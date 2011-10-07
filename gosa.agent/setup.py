@@ -93,6 +93,11 @@ setup(
         gosa-agent.plugins.goto.network = gosa.agent.plugins.goto.network:NetworkUtils
         gosa-agent.plugins.goto.client_service = gosa.agent.plugins.goto.client_service:ClientService
 
+        [gosa.object.type]
+        type.string = gosa.agent.objects.types.base:StringAttribute
+        type.integer = gosa.agent.objects.types.base:IntegerAttribute
+        type.boolean = gosa.agent.objects.types.base:BooleanAttribute
+
         [gosa.object.backend]
         backend.ldap = gosa.agent.objects.backend.back_ldap:LDAP
 

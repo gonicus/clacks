@@ -22,7 +22,9 @@ else:
     del sys.argv[1]
 
 f = GOsaObjectFactory()
+print f.getObjectTypes()
 #print f.identifyObject(u"cn=Klaus Mustermann,ou=people,dc=gonicus,dc=de")
+exit(0)
 
 if mode == "create":
     p = f.getObject('GenericUser', u'ou=people,dc=gonicus,dc=de', mode="create")

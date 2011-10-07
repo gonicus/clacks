@@ -78,6 +78,7 @@ class GOsaObjectFactory(object):
     __xml_defs = {}
     __classes = {}
     __var_regex = re.compile('^[a-z_][a-z0-9\-_]*$', re.IGNORECASE)
+    __attribute_type = {}
 
     def __init__(self):
         self.env = Environment.getInstance()
@@ -93,10 +94,30 @@ class GOsaObjectFactory(object):
 
         self.log.info("object factory initialized")
 
+        # Loade attribute type mapping
+        for entry in pkg_resources.iter_entry_points("gosa.object.type"):
+            module = entry.load()
+            self.log.info("attribute type %s included" % module.__alias__)
+            self.__attribute_type[module.__alias__] = module()
+
         # Load and parse schema
         self.loadSchema()
 
 #-TODO-needs-re-work-------------------------------------------------------------------------------
+
+    #@Command()
+    def getObjectTypes(self):
+        obr = ObjectBackendRegistry.getInstance()
+
+        # First, find all base objects
+        # -> for every base object -> ask the primary backend to identify [true/false]
+        for name, obj in self.__xml_defs.items():
+            t_obj = obj.Object
+            is_base = bool(t_obj.BaseObject)
+            print str(t_obj.Name)
+            # print str(t_obj.Extends)
+
+        return "done"
 
     #@Command()
     def identifyObject(self, dn):
@@ -118,6 +139,8 @@ class GOsaObjectFactory(object):
             be = ObjectBackendRegistry.getBackend(backend)
             if be.identify(dn, attrs):
                 if is_base:
+                    if id_base:
+                        raise FactoryException("object looks like beeing '%s' and '%s' at the same time - multiple base objects are not supported" % (id_base, name))
                     id_base = name
                 else:
                     id_extend.append(name)
