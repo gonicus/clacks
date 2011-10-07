@@ -952,32 +952,10 @@ class GOsaObject(object):
             else:
                 new_value = [value]
 
+            # Check if the new value is valid
             s_type = props[name]['type']
             if not self._objectFactory.getAttributeTypes()[s_type].is_valid_value(new_value):
                 raise TypeError("Invalid value given for %s" % (name,))
-
-            # # Run type check (Multi-value and single-value separately)
-            # if props[name]['multivalue']:
-
-            #     # We require lists for multi-value objects
-            #     if type(value) != list:
-            #         raise TypeError("Cannot assign multi-value '%s' to property '%s'. A list is required for multi-values!" % (
-            #             value, name))
-
-            #     # Check each list value for the required type
-            #     failed = 0
-            #     for entry in value:
-            #         if TYPE_MAP[props[name]['type']] and not issubclass(type(value[failed]), TYPE_MAP[props[name]['type']]):
-            #             raise TypeError("Cannot assign multi-value '%s' to property '%s' which expects %s. Item %s is of invalid type %s!" % (
-            #                 value, name, props[name]['type'], failed, type(value[failed])))
-            #         failed += 1
-            # else:
-
-            #     # Check single-values here.
-            #     if TYPE_MAP[props[name]['type']] and not issubclass(type(value), TYPE_MAP[props[name]['type']]):
-            #         raise TypeError("cannot assign value '%s'(%s) to property '%s'(%s)" % (
-            #             value, type(value).__name__,
-            #             name, props[name]['type']))
 
             # Validate value
             if props[name]['validator']:
