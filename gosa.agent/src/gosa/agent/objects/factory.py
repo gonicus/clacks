@@ -946,6 +946,15 @@ class GOsaObject(object):
             if props[name]['readonly']:
                 raise AttributeError("Cannot write to readonly attribute '%s'" % name)
 
+            # Set the new value
+            if props[name]['multivalue']:
+                new_value = value
+            else:
+                new_value = [value]
+
+            s_type = props[name]['type']
+            if not self._objectFactory.getAttributeTypes()[s_type].is_valid_value(new_value):
+                raise TypeError("Invalid value given for %s" % (name,))
 
             # # Run type check (Multi-value and single-value separately)
             # if props[name]['multivalue']:
@@ -969,12 +978,6 @@ class GOsaObject(object):
             #         raise TypeError("cannot assign value '%s'(%s) to property '%s'(%s)" % (
             #             value, type(value).__name__,
             #             name, props[name]['type']))
-
-            # Set the new value
-            if props[name]['multivalue']:
-                new_value = value
-            else:
-                new_value = [value]
 
             # Validate value
             if props[name]['validator']:

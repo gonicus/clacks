@@ -135,6 +135,22 @@ class SambaLogonHoursAttribute(AttributeType):
         return(str(value1) == str(value2))
 
     @classmethod
+    def is_valid_value(cls, value):
+
+        if value:
+
+            # Check if we've got a dict with values for all seven week days.
+            if value[0].keys() != range(0,7):
+                return False
+
+            # Check if each week day contains 24 values.
+            for i in range(0,7):
+                if type(value[0][i]) != str or len(value[0][i]) != 24 or len(set(value[0][i]) - set('01')):
+                    return False
+
+        return True
+
+    @classmethod
     def _convert_to_unicodestring(cls, value):
 
         if len(value):
