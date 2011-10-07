@@ -313,7 +313,6 @@
                                 <Description>Logon Hours</Description>
                                 <Type>Object</Type>
                                 <BackendType>UnicodeString</BackendType>
-				<Readonly>true</Readonly>
 	                       	<InFilter>
                                         <FilterChain>
                                                 <FilterEntry>
@@ -323,6 +322,15 @@
                                                 </FilterEntry>
                                         </FilterChain>
                                 </InFilter>
+	                       	<OutFilter>
+                                        <FilterChain>
+                                                <FilterEntry>
+                                                        <Filter>
+                                                                <Name>SambaLogonHoursOut</Name>
+                                                        </Filter>
+                                                </FilterEntry>
+                                        </FilterChain>
+				</OutFilter>
                         </Attribute>
                 </Attributes>
 

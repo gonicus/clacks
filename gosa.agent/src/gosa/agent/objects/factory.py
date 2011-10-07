@@ -88,6 +88,22 @@ class GOsaObjectFactory(object):
         #pylint: disable=E1101
         schema_path = pkg_resources.resource_filename('gosa.agent', 'data/objects/object.xsd')
         schema_doc = open(schema_path).read()
+
+        # Prepare list of backend types
+        backend_types = ""
+        b_types = ['Boolean', 'String', 'UnicodeString', 'Integer', 'Timestamp', 'Date', 'Binary', 'Object']
+        for b_type in b_types:
+            backend_types += "<enumeration value=\"%s\"></enumeration>" % (b_type,)
+
+        # Prepare list of backend types
+        object_types = ""
+        o_types = ['Boolean', 'String', 'UnicodeString', 'Integer', 'Timestamp', 'Date', 'Binary', 'Object']
+        for o_type in o_types:
+            object_types += "<enumeration value=\"%s\"></enumeration>" % (o_type,)
+
+        # Insert available object types into the xsd schema
+        schema_doc = schema_doc % {'object_types': object_types, 'backend_types': backend_types}
+
         schema_root = etree.XML(schema_doc)
         schema = etree.XMLSchema(schema_root)
         self.__parser = objectify.makeparser(schema=schema)
@@ -910,28 +926,31 @@ class GOsaObject(object):
 
             current = copy.deepcopy(props[name]['value'])
 
-            # Run type check (Multi-value and single-value separately)
-            if props[name]['multivalue']:
-
-                # We require lists for multi-value objects
-                if type(value) != list:
-                    raise TypeError("Cannot assign multi-value '%s' to property '%s'. A list is required for multi-values!" % (
-                        value, name))
-
-                # Check each list value for the required type
-                failed = 0
-                for entry in value:
-                    if TYPE_MAP[props[name]['type']] and not issubclass(type(value[failed]), TYPE_MAP[props[name]['type']]):
-                        raise TypeError("Cannot assign multi-value '%s' to property '%s' which expects %s. Item %s is of invalid type %s!" % (
-                            value, name, props[name]['type'], failed, type(value[failed])))
-                    failed += 1
+            if props[name]['type'] == "Object":
+                pass
             else:
+                # Run type check (Multi-value and single-value separately)
+                if props[name]['multivalue']:
 
-                # Check single-values here.
-                if TYPE_MAP[props[name]['type']] and not issubclass(type(value), TYPE_MAP[props[name]['type']]):
-                    raise TypeError("cannot assign value '%s'(%s) to property '%s'(%s)" % (
-                        value, type(value).__name__,
-                        name, props[name]['type']))
+                    # We require lists for multi-value objects
+                    if type(value) != list:
+                        raise TypeError("Cannot assign multi-value '%s' to property '%s'. A list is required for multi-values!" % (
+                            value, name))
+
+                    # Check each list value for the required type
+                    failed = 0
+                    for entry in value:
+                        if TYPE_MAP[props[name]['type']] and not issubclass(type(value[failed]), TYPE_MAP[props[name]['type']]):
+                            raise TypeError("Cannot assign multi-value '%s' to property '%s' which expects %s. Item %s is of invalid type %s!" % (
+                                value, name, props[name]['type'], failed, type(value[failed])))
+                        failed += 1
+                else:
+
+                    # Check single-values here.
+                    if TYPE_MAP[props[name]['type']] and not issubclass(type(value), TYPE_MAP[props[name]['type']]):
+                        raise TypeError("cannot assign value '%s'(%s) to property '%s'(%s)" % (
+                            value, type(value).__name__,
+                            name, props[name]['type']))
 
             # Set the new value
             if props[name]['multivalue']:
@@ -959,7 +978,7 @@ class GOsaObject(object):
             self.log.debug("updated property value of [%s|%s] %s:%s" % (type(self).__name__, self.uuid, name, new_value))
 
             # Update status if there's a change
-            if current != props[name]['value'] and props[name]['status'] != STATUS_CHANGED:
+            if (props[name]['type'] == "Object" or current != props[name]['value']) and props[name]['status'] != STATUS_CHANGED:
                 props[name]['status'] = STATUS_CHANGED
                 props[name]['old'] = current
 
