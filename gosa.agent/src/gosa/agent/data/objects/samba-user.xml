@@ -311,7 +311,7 @@
 			<Attribute>
                                 <Name>sambaLogonHours</Name>
                                 <Description>Logon Hours</Description>
-                                <Type>Object</Type>
+                                <Type>SambaLogonHours</Type>
                                 <BackendType>UnicodeString</BackendType>
 	                       	<InFilter>
                                         <FilterChain>

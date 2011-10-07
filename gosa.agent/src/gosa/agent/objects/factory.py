@@ -84,37 +84,30 @@ class GOsaObjectFactory(object):
         self.env = Environment.getInstance()
         self.log = logging.getLogger(__name__)
 
+        # Loade attribute type mapping
+        for entry in pkg_resources.iter_entry_points("gosa.object.type"):
+            module = entry.load()
+            self.log.info("attribute type %s included" % module.__alias__)
+            self.__attribute_type[module.__alias__] = module()
+
         # Initialize parser
         #pylint: disable=E1101
         schema_path = pkg_resources.resource_filename('gosa.agent', 'data/objects/object.xsd')
         schema_doc = open(schema_path).read()
 
-        # Prepare list of backend types
-        backend_types = ""
-        b_types = ['Boolean', 'String', 'UnicodeString', 'Integer', 'Timestamp', 'Date', 'Binary', 'Object']
-        for b_type in b_types:
-            backend_types += "<enumeration value=\"%s\"></enumeration>" % (b_type,)
-
-        # Prepare list of backend types
+        # Prepare list of object types
         object_types = ""
-        o_types = ['Boolean', 'String', 'UnicodeString', 'Integer', 'Timestamp', 'Date', 'Binary', 'Object']
-        for o_type in o_types:
+        for o_type in self.__attribute_type.keys():
             object_types += "<enumeration value=\"%s\"></enumeration>" % (o_type,)
 
         # Insert available object types into the xsd schema
-        schema_doc = schema_doc % {'object_types': object_types, 'backend_types': backend_types}
+        schema_doc = schema_doc % {'object_types': object_types}
 
         schema_root = etree.XML(schema_doc)
         schema = etree.XMLSchema(schema_root)
         self.__parser = objectify.makeparser(schema=schema)
 
         self.log.info("object factory initialized")
-
-        # Loade attribute type mapping
-        for entry in pkg_resources.iter_entry_points("gosa.object.type"):
-            module = entry.load()
-            self.log.info("attribute type %s included" % module.__alias__)
-            self.__attribute_type[module.__alias__] = module()
 
         # Load and parse schema
         self.loadSchema()

@@ -12,3 +12,19 @@ class IntegerAttribute(AttributeType):
 
 class BooleanAttribute(AttributeType):
     __alias__ = "Boolean"
+
+
+class BinaryAttribute(AttributeType):
+    __alias__ = "Binary"
+
+
+class UnicodeStringAttribute(AttributeType):
+    __alias__ = "UnicodeString"
+
+
+class DateAttribute(AttributeType):
+    __alias__ = "Date"
+
+
+class TimestampAttribute(AttributeType):
+    __alias__ = "Timestamp"

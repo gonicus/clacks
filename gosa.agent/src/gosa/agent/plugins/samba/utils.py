@@ -6,6 +6,7 @@ from gosa.common.components import Plugin
 from gosa.common.utils import N_
 from gosa.common import Environment
 from gosa.agent.objects.filter import ElementFilter
+from gosa.agent.objects.types import AttributeType
 from gosa.agent.objects import GOsaObjectFactory
 
 class SambaUtils(Plugin):
@@ -186,3 +187,9 @@ class SambaLogonHoursOut(ElementFilter):
             valDict[key]['value'][0] = new.upper()
 
         return key, valDict
+
+
+class SambaLogonHoursAttribute(AttributeType):
+        __alias__ = "SambaLogonHours"
+
+

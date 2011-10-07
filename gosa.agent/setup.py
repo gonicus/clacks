@@ -97,6 +97,11 @@ setup(
         type.string = gosa.agent.objects.types.base:StringAttribute
         type.integer = gosa.agent.objects.types.base:IntegerAttribute
         type.boolean = gosa.agent.objects.types.base:BooleanAttribute
+        type.binary = gosa.agent.objects.types.base:BinaryAttribute
+        type.unicodestring = gosa.agent.objects.types.base:UnicodeStringAttribute
+        type.date = gosa.agent.objects.types.base:DateAttribute
+        type.timestamp = gosa.agent.objects.types.base:TimestampAttribute
+        type.sambalogonhours = gosa.agent.plugins.samba.utils:SambaLogonHoursAttribute
 
         [gosa.object.backend]
         backend.ldap = gosa.agent.objects.backend.back_ldap:LDAP
