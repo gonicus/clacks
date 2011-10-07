@@ -110,6 +110,9 @@ class GOsaObjectFactory(object):
 
         self.log.info("object factory initialized")
 
+        # Initialize backend registry
+        obr = ObjectBackendRegistry.getInstance()
+
         # Loade attribute type mapping
         for entry in pkg_resources.iter_entry_points("gosa.object.type"):
             module = entry.load()
@@ -117,27 +120,53 @@ class GOsaObjectFactory(object):
             self.__attribute_type[module.__alias__] = module()
 
         # Load and parse schema
-        self.loadSchema()
+        self.load_schema()
+        self.load_object_types()
 
-#-TODO-needs-re-work-------------------------------------------------------------------------------
-
-    #@Command()
-    def getObjectTypes(self):
-        obr = ObjectBackendRegistry.getInstance()
+    def load_object_types(self):
+        types = {}
+        extends = {}
 
         # First, find all base objects
         # -> for every base object -> ask the primary backend to identify [true/false]
         for name, obj in self.__xml_defs.items():
             t_obj = obj.Object
             is_base = bool(t_obj.BaseObject)
-            print str(t_obj.Name)
-            # print str(t_obj.Extends)
+            backend = str(t_obj.Backend)
+            backend_attrs = None
 
-        return "done"
+            for bp in t_obj.BackendParameters.Backend:
+                if str(bp) == backend:
+                    backend_attrs = bp.attrib
+                    break
+
+            types[name] = {
+                'backend': backend,
+                'backend_attrs': backend_attrs,
+                'extended_by': [],
+            }
+            if "Extends" in t_obj.__dict__:
+                types[str(t_obj.Name)]['extends'] = [str(v) for v in t_obj.Extends.Value]
+                for ext in types[name]['extends']:
+                    if ext not in extends:
+                        extends[ext] = []
+                    extends[ext].append(name)
+
+        for name, ext in extends.items():
+            if not name in types:
+                continue
+            types[name]['extended_by'] = ext
+
+        self.__object_types = types
+
+#-TODO-needs-re-work-------------------------------------------------------------------------------
+
+    #@Command()
+    def getObjectTypes(self):
+        return self.__object_types.keys()
 
     #@Command()
     def identifyObject(self, dn):
-        obr = ObjectBackendRegistry.getInstance()
         id_base = None
         id_extend = []
 
@@ -242,7 +271,7 @@ class GOsaObjectFactory(object):
         return ret
 
 
-    def loadSchema(self):
+    def load_schema(self):
         """
         This method reads all gosa-object defintion files and then calls
         :meth:`gosa.agent.objects.factory.GOsaObjectFactory.getObject`

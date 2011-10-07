@@ -335,7 +335,7 @@
                 </Attributes>
 
 		<Extends>
-			<Value>generic-user</Value>
+			<Value>GenericUser</Value>
 		</Extends>
 		<BaseObject>false</BaseObject>
 	</Object>
