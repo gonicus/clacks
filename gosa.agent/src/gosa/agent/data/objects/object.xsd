@@ -115,10 +115,16 @@
     	</restriction>
     </simpleType>
 
-    <simpleType name="AttributeBackendTypes">
-    	<restriction base="string">
-    		%(backend_types)s
-    	</restriction>
+	<simpleType name="AttributeBackendTypes">
+		<restriction base="string">
+			<enumeration value="Boolean"></enumeration>
+			<enumeration value="String"></enumeration>
+			<enumeration value="UnicodeString"></enumeration>
+			<enumeration value="Integer"></enumeration>
+			<enumeration value="Timestamp"></enumeration>
+			<enumeration value="Date"></enumeration>
+			<enumeration value="Binary"></enumeration>
+		</restriction>
     </simpleType>
 
     <complexType name="ContainerType">
