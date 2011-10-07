@@ -23,7 +23,7 @@ else:
 
 f = GOsaObjectFactory()
 print f.getObjectTypes()
-#print f.identifyObject(u"cn=Klaus Mustermann,ou=people,dc=gonicus,dc=de")
+print f.identifyObject(u"cn=Klaus Mustermann,ou=people,dc=gonicus,dc=de")
 exit(0)
 
 if mode == "create":

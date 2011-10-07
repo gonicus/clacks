@@ -144,6 +144,7 @@ class GOsaObjectFactory(object):
                 'backend': backend,
                 'backend_attrs': backend_attrs,
                 'extended_by': [],
+                'base': is_base,
             }
             if "Extends" in t_obj.__dict__:
                 types[str(t_obj.Name)]['extends'] = [str(v) for v in t_obj.Extends.Value]
@@ -171,19 +172,10 @@ class GOsaObjectFactory(object):
         id_extend = []
 
         # First, find all base objects
-        # -> for every base object -> ask the primary backend to identify [true/false]
-        for name, obj in self.__xml_defs.items():
-            t_obj = obj.Object
-            is_base = bool(t_obj.BaseObject)
-            backend = str(t_obj.Backend)
-            for bp in t_obj.BackendParameters.Backend:
-                if str(bp) == backend:
-                    attrs = bp.attrib
-                    break
-
-            be = ObjectBackendRegistry.getBackend(backend)
-            if be.identify(dn, attrs):
-                if is_base:
+        for name, info in self.__object_types.items():
+            be = ObjectBackendRegistry.getBackend(info['backend'])
+            if be.identify(dn, info['backend_attrs']):
+                if info['base']:
                     if id_base:
                         raise FactoryException("object looks like beeing '%s' and '%s' at the same time - multiple base objects are not supported" % (id_base, name))
                     id_base = name
