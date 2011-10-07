@@ -250,7 +250,8 @@ class GOsaObjectFactory(object):
                 'out_filter': out_f,
                 'in_filter': in_f,
                 'backend': backend,
-                'orig_value': value,
+                'in_value': value,
+                'orig_value': None,
                 'foreign': foreign,
                 'unique': unique,
                 'mandatory': mandatory,
@@ -866,7 +867,7 @@ class GOsaObject(object):
                     continue
 
                 # Keep original values, they may be overwritten in the in-filters.
-                props[key]['orig_value'] = props[key]['value'] = attrs[key]
+                props[key]['in_value'] = props[key]['value'] = attrs[key]
                 self.log.debug("%s: %s" % (key, props[key]['value']))
 
             # Once we've loaded all properties from the backend, execute the
@@ -875,7 +876,7 @@ class GOsaObject(object):
 
                 # Skip loading in-filters for None values
                 if props[key]['value'] == None:
-                    props[key]['orig_value'] = props[key]['value'] = []
+                    props[key]['in_value'] = props[key]['value'] = []
                     continue
 
                 # Execute defined in-filters.
@@ -903,14 +904,14 @@ class GOsaObject(object):
 
                 #  Convert all values to required type
                 try:
-                    value = self._objectFactory.getAttributeTypes()[a_type].convert_from(be_type, props[key]['value'])
+                    props[key]['value'] = self._objectFactory.getAttributeTypes()[a_type].convert_from(be_type, props[key]['value'])
                 except Exception as e:
-                    print "!!!!::::: ", key, e
+                    print "Conversion failed! ::::: ", key, e
 
                 self.log.debug("converted '%s' from type '%s' to type '%s'!" % (key, be_type, a_type))
 
             # Keep the initial value
-            props[key]['old'] = props[key]['value']
+            props[key]['last_value'] = props[key]['orig_value'] = copy.deepcopy(props[key]['value'])
 
     def _delattr_(self, name):
         """
@@ -955,36 +956,16 @@ class GOsaObject(object):
             if props[name]['readonly']:
                 raise AttributeError("Cannot write to readonly attribute '%s'" % name)
 
-            current = copy.deepcopy(props[name]['value'])
-
-            # # Run type check (Multi-value and single-value separately)
-            # if props[name]['multivalue']:
-
-            #     # We require lists for multi-value objects
-            #     if type(value) != list:
-            #         raise TypeError("Cannot assign multi-value '%s' to property '%s'. A list is required for multi-values!" % (
-            #             value, name))
-
-            #     # Check each list value for the required type
-            #     failed = 0
-            #     for entry in value:
-            #         if TYPE_MAP[props[name]['type']] and not issubclass(type(value[failed]), TYPE_MAP[props[name]['type']]):
-            #             raise TypeError("Cannot assign multi-value '%s' to property '%s' which expects %s. Item %s is of invalid type %s!" % (
-            #                 value, name, props[name]['type'], failed, type(value[failed])))
-            #         failed += 1
-            # else:
-
-            #     # Check single-values here.
-            #     if TYPE_MAP[props[name]['type']] and not issubclass(type(value), TYPE_MAP[props[name]['type']]):
-            #         raise TypeError("cannot assign value '%s'(%s) to property '%s'(%s)" % (
-            #             value, type(value).__name__,
-            #             name, props[name]['type']))
-
             # Set the new value
             if props[name]['multivalue']:
                 new_value = value
             else:
                 new_value = [value]
+
+            # Check if the new value is valid
+            s_type = props[name]['type']
+            if not self._objectFactory.getAttributeTypes()[s_type].is_valid_value(new_value):
+                raise TypeError("Invalid value given for %s" % (name,))
 
             # Validate value
             if props[name]['validator']:
@@ -1006,9 +987,11 @@ class GOsaObject(object):
             self.log.debug("updated property value of [%s|%s] %s:%s" % (type(self).__name__, self.uuid, name, new_value))
 
             # Update status if there's a change
-            if (props[name]['type'] == "Object" or current != props[name]['value']) and props[name]['status'] != STATUS_CHANGED:
+            t = props[name]['type']
+            current = copy.deepcopy(props[name]['value'])
+            if not self._objectFactory.getAttributeTypes()[t].values_match(props[name]['value'], props[name]['orig_value']):
                 props[name]['status'] = STATUS_CHANGED
-                props[name]['old'] = current
+                props[name]['last_value'] = current
 
         else:
             raise AttributeError("no such property '%s'" % name)
@@ -1027,12 +1010,14 @@ class GOsaObject(object):
 
             # We can have single and multivalues, return the correct type here.
             if props[name]['multivalue']:
-                return props[name]['value']
+                value = props[name]['value']
             else:
                 if len(props[name]['value']):
-                    return props[name]['value'][0]
+                    value = props[name]['value'][0]
                 else:
-                    return None
+                    value = None
+
+            return(value)
 
         # The requested property-name seems to be a method, return the method reference.
         elif name in methods:
@@ -1073,6 +1058,7 @@ class GOsaObject(object):
 
         # Collect values by store and process the property filters
         toStore = {}
+        collectedAttrs = {}
         for key in props:
 
             # Adapt status from dependent properties.
@@ -1088,6 +1074,9 @@ class GOsaObject(object):
             new_key = key
 
             self.log.debug("changed: %s" % (key,))
+
+            # Add this attribute to the list of attributes that will be prepared to be saved.
+            collectedAttrs[key] = copy.deepcopy(props[key])
 
             # Process each and every out-filter with a clean set of input values,
             #  to avoid that return-values overwrite themselves.
@@ -1115,26 +1104,32 @@ class GOsaObject(object):
                         if not be in toStore:
                             toStore[be] = {}
 
-                        # Append entry to be sored.
-                        toStore[be][prop_key] = {'foreign': props[key]['foreign'],
-                                                 'orig': props[key]['orig_value'],
-                                                 'value': valDict[prop_key]['value'],
-                                                 'type': valDict[prop_key]['backend_type']}
-            else:
+                        collectedAttrs[prop_key] = copy.deepcopy(valDict[prop_key])
 
-                # do not save properties that are marked with 'skip_save'
-                if props[key]['skip_save']:
-                    continue
+        # Create a backend compatible list of all changed attributes.
+        toStore = {}
+        for prop_key in collectedAttrs:
 
-                # Collect properties by backend
-                be = props[key]['backend']
-                if not be in toStore:
-                    toStore[be] = {}
+            # do not save properties that are marked with 'skip_save'
+            if collectedAttrs[prop_key]['skip_save']:
+                continue
 
-                toStore[be][key] = {'foreign': props[key]['foreign'],
-                                    'orig': props[key]['orig_value'],
-                                    'value': props[key]['value'],
-                                    'type': props[key]['backend_type']}
+            # Collect properties by backend
+            be = collectedAttrs[prop_key]['backend']
+            if not be in toStore:
+                toStore[be] = {}
+
+            # Convert the properities type to the required format - if its not of the expected type.
+            be_type = collectedAttrs[prop_key]['backend_type']
+            s_type = collectedAttrs[prop_key]['type']
+            if not self._objectFactory.getAttributeTypes()[be_type].is_valid_value(collectedAttrs[prop_key]['value']):
+                collectedAttrs[prop_key]['value'] = self._objectFactory.getAttributeTypes()[s_type].convert_to(be_type, collectedAttrs[prop_key]['value'])
+
+            # Append entry to the to-be-stored list
+            toStore[be][prop_key] = {'foreign': collectedAttrs[prop_key]['foreign'],
+                                'orig': collectedAttrs[prop_key]['in_value'],
+                                'value': collectedAttrs[prop_key]['value'],
+                                'type': collectedAttrs[prop_key]['backend_type']}
 
         # Handle by backend
         p_backend = getattr(self, '_backend')
@@ -1177,7 +1172,7 @@ class GOsaObject(object):
         """
         props = getattr(self, '__properties')
         for key in props:
-            props[key]['value'] = props[key]['old']
+            props[key]['value'] = props[key]['last_value']
 
         self.log.debug("reverted object modifications for [%s|%s]" % (type(self).__name__, self.uuid))
 

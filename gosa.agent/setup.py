@@ -133,8 +133,6 @@ setup(
         filter.datetimetointeger = gosa.agent.objects.filter.basic:DatetimeToInteger
         filter.sambaacctflagsin = gosa.agent.plugins.samba.utils:SambaAcctFlagsIn
         filter.sambaacctflagsout = gosa.agent.plugins.samba.utils:SambaAcctFlagsOut
-        filter.sambalogonhoursin = gosa.agent.plugins.samba.utils:SambaLogonHoursIn
-        filter.sambalogonhoursout = gosa.agent.plugins.samba.utils:SambaLogonHoursOut
 
         [gosa.object.operator]
         operator.and = gosa.agent.objects.operator.bool:And

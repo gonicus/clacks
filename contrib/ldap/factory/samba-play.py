@@ -13,7 +13,7 @@ p = f.getObject('SambaUser', u"cn=Playground Tester,ou=people,dc=gonicus,dc=de",
 #for prop in p.listProperties():
 #    print "Attribute %s: %s" % (prop.ljust(40), getattr(p, prop))
 
-#p.sambaLogonTime = datetime.datetime.today()
+p.sambaLogonTime = datetime.datetime.today()
 #p.sambaPwdCanChange = datetime.datetime.today()
 #p.sambaKickoffTime = datetime.datetime.today()
 #p.sambaLogoffTime = datetime.datetime.today()
@@ -21,22 +21,22 @@ p = f.getObject('SambaUser', u"cn=Playground Tester,ou=people,dc=gonicus,dc=de",
 #p.sambaBadPasswordTime = datetime.datetime.today()
 #p.sambaPwdMustChange = datetime.datetime.today()
 #p.sambaBadPasswordCount = 5
-#p.displayName = "PeterPan"
+p.displayName += 'P'
 
 #p.passwordNotRequired = True
 p.serverTrustAccount = not p.serverTrustAccount
 p.sambaHomePath = r"\\hallo\welt"
 p.sambaHomeDrive = "D:"
 
-for entry in p.sambaLogonHours:
-    print("%s: %s" % (entry, p.sambaLogonHours[entry]))
-
 lh = p.sambaLogonHours
+for entry in lh:
+    print("%s: %s" % (entry, lh[entry]))
+
 lh[0] = (str(int(not(int(lh[0][0]))))  * 24)
 p.sambaLogonHours = lh
 
-for entry in p.sambaLogonHours:
-    print("%s: %s" % (entry, p.sambaLogonHours[entry]))
+for entry in lh:
+    print("%s: %s" % (entry, lh[entry]))
 
 p.commit()
 #print p._extends

@@ -313,24 +313,6 @@
                                 <Description>Logon Hours</Description>
                                 <Type>SambaLogonHours</Type>
                                 <BackendType>UnicodeString</BackendType>
-	                       	<InFilter>
-                                        <FilterChain>
-                                                <FilterEntry>
-                                                        <Filter>
-                                                                <Name>SambaLogonHoursIn</Name>
-                                                        </Filter>
-                                                </FilterEntry>
-                                        </FilterChain>
-                                </InFilter>
-	                       	<OutFilter>
-                                        <FilterChain>
-                                                <FilterEntry>
-                                                        <Filter>
-                                                                <Name>SambaLogonHoursOut</Name>
-                                                        </Filter>
-                                                </FilterEntry>
-                                        </FilterChain>
-				</OutFilter>
                         </Attribute>
                 </Attributes>
 
