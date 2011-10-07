@@ -17,6 +17,14 @@ class AttributeType(object):
             return (cls.__alias__.lower(), fname[14:].replace("_", " "))
 
     @classmethod
+    def is_valid_value(cls, value):
+        raise ConversationNotSupported("Cannot check value type for '%s'!" % (cls.__alias__.lower(),))
+
+    @classmethod
+    def values_match(cls, value1, value2):
+        raise ConversationNotSupported("Value check not implemented for '%s'!" % (cls.__alias__.lower(),))
+
+    @classmethod
     def convert_to(cls, target_type, value):
         cnv = getattr(cls, "_convert_to_%s" % target_type.lower())
         return cnv(value)
