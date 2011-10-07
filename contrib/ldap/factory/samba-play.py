@@ -28,15 +28,15 @@ p.serverTrustAccount = not p.serverTrustAccount
 p.sambaHomePath = r"\\hallo\welt"
 p.sambaHomeDrive = "D:"
 
-for entry in p.sambaLogonHours:
-    print("%s: %s" % (entry, p.sambaLogonHours[entry]))
-
 lh = p.sambaLogonHours
+for entry in lh:
+    print("%s: %s" % (entry, lh[entry]))
+
 lh[0] = (str(int(not(int(lh[0][0]))))  * 24)
 p.sambaLogonHours = lh
 
-for entry in p.sambaLogonHours:
-    print("%s: %s" % (entry, p.sambaLogonHours[entry]))
+for entry in lh:
+    print("%s: %s" % (entry, lh[entry]))
 
 p.commit()
 #print p._extends

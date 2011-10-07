@@ -247,7 +247,8 @@ class GOsaObjectFactory(object):
                 'out_filter': out_f,
                 'in_filter': in_f,
                 'backend': backend,
-                'orig_value': value,
+                'in_value': value,
+                'orig_value': None,
                 'foreign': foreign,
                 'unique': unique,
                 'mandatory': mandatory,
@@ -856,7 +857,7 @@ class GOsaObject(object):
                     continue
 
                 # Keep original values, they may be overwritten in the in-filters.
-                props[key]['orig_value'] = props[key]['value'] = attrs[key]
+                props[key]['in_value'] = props[key]['value'] = attrs[key]
                 self.log.debug("%s: %s" % (key, props[key]['value']))
 
             # Once we've loaded all properties from the backend, execute the
@@ -865,7 +866,7 @@ class GOsaObject(object):
 
                 # Skip loading in-filters for None values
                 if props[key]['value'] == None:
-                    props[key]['orig_value'] = props[key]['value'] = []
+                    props[key]['in_value'] = props[key]['value'] = []
                     continue
 
                 # Execute defined in-filters.
@@ -900,7 +901,7 @@ class GOsaObject(object):
                 self.log.debug("converted '%s' from type '%s' to type '%s'!" % (key, be_type, a_type))
 
             # Keep the initial value
-            props[key]['old'] = props[key]['value']
+            props[key]['last_value'] = props[key]['orig_value'] = copy.deepcopy(props[key]['value'])
 
     def _delattr_(self, name):
         """
@@ -945,7 +946,6 @@ class GOsaObject(object):
             if props[name]['readonly']:
                 raise AttributeError("Cannot write to readonly attribute '%s'" % name)
 
-            current = copy.deepcopy(props[name]['value'])
 
             # # Run type check (Multi-value and single-value separately)
             # if props[name]['multivalue']:
@@ -997,9 +997,10 @@ class GOsaObject(object):
 
             # Update status if there's a change
             t = props[name]['type']
-            if not self._objectFactory.getAttributeTypes()[t].values_match(props[name]['value'], current):
+            current = copy.deepcopy(props[name]['value'])
+            if not self._objectFactory.getAttributeTypes()[t].values_match(props[name]['value'], props[name]['orig_value']):
                 props[name]['status'] = STATUS_CHANGED
-                props[name]['old'] = current
+                props[name]['last_value'] = current
 
         else:
             raise AttributeError("no such property '%s'" % name)
@@ -1025,8 +1026,7 @@ class GOsaObject(object):
                 else:
                     value = None
 
-            print "fix me! Do not deepcopy objects.."
-            return(copy.deepcopy(value))
+            return(value)
 
         # The requested property-name seems to be a method, return the method reference.
         elif name in methods:
@@ -1136,7 +1136,7 @@ class GOsaObject(object):
 
             # Append entry to the to-be-stored list
             toStore[be][prop_key] = {'foreign': collectedAttrs[prop_key]['foreign'],
-                                'orig': collectedAttrs[prop_key]['orig_value'],
+                                'orig': collectedAttrs[prop_key]['in_value'],
                                 'value': collectedAttrs[prop_key]['value'],
                                 'type': collectedAttrs[prop_key]['backend_type']}
 
@@ -1181,7 +1181,7 @@ class GOsaObject(object):
         """
         props = getattr(self, '__properties')
         for key in props:
-            props[key]['value'] = props[key]['old']
+            props[key]['value'] = props[key]['last_value']
 
         self.log.debug("reverted object modifications for [%s|%s]" % (type(self).__name__, self.uuid))
 
