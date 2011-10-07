@@ -146,12 +146,16 @@ class GOsaObjectFactory(object):
                 'extended_by': [],
                 'base': is_base,
             }
+
             if "Extends" in t_obj.__dict__:
                 types[str(t_obj.Name)]['extends'] = [str(v) for v in t_obj.Extends.Value]
                 for ext in types[name]['extends']:
                     if ext not in extends:
                         extends[ext] = []
                     extends[ext].append(name)
+
+            if "Container" in t_obj.__dict__:
+                types[str(t_obj.Name)]['container'] = [str(v) for v in t_obj.Container.Type]
 
         for name, ext in extends.items():
             if not name in types:
@@ -175,6 +179,9 @@ class GOsaObjectFactory(object):
         for name, info in self.__object_types.items():
             be = ObjectBackendRegistry.getBackend(info['backend'])
             if be.identify(dn, info['backend_attrs']):
+
+                #TODO: check for the current name if it makes a different object type
+
                 if info['base']:
                     if id_base:
                         raise FactoryException("object looks like beeing '%s' and '%s' at the same time - multiple base objects are not supported" % (id_base, name))
