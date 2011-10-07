@@ -102,7 +102,7 @@ class GOsaObjectFactory(object):
         self.log.info("object factory initialized")
 
         # Load and parse schema
-        self.loadSchema()
+        self.load_schema()
         self.load_object_types()
 
     def getAttributeTypes(self):
