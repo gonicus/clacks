@@ -73,8 +73,9 @@
         		maxOccurs="1" minOccurs="1"
         	>
         	</element>
-        	<element name="BackendType" type="gosa:AttributeTypes"
-        		maxOccurs="1" minOccurs="0"
+        	<element name="BackendType"
+        		type="gosa:AttributeBackendTypes" maxOccurs="1"
+        		minOccurs="0"
         	>
         	</element>
         	<element name="Validators" type="gosa:Validator"
@@ -110,14 +111,13 @@
 
     <simpleType name="AttributeTypes">
     	<restriction base="string">
-    		<enumeration value="Boolean"></enumeration>
-    		<enumeration value="String"></enumeration>
-    		<enumeration value="UnicodeString"></enumeration>
-    		<enumeration value="Integer"></enumeration>
-    		<enumeration value="Timestamp"></enumeration>
-    		<enumeration value="Date"></enumeration>
-    		<enumeration value="Binary"></enumeration>
-    		<enumeration value="Object"></enumeration>
+    		%(object_types)s
+    	</restriction>
+    </simpleType>
+
+    <simpleType name="AttributeBackendTypes">
+    	<restriction base="string">
+    		%(backend_types)s
     	</restriction>
     </simpleType>
 
