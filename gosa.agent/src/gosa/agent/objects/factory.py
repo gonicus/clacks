@@ -887,28 +887,31 @@ class GOsaObject(object):
 
             current = copy.deepcopy(props[name]['value'])
 
-            # Run type check (Multi-value and single-value separately)
-            if props[name]['multivalue']:
-
-                # We require lists for multi-value objects
-                if type(value) != list:
-                    raise TypeError("Cannot assign multi-value '%s' to property '%s'. A list is required for multi-values!" % (
-                        value, name))
-
-                # Check each list value for the required type
-                failed = 0
-                for entry in value:
-                    if TYPE_MAP[props[name]['type']] and not issubclass(type(value[failed]), TYPE_MAP[props[name]['type']]):
-                        raise TypeError("Cannot assign multi-value '%s' to property '%s' which expects %s. Item %s is of invalid type %s!" % (
-                            value, name, props[name]['type'], failed, type(value[failed])))
-                    failed += 1
+            if props[name]['type'] == "Object":
+                pass
             else:
+                # Run type check (Multi-value and single-value separately)
+                if props[name]['multivalue']:
 
-                # Check single-values here.
-                if TYPE_MAP[props[name]['type']] and not issubclass(type(value), TYPE_MAP[props[name]['type']]):
-                    raise TypeError("cannot assign value '%s'(%s) to property '%s'(%s)" % (
-                        value, type(value).__name__,
-                        name, props[name]['type']))
+                    # We require lists for multi-value objects
+                    if type(value) != list:
+                        raise TypeError("Cannot assign multi-value '%s' to property '%s'. A list is required for multi-values!" % (
+                            value, name))
+
+                    # Check each list value for the required type
+                    failed = 0
+                    for entry in value:
+                        if TYPE_MAP[props[name]['type']] and not issubclass(type(value[failed]), TYPE_MAP[props[name]['type']]):
+                            raise TypeError("Cannot assign multi-value '%s' to property '%s' which expects %s. Item %s is of invalid type %s!" % (
+                                value, name, props[name]['type'], failed, type(value[failed])))
+                        failed += 1
+                else:
+
+                    # Check single-values here.
+                    if TYPE_MAP[props[name]['type']] and not issubclass(type(value), TYPE_MAP[props[name]['type']]):
+                        raise TypeError("cannot assign value '%s'(%s) to property '%s'(%s)" % (
+                            value, type(value).__name__,
+                            name, props[name]['type']))
 
             # Set the new value
             if props[name]['multivalue']:
@@ -936,7 +939,7 @@ class GOsaObject(object):
             self.log.debug("updated property value of [%s|%s] %s:%s" % (type(self).__name__, self.uuid, name, new_value))
 
             # Update status if there's a change
-            if current != props[name]['value'] and props[name]['status'] != STATUS_CHANGED:
+            if (props[name]['type'] == "Object" or current != props[name]['value']) and props[name]['status'] != STATUS_CHANGED:
                 props[name]['status'] = STATUS_CHANGED
                 props[name]['old'] = current
 

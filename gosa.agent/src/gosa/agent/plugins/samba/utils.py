@@ -7,9 +7,6 @@ from gosa.common.utils import N_
 from gosa.common import Environment
 from gosa.agent.objects.filter import ElementFilter
 from gosa.agent.objects import GOsaObjectFactory
-import struct
-from binascii import unhexlify
-
 
 class SambaUtils(Plugin):
     """
@@ -140,23 +137,52 @@ class SambaLogonHoursIn(ElementFilter):
     def process(self, obj, key, valDict):
 
         if len(valDict[key]['value']):
+
+            # Convert each hex-pair into binary values.
+            # Then reverse the binary result and switch high and low pairs.
             res = {}
             value = valDict[key]['value'][0]
-
-            # Convert logon hours to a string representing the bitwise definition
-            lstr = ''.join(map(lambda x: (bin(x)[2::]).rjust(8,'0'), struct.unpack('BBBBBBBBBBBBBBBBBBBBB', unhexlify(value))))
-            new = ""
-
-            # New reverse every 8 bit part, and toggle high- and low-tuple (4Bits)
-            for i in range(0, 21):
-                n = lstr[i*8:((i+1)*8)]
+            lstr = ""
+            for i in range(0,42,2):
+                n = (bin(int(value[i:i+2], 16))[2::]).rjust(8, '0')
                 n = n[::-1]
-                new += n[0:4] + n[4:]
-            lstr = new
+                lstr += n[0:4] + n[4:]
 
             # Parse result into more readable value
             for day in range(0,7):
                 res[day] = lstr[(day*24):((day+1)*24)]
+
             valDict[key]['value']=[res]
+
+        return key, valDict
+
+
+class SambaLogonHoursOut(ElementFilter):
+    """
+    Out-Filter for sambaLogonHours.
+    """
+
+    def __init__(self, obj):
+        super(SambaLogonHoursOut, self).__init__(obj)
+
+    def process(self, obj, key, valDict):
+
+        if valDict[key]['value']:
+
+            # Combine the binary strings
+            val = valDict[key]['value'][0]
+            lstr = ""
+            for day in range(0,7):
+                lstr += valDict[key]['value'][0][day]
+
+            # New reverse every 8 bit part, and toggle high- and low-tuple (4Bits)
+            new = ""
+            for i in range(0, 21):
+                n = lstr[i*8:((i+1)*8)]
+                n = n[0:4] + n[4:]
+                n = n[::-1]
+                n = str(hex(int( n, 2)))[2::].rjust(2,'0')
+                new += n
+            valDict[key]['value'][0] = new.upper()
 
         return key, valDict
