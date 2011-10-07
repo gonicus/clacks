@@ -102,6 +102,7 @@ class IntegerToDatetime(ElementFilter):
 
     def process(self, obj, key, valDict):
         valDict[key]['value'] = map(lambda x: datetime.datetime.fromtimestamp(x), valDict[key]['value'])
+        valDict[key]['backend_type'] = 'Timestamp'
         return key, valDict
 
 
@@ -123,4 +124,5 @@ class DatetimeToInteger(ElementFilter):
 
     def process(self, obj, key, valDict):
         valDict[key]['value'] = map(lambda x: int(time.mktime(x.timetuple())), valDict[key]['value'])
+        valDict[key]['backend_type'] = 'Integer'
         return key, valDict

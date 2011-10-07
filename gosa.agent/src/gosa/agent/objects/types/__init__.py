@@ -8,56 +8,76 @@ class ConversationNotSupported(Exception):
 
 class AttributeType(object):
 
-    def _cnv_topic(self):
+    @classmethod
+    def _cnv_topic(cls):
         fname = inspect.stack()[1][3]
-        return fname[9:].replace("_", " ")
+        if fname[12::] == "_convert_to_":
+            return (cls.__alias__.lower(), fname[12:].replace("_", " "))
+        else:
+            return (cls.__alias__.lower(), fname[14:].replace("_", " "))
 
-    def convert_to(target_type, from_v, to_v):
-        cnv = getattr(self, "_convert_to_%s" % target_type.lower())
-        return cnv(from_v, to_v)
+    @classmethod
+    def convert_to(cls, target_type, value):
+        cnv = getattr(cls, "_convert_to_%s" % target_type.lower())
+        return cnv(value)
 
-    def convert_from(source_type, from_v, to_v):
-        cnv = getattr(self, "_convert_from_%s" % source_type.lower())
-        return cnv(from_v, to_v)
+    @classmethod
+    def convert_from(cls, source_type, value):
+        cnv = getattr(cls, "_convert_from_%s" % source_type.lower())
+        return cnv(value)
 
-    def _convert_to_boolean(self, from_v, to_v):
-        raise ConversationNotSupported("cannot convert %s" % self._cnv_topic())
+    @classmethod
+    def _convert_to_boolean(cls, value):
+        raise ConversationNotSupported("Cannot convert from '%s' to '%s'" % cls._cnv_topic())
 
-    def _convert_to_string(self, from_v, to_v):
-        raise ConversationNotSupported("cannot convert %s" % self._cnv_topic())
+    @classmethod
+    def _convert_to_string(cls, value):
+        raise ConversationNotSupported("Cannot convert from '%s' to '%s'" % cls._cnv_topic())
 
-    def _convert_to_unicodestring(self, from_v, to_v):
-        raise ConversationNotSupported("cannot convert %s" % self._cnv_topic())
+    @classmethod
+    def _convert_to_unicodestring(cls, value):
+        raise ConversationNotSupported("Cannot convert from '%s' to '%s'" % cls._cnv_topic())
 
-    def _convert_to_integer(self, from_v, to_v):
-        raise ConversationNotSupported("cannot convert %s" % self._cnv_topic())
+    @classmethod
+    def _convert_to_integer(cls, value):
+        raise ConversationNotSupported("Cannot convert from '%s' to '%s'" % cls._cnv_topic())
 
-    def _convert_to_timestamp(self, from_v, to_v):
-        raise ConversationNotSupported("cannot convert %s" % self._cnv_topic())
+    @classmethod
+    def _convert_to_timestamp(cls, value):
+        raise ConversationNotSupported("Cannot convert from '%s' to '%s'" % cls._cnv_topic())
 
-    def _convert_to_date(self, from_v, to_v):
-        raise ConversationNotSupported("cannot convert %s" % self._cnv_topic())
+    @classmethod
+    def _convert_to_date(cls, value):
+        raise ConversationNotSupported("Cannot convert from '%s' to '%s'" % cls._cnv_topic())
 
-    def _convert_to_binary(self, from_v, to_v):
-        raise ConversationNotSupported("cannot convert %s" % self._cnv_topic())
+    @classmethod
+    def _convert_to_binary(cls, value):
+        raise ConversationNotSupported("Cannot convert from '%s' to '%s'" % cls._cnv_topic())
 
-    def _convert_from_boolean(self, from_v, to_v):
-        raise ConversationNotSupported("cannot convert %s" % self._cnv_topic())
+    @classmethod
+    def _convert_from_boolean(cls, value):
+        raise ConversationNotSupported("Cannot convert to '%s' from '%s'" % cls._cnv_topic())
 
-    def _convert_from_string(self, from_v, to_v):
-        raise ConversationNotSupported("cannot convert %s" % self._cnv_topic())
+    @classmethod
+    def _convert_from_string(cls, value):
+        raise ConversationNotSupported("Cannot convert to '%s' from '%s'" % cls._cnv_topic())
 
-    def _convert_from_unicodestring(self, from_v, to_v):
-        raise ConversationNotSupported("cannot convert %s" % self._cnv_topic())
+    @classmethod
+    def _convert_from_unicodestring(cls, value):
+        raise ConversationNotSupported("Cannot convert to '%s' from '%s'" % cls._cnv_topic())
 
-    def _convert_from_integer(self, from_v, to_v):
-        raise ConversationNotSupported("cannot convert %s" % self._cnv_topic())
+    @classmethod
+    def _convert_from_integer(cls, value):
+        raise ConversationNotSupported("Cannot convert to '%s' from '%s'" % cls._cnv_topic())
 
-    def _convert_from_timestamp(self, from_v, to_v):
-        raise ConversationNotSupported("cannot convert %s" % self._cnv_topic())
+    @classmethod
+    def _convert_from_timestamp(cls, value):
+        raise ConversationNotSupported("Cannot convert to '%s' from '%s'" % cls._cnv_topic())
 
-    def _convert_from_date(self, from_v, to_v):
-        raise ConversationNotSupported("cannot convert %s" % self._cnv_topic())
+    @classmethod
+    def _convert_from_date(cls, value):
+        raise ConversationNotSupported("Cannot convert to '%s' from '%s'" % cls._cnv_topic())
 
-    def _convert_from_binary(self, from_v, to_v):
-        raise ConversationNotSupported("cannot convert %s" % self._cnv_topic())
+    @classmethod
+    def _convert_from_binary(cls, value):
+        raise ConversationNotSupported("Cannot convert to '%s' from '%s'" % cls._cnv_topic())

@@ -50,17 +50,6 @@ from gosa.agent.objects.comparator import get_comparator
 from gosa.agent.objects.operator import get_operator
 from logging import getLogger
 
-# Map XML base types to python values
-TYPE_MAP = {
-        'Boolean': bool,
-        'String': str,
-        'UnicodeString': unicode,
-        'Integer': int,
-        'Timestamp': datetime.datetime,
-        'Date': datetime.date,
-        'Binary': None
-        }
-
 # Status
 STATUS_OK = 0
 STATUS_CHANGED = 1
@@ -111,6 +100,9 @@ class GOsaObjectFactory(object):
 
         # Load and parse schema
         self.loadSchema()
+
+    def getAttributeTypes(self):
+        return(self.__attribute_type)
 
 #-TODO-needs-re-work-------------------------------------------------------------------------------
 
@@ -329,6 +321,7 @@ class GOsaObjectFactory(object):
 
         # Tweak name to the new target
         setattr(klass, '__name__', name)
+        setattr(klass, '_objectFactory', self)
         setattr(klass, '_backend', str(classr.Backend))
         setattr(klass, '_backendAttrs', back_attrs)
         setattr(klass, '_extends', extends)
@@ -444,15 +437,15 @@ class GOsaObjectFactory(object):
                         elif cnt < len(args):
                             arguments[mName] = args[cnt]
                         elif mDefault:
-                            arguments[mName] = TYPE_MAP[mType](mDefault)
+
+                            #TODO: Ensure that the given default has the correct type
+                            # The default is always a string value, due to the fact that
+                            # it was read from an xml tag.
+                            arguments[mName] = mDefault
                         else:
                             raise FactoryException("Missing parameter '%s'!" % mName)
 
-                        # Ensure that the correct parameter type was given.
-                        if TYPE_MAP[mType] != type(arguments[mName]):
-                            raise FactoryException("Invalid parameter type given for '%s', expected "
-                                "'%s' but received '%s'!" % (mName,
-                                    TYPE_MAP[mType],type(arguments[mName])))
+                        #TODO: Ensure that the correct parameter type was given.
 
                         cnt = cnt + 1
 
@@ -862,14 +855,19 @@ class GOsaObject(object):
 
         # Convert the received type into the target type if not done already
         for key in props:
-            if props[key]['type'] == 'Object':
-                continue
 
-            if props[key]['value'] and \
-                    TYPE_MAP[props[key]['type']] and \
-                    not all(map(lambda x: type(x) == TYPE_MAP[props[key]['type']], props[key]['value'])):
-                props[key]['value'] = map(lambda x: TYPE_MAP[props[key]['type']](x), props[key]['value'])
-                self.log.debug("converted '%s' to type '%s'!" % (key,props[key]['type']))
+            # Convert values from incoming backend-type to required type
+            if props[key]['value']:
+                a_type = props[key]['type']
+                be_type = props[key]['backend_type']
+
+                #  Convert all values to required type
+                try:
+                    value = self._objectFactory.getAttributeTypes()[a_type].convert_from(be_type, props[key]['value'])
+                except Exception as e:
+                    print "!!!!::::: ", key, e
+
+                self.log.debug("converted '%s' from type '%s' to type '%s'!" % (key, be_type, a_type))
 
             # Keep the initial value
             props[key]['old'] = props[key]['value']
@@ -919,31 +917,28 @@ class GOsaObject(object):
 
             current = copy.deepcopy(props[name]['value'])
 
-            if props[name]['type'] == "Object":
-                pass
-            else:
-                # Run type check (Multi-value and single-value separately)
-                if props[name]['multivalue']:
+            # # Run type check (Multi-value and single-value separately)
+            # if props[name]['multivalue']:
 
-                    # We require lists for multi-value objects
-                    if type(value) != list:
-                        raise TypeError("Cannot assign multi-value '%s' to property '%s'. A list is required for multi-values!" % (
-                            value, name))
+            #     # We require lists for multi-value objects
+            #     if type(value) != list:
+            #         raise TypeError("Cannot assign multi-value '%s' to property '%s'. A list is required for multi-values!" % (
+            #             value, name))
 
-                    # Check each list value for the required type
-                    failed = 0
-                    for entry in value:
-                        if TYPE_MAP[props[name]['type']] and not issubclass(type(value[failed]), TYPE_MAP[props[name]['type']]):
-                            raise TypeError("Cannot assign multi-value '%s' to property '%s' which expects %s. Item %s is of invalid type %s!" % (
-                                value, name, props[name]['type'], failed, type(value[failed])))
-                        failed += 1
-                else:
+            #     # Check each list value for the required type
+            #     failed = 0
+            #     for entry in value:
+            #         if TYPE_MAP[props[name]['type']] and not issubclass(type(value[failed]), TYPE_MAP[props[name]['type']]):
+            #             raise TypeError("Cannot assign multi-value '%s' to property '%s' which expects %s. Item %s is of invalid type %s!" % (
+            #                 value, name, props[name]['type'], failed, type(value[failed])))
+            #         failed += 1
+            # else:
 
-                    # Check single-values here.
-                    if TYPE_MAP[props[name]['type']] and not issubclass(type(value), TYPE_MAP[props[name]['type']]):
-                        raise TypeError("cannot assign value '%s'(%s) to property '%s'(%s)" % (
-                            value, type(value).__name__,
-                            name, props[name]['type']))
+            #     # Check single-values here.
+            #     if TYPE_MAP[props[name]['type']] and not issubclass(type(value), TYPE_MAP[props[name]['type']]):
+            #         raise TypeError("cannot assign value '%s'(%s) to property '%s'(%s)" % (
+            #             value, type(value).__name__,
+            #             name, props[name]['type']))
 
             # Set the new value
             if props[name]['multivalue']:

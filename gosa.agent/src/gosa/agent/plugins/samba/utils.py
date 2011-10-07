@@ -190,6 +190,11 @@ class SambaLogonHoursOut(ElementFilter):
 
 
 class SambaLogonHoursAttribute(AttributeType):
-        __alias__ = "SambaLogonHours"
+    __alias__ = "SambaLogonHours"
+
+    @classmethod
+    def _convert_from_unicodestring(cls, value):
+        #TODO put sambaLogonHours conversion into this functions
+        return(value)
 
 
