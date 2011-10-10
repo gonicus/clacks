@@ -1288,10 +1288,7 @@ class GOsaObject(object):
                     args.append(entry)
 
                 # Process filter and keep results
-                try:
-                    key, prop = (curline['filter']).process(*args)
-                except Exception as e:
-                    raise FactoryException("Filter '%s' execution failed for '%s'! Error was: %s" % (fname, key, e))
+                key, prop = (curline['filter']).process(*args)
 
                 # Ensure that the processed data is still valid.
                 # Filter may mess things up and then the next cannot process correctly.

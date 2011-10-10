@@ -10,8 +10,8 @@ from gosa.agent.objects import GOsaObjectFactory
 f = GOsaObjectFactory()
 p = f.getObject('SambaUser', u"cn=Playground Tester,ou=people,dc=gonicus,dc=de", mode="update")
 
-#for prop in p.listProperties():
-#    print "Attribute %s: %s" % (prop.ljust(40), getattr(p, prop))
+for prop in p.listProperties():
+    print "Attribute %s: %s" % (prop.ljust(40), getattr(p, prop))
 
 p.sambaLogonTime = datetime.datetime.today()
 #p.sambaPwdCanChange = datetime.datetime.today()
@@ -28,15 +28,16 @@ p.serverTrustAccount = not p.serverTrustAccount
 p.sambaHomePath = r"\\hallo\welt"
 p.sambaHomeDrive = "D:"
 
-lh = p.sambaLogonHours
-for entry in lh:
-    print("%s: %s" % (entry, lh[entry]))
+#lh = p.sambaLogonHours
+#for entry in lh:
+#    print("%s: %s" % (entry, lh[entry]))
 
-lh[0] = (str(int(not(int(lh[0][0]))))  * 24)
-p.sambaLogonHours = lh
+#lh[0] = (str(int(not(int(lh[0][0]))))  * 24)
+#p.sambaLogonHours = lh
 
-for entry in lh:
-    print("%s: %s" % (entry, lh[entry]))
+#for entry in lh:
+#    print("%s: %s" % (entry, lh[entry]))
 
-p.commit()
+print p.sambaMungedDial
+#p.commit()
 #print p._extends
