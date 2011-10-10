@@ -22,10 +22,10 @@ else:
     del sys.argv[1]
 
 f = GOsaObjectFactory.getInstance()
-for entry in ObjectQuery("dc=gonicus,dc=de", fltr="GenericUser", attrs=['sn', 'givenName', 'uid']):
-    print entry
-
-exit(0)
+#for entry in ObjectQuery("dc=gonicus,dc=de", fltr="GenericUser", attrs=['sn', 'givenName', 'uid']):
+#    print entry
+#
+#exit(0)
 
 if mode == "create":
     p = f.getObject('GenericUser', u'ou=people,dc=gonicus,dc=de', mode="create")

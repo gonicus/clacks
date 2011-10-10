@@ -1522,28 +1522,54 @@ class ObjectQuery(object):
         gof = GOsaObjectFactory.getInstance()
         all_types = gof.getObjectTypes()
 
-        # Analyze filter and extract object types to query
-        #TODO: ... analyze it
-        relevant_types = ['GenericUser', 'PosixUser']
+        # Szenario 1)
 
-        # Query each relevant object type
-        for t_name in relevant_types:
+        # Filter analysieren
+        # -> extrahiere attribute
+        #   -> ordne attribute objekt-typen zu
+        #   -> falls keine basis objekte vorhanden sind, füge alle möglichen hinzu
+        #   -> stelle eine liste der beteiligten backends zusammen
+        #
+        # a) es ist nur ein backend zu durchsuchen
+        #
+        #    übergebe filter und parameter an backend zur suche
+        #    liefere ergebnis zurück
+        #
+        # b) es sind mehr als ein backend zu durchsuchen
+        #
+        #    blöd
 
-            # If this is a base type, do a query
-            if all_types[t_name]['base']:
-                #be = ObjectBackendRegistry.getBackend(all_types[t_name]['backend'])
-                #print be.query(all_types[t_name]['backend_attrs'], base, scope, fltr, attrs)
-                print "query on backend %s for %s" % (all_types[t_name]['backend'], t_name)
 
-                #FOR every result, merge with:
+        # Szenario 2)
 
-                # To more queries with if we're extended by a relvant type
-                for et_name in list(
-                        set(all_types[t_name]['extended_by']).intersection(
-                            set(relevant_types))):
-                    #be = ObjectBackendRegistry.getBackend(all_types[et_name]['backend'])
-                    #print be.query_by_uuid(all_types[et_name]['backend_attrs'], uuid, fltr, attrs)
-                    print "-> sub query on backend %s for %s" % (all_types[et_name]['backend'], et_name)
+        # Es wird eine Objektkopie von allen *kompletten* objekten gehalten,
+        # die entsprechend aktualisiert werden muss, etc.
+        # Diese kann dann mittels Algorithmus einfach nach Filtervorgaben
+        # durchsucht werden.
+
+#Notes:
+#        # Analyze filter and extract object types to query
+#        #TODO: ... analyze it, add eventually missing base object
+#        relevant_types = ['GenericUser', 'PosixUser']
+#
+#        # Query each relevant object type
+#        for t_name in relevant_types:
+#
+#            # If this is a base type, do a query
+#            if all_types[t_name]['base']:
+#                #be = ObjectBackendRegistry.getBackend(all_types[t_name]['backend'])
+#                #print be.query(all_types[t_name]['backend_attrs'], base, scope, fltr, attrs)
+#                print "query on backend %s for %s" % (all_types[t_name]['backend'], t_name)
+#
+#                #FOR every result, merge with:
+#
+#                # To more queries with if we're extended by a relvant type
+#                for et_name in list(
+#                        set(all_types[t_name]['extended_by']).intersection(
+#                            set(relevant_types))):
+#                    #be = ObjectBackendRegistry.getBackend(all_types[et_name]['backend'])
+#                    #print be.query_by_uuid(all_types[et_name]['backend_attrs'], uuid, fltr, attrs)
+#                    print "-> sub query on backend %s for %s" % (all_types[et_name]['backend'], et_name)
 
     def __iter__(self):
         return self
