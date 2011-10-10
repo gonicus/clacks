@@ -281,6 +281,15 @@
                                 <Name>sambaMungedDial</Name>
                                 <Description>Base64 encoded user parameter string</Description>
                                 <Type>UnicodeString</Type>
+	                       	<InFilter>
+                                        <FilterChain>
+                                                <FilterEntry>
+                                                        <Filter>
+                                                                <Name>SambaMungedDialIn</Name>
+                                                        </Filter>
+                                                </FilterEntry>
+                                        </FilterChain>
+                                </InFilter>
                         </Attribute>
 
            		<Attribute>

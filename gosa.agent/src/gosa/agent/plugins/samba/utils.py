@@ -8,6 +8,7 @@ from gosa.common import Environment
 from gosa.agent.objects.filter import ElementFilter
 from gosa.agent.objects.types import AttributeType
 from gosa.agent.objects import GOsaObjectFactory
+from gosa.agent.plugins.samba.SambaMungedDial import SambaMungedDial
 
 class SambaUtils(Plugin):
     """
@@ -54,6 +55,79 @@ class SambaHash(ElementFilter):
                 self.__class__.__name__, type(valDict[key]['value'])))
 
             return key, valDict
+
+
+class SambaMungedDialIn(ElementFilter):
+    """
+    In-Filter for sambaMungedDial.
+    """
+
+    def __init__(self, obj):
+        super(SambaMungedDialIn, self).__init__(obj)
+
+    def process(self, obj, key, valDict):
+
+        if len(valDict[key]['value']):
+
+            md = valDict[key]['value'][0]
+            res = SambaMungedDial.decode(md)
+            valDict[u'CtxCallback'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    '', value=[res['CtxCallback']])
+            valDict[u'CtxCallbackNumber'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'UnicodeString', value=[res['CtxCallbackNumber']])
+            valDict[u'CtxCfgFlags1'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'UnicodeString', value=[res['CtxCfgFlags1']])
+            valDict[u'CtxCfgPresent'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'UnicodeString', value=[res['CtxCfgPresent']])
+            valDict[u'CtxInitialProgram'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'UnicodeString', value=[res['CtxInitialProgram']])
+            valDict[u'CtxKeyboardLayout'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'UnicodeString', value=[res['CtxKeyboardLayout']])
+            valDict[u'CtxMaxConnectionTime'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'Integer', value=[res['CtxMaxConnectionTime']])
+            valDict[u'CtxMaxConnectionTimeMode'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'Boolean', value=[res['CtxMaxConnectionTimeMode']])
+            valDict[u'CtxMaxDisconnectionTime'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'Integer', value=[res['CtxMaxDisconnectionTime']])
+            valDict[u'CtxMaxDisconnectionTimeMode'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'Boolean', value=[res['CtxMaxDisconnectionTimeMode']])
+            valDict[u'CtxMaxIdleTime'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'Integer', value=[res['CtxMaxIdleTime']])
+            valDict[u'CtxMaxIdleTimeMode'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'Boolean', value=[res['CtxMaxIdleTimeMode']])
+            valDict[u'CtxMinEncryptionLevel'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'Integer', value=[res['CtxMinEncryptionLevel']])
+            valDict[u'CtxNWLogonServer'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'UnicodeString', value=[res['CtxNWLogonServer']])
+            valDict[u'CtxShadow'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'UnicodeString', value=[res['CtxShadow']])
+            valDict[u'CtxWFHomeDir'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'UnicodeString', value=[res['CtxWFHomeDir']])
+            valDict[u'CtxWFHomeDirDrive'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'UnicodeString', value=[res['CtxWFHomeDirDrive']])
+            valDict[u'CtxWFProfilePath'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'UnicodeString', value=[res['CtxWFProfilePath']])
+            valDict[u'CtxWorkDirectory'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'UnicodeString', value=[res['CtxWorkDirectory']])
+            valDict[u'brokenConn'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'Boolean', value=[res['brokenConn']])
+            valDict[u'connectClientDrives'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'Boolean', value=[res['connectClientDrives']])
+            valDict[u'connectClientPrinters'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'Boolean', value=[res['connectClientPrinters']])
+            valDict[u'defaultPrinter'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'Boolean', value=[res['defaultPrinter']])
+            valDict[u'inheritMode'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'Boolean', value=[res['inheritMode']])
+            valDict[u'reConn'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'Boolean', value=[res['reConn']])
+            valDict[u'tsLogin'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'Boolean', value=[res['tsLogin']])
+
+            # Can be 0: disabled 1: input on, notify on 2: input on, notify off 3: input off, notify on 4: input off, notify off
+            valDict[u'shadow'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
+                    'Integer', value=[res['shadow']])
+        return key, valDict
 
 
 class SambaAcctFlagsOut(ElementFilter):
