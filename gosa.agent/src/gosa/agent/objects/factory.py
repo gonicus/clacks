@@ -444,6 +444,13 @@ class GOsaObjectFactory(object):
                     out_f=out_f, unique=unique, mandatory=mandatory, readonly=readonly,
                     multivalue=multivalue, foreign=foreign, status=STATUS_OK, value=None)
 
+        # Validate the properties dependsOn list
+        for pname in props:
+            for dentry in props[pname]['dependsOn']:
+                if dentry not in props:
+                    raise FactoryException("Property '%s' cannot depend on non existing property '%s', please check the XML definition!" % (
+                            pname, pentry))
+
         # Build up a list of callable methods
         if 'Methods' in classr.__dict__:
             for method in classr['Methods']['Method']:
