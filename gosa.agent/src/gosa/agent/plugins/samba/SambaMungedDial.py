@@ -78,6 +78,10 @@ class SambaMungedDial(object):
                 'CtxNWLogonServer', 'CtxWFHomeDir', 'CtxWFHomeDirDrive', 'CtxWFProfilePath',
                 'CtxInitialProgram', 'CtxCallbackNumber']
 
+        # Convert integer values to string before converting them
+        for entry in ['CtxMinEncryptionLevel', 'shadow']:
+            values[entry] = str(values[entry])
+
         result_tmp = ""
         for name in params:
             value = values[name]
@@ -161,7 +165,7 @@ class SambaMungedDial(object):
 
             # If string parameter, convert
             if ctxParmName in SambaMungedDial.stringParams:
-                ctxParm = unhexlify(ctxParm)
+                ctxParm = unicode(unhexlify(ctxParm))
                 if ctxParm[-1] == '\0':
                     ctxParm = ctxParm[:-1]
 
@@ -199,6 +203,10 @@ class SambaMungedDial(object):
         result[u'connectClientDrives'] = bool(connections & 8)
         result[u'connectClientPrinters'] = bool(connections & 4)
         result[u'defaultPrinter'] = bool(connections & 2)
+
+        # Convert integer values to integer
+        for entry in ['CtxMinEncryptionLevel', 'shadow']:
+            result[entry] = int(result[entry])
 
         return result
 

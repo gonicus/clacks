@@ -385,7 +385,7 @@
                         <Attribute>
                                 <Name>CtxKeyboardLayout</Name>
                                 <Description></Description>
-                                <Type>UnicodeString</Type>
+                                <Type>String</Type>
                         </Attribute>
 
                         <Attribute>
@@ -403,13 +403,14 @@
                         <Attribute>
                                 <Name>CtxCallback</Name>
                                 <Description></Description>
-                                <Type>UnicodeString</Type>
+                                <Type>String</Type>
                         </Attribute>
 
                         <Attribute>
                                 <Name>CtxShadow</Name>
                                 <Description></Description>
-                                <Type>UnicodeString</Type>
+				<Type>String</Type>
+				<Readonly>true</Readonly>
                         </Attribute>
 
                         <Attribute>
@@ -451,7 +452,7 @@
                         <Attribute>
                                 <Name>CtxCfgPresent</Name>
                                 <Description></Description>
-                                <Type>UnicodeString</Type>
+                                <Type>String</Type>
                         </Attribute>
 
                         <Attribute>
@@ -505,7 +506,8 @@
                         <Attribute>
                                 <Name>CtxCfgFlags1</Name>
                                 <Description></Description>
-                                <Type>UnicodeString</Type>
+                                <Type>String</Type>
+				<Readonly>true</Readonly>
                         </Attribute>
 
                         <Attribute>

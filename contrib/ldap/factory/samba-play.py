@@ -13,6 +13,8 @@ p = f.getObject('SambaUser', u"cn=Playground Tester,ou=people,dc=gonicus,dc=de",
 #for prop in p.listProperties():
 #    print "Attribute %s: %s" % (prop.ljust(40), getattr(p, prop))
 
+print len(p.listProperties())
+
 #p.CtxMaxIdleTime = 0
 #p.CtxMaxDisconnectionTime = 223
 #p.CtxMaxConnectionTime = 224
@@ -27,7 +29,7 @@ p.CtxWFHomeDir = u'\\Users\\Peter'
 
 p.isAutoLocked = not p.isAutoLocked
 
-#p.defaultPrinter = not p.defaultPrinter
-#p.defaultPrinter = not p.defaultPrinter
+p.defaultPrinter = not p.defaultPrinter
+p.defaultPrinter = not p.defaultPrinter
 p.commit()
 

@@ -919,12 +919,13 @@ class GOsaObject(object):
                 be_type = props[key]['backend_type']
 
                 #  Convert all values to required type
-                try:
-                    props[key]['value'] = self._objectFactory.getAttributeTypes()[a_type].convert_from(be_type, props[key]['value'])
-                except Exception as e:
-                    print "Conversion failed! ::::: ", key, e
+                if not self._objectFactory.getAttributeTypes()[a_type].is_valid_value(props[key]['value']):
+                    try:
+                        props[key]['value'] = self._objectFactory.getAttributeTypes()[a_type].convert_from(be_type, props[key]['value'])
+                    except Exception as e:
+                        print "Conversion failed! ::::: ", key, e
 
-                self.log.debug("converted '%s' from type '%s' to type '%s'!" % (key, be_type, a_type))
+                    self.log.debug("converted '%s' from type '%s' to type '%s'!" % (key, be_type, a_type))
 
             # Keep the initial value
             props[key]['last_value'] = props[key]['orig_value'] = copy.deepcopy(props[key]['value'])
