@@ -84,6 +84,7 @@ class SambaMungedDial(object):
             is_str = False
             if name in SambaMungedDial.stringParams:
                 is_str = True
+                value += '\0'
                 value = value.encode('utf-16')[2:]
             elif name in SambaMungedDial.timeParams:
                 usec = int(value) * 60 * 1000
@@ -161,6 +162,8 @@ class SambaMungedDial(object):
             # If string parameter, convert
             if ctxParmName in SambaMungedDial.stringParams:
                 ctxParm = unhexlify(ctxParm)
+                if ctxParm[-1] == '\0':
+                    ctxParm = ctxParm[:-1]
 
             # If time parameter, convert
             if ctxParmName in SambaMungedDial.timeParams:

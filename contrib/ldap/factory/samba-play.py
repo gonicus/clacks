@@ -13,10 +13,19 @@ p = f.getObject('SambaUser', u"cn=Playground Tester,ou=people,dc=gonicus,dc=de",
 for prop in p.listProperties():
     print "Attribute %s: %s" % (prop.ljust(40), getattr(p, prop))
 
-p.CtxMaxIdleTime = 222
-p.CtxMaxDisconnectionTime = 223
-p.CtxMaxConnectionTime = 224
+#p.CtxMaxIdleTime = 0
+#p.CtxMaxDisconnectionTime = 223
+#p.CtxMaxConnectionTime = 224
+
+
+#from binascii import *
+#print (p.CtxWFHomeDir)
+#p.CtxWFHomeDir = u"Hallo"
+
+
+p.CtxWFHomeDir = u'\\Users\\Peter'
+
 p.defaultPrinter = not p.defaultPrinter
 p.defaultPrinter = not p.defaultPrinter
-p.commit()
+#p.commit()
 
