@@ -1,11 +1,12 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import re
 import uuid
 import datetime
 import inspect
 import sqlalchemy.sql
 from sqlalchemy import create_engine
 from sqlalchemy.sql import select, and_, or_, not_, func, asc
+from sqlalchemy.dialects.sqlite.base import SQLiteDialect
 from sqlalchemy import Table, Column, Integer, Boolean, String, DateTime, Date, Unicode, MetaData, ColumnDefault
 
 
@@ -99,6 +100,15 @@ class IndexEngine(object):
         # Establish the connection
         self.__conn = self.__engine.connect()
 
+        # SQlite needs a custom regex function
+        if issubclass(type(self.__engine.dialect), SQLiteDialect):
+
+            def sqlite_regexp(expr, item):
+                r = re.compile(expr)
+                return r.match(item) is not None
+
+            self.__conn.connection.create_function("regexp", 2, sqlite_regexp)
+
     def has_entry(self, euuid):
         tmp = self.__conn.execute(select([self.__index], self.__index.c._uuid == euuid))
         res = bool(tmp.fetchone())
@@ -160,6 +170,7 @@ class IndexEngine(object):
 
         for el, value in fltr.items():
             cel = el.split("_")[0]
+            value = value.replace("*", "%")
 
             if el in ["_and", "_or", "_not"]:
                 if type(value) == dict:
@@ -212,33 +223,3 @@ class IndexEngine(object):
                     arg.append(getattr(self.__index.c, cel) == value)
 
         return arg
-
-#---------------------------------------------------------------------
-
-ie = IndexEngine({
-    'givenName': {'type': 'UnicodeString', 'multi': False},
-    'sn': {'type': 'UnicodeString', 'multi': False},
-    'mail': {'type': 'String', 'multi': True},
-    'uid': {'type': 'String', 'multi': False},
-    'uidNumber': {'type': 'Integer', 'multi': False},
-    'dateOfBirth': {'type': 'Date', 'multi': False}})
-
-#u1 = str(uuid.uuid4())
-#ie.insert(u1, dn=u"cn=Cajus Pollmeier,ou=people,ou=Technik,dc=gonicus,dc=de", sn=u"Pollmeier", givenName=u"Cajus", uid="cajus", mail=['cajus@debian.org', 'cajus@naasa.net', 'pollmeier@gonicus.de'], _lastChanged=datetime.datetime.now())
-#print ie.has_entry(u1)
-#ie.update(u1, uid="lorenz")
-
-#TODO: filter for list elements -> |....|....|....|
-#fltr = {}
-#fltr = {'uid': 'lo%'}
-fltr = {'mail': 'cajus@%'}
-#fltr = {'_and': {'uid': 'lorenz', 'givenName': u'Cajus', '_or': {'sn': u'ding', 'sn_2': u'dong', '_gt': ['dob', datetime.datetime.now()]}}}
-#fltr = {'_and': {'uid': 'lorenz', 'givenName': u'Cajus', '_or': {'_in': {'sn': [u'ding', u'dong']}, '_gt': ['dob', datetime.datetime.now()]}}}
-print "Count:", ie.count(fltr)
-for e in ie.search(fltr, attrs=['sn', 'givenName', 'uid'], begin=0, end=10):
-    print e
-
-#ie.remove(u1)
-#print ie.has_entry(u1)
-
-#ie.refresh()
