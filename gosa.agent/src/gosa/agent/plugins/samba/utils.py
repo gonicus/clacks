@@ -135,10 +135,8 @@ class SambaMungedDialIn(ElementFilter):
             md = valDict[key]['value'][0]
             res = SambaMungedDial.decode(md)
             for entry in alist:
-                valDict[entry] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    alist[entry], value=[res[entry]], skip_save=True)
-                valDict['sambaMungedDial']['dependsOn'].append(entry)
-
+                valDict[entry]['value'] = [res[entry]]
+                valDict[entry]['skip_save'] = True
         return key, valDict
 
 

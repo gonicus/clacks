@@ -902,6 +902,11 @@ class GOsaObject(object):
                     # Execute each in-filter
                     for in_f in props[key]['in_filter']:
                         valDict = {key: copy.deepcopy(props[key])}
+
+                        # Add a copy of all attributes we depend on
+                        for entry in props[key]['dependsOn']:
+                            valDict[entry] = copy.deepcopy(props[entry])
+
                         self.__processFilter(in_f, key, valDict)
 
                         # Assign filter results

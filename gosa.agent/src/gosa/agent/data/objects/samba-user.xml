@@ -281,6 +281,36 @@
                                 <Name>sambaMungedDial</Name>
                                 <Description>Base64 encoded user parameter string</Description>
                                 <Type>UnicodeString</Type>
+                                <DependsOn>
+                                        <Attribute>oldStorageBehavior</Attribute>
+                                        <Attribute>CtxCallback</Attribute>
+                                        <Attribute>CtxCallbackNumber</Attribute>
+                                        <Attribute>CtxCfgFlags1</Attribute>
+                                        <Attribute>CtxCfgPresent</Attribute>
+                                        <Attribute>CtxInitialProgram</Attribute>
+                                        <Attribute>CtxKeyboardLayout</Attribute>
+                                        <Attribute>CtxMaxConnectionTime</Attribute>
+                                        <Attribute>CtxMaxConnectionTimeMode</Attribute>
+                                        <Attribute>CtxMaxDisconnectionTime</Attribute>
+                                        <Attribute>CtxMaxDisconnectionTimeMode</Attribute>
+                                        <Attribute>CtxMaxIdleTime</Attribute>
+                                        <Attribute>CtxMaxIdleTimeMode</Attribute>
+                                        <Attribute>CtxMinEncryptionLevel</Attribute>
+                                        <Attribute>CtxNWLogonServer</Attribute>
+                                        <Attribute>CtxShadow</Attribute>
+                                        <Attribute>CtxWFHomeDir</Attribute>
+                                        <Attribute>CtxWFHomeDirDrive</Attribute>
+                                        <Attribute>CtxWFProfilePath</Attribute>
+                                        <Attribute>CtxWorkDirectory</Attribute>
+                                        <Attribute>brokenConn</Attribute>
+                                        <Attribute>connectClientDrives</Attribute>
+                                        <Attribute>connectClientPrinters</Attribute>
+                                        <Attribute>defaultPrinter</Attribute>
+                                        <Attribute>inheritMode</Attribute>
+                                        <Attribute>reConn</Attribute>
+                                        <Attribute>shadow</Attribute>
+                                        <Attribute>tsLogin</Attribute>
+                                </DependsOn>
 	                       	<InFilter>
                                         <FilterChain>
                                                 <FilterEntry>
@@ -332,8 +362,175 @@
                                 <Type>SambaLogonHours</Type>
                                 <BackendType>UnicodeString</BackendType>
                         </Attribute>
-                </Attributes>
 
+       			<Attribute>
+                                <Name>CtxMaxDisconnectionTimeMode</Name>
+                                <Description></Description>
+                                <Type>Boolean</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxKeyboardLayout</Name>
+                                <Description></Description>
+                                <Type>UnicodeString</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxMaxConnectionTimeMode</Name>
+                                <Description></Description>
+                                <Type>Boolean</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxInitialProgram</Name>
+                                <Description></Description>
+                                <Type>UnicodeString</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxCallback</Name>
+                                <Description></Description>
+                                <Type>UnicodeString</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxShadow</Name>
+                                <Description></Description>
+                                <Type>UnicodeString</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxWFProfilePath</Name>
+                                <Description></Description>
+                                <Type>UnicodeString</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>oldStorageBehavior</Name>
+                                <Description></Description>
+                                <Type>Boolean</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>connectClientPrinters</Name>
+                                <Description></Description>
+                                <Type>Boolean</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxWFHomeDirDrive</Name>
+                                <Description></Description>
+                                <Type>UnicodeString</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxMaxIdleTime</Name>
+                                <Description></Description>
+                                <Type>Integer</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>brokenConn</Name>
+                                <Description></Description>
+                                <Type>Boolean</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxCfgPresent</Name>
+                                <Description></Description>
+                                <Type>UnicodeString</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxWFHomeDir</Name>
+                                <Description></Description>
+                                <Type>UnicodeString</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>connectClientDrives</Name>
+                                <Description></Description>
+                                <Type>Boolean</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxWorkDirectory</Name>
+                                <Description></Description>
+                                <Type>UnicodeString</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxNWLogonServer</Name>
+                                <Description></Description>
+                                <Type>UnicodeString</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxMaxIdleTimeMode</Name>
+                                <Description></Description>
+                                <Type>Boolean</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxMaxConnectionTime</Name>
+                                <Description></Description>
+                                <Type>Integer</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxMinEncryptionLevel</Name>
+                                <Description></Description>
+                                <Type>Integer</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxCallbackNumber</Name>
+                                <Description></Description>
+                                <Type>UnicodeString</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxCfgFlags1</Name>
+                                <Description></Description>
+                                <Type>UnicodeString</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>reConn</Name>
+                                <Description></Description>
+                                <Type>Boolean</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>defaultPrinter</Name>
+                                <Description></Description>
+                                <Type>Boolean</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxMaxDisconnectionTime</Name>
+                                <Description></Description>
+                                <Type>Integer</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>shadow</Name>
+                                <Description></Description>
+                                <Type>Integer</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>inheritMode</Name>
+                                <Description></Description>
+                                <Type>Boolean</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>tsLogin</Name>
+                                <Description></Description>
+                                <Type>Boolean</Type>
+                        </Attribute>
+                </Attributes>
 		<Extends>
 			<Value>GenericUser</Value>
 		</Extends>
