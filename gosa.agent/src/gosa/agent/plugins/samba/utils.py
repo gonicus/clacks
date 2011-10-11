@@ -7,7 +7,6 @@ from gosa.common.utils import N_
 from gosa.common import Environment
 from gosa.agent.objects.filter import ElementFilter
 from gosa.agent.objects.types import AttributeType
-from gosa.agent.objects import GOsaObjectFactory
 from gosa.agent.plugins.samba.SambaMungedDial import SambaMungedDial
 
 class SambaUtils(Plugin):
@@ -198,8 +197,8 @@ class SambaAcctFlagsIn(ElementFilter):
 
         # Add newly introduced properties.
         for src in mapping:
-            valDict[mapping[src]] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'], 'Boolean', value=[False], skip_save=True)
-            valDict[key]['dependsOn'].append(mapping[src])
+            valDict[mapping[src]]['value'] = [False]
+            valDict[mapping[src]]['skip_save'] = True
 
         # Now parse the existing acctFlags
         if len(valDict[key]['value']) >= 1:
