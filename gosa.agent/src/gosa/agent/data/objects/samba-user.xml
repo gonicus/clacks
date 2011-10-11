@@ -380,30 +380,35 @@
                                 <Name>CtxMaxDisconnectionTimeMode</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>CtxKeyboardLayout</Name>
                                 <Description></Description>
                                 <Type>String</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>CtxMaxConnectionTimeMode</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>CtxInitialProgram</Name>
                                 <Description></Description>
                                 <Type>UnicodeString</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>CtxCallback</Name>
                                 <Description></Description>
                                 <Type>String</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
@@ -411,96 +416,112 @@
                                 <Description></Description>
 				<Type>String</Type>
 				<Readonly>true</Readonly>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>CtxWFProfilePath</Name>
                                 <Description></Description>
                                 <Type>UnicodeString</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>oldStorageBehavior</Name>
-                                <Description></Description>
+                                <Description>There seems to be an old and a new storage method for the sambaMungedDial attribute, this flag just shows the whether the processes values was in the old or in the new style. Saved will always be done in the new way.</Description>
                                 <Type>Boolean</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>connectClientPrinters</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>CtxWFHomeDirDrive</Name>
                                 <Description></Description>
                                 <Type>UnicodeString</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>CtxMaxIdleTime</Name>
                                 <Description></Description>
                                 <Type>Integer</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>brokenConn</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>CtxCfgPresent</Name>
                                 <Description></Description>
                                 <Type>String</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>CtxWFHomeDir</Name>
                                 <Description></Description>
                                 <Type>UnicodeString</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>connectClientDrives</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>CtxWorkDirectory</Name>
                                 <Description></Description>
                                 <Type>UnicodeString</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>CtxNWLogonServer</Name>
                                 <Description></Description>
                                 <Type>UnicodeString</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>CtxMaxIdleTimeMode</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>CtxMaxConnectionTime</Name>
                                 <Description></Description>
                                 <Type>Integer</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>CtxMinEncryptionLevel</Name>
                                 <Description></Description>
                                 <Type>Integer</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>CtxCallbackNumber</Name>
                                 <Description></Description>
                                 <Type>UnicodeString</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
@@ -508,108 +529,126 @@
                                 <Description></Description>
                                 <Type>String</Type>
 				<Readonly>true</Readonly>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>reConn</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>defaultPrinter</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>CtxMaxDisconnectionTime</Name>
                                 <Description></Description>
                                 <Type>Integer</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>shadow</Name>
                                 <Description></Description>
                                 <Type>Integer</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>inheritMode</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>tsLogin</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>accountDisabled</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>interDomainTrust</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>homeDirectoryRequired</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>anMNSLogonAccount</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>isAutoLocked</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>passwordNotRequired</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
 	                <Attribute>
                                 <Name>serverTrustAccount</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>normalUserAccount</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>temporaryDuplicateAccount</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>worktstationTrustAccount</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
                                 <Name>passwordDoesNotExpire</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
 
                 </Attributes>

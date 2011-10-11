@@ -15,9 +15,9 @@ p = f.getObject('SambaUser', u"cn=Playground Tester,ou=people,dc=gonicus,dc=de",
 
 print len(p.listProperties())
 
-#p.CtxMaxIdleTime = 0
-#p.CtxMaxDisconnectionTime = 223
-#p.CtxMaxConnectionTime = 224
+p.CtxMaxIdleTime = None
+p.CtxMaxDisconnectionTime = 223
+p.CtxMaxConnectionTime = 224
 
 
 #from binascii import *
@@ -26,6 +26,7 @@ print len(p.listProperties())
 
 
 p.CtxWFHomeDir = u'\\Users\\Peter'
+del(p.CtxWFHomeDir)
 
 p.isAutoLocked = not p.isAutoLocked
 

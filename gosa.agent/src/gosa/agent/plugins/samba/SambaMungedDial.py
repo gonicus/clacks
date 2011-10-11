@@ -82,15 +82,20 @@ class SambaMungedDial(object):
         for entry in ['CtxMinEncryptionLevel', 'shadow']:
             values[entry] = str(values[entry])
 
+        # Convert each param into an sambaMungedDial style value.
         result_tmp = ""
         for name in params:
             value = values[name]
             is_str = False
+
+            # Special handling for strings and timeParams
             if name in SambaMungedDial.stringParams:
                 is_str = True
                 value += '\0'
                 value = value.encode('utf-16')[2:]
             elif name in SambaMungedDial.timeParams:
+
+                # Convert numerical value back to into mungedDial style.
                 usec = int(value) * 60 * 1000
                 src = '%04x%04x' % (usec & 0x0FFFF, (usec & 0x0FFFF0000) >> 16)
                 value = src[2:4] + src[0:2] + src[6:8] + src[4:6]
