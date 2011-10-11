@@ -13,20 +13,12 @@ p = f.getObject('SambaUser', u"cn=Playground Tester,ou=people,dc=gonicus,dc=de",
 #for prop in p.listProperties():
 #    print "Attribute %s: %s" % (prop.ljust(40), getattr(p, prop))
 
-print len(p.listProperties())
+print p.listProperties()
 
 p.CtxMaxIdleTime = None
 p.CtxMaxDisconnectionTime = 223
 p.CtxMaxConnectionTime = 224
-
-
-#from binascii import *
-#print (p.CtxWFHomeDir)
-#p.CtxWFHomeDir = u"Hallo"
-
-
 p.CtxWFHomeDir = u'\\Users\\Peter'
-del(p.CtxWFHomeDir)
 
 p.isAutoLocked = not p.isAutoLocked
 
