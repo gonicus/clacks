@@ -34,6 +34,7 @@ class ObjectIndex(Plugin):
     __conn = None
     __fixed = ['id', '_dn', '_uuid', '_lastChanged', '_extensions']
     _priority_ = 20
+    _target_ = 'core'
 
     def __init__(self):
         #TODO: get that from the object factory
@@ -165,7 +166,7 @@ class ObjectIndex(Plugin):
         self.__conn.execute(self.__index.update().where(self.__index.c._uuid == uuid), [props])
 
     @Command(__help__=N_("Filter for indexed attributes and return the number of matches."))
-    def count(self, fltr):
+    def count(self, fltr=None):
         """
         Query the database using the given filter and return the number
         of matches.
@@ -208,14 +209,15 @@ class ObjectIndex(Plugin):
 
         ``Return``: Integer
         """
-        return self.__conn.execute(
-            select(
-                [func.count(self.__index.c._uuid)],
-                *self.__build_filter(fltr)
-            )).fetchone()[0]
+        if fltr:
+            slct = select([func.count(self.__index.c._uuid)], *self.__build_filter(fltr))
+        else:
+            slct = select([func.count(self.__index.c._uuid)])
+
+        return self.__conn.execute(slct).fetchone()[0]
 
     @Command(__help__=N_("Filter for indexed attributes and return the matches."))
-    def search(self, fltr, attrs=None, begin=None, end=None, order_by=None, descending=False):
+    def search(self, fltr=None, attrs=None, begin=None, end=None, order_by=None, descending=False):
         """
         Query the database using the given filter and return the
         result set.
@@ -232,7 +234,7 @@ class ObjectIndex(Plugin):
         ========== ==================
 
         For more information on the filter format, consult the ref:`gosa.agent.objects.index.count`
-        documentation. 
+        documentation.
 
         ``Return``: List of dicts
         """
@@ -244,7 +246,10 @@ class ObjectIndex(Plugin):
             for a in attrs:
                 ats.append(getattr(self.__index.c, a))
 
-        sl = select(ats, *self.__build_filter(fltr))
+        if fltr:
+            sl = select(ats, *self.__build_filter(fltr))
+        else:
+            sl = select(ats)
 
         # Apply ordering
         if order_by:
