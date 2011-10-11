@@ -942,6 +942,10 @@ class GOsaObject(object):
             if props[name]['readonly']:
                 raise AttributeError("Cannot write to readonly attribute '%s'" % name)
 
+            # Do not allow remove mandatory attributes
+            if props[name]['mandatory']:
+                raise AttributeError("Cannot remove mandatory attribute '%s'" % name)
+
             props[name]['value'] = []
         else:
             raise AttributeError("no such property '%s'" % name)
