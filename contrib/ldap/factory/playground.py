@@ -5,7 +5,7 @@ import datetime
 import sys
 import os
 import zope.event
-from gosa.agent.objects import GOsaObjectFactory
+from gosa.agent.objects import GOsaObjectFactory, ObjectQuery
 
 
 # Register pseudo event handler
@@ -21,10 +21,11 @@ else:
     mode = sys.argv[1]
     del sys.argv[1]
 
-f = GOsaObjectFactory()
-print f.getObjectTypes()
-print f.identifyObject(u"cn=Klaus Mustermann,ou=people,dc=gonicus,dc=de")
-exit(0)
+f = GOsaObjectFactory.getInstance()
+#for entry in ObjectQuery("dc=gonicus,dc=de", fltr="GenericUser", attrs=['sn', 'givenName', 'uid']):
+#    print entry
+#
+#exit(0)
 
 if mode == "create":
     p = f.getObject('GenericUser', u'ou=people,dc=gonicus,dc=de', mode="create")

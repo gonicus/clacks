@@ -54,9 +54,11 @@ from logging import getLogger
 STATUS_OK = 0
 STATUS_CHANGED = 1
 
+# Scopes
+SCOPE_BASE = 0
+SCOPE_ONE = 1
+SCOPE_SUB = 2
 
-class FactoryException(Exception):
-    pass
 
 class GOsaObjectFactory(object):
     """
@@ -64,6 +66,7 @@ class GOsaObjectFactory(object):
     for each object, which can then be instantiated using
     :meth:`gosa.agent.objects.factory.GOsaObjectFactory.getObject`.
     """
+    __instance = None
     __xml_defs = {}
     __classes = {}
     __var_regex = re.compile('^[a-z_][a-z0-9\-_]*$', re.IGNORECASE)
@@ -155,7 +158,7 @@ class GOsaObjectFactory(object):
 
     #@Command()
     def getObjectTypes(self):
-        return self.__object_types.keys()
+        return self.__object_types
 
     #@Command()
     def identifyObject(self, dn):
@@ -773,6 +776,13 @@ class GOsaObjectFactory(object):
         cnt = len(out) + 1
         out[cnt] = {'condition': get_comparator(name)(self), 'params': params}
         return(out)
+
+    @staticmethod
+    def getInstance():
+        if not GOsaObjectFactory.__instance:
+            GOsaObjectFactory.__instance = GOsaObjectFactory()
+
+        return GOsaObjectFactory.__instance
 
 
 class GOsaObject(object):
@@ -1507,6 +1517,90 @@ class GOsaObject(object):
         """
         #TODO
         print "--> cleanup"
+
+
+class ObjectQuery(object):
+
+    __result = None
+    __idx = 0
+
+    def __init__(self, base, scope=SCOPE_SUB, fltr=None, attrs=None):
+        print "Query on  ", base
+        print "Scope     ", scope
+        print "Filter    ", fltr
+        print "Attributes", attrs
+        print "-"*80
+
+        gof = GOsaObjectFactory.getInstance()
+        all_types = gof.getObjectTypes()
+
+        # Szenario 1)
+
+        # Filter analysieren
+        # -> extrahiere attribute
+        #   -> ordne attribute objekt-typen zu
+        #   -> falls keine basis objekte vorhanden sind, füge alle möglichen hinzu
+        #   -> stelle eine liste der beteiligten backends zusammen
+        #
+        # a) es ist nur ein backend zu durchsuchen
+        #
+        #    übergebe filter und parameter an backend zur suche
+        #    liefere ergebnis zurück
+        #
+        # b) es sind mehr als ein backend zu durchsuchen
+        #
+        #    blöd
+
+
+        # Szenario 2)
+
+        # Es wird eine Objektkopie von allen *kompletten* objekten gehalten,
+        # die entsprechend aktualisiert werden muss, etc.
+        # Diese kann dann mittels Algorithmus einfach nach Filtervorgaben
+        # durchsucht werden.
+
+#Notes:
+#        # Analyze filter and extract object types to query
+#        #TODO: ... analyze it, add eventually missing base object
+#        relevant_types = ['GenericUser', 'PosixUser']
+#
+#        # Query each relevant object type
+#        for t_name in relevant_types:
+#
+#            # If this is a base type, do a query
+#            if all_types[t_name]['base']:
+#                #be = ObjectBackendRegistry.getBackend(all_types[t_name]['backend'])
+#                #print be.query(all_types[t_name]['backend_attrs'], base, scope, fltr, attrs)
+#                print "query on backend %s for %s" % (all_types[t_name]['backend'], t_name)
+#
+#                #FOR every result, merge with:
+#
+#                # To more queries with if we're extended by a relvant type
+#                for et_name in list(
+#                        set(all_types[t_name]['extended_by']).intersection(
+#                            set(relevant_types))):
+#                    #be = ObjectBackendRegistry.getBackend(all_types[et_name]['backend'])
+#                    #print be.query_by_uuid(all_types[et_name]['backend_attrs'], uuid, fltr, attrs)
+#                    print "-> sub query on backend %s for %s" % (all_types[et_name]['backend'], et_name)
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        if not self.__result:
+            raise StopIteration
+
+        if self.__idx >= len(self.__result):
+            raise StopIteration
+
+        current = self.__result[self.idx]
+        self.__idx += 1
+
+        return current
+
+
+class FactoryException(Exception):
+    pass
 
 
 class IObjectChanged(Interface):

@@ -28,7 +28,7 @@ class GOForgeRenderer(BaseRenderer):
 
         # connect to GOforge db
         self.forge_db = MySQLdb.connect(host=host,
-            user=user, passwd=passwd, db=db)
+            user=user, passwd=passwd, db=db, charset="utf8")
 
         self.forge_url = self.env.config.get("fetcher-goforge.site_url",
             default="http://localhost/")
