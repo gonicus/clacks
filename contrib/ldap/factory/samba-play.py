@@ -27,5 +27,5 @@ p.CtxWFHomeDir = u'\\Users\\Peter'
 
 p.defaultPrinter = not p.defaultPrinter
 p.defaultPrinter = not p.defaultPrinter
-#p.commit()
+p.commit()
 
