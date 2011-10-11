@@ -230,12 +230,27 @@ class GOsaObjectFactory(object):
 #----------------------------------------------------------------------------------------
 
     @staticmethod
-    def createNewProperty(backend, atype, dependsOn=[], backend_type=None, validator=[], in_f=[], out_f=[],
+    def createNewProperty(backend, atype, dependsOn=None, backend_type=None, validator=None, in_f=None, out_f=None,
             unique=False, mandatory=False, readonly=False, multivalue=False, foreign=False, status=STATUS_OK,
-            value=[], skip_save=False):
+            value=None, skip_save=False):
 
         if not backend_type:
             backend_type = atype
+
+        if not dependsOn:
+            dependsOn=[]
+
+        if not value:
+            value=[]
+
+        if not in_f:
+            in_f=[]
+
+        if not out_f:
+            out_f=[]
+
+        if not validator:
+            validator=[]
 
         ret = {
                 'value': value,

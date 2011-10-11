@@ -1,4 +1,4 @@
-from base64 import b64decode
+from base64 import b64decode, b64encode
 from binascii import hexlify, unhexlify
 
 class SambaMungedDial(object):
@@ -23,8 +23,118 @@ class SambaMungedDial(object):
             "20002000200020002000200020002000"  \
             "50001000"
 
-    @classmethod
-    def decode(self, mstr):
+    @staticmethod
+    def encode(values):
+
+        # Build up 'CtxCfgFlags1' property.
+        flags = list(values['CtxCfgFlags1'])
+        flag = int(flags[2], 16)
+        if values['defaultPrinter']:
+            flag |= 2
+        else:
+            flag &= 0xFF & ~0x2
+
+        if values['connectClientDrives']:
+            flag |= 8
+        else:
+            flag &= 0xFF & ~0x8
+
+        if values['connectClientPrinters']:
+            flag |= 4
+        else:
+            flag &= 0xFF & ~0x4
+        flags[2] = hex(flag)[2:]
+
+        flag = int(flags[5], 16)
+        if values['tsLogin']:
+            flag |= 1
+        else:
+            flag &= 0xFF & ~0x1
+
+        if values['reConn']:
+            flag |= 2
+        else:
+            flag &= 0xFF & ~0x2
+
+        if values['brokenConn']:
+            flag |= 4
+        else:
+            flag &= 0xFF & ~0x4
+        flags[6] = '1' if values['inheritMode'] else '0'
+        values['CtxCfgFlags1'] = ''.join(flags)
+
+        if values['oldStorageBehavior']:
+            flags = list(values['CtxCfgFlags1'])
+            flags[1] = str(values['shadow'])
+            values['CtxCfgFlags1'] = ''.join(flags)
+        else:
+            flags = list(values['CtxShadow'])
+            flags[1] = str(values['shadow'])
+            values['CtxShadow'] = ''.join(flags)
+
+        params = ["CtxCfgPresent", "CtxCfgFlags1", "CtxCallback", "CtxShadow", "CtxKeyboardLayout",
+                "CtxMinEncryptionLevel", "CtxWorkDirectory", "CtxNWLogonServer", "CtxWFHomeDir",
+                "CtxWFHomeDirDrive", "CtxWFProfilePath", "CtxInitialProgram", "CtxCallbackNumber",
+                "CtxMaxConnectionTime", "CtxMaxDisconnectionTime", "CtxMaxIdleTime"]
+
+        result_tmp = ""
+        for name in params:
+            value = values[name]
+            is_str = False
+            if name in SambaMungedDial.stringParams:
+                is_str = True
+                value = value.encode('utf-16')
+            elif name in SambaMungedDial.timeParams:
+                value = ""
+
+            result_tmp += SambaMungedDial.munge(name, value, is_str)
+
+        # First add the number of attributes
+        result = unhexlify(SambaMungedDial.new_header)
+        result += chr(len(values) & 0x0FF)
+        result += chr((len(values) & 0x0FF00) >> 8)
+        result += chr(0)
+        result += chr(0)
+
+        result += result_tmp
+        result = b64encode(result)
+        return result
+
+    @staticmethod
+    def munge(name, value, isString=False):
+
+        utfName = name.encode('utf-16')
+
+        # Set parameter length, high and low byte
+        paramLen = len(utfName)
+        result = ''
+        result += chr(paramLen & 0x0FF)
+        result += chr((paramLen & 0x0FF00) >> 8)
+
+        # String parameters have additional trailing bytes
+        valueLen = len(value);
+        result += chr(valueLen & 0x0FF);
+        result += chr((valueLen & 0x0FF00) >> 8)
+
+        # Length fields have a trailing '01' appended by the UTF-16 converted name
+        result += chr(1)
+        result += utfName
+
+        # Parameter is padded with '00'
+        result += chr(0)
+        result += value
+
+        # Append a trailing '00' to string parameters
+        if isString and len(value):
+            result += chr(0)
+
+        return (result)
+
+
+    @staticmethod
+    def decode(mstr):
+
+        print mstr
 
         # check if we've to use the old or new munged dial storage behavior
         test = b64decode(mstr)
@@ -36,7 +146,7 @@ class SambaMungedDial(object):
 
         # Decode parameters
         result = {}
-        result['old_behaviour'] = True
+        result['oldStorageBehavior'] = True
         while ctxField != "":
 
             # Get parameter-name length and parameter value length
@@ -89,9 +199,6 @@ class SambaMungedDial(object):
         result[u'connectClientDrives'] = bool(connections & 8)
         result[u'connectClientPrinters'] = bool(connections & 4)
         result[u'defaultPrinter'] = bool(connections & 2)
-        result[u'CtxMaxConnectionTimeF'] = True if ('CtxMaxConnectionTime' in result and result['CtxMaxConnectionTime']) else False
-        result[u'CtxMaxDisconnectionTimeF'] = True if ('CtxMaxDisconnectionTime' in result and result['CtxMaxDisconnectionTime']) else False
-        result[u'CtxMaxIdleTimeF'] = True if ('CtxMaxIdleTime' in result and result['CtxMaxIdleTime']) else False
 
         return result
 
