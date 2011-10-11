@@ -906,7 +906,8 @@ class GOsaObject(object):
 
                         # Assign filter results
                         for new_key in valDict:
-                            self.log.debug("in-filter returned %s: '%s'" % (new_key, valDict[new_key]['value']))
+                            if props[new_key]['value'] != valDict[new_key]['value']:
+                                self.log.debug("in-filter returned %s: '%s'" % (new_key, valDict[new_key]['value']))
                             props[new_key] =  valDict[new_key]
 
         # Convert the received type into the target type if not done already
