@@ -336,17 +336,17 @@
                                 <Description>Account Flags</Description>
                                 <Type>UnicodeString</Type>
 				<DependsOn>
-					<Attribute>accountDisabled</Attribute>
-					<Attribute>homeDirectoryRequired</Attribute>
-					<Attribute>interDomainTrust</Attribute>
-					<Attribute>isAutoLocked</Attribute>
-					<Attribute>anMNSLogonAccount</Attribute>
-					<Attribute>passwordNotRequired</Attribute>
-					<Attribute>serverTrustAccount</Attribute>
-					<Attribute>temporaryDuplicateAccount</Attribute>
-					<Attribute>normalUserAccount</Attribute>
-					<Attribute>worktstationTrustAccount</Attribute>
-					<Attribute>passwordDoesNotExpire</Attribute>
+					<Attribute>acct_accountDisabled</Attribute>
+					<Attribute>acct_homeDirectoryRequired</Attribute>
+					<Attribute>acct_interDomainTrust</Attribute>
+					<Attribute>acct_isAutoLocked</Attribute>
+					<Attribute>acct_MNSLogonAccount</Attribute>
+					<Attribute>acct_passwordNotRequired</Attribute>
+					<Attribute>acct_serverTrustAccount</Attribute>
+					<Attribute>acct_temporaryDuplicateAccount</Attribute>
+					<Attribute>acct_normalUserAccount</Attribute>
+					<Attribute>acct_worktstationTrustAccount</Attribute>
+					<Attribute>acct_passwordDoesNotExpire</Attribute>
 				</DependsOn>
 				<Readonly>true</Readonly>
 	                       	<InFilter>
@@ -575,77 +575,77 @@
                         </Attribute>
 
                         <Attribute>
-                                <Name>accountDisabled</Name>
+                                <Name>acct_accountDisabled</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
-                                <Name>interDomainTrust</Name>
+                                <Name>acct_interDomainTrust</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
-                                <Name>homeDirectoryRequired</Name>
+                                <Name>acct_homeDirectoryRequired</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
-                                <Name>anMNSLogonAccount</Name>
+                                <Name>acct_MNSLogonAccount</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
-                                <Name>isAutoLocked</Name>
+                                <Name>acct_isAutoLocked</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
-                                <Name>passwordNotRequired</Name>
+                                <Name>acct_passwordNotRequired</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
 	                <Attribute>
-                                <Name>serverTrustAccount</Name>
+                                <Name>acct_serverTrustAccount</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
-                                <Name>normalUserAccount</Name>
+                                <Name>acct_normalUserAccount</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
-                                <Name>temporaryDuplicateAccount</Name>
+                                <Name>acct_temporaryDuplicateAccount</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
-                                <Name>worktstationTrustAccount</Name>
+                                <Name>acct_worktstationTrustAccount</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
-                                <Name>passwordDoesNotExpire</Name>
+                                <Name>acct_passwordDoesNotExpire</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>

@@ -15,12 +15,11 @@ p = f.getObject('SambaUser', u"cn=Playground Tester,ou=people,dc=gonicus,dc=de",
 
 print p.listProperties()
 
-p.CtxMaxIdleTime = None
 p.CtxMaxDisconnectionTime = 223
 p.CtxMaxConnectionTime = 224
 p.CtxWFHomeDir = u'\\Users\\Peter'
 
-p.isAutoLocked = not p.isAutoLocked
+p.acct_isAutoLocked = not p.acct_isAutoLocked
 
 p.defaultPrinter = not p.defaultPrinter
 p.defaultPrinter = not p.defaultPrinter

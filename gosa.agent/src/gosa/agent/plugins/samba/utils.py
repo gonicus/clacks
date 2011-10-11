@@ -139,6 +139,18 @@ class SambaMungedDialIn(ElementFilter):
         return key, valDict
 
 
+mapping = { 'D': 'acct_accountDisabled',
+            'H': 'acct_homeDirectoryRequired',
+            'I': 'acct_interDomainTrust',
+            'L': 'acct_isAutoLocked',
+            'M': 'acct_MNSLogonAccount',
+            'N': 'acct_passwordNotRequired',
+            'S': 'acct_serverTrustAccount',
+            'T': 'acct_temporaryDuplicateAccount',
+            'U': 'acct_normalUserAccount',
+            'W': 'acct_worktstationTrustAccount',
+            'X': 'acct_passwordDoesNotExpire'}
+
 class SambaAcctFlagsOut(ElementFilter):
     """
     In-Filter for sambaAcctFlags.
@@ -150,17 +162,6 @@ class SambaAcctFlagsOut(ElementFilter):
         super(SambaAcctFlagsOut, self).__init__(obj)
 
     def process(self, obj, key, valDict):
-        mapping = { 'D': 'accountDisabled',
-                'H': 'homeDirectoryRequired',
-                'I': 'interDomainTrust',
-                'L': 'isAutoLocked',
-                'M': 'anMNSLogonAccount',
-                'N': 'passwordNotRequired',
-                'S': 'serverTrustAccount',
-                'T': 'temporaryDuplicateAccount',
-                'U': 'normalUserAccount',
-                'W': 'worktstationTrustAccount',
-                'X': 'passwordDoesNotExpire'}
 
         # Now parse the existing acctFlags
         flagStr = ""
@@ -183,17 +184,6 @@ class SambaAcctFlagsIn(ElementFilter):
         super(SambaAcctFlagsIn, self).__init__(obj)
 
     def process(self, obj, key, valDict):
-        mapping = { 'D': 'accountDisabled',
-                    'H': 'homeDirectoryRequired',
-                    'I': 'interDomainTrust',
-                    'L': 'isAutoLocked',
-                    'M': 'anMNSLogonAccount',
-                    'N': 'passwordNotRequired',
-                    'S': 'serverTrustAccount',
-                    'T': 'temporaryDuplicateAccount',
-                    'U': 'normalUserAccount',
-                    'W': 'worktstationTrustAccount',
-                    'X': 'passwordDoesNotExpire'}
 
         # Add newly introduced properties.
         for src in mapping:
