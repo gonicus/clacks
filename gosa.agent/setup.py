@@ -134,6 +134,7 @@ setup(
         filter.sambaacctflagsin = gosa.agent.plugins.samba.utils:SambaAcctFlagsIn
         filter.sambaacctflagsout = gosa.agent.plugins.samba.utils:SambaAcctFlagsOut
         filter.sambamungedialin = gosa.agent.plugins.samba.utils:SambaMungedDialIn
+        filter.sambamungedialout = gosa.agent.plugins.samba.utils:SambaMungedDialOut
 
         [gosa.object.operator]
         operator.and = gosa.agent.objects.operator.bool:And
