@@ -25,7 +25,9 @@ p = f.getObject('SambaUser', u"cn=Playground Tester,ou=people,dc=gonicus,dc=de",
 
 p.CtxWFHomeDir = u'\\Users\\Peter'
 
-p.defaultPrinter = not p.defaultPrinter
-p.defaultPrinter = not p.defaultPrinter
+p.isAutoLocked = not p.isAutoLocked
+
+#p.defaultPrinter = not p.defaultPrinter
+#p.defaultPrinter = not p.defaultPrinter
 p.commit()
 

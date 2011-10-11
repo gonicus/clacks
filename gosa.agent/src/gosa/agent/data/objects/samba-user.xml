@@ -335,6 +335,19 @@
                                 <Name>sambaAcctFlags</Name>
                                 <Description>Account Flags</Description>
                                 <Type>UnicodeString</Type>
+				<DependsOn>
+					<Attribute>accountDisabled</Attribute>
+					<Attribute>homeDirectoryRequired</Attribute>
+					<Attribute>interDomainTrust</Attribute>
+					<Attribute>isAutoLocked</Attribute>
+					<Attribute>anMNSLogonAccount</Attribute>
+					<Attribute>passwordNotRequired</Attribute>
+					<Attribute>serverTrustAccount</Attribute>
+					<Attribute>temporaryDuplicateAccount</Attribute>
+					<Attribute>normalUserAccount</Attribute>
+					<Attribute>worktstationTrustAccount</Attribute>
+					<Attribute>passwordDoesNotExpire</Attribute>
+				</DependsOn>
 				<Readonly>true</Readonly>
 	                       	<InFilter>
                                         <FilterChain>
@@ -530,6 +543,73 @@
                                 <Description></Description>
                                 <Type>Boolean</Type>
                         </Attribute>
+
+                        <Attribute>
+                                <Name>accountDisabled</Name>
+                                <Description></Description>
+                                <Type>Boolean</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>interDomainTrust</Name>
+                                <Description></Description>
+                                <Type>Boolean</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>homeDirectoryRequired</Name>
+                                <Description></Description>
+                                <Type>Boolean</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>anMNSLogonAccount</Name>
+                                <Description></Description>
+                                <Type>Boolean</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>isAutoLocked</Name>
+                                <Description></Description>
+                                <Type>Boolean</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>passwordNotRequired</Name>
+                                <Description></Description>
+                                <Type>Boolean</Type>
+                        </Attribute>
+
+	                <Attribute>
+                                <Name>serverTrustAccount</Name>
+                                <Description></Description>
+                                <Type>Boolean</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>normalUserAccount</Name>
+                                <Description></Description>
+                                <Type>Boolean</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>temporaryDuplicateAccount</Name>
+                                <Description></Description>
+                                <Type>Boolean</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>worktstationTrustAccount</Name>
+                                <Description></Description>
+                                <Type>Boolean</Type>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>passwordDoesNotExpire</Name>
+                                <Description></Description>
+                                <Type>Boolean</Type>
+                        </Attribute>
+
                 </Attributes>
 		<Extends>
 			<Value>GenericUser</Value>
