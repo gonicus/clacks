@@ -85,12 +85,8 @@ class SambaMungedDialOut(ElementFilter):
             else:
                 res[entry]=None
 
-        print "-" * 20
-        print SambaMungedDial.encode(res)
-
-        import sys
-        sys.exit(0)
-
+        result = SambaMungedDial.encode(res)
+        valDict[key]['value'] = [result]
         return key, valDict
 
 class SambaMungedDialIn(ElementFilter):
