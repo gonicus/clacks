@@ -911,6 +911,7 @@ class GOsaObject(object):
                             props[new_key] =  valDict[new_key]
 
         # Convert the received type into the target type if not done already
+        atypes = self._objectFactory.getAttributeTypes()
         for key in props:
 
             # Convert values from incoming backend-type to required type
@@ -919,9 +920,9 @@ class GOsaObject(object):
                 be_type = props[key]['backend_type']
 
                 #  Convert all values to required type
-                if not self._objectFactory.getAttributeTypes()[a_type].is_valid_value(props[key]['value']):
+                if not atypes[a_type].is_valid_value(props[key]['value']):
                     try:
-                        props[key]['value'] = self._objectFactory.getAttributeTypes()[a_type].convert_from(be_type, props[key]['value'])
+                        props[key]['value'] = atypes[a_type].convert_from(be_type, props[key]['value'])
                     except Exception as e:
                         print "Conversion failed! ::::: ", key, e
 
