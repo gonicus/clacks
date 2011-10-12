@@ -80,6 +80,7 @@
         		maxOccurs="1" minOccurs="1"
         	>
         	</element>
+        	<element name="Default" type="string" maxOccurs="1" minOccurs="0"></element>
         	<element name="BackendType"
         		type="gosa:AttributeBackendTypes" maxOccurs="1"
         		minOccurs="0"

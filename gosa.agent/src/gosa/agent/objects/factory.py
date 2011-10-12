@@ -397,6 +397,10 @@ class GOsaObjectFactory(object):
             if "Backend" in prop.__dict__:
                 backend = str(prop.Backend)
 
+            default = None
+            if "Default" in prop.__dict__:
+                default = str(prop.Default)
+
             # Do we have an output filter definition?
             out_f = []
             if "OutFilter" in prop.__dict__:
@@ -431,6 +435,16 @@ class GOsaObjectFactory(object):
             readonly = bool(prop['Readonly']) if "Readonly" in prop.__dict__ else False
             foreign = bool(prop['Foreign']) if "Foreign" in prop.__dict__ else False
 
+            # Convert the default to the corresponding type.
+            print str(prop['Name'])
+            if default != None:
+                value = [self.__attribute_type['String'].convert_to(syntax, default)]
+            else:
+                value = None
+            print str(prop['Name']), ": ", value 
+
+
+
             # Check for property dependencies
             dependsOn = []
             if "DependsOn" in prop.__dict__:
@@ -441,7 +455,7 @@ class GOsaObjectFactory(object):
             props[str(prop['Name'])] =  new_prop = self.__createNewProperty(backend, syntax,
                     dependsOn=dependsOn, backend_type=backend_syntax, validator=validator, in_f=in_f,
                     out_f=out_f, unique=unique, mandatory=mandatory, readonly=readonly,
-                    multivalue=multivalue, foreign=foreign, status=STATUS_OK, value=None)
+                    multivalue=multivalue, foreign=foreign, status=STATUS_OK, value=value)
 
         # Validate the properties dependsOn list
         for pname in props:
@@ -1075,7 +1089,7 @@ class GOsaObject(object):
 
         # Check if all required attributes are set.
         for key in props:
-            if props[key]['mandatory'] and not props[key]['value']:
+            if props[key]['mandatory'] and not len(props[key]['value']):
                 raise FactoryException("The required property '%s' is not set!" % (key,))
 
         # Collect values by store and process the property filters

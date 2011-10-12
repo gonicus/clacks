@@ -17,6 +17,17 @@ class StringAttribute(AttributeType):
     def values_match(self, value1, value2):
         return(value1 == value2)
 
+    def _convert_to_boolean(self, value):
+        return(bool(value == 'true'))
+
+    def _convert_to_string(self, value):
+        return(str(value))
+
+    def _convert_to_integer(self, value):
+        return(int(value))
+
+    def _convert_to_unicodestring(self, value):
+        return(unicode(value))
 
 class IntegerAttribute(AttributeType):
     __alias__ = "Integer"
