@@ -7,8 +7,23 @@ import os
 from pprint import pprint
 from gosa.agent.objects import GOsaObjectFactory
 
+
 f = GOsaObjectFactory()
-p = f.getObject('SambaUser', u"cn=Playground Tester,ou=people,dc=gonicus,dc=de", mode="update")
+
+# Add samba 
+if False:
+    print "Extending!"
+    p = f.getObject('SambaUser', u'cn=Playground Tester,ou=people,dc=gonicus,dc=de', mode='extend')
+    p.commit()
+    exit(0)
+
+else:
+    print "Retracting!"
+    p = f.getObject('SambaUser', u'cn=Playground Tester,ou=people,dc=gonicus,dc=de')
+    p.retract()
+    sys.exit(0)
+
+
 
 #for prop in p.listProperties():
 #    print "Attribute %s: %s" % (prop.ljust(40), getattr(p, prop))
@@ -21,13 +36,13 @@ p = f.getObject('SambaUser', u"cn=Playground Tester,ou=people,dc=gonicus,dc=de",
 
 #p.acct_isAutoLocked = not p.acct_isAutoLocked
 
-p.Ctx_flag_defaultPrinter = not p.Ctx_flag_defaultPrinter
-p.Ctx_flag_defaultPrinter = not p.Ctx_flag_defaultPrinter
+#p.Ctx_flag_defaultPrinter = not p.Ctx_flag_defaultPrinter
+#p.Ctx_flag_defaultPrinter = not p.Ctx_flag_defaultPrinter
 
 #print p.Ctx_shadow
-p.Ctx_shadow = 3
+#p.Ctx_shadow = 3
 
-print p.sambaMungedDial
+#print p.sambaMungedDial
 
-p.commit()
+#p.commit()
 
