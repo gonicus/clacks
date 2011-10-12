@@ -54,9 +54,11 @@ from logging import getLogger
 STATUS_OK = 0
 STATUS_CHANGED = 1
 
+# Scopes
+SCOPE_BASE = 0
+SCOPE_ONE = 1
+SCOPE_SUB = 2
 
-class FactoryException(Exception):
-    pass
 
 class GOsaObjectFactory(object):
     """
@@ -64,6 +66,7 @@ class GOsaObjectFactory(object):
     for each object, which can then be instantiated using
     :meth:`gosa.agent.objects.factory.GOsaObjectFactory.getObject`.
     """
+    __instance = None
     __xml_defs = {}
     __classes = {}
     __var_regex = re.compile('^[a-z_][a-z0-9\-_]*$', re.IGNORECASE)
@@ -155,7 +158,7 @@ class GOsaObjectFactory(object):
 
     #@Command()
     def getObjectTypes(self):
-        return self.__object_types.keys()
+        return self.__object_types
 
     #@Command()
     def identifyObject(self, dn):
@@ -229,13 +232,27 @@ class GOsaObjectFactory(object):
 
 #----------------------------------------------------------------------------------------
 
-    @staticmethod
-    def createNewProperty(backend, atype, dependsOn=[], backend_type=None, validator=[], in_f=[], out_f=[],
+    def __createNewProperty(self, backend, atype, dependsOn=None, backend_type=None, validator=None, in_f=None, out_f=None,
             unique=False, mandatory=False, readonly=False, multivalue=False, foreign=False, status=STATUS_OK,
-            value=[], skip_save=False):
+            value=None, skip_save=False):
 
         if not backend_type:
             backend_type = atype
+
+        if not dependsOn:
+            dependsOn=[]
+
+        if not value:
+            value=[]
+
+        if not in_f:
+            in_f=[]
+
+        if not out_f:
+            out_f=[]
+
+        if not validator:
+            validator=[]
 
         ret = {
                 'value': value,
@@ -380,6 +397,10 @@ class GOsaObjectFactory(object):
             if "Backend" in prop.__dict__:
                 backend = str(prop.Backend)
 
+            default = None
+            if "Default" in prop.__dict__:
+                default = str(prop.Default)
+
             # Do we have an output filter definition?
             out_f = []
             if "OutFilter" in prop.__dict__:
@@ -414,6 +435,16 @@ class GOsaObjectFactory(object):
             readonly = bool(prop['Readonly']) if "Readonly" in prop.__dict__ else False
             foreign = bool(prop['Foreign']) if "Foreign" in prop.__dict__ else False
 
+            # Convert the default to the corresponding type.
+            print str(prop['Name'])
+            if default != None:
+                value = [self.__attribute_type['String'].convert_to(syntax, default)]
+            else:
+                value = None
+            print str(prop['Name']), ": ", value 
+
+
+
             # Check for property dependencies
             dependsOn = []
             if "DependsOn" in prop.__dict__:
@@ -421,10 +452,17 @@ class GOsaObjectFactory(object):
                     dependsOn.append(str(d))
 
             # Create a new property with the given information
-            props[str(prop['Name'])] =  new_prop = GOsaObjectFactory.createNewProperty(backend, syntax,
+            props[str(prop['Name'])] =  new_prop = self.__createNewProperty(backend, syntax,
                     dependsOn=dependsOn, backend_type=backend_syntax, validator=validator, in_f=in_f,
                     out_f=out_f, unique=unique, mandatory=mandatory, readonly=readonly,
-                    multivalue=multivalue, foreign=foreign, status=STATUS_OK, value=None)
+                    multivalue=multivalue, foreign=foreign, status=STATUS_OK, value=value)
+
+        # Validate the properties dependsOn list
+        for pname in props:
+            for dentry in props[pname]['dependsOn']:
+                if dentry not in props:
+                    raise FactoryException("Property '%s' cannot depend on non existing property '%s', please check the XML definition!" % (
+                            pname, pentry))
 
         # Build up a list of callable methods
         if 'Methods' in classr.__dict__:
@@ -759,6 +797,13 @@ class GOsaObjectFactory(object):
         out[cnt] = {'condition': get_comparator(name)(self), 'params': params}
         return(out)
 
+    @staticmethod
+    def getInstance():
+        if not GOsaObjectFactory.__instance:
+            GOsaObjectFactory.__instance = GOsaObjectFactory()
+
+        return GOsaObjectFactory.__instance
+
 
 class GOsaObject(object):
     """
@@ -876,15 +921,10 @@ class GOsaObject(object):
 
                     # Execute each in-filter
                     for in_f in props[key]['in_filter']:
-                        valDict = {key: copy.deepcopy(props[key])}
-                        self.__processFilter(in_f, key, valDict)
-
-                        # Assign filter results
-                        for new_key in valDict:
-                            self.log.debug("in-filter returned %s: '%s'" % (new_key, valDict[new_key]['value']))
-                            props[new_key] =  valDict[new_key]
+                        self.__processFilter(in_f, key, props)
 
         # Convert the received type into the target type if not done already
+        atypes = self._objectFactory.getAttributeTypes()
         for key in props:
 
             # Convert values from incoming backend-type to required type
@@ -893,12 +933,13 @@ class GOsaObject(object):
                 be_type = props[key]['backend_type']
 
                 #  Convert all values to required type
-                try:
-                    props[key]['value'] = self._objectFactory.getAttributeTypes()[a_type].convert_from(be_type, props[key]['value'])
-                except Exception as e:
-                    print "Conversion failed! ::::: ", key, e
+                if not atypes[a_type].is_valid_value(props[key]['value']):
+                    try:
+                        props[key]['value'] = atypes[a_type].convert_from(be_type, props[key]['value'])
+                    except Exception as e:
+                        print "Conversion failed! ::::: ", key, e
 
-                self.log.debug("converted '%s' from type '%s' to type '%s'!" % (key, be_type, a_type))
+                    self.log.debug("converted '%s' from type '%s' to type '%s'!" % (key, be_type, a_type))
 
             # Keep the initial value
             props[key]['last_value'] = props[key]['orig_value'] = copy.deepcopy(props[key]['value'])
@@ -913,6 +954,10 @@ class GOsaObject(object):
             # Do not allow to write to read-only attributes.
             if props[name]['readonly']:
                 raise AttributeError("Cannot write to readonly attribute '%s'" % name)
+
+            # Do not allow remove mandatory attributes
+            if props[name]['mandatory']:
+                raise AttributeError("Cannot remove mandatory attribute '%s'" % name)
 
             props[name]['value'] = []
         else:
@@ -1031,7 +1076,8 @@ class GOsaObject(object):
         """
         Commits changes of an GOsa-object to the corresponding backends.
         """
-        props = getattr(self, '__properties')
+        # Create a copy to avoid touching the original values
+        props = copy.deepcopy(getattr(self, '__properties'))
 
         # Check if _mode matches with the current object type
         if self._base_object and not self._mode in ['create', 'remove', 'update']:
@@ -1042,9 +1088,9 @@ class GOsaObject(object):
         self.log.debug("saving object modifications for [%s|%s]" % (type(self).__name__, self.uuid))
 
         # Check if all required attributes are set.
-        #for key in props:
-        #    if props[key]['mandatory'] and not props[key]['value']:
-        #        raise FactoryException("The required property '%s' is not set!" % (key,))
+        for key in props:
+            if props[key]['mandatory'] and not len(props[key]['value']):
+                raise FactoryException("The required property '%s' is not set!" % (key,))
 
         # Collect values by store and process the property filters
         toStore = {}
@@ -1062,11 +1108,7 @@ class GOsaObject(object):
             # Get the new value for the property and execute the out-filter
             value = props[key]['value']
             new_key = key
-
             self.log.debug("changed: %s" % (key,))
-
-            # Add this attribute to the list of attributes that will be prepared to be saved.
-            collectedAttrs[key] = copy.deepcopy(props[key])
 
             # Process each and every out-filter with a clean set of input values,
             #  to avoid that return-values overwrite themselves.
@@ -1074,27 +1116,27 @@ class GOsaObject(object):
 
                 self.log.debug(" found %s out-filter for %s" % (str(len(props[key]['out_filter'])), key,))
                 for out_f in props[key]['out_filter']:
-                    valDict = copy.deepcopy(props)
-                    valDict = self.__processFilter(out_f, key, valDict)
+                    self.__processFilter(out_f, key, props)
 
-                    # Collect properties by backend
-                    for prop_key in valDict:
+        # Collect properties by backend
+        for prop_key in props:
 
-                        # Do not save untouched values
-                        if not valDict[prop_key]['status'] & STATUS_CHANGED:
-                            continue
+            # Do not save untouched values
+            if not props[prop_key]['status'] & STATUS_CHANGED:
+                continue
 
-                        # do not save properties that are marked with 'skip_save'
-                        #self.log.debug(" outfilter returned %s:(%s) %s" % (prop_key, valDict[prop_key]['type'], valDict[prop_key]['value']))
-                        if valDict[prop_key]['skip_save']:
-                            continue
+            # do not save properties that are marked with 'skip_save'
+            #self.log.debug(" outfilter returned %s:(%s) %s" % (prop_key, valDict[prop_key]['type'], valDict[prop_key]['value']))
+            #TODO: No longer required since we introduced the NULL backend
+            if props[prop_key]['skip_save']:
+                continue
 
-                        # Create backend entry in the target list.
-                        be = valDict[prop_key]['backend']
-                        if not be in toStore:
-                            toStore[be] = {}
+            # Create backend entry in the target list.
+            be = props[prop_key]['backend']
+            if not be in toStore:
+                toStore[be] = {}
 
-                        collectedAttrs[prop_key] = copy.deepcopy(valDict[prop_key])
+            collectedAttrs[prop_key] = props[prop_key]
 
         # Create a backend compatible list of all changed attributes.
         toStore = {}
@@ -1469,10 +1511,16 @@ class GOsaObject(object):
 
         # Collect backends
         backends = [getattr(self, '_backend')]
+        be_attrs = {}
 
         for prop, info in props.items():
-            if not info['backend'] in backends:
+            backend = info['backend']
+            if not backend in backends:
                 backends.append(info['backend'])
+
+            if not backend in be_attrs:
+                be_attrs[backend] = []
+            be_attrs[backend].append(prop)
 
         # Retract for all backends, removing the primary one as the last one
         backends.reverse()
@@ -1482,7 +1530,14 @@ class GOsaObject(object):
         for backend in backends:
             be = ObjectBackendRegistry.getBackend(backend)
             r_attrs = self.getExclusiveProperties()
-            be.retract(self.uuid, [a for a in r_attrs if getattr(r_attrs, a)], self._backendAttrs[backend])
+
+            # Remove all non exclusive properties
+            remove_attrs = []
+            for attr in be_attrs[backend]:
+                if attr in r_attrs:
+                    remove_attrs.append(attr)
+
+            be.retract(self.uuid, [a for a in remove_attrs if getattr(obj, a)], self._backendAttrs[backend] if backend in self._backendAttrs else None)
 
         zope.event.notify(ObjectChanged("pre retract", obj))
 
@@ -1492,6 +1547,90 @@ class GOsaObject(object):
         """
         #TODO
         print "--> cleanup"
+
+
+class ObjectQuery(object):
+
+    __result = None
+    __idx = 0
+
+    def __init__(self, base, scope=SCOPE_SUB, fltr=None, attrs=None):
+        print "Query on  ", base
+        print "Scope     ", scope
+        print "Filter    ", fltr
+        print "Attributes", attrs
+        print "-"*80
+
+        gof = GOsaObjectFactory.getInstance()
+        all_types = gof.getObjectTypes()
+
+        # Szenario 1)
+
+        # Filter analysieren
+        # -> extrahiere attribute
+        #   -> ordne attribute objekt-typen zu
+        #   -> falls keine basis objekte vorhanden sind, füge alle möglichen hinzu
+        #   -> stelle eine liste der beteiligten backends zusammen
+        #
+        # a) es ist nur ein backend zu durchsuchen
+        #
+        #    übergebe filter und parameter an backend zur suche
+        #    liefere ergebnis zurück
+        #
+        # b) es sind mehr als ein backend zu durchsuchen
+        #
+        #    blöd
+
+
+        # Szenario 2)
+
+        # Es wird eine Objektkopie von allen *kompletten* objekten gehalten,
+        # die entsprechend aktualisiert werden muss, etc.
+        # Diese kann dann mittels Algorithmus einfach nach Filtervorgaben
+        # durchsucht werden.
+
+#Notes:
+#        # Analyze filter and extract object types to query
+#        #TODO: ... analyze it, add eventually missing base object
+#        relevant_types = ['GenericUser', 'PosixUser']
+#
+#        # Query each relevant object type
+#        for t_name in relevant_types:
+#
+#            # If this is a base type, do a query
+#            if all_types[t_name]['base']:
+#                #be = ObjectBackendRegistry.getBackend(all_types[t_name]['backend'])
+#                #print be.query(all_types[t_name]['backend_attrs'], base, scope, fltr, attrs)
+#                print "query on backend %s for %s" % (all_types[t_name]['backend'], t_name)
+#
+#                #FOR every result, merge with:
+#
+#                # To more queries with if we're extended by a relvant type
+#                for et_name in list(
+#                        set(all_types[t_name]['extended_by']).intersection(
+#                            set(relevant_types))):
+#                    #be = ObjectBackendRegistry.getBackend(all_types[et_name]['backend'])
+#                    #print be.query_by_uuid(all_types[et_name]['backend_attrs'], uuid, fltr, attrs)
+#                    print "-> sub query on backend %s for %s" % (all_types[et_name]['backend'], et_name)
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        if not self.__result:
+            raise StopIteration
+
+        if self.__idx >= len(self.__result):
+            raise StopIteration
+
+        current = self.__result[self.idx]
+        self.__idx += 1
+
+        return current
+
+
+class FactoryException(Exception):
+    pass
 
 
 class IObjectChanged(Interface):

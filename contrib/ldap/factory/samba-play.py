@@ -4,40 +4,47 @@ import time
 import datetime
 import sys
 import os
-import pprint
+from pprint import pprint
 from gosa.agent.objects import GOsaObjectFactory
 
+
 f = GOsaObjectFactory()
-p = f.getObject('SambaUser', u"cn=Playground Tester,ou=people,dc=gonicus,dc=de", mode="update")
 
-for prop in p.listProperties():
-    print "Attribute %s: %s" % (prop.ljust(40), getattr(p, prop))
+## Update
+object_type, extensions =  f.identifyObject(u'cn=Playground Tester,ou=people,dc=gonicus,dc=de')
 
-p.sambaLogonTime = datetime.datetime.today()
-#p.sambaPwdCanChange = datetime.datetime.today()
-#p.sambaKickoffTime = datetime.datetime.today()
-#p.sambaLogoffTime = datetime.datetime.today()
-#p.sambaPwdLastSet = datetime.datetime.today()
-#p.sambaBadPasswordTime = datetime.datetime.today()
-#p.sambaPwdMustChange = datetime.datetime.today()
-#p.sambaBadPasswordCount = 5
-p.displayName += 'P'
+# Add or remove samba
+if not 'SambaUser' in extensions:
+    print "Extending!"
+    p = f.getObject('SambaUser', u'cn=Playground Tester,ou=people,dc=gonicus,dc=de', mode='extend')
+    p.sambaSID = "11111111"
+    p.commit()
+    exit(0)
 
-#p.passwordNotRequired = True
-p.serverTrustAccount = not p.serverTrustAccount
-p.sambaHomePath = r"\\hallo\welt"
-p.sambaHomeDrive = "D:"
+else:
+    print "Retracting!"
+    p = f.getObject('SambaUser', u'cn=Playground Tester,ou=people,dc=gonicus,dc=de')
+    p.retract()
+    sys.exit(0)
 
-#lh = p.sambaLogonHours
-#for entry in lh:
-#    print("%s: %s" % (entry, lh[entry]))
 
-#lh[0] = (str(int(not(int(lh[0][0]))))  * 24)
-#p.sambaLogonHours = lh
 
-#for entry in lh:
-#    print("%s: %s" % (entry, lh[entry]))
 
-print p.sambaMungedDial
+#pprint(p.listProperties())
+
+#p.CtxMaxDisconnectionTime = 223
+#p.CtxMaxConnectionTime = 224
+#p.CtxWFHomeDir = u'\\Users\\Peter'
+
+#p.acct_isAutoLocked = not p.acct_isAutoLocked
+
+#p.Ctx_flag_defaultPrinter = not p.Ctx_flag_defaultPrinter
+#p.Ctx_flag_defaultPrinter = not p.Ctx_flag_defaultPrinter
+
+#print p.Ctx_shadow
+#p.Ctx_shadow = 3
+
+#print p.sambaMungedDial
+
 #p.commit()
-#print p._extends
+

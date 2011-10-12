@@ -36,7 +36,7 @@ from netaddr import IPNetwork
 from zope.interface import implements
 from qpid.messaging import Message
 
-from gosa.common.json import loads, dumps, ServiceRequestNotTranslatable, BadServiceRequest
+from gosa.common.gjson import loads, dumps, ServiceRequestNotTranslatable, BadServiceRequest
 from gosa.common.handler import IInterfaceHandler
 from gosa.common.components.registry import PluginRegistry
 from gosa.common.components.amqp import AMQPWorker, EventConsumer

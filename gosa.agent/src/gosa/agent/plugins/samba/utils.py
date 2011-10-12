@@ -7,8 +7,22 @@ from gosa.common.utils import N_
 from gosa.common import Environment
 from gosa.agent.objects.filter import ElementFilter
 from gosa.agent.objects.types import AttributeType
-from gosa.agent.objects import GOsaObjectFactory
 from gosa.agent.plugins.samba.SambaMungedDial import SambaMungedDial
+
+
+# SambaAcctFlags mapping.
+mapping = { 'D': 'acct_accountDisabled',
+            'H': 'acct_homeDirectoryRequired',
+            'I': 'acct_interDomainTrust',
+            'L': 'acct_isAutoLocked',
+            'M': 'acct_MNSLogonAccount',
+            'N': 'acct_passwordNotRequired',
+            'S': 'acct_serverTrustAccount',
+            'T': 'acct_temporaryDuplicateAccount',
+            'U': 'acct_normalUserAccount',
+            'W': 'acct_worktstationTrustAccount',
+            'X': 'acct_passwordDoesNotExpire'}
+
 
 class SambaUtils(Plugin):
     """
@@ -57,6 +71,37 @@ class SambaHash(ElementFilter):
             return key, valDict
 
 
+class SambaMungedDialOut(ElementFilter):
+    """
+    Out-Filter for sambaMungedDial.
+    """
+
+    def __init__(self, obj):
+        super(SambaMungedDialOut, self).__init__(obj)
+
+    def process(self, obj, key, valDict):
+
+        # Create a dictionary with all relevant samba attributes.
+        alist = ['CtxCallback', 'CtxCallbackNumber', 'CtxCfgFlags1', 'CtxCfgPresent', \
+                'CtxInitialProgram', 'CtxKeyboardLayout', 'CtxMaxConnectionTime', \
+                'CtxMaxDisconnectionTime', 'CtxMaxIdleTime', 'Ctx_flag_connectClientDrives', \
+                'CtxMinEncryptionLevel', 'oldStorageBehavior', \
+                'CtxNWLogonServer', 'CtxShadow', 'CtxWFHomeDir', 'CtxWFHomeDirDrive', \
+                'CtxWFProfilePath', 'CtxWorkDirectory', 'Ctx_flag_brokenConn', \
+                'Ctx_flag_connectClientPrinters', 'Ctx_flag_defaultPrinter', \
+                'Ctx_flag_inheritMode', 'Ctx_flag_reConn', 'Ctx_shadow', 'Ctx_flag_tsLogin']
+
+        # Build up a list of values to encode.
+        res = {}
+        for entry in alist:
+            res[entry]=valDict[entry]['value'][0]
+
+        # Encode the sambaMungedDial attribute.
+        result = SambaMungedDial.encode(res)
+        valDict[key]['value'] = [result]
+        return key, valDict
+
+
 class SambaMungedDialIn(ElementFilter):
     """
     In-Filter for sambaMungedDial.
@@ -69,64 +114,40 @@ class SambaMungedDialIn(ElementFilter):
 
         if len(valDict[key]['value']):
 
+            # Create a dictionary with all relevant samba attributes.
+            alist = {
+                    'oldStorageBehavior': 'Boolean',
+                    'CtxCallback': 'UnicodeString',
+                    'CtxCallbackNumber': 'UnicodeString',
+                    'CtxCfgFlags1': 'UnicodeString',
+                    'CtxCfgPresent': 'UnicodeString',
+                    'CtxInitialProgram': 'UnicodeString',
+                    'CtxKeyboardLayout': 'UnicodeString',
+                    'CtxMaxConnectionTime': 'Integer',
+                    'CtxMaxDisconnectionTime': 'Integer',
+                    'CtxMaxIdleTime': 'Integer',
+                    'CtxMinEncryptionLevel': 'Integer',
+                    'CtxNWLogonServer': 'UnicodeString',
+                    'CtxShadow': 'UnicodeString',
+                    'CtxWFHomeDir': 'UnicodeString',
+                    'CtxWFHomeDirDrive': 'UnicodeString',
+                    'CtxWFProfilePath': 'UnicodeString',
+                    'CtxWorkDirectory': 'UnicodeString',
+                    'Ctx_flag_brokenConn': 'Boolean',
+                    'Ctx_flag_connectClientDrives': 'Boolean',
+                    'Ctx_flag_connectClientPrinters': 'Boolean',
+                    'Ctx_flag_defaultPrinter': 'Boolean',
+                    'Ctx_flag_inheritMode': 'Boolean',
+                    'Ctx_flag_reConn': 'Boolean',
+                    'Ctx_shadow': 'Integer',
+                    'Ctx_flag_tsLogin': 'Boolean'}
+
+            # Update the value of the read property
             md = valDict[key]['value'][0]
             res = SambaMungedDial.decode(md)
-            valDict[u'CtxCallback'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    '', value=[res['CtxCallback']])
-            valDict[u'CtxCallbackNumber'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'UnicodeString', value=[res['CtxCallbackNumber']])
-            valDict[u'CtxCfgFlags1'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'UnicodeString', value=[res['CtxCfgFlags1']])
-            valDict[u'CtxCfgPresent'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'UnicodeString', value=[res['CtxCfgPresent']])
-            valDict[u'CtxInitialProgram'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'UnicodeString', value=[res['CtxInitialProgram']])
-            valDict[u'CtxKeyboardLayout'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'UnicodeString', value=[res['CtxKeyboardLayout']])
-            valDict[u'CtxMaxConnectionTime'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'Integer', value=[res['CtxMaxConnectionTime']])
-            valDict[u'CtxMaxConnectionTimeMode'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'Boolean', value=[res['CtxMaxConnectionTimeMode']])
-            valDict[u'CtxMaxDisconnectionTime'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'Integer', value=[res['CtxMaxDisconnectionTime']])
-            valDict[u'CtxMaxDisconnectionTimeMode'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'Boolean', value=[res['CtxMaxDisconnectionTimeMode']])
-            valDict[u'CtxMaxIdleTime'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'Integer', value=[res['CtxMaxIdleTime']])
-            valDict[u'CtxMaxIdleTimeMode'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'Boolean', value=[res['CtxMaxIdleTimeMode']])
-            valDict[u'CtxMinEncryptionLevel'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'Integer', value=[res['CtxMinEncryptionLevel']])
-            valDict[u'CtxNWLogonServer'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'UnicodeString', value=[res['CtxNWLogonServer']])
-            valDict[u'CtxShadow'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'UnicodeString', value=[res['CtxShadow']])
-            valDict[u'CtxWFHomeDir'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'UnicodeString', value=[res['CtxWFHomeDir']])
-            valDict[u'CtxWFHomeDirDrive'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'UnicodeString', value=[res['CtxWFHomeDirDrive']])
-            valDict[u'CtxWFProfilePath'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'UnicodeString', value=[res['CtxWFProfilePath']])
-            valDict[u'CtxWorkDirectory'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'UnicodeString', value=[res['CtxWorkDirectory']])
-            valDict[u'brokenConn'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'Boolean', value=[res['brokenConn']])
-            valDict[u'connectClientDrives'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'Boolean', value=[res['connectClientDrives']])
-            valDict[u'connectClientPrinters'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'Boolean', value=[res['connectClientPrinters']])
-            valDict[u'defaultPrinter'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'Boolean', value=[res['defaultPrinter']])
-            valDict[u'inheritMode'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'Boolean', value=[res['inheritMode']])
-            valDict[u'reConn'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'Boolean', value=[res['reConn']])
-            valDict[u'tsLogin'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'Boolean', value=[res['tsLogin']])
-
-            # Can be 0: disabled 1: input on, notify on 2: input on, notify off 3: input off, notify on 4: input off, notify off
-            valDict[u'shadow'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'],
-                    'Integer', value=[res['shadow']])
+            for entry in alist:
+                valDict[entry]['value'] = [res[entry]]
+                valDict[entry]['skip_save'] = True
         return key, valDict
 
 
@@ -141,17 +162,6 @@ class SambaAcctFlagsOut(ElementFilter):
         super(SambaAcctFlagsOut, self).__init__(obj)
 
     def process(self, obj, key, valDict):
-        mapping = { 'D': 'accountDisabled',
-                'H': 'homeDirectoryRequired',
-                'I': 'interDomainTrust',
-                'L': 'isAutoLocked',
-                'M': 'anMNSLogonAccount',
-                'N': 'passwordNotRequired',
-                'S': 'serverTrustAccount',
-                'T': 'temporaryDuplicateAccount',
-                'U': 'normalUserAccount',
-                'W': 'worktstationTrustAccount',
-                'X': 'passwordDoesNotExpire'}
 
         # Now parse the existing acctFlags
         flagStr = ""
@@ -174,22 +184,11 @@ class SambaAcctFlagsIn(ElementFilter):
         super(SambaAcctFlagsIn, self).__init__(obj)
 
     def process(self, obj, key, valDict):
-        mapping = { 'D': 'accountDisabled',
-                    'H': 'homeDirectoryRequired',
-                    'I': 'interDomainTrust',
-                    'L': 'isAutoLocked',
-                    'M': 'anMNSLogonAccount',
-                    'N': 'passwordNotRequired',
-                    'S': 'serverTrustAccount',
-                    'T': 'temporaryDuplicateAccount',
-                    'U': 'normalUserAccount',
-                    'W': 'worktstationTrustAccount',
-                    'X': 'passwordDoesNotExpire'}
 
         # Add newly introduced properties.
         for src in mapping:
-            valDict[mapping[src]] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'], 'Boolean', value=[False], skip_save=True)
-            valDict[key]['dependsOn'].append(mapping[src])
+            valDict[mapping[src]]['value'] = [False]
+            valDict[mapping[src]]['skip_save'] = True
 
         # Now parse the existing acctFlags
         if len(valDict[key]['value']) >= 1:
@@ -202,6 +201,13 @@ class SambaAcctFlagsIn(ElementFilter):
 
 
 class SambaLogonHoursAttribute(AttributeType):
+    """
+    This is a special object-attribute-type for sambaLogonHours.
+
+    This call can convert sambaLogonHours to a UnicodeString and vice versa.
+    It is used in the samba-object definition file.
+    """
+
     __alias__ = "SambaLogonHours"
 
     @classmethod
@@ -226,7 +232,11 @@ class SambaLogonHoursAttribute(AttributeType):
 
     @classmethod
     def _convert_to_unicodestring(cls, value):
+        """
+        This method is a converter used when values gets read from or written to the backend.
 
+        Converts the 'SambaLogonHours' object-type into a 'UnicodeString'-object.
+        """
         if len(value):
 
             # Combine the binary strings
@@ -249,6 +259,11 @@ class SambaLogonHoursAttribute(AttributeType):
 
     @classmethod
     def _convert_from_unicodestring(cls, value):
+        """
+        This method is a converter used when values gets read from or written to the backend.
+
+        Converts a 'UnicodeString' attribute into the 'SambaLogonHours' object-type.
+        """
 
         if len(value):
 

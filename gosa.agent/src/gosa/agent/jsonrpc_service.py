@@ -13,7 +13,7 @@ import uuid
 import traceback
 import logging
 from zope.interface import implements
-from gosa.common.json import loads, dumps
+from gosa.common.gjson import loads, dumps
 from webob import exc, Request, Response
 from paste.auth.cookie import AuthCookieHandler
 from gosa.common.utils import repr2json, f_print

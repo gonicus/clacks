@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Objects xmlns="http://www.gonicus.de/Objects">
+	<Object>
+		<Name>GroupContainer</Name>
+		<Description>Organizational unit that can contain groups</Description>
+		<BackendParameters>
+			<Backend objectClasses="organizationalUnit">LDAP</Backend>
+		</BackendParameters>
+		<Backend>LDAP</Backend>
+
+		<BaseObject>true</BaseObject>
+		<FixedRDN>ou=groups</FixedRDN>
+	</Object>
+</Objects>
+

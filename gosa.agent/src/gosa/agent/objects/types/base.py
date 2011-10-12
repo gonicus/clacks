@@ -5,138 +5,121 @@ import datetime
 class StringAttribute(AttributeType):
     __alias__ = "String"
 
-    @classmethod
-    def _convert_to_string(cls, value):
+    def _convert_to_string(self, value):
         return(value)
 
-    @classmethod
-    def _convert_from_string(cls, value):
+    def _convert_from_string(self, value):
         return(value)
 
-    @classmethod
-    def is_valid_value(cls, value):
+    def is_valid_value(self, value):
         return(not len(value) or all(map(lambda x: type(x) == str, value)))
 
-    @classmethod
-    def values_match(cls, value1, value2):
+    def values_match(self, value1, value2):
         return(value1 == value2)
 
+    def _convert_to_boolean(self, value):
+        return(bool(value == 'true'))
+
+    def _convert_to_string(self, value):
+        return(str(value))
+
+    def _convert_to_integer(self, value):
+        return(int(value))
+
+    def _convert_to_unicodestring(self, value):
+        return(unicode(value))
 
 class IntegerAttribute(AttributeType):
     __alias__ = "Integer"
 
-    @classmethod
-    def _convert_to_integer(cls, value):
+    def _convert_to_integer(self, value):
         return(value)
 
-    @classmethod
-    def _convert_from_integer(cls, value):
+    def _convert_from_integer(self, value):
         return(value)
 
-    @classmethod
-    def is_valid_value(cls, value):
+    def is_valid_value(self, value):
         return(not len(value) or all(map(lambda x: type(x) == int, value)))
 
-    @classmethod
-    def values_match(cls, value1, value2):
+    def values_match(self, value1, value2):
         return(value1 == value2)
 
 
 class BooleanAttribute(AttributeType):
     __alias__ = "Boolean"
 
-    @classmethod
-    def is_valid_value(cls, value):
+    def is_valid_value(self, value):
         return(not len(value) or all(map(lambda x: type(x) == bool, value)))
 
-    @classmethod
-    def _convert_to_boolean(cls, value):
+    def _convert_to_boolean(self, value):
         return(value)
 
-    @classmethod
-    def _convert_from_boolean(cls, value):
+    def _convert_from_boolean(self, value):
         return(value)
 
-    @classmethod
-    def values_match(cls, value1, value2):
+    def values_match(self, value1, value2):
         return(value1 == value2)
 
 
 class BinaryAttribute(AttributeType):
     __alias__ = "Binary"
 
-    @classmethod
-    def _convert_to_binary(cls, value):
+    def _convert_to_binary(self, value):
         return(value)
 
-    @classmethod
-    def _convert_from_binary(cls, value):
+    def _convert_from_binary(self, value):
         return(value)
 
-    @classmethod
-    def is_valid_value(cls, value):
+    def is_valid_value(self, value):
         return(not len(value) or all(map(lambda x: type(x) == unicode, value)))
 
-    @classmethod
-    def values_match(cls, value1, value2):
+    def values_match(self, value1, value2):
         return(value1 == value2)
 
 
 class UnicodeStringAttribute(AttributeType):
     __alias__ = "UnicodeString"
 
-    @classmethod
-    def _convert_to_unicodestring(cls, value):
+    def _convert_to_unicodestring(self, value):
         return(value)
 
-    @classmethod
-    def _convert_from_unicodestring(cls, value):
+    def _convert_from_unicodestring(self, value):
         return(value)
 
-    @classmethod
-    def is_valid_value(cls, value):
+    def is_valid_value(self, value):
         return(not len(value) or all(map(lambda x: type(x) == unicode, value)))
 
-    @classmethod
-    def values_match(cls, value1, value2):
+    def values_match(self, value1, value2):
         return(value1 == value2)
 
 
 class DateAttribute(AttributeType):
     __alias__ = "Date"
 
-    @classmethod
-    def _convert_to_date(cls, value):
+    def _convert_to_date(self, value):
         return(value)
 
-    @classmethod
-    def _convert_from_date(cls, value):
+    def _convert_from_date(self, value):
         return(value)
 
-    @classmethod
-    def is_valid_value(cls, value):
+    def is_valid_value(self, value):
         return(not len(value) or all(map(lambda x: type(x) == datetime.date, value)))
 
-    @classmethod
-    def values_match(cls, value1, value2):
+    def values_match(self, value1, value2):
         return(value1 == value2)
 
 
 class TimestampAttribute(AttributeType):
     __alias__ = "Timestamp"
 
-    @classmethod
-    def _convert_to_timestamp(cls, value):
+    def _convert_to_timestamp(self, value):
         return(value)
 
-    @classmethod
-    def _convert_from_timestamp(cls, value):
+    def _convert_from_timestamp(self, value):
         return(value)
 
-    @classmethod
-    def is_valid_value(cls, value):
+    def is_valid_value(self, value):
         return(not len(value) or all(map(lambda x: type(x) == datetime.datetime, value)))
 
-    @classmethod
-    def values_match(cls, value1, value2):
+    def values_match(self, value1, value2):
         return(value1 == value2)

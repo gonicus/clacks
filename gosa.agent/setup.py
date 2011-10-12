@@ -85,6 +85,7 @@ setup(
         gosa-agent.httpd = gosa.agent.httpd:HTTPService
         gosa-agent.scheduler = gosa.agent.scheduler:SchedulerService
         gosa-agent.acl = gosa.agent.acl:ACLResolver
+        gosa-agent.objects = gosa.agent.objects.index:ObjectIndex
         gosa-agent.jsonrpc_service = gosa.agent.jsonrpc_service:JSONRPCService
         gosa-agent.jsonrpc_om = gosa.agent.jsonrpc_objects:JSONRPCObjectMapper
         gosa-agent.plugins.samba.utils = gosa.agent.plugins.samba.utils:SambaUtils
@@ -105,6 +106,7 @@ setup(
 
         [gosa.object.backend]
         backend.ldap = gosa.agent.objects.backend.back_ldap:LDAP
+        backend.null = gosa.agent.objects.backend.back_null:NULL
 
         [gosa.object.comparator]
         comparator.like = gosa.agent.objects.comparator.strings:Like
@@ -126,14 +128,13 @@ setup(
         filter.target = gosa.agent.objects.filter.basic:Target
         filter.setbackend = gosa.agent.objects.filter.basic:SetBackend
         filter.setvalue = gosa.agent.objects.filter.basic:SetValue
-        #filter.loadattr = gosa.agent.objects.filter.basic:LoadAttr
-        #filter.saveattr = gosa.agent.objects.filter.basic:SaveAttr
         filter.clear = gosa.agent.objects.filter.basic:Clear
         filter.integertodatetime = gosa.agent.objects.filter.basic:IntegerToDatetime
         filter.datetimetointeger = gosa.agent.objects.filter.basic:DatetimeToInteger
         filter.sambaacctflagsin = gosa.agent.plugins.samba.utils:SambaAcctFlagsIn
         filter.sambaacctflagsout = gosa.agent.plugins.samba.utils:SambaAcctFlagsOut
         filter.sambamungedialin = gosa.agent.plugins.samba.utils:SambaMungedDialIn
+        filter.sambamungedialout = gosa.agent.plugins.samba.utils:SambaMungedDialOut
 
         [gosa.object.operator]
         operator.and = gosa.agent.objects.operator.bool:And

@@ -281,6 +281,33 @@
                                 <Name>sambaMungedDial</Name>
                                 <Description>Base64 encoded user parameter string</Description>
                                 <Type>UnicodeString</Type>
+                                <DependsOn>
+                                        <Attribute>oldStorageBehavior</Attribute>
+                                        <Attribute>CtxCallback</Attribute>
+                                        <Attribute>CtxCallbackNumber</Attribute>
+                                        <Attribute>CtxCfgFlags1</Attribute>
+                                        <Attribute>CtxCfgPresent</Attribute>
+                                        <Attribute>CtxInitialProgram</Attribute>
+                                        <Attribute>CtxKeyboardLayout</Attribute>
+                                        <Attribute>CtxMaxConnectionTime</Attribute>
+                                        <Attribute>CtxMaxDisconnectionTime</Attribute>
+                                        <Attribute>CtxMaxIdleTime</Attribute>
+                                        <Attribute>CtxMinEncryptionLevel</Attribute>
+                                        <Attribute>CtxNWLogonServer</Attribute>
+                                        <Attribute>CtxShadow</Attribute>
+                                        <Attribute>CtxWFHomeDir</Attribute>
+                                        <Attribute>CtxWFHomeDirDrive</Attribute>
+                                        <Attribute>CtxWFProfilePath</Attribute>
+                                        <Attribute>CtxWorkDirectory</Attribute>
+                                        <Attribute>Ctx_flag_brokenConn</Attribute>
+                                        <Attribute>Ctx_flag_connectClientDrives</Attribute>
+                                        <Attribute>Ctx_flag_connectClientPrinters</Attribute>
+                                        <Attribute>Ctx_flag_defaultPrinter</Attribute>
+                                        <Attribute>Ctx_flag_inheritMode</Attribute>
+                                        <Attribute>Ctx_flag_reConn</Attribute>
+                                        <Attribute>Ctx_shadow</Attribute>
+                                        <Attribute>Ctx_flag_tsLogin</Attribute>
+                                </DependsOn>
 	                       	<InFilter>
                                         <FilterChain>
                                                 <FilterEntry>
@@ -290,12 +317,34 @@
                                                 </FilterEntry>
                                         </FilterChain>
                                 </InFilter>
+	                       	<OutFilter>
+                                        <FilterChain>
+                                                <FilterEntry>
+                                                        <Filter>
+                                                                <Name>SambaMungedDialOut</Name>
+                                                        </Filter>
+                                                </FilterEntry>
+                                        </FilterChain>
+                                </OutFilter>
                         </Attribute>
 
            		<Attribute>
                                 <Name>sambaAcctFlags</Name>
                                 <Description>Account Flags</Description>
                                 <Type>UnicodeString</Type>
+				<DependsOn>
+					<Attribute>acct_accountDisabled</Attribute>
+					<Attribute>acct_homeDirectoryRequired</Attribute>
+					<Attribute>acct_interDomainTrust</Attribute>
+					<Attribute>acct_isAutoLocked</Attribute>
+					<Attribute>acct_MNSLogonAccount</Attribute>
+					<Attribute>acct_passwordNotRequired</Attribute>
+					<Attribute>acct_serverTrustAccount</Attribute>
+					<Attribute>acct_temporaryDuplicateAccount</Attribute>
+					<Attribute>acct_normalUserAccount</Attribute>
+					<Attribute>acct_worktstationTrustAccount</Attribute>
+					<Attribute>acct_passwordDoesNotExpire</Attribute>
+				</DependsOn>
 				<Readonly>true</Readonly>
 	                       	<InFilter>
                                         <FilterChain>
@@ -323,8 +372,334 @@
                                 <Type>SambaLogonHours</Type>
                                 <BackendType>UnicodeString</BackendType>
                         </Attribute>
-                </Attributes>
 
+                        <Attribute>
+                                <Name>CtxKeyboardLayout</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>String</Type>
+				<Default></Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxInitialProgram</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>UnicodeString</Type>
+				<Default></Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxCallback</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+				<Type>String</Type>
+				<Default></Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxShadow</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+				<Type>String</Type>
+				<Default>01000000</Default>
+				<Readonly>true</Readonly>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxWFProfilePath</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>UnicodeString</Type>
+				<Default></Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>oldStorageBehavior</Name>
+                                <Description>There seems to be an old and a new storage method for the sambaMungedDial attribute, this flag just shows the whether the processes values was in the old or in the new style. Saved will always be done in the new way.</Description>
+				<Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>Ctx_flag_connectClientPrinters</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>true</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxWFHomeDirDrive</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>UnicodeString</Type>
+				<Default></Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxMaxIdleTime</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Integer</Type>
+				<Default>0</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>Ctx_flag_brokenConn</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxCfgPresent</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>String</Type>
+				<Default>551e0bb0</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxWFHomeDir</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>UnicodeString</Type>
+				<Default></Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>Ctx_flag_connectClientDrives</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>true</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxWorkDirectory</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>UnicodeString</Type>
+				<Default></Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxNWLogonServer</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>UnicodeString</Type>
+				<Default></Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxMaxConnectionTime</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Integer</Type>
+				<Default>0</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxMinEncryptionLevel</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Integer</Type>
+				<Default>0</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxCallbackNumber</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>UnicodeString</Type>
+				<Default></Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxCfgFlags1</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>String</Type>
+				<Default>00e00010</Default>
+				<Readonly>true</Readonly>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>Ctx_flag_reConn</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>Ctx_flag_defaultPrinter</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>true</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>CtxMaxDisconnectionTime</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Integer</Type>
+				<Default>0</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>Ctx_shadow</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Integer</Type>
+				<Default>1</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>Ctx_flag_inheritMode</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>Ctx_flag_tsLogin</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>acct_accountDisabled</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>acct_interDomainTrust</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>acct_homeDirectoryRequired</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>acct_MNSLogonAccount</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>acct_isAutoLocked</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>acct_passwordNotRequired</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+	                <Attribute>
+                                <Name>acct_serverTrustAccount</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>acct_normalUserAccount</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>true</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>acct_temporaryDuplicateAccount</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>acct_worktstationTrustAccount</Name>
+                                <Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+				<Name>acct_passwordDoesNotExpire</Name>
+				<Description></Description>
+				<Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                </Attributes>
 		<Extends>
 			<Value>GenericUser</Value>
 		</Extends>

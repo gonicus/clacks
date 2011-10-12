@@ -2,7 +2,7 @@
 from qpid.messaging import Connection, Message, uuid4
 from types import DictType
 from gosa.common.components.jsonrpc_proxy import JSONRPCException, ObjectFactory
-from gosa.common.json import dumps, loads
+from gosa.common.gjson import dumps, loads
 from gosa.common.components.amqp import AMQPProcessor
 from gosa.common.utils import parseURL
 from lxml import objectify

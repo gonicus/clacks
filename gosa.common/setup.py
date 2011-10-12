@@ -89,5 +89,8 @@ setup(
     entry_points = """
         [gosa.modules]
         gosa-agent.amqp = gosa.common.components.amqp:AMQPHandler
+
+        [json.datahandlers]
+        datetime = gosa.common.gjson:DateTimeHandler
     """,
 )

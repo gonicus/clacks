@@ -29,7 +29,7 @@ ANDOP               := TS,'AND',TS
 OROP                := TS,'OR',TS
 '''
 
-testdata = 'cn="Klaus Müller" AND (dob < 1975 OR dob = 2000) AND gender != "M"'
+testdata = 'type="GenericUser" AND cn="Klaus Müller" AND (dob < 1975 OR dob = 2000) AND gender != "M"'
 
 from simpleparse.parser import Parser
 import pprint
