@@ -64,7 +64,7 @@ from zope.interface import implements
 from qpid.messaging import Message
 from qpid.messaging.message import Disposition
 from qpid.messaging.constants import RELEASED
-from gosa.common.json import loads, dumps, ServiceRequestNotTranslatable, BadServiceRequest
+from gosa.common.gjson import loads, dumps, ServiceRequestNotTranslatable, BadServiceRequest
 from gosa.common.handler import IInterfaceHandler
 from gosa.common.components import PluginRegistry, AMQPWorker, ZeroconfService
 from gosa.common.utils import parseURL, repr2json

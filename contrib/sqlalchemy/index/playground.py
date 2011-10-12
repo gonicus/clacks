@@ -5,10 +5,10 @@ from gosa.agent.objects.index import ObjectIndex
 
 ie = ObjectIndex()
 
-#u1 = str(uuid.uuid4())
-#ie.insert(u1, dn=u"cn=Cajus Pollmeier,ou=people,ou=Technik,dc=gonicus,dc=de", sn=u"Pollmeier", givenName=u"Cajus", uid="cajus", mail=['cajus@debian.org', 'cajus@naasa.net', 'pollmeier@gonicus.de'], _lastChanged=datetime.datetime.now())
-#print ie.exists(u1)
-#ie.update(u1, uid="lorenz")
+u1 = str(uuid.uuid4())
+ie.insert(u1, dn=u"cn=Cajus Pollmeier,ou=people,ou=Technik,dc=gonicus,dc=de", sn=u"Pollmeier", givenName=u"Cajus", uid="cajus", mail=['cajus@debian.org', 'cajus@naasa.net', 'pollmeier@gonicus.de'], _lastChanged=datetime.datetime.now())
+print ie.exists(u1)
+ie.update(u1, uid="lorenz")
 
 #fltr = {}
 fltr = {'uid': '*us'}

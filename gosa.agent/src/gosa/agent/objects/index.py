@@ -3,6 +3,7 @@ import re
 import inspect
 import sqlalchemy.sql
 import logging
+import collections
 from gosa.common import Environment
 from gosa.common.utils import N_
 from gosa.common.components import Command, PluginRegistry, Plugin
@@ -29,6 +30,7 @@ class ObjectIndex(Plugin):
             'Date': Date,
             'Timestamp': DateTime,
             }
+    __sep = '|'
     __types = None
     __engine = None
     __conn = None
@@ -37,6 +39,8 @@ class ObjectIndex(Plugin):
     _target_ = 'core'
 
     def __init__(self):
+        self.__bl = re.compile(r'([^%s]+)' % self.__sep)
+
         #TODO: get that from the object factory
         index_attrs = {
             'givenName': {'type': 'UnicodeString', 'multi': False},
@@ -154,7 +158,7 @@ class ObjectIndex(Plugin):
         props['_dn']= dn
 
         # Convert all list types to Unicode strings
-        props = dict([(attr, "|" + "|".join(key) + "|" if type(key) == list else key) for attr, key in props.items()])
+        props = dict([(attr, self.__sep + self.__sep.join(key) + self.__sep if type(key) == list else key) for attr, key in props.items()])
         self.__conn.execute(self.__index.insert(), [props])
 
     def remove(self, uuid):
@@ -162,7 +166,7 @@ class ObjectIndex(Plugin):
 
     def update(self, uuid, **props):
         # Convert all list types to Unicode strings
-        props = dict([(attr, "|" + "|".join(key) + "|" if type(key) == list else key) for attr, key in props.items()])
+        props = dict([(attr, self.__sep + self.__sep.join(key) + self.__sep if type(key) == list else key) for attr, key in props.items()])
         self.__conn.execute(self.__index.update().where(self.__index.c._uuid == uuid), [props])
 
     @Command(__help__=N_("Filter for indexed attributes and return the number of matches."))
@@ -265,7 +269,21 @@ class ObjectIndex(Plugin):
 
             sl = sl.offset(begin).limit(end - begin + 1)
 
-        return self.__conn.execute(sl).fetchall()
+        res = [dict(r.items()) for r in self.__conn.execute(sl).fetchall()]
+        return self.__convert_lists(res)
+
+    def __convert_lists(self, data):
+        if isinstance(data, str) or isinstance(data, unicode):
+            # Check for list conversion
+            if data[0] == self.__sep and data[-1] == self.__sep:
+                return self.__bl.findall(data)
+            return data
+        elif isinstance(data, collections.Mapping):
+            return dict(map(self.__convert_lists, data.iteritems()))
+        elif isinstance(data, collections.Iterable):
+            return type(data)(map(self.__convert_lists, data))
+        else:
+            return data
 
     def __build_filter(self, fltr):
         arg = []
@@ -311,12 +329,10 @@ class ObjectIndex(Plugin):
                 raise FilterException("attribute '%s' is not indexed" % el.split("_")[0])
 
             elif self.__types[cel]['multi']:
-                value = value.replace("|", r"\|")
-
                 if '%' in value:
-                    value = value.replace('%', '[^|]*')
+                    value = value.replace('%', r'[^\%s]*' % self.__sep)
 
-                arg.append(getattr(self.__index.c, cel).op('regexp')(r"|%s|" % value))
+                arg.append(getattr(self.__index.c, cel).op('regexp')(r"\%s%s\%s" % (self.__sep, value, self.__sep)))
 
             else:
                 if '%' in value:

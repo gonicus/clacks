@@ -2,7 +2,7 @@
 import urllib2
 import cookielib
 from types import DictType
-from gosa.common.json import dumps, loads
+from gosa.common.gjson import dumps, loads
 
 
 class JSONRPCException(Exception):
