@@ -8,7 +8,7 @@
 		</BackendParameters>
 		<Backend>LDAP</Backend>
 		<Container>
-			<Type>GenericUser<Type>
+			<Type>GenericUser</Type>
 		</Container>
 		<BaseObject>true</BaseObject>
 		<FixedRDN>ou=people</FixedRDN>

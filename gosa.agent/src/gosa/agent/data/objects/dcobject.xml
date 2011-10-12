@@ -18,8 +18,8 @@
                         </Attribute>
 		</Attributes>
 		<Container>
-			<Type>PeopleContainer<Type>
-			<Type>GroupContainer<Type>
+			<Type>PeopleContainer</Type>
+			<Type>GroupContainer</Type>
 		</Container>
 		<BaseObject>true</BaseObject>
 	</Object>
