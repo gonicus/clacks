@@ -907,14 +907,7 @@ class GOsaObject(object):
 
                     # Execute each in-filter
                     for in_f in props[key]['in_filter']:
-                        valDict = copy.deepcopy(props)
-                        self.__processFilter(in_f, key, valDict)
-
-                        # Assign filter results
-                        for new_key in valDict:
-                            if props[new_key]['value'] != valDict[new_key]['value']:
-                                self.log.debug("in-filter returned %s: '%s'" % (new_key, valDict[new_key]['value']))
-                            props[new_key] =  valDict[new_key]
+                        self.__processFilter(in_f, key, props)
 
         # Convert the received type into the target type if not done already
         atypes = self._objectFactory.getAttributeTypes()
@@ -1069,7 +1062,8 @@ class GOsaObject(object):
         """
         Commits changes of an GOsa-object to the corresponding backends.
         """
-        props = getattr(self, '__properties')
+        # Create a copy to avoid touching the original values
+        props = copy.deepcopy(getattr(self, '__properties'))
 
         # Check if _mode matches with the current object type
         if self._base_object and not self._mode in ['create', 'remove', 'update']:
@@ -1100,11 +1094,7 @@ class GOsaObject(object):
             # Get the new value for the property and execute the out-filter
             value = props[key]['value']
             new_key = key
-
             self.log.debug("changed: %s" % (key,))
-
-            # Add this attribute to the list of attributes that will be prepared to be saved.
-            collectedAttrs[key] = copy.deepcopy(props[key])
 
             # Process each and every out-filter with a clean set of input values,
             #  to avoid that return-values overwrite themselves.
@@ -1112,27 +1102,27 @@ class GOsaObject(object):
 
                 self.log.debug(" found %s out-filter for %s" % (str(len(props[key]['out_filter'])), key,))
                 for out_f in props[key]['out_filter']:
-                    valDict = copy.deepcopy(props)
-                    valDict = self.__processFilter(out_f, key, valDict)
+                    self.__processFilter(out_f, key, props)
 
-                    # Collect properties by backend
-                    for prop_key in valDict:
+        # Collect properties by backend
+        for prop_key in props:
 
-                        # Do not save untouched values
-                        if not valDict[prop_key]['status'] & STATUS_CHANGED:
-                            continue
+            # Do not save untouched values
+            if not props[prop_key]['status'] & STATUS_CHANGED:
+                continue
 
-                        # do not save properties that are marked with 'skip_save'
-                        #self.log.debug(" outfilter returned %s:(%s) %s" % (prop_key, valDict[prop_key]['type'], valDict[prop_key]['value']))
-                        if valDict[prop_key]['skip_save']:
-                            continue
+            # do not save properties that are marked with 'skip_save'
+            #self.log.debug(" outfilter returned %s:(%s) %s" % (prop_key, valDict[prop_key]['type'], valDict[prop_key]['value']))
+            #TODO: No longer required since we introduced the NULL backend
+            if props[prop_key]['skip_save']:
+                continue
 
-                        # Create backend entry in the target list.
-                        be = valDict[prop_key]['backend']
-                        if not be in toStore:
-                            toStore[be] = {}
+            # Create backend entry in the target list.
+            be = props[prop_key]['backend']
+            if not be in toStore:
+                toStore[be] = {}
 
-                        collectedAttrs[prop_key] = copy.deepcopy(valDict[prop_key])
+            collectedAttrs[prop_key] = props[prop_key]
 
         # Create a backend compatible list of all changed attributes.
         toStore = {}
