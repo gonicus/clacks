@@ -106,6 +106,7 @@ setup(
 
         [gosa.object.backend]
         backend.ldap = gosa.agent.objects.backend.back_ldap:LDAP
+        backend.null = gosa.agent.objects.backend.back_null:NULL
 
         [gosa.object.comparator]
         comparator.like = gosa.agent.objects.comparator.strings:Like
@@ -127,8 +128,6 @@ setup(
         filter.target = gosa.agent.objects.filter.basic:Target
         filter.setbackend = gosa.agent.objects.filter.basic:SetBackend
         filter.setvalue = gosa.agent.objects.filter.basic:SetValue
-        #filter.loadattr = gosa.agent.objects.filter.basic:LoadAttr
-        #filter.saveattr = gosa.agent.objects.filter.basic:SaveAttr
         filter.clear = gosa.agent.objects.filter.basic:Clear
         filter.integertodatetime = gosa.agent.objects.filter.basic:IntegerToDatetime
         filter.datetimetointeger = gosa.agent.objects.filter.basic:DatetimeToInteger
