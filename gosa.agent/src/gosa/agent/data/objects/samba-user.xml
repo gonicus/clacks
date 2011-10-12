@@ -290,11 +290,8 @@
                                         <Attribute>CtxInitialProgram</Attribute>
                                         <Attribute>CtxKeyboardLayout</Attribute>
                                         <Attribute>CtxMaxConnectionTime</Attribute>
-                                        <Attribute>CtxMaxConnectionTimeMode</Attribute>
                                         <Attribute>CtxMaxDisconnectionTime</Attribute>
-                                        <Attribute>CtxMaxDisconnectionTimeMode</Attribute>
                                         <Attribute>CtxMaxIdleTime</Attribute>
-                                        <Attribute>CtxMaxIdleTimeMode</Attribute>
                                         <Attribute>CtxMinEncryptionLevel</Attribute>
                                         <Attribute>CtxNWLogonServer</Attribute>
                                         <Attribute>CtxShadow</Attribute>
@@ -376,27 +373,12 @@
                                 <BackendType>UnicodeString</BackendType>
                         </Attribute>
 
-       			<Attribute>
-                                <Name>CtxMaxDisconnectionTimeMode</Name>
-                                <Description></Description>
-				<Backend>NULL</Backend>
-                                <Type>Boolean</Type>
-                                <Mandatory>true</Mandatory>
-                        </Attribute>
-
                         <Attribute>
                                 <Name>CtxKeyboardLayout</Name>
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>String</Type>
-                                <Mandatory>true</Mandatory>
-                        </Attribute>
-
-                        <Attribute>
-                                <Name>CtxMaxConnectionTimeMode</Name>
-                                <Description></Description>
-				<Backend>NULL</Backend>
-                                <Type>Boolean</Type>
+				<Default></Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -405,6 +387,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>UnicodeString</Type>
+				<Default></Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -412,7 +395,8 @@
                                 <Name>CtxCallback</Name>
                                 <Description></Description>
 				<Backend>NULL</Backend>
-                                <Type>String</Type>
+				<Type>String</Type>
+				<Default></Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -421,6 +405,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
 				<Type>String</Type>
+				<Default>01000000</Default>
 				<Readonly>true</Readonly>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -430,6 +415,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>UnicodeString</Type>
+				<Default></Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -446,6 +432,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
+                                <Default>true</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -454,6 +441,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>UnicodeString</Type>
+				<Default></Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -462,6 +450,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Integer</Type>
+				<Default>0</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -470,6 +459,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
+                                <Default>false</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -478,6 +468,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>String</Type>
+				<Default>551e0bb0</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -486,6 +477,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>UnicodeString</Type>
+				<Default></Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -494,6 +486,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
+                                <Default>true</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -502,6 +495,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>UnicodeString</Type>
+				<Default></Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -510,14 +504,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>UnicodeString</Type>
-                                <Mandatory>true</Mandatory>
-                        </Attribute>
-
-                        <Attribute>
-                                <Name>CtxMaxIdleTimeMode</Name>
-                                <Description></Description>
-				<Backend>NULL</Backend>
-                                <Type>Boolean</Type>
+				<Default></Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -526,6 +513,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Integer</Type>
+				<Default>0</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -534,6 +522,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Integer</Type>
+				<Default>0</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -542,6 +531,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>UnicodeString</Type>
+				<Default></Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -550,6 +540,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>String</Type>
+				<Default>00e00010</Default>
 				<Readonly>true</Readonly>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -559,6 +550,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
+                                <Default>false</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -567,6 +559,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
+                                <Default>true</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -575,6 +568,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Integer</Type>
+				<Default>0</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -583,6 +577,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Integer</Type>
+				<Default>1</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -591,6 +586,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
+                                <Default>false</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -599,6 +595,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
+                                <Default>false</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -607,6 +604,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
+                                <Default>false</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -615,6 +613,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
+                                <Default>false</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -623,6 +622,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
+                                <Default>false</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -631,6 +631,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
+                                <Default>false</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -639,6 +640,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
+                                <Default>false</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -647,6 +649,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
+                                <Default>false</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -655,6 +658,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
+                                <Default>false</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -663,6 +667,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
+                                <Default>true</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -671,6 +676,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
+                                <Default>false</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -679,6 +685,7 @@
                                 <Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
+                                <Default>false</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -687,6 +694,7 @@
 				<Description></Description>
 				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
+                                <Default>false</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
