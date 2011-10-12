@@ -1507,10 +1507,16 @@ class GOsaObject(object):
 
         # Collect backends
         backends = [getattr(self, '_backend')]
+        be_attrs = {}
 
         for prop, info in props.items():
-            if not info['backend'] in backends:
+            backend = info['backend']
+            if not backend in backends:
                 backends.append(info['backend'])
+
+            if not backend in be_attrs:
+                be_attrs[backend] = []
+            be_attrs[backend].append(prop)
 
         # Retract for all backends, removing the primary one as the last one
         backends.reverse()
@@ -1520,7 +1526,14 @@ class GOsaObject(object):
         for backend in backends:
             be = ObjectBackendRegistry.getBackend(backend)
             r_attrs = self.getExclusiveProperties()
-            be.retract(self.uuid, [a for a in r_attrs if getattr(obj, a)], self._backendAttrs[backend] if backend in self._backendAttrs else None)
+
+            # Remove all non exclusive properties
+            remove_attrs = []
+            for attr in be_attrs[backend]:
+                if attr in r_attrs:
+                    remove_attrs.append(attr)
+
+            be.retract(self.uuid, [a for a in remove_attrs if getattr(obj, a)], self._backendAttrs[backend] if backend in self._backendAttrs else None)
 
         zope.event.notify(ObjectChanged("pre retract", obj))
 
