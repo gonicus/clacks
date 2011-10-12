@@ -101,7 +101,7 @@ p.userPassword = u"secret"
 #del(p.uid)
 p.roomNumber = 21
 #open('dummy.gif_read', 'w').write(p.jpegPhoto)
-p.jpegPhoto =  open('dummy.gif', 'r').read()
+#p.jpegPhoto =  open('dummy.gif', 'r').read()
 #p.gotoLastSystemLogin = datetime.datetime.today()
 #p.dateOfBirth = datetime.datetime.today().date()
 #p.gender = "M"

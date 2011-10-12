@@ -379,6 +379,7 @@
        			<Attribute>
                                 <Name>CtxMaxDisconnectionTimeMode</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -386,6 +387,7 @@
                         <Attribute>
                                 <Name>CtxKeyboardLayout</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>String</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -393,6 +395,7 @@
                         <Attribute>
                                 <Name>CtxMaxConnectionTimeMode</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -400,6 +403,7 @@
                         <Attribute>
                                 <Name>CtxInitialProgram</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>UnicodeString</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -407,6 +411,7 @@
                         <Attribute>
                                 <Name>CtxCallback</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>String</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -414,6 +419,7 @@
                         <Attribute>
                                 <Name>CtxShadow</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
 				<Type>String</Type>
 				<Readonly>true</Readonly>
                                 <Mandatory>true</Mandatory>
@@ -422,6 +428,7 @@
                         <Attribute>
                                 <Name>CtxWFProfilePath</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>UnicodeString</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -429,6 +436,7 @@
                         <Attribute>
                                 <Name>oldStorageBehavior</Name>
                                 <Description>There seems to be an old and a new storage method for the sambaMungedDial attribute, this flag just shows the whether the processes values was in the old or in the new style. Saved will always be done in the new way.</Description>
+				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -436,6 +444,7 @@
                         <Attribute>
                                 <Name>Ctx_flag_connectClientPrinters</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -443,6 +452,7 @@
                         <Attribute>
                                 <Name>CtxWFHomeDirDrive</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>UnicodeString</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -450,6 +460,7 @@
                         <Attribute>
                                 <Name>CtxMaxIdleTime</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Integer</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -457,6 +468,7 @@
                         <Attribute>
                                 <Name>Ctx_flag_brokenConn</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -464,6 +476,7 @@
                         <Attribute>
                                 <Name>CtxCfgPresent</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>String</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -471,6 +484,7 @@
                         <Attribute>
                                 <Name>CtxWFHomeDir</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>UnicodeString</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -478,6 +492,7 @@
                         <Attribute>
                                 <Name>Ctx_flag_connectClientDrives</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -485,6 +500,7 @@
                         <Attribute>
                                 <Name>CtxWorkDirectory</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>UnicodeString</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -492,6 +508,7 @@
                         <Attribute>
                                 <Name>CtxNWLogonServer</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>UnicodeString</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -499,6 +516,7 @@
                         <Attribute>
                                 <Name>CtxMaxIdleTimeMode</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -506,6 +524,7 @@
                         <Attribute>
                                 <Name>CtxMaxConnectionTime</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Integer</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -513,6 +532,7 @@
                         <Attribute>
                                 <Name>CtxMinEncryptionLevel</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Integer</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -520,6 +540,7 @@
                         <Attribute>
                                 <Name>CtxCallbackNumber</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>UnicodeString</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -527,6 +548,7 @@
                         <Attribute>
                                 <Name>CtxCfgFlags1</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>String</Type>
 				<Readonly>true</Readonly>
                                 <Mandatory>true</Mandatory>
@@ -535,6 +557,7 @@
                         <Attribute>
                                 <Name>Ctx_flag_reConn</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -542,6 +565,7 @@
                         <Attribute>
                                 <Name>Ctx_flag_defaultPrinter</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -549,6 +573,7 @@
                         <Attribute>
                                 <Name>CtxMaxDisconnectionTime</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Integer</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -556,6 +581,7 @@
                         <Attribute>
                                 <Name>Ctx_shadow</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Integer</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -563,6 +589,7 @@
                         <Attribute>
                                 <Name>Ctx_flag_inheritMode</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -570,6 +597,7 @@
                         <Attribute>
                                 <Name>Ctx_flag_tsLogin</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -577,6 +605,7 @@
                         <Attribute>
                                 <Name>acct_accountDisabled</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -584,6 +613,7 @@
                         <Attribute>
                                 <Name>acct_interDomainTrust</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -591,6 +621,7 @@
                         <Attribute>
                                 <Name>acct_homeDirectoryRequired</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -598,6 +629,7 @@
                         <Attribute>
                                 <Name>acct_MNSLogonAccount</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -605,6 +637,7 @@
                         <Attribute>
                                 <Name>acct_isAutoLocked</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -612,6 +645,7 @@
                         <Attribute>
                                 <Name>acct_passwordNotRequired</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -619,6 +653,7 @@
 	                <Attribute>
                                 <Name>acct_serverTrustAccount</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -626,6 +661,7 @@
                         <Attribute>
                                 <Name>acct_normalUserAccount</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -633,6 +669,7 @@
                         <Attribute>
                                 <Name>acct_temporaryDuplicateAccount</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
@@ -640,13 +677,15 @@
                         <Attribute>
                                 <Name>acct_worktstationTrustAccount</Name>
                                 <Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
-                                <Name>acct_passwordDoesNotExpire</Name>
-                                <Description></Description>
+				<Name>acct_passwordDoesNotExpire</Name>
+				<Description></Description>
+				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
