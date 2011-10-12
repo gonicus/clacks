@@ -11,12 +11,10 @@ from gosa.agent.objects import GOsaObjectFactory
 f = GOsaObjectFactory()
 
 ## Update
-#p = f.getObject('SambaUser', u'cn=Playground Tester,ou=people,dc=gonicus,dc=de', mode='update')
-#for prop in p.listProperties():
-#    print "Attribute %s: %s" % (prop.ljust(40), getattr(p, prop))
+object_type, extensions =  f.identifyObject(u'cn=Playground Tester,ou=people,dc=gonicus,dc=de')
 
-# Add samba
-if True:
+# Add or remove samba
+if not 'SambaUser' in extensions:
     print "Extending!"
     p = f.getObject('SambaUser', u'cn=Playground Tester,ou=people,dc=gonicus,dc=de', mode='extend')
     p.sambaSID = "11111111"
