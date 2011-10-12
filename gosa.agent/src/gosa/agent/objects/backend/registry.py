@@ -11,9 +11,7 @@ class ObjectBackendRegistry(object):
     def __init__(self):
         log = logging.getLogger("gosa.object.backend")
         # Load available backends
-        log.critical("Test")
         for entry in pkg_resources.iter_entry_points("gosa.object.backend"):
-            print "->", entry
             clazz = entry.load()
             ObjectBackendRegistry.backends[clazz.__name__] = clazz()
 
