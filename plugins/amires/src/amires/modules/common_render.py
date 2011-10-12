@@ -28,9 +28,9 @@ class CommonRenderer(BaseRenderer):
             if 'company_detail_url' in info and info['company_detail_url']:
                 comp += "<a href='%s'>%s</a>" %(
                     cgi.escape(info['company_detail_url']),
-                    info['company_name'])
+                    cgi.escape(info['company_name']))
             else:
-                comp += info['company_name']
+                comp += cgi.escape(info['company_name'])
 
         # build html for contact name
         cont = u""
@@ -38,9 +38,9 @@ class CommonRenderer(BaseRenderer):
             if 'contact_detail_url' in info and info['contact_detail_url']:
                 cont += "<a href='%s'>%s</a>" %(
                     cgi.escape(info['contact_detail_url']),
-                    info['contact_name'])
+                    cgi.escape(info['contact_name']))
             else:
-                cont += info['contact_name']
+                cont += cgi.escape(info['contact_name'])
 
         # build actual html section
         html = u"<b>%s:</b>\n" % _("Attendee")
