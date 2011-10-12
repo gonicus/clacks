@@ -29,47 +29,47 @@ class SambaMungedDial(object):
         # Build up 'CtxCfgFlags1' property.
         flags = list(values['CtxCfgFlags1'])
         flag = int(flags[2], 16)
-        if values['defaultPrinter']:
+        if values['Ctx_flag_defaultPrinter']:
             flag |= 2
         else:
             flag &= 0xFF & ~0x2
 
-        if values['connectClientDrives']:
+        if values['Ctx_flag_connectClientDrives']:
             flag |= 8
         else:
             flag &= 0xFF & ~0x8
 
-        if values['connectClientPrinters']:
+        if values['Ctx_flag_connectClientPrinters']:
             flag |= 4
         else:
             flag &= 0xFF & ~0x4
         flags[2] = hex(flag)[2:]
 
         flag = int(flags[5], 16)
-        if values['tsLogin']:
+        if values['Ctx_flag_tsLogin']:
             flag |= 1
         else:
             flag &= 0xFF & ~0x1
 
-        if values['reConn']:
+        if values['Ctx_flag_reConn']:
             flag |= 2
         else:
             flag &= 0xFF & ~0x2
 
-        if values['brokenConn']:
+        if values['Ctx_flag_brokenConn']:
             flag |= 4
         else:
             flag &= 0xFF & ~0x4
-        flags[6] = '1' if values['inheritMode'] else '0'
+        flags[6] = '1' if values['Ctx_flag_inheritMode'] else '0'
         values['CtxCfgFlags1'] = ''.join(flags)
 
         if values['oldStorageBehavior']:
             flags = list(values['CtxCfgFlags1'])
-            flags[1] = str(values['shadow'])
+            flags[1] = str(values['CtxShadow'])
             values['CtxCfgFlags1'] = ''.join(flags)
         else:
             flags = list(values['CtxShadow'])
-            flags[1] = str(values['shadow'])
+            flags[1] = str(values['Ctxshadow'])
             values['CtxShadow'] = ''.join(flags)
 
         params = ['CtxCfgPresent', 'CtxCfgFlags1', 'CtxCallback', 'CtxShadow',
@@ -79,7 +79,7 @@ class SambaMungedDial(object):
                 'CtxInitialProgram', 'CtxCallbackNumber']
 
         # Convert integer values to string before converting them
-        for entry in ['CtxMinEncryptionLevel', 'shadow']:
+        for entry in ['CtxMinEncryptionLevel', 'Ctx_shadow']:
             values[entry] = str(values[entry])
 
         # Convert each param into an sambaMungedDial style value.
@@ -187,30 +187,26 @@ class SambaMungedDial(object):
             # Reposition ctxField on end of parameter and continue
             ctxField = ctxField[ctxParmLength::]
 
-        # Add on demand flags?
-        for entry in SambaMungedDial.timeParams:
-            result[entry+u'Mode'] = entry in result and result[entry] != 0
-
         # Detect TS Login Flag
         flags = ord(result['CtxCfgFlags1'][5:6])
 
-        result[u'tsLogin'] = bool(flags & 1)
-        result[u'reConn'] =  bool(flags & 2)
-        result[u'brokenConn'] =  bool(flags & 4)
-        result[u'inheritMode'] = bool(result['CtxCfgFlags1'][6:7] == 1)
+        result[u'Ctx_flag_tsLogin'] = bool(flags & 1)
+        result[u'Ctx_flag_reConn'] =  bool(flags & 2)
+        result[u'Ctx_flag_brokenConn'] =  bool(flags & 4)
+        result[u'Ctx_flag_inheritMode'] = bool(result['CtxCfgFlags1'][6:7] == 1)
 
         if old_behavior:
-            result[u'shadow'] = result['CtxCfgFlags1'][1:2]
+            result[u'Ctx_shadow'] = result['CtxCfgFlags1'][1:2]
         else:
-            result[u'shadow'] = result['CtxShadow'][1:2]
+            result[u'Ctx_shadow'] = result['CtxShadow'][1:2]
 
         connections = int(result['CtxCfgFlags1'][2:3], 16)
-        result[u'connectClientDrives'] = bool(connections & 8)
-        result[u'connectClientPrinters'] = bool(connections & 4)
-        result[u'defaultPrinter'] = bool(connections & 2)
+        result[u'Ctx_flag_connectClientDrives'] = bool(connections & 8)
+        result[u'Ctx_flag_connectClientPrinters'] = bool(connections & 4)
+        result[u'Ctx_flag_defaultPrinter'] = bool(connections & 2)
 
         # Convert integer values to integer
-        for entry in ['CtxMinEncryptionLevel', 'shadow']:
+        for entry in ['CtxMinEncryptionLevel', 'Ctx_shadow']:
             result[entry] = int(result[entry])
 
         return result

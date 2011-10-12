@@ -69,13 +69,13 @@ class SambaMungedDialOut(ElementFilter):
         # Create a dictionary with all relevant samba attributes.
         alist = ['CtxCallback', 'CtxCallbackNumber', 'CtxCfgFlags1', 'CtxCfgPresent', \
                 'CtxInitialProgram', 'CtxKeyboardLayout', 'CtxMaxConnectionTime', \
-                'CtxMaxConnectionTimeMode', 'CtxMaxDisconnectionTime', \
-                'CtxMaxDisconnectionTimeMode', 'CtxMaxIdleTime', \
-                'CtxMaxIdleTimeMode', 'CtxMinEncryptionLevel', 'oldStorageBehavior', \
+                'CtxMaxDisconnectionTime', \
+                'CtxMaxIdleTime', \
+                'CtxMinEncryptionLevel', 'oldStorageBehavior', \
                 'CtxNWLogonServer', 'CtxShadow', 'CtxWFHomeDir', 'CtxWFHomeDirDrive', \
-                'CtxWFProfilePath', 'CtxWorkDirectory', 'brokenConn', 'connectClientDrives', \
-                'connectClientPrinters', 'defaultPrinter', 'inheritMode', 'reConn', 'shadow', \
-                'tsLogin']
+                'CtxWFProfilePath', 'CtxWorkDirectory', 'Ctx_flag_brokenConn', 'Ctx_flag_connectClientDrives', \
+                'Ctx_flag_connectClientPrinters', 'Ctx_flag_defaultPrinter', \
+                'Ctx_flag_inheritMode', 'Ctx_flag_reConn', 'Ctx_shadow', 'Ctx_flag_tsLogin']
 
         res = {}
         for entry in alist:
@@ -110,11 +110,8 @@ class SambaMungedDialIn(ElementFilter):
                     'CtxInitialProgram': 'UnicodeString',
                     'CtxKeyboardLayout': 'UnicodeString',
                     'CtxMaxConnectionTime': 'Integer',
-                    'CtxMaxConnectionTimeMode': 'Boolean',
                     'CtxMaxDisconnectionTime': 'Integer',
-                    'CtxMaxDisconnectionTimeMode': 'Boolean',
                     'CtxMaxIdleTime': 'Integer',
-                    'CtxMaxIdleTimeMode': 'Boolean',
                     'CtxMinEncryptionLevel': 'Integer',
                     'CtxNWLogonServer': 'UnicodeString',
                     'CtxShadow': 'UnicodeString',
@@ -122,14 +119,14 @@ class SambaMungedDialIn(ElementFilter):
                     'CtxWFHomeDirDrive': 'UnicodeString',
                     'CtxWFProfilePath': 'UnicodeString',
                     'CtxWorkDirectory': 'UnicodeString',
-                    'brokenConn': 'Boolean',
-                    'connectClientDrives': 'Boolean',
-                    'connectClientPrinters': 'Boolean',
-                    'defaultPrinter': 'Boolean',
-                    'inheritMode': 'Boolean',
-                    'reConn': 'Boolean',
-                    'shadow': 'Integer',
-                    'tsLogin': 'Boolean'}
+                    'Ctx_flag_brokenConn': 'Boolean',
+                    'Ctx_flag_connectClientDrives': 'Boolean',
+                    'Ctx_flag_connectClientPrinters': 'Boolean',
+                    'Ctx_flag_defaultPrinter': 'Boolean',
+                    'Ctx_flag_inheritMode': 'Boolean',
+                    'Ctx_flag_reConn': 'Boolean',
+                    'Ctx_shadow': 'Integer',
+                    'Ctx_flag_tsLogin': 'Boolean'}
 
             md = valDict[key]['value'][0]
             res = SambaMungedDial.decode(md)

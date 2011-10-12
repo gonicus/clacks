@@ -302,14 +302,14 @@
                                         <Attribute>CtxWFHomeDirDrive</Attribute>
                                         <Attribute>CtxWFProfilePath</Attribute>
                                         <Attribute>CtxWorkDirectory</Attribute>
-                                        <Attribute>brokenConn</Attribute>
-                                        <Attribute>connectClientDrives</Attribute>
-                                        <Attribute>connectClientPrinters</Attribute>
-                                        <Attribute>defaultPrinter</Attribute>
-                                        <Attribute>inheritMode</Attribute>
-                                        <Attribute>reConn</Attribute>
-                                        <Attribute>shadow</Attribute>
-                                        <Attribute>tsLogin</Attribute>
+                                        <Attribute>Ctx_flag_brokenConn</Attribute>
+                                        <Attribute>Ctx_flag_connectClientDrives</Attribute>
+                                        <Attribute>Ctx_flag_connectClientPrinters</Attribute>
+                                        <Attribute>Ctx_flag_defaultPrinter</Attribute>
+                                        <Attribute>Ctx_flag_inheritMode</Attribute>
+                                        <Attribute>Ctx_flag_reConn</Attribute>
+                                        <Attribute>Ctx_shadow</Attribute>
+                                        <Attribute>Ctx_flag_tsLogin</Attribute>
                                 </DependsOn>
 	                       	<InFilter>
                                         <FilterChain>
@@ -434,7 +434,7 @@
                         </Attribute>
 
                         <Attribute>
-                                <Name>connectClientPrinters</Name>
+                                <Name>Ctx_flag_connectClientPrinters</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
@@ -455,7 +455,7 @@
                         </Attribute>
 
                         <Attribute>
-                                <Name>brokenConn</Name>
+                                <Name>Ctx_flag_brokenConn</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
@@ -476,7 +476,7 @@
                         </Attribute>
 
                         <Attribute>
-                                <Name>connectClientDrives</Name>
+                                <Name>Ctx_flag_connectClientDrives</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
@@ -533,14 +533,14 @@
                         </Attribute>
 
                         <Attribute>
-                                <Name>reConn</Name>
+                                <Name>Ctx_flag_reConn</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
-                                <Name>defaultPrinter</Name>
+                                <Name>Ctx_flag_defaultPrinter</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
@@ -554,21 +554,21 @@
                         </Attribute>
 
                         <Attribute>
-                                <Name>shadow</Name>
+                                <Name>Ctx_shadow</Name>
                                 <Description></Description>
                                 <Type>Integer</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
-                                <Name>inheritMode</Name>
+                                <Name>Ctx_flag_inheritMode</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
                         <Attribute>
-                                <Name>tsLogin</Name>
+                                <Name>Ctx_flag_tsLogin</Name>
                                 <Description></Description>
                                 <Type>Boolean</Type>
                                 <Mandatory>true</Mandatory>

@@ -19,9 +19,9 @@ p.CtxMaxDisconnectionTime = 223
 p.CtxMaxConnectionTime = 224
 p.CtxWFHomeDir = u'\\Users\\Peter'
 
-p.acct_isAutoLocked = not p.acct_isAutoLocked
+#p.acct_isAutoLocked = not p.acct_isAutoLocked
 
-p.defaultPrinter = not p.defaultPrinter
-p.defaultPrinter = not p.defaultPrinter
+p.Ctx_flag_defaultPrinter = not p.Ctx_flag_defaultPrinter
+p.Ctx_flag_defaultPrinter = not p.Ctx_flag_defaultPrinter
 p.commit()
 
