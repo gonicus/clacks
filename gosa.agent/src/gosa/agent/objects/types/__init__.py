@@ -10,7 +10,7 @@ class AttributeType(object):
 
     def _cnv_topic(self):
         fname = inspect.stack()[1][3]
-        if fname[12::] == "_convert_to_":
+        if fname[:12:] == "_convert_to_":
             return (self.__alias__.lower(), fname[12:].replace("_", " "))
         else:
             return (self.__alias__.lower(), fname[14:].replace("_", " "))
