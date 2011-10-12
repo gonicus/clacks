@@ -4,13 +4,18 @@ import inspect
 import sqlalchemy.sql
 import logging
 import collections
+import ldap.dn
+from base64 import b64encode, b64decode
+from ldap import DN_FORMAT_LDAPV3
 from gosa.common import Environment
 from gosa.common.utils import N_
 from gosa.common.components import Command, PluginRegistry, Plugin
+from gosa.agent.objects import SCOPE_BASE, SCOPE_ONE, SCOPE_SUB
 from sqlalchemy import create_engine
 from sqlalchemy.sql import select, and_, func, asc
 from sqlalchemy.dialects.sqlite.base import SQLiteDialect
 from sqlalchemy import Table, Column, Integer, Boolean, String, DateTime, Date, Unicode, MetaData
+
 
 class FilterException(Exception):
     pass
@@ -115,7 +120,7 @@ class ObjectIndex(Plugin):
 
         self.__index = Table(idx, metadata,
             Column('_uuid', String(36), primary_key=True),
-            Column('_dn', Unicode(1024)),
+            Column('_dn', String(1024)),
             Column('_lastChanged', DateTime),
             Column('_extensions', String(256)),
             *props)
@@ -170,7 +175,7 @@ class ObjectIndex(Plugin):
         self.__conn.execute(self.__index.update().where(self.__index.c._uuid == uuid), [props])
 
     @Command(__help__=N_("Filter for indexed attributes and return the number of matches."))
-    def count(self, fltr=None):
+    def count(self, base=None, scope=SCOPE_SUB, fltr=None):
         """
         Query the database using the given filter and return the number
         of matches.
@@ -178,6 +183,8 @@ class ObjectIndex(Plugin):
         ========== ==================
         Parameter  Description
         ========== ==================
+        base       Base to search on
+        scope      Scope to use (BASE, ONE, SUB)
         fltr       Filter description
         ========== ==================
 
@@ -213,15 +220,40 @@ class ObjectIndex(Plugin):
 
         ``Return``: Integer
         """
+        base_filter = None
+
+        if scope == None or not scope in [SCOPE_ONE, SCOPE_BASE, SCOPE_SUB]:
+            raise FilterException("invalid search scope")
+
+        if base:
+            base = self.dn2b64(base)
+            if scope == SCOPE_BASE:
+                base_filter = self.__index.c._dn == base
+
+            if scope == SCOPE_ONE:
+                base_filter = self.__index.c._dn.op('regexp')(r"^([^,]+,)?%s$" % base)
+
+            if scope == SCOPE_SUB:
+                base_filter = self.__index.c._dn.op('regexp')(r"^(.*,)?%s$" % base)
+
         if fltr:
-            slct = select([func.count(self.__index.c._uuid)], *self.__build_filter(fltr))
+            if base:
+                fltr = and_(base_filter, *self.__build_filter(fltr))
+            else:
+                fltr = self.__build_filter(fltr)
+
+            slct = select([func.count(self.__index.c._uuid)], fltr)
+
         else:
-            slct = select([func.count(self.__index.c._uuid)])
+            if base:
+                slct = select([func.count(self.__index.c._uuid)], base_filter)
+            else:
+                slct = select([func.count(self.__index.c._uuid)])
 
         return self.__conn.execute(slct).fetchone()[0]
 
     @Command(__help__=N_("Filter for indexed attributes and return the matches."))
-    def search(self, fltr=None, attrs=None, begin=None, end=None, order_by=None, descending=False):
+    def search(self, base=None, scope=SCOPE_SUB, fltr=None, attrs=None, begin=None, end=None, order_by=None, descending=False):
         """
         Query the database using the given filter and return the
         result set.
@@ -229,6 +261,8 @@ class ObjectIndex(Plugin):
         ========== ==================
         Parameter  Description
         ========== ==================
+        base       Base to search on
+        scope      Scope to use (BASE, ONE, SUB)
         fltr       Filter description
         attrs      List of attributes the result set should contain
         begin      Offset to start returning results
@@ -341,3 +375,7 @@ class ObjectIndex(Plugin):
                     arg.append(getattr(self.__index.c, cel) == value)
 
         return arg
+
+    def dn2b64(self, dn):
+        parts = ldap.dn.explode_dn(dn, flags=DN_FORMAT_LDAPV3)
+        return ",".join([b64encode(p) for p in parts])
