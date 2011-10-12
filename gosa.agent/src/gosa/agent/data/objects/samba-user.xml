@@ -424,6 +424,7 @@
                                 <Description>There seems to be an old and a new storage method for the sambaMungedDial attribute, this flag just shows the whether the processes values was in the old or in the new style. Saved will always be done in the new way.</Description>
 				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
+                                <Default>false</Default>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 

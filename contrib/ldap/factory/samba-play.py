@@ -9,23 +9,25 @@ from gosa.agent.objects import GOsaObjectFactory
 
 
 f = GOsaObjectFactory()
-p = f.getObject('SambaUser', u'cn=Playground Tester,ou=people,dc=gonicus,dc=de', mode='update')
-for prop in p.listProperties():
-    print "Attribute %s: %s" % (prop.ljust(40), getattr(p, prop))
+
+## Update
+#p = f.getObject('SambaUser', u'cn=Playground Tester,ou=people,dc=gonicus,dc=de', mode='update')
+#for prop in p.listProperties():
+#    print "Attribute %s: %s" % (prop.ljust(40), getattr(p, prop))
 
 # Add samba
-#if True:
-#    print "Extending!"
-#    p = f.getObject('SambaUser', u'cn=Playground Tester,ou=people,dc=gonicus,dc=de', mode='extend')
-#    p.sambaSID = "11111111"
-#    p.commit()
-#    exit(0)
-#
-#else:
-#    print "Retracting!"
-#    p = f.getObject('SambaUser', u'cn=Playground Tester,ou=people,dc=gonicus,dc=de')
-#    p.retract()
-#    sys.exit(0)
+if True:
+    print "Extending!"
+    p = f.getObject('SambaUser', u'cn=Playground Tester,ou=people,dc=gonicus,dc=de', mode='extend')
+    p.sambaSID = "11111111"
+    p.commit()
+    exit(0)
+
+else:
+    print "Retracting!"
+    p = f.getObject('SambaUser', u'cn=Playground Tester,ou=people,dc=gonicus,dc=de')
+    p.retract()
+    sys.exit(0)
 
 
 
