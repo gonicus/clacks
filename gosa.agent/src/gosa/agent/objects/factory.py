@@ -232,8 +232,7 @@ class GOsaObjectFactory(object):
 
 #----------------------------------------------------------------------------------------
 
-    @staticmethod
-    def createNewProperty(backend, atype, dependsOn=None, backend_type=None, validator=None, in_f=None, out_f=None,
+    def __createNewProperty(self, backend, atype, dependsOn=None, backend_type=None, validator=None, in_f=None, out_f=None,
             unique=False, mandatory=False, readonly=False, multivalue=False, foreign=False, status=STATUS_OK,
             value=None, skip_save=False):
 
@@ -439,7 +438,7 @@ class GOsaObjectFactory(object):
                     dependsOn.append(str(d))
 
             # Create a new property with the given information
-            props[str(prop['Name'])] =  new_prop = GOsaObjectFactory.createNewProperty(backend, syntax,
+            props[str(prop['Name'])] =  new_prop = self.__createNewProperty(backend, syntax,
                     dependsOn=dependsOn, backend_type=backend_syntax, validator=validator, in_f=in_f,
                     out_f=out_f, unique=unique, mandatory=mandatory, readonly=readonly,
                     multivalue=multivalue, foreign=foreign, status=STATUS_OK, value=None)

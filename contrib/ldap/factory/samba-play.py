@@ -4,7 +4,7 @@ import time
 import datetime
 import sys
 import os
-import pprint
+from pprint import pprint
 from gosa.agent.objects import GOsaObjectFactory
 
 f = GOsaObjectFactory()
@@ -13,7 +13,7 @@ p = f.getObject('SambaUser', u"cn=Playground Tester,ou=people,dc=gonicus,dc=de",
 #for prop in p.listProperties():
 #    print "Attribute %s: %s" % (prop.ljust(40), getattr(p, prop))
 
-print p.listProperties()
+pprint(p.listProperties())
 
 p.CtxMaxDisconnectionTime = 223
 p.CtxMaxConnectionTime = 224
