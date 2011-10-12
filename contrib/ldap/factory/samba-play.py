@@ -10,10 +10,11 @@ from gosa.agent.objects import GOsaObjectFactory
 
 f = GOsaObjectFactory()
 
-# Add samba 
-if False:
+# Add samba
+if True:
     print "Extending!"
     p = f.getObject('SambaUser', u'cn=Playground Tester,ou=people,dc=gonicus,dc=de', mode='extend')
+    p.sambaSID = "11111111"
     p.commit()
     exit(0)
 

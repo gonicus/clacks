@@ -1074,9 +1074,9 @@ class GOsaObject(object):
         self.log.debug("saving object modifications for [%s|%s]" % (type(self).__name__, self.uuid))
 
         # Check if all required attributes are set.
-        #for key in props:
-        #    if props[key]['mandatory'] and not props[key]['value']:
-        #        raise FactoryException("The required property '%s' is not set!" % (key,))
+        for key in props:
+            if props[key]['mandatory'] and not props[key]['value']:
+                raise FactoryException("The required property '%s' is not set!" % (key,))
 
         # Collect values by store and process the property filters
         toStore = {}
