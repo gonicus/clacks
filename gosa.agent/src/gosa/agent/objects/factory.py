@@ -1520,7 +1520,7 @@ class GOsaObject(object):
         for backend in backends:
             be = ObjectBackendRegistry.getBackend(backend)
             r_attrs = self.getExclusiveProperties()
-            be.retract(self.uuid, [a for a in r_attrs if getattr(obj, a)], self._backendAttrs[backend])
+            be.retract(self.uuid, [a for a in r_attrs if getattr(obj, a)], self._backendAttrs[backend] if backend in self._backendAttrs else None)
 
         zope.event.notify(ObjectChanged("pre retract", obj))
 
