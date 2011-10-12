@@ -1,12 +1,32 @@
 from base64 import b64decode, b64encode
 from binascii import hexlify, unhexlify
 
+
 class SambaMungedDial(object):
+    """
+    This class allows to convert the sambaMungedDial attribute into
+    a human readable list of properties and vice versa.
 
-    stringParams = ["CtxWorkDirectory", "CtxNWLogonServer", "CtxWFHomeDir", "CtxWFHomeDirDrive",
-            "CtxWFProfilePath", "CtxInitialProgram", "CtxCallbackNumber"]
-    timeParams = ["CtxMaxConnectionTime", "CtxMaxDisconnectionTime", "CtxMaxIdleTime"]
+    (All methods are declared static, due to the fact that this
+    methods gets called from within in- and out-filters!)
+    """
 
+    # A list of all string values included in the samba
+    # mungedDial
+    stringParams = ["CtxWorkDirectory",
+            "CtxNWLogonServer",
+            "CtxWFHomeDir",
+            "CtxWFHomeDirDrive",
+            "CtxWFProfilePath",
+            "CtxInitialProgram",
+            "CtxCallbackNumber"]
+
+    # A list of time values
+    timeParams = ["CtxMaxConnectionTime",
+            "CtxMaxDisconnectionTime",
+            "CtxMaxIdleTime"]
+
+    # The old sambaMungedDial header.
     new_header = "20002000200020002000200020002000" \
             "20002000200020002000200020002000"  \
             "20002000200020002000200020002000"  \
@@ -15,6 +35,7 @@ class SambaMungedDial(object):
             "20002000200020002000200020002000"  \
             "5000"
 
+    # The old sambaMungedDial header.
     old_header = "6d000800200020002000200020002000" \
             "20002000200020002000200020002000"  \
             "20002000200020002000200064000100"  \
@@ -25,9 +46,21 @@ class SambaMungedDial(object):
 
     @staticmethod
     def encode(values):
+        """
+        Encodes the given value dictionary into a sambaMungedDial attribute.
+
+        =========== ===============================
+        Key         Description
+        =========== ===============================
+        values      A dictionary containing all munged dial relevant values.
+        =========== ===============================
+        """
 
         # Build up 'CtxCfgFlags1' property.
         flags = list(values['CtxCfgFlags1'])
+        flags = list('00e00000')
+
+        # Handle flag at position 2
         flag = int(flags[2], 16)
         if values['Ctx_flag_defaultPrinter']:
             flag |= 2
@@ -45,6 +78,7 @@ class SambaMungedDial(object):
             flag &= 0xFF & ~0x4
         flags[2] = hex(flag)[2:]
 
+        # Handle flag at position 5
         flag = int(flags[5], 16)
         if values['Ctx_flag_tsLogin']:
             flag |= 1
@@ -61,22 +95,19 @@ class SambaMungedDial(object):
         else:
             flag &= 0xFF & ~0x4
         flags[6] = '1' if values['Ctx_flag_inheritMode'] else '0'
-        values['CtxCfgFlags1'] = ''.join(flags)
 
+        # Add shadow handling.
         if values['oldStorageBehavior']:
-            flags = list(values['CtxCfgFlags1'])
-            flags[1] = str(values['CtxShadow'])
-            values['CtxCfgFlags1'] = ''.join(flags)
-        else:
-            flags = list(values['CtxShadow'])
-            flags[1] = str(values['Ctxshadow'])
-            values['CtxShadow'] = ''.join(flags)
+            flags[1] =  '%1X' % values['Ctx_shadow']
+        values['CtxCfgFlags1'] = ''.join(flags)
+        values['CtxShadow'] = '0%1X000000' % (values['Ctx_shadow'])
 
-        params = ['CtxCfgPresent', 'CtxCfgFlags1', 'CtxCallback', 'CtxShadow',
-                'CtxMaxConnectionTime', 'CtxMaxDisconnectionTime', 'CtxMaxIdleTime',
-                'CtxKeyboardLayout', 'CtxMinEncryptionLevel', 'CtxWorkDirectory',
-                'CtxNWLogonServer', 'CtxWFHomeDir', 'CtxWFHomeDirDrive', 'CtxWFProfilePath',
-                'CtxInitialProgram', 'CtxCallbackNumber']
+        # A list of all properties we are goind to encode.
+        params = ["CtxCfgPresent", "CtxCfgFlags1", "CtxCallback", "CtxShadow",
+                "CtxMaxConnectionTime", "CtxMaxDisconnectionTime", "CtxKeyboardLayout",
+                "CtxMinEncryptionLevel", "CtxWorkDirectory", "CtxNWLogonServer", "CtxWFHomeDir",
+                "CtxWFHomeDirDrive", "CtxWFProfilePath", "CtxInitialProgram", "CtxCallbackNumber",
+                "CtxMaxIdleTime"]
 
         # Convert integer values to string before converting them
         for entry in ['CtxMinEncryptionLevel', 'Ctx_shadow']:
@@ -100,6 +131,7 @@ class SambaMungedDial(object):
                 src = '%04x%04x' % (usec & 0x0FFFF, (usec & 0x0FFFF0000) >> 16)
                 value = src[2:4] + src[0:2] + src[6:8] + src[4:6]
 
+            # Append encoded samba attribute to the result.
             m = SambaMungedDial.munge(name, value, is_str)
             result_tmp += m
 
@@ -112,6 +144,18 @@ class SambaMungedDial(object):
 
     @staticmethod
     def munge(name, value, isString=False):
+        """
+        Encodes the given property name and value into a valid
+        format for the sambaMungedDial attribute.
+
+        =========== ===============================
+        Key         Description
+        =========== ===============================
+        name        The name of the property to encode
+        value       The value of the property
+        isString    Boolean, tells whether to encode a string value or not.
+        =========== ===============================
+        """
 
         # Encode parameter name with utf-16 and reomve the 2 Byte BOM infront of the string.
         utfName = name.encode('utf-16')[2:]
@@ -139,9 +183,18 @@ class SambaMungedDial(object):
 
         return (result)
 
-
     @staticmethod
     def decode(mstr):
+        """
+        Decodes a given sambaMungedDial attribute into a human readable
+        list of properties.
+
+        =========== ===============================
+        Key         Description
+        =========== ===============================
+        mstr        The b64encoded sambaMungedDial string.
+        =========== ===============================
+        """
 
         # check if we've to use the old or new munged dial storage behavior
         test = b64decode(mstr)
@@ -189,17 +242,18 @@ class SambaMungedDial(object):
 
         # Detect TS Login Flag
         flags = ord(result['CtxCfgFlags1'][5:6])
-
         result[u'Ctx_flag_tsLogin'] = bool(flags & 1)
         result[u'Ctx_flag_reConn'] =  bool(flags & 2)
         result[u'Ctx_flag_brokenConn'] =  bool(flags & 4)
         result[u'Ctx_flag_inheritMode'] = bool(result['CtxCfgFlags1'][6:7] == 1)
 
+        # convert the shadow value into integer.
         if old_behavior:
-            result[u'Ctx_shadow'] = result['CtxCfgFlags1'][1:2]
+            result[u'Ctx_shadow'] = int(result['CtxCfgFlags1'][1:2])
         else:
-            result[u'Ctx_shadow'] = result['CtxShadow'][1:2]
+            result[u'Ctx_shadow'] = int(result['CtxShadow'][1:2])
 
+        # Convert flags into boolean values.
         connections = int(result['CtxCfgFlags1'][2:3], 16)
         result[u'Ctx_flag_connectClientDrives'] = bool(connections & 8)
         result[u'Ctx_flag_connectClientPrinters'] = bool(connections & 4)

@@ -9,6 +9,21 @@ from gosa.agent.objects.filter import ElementFilter
 from gosa.agent.objects.types import AttributeType
 from gosa.agent.plugins.samba.SambaMungedDial import SambaMungedDial
 
+
+# SambaAcctFlags mapping.
+mapping = { 'D': 'acct_accountDisabled',
+            'H': 'acct_homeDirectoryRequired',
+            'I': 'acct_interDomainTrust',
+            'L': 'acct_isAutoLocked',
+            'M': 'acct_MNSLogonAccount',
+            'N': 'acct_passwordNotRequired',
+            'S': 'acct_serverTrustAccount',
+            'T': 'acct_temporaryDuplicateAccount',
+            'U': 'acct_normalUserAccount',
+            'W': 'acct_worktstationTrustAccount',
+            'X': 'acct_passwordDoesNotExpire'}
+
+
 class SambaUtils(Plugin):
     """
     Utility class that contains methods needed to handle samba
@@ -69,24 +84,23 @@ class SambaMungedDialOut(ElementFilter):
         # Create a dictionary with all relevant samba attributes.
         alist = ['CtxCallback', 'CtxCallbackNumber', 'CtxCfgFlags1', 'CtxCfgPresent', \
                 'CtxInitialProgram', 'CtxKeyboardLayout', 'CtxMaxConnectionTime', \
-                'CtxMaxDisconnectionTime', \
-                'CtxMaxIdleTime', \
+                'CtxMaxDisconnectionTime', 'CtxMaxIdleTime', 'Ctx_flag_connectClientDrives', \
                 'CtxMinEncryptionLevel', 'oldStorageBehavior', \
                 'CtxNWLogonServer', 'CtxShadow', 'CtxWFHomeDir', 'CtxWFHomeDirDrive', \
-                'CtxWFProfilePath', 'CtxWorkDirectory', 'Ctx_flag_brokenConn', 'Ctx_flag_connectClientDrives', \
+                'CtxWFProfilePath', 'CtxWorkDirectory', 'Ctx_flag_brokenConn', \
                 'Ctx_flag_connectClientPrinters', 'Ctx_flag_defaultPrinter', \
                 'Ctx_flag_inheritMode', 'Ctx_flag_reConn', 'Ctx_shadow', 'Ctx_flag_tsLogin']
 
+        # Build up a list of values to encode.
         res = {}
         for entry in alist:
-            if len(valDict[entry]['value']):
-                res[entry]=valDict[entry]['value'][0]
-            else:
-                res[entry]=None
+            res[entry]=valDict[entry]['value'][0]
 
+        # Encode the sambaMungedDial attribute.
         result = SambaMungedDial.encode(res)
         valDict[key]['value'] = [result]
         return key, valDict
+
 
 class SambaMungedDialIn(ElementFilter):
     """
@@ -128,6 +142,7 @@ class SambaMungedDialIn(ElementFilter):
                     'Ctx_shadow': 'Integer',
                     'Ctx_flag_tsLogin': 'Boolean'}
 
+            # Update the value of the read property
             md = valDict[key]['value'][0]
             res = SambaMungedDial.decode(md)
             for entry in alist:
@@ -135,18 +150,6 @@ class SambaMungedDialIn(ElementFilter):
                 valDict[entry]['skip_save'] = True
         return key, valDict
 
-
-mapping = { 'D': 'acct_accountDisabled',
-            'H': 'acct_homeDirectoryRequired',
-            'I': 'acct_interDomainTrust',
-            'L': 'acct_isAutoLocked',
-            'M': 'acct_MNSLogonAccount',
-            'N': 'acct_passwordNotRequired',
-            'S': 'acct_serverTrustAccount',
-            'T': 'acct_temporaryDuplicateAccount',
-            'U': 'acct_normalUserAccount',
-            'W': 'acct_worktstationTrustAccount',
-            'X': 'acct_passwordDoesNotExpire'}
 
 class SambaAcctFlagsOut(ElementFilter):
     """
@@ -198,6 +201,13 @@ class SambaAcctFlagsIn(ElementFilter):
 
 
 class SambaLogonHoursAttribute(AttributeType):
+    """
+    This is a special object-attribute-type for sambaLogonHours.
+
+    This call can convert sambaLogonHours to a UnicodeString and vice versa.
+    It is used in the samba-object definition file.
+    """
+
     __alias__ = "SambaLogonHours"
 
     @classmethod
@@ -222,7 +232,11 @@ class SambaLogonHoursAttribute(AttributeType):
 
     @classmethod
     def _convert_to_unicodestring(cls, value):
+        """
+        This method is a converter used when values gets read from or written to the backend.
 
+        Converts the 'SambaLogonHours' object-type into a 'UnicodeString'-object.
+        """
         if len(value):
 
             # Combine the binary strings
@@ -245,6 +259,11 @@ class SambaLogonHoursAttribute(AttributeType):
 
     @classmethod
     def _convert_from_unicodestring(cls, value):
+        """
+        This method is a converter used when values gets read from or written to the backend.
+
+        Converts a 'UnicodeString' attribute into the 'SambaLogonHours' object-type.
+        """
 
         if len(value):
 
