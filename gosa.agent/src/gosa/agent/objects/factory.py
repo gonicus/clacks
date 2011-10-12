@@ -234,24 +234,27 @@ class GOsaObjectFactory(object):
 
     def __createNewProperty(self, backend, atype, dependsOn=None, backend_type=None, validator=None, in_f=None, out_f=None,
             unique=False, mandatory=False, readonly=False, multivalue=False, foreign=False, status=STATUS_OK,
-            value=None, skip_save=False):
+            value=None, skip_save=False, default=None):
 
-        if not backend_type:
+        if backend_type == None:
             backend_type = atype
 
-        if not dependsOn:
+        if dependsOn == None:
             dependsOn=[]
 
-        if not value:
+        if value == None:
             value=[]
 
-        if not in_f:
+        if default == None:
+            default=[]
+
+        if in_f == None:
             in_f=[]
 
-        if not out_f:
+        if out_f == None:
             out_f=[]
 
-        if not validator:
+        if validator == None:
             validator=[]
 
         ret = {
@@ -265,6 +268,7 @@ class GOsaObjectFactory(object):
                 'in_filter': in_f,
                 'backend': backend,
                 'in_value': value,
+                'default': default,
                 'orig_value': None,
                 'foreign': foreign,
                 'unique': unique,
@@ -436,14 +440,8 @@ class GOsaObjectFactory(object):
             foreign = bool(prop['Foreign']) if "Foreign" in prop.__dict__ else False
 
             # Convert the default to the corresponding type.
-            print str(prop['Name'])
             if default != None:
-                value = [self.__attribute_type['String'].convert_to(syntax, default)]
-            else:
-                value = None
-            print str(prop['Name']), ": ", value 
-
-
+                default = [self.__attribute_type['String'].convert_to(syntax, default)]
 
             # Check for property dependencies
             dependsOn = []
@@ -455,7 +453,8 @@ class GOsaObjectFactory(object):
             props[str(prop['Name'])] =  new_prop = self.__createNewProperty(backend, syntax,
                     dependsOn=dependsOn, backend_type=backend_syntax, validator=validator, in_f=in_f,
                     out_f=out_f, unique=unique, mandatory=mandatory, readonly=readonly,
-                    multivalue=multivalue, foreign=foreign, status=STATUS_OK, value=value)
+                    multivalue=multivalue, foreign=foreign, status=STATUS_OK, value=None,
+                    default=default)
 
         # Validate the properties dependsOn list
         for pname in props:
@@ -854,6 +853,13 @@ class GOsaObject(object):
         # Initialize object using a DN
         if dn and mode != "create":
             self._read(dn)
+
+        # # Use default value for newly created objects.
+        # if mode in ["create", "extend"]:
+        #     for key in props:
+        #         if props[key]['default'] != None:
+        #             props[key]['value'] = copy.deepcopy(props[key]['default'])
+        #             props[key]['status'] = STATUS_CHANGED
 
     def listProperties(self):
         props = getattr(self, '__properties')

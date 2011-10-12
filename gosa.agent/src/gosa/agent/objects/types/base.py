@@ -18,7 +18,7 @@ class StringAttribute(AttributeType):
         return(value1 == value2)
 
     def _convert_to_boolean(self, value):
-        return(bool(value == 'true'))
+        return(not(value in ['', 'false', '0', 'False']))
 
     def _convert_to_string(self, value):
         return(str(value))
