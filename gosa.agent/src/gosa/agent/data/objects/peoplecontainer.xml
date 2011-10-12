@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Objects xmlns="http://www.gonicus.de/Objects">
+	<Object>
+		<Name>PeopleContainer</Name>
+		<Description>Organizational unit that can contain users</Description>
+		<BackendParameters>
+			<Backend objectClasses="organizationalUnit">LDAP</Backend>
+		</BackendParameters>
+		<Backend>LDAP</Backend>
+		<Container>
+			<Type>GenericUser<Type>
+		</Container>
+		<BaseObject>true</BaseObject>
+		<FixedRDN>ou=people</FixedRDN>
+	</Object>
+</Objects>
+
