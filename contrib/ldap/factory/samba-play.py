@@ -13,15 +13,21 @@ p = f.getObject('SambaUser', u"cn=Playground Tester,ou=people,dc=gonicus,dc=de",
 #for prop in p.listProperties():
 #    print "Attribute %s: %s" % (prop.ljust(40), getattr(p, prop))
 
-pprint(p.listProperties())
+#pprint(p.listProperties())
 
-p.CtxMaxDisconnectionTime = 223
-p.CtxMaxConnectionTime = 224
-p.CtxWFHomeDir = u'\\Users\\Peter'
+#p.CtxMaxDisconnectionTime = 223
+#p.CtxMaxConnectionTime = 224
+#p.CtxWFHomeDir = u'\\Users\\Peter'
 
 #p.acct_isAutoLocked = not p.acct_isAutoLocked
 
 p.Ctx_flag_defaultPrinter = not p.Ctx_flag_defaultPrinter
 p.Ctx_flag_defaultPrinter = not p.Ctx_flag_defaultPrinter
+
+#print p.Ctx_shadow
+p.Ctx_shadow = 3
+
+print p.sambaMungedDial
+
 p.commit()
 

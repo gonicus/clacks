@@ -28,6 +28,7 @@ class SambaMungedDial(object):
 
         # Build up 'CtxCfgFlags1' property.
         flags = list(values['CtxCfgFlags1'])
+        flags = list('00e00000')
         flag = int(flags[2], 16)
         if values['Ctx_flag_defaultPrinter']:
             flag |= 2
@@ -61,22 +62,18 @@ class SambaMungedDial(object):
         else:
             flag &= 0xFF & ~0x4
         flags[6] = '1' if values['Ctx_flag_inheritMode'] else '0'
-        values['CtxCfgFlags1'] = ''.join(flags)
 
+        # Add shadow handling.
         if values['oldStorageBehavior']:
-            flags = list(values['CtxCfgFlags1'])
-            flags[1] = str(values['CtxShadow'])
-            values['CtxCfgFlags1'] = ''.join(flags)
-        else:
-            flags = list(values['CtxShadow'])
-            flags[1] = str(values['Ctxshadow'])
-            values['CtxShadow'] = ''.join(flags)
+            flags[1] =  '%1X' % values['Ctx_shadow']
+        values['CtxCfgFlags1'] = ''.join(flags)
+        values['CtxShadow'] = '0%1X000000' % (values['Ctx_shadow'])
 
-        params = ['CtxCfgPresent', 'CtxCfgFlags1', 'CtxCallback', 'CtxShadow',
-                'CtxMaxConnectionTime', 'CtxMaxDisconnectionTime', 'CtxMaxIdleTime',
-                'CtxKeyboardLayout', 'CtxMinEncryptionLevel', 'CtxWorkDirectory',
-                'CtxNWLogonServer', 'CtxWFHomeDir', 'CtxWFHomeDirDrive', 'CtxWFProfilePath',
-                'CtxInitialProgram', 'CtxCallbackNumber']
+        params = ["CtxCfgPresent", "CtxCfgFlags1", "CtxCallback", "CtxShadow",
+                "CtxMaxConnectionTime", "CtxMaxDisconnectionTime", "CtxKeyboardLayout",
+                "CtxMinEncryptionLevel", "CtxWorkDirectory", "CtxNWLogonServer", "CtxWFHomeDir",
+                "CtxWFHomeDirDrive", "CtxWFProfilePath", "CtxInitialProgram", "CtxCallbackNumber",
+                "CtxMaxIdleTime"]
 
         # Convert integer values to string before converting them
         for entry in ['CtxMinEncryptionLevel', 'Ctx_shadow']:
@@ -196,9 +193,9 @@ class SambaMungedDial(object):
         result[u'Ctx_flag_inheritMode'] = bool(result['CtxCfgFlags1'][6:7] == 1)
 
         if old_behavior:
-            result[u'Ctx_shadow'] = result['CtxCfgFlags1'][1:2]
+            result[u'Ctx_shadow'] = int(result['CtxCfgFlags1'][1:2])
         else:
-            result[u'Ctx_shadow'] = result['CtxShadow'][1:2]
+            result[u'Ctx_shadow'] = int(result['CtxShadow'][1:2])
 
         connections = int(result['CtxCfgFlags1'][2:3], 16)
         result[u'Ctx_flag_connectClientDrives'] = bool(connections & 8)
