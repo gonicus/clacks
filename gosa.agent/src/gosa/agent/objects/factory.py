@@ -401,10 +401,6 @@ class GOsaObjectFactory(object):
             if "Backend" in prop.__dict__:
                 backend = str(prop.Backend)
 
-            default = None
-            if "Default" in prop.__dict__:
-                default = str(prop.Default)
-
             # Do we have an output filter definition?
             out_f = []
             if "OutFilter" in prop.__dict__:
@@ -432,16 +428,17 @@ class GOsaObjectFactory(object):
             if "BackendType" in prop.__dict__:
                 backend_syntax = str(prop['BackendType'])
 
+            # Convert the default to the corresponding type.
+            default = None
+            if "Default" in prop.__dict__:
+                default = [self.__attribute_type['String'].convert_to(syntax, str(prop.Default))]
+
             # check for multivalue, mandatory and unique definition
             multivalue = bool(prop['MultiValue']) if "MultiValue" in prop.__dict__ else False
             unique = bool(prop['Unique']) if "Unique" in prop.__dict__ else False
             mandatory = bool(prop['Mandatory']) if "Mandatory" in prop.__dict__ else False
             readonly = bool(prop['Readonly']) if "Readonly" in prop.__dict__ else False
             foreign = bool(prop['Foreign']) if "Foreign" in prop.__dict__ else False
-
-            # Convert the default to the corresponding type.
-            if default != None:
-                default = [self.__attribute_type['String'].convert_to(syntax, default)]
 
             # Check for property dependencies
             dependsOn = []
@@ -854,12 +851,13 @@ class GOsaObject(object):
         if dn and mode != "create":
             self._read(dn)
 
-        # # Use default value for newly created objects.
-        # if mode in ["create", "extend"]:
-        #     for key in props:
-        #         if props[key]['default'] != None:
-        #             props[key]['value'] = copy.deepcopy(props[key]['default'])
-        #             props[key]['status'] = STATUS_CHANGED
+        # Use default value for newly created objects.
+        if mode in ["create", "extend"]:
+            for key in props:
+                if props[key]['default'] != None:
+                    props[key]['value'] = copy.deepcopy(props[key]['default'])
+                    props[key]['status'] = STATUS_CHANGED
+                    print key, props[key]['value']
 
     def listProperties(self):
         props = getattr(self, '__properties')
