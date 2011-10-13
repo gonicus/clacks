@@ -122,13 +122,12 @@ class GOsaObjectFactory(object):
                     res[attr.Name.text] = {
                             'description': attr.Description.text,
                             'type': attr.Type.text,
-                            'multivalue': bool(attr.get("MultiValue")),
-                            'mandatory': bool(attr.get("Mandatory")),
-                            'read-only': bool(attr.get("ReadOnly")),
-                            'unique': bool(attr.get("Unique"))
+                            'multivalue': bool(attr.get("MultiValue", False)),
+                            'mandatory': bool(attr.get("Mandatory", False)),
+                            'read-only': bool(attr.get("ReadOnly", False)),
+                            'unique': bool(attr.get("Unique", False))
                             }
-        print res
-        exit(0)
+        return res
 
     def load_object_types(self):
         types = {}
@@ -449,11 +448,11 @@ class GOsaObjectFactory(object):
                 default = [self.__attribute_type['String'].convert_to(syntax, str(prop.Default))]
 
             # check for multivalue, mandatory and unique definition
-            multivalue = bool(prop['MultiValue']) if "MultiValue" in prop.__dict__ else False
-            unique = bool(prop['Unique']) if "Unique" in prop.__dict__ else False
-            mandatory = bool(prop['Mandatory']) if "Mandatory" in prop.__dict__ else False
-            readonly = bool(prop['ReadOnly']) if "ReadOnly" in prop.__dict__ else False
-            foreign = bool(prop['Foreign']) if "Foreign" in prop.__dict__ else False
+            multivalue = bool(prop.get('MultiValue', False))
+            unique = bool(prop.get('Unique', False))
+            mandatory = bool(prop.get('Mandatory', False))
+            readonly = bool(prop.get('ReadOnly', False))
+            foreign = bool(prop.get('Foreign', False))
 
             # Check for property dependencies
             dependsOn = []
@@ -493,8 +492,8 @@ class GOsaObjectFactory(object):
                     for param in method['MethodParameters']['MethodParameter']:
                         pName = str(param['Name'])
                         pType = str(param['Type'])
-                        pRequired = bool(param['Required']) if 'Required' in param.__dict__ else False
-                        pDefault = str(param['Default']) if 'Default' in param.__dict__ else None
+                        pRequired = bool(param.get('Required', False))
+                        pDefault = str(param.get('Default', None))
                         mParams.append( (pName, pType, pRequired, pDefault), )
 
                 # Get the list of command parameters

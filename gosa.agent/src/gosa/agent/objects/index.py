@@ -51,25 +51,18 @@ class ObjectIndex(Plugin):
 
         self.__bl = re.compile(r'([^%s]+)' % self.__sep)
 
-        #TODO: get that from the object factory
-        print "TODO" + "-"*76
+        # Define attributes to be indexed from configuration
         index_attrs = [s.strip() for s in self.env.config.get("index.attributes").split(",")]
-        print index_attrs
-        print self.factory.getAttributes()
+        available_attrs = self.factory.getAttributes()
 
-        print "-"*80
-        exit(0)
+        self.__types = {}
+        for ia in index_attrs:
+            if not ia in available_attrs:
+                self.log.warning("attribute '%s' is not available" % ia)
+                continue
 
-        index_attrs = {
-            'givenName': {'type': 'UnicodeString', 'multi': False},
-            'sn': {'type': 'UnicodeString', 'multi': False},
-            'mail': {'type': 'String', 'multi': True},
-            'uid': {'type': 'String', 'multi': False},
-            'uidNumber': {'type': 'Integer', 'multi': False},
-            'dateOfBirth': {'type': 'Date', 'multi': False},
-        }
+            self.__types[ia] = available_attrs[ia]
 
-        self.__types = index_attrs
         self.__engine = self.env.getDatabaseEngine('index')
 
         # Table name
@@ -394,7 +387,7 @@ class ObjectIndex(Plugin):
             elif not cel in self.__types:
                 raise FilterException("attribute '%s' is not indexed" % el.split("_")[0])
 
-            elif self.__types[cel]['multi']:
+            elif self.__types[cel]['multivalue']:
                 if '%' in value:
                     value = value.replace('%', r'[^\%s]*' % self.__sep)
 
