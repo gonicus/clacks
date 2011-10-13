@@ -17,6 +17,27 @@
                                 <MultiValue>false</MultiValue>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
+			<Attribute>
+				<Name>description</Name>
+				<Description>Description</Description>
+				<Type>UnicodeString</Type>
+                                <MultiValue>false</MultiValue>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+			<Attribute>
+				<Name>ou</Name>
+				<Description>Organizational unit</Description>
+				<Type>UnicodeString</Type>
+                                <MultiValue>false</MultiValue>
+                                <Mandatory>false</Mandatory>
+                        </Attribute>
+			<Attribute>
+				<Name>manager</Name>
+				<Description>The dn of the manager</Description>
+				<Type>UnicodeString</Type>
+                                <MultiValue>false</MultiValue>
+                                <Mandatory>false</Mandatory>
+                        </Attribute>
 		</Attributes>
 		<Container>
 			<Type>PeopleContainer</Type>
