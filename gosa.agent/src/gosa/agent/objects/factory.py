@@ -256,53 +256,6 @@ class GOsaObjectFactory(object):
 
 #----------------------------------------------------------------------------------------
 
-    def __createNewProperty(self, backend, atype, dependsOn=None, backend_type=None, validator=None, in_f=None, out_f=None,
-            unique=False, mandatory=False, readonly=False, multivalue=False, foreign=False, status=STATUS_OK,
-            value=None, skip_save=False, default=None):
-
-        if backend_type == None:
-            backend_type = atype
-
-        if dependsOn == None:
-            dependsOn=[]
-
-        if value == None:
-            value=[]
-
-        if default == None:
-            default=[]
-
-        if in_f == None:
-            in_f=[]
-
-        if out_f == None:
-            out_f=[]
-
-        if validator == None:
-            validator=[]
-
-        ret = {
-                'value': value,
-                'status': status,
-                'dependsOn': dependsOn,
-                'type': atype,
-                'backend_type': backend_type,
-                'validator': validator,
-                'out_filter': out_f,
-                'in_filter': in_f,
-                'backend': backend,
-                'in_value': value,
-                'default': default,
-                'orig_value': None,
-                'foreign': foreign,
-                'unique': unique,
-                'mandatory': mandatory,
-                'readonly': readonly,
-                'skip_save': skip_save,
-                'multivalue': multivalue}
-        return ret
-
-
     def load_schema(self):
         """
         This method reads all gosa-object defintion files and then calls
@@ -471,11 +424,24 @@ class GOsaObjectFactory(object):
                     dependsOn.append(str(d))
 
             # Create a new property with the given information
-            props[str(prop['Name'])] =  new_prop = self.__createNewProperty(backend, syntax,
-                    dependsOn=dependsOn, backend_type=backend_syntax, validator=validator, in_f=in_f,
-                    out_f=out_f, unique=unique, mandatory=mandatory, readonly=readonly,
-                    multivalue=multivalue, foreign=foreign, status=STATUS_OK, value=None,
-                    default=default)
+            props[str(prop['Name'])] =  {
+                'value': [],
+                'status': STATUS_OK,
+                'dependsOn': dependsOn,
+                'type': syntax,
+                'backend_type': backend_syntax,
+                'validator': validator,
+                'out_filter': out_f,
+                'in_filter': in_f,
+                'backend': backend,
+                'in_value': [],
+                'default': default,
+                'orig_value': None,
+                'foreign': foreign,
+                'unique': unique,
+                'mandatory': mandatory,
+                'readonly': readonly,
+                'multivalue': multivalue}
 
         # Validate the properties dependsOn list
         for pname in props:
@@ -1155,12 +1121,6 @@ class GOsaObject(object):
             if not props[prop_key]['status'] & STATUS_CHANGED:
                 continue
 
-            # do not save properties that are marked with 'skip_save'
-            #self.log.debug(" outfilter returned %s:(%s) %s" % (prop_key, valDict[prop_key]['type'], valDict[prop_key]['value']))
-            #TODO: No longer required since we introduced the NULL backend
-            if props[prop_key]['skip_save']:
-                continue
-
             # Create backend entry in the target list.
             be = props[prop_key]['backend']
             if not be in toStore:
@@ -1171,10 +1131,6 @@ class GOsaObject(object):
         # Create a backend compatible list of all changed attributes.
         toStore = {}
         for prop_key in collectedAttrs:
-
-            # do not save properties that are marked with 'skip_save'
-            if collectedAttrs[prop_key]['skip_save']:
-                continue
 
             # Collect properties by backend
             be = collectedAttrs[prop_key]['backend']
