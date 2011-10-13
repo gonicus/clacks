@@ -3,6 +3,7 @@
 	<Object>
 		<Name>GenericUser</Name>
 		<Description>A generic user</Description>
+		<DisplayName>User</DisplayName>
 		<BackendParameters>
 			<Backend objectClasses="inetOrgPerson"
 				RDN="cn,uid">LDAP</Backend>

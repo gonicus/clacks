@@ -2,6 +2,7 @@
 <Objects xmlns="http://www.gonicus.de/Objects">
 	<Object>
 		<Name>DomainComponent</Name>
+		<DisplayName>Domain component</DisplayName>
 		<Description>A domain component</Description>
 		<BackendParameters>
 			<Backend objectClasses="dcObject,locality">LDAP</Backend>

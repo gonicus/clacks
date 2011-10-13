@@ -3,6 +3,7 @@
 	<Object>
 		<Name>Organization</Name>
 		<Description>An organization</Description>
+		<DisplayName>Organization</DisplayName>
 		<BackendParameters>
 			<Backend objectClasses="organization">LDAP</Backend>
 		</BackendParameters>

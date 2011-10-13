@@ -3,6 +3,7 @@
 	<Object>
 		<Name>SambaUser</Name>
 		<Description>A samba extension for a generic user</Description>
+		<DisplayName>Samba extension</DisplayName>
 		<BackendParameters>
 			<Backend objectClasses="sambaSamAccount">LDAP</Backend>
 		</BackendParameters>
