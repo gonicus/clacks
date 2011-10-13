@@ -39,13 +39,23 @@ def resolve_children(dn):
 
     return res
 
-print "Wait",
-res = resolve_children(u"dc=gonicus,dc=de")
-print
+print "Scanning for objects",
+res = resolve_children(u"ou=Vertrieb,dc=gonicus,dc=de")
+print "done"
 
-for r in res.items():
-    print r
-print len(res)
+print "Generating index:"
+to_be_indexed = ['uid', 'givenName', 'sn', 'mail']
+for o, o_type in res.items():
+    obj = f.getObject(o_type, o)
+    print obj.uuid
+    print obj.createTimestamp
+    print obj.modifyTimestamp
+    for attr in to_be_indexed:
+        if obj.hasattr(attr):
+            print "->", getattr(obj, attr)
+    del obj
+
+print "Processed %d entries" % len(res)
 
 # Break for now...
 exit(0)

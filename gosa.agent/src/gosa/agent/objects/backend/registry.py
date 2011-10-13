@@ -18,6 +18,9 @@ class ObjectBackendRegistry(object):
     def dn2uuid(self, backend, dn):
         return ObjectBackendRegistry.backends[backend].dn2uuid(dn)
 
+    def get_timestamps(self, backend, dn):
+        return ObjectBackendRegistry.backends[backend].get_timestamps(dn)
+
     @staticmethod
     def getInstance():
         if not ObjectBackendRegistry.instance:

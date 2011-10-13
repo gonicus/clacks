@@ -402,79 +402,80 @@ class GOsaObjectFactory(object):
         defaultBackend = str(classr.Backend)
 
         # Append attributes
-        for prop in classr['Attributes']['Attribute']:
+        if 'Attributes' in classr.__dict__:
+            for prop in classr['Attributes']['Attribute']:
 
-            self.log.debug("adding property: '%s'" % (str(prop['Name']),))
+                self.log.debug("adding property: '%s'" % (str(prop['Name']),))
 
-            # Read backend definition per property (if it exists)
-            backend = defaultBackend
-            if "Backend" in prop.__dict__:
-                backend = str(prop.Backend)
+                # Read backend definition per property (if it exists)
+                backend = defaultBackend
+                if "Backend" in prop.__dict__:
+                    backend = str(prop.Backend)
 
-            # Do we have an output filter definition?
-            out_f = []
-            if "OutFilter" in prop.__dict__:
-                for entry in  prop['OutFilter'].iterchildren():
-                    self.log.debug(" appending out-filter")
-                    of = self.__handleFilterChain(entry)
-                    out_f.append(of)
+                # Do we have an output filter definition?
+                out_f = []
+                if "OutFilter" in prop.__dict__:
+                    for entry in  prop['OutFilter'].iterchildren():
+                        self.log.debug(" appending out-filter")
+                        of = self.__handleFilterChain(entry)
+                        out_f.append(of)
 
-            # Do we have a input filter definition?
-            in_f =  []
-            if "InFilter" in prop.__dict__:
-                for entry in  prop['InFilter'].iterchildren():
-                    self.log.debug(" appending in-filter")
-                    in_f.append(self.__handleFilterChain(entry))
+                # Do we have a input filter definition?
+                in_f =  []
+                if "InFilter" in prop.__dict__:
+                    for entry in  prop['InFilter'].iterchildren():
+                        self.log.debug(" appending in-filter")
+                        in_f.append(self.__handleFilterChain(entry))
 
-            # Read and build up validators
-            validator =  None
-            if "Validators" in prop.__dict__:
-                self.log.debug(" appending property validator")
-                validator = self.__build_filter(prop['Validators'])
+                # Read and build up validators
+                validator =  None
+                if "Validators" in prop.__dict__:
+                    self.log.debug(" appending property validator")
+                    validator = self.__build_filter(prop['Validators'])
 
-            # Read the properties syntax
-            syntax = str(prop['Type'])
-            backend_syntax = syntax
-            if "BackendType" in prop.__dict__:
-                backend_syntax = str(prop['BackendType'])
+                # Read the properties syntax
+                syntax = str(prop['Type'])
+                backend_syntax = syntax
+                if "BackendType" in prop.__dict__:
+                    backend_syntax = str(prop['BackendType'])
 
-            # Convert the default to the corresponding type.
-            default = None
-            if "Default" in prop.__dict__:
-                default = self.__attribute_type['String'].convert_to(syntax, [str(prop.Default)])
+                # Convert the default to the corresponding type.
+                default = None
+                if "Default" in prop.__dict__:
+                    default = self.__attribute_type['String'].convert_to(syntax, [str(prop.Default)])
 
-            # check for multivalue, mandatory and unique definition
-            multivalue = bool(load(prop, "MultiValue", False))
-            unique = bool(load(prop, "Unique", False))
-            mandatory = bool(load(prop, "Mandatory", False))
-            readonly = bool(load(prop, "ReadOnly", False))
-            foreign = bool(load(prop, "Foreign", False))
+                # check for multivalue, mandatory and unique definition
+                multivalue = bool(load(prop, "MultiValue", False))
+                unique = bool(load(prop, "Unique", False))
+                mandatory = bool(load(prop, "Mandatory", False))
+                readonly = bool(load(prop, "ReadOnly", False))
+                foreign = bool(load(prop, "Foreign", False))
 
-            # Check for property dependencies
-            dependsOn = []
-            if "DependsOn" in prop.__dict__:
-                for d in prop.__dict__['DependsOn'].iterchildren():
-                    dependsOn.append(str(d))
+                # Check for property dependencies
+                dependsOn = []
+                if "DependsOn" in prop.__dict__:
+                    for d in prop.__dict__['DependsOn'].iterchildren():
+                        dependsOn.append(str(d))
 
-            # Create a new property with the given information
-            props[str(prop['Name'])] =  {
-                'value': [],
-                'status': STATUS_OK,
-                'dependsOn': dependsOn,
-                'type': syntax,
-                'backend_type': backend_syntax,
-                'validator': validator,
-                'out_filter': out_f,
-                'in_filter': in_f,
-                'backend': backend,
-                'in_value': [],
-                'default': default,
-                'orig_value': None,
-                'foreign': foreign,
-                'unique': unique,
-                'mandatory': mandatory,
-                'readonly': readonly,
-                'multivalue': multivalue}
+                # Create a new property with the given information
+                props[str(prop['Name'])] =  {
+                    'value': [],
+                    'status': STATUS_OK,
+                    'dependsOn': dependsOn,
+                    'type': syntax,
+                    'backend_type': backend_syntax,
+                    'validator': validator,
+                    'out_filter': out_f,
+                    'in_filter': in_f,
+                    'backend': backend,
+                    'in_value': [],
+                    'default': default,
+                    'orig_value': None,
+                    'foreign': foreign,
+                    'unique': unique,
+                    'mandatory': mandatory,
+                    'readonly': readonly,
+                    'multivalue': multivalue}
 
         # Validate the properties dependsOn list
         for pname in props:
@@ -856,6 +857,9 @@ class GOsaObject(object):
     uuid = None
     dn = None
     log = None
+    createTimestamp = None
+    modifyTimestamp = None
+
 
     def __init__(self, dn=None, mode="update"):
 
@@ -898,6 +902,10 @@ class GOsaObject(object):
         props = getattr(self, '__properties')
         return(props.keys())
 
+    def hasattr(self, attr):
+        props = getattr(self, '__properties')
+        return attr in props
+
     def _read(self, dn):
         """
         This method tries to initialize a GOsa-object instance by reading data
@@ -911,11 +919,13 @@ class GOsaObject(object):
 
         # Instantiate Backend-Registry
         self.uuid = self._reg.dn2uuid(self._backend, dn)
+        self.createTimestamp, self.modifyTimestamp = self._reg.get_timestamps(self._backend, dn)
 
         # Load attributes for each backend.
         # And then assign the values to the properties.
         obj = self
         self.log.debug("object uuid: %s" % (self.uuid))
+
         for backend in self._propsByBackend:
 
             try:

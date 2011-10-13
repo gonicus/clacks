@@ -31,6 +31,8 @@ class LDAP(ObjectBackend):
         self.lh = LDAPHandler.get_instance()
         self.con = self.lh.get_connection()
         self.uuid_entry = self.env.config.get("ldap.uuid_attribute", "entryUUID")
+        self.create_ts_entry = self.env.config.get("ldap.create_attribute", "createTimestamp")
+        self.modify_ts_entry = self.env.config.get("ldap.modify_attribute", "modifyTimestamp")
 
     def __del__(self):
         self.lh.free_connection(self.con)
@@ -272,6 +274,13 @@ class LDAP(ObjectBackend):
         self.__check_res(dn, res)
 
         return res[0][1][self.uuid_entry][0]
+
+    def get_timestamps(self, dn):
+        res = self.con.search_s(dn.encode('utf-8'), ldap.SCOPE_BASE,
+                '(objectClass=*)', [self.create_ts_entry, self.modify_ts_entry])
+        cts = self._convert_from_timestamp(res[0][1][self.create_ts_entry][0])
+        mts = self._convert_from_timestamp(res[0][1][self.modify_ts_entry][0])
+        return (cts, mts)
 
     def get_uniq_dn(self, rdns, base, data):
         try:

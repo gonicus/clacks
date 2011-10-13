@@ -19,6 +19,12 @@ class ObjectBackend(object):
         """
         raise NotImplementedError("object backend is not capable of mapping DN to UUID")
 
+    def get_timestamps(self, dn):
+        """
+        Return a tuple (createdTimestamp, modifyTimestamp)
+        """
+        return (None, None)
+
     def load(self, uuid, keys):
         """
         Load given keys from entry with uuid.
