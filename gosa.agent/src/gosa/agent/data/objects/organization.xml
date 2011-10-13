@@ -18,14 +18,6 @@
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 		</Attributes>
-
-		"o", "ou", "description","userPassword","searchGuide",
-		            "seeAlso","businessCategory","x121Address","registeredAddress","manager",
-			                "destinationIndicator","preferredDeliveryMethod","telexNumber",
-					            "telephoneNumber","internationaliSDNNumber","facsimileTelephoneNumber","street",
-						                "postOfficeBox","postalCode", "postalAddress","physicalDeliveryOfficeName",
-								            "st","l","teletexTerminalIdentifier"
-
 		<Container>
 			<Type>PeopleContainer</Type>
 			<Type>GroupContainer</Type>
