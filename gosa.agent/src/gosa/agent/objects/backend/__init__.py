@@ -80,4 +80,14 @@ class ObjectBackend(object):
         """
         Check if the given attribute is unique.
         """
-        raise NotImplementedError("object backend is missing retract()")
+        raise NotImplementedError("object backend is missing is_uniq()")
+
+    def identify(self, dn, params, fixed_rdn=None):
+        raise NotImplementedError("object backend is missing identify()")
+
+    def query(self, base, scope, params, fixed_rdn=None):
+        raise NotImplementedError("object backend is missing query()")
+
+    def get_next_id(self, attr, base=1000):
+        #TODO: needs to be moved to the LDAP backend
+        return base

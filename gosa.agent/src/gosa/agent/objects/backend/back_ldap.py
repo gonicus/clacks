@@ -59,13 +59,18 @@ class LDAP(ObjectBackend):
 
         return items
 
-    def identify(self, dn, params):
+    def identify(self, dn, params, fixed_rdn=None):
         ocs = ["(objectClass=%s)" % o.strip() for o in params['objectClasses'].split(",")]
-        fltr = "(&" + "".join(ocs) + ")"
+        fltr = "(&" + "".join(ocs) + (ldap.filter.filter_format("(%s)", [fixed_rdn]) if fixed_rdn else "") + ")"
         res = self.con.search_s(dn.encode('utf-8'), ldap.SCOPE_BASE, fltr,
                 [self.uuid_entry])
 
         return len(res) == 1
+
+    def query(self, base, scope, params, fixed_rdn=None):
+        ocs = ["(objectClass=%s)" % o.strip() for o in params['objectClasses'].split(",")]
+        fltr = "(&" + "".join(ocs) + (ldap.filter.filter_format("(%s)", [fixed_rdn]) if fixed_rdn else "") + ")"
+        print fltr
 
     def exists(self, misc):
         if self.is_uuid(misc):

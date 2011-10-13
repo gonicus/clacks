@@ -150,12 +150,7 @@ class GOsaObjectFactory(object):
             t_obj = obj.Object
             is_base = bool(t_obj.BaseObject)
             backend = str(t_obj.Backend)
-            backend_attrs = None
-
-            for bp in t_obj.BackendParameters.Backend:
-                if str(bp) == backend:
-                    backend_attrs = bp.attrib
-                    break
+            backend_attrs = self.__get_backend_parameters(t_obj)
 
             types[name] = {
                 'backend': backend,
@@ -193,13 +188,10 @@ class GOsaObjectFactory(object):
         # First, find all base objects
         for name, info in self.__object_types.items():
             be = ObjectBackendRegistry.getBackend(info['backend'])
-            if be.identify(dn, info['backend_attrs']):
+            classr = self.__xml_defs[name].Object
+            fixed_rdn = classr.FixedRDN.text if 'FixedRDN' in classr.__dict__ else None
 
-                # check for the current name if it makes a different object type
-                classr = self.__xml_defs[name].Object
-                if 'FixedRDN' in classr.__dict__:
-                    if ldap.dn.explode_dn(dn, flags=DN_FORMAT_LDAPV3)[0].lower() != classr.FixedRDN.text.lower():
-                        continue
+            if be.identify(dn, info['backend_attrs'], fixed_rdn):
 
                 if info['base']:
                     if id_base:
@@ -212,6 +204,27 @@ class GOsaObjectFactory(object):
             return (id_base, id_extend)
 
         return None
+
+    def getObjectChildren(self, dn):
+        # Identify possible children types
+        o_type = self.identifyObject(dn)[0]
+
+        print
+        print "identified %s as %s" % (dn, o_type)
+
+        o = self.__xml_defs[o_type].Object
+        if 'Container' in o.__dict__:
+
+            # Ask base backends for a one level query
+            for c_type in o.Container.iterchildren():
+                c = self.__xml_defs[c_type.text].Object
+                print "-> looking for %s objects on base %s in backend %s" % (c_type.text, dn, c.Backend)
+
+                be = ObjectBackendRegistry.getBackend(c.Backend.text)
+                fixed_rdn = c.FixedRDN.text if 'FixedRDN' in c.__dict__ else None
+                print be.query(dn, scope=SCOPE_ONE, params=self.__get_backend_parameters(o), fixed_rdn=fixed_rdn)
+
+        return []
 
     #@Command()
     def getObject(self, name, *args, **kwargs):
@@ -801,6 +814,17 @@ class GOsaObjectFactory(object):
             GOsaObjectFactory.__instance = GOsaObjectFactory()
 
         return GOsaObjectFactory.__instance
+
+    def __get_backend_parameters(self, obj):
+        backend_attrs = None
+
+        if "BackendParameters" in obj.__dict__:
+            for bp in obj.BackendParameters.Backend:
+                if str(bp) == obj.Backend:
+                    backend_attrs = bp.attrib
+                    break
+
+        return backend_attrs
 
 
 class GOsaObject(object):

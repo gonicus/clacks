@@ -23,10 +23,10 @@ else:
 
 f = GOsaObjectFactory.getInstance()
 
-b = u"ou=people,dc=gonicus,dc=de"
+b = u"dc=gonicus,dc=de"
 
-print ">", f.identifyObject(b)
-#print "->", f.getObjectChildren(b)
+#print ">", f.identifyObject(b)
+print "->", f.getObjectChildren(b)
 exit(0)
 
 if mode == "create":

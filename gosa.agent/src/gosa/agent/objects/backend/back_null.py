@@ -10,7 +10,7 @@ class NULL(ObjectBackend):
     def load(self, uuid, info):
         return {}
 
-    def identify(self, dn, params):
+    def identify(self, dn, params, fixed_rdn=None):
         return False
 
     def exists(self, misc):
@@ -39,3 +39,6 @@ class NULL(ObjectBackend):
 
     def is_uniq(self, attr, value, at_type):
         return False
+
+    def query(self, base, scope, params, fixed_rdn=None):
+        return []
