@@ -89,6 +89,7 @@ setup(
         gosa-agent.jsonrpc_service = gosa.agent.jsonrpc_service:JSONRPCService
         gosa-agent.jsonrpc_om = gosa.agent.jsonrpc_objects:JSONRPCObjectMapper
         gosa-agent.plugins.samba.utils = gosa.agent.plugins.samba.utils:SambaUtils
+        gosa-agent.plugins.posix.utils = gosa.agent.plugins.posix.utils:PosixUtils
         gosa-agent.plugins.misc.utils = gosa.agent.plugins.misc.utils:MiscUtils
         gosa-agent.plugins.gravatar.utils = gosa.agent.plugins.gravatar.utils:GravatarUtils
         gosa-agent.plugins.goto.network = gosa.agent.plugins.goto.network:NetworkUtils
@@ -135,6 +136,7 @@ setup(
         filter.sambaacctflagsout = gosa.agent.plugins.samba.utils:SambaAcctFlagsOut
         filter.sambamungedialin = gosa.agent.plugins.samba.utils:SambaMungedDialIn
         filter.sambamungedialout = gosa.agent.plugins.samba.utils:SambaMungedDialOut
+        filter.posixgetnextid = gosa.agent.plugins.posix.utils:GetNextID
 
         [gosa.object.operator]
         operator.and = gosa.agent.objects.operator.bool:And

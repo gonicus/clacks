@@ -55,10 +55,21 @@
 
            		<Attribute>
                                 <Name>uidNumber</Name>
-                                <Unique>true</Unique>
+				<Unique>true</Unique>
+				<Default>-1</Default>
                                 <Description>An integer uniquely identifying a user in an administrative domain</Description>
                                 <Type>Integer</Type>
                                 <Mandatory>true</Mandatory>
+                                <OutFilter>
+                                        <FilterChain>
+                                                <FilterEntry>
+                                                        <Filter>
+                                                                <Name>GetNextID</Name>
+                                                                <Param>uidNumber</Param>
+                                                        </Filter>
+                                                </FilterEntry>
+                                        </FilterChain>
+                                </OutFilter>
                         </Attribute>
 
            		<Attribute>

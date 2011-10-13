@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Objects xmlns="http://www.gonicus.de/Objects">
 	<Object>
-		<Name>DomainComponent</Name>
-		<DisplayName>Domain component</DisplayName>
-		<Description>A domain component</Description>
+		<Name>Locality</Name>
+		<Description>Locality</Description>
+		<DisplayName>Locality</DisplayName>
 		<BackendParameters>
-			<Backend objectClasses="dcObject">LDAP</Backend>
+			<Backend objectClasses="locality">LDAP</Backend>
 		</BackendParameters>
 		<Backend>LDAP</Backend>
 
 		<Attributes>
 			<Attribute>
-				<Name>dc</Name>
-				<Description>domain component</Description>
+				<Name>l</Name>
+				<Description>Locality name</Description>
 				<Type>UnicodeString</Type>
                                 <MultiValue>false</MultiValue>
                                 <Mandatory>true</Mandatory>
