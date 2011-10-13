@@ -27,6 +27,7 @@ which will then provide the defined attributes, methods, aso.
 Here are some examples on how to instatiate on new object:
 
 >>> from gosa.agent.objects import GOsaObjectFactory
+>>> f = GOsaObjectFactory.getInstance()
 >>> person = f.getObject('Person', "410ad9f0-c4c0-11e0-962b-0800200c9a66")
 >>> print person->sn
 >>> person->sn = "Surname"
@@ -111,7 +112,22 @@ class GOsaObjectFactory(object):
     def getAttributeTypes(self):
         return(self.__attribute_type)
 
-#-TODO-needs-re-work-------------------------------------------------------------------------------
+    def getAttributes(self):
+        res = {}
+
+        for name, element in self.__xml_defs.items():
+            find = objectify.ObjectPath("Objects.Object.Attributes")
+            if find.hasattr(element):
+                for attr in find(element).iterchildren():
+                    res[attr.Name.text] = {
+                            'description': attr.Description.text,
+                            'type': attr.Type.text,
+                            'multivalue': bool(attr.get("MultiValue", False)),
+                            'mandatory': bool(attr.get("Mandatory", False)),
+                            'read-only': bool(attr.get("ReadOnly", False)),
+                            'unique': bool(attr.get("Unique", False))
+                            }
+        return res
 
     def load_object_types(self):
         types = {}
@@ -153,8 +169,6 @@ class GOsaObjectFactory(object):
             types[name]['extended_by'] = ext
 
         self.__object_types = types
-
-#-TODO-needs-re-work-------------------------------------------------------------------------------
 
     #@Command()
     def getObjectTypes(self):
@@ -434,11 +448,11 @@ class GOsaObjectFactory(object):
                 default = [self.__attribute_type['String'].convert_to(syntax, str(prop.Default))]
 
             # check for multivalue, mandatory and unique definition
-            multivalue = bool(prop['MultiValue']) if "MultiValue" in prop.__dict__ else False
-            unique = bool(prop['Unique']) if "Unique" in prop.__dict__ else False
-            mandatory = bool(prop['Mandatory']) if "Mandatory" in prop.__dict__ else False
-            readonly = bool(prop['Readonly']) if "Readonly" in prop.__dict__ else False
-            foreign = bool(prop['Foreign']) if "Foreign" in prop.__dict__ else False
+            multivalue = bool(prop.get('MultiValue', False))
+            unique = bool(prop.get('Unique', False))
+            mandatory = bool(prop.get('Mandatory', False))
+            readonly = bool(prop.get('ReadOnly', False))
+            foreign = bool(prop.get('Foreign', False))
 
             # Check for property dependencies
             dependsOn = []
@@ -478,8 +492,8 @@ class GOsaObjectFactory(object):
                     for param in method['MethodParameters']['MethodParameter']:
                         pName = str(param['Name'])
                         pType = str(param['Type'])
-                        pRequired = bool(param['Required']) if 'Required' in param.__dict__ else False
-                        pDefault = str(param['Default']) if 'Default' in param.__dict__ else None
+                        pRequired = bool(param.get('Required', False))
+                        pDefault = str(param.get('Default', None))
                         mParams.append( (pName, pType, pRequired, pDefault), )
 
                 # Get the list of command parameters
@@ -1553,86 +1567,6 @@ class GOsaObject(object):
         """
         #TODO
         print "--> cleanup"
-
-
-class ObjectQuery(object):
-
-    __result = None
-    __idx = 0
-
-    def __init__(self, base, scope=SCOPE_SUB, fltr=None, attrs=None):
-        print "Query on  ", base
-        print "Scope     ", scope
-        print "Filter    ", fltr
-        print "Attributes", attrs
-        print "-"*80
-
-        gof = GOsaObjectFactory.getInstance()
-        all_types = gof.getObjectTypes()
-
-        # Szenario 1)
-
-        # Filter analysieren
-        # -> extrahiere attribute
-        #   -> ordne attribute objekt-typen zu
-        #   -> falls keine basis objekte vorhanden sind, füge alle möglichen hinzu
-        #   -> stelle eine liste der beteiligten backends zusammen
-        #
-        # a) es ist nur ein backend zu durchsuchen
-        #
-        #    übergebe filter und parameter an backend zur suche
-        #    liefere ergebnis zurück
-        #
-        # b) es sind mehr als ein backend zu durchsuchen
-        #
-        #    blöd
-
-
-        # Szenario 2)
-
-        # Es wird eine Objektkopie von allen *kompletten* objekten gehalten,
-        # die entsprechend aktualisiert werden muss, etc.
-        # Diese kann dann mittels Algorithmus einfach nach Filtervorgaben
-        # durchsucht werden.
-
-#Notes:
-#        # Analyze filter and extract object types to query
-#        #TODO: ... analyze it, add eventually missing base object
-#        relevant_types = ['GenericUser', 'PosixUser']
-#
-#        # Query each relevant object type
-#        for t_name in relevant_types:
-#
-#            # If this is a base type, do a query
-#            if all_types[t_name]['base']:
-#                #be = ObjectBackendRegistry.getBackend(all_types[t_name]['backend'])
-#                #print be.query(all_types[t_name]['backend_attrs'], base, scope, fltr, attrs)
-#                print "query on backend %s for %s" % (all_types[t_name]['backend'], t_name)
-#
-#                #FOR every result, merge with:
-#
-#                # To more queries with if we're extended by a relvant type
-#                for et_name in list(
-#                        set(all_types[t_name]['extended_by']).intersection(
-#                            set(relevant_types))):
-#                    #be = ObjectBackendRegistry.getBackend(all_types[et_name]['backend'])
-#                    #print be.query_by_uuid(all_types[et_name]['backend_attrs'], uuid, fltr, attrs)
-#                    print "-> sub query on backend %s for %s" % (all_types[et_name]['backend'], et_name)
-
-    def __iter__(self):
-        return self
-
-    def next(self):
-        if not self.__result:
-            raise StopIteration
-
-        if self.__idx >= len(self.__result):
-            raise StopIteration
-
-        current = self.__result[self.idx]
-        self.__idx += 1
-
-        return current
 
 
 class FactoryException(Exception):

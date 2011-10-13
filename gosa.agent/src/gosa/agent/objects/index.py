@@ -4,13 +4,18 @@ import inspect
 import sqlalchemy.sql
 import logging
 import collections
+import ldap.dn
+from base64 import b64encode, b64decode
+from ldap import DN_FORMAT_LDAPV3
 from gosa.common import Environment
 from gosa.common.utils import N_
-from gosa.common.components import Command, PluginRegistry, Plugin
+from gosa.common.components import Command, Plugin
+from gosa.agent.objects import GOsaObjectFactory, SCOPE_BASE, SCOPE_ONE, SCOPE_SUB
 from sqlalchemy import create_engine
 from sqlalchemy.sql import select, and_, func, asc
 from sqlalchemy.dialects.sqlite.base import SQLiteDialect
 from sqlalchemy import Table, Column, Integer, Boolean, String, DateTime, Date, Unicode, MetaData
+
 
 class FilterException(Exception):
     pass
@@ -39,23 +44,25 @@ class ObjectIndex(Plugin):
     _target_ = 'core'
 
     def __init__(self):
-        self.__bl = re.compile(r'([^%s]+)' % self.__sep)
-
-        #TODO: get that from the object factory
-        index_attrs = {
-            'givenName': {'type': 'UnicodeString', 'multi': False},
-            'sn': {'type': 'UnicodeString', 'multi': False},
-            'mail': {'type': 'String', 'multi': True},
-            'uid': {'type': 'String', 'multi': False},
-            'uidNumber': {'type': 'Integer', 'multi': False},
-            'dateOfBirth': {'type': 'Date', 'multi': False},
-        }
-
         self.env = Environment.getInstance()
         self.log = logging.getLogger(__name__)
         self.log.info("initializing object index handler")
+        self.factory = GOsaObjectFactory.getInstance()
 
-        self.__types = index_attrs
+        self.__bl = re.compile(r'([^%s]+)' % self.__sep)
+
+        # Define attributes to be indexed from configuration
+        index_attrs = [s.strip() for s in self.env.config.get("index.attributes").split(",")]
+        available_attrs = self.factory.getAttributes()
+
+        self.__types = {}
+        for ia in index_attrs:
+            if not ia in available_attrs:
+                self.log.warning("attribute '%s' is not available" % ia)
+                continue
+
+            self.__types[ia] = available_attrs[ia]
+
         self.__engine = self.env.getDatabaseEngine('index')
 
         # Table name
@@ -115,7 +122,7 @@ class ObjectIndex(Plugin):
 
         self.__index = Table(idx, metadata,
             Column('_uuid', String(36), primary_key=True),
-            Column('_dn', Unicode(1024)),
+            Column('_dn', String(1024)),
             Column('_lastChanged', DateTime),
             Column('_extensions', String(256)),
             *props)
@@ -155,7 +162,7 @@ class ObjectIndex(Plugin):
 
     def insert(self, uuid, dn, **props):
         props['_uuid'] = uuid
-        props['_dn']= dn
+        props['_dn']= self.dn2b64(dn)
 
         # Convert all list types to Unicode strings
         props = dict([(attr, self.__sep + self.__sep.join(key) + self.__sep if type(key) == list else key) for attr, key in props.items()])
@@ -164,13 +171,16 @@ class ObjectIndex(Plugin):
     def remove(self, uuid):
         self.__conn.execute(self.__index.delete().where(self.__index.c._uuid == uuid))
 
+    def move(self, uuid, dn):
+        self.update(uuid, _dn=self.dn2b64(dn))
+
     def update(self, uuid, **props):
         # Convert all list types to Unicode strings
         props = dict([(attr, self.__sep + self.__sep.join(key) + self.__sep if type(key) == list else key) for attr, key in props.items()])
         self.__conn.execute(self.__index.update().where(self.__index.c._uuid == uuid), [props])
 
     @Command(__help__=N_("Filter for indexed attributes and return the number of matches."))
-    def count(self, fltr=None):
+    def count(self, base=None, scope=SCOPE_SUB, fltr=None):
         """
         Query the database using the given filter and return the number
         of matches.
@@ -178,6 +188,8 @@ class ObjectIndex(Plugin):
         ========== ==================
         Parameter  Description
         ========== ==================
+        base       Base to search on
+        scope      Scope to use (BASE, ONE, SUB)
         fltr       Filter description
         ========== ==================
 
@@ -213,15 +225,40 @@ class ObjectIndex(Plugin):
 
         ``Return``: Integer
         """
+        base_filter = None
+
+        if scope == None or not scope in [SCOPE_ONE, SCOPE_BASE, SCOPE_SUB]:
+            raise FilterException("invalid search scope")
+
+        if base:
+            base = self.dn2b64(base)
+            if scope == SCOPE_BASE:
+                base_filter = self.__index.c._dn == base
+
+            if scope == SCOPE_ONE:
+                base_filter = self.__index.c._dn.op('regexp')(r"^([^,]+,)?%s$" % base)
+
+            if scope == SCOPE_SUB:
+                base_filter = self.__index.c._dn.op('regexp')(r"^(.*,)?%s$" % base)
+
         if fltr:
-            slct = select([func.count(self.__index.c._uuid)], *self.__build_filter(fltr))
+            if base:
+                fltr = and_(base_filter, *self.__build_filter(fltr))
+            else:
+                fltr = self.__build_filter(fltr)
+
+            slct = select([func.count(self.__index.c._uuid)], fltr)
+
         else:
-            slct = select([func.count(self.__index.c._uuid)])
+            if base:
+                slct = select([func.count(self.__index.c._uuid)], base_filter)
+            else:
+                slct = select([func.count(self.__index.c._uuid)])
 
         return self.__conn.execute(slct).fetchone()[0]
 
     @Command(__help__=N_("Filter for indexed attributes and return the matches."))
-    def search(self, fltr=None, attrs=None, begin=None, end=None, order_by=None, descending=False):
+    def search(self, base=None, scope=SCOPE_SUB, fltr=None, attrs=None, begin=None, end=None, order_by=None, descending=False):
         """
         Query the database using the given filter and return the
         result set.
@@ -229,6 +266,8 @@ class ObjectIndex(Plugin):
         ========== ==================
         Parameter  Description
         ========== ==================
+        base       Base to search on
+        scope      Scope to use (BASE, ONE, SUB)
         fltr       Filter description
         attrs      List of attributes the result set should contain
         begin      Offset to start returning results
@@ -242,6 +281,7 @@ class ObjectIndex(Plugin):
 
         ``Return``: List of dicts
         """
+        base_filter = None
 
         if not attrs:
             ats = [self.__index]
@@ -250,10 +290,27 @@ class ObjectIndex(Plugin):
             for a in attrs:
                 ats.append(getattr(self.__index.c, a))
 
+        if base:
+            base = self.dn2b64(base)
+            if scope == SCOPE_BASE:
+                base_filter = self.__index.c._dn == base
+
+            if scope == SCOPE_ONE:
+                base_filter = self.__index.c._dn.op('regexp')(r"^([^,]+,)?%s$" % base)
+
+            if scope == SCOPE_SUB:
+                base_filter = self.__index.c._dn.op('regexp')(r"^(.*,)?%s$" % base)
+
         if fltr:
-            sl = select(ats, *self.__build_filter(fltr))
+            if base:
+                sl = select(ats, and_(base_filter, *self.__build_filter(fltr)))
+            else:
+                sl = select(ats, *self.__build_filter(fltr))
         else:
-            sl = select(ats)
+            if base:
+                sl = select(ats, base_filter)
+            else:
+                sl = select(ats)
 
         # Apply ordering
         if order_by:
@@ -281,6 +338,8 @@ class ObjectIndex(Plugin):
         elif isinstance(data, collections.Mapping):
             return dict(map(self.__convert_lists, data.iteritems()))
         elif isinstance(data, collections.Iterable):
+            if data[0] == "_dn":
+                data = (data[0], self.b642dn(data[1]))
             return type(data)(map(self.__convert_lists, data))
         else:
             return data
@@ -328,7 +387,7 @@ class ObjectIndex(Plugin):
             elif not cel in self.__types:
                 raise FilterException("attribute '%s' is not indexed" % el.split("_")[0])
 
-            elif self.__types[cel]['multi']:
+            elif self.__types[cel]['multivalue']:
                 if '%' in value:
                     value = value.replace('%', r'[^\%s]*' % self.__sep)
 
@@ -341,3 +400,10 @@ class ObjectIndex(Plugin):
                     arg.append(getattr(self.__index.c, cel) == value)
 
         return arg
+
+    def dn2b64(self, dn):
+        parts = ldap.dn.explode_dn(dn, flags=DN_FORMAT_LDAPV3)
+        return ",".join([b64encode(p) for p in parts])
+
+    def b642dn(self, b64dn):
+        return u",".join([b64decode(p).encode('utf-8') for p in b64dn.split(",")])

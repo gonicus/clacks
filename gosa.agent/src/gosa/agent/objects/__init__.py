@@ -688,4 +688,8 @@ parameters of the method as placeholders.
 
 """
 __import__('pkg_resources').declare_namespace(__name__)
-from gosa.agent.objects.factory import GOsaObjectFactory, ObjectQuery
+from gosa.agent.objects.factory import GOsaObjectFactory
+
+SCOPE_BASE = 0
+SCOPE_ONE = 1
+SCOPE_SUB = 2
