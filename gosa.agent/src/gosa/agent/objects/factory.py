@@ -42,8 +42,8 @@ import datetime
 import re
 import logging
 import zope.event
+import ldap
 import ldap.dn
-from ldap import DN_FORMAT_LDAPV3
 from zope.interface import Interface, implements
 from lxml import etree, objectify
 from gosa.common import Environment
@@ -58,9 +58,9 @@ STATUS_OK = 0
 STATUS_CHANGED = 1
 
 # Scopes
-SCOPE_BASE = 0
-SCOPE_ONE = 1
-SCOPE_SUB = 2
+SCOPE_BASE = ldap.SCOPE_BASE
+SCOPE_ONE = ldap.SCOPE_ONELEVEL
+SCOPE_SUB = ldap.SCOPE_SUBTREE
 
 
 def load(attr, element, default=None):
@@ -206,25 +206,26 @@ class GOsaObjectFactory(object):
         return None
 
     def getObjectChildren(self, dn):
+        res = {}
+
         # Identify possible children types
         o_type = self.identifyObject(dn)[0]
-
-        print
-        print "identified %s as %s" % (dn, o_type)
-
         o = self.__xml_defs[o_type].Object
+
         if 'Container' in o.__dict__:
 
             # Ask base backends for a one level query
             for c_type in o.Container.iterchildren():
                 c = self.__xml_defs[c_type.text].Object
-                print "-> looking for %s objects on base %s in backend %s" % (c_type.text, dn, c.Backend)
 
                 be = ObjectBackendRegistry.getBackend(c.Backend.text)
                 fixed_rdn = c.FixedRDN.text if 'FixedRDN' in c.__dict__ else None
-                print be.query(dn, scope=SCOPE_ONE, params=self.__get_backend_parameters(o), fixed_rdn=fixed_rdn)
+                for r in be.query(dn, scope=SCOPE_ONE,
+                        params=self.__get_backend_parameters(c),
+                        fixed_rdn=fixed_rdn):
+                    res[r] = c_type.text
 
-        return []
+        return res
 
     #@Command()
     def getObject(self, name, *args, **kwargs):
