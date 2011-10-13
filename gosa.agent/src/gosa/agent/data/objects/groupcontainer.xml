@@ -2,6 +2,7 @@
 <Objects xmlns="http://www.gonicus.de/Objects">
 	<Object>
 		<Name>GroupContainer</Name>
+		<DisplayName>Groups</DisplayName>
 		<Description>Organizational unit that can contain groups</Description>
 		<BackendParameters>
 			<Backend objectClasses="organizationalUnit">LDAP</Backend>

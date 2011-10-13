@@ -353,10 +353,17 @@ class GOsaObjectFactory(object):
             for entry in classr["Container"]:
                 container.append(str(entry.Type))
 
+        # Load FixedRDN value
+        fixed_rdn = None
+        if "FixedRDN" in classr.__dict__:
+            fixed_rdn = str(classr.FixedRDN)
+
         # Tweak name to the new target
         setattr(klass, '__name__', name)
         setattr(klass, '_objectFactory', self)
         setattr(klass, '_backend', str(classr.Backend))
+        setattr(klass, '_displayName', str(classr.DisplayName))
+        setattr(klass, '_fixedRDN', fixed_rdn)
         setattr(klass, '_backendAttrs', back_attrs)
         setattr(klass, '_extends', extends)
         setattr(klass, '_base_object', base_object)
@@ -413,7 +420,7 @@ class GOsaObjectFactory(object):
             # Convert the default to the corresponding type.
             default = None
             if "Default" in prop.__dict__:
-                default = [self.__attribute_type['String'].convert_to(syntax, str(prop.Default))]
+                default = self.__attribute_type['String'].convert_to(syntax, [str(prop.Default)])
 
             # check for multivalue, mandatory and unique definition
             multivalue = bool(load(prop, "MultiValue", False))
@@ -1146,7 +1153,8 @@ class GOsaObject(object):
             be_type = collectedAttrs[prop_key]['backend_type']
             s_type = collectedAttrs[prop_key]['type']
             if not self._objectFactory.getAttributeTypes()[be_type].is_valid_value(collectedAttrs[prop_key]['value']):
-                collectedAttrs[prop_key]['value'] = self._objectFactory.getAttributeTypes()[s_type].convert_to(be_type, collectedAttrs[prop_key]['value'])
+                collectedAttrs[prop_key]['value'] = self._objectFactory.getAttributeTypes()[s_type].convert_to(
+                        be_type, collectedAttrs[prop_key]['value'])
 
             # Append entry to the to-be-stored list
             toStore[be][prop_key] = {'foreign': collectedAttrs[prop_key]['foreign'],

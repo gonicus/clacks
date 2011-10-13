@@ -2,6 +2,7 @@
 <Objects xmlns="http://www.gonicus.de/Objects">
 	<Object>
 		<Name>PosixUser</Name>
+		<DisplayName>Posix extension</DisplayName>
 		<Description>A posix extension for a generic user</Description>
 		<BaseObject>false</BaseObject>
 		<BackendParameters>
