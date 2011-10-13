@@ -11,7 +11,6 @@ from gosa.common import Environment
 from gosa.common.utils import N_
 from gosa.common.components import Command, Plugin
 from gosa.agent.objects import GOsaObjectFactory, SCOPE_BASE, SCOPE_ONE, SCOPE_SUB
-from sqlalchemy import create_engine
 from sqlalchemy.sql import select, and_, func, asc
 from sqlalchemy.dialects.sqlite.base import SQLiteDialect
 from sqlalchemy import Table, Column, Integer, Boolean, String, DateTime, Date, Unicode, MetaData
@@ -75,7 +74,7 @@ class ObjectIndex(Plugin):
         reset = True
         if idx in meta.tables:
             current_attrs = set(self.__types.keys())
-            db_attrs = set([str(x)[len(idx) + 1:] for x in meta.tables[idx]._columns if not str(x)[len(idx) + 1:] in self.__fixed])
+            db_attrs = set([str(x)[len(idx) + 1:] for x in meta.tables[idx].columns if not str(x)[len(idx) + 1:] in self.__fixed])
 
             if current_attrs == db_attrs:
 
@@ -83,7 +82,7 @@ class ObjectIndex(Plugin):
 
                     # Check if we at least subclass the type we got from the
                     # database
-                    s_type = type(getattr(meta.tables[idx]._columns, attr).type)
+                    s_type = type(getattr(meta.tables[idx].columns, attr).type)
                     try:
                         d_type = self.__type_conv[self.__types[attr]['type']]
                         if not inspect.isclass(d_type):
@@ -112,7 +111,7 @@ class ObjectIndex(Plugin):
         metadata = MetaData()
 
         props = []
-        for attr, info in self.__types.items():
+        for attr in self.__types.keys():
             try:
                 d_type = self.__type_conv[self.__types[attr]['type']]
             except KeyError:
@@ -338,7 +337,7 @@ class ObjectIndex(Plugin):
         elif isinstance(data, collections.Mapping):
             return dict(map(self.__convert_lists, data.iteritems()))
         elif isinstance(data, collections.Iterable):
-            if data[0] == "_dn":
+            if len(data) and data[0] == "_dn":
                 data = (data[0], self.b642dn(data[1]))
             return type(data)(map(self.__convert_lists, data))
         else:
