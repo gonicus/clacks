@@ -122,10 +122,10 @@ class GOsaObjectFactory(object):
                     res[attr.Name.text] = {
                             'description': attr.Description.text,
                             'type': attr.Type.text,
-                            'multivalue': bool(attr.MultiValue),
-                            'mandatory': bool(attr.Mandatory),
-                            'read-only': bool(attr.ReadOnly)
-                            'unique': bool(attr.Unique)
+                            'multivalue': bool(attr.get("MultiValue")),
+                            'mandatory': bool(attr.get("Mandatory")),
+                            'read-only': bool(attr.get("ReadOnly")),
+                            'unique': bool(attr.get("Unique"))
                             }
         print res
         exit(0)
