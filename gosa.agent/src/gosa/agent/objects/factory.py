@@ -849,14 +849,13 @@ class GOsaObject(object):
             self._read(dn)
 
         # Use default value for newly created objects.
-        if mode in ["create", "extend"]:
-            for key in props:
-                if props[key]['default'] != None:
-                    props[key]['value'] = copy.deepcopy(props[key]['default'])
+        for key in props:
+            if not(props[key]['value']) and props[key]['default'] != None:
+                props[key]['value'] = copy.deepcopy(props[key]['default'])
 
-                    # Only set status to modified for values with a valid default.
-                    if props[key]['default'] and len(props[key]['default']):
-                        props[key]['status'] = STATUS_CHANGED
+                # Only set status to modified for values with a valid default.
+                if len(props[key]['default']):
+                    props[key]['status'] = STATUS_CHANGED
 
     def listProperties(self):
         props = getattr(self, '__properties')
