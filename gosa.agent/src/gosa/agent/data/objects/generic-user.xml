@@ -94,6 +94,7 @@
 				<Name>mail</Name>
 				<Description>RFC1274: RFC822 Mailbox</Description>
 				<Type>String</Type>
+				<MultiValue>true</MultiValue>
 			</Attribute>
 
 			<Attribute>

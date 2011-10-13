@@ -61,6 +61,15 @@ SCOPE_ONE = 1
 SCOPE_SUB = 2
 
 
+def load(attr, element, default=None):
+    """
+    Helper function for loading XML attributes with defaults.
+    """
+    if not element in attr.__dict__:
+        return default
+
+    return attr[element]
+
 class GOsaObjectFactory(object):
     """
     This class reads GOsa-object defintions and generates python-meta classes
@@ -122,10 +131,10 @@ class GOsaObjectFactory(object):
                     res[attr.Name.text] = {
                             'description': attr.Description.text,
                             'type': attr.Type.text,
-                            'multivalue': bool(attr.get("MultiValue", False)),
-                            'mandatory': bool(attr.get("Mandatory", False)),
-                            'read-only': bool(attr.get("ReadOnly", False)),
-                            'unique': bool(attr.get("Unique", False))
+                            'multivalue': bool(load(attr, "MultiValue", False)),
+                            'mandatory': bool(load(attr, "Mandatory", False)),
+                            'read-only': bool(load(attr, "ReadOnly", False)),
+                            'unique': bool(load(attr, "Unique", False))
                             }
         return res
 
@@ -448,11 +457,11 @@ class GOsaObjectFactory(object):
                 default = [self.__attribute_type['String'].convert_to(syntax, str(prop.Default))]
 
             # check for multivalue, mandatory and unique definition
-            multivalue = bool(prop.get('MultiValue', False))
-            unique = bool(prop.get('Unique', False))
-            mandatory = bool(prop.get('Mandatory', False))
-            readonly = bool(prop.get('ReadOnly', False))
-            foreign = bool(prop.get('Foreign', False))
+            multivalue = bool(load(prop, "MultiValue", False))
+            unique = bool(load(prop, "Unique", False))
+            mandatory = bool(load(prop, "Mandatory", False))
+            readonly = bool(load(prop, "ReadOnly", False))
+            foreign = bool(load(prop, "Foreign", False))
 
             # Check for property dependencies
             dependsOn = []
@@ -492,8 +501,8 @@ class GOsaObjectFactory(object):
                     for param in method['MethodParameters']['MethodParameter']:
                         pName = str(param['Name'])
                         pType = str(param['Type'])
-                        pRequired = bool(param.get('Required', False))
-                        pDefault = str(param.get('Default', None))
+                        pRequired = bool(load(param, "Required", False))
+                        pDefault = str(load(param, "Default"))
                         mParams.append( (pName, pType, pRequired, pDefault), )
 
                 # Get the list of command parameters
