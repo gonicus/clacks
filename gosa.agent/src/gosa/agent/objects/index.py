@@ -407,7 +407,7 @@ class ObjectIndex(Plugin):
         return arg
 
     def dn2b64(self, dn):
-        parts = ldap.dn.explode_dn(dn, flags=DN_FORMAT_LDAPV3)
+        parts = ldap.dn.explode_dn(dn.lower(), flags=DN_FORMAT_LDAPV3)
         return ",".join([b64encode(p) for p in parts])
 
     def b642dn(self, b64dn):

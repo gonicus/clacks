@@ -22,7 +22,11 @@ else:
     del sys.argv[1]
 
 f = GOsaObjectFactory.getInstance()
-print f.identifyObject(u'dc=gonicus,dc=de')
+
+b = u"ou=people,dc=gonicus,dc=de"
+
+print ">", f.identifyObject(b)
+#print "->", f.getObjectChildren(b)
 exit(0)
 
 if mode == "create":
