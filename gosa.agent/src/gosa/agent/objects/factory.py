@@ -856,8 +856,8 @@ class GOsaObject(object):
             for key in props:
                 if props[key]['default'] != None:
                     props[key]['value'] = copy.deepcopy(props[key]['default'])
-                    props[key]['status'] = STATUS_CHANGED
-                    print key, props[key]['value']
+                    if props[key]['default']:
+                        props[key]['status'] = STATUS_CHANGED
 
     def listProperties(self):
         props = getattr(self, '__properties')
@@ -1178,6 +1178,8 @@ class GOsaObject(object):
             if self._mode == "create":
                 be.create(self.dn, toStore[p_backend], self._backendAttrs[p_backend])
             elif self._mode == "extend":
+                import pprint
+                pprint.pprint([self.uuid, toStore[p_backend], self._backendAttrs[p_backend], self.getForeignProperties()])
                 be.extend(self.uuid, toStore[p_backend],
                         self._backendAttrs[p_backend],
                         self.getForeignProperties())
