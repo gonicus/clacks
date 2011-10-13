@@ -194,6 +194,7 @@ class GOsaObjectFactory(object):
             if be.identify(dn, info['backend_attrs']):
 
                 #TODO: check for the current name if it makes a different object type
+                #      -> placeholder i.e. ou=people, etc.
 
                 if info['base']:
                     if id_base:

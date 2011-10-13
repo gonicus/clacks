@@ -17,8 +17,8 @@ fltr = {'mail': 'cajus@*'}
 
 # Deliver a count for a specific base
 print "Count:", ie.count(base="dc=gonicus,dc=de", fltr=fltr)
-for e in ie.search(base="ou=people,ou=Technik,dc=gonicus,dc=de",
-        scope=SCOPE_ONE, fltr=fltr, attrs=['sn', 'givenName', 'uid', 'mail', '_dn'], begin=0, end=10):
+for e in ie.search(base=u"dc=gonicus,dc=de", scope=SCOPE_SUB, fltr=fltr,
+        attrs=['sn', 'givenName', 'uid', 'mail', '_dn'], begin=0, end=10):
     print e
 
 #ie.remove(u1)

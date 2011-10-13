@@ -11,7 +11,7 @@ from gosa.common import Environment
 from gosa.common.utils import N_
 from gosa.common.components import Command, Plugin
 from gosa.agent.objects import GOsaObjectFactory, SCOPE_BASE, SCOPE_ONE, SCOPE_SUB
-from sqlalchemy.sql import select, and_, func, asc
+from sqlalchemy.sql import select, and_, or_, func, asc
 from sqlalchemy.dialects.sqlite.base import SQLiteDialect
 from sqlalchemy import Table, Column, Integer, Boolean, String, DateTime, Date, Unicode, MetaData
 
@@ -38,7 +38,7 @@ class ObjectIndex(Plugin):
     __types = None
     __engine = None
     __conn = None
-    __fixed = ['id', '_dn', '_uuid', '_lastChanged', '_extensions']
+    __fixed = ['id', '_dn', '_parent_dn', '_uuid', '_lastChanged', '_extensions']
     _priority_ = 20
     _target_ = 'core'
 
@@ -122,6 +122,7 @@ class ObjectIndex(Plugin):
         self.__index = Table(idx, metadata,
             Column('_uuid', String(36), primary_key=True),
             Column('_dn', String(1024)),
+            Column('_parent_dn', String(1024)),
             Column('_lastChanged', DateTime),
             Column('_extensions', String(256)),
             *props)
@@ -162,6 +163,8 @@ class ObjectIndex(Plugin):
     def insert(self, uuid, dn, **props):
         props['_uuid'] = uuid
         props['_dn']= self.dn2b64(dn)
+        prnt_helper = props['_dn'].split(",")
+        props['_parent_dn'] = ",".join(prnt_helper[1:]) if len(prnt_helper) > 1 else ""
 
         # Convert all list types to Unicode strings
         props = dict([(attr, self.__sep + self.__sep.join(key) + self.__sep if type(key) == list else key) for attr, key in props.items()])
@@ -171,7 +174,10 @@ class ObjectIndex(Plugin):
         self.__conn.execute(self.__index.delete().where(self.__index.c._uuid == uuid))
 
     def move(self, uuid, dn):
-        self.update(uuid, _dn=self.dn2b64(dn))
+        dn = self.dn2b64(dn)
+        prnt_helper = dn.split(",")
+        parent_dn = ",".join(prnt_helper[1:]) if len(prnt_helper) > 1 else ""
+        self.update(uuid, _dn=dn, _parent_dn=parent_dn)
 
     def update(self, uuid, **props):
         # Convert all list types to Unicode strings
@@ -235,10 +241,10 @@ class ObjectIndex(Plugin):
                 base_filter = self.__index.c._dn == base
 
             if scope == SCOPE_ONE:
-                base_filter = self.__index.c._dn.op('regexp')(r"^([^,]+,)?%s$" % base)
+                base_filter = or_(self.__index.c._dn == base, self.__index.c._parent_dn == base)
 
             if scope == SCOPE_SUB:
-                base_filter = self.__index.c._dn.op('regexp')(r"^(.*,)?%s$" % base)
+                base_filter = or_(self.__index.c._dn == base, self.__index.c._parent_dn.like("%%,%s" % base))
 
         if fltr:
             if base:
@@ -295,10 +301,10 @@ class ObjectIndex(Plugin):
                 base_filter = self.__index.c._dn == base
 
             if scope == SCOPE_ONE:
-                base_filter = self.__index.c._dn.op('regexp')(r"^([^,]+,)?%s$" % base)
+                base_filter = or_(self.__index.c._dn == base, self.__index.c._parent_dn == base)
 
             if scope == SCOPE_SUB:
-                base_filter = self.__index.c._dn.op('regexp')(r"^(.*,)?%s$" % base)
+                base_filter = or_(self.__index.c._dn == base, self.__index.c._parent_dn.like("%%,%s" % base))
 
         if fltr:
             if base:
