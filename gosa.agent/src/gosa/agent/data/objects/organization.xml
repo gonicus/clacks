@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Objects xmlns="http://www.gonicus.de/Objects">
+	<Object>
+		<Name>Organization</Name>
+		<Description>An organization</Description>
+		<BackendParameters>
+			<Backend objectClasses="organization">LDAP</Backend>
+		</BackendParameters>
+		<Backend>LDAP</Backend>
+
+		<Attributes>
+			<Attribute>
+				<Name>o</Name>
+				<Description>Organization name</Description>
+				<Type>UnicodeString</Type>
+                                <MultiValue>false</MultiValue>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+		</Attributes>
+		<Container>
+			<Type>PeopleContainer</Type>
+			<Type>GroupContainer</Type>
+		</Container>
+		<BaseObject>true</BaseObject>
+	</Object>
+</Objects>
+
