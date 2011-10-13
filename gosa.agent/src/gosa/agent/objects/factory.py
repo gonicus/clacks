@@ -879,7 +879,9 @@ class GOsaObject(object):
             for key in props:
                 if props[key]['default'] != None:
                     props[key]['value'] = copy.deepcopy(props[key]['default'])
-                    if props[key]['default']:
+
+                    # Only set status to modified for values with a valid default.
+                    if props[key]['default'] and len(props[key]['default']):
                         props[key]['status'] = STATUS_CHANGED
 
     def listProperties(self):
@@ -1201,8 +1203,6 @@ class GOsaObject(object):
             if self._mode == "create":
                 be.create(self.dn, toStore[p_backend], self._backendAttrs[p_backend])
             elif self._mode == "extend":
-                import pprint
-                pprint.pprint([self.uuid, toStore[p_backend], self._backendAttrs[p_backend], self.getForeignProperties()])
                 be.extend(self.uuid, toStore[p_backend],
                         self._backendAttrs[p_backend],
                         self.getForeignProperties())
@@ -1217,11 +1217,11 @@ class GOsaObject(object):
                 continue
 
             be = ObjectBackendRegistry.getBackend(backend)
-
+            beAttrs = self._backendAttrs[backend] if backend in self._backendAttrs else {}
             if self._mode == "create":
-                be.create(self.dn, data, self._backendAttrs[backend])
+                be.create(self.dn, data, beAttrs)
             elif self._mode == "extend":
-                be.extend(self.uuid, data, self._backendAttrs[backend])
+                be.extend(self.uuid, data, beAttrs, self.getForeignProperties())
             else:
                 be.update(self.uuid, data)
 
