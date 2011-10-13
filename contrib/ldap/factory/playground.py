@@ -26,11 +26,12 @@ f = GOsaObjectFactory.getInstance()
 #-Test-------------------------------------------------------------------------
 
 def resolve_children(dn):
-    print "Inspecting", dn
+    sys.stdout.write(".")
+    sys.stdout.flush()
+
     res = {}
 
     children = f.getObjectChildren(dn)
-    print "* Found", children
     res = dict(res.items() + children.items())
 
     for chld in children.keys():
@@ -38,7 +39,13 @@ def resolve_children(dn):
 
     return res
 
-print resolve_children(u"dc=gonicus,dc=de")
+print "Wait",
+res = resolve_children(u"dc=gonicus,dc=de")
+print
+
+for r in res.items():
+    print r
+print len(res)
 
 # Break for now...
 exit(0)
