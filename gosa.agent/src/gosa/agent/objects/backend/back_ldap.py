@@ -183,14 +183,6 @@ class LDAP(ObjectBackend):
         # Write...
         self.log.debug("saving entry '%s'" % dn)
 
-        mod_attrs = [
-                (0, 'sambaProfilePath', []),
-                (0, 'sambaAcctFlags', ['[U]']),
-                (0, 'sambaSID', ['11111111']),
-                (0, 'objectClass', ['sambaSamAccount'])
-                ]
-
-
         if foreign_keys == None:
             self.con.add_s(dn, mod_attrs)
         else:
