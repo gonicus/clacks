@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import cgi
 
 class BaseRenderer(object):
 
@@ -6,6 +7,7 @@ class BaseRenderer(object):
 
     def __init__(self):
         pass
+
 
     def getHTML(self, particiantInfo):
         if not particiantInfo:

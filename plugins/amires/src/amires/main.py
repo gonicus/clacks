@@ -117,6 +117,10 @@ class AsteriskNotificationReceiver(object):
                 from_msg += info['object'].getHTML(i_to, event)
                 from_msg += "\n\n"
 
+        # encode as ASCII with hexadecimal HTML entities for non-latin1 chars
+        to_msg = to_msg.encode('ascii', 'xmlcharrefreplace')
+        from_msg = from_msg.encode('ascii', 'xmlcharrefreplace')
+
         # Send from/to messages as needed
         amqp = PluginRegistry.getInstance('AMQPHandler')
         if from_msg:
