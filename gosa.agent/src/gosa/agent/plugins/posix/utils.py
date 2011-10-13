@@ -7,32 +7,6 @@ from gosa.agent.objects.filter import ElementFilter
 from gosa.agent.objects.types import AttributeType
 from gosa.agent.objects.backend.registry import ObjectBackendRegistry
 
-class PosixUtils(Plugin):
-    """
-    Utility class that contains methods needed to handle posix
-    functionality.
-    """
-    _target_ = 'posix'
-
-    def __init__(self):
-        env = Environment.getInstance()
-        self.env = env
-
-    @Command(__help__=N_("Find the next free id for the given attribute."))
-    def get_next_id(self, attribute="uidNumber"):
-        """
-        Returns the next free id for the given attribute!
-
-        ========== ============
-        Parameter  Description
-        ========== ============
-        attribute  The name of the attribute want to get the next free id for. (default is 'uidNumber')
-        ========== ============
-
-        ``Return:`` An integer value representing the next free id.
-        """
-        return(ObjectBackendRegistry.getBackend(valDict[key]['backend']).get_next_id(attribute))
-
 
 class GetNextID(ElementFilter):
     """
