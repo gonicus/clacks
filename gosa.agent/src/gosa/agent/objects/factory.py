@@ -42,6 +42,8 @@ import datetime
 import re
 import logging
 import zope.event
+import ldap.dn
+from ldap import DN_FORMAT_LDAPV3
 from zope.interface import Interface, implements
 from lxml import etree, objectify
 from gosa.common import Environment
@@ -193,8 +195,11 @@ class GOsaObjectFactory(object):
             be = ObjectBackendRegistry.getBackend(info['backend'])
             if be.identify(dn, info['backend_attrs']):
 
-                #TODO: check for the current name if it makes a different object type
-                #      -> placeholder i.e. ou=people, etc.
+                # check for the current name if it makes a different object type
+                classr = self.__xml_defs[name].Object
+                if 'FixedRDN' in classr.__dict__:
+                    if ldap.dn.explode_dn(dn, flags=DN_FORMAT_LDAPV3)[0].lower() != classr.FixedRDN.text.lower():
+                        continue
 
                 if info['base']:
                     if id_base:
