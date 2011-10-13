@@ -30,7 +30,7 @@ class SugarNumberResolver(PhoneNumberResolver):
 
         # connect to sugar db
         self.sugar_db = MySQLdb.connect(host=host,
-            user=user, passwd=passwd, db=base)
+            user=user, passwd=passwd, db=base, charset='utf8')
         self.sugar_db.set_character_set('utf8')
 
         self.sugar_url = self.env.config.get("resolver-sugar.site_url",
@@ -100,7 +100,7 @@ class SugarNumberResolver(PhoneNumberResolver):
                         + 'index.php?module=Accounts&action=DetailView' \
                         + '&record=' + dat[0]
                 if dat[1] is not None:
-                    result['company_name'] = unicode(dat[1], "UTF-8")
+                    result['company_name'] = dat[1]
                 if dat[2] is not None:
                     result['company_phone'] = dat[2]
 
@@ -120,11 +120,11 @@ class SugarNumberResolver(PhoneNumberResolver):
                     # fill result data with found data
                     result['contact_id'] = dat[0]
                     if dat[1] is not None:
-                        result['contact_name'] = unicode(dat[1], "UTF-8")
+                        result['contact_name'] = dat[1]
                     if dat[2] is not None:
                         if not result['contact_name'] == '':
                             result['contact_name'] += ' '
-                        result['contact_name'] += unicode(dat[2], "UTF-8")
+                        result['contact_name'] += dat[2]
                     if dat[3] is not None:
                         result['contact_phone'] = dat[3]
                     result['contact_detail_url'] = self.sugar_url \
@@ -153,7 +153,7 @@ class SugarNumberResolver(PhoneNumberResolver):
                                     + 'index.php?module=Accounts&action=DetailView'\
                                     + '&record=' + dat[0]
                             if dat[1] is not None:
-                                result['company_name'] = unicode(dat[1], "UTF-8")
+                                result['company_name'] = dat[1]
                             if dat[2] is not None:
                                 result['company_phone'] = dat[2]
         finally:
