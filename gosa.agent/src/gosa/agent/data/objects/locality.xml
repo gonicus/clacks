@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Objects xmlns="http://www.gonicus.de/Objects">
+	<Object>
+		<Name>Locality</Name>
+		<Description>Locality</Description>
+		<DisplayName>Locality</DisplayName>
+		<BackendParameters>
+			<Backend objectClasses="locality">LDAP</Backend>
+		</BackendParameters>
+		<Backend>LDAP</Backend>
+
+		<Attributes>
+			<Attribute>
+				<Name>l</Name>
+				<Description>Locality name</Description>
+				<Type>UnicodeString</Type>
+                                <MultiValue>false</MultiValue>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+			<Attribute>
+				<Name>description</Name>
+				<Description>Description</Description>
+				<Type>UnicodeString</Type>
+                                <MultiValue>false</MultiValue>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+			<Attribute>
+				<Name>ou</Name>
+				<Description>Organizational unit</Description>
+				<Type>UnicodeString</Type>
+                                <MultiValue>false</MultiValue>
+                                <Mandatory>false</Mandatory>
+                        </Attribute>
+			<Attribute>
+				<Name>manager</Name>
+				<Description>The dn of the manager</Description>
+				<Type>UnicodeString</Type>
+                                <MultiValue>false</MultiValue>
+                                <Mandatory>false</Mandatory>
+                        </Attribute>
+		</Attributes>
+		<Container>
+			<Type>Locality</Type>
+			<Type>Organization</Type>
+		</Container>
+		<BaseObject>true</BaseObject>
+	</Object>
+</Objects>
+
