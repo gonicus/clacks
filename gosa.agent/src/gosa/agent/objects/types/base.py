@@ -18,16 +18,16 @@ class StringAttribute(AttributeType):
         return(value1 == value2)
 
     def _convert_to_boolean(self, value):
-        return(not(value in ['', 'false', '0', 'False']))
+        return(map(lambda x: not(x in ['', 'false', '0', 'False']), value))
 
     def _convert_to_string(self, value):
-        return(str(value))
+        return(map(lambda x: str(x), value))
 
     def _convert_to_integer(self, value):
-        return(int(value))
+        return(map(lambda x: int(x), value))
 
     def _convert_to_unicodestring(self, value):
-        return(unicode(value))
+        return(map(lambda x: unicode(x), value))
 
 class IntegerAttribute(AttributeType):
     __alias__ = "Integer"

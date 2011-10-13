@@ -415,7 +415,7 @@ class GOsaObjectFactory(object):
             # Convert the default to the corresponding type.
             default = None
             if "Default" in prop.__dict__:
-                default = [self.__attribute_type['String'].convert_to(syntax, str(prop.Default))]
+                default = self.__attribute_type['String'].convert_to(syntax, [str(prop.Default)])
 
             # check for multivalue, mandatory and unique definition
             multivalue = bool(load(prop, "MultiValue", False))
@@ -1148,7 +1148,8 @@ class GOsaObject(object):
             be_type = collectedAttrs[prop_key]['backend_type']
             s_type = collectedAttrs[prop_key]['type']
             if not self._objectFactory.getAttributeTypes()[be_type].is_valid_value(collectedAttrs[prop_key]['value']):
-                collectedAttrs[prop_key]['value'] = self._objectFactory.getAttributeTypes()[s_type].convert_to(be_type, collectedAttrs[prop_key]['value'])
+                collectedAttrs[prop_key]['value'] = self._objectFactory.getAttributeTypes()[s_type].convert_to(
+                        be_type, collectedAttrs[prop_key]['value'])
 
             # Append entry to the to-be-stored list
             toStore[be][prop_key] = {'foreign': collectedAttrs[prop_key]['foreign'],
