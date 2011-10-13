@@ -60,12 +60,21 @@
                                 <Description>An integer uniquely identifying a user in an administrative domain</Description>
                                 <Type>Integer</Type>
                                 <Mandatory>true</Mandatory>
+                                <OutFilter>
+                                        <FilterChain>
+                                                <FilterEntry>
+                                                        <Filter>
+                                                                <Name>GetNextID</Name>
+                                                                <Param>uidNumber</Param>
+                                                        </Filter>
+                                                </FilterEntry>
+                                        </FilterChain>
+                                </OutFilter>
                         </Attribute>
 
            		<Attribute>
                                 <Name>gidNumber</Name>
                                 <Description>An integer uniquely identifying a group in an administrative domain</Description>
-				<Default>-1</Default>
                                 <Type>Integer</Type>
                                 <Mandatory>true</Mandatory>
                         </Attribute>

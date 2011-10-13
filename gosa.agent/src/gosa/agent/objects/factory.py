@@ -451,16 +451,16 @@ class GOsaObjectFactory(object):
             foreign = bool(load(prop, "Foreign", False))
 
             # Check for property dependencies
-            dependsOn = []
+            depends_on = []
             if "DependsOn" in prop.__dict__:
                 for d in prop.__dict__['DependsOn'].iterchildren():
-                    dependsOn.append(str(d))
+                    depends_on.append(str(d))
 
             # Create a new property with the given information
             props[str(prop['Name'])] =  {
                 'value': [],
                 'status': STATUS_OK,
-                'dependsOn': dependsOn,
+                'depends_on': depends_on,
                 'type': syntax,
                 'backend_type': backend_syntax,
                 'validator': validator,
@@ -476,9 +476,9 @@ class GOsaObjectFactory(object):
                 'readonly': readonly,
                 'multivalue': multivalue}
 
-        # Validate the properties dependsOn list
+        # Validate the properties depends_on list
         for pname in props:
-            for dentry in props[pname]['dependsOn']:
+            for dentry in props[pname]['depends_on']:
                 if dentry not in props:
                     raise FactoryException("Property '%s' cannot depend on non existing property '%s', please check the XML definition!" % (
                             pname, pentry))
@@ -1137,7 +1137,7 @@ class GOsaObject(object):
         for key in props:
 
             # Adapt status from dependent properties.
-            for propname in props[key]['dependsOn']:
+            for propname in props[key]['depends_on']:
                 props[key]['status'] |= props[propname]['status'] & STATUS_CHANGED
 
             # Do not save untouched values
