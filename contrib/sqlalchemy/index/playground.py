@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import uuid
 import datetime
-from gosa.agent.objects.index import ObjectIndex
+from gosa.agent.objects.index import ObjectIndex, SCOPE_ONE, SCOPE_BASE, SCOPE_SUB
 
 ie = ObjectIndex()
 
@@ -17,8 +17,8 @@ fltr = {'uid': '*us'}
 
 # Deliver a count for a specific base
 print "Count:", ie.count(base="dc=gonicus,dc=de", fltr=fltr)
-#for e in ie.search(fltr=fltr, attrs=['sn', 'givenName', 'uid'], begin=0, end=10):
-#    print e
+for e in ie.search(base="ou=people,ou=Technik,dc=gonicus,dc=de", scope=SCOPE_ONE, fltr=fltr, attrs=['sn', 'givenName', 'uid', '_dn'], begin=0, end=10):
+    print e
 
 #ie.remove(u1)
 #print ie.exists(u1)

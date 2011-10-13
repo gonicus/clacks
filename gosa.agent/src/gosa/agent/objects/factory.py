@@ -27,6 +27,7 @@ which will then provide the defined attributes, methods, aso.
 Here are some examples on how to instatiate on new object:
 
 >>> from gosa.agent.objects import GOsaObjectFactory
+>>> f = GOsaObjectFactory.getInstance()
 >>> person = f.getObject('Person', "410ad9f0-c4c0-11e0-962b-0800200c9a66")
 >>> print person->sn
 >>> person->sn = "Surname"
@@ -111,7 +112,23 @@ class GOsaObjectFactory(object):
     def getAttributeTypes(self):
         return(self.__attribute_type)
 
-#-TODO-needs-re-work-------------------------------------------------------------------------------
+    def getAttributes(self):
+        res = {}
+
+        for name, element in self.__xml_defs.items():
+            find = objectify.ObjectPath("Objects.Object.Attributes")
+            if find.hasattr(element):
+                for attr in find(element).iterchildren():
+                    res[attr.Name.text] = {
+                            'description': attr.Description.text,
+                            'type': attr.Type.text,
+                            'multivalue': bool(attr.MultiValue),
+                            'mandatory': bool(attr.Mandatory),
+                            'read-only': bool(attr.ReadOnly)
+                            'unique': bool(attr.Unique)
+                            }
+        print res
+        exit(0)
 
     def load_object_types(self):
         types = {}
@@ -153,8 +170,6 @@ class GOsaObjectFactory(object):
             types[name]['extended_by'] = ext
 
         self.__object_types = types
-
-#-TODO-needs-re-work-------------------------------------------------------------------------------
 
     #@Command()
     def getObjectTypes(self):
@@ -437,7 +452,7 @@ class GOsaObjectFactory(object):
             multivalue = bool(prop['MultiValue']) if "MultiValue" in prop.__dict__ else False
             unique = bool(prop['Unique']) if "Unique" in prop.__dict__ else False
             mandatory = bool(prop['Mandatory']) if "Mandatory" in prop.__dict__ else False
-            readonly = bool(prop['Readonly']) if "Readonly" in prop.__dict__ else False
+            readonly = bool(prop['ReadOnly']) if "ReadOnly" in prop.__dict__ else False
             foreign = bool(prop['Foreign']) if "Foreign" in prop.__dict__ else False
 
             # Check for property dependencies

@@ -20,14 +20,14 @@
                                 <Name>sambaLMPassword</Name>
                                 <Description>LanManager Password</Description>
                                 <Type>String</Type>
-                                <Readonly>true</Readonly>
+                                <ReadOnly>true</ReadOnly>
                         </Attribute>
 
            		<Attribute>
                                 <Name>sambaNTPassword</Name>
                                 <Description>MD4 hash of the unicode password</Description>
                                 <Type>String</Type>
-                                <Readonly>true</Readonly>
+                                <ReadOnly>true</ReadOnly>
                         </Attribute>
 
            		<Attribute>
@@ -345,7 +345,7 @@
 					<Attribute>acct_worktstationTrustAccount</Attribute>
 					<Attribute>acct_passwordDoesNotExpire</Attribute>
 				</DependsOn>
-				<Readonly>true</Readonly>
+				<ReadOnly>true</ReadOnly>
 	                       	<InFilter>
                                         <FilterChain>
                                                 <FilterEntry>
@@ -406,7 +406,7 @@
 				<Backend>NULL</Backend>
 				<Type>String</Type>
 				<Default>01000000</Default>
-				<Readonly>true</Readonly>
+				<ReadOnly>true</ReadOnly>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
@@ -542,7 +542,7 @@
 				<Backend>NULL</Backend>
                                 <Type>String</Type>
 				<Default>00e00010</Default>
-				<Readonly>true</Readonly>
+				<ReadOnly>true</ReadOnly>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
 
