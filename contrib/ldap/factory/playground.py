@@ -23,11 +23,34 @@ else:
 
 f = GOsaObjectFactory.getInstance()
 
-b = u"dc=gonicus,dc=de"
+#-Test-------------------------------------------------------------------------
 
-#print ">", f.identifyObject(b)
-print "->", f.getObjectChildren(b)
+def resolve_children(dn):
+    sys.stdout.write(".")
+    sys.stdout.flush()
+
+    res = {}
+
+    children = f.getObjectChildren(dn)
+    res = dict(res.items() + children.items())
+
+    for chld in children.keys():
+        res = dict(res.items() + resolve_children(chld).items())
+
+    return res
+
+print "Wait",
+res = resolve_children(u"dc=gonicus,dc=de")
+print
+
+for r in res.items():
+    print r
+print len(res)
+
+# Break for now...
 exit(0)
+
+#-------------------------------------------------------------------------Test-
 
 if mode == "create":
     p = f.getObject('GenericUser', u'ou=people,dc=gonicus,dc=de', mode="create")

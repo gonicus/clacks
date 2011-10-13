@@ -70,7 +70,9 @@ class LDAP(ObjectBackend):
     def query(self, base, scope, params, fixed_rdn=None):
         ocs = ["(objectClass=%s)" % o.strip() for o in params['objectClasses'].split(",")]
         fltr = "(&" + "".join(ocs) + (ldap.filter.filter_format("(%s)", [fixed_rdn]) if fixed_rdn else "") + ")"
-        print fltr
+        res = self.con.search_s(base.encode('utf-8'), ldap.SCOPE_ONELEVEL, fltr,
+                [self.uuid_entry])
+        return [unicode(x.decode('utf-8')) for x in dict(res).keys()]
 
     def exists(self, misc):
         if self.is_uuid(misc):

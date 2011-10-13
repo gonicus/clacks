@@ -42,6 +42,7 @@
 		<Container>
 			<Type>PeopleContainer</Type>
 			<Type>GroupContainer</Type>
+			<Type>OrganizationalUnit</Type>
 		</Container>
 		<BaseObject>true</BaseObject>
 	</Object>
