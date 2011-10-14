@@ -15,7 +15,8 @@ from gosa.common import Environment
 from gosa.common.utils import N_
 from gosa.common.handler import IInterfaceHandler
 from gosa.common.components import Command, Plugin, PluginRegistry
-from gosa.agent.objects import GOsaObjectFactory, SCOPE_BASE, SCOPE_ONE, SCOPE_SUB
+from gosa.agent.objects import GOsaObjectFactory, ObjectChanged, SCOPE_BASE, SCOPE_ONE, SCOPE_SUB
+from gosa.agent.ldap_utils import LDAPHandler
 from sqlalchemy.sql import select, and_, or_, func, asc
 from sqlalchemy.dialects.sqlite.base import SQLiteDialect
 from sqlalchemy import Table, Column, Integer, Boolean, String, DateTime, Date, Unicode, MetaData
@@ -58,11 +59,11 @@ class ObjectIndex(Plugin):
         self.__bl = re.compile(r'([^%s]+)' % self.__sep)
 
         # Define attributes to be indexed from configuration
-        index_attrs = [s.strip() for s in self.env.config.get("index.attributes").split(",")]
+        self.index_attrs = [s.strip() for s in self.env.config.get("index.attributes").split(",")]
         available_attrs = self.factory.getAttributes()
 
         self.__types = {}
-        for ia in index_attrs:
+        for ia in self.index_attrs:
             if not ia in available_attrs:
                 self.log.warning("attribute '%s' is not available" % ia)
                 continue
@@ -149,13 +150,13 @@ class ObjectIndex(Plugin):
 
             self.__conn.connection.create_function("regexp", 2, sqlite_regexp)
 
+        # Listen for object events
+        zope.event.subscribers.append(self.__handle_events)
+
     def serve(self):
         # Sync index
         sobj = PluginRegistry.getInstance("SchedulerService")
         sobj.getScheduler().add_date_job(self.sync_index, datetime.datetime.now() + datetime.timedelta(seconds=5), tag='_internal')
-
-        # Listen for object events
-        zope.event.subscribers.append(self.__handle_events)
 
     @Command(__help__=N_("Check if an object with the given UUID exists."))
     def exists(self, uuid):
@@ -450,10 +451,9 @@ class ObjectIndex(Plugin):
             return res
 
         self.log.info("scanning for objects")
-        res = resolve_children(u"ou=Vertrieb,dc=gonicus,dc=de")
+        res = resolve_children(LDAPHandler.get_instance().get_base())
 
         self.log.info("generating object index")
-        to_be_indexed = ['uid', 'givenName', 'sn', 'mail']
 
         # Find new entries
         backend_objects = []
@@ -469,7 +469,7 @@ class ObjectIndex(Plugin):
 
             # Gather index attributes
             attrs = {}
-            for attr in to_be_indexed:
+            for attr in self.index_attrs:
                 if obj.hasattr(attr):
                     attrs[attr] = getattr(obj, attr)
 
@@ -502,4 +502,40 @@ class ObjectIndex(Plugin):
         self.log.info("processed %d objects in %ds" % (len(res), t1 - t0))
 
     def __handle_events(self, event):
-        print "%s event catched: %s of %s" % (event.__class__.__name__, event.reason, event.uuid)
+        if isinstance(event, ObjectChanged):
+            uuid = event.uuid
+            f = GOsaObjectFactory.getInstance()
+
+            if event.reason == "post remove":
+                self.log.debug("removing object index for %s" % uuid)
+                self.remove(uuid)
+
+            if event.reason == "post move":
+                self.log.debug("updating object index for %s" % uuid)
+                self.move(uuid, obj.dn)
+
+            if event.reason == "post create":
+                self.log.debug("creating object index for %s" % uuid)
+                o_type, ext = f.identifyObject(event.dn)
+                obj = f.getObject(o_type, event.dn)
+
+                # Gather index attributes
+                attrs = {}
+                for attr in self.index_attrs:
+                    if obj.hasattr(attr):
+                        attrs[attr] = getattr(obj, attr)
+
+                self.insert(uuid, event.dn, _lastChanged=obj.modifyTimestamp, _type=o_type, _extensions=ext, **attrs)
+
+            if event.reason in ["post retract", "post update", "post extend"]:
+                self.log.debug("updating object index for %s" % uuid)
+                o_type, ext = f.identifyObject(event.dn)
+                obj = f.getObject(o_type, event.dn)
+
+                # Gather index attributes
+                attrs = {}
+                for attr in self.index_attrs:
+                    if obj.hasattr(attr):
+                        attrs[attr] = getattr(obj, attr)
+
+                self.update(uuid, _type=o_type, _lastChanged=obj.modifyTimestamp, _extensions=ext, **attrs)

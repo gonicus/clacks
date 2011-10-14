@@ -49,7 +49,7 @@
 			<Type>Domain</Type>
 			<Type>Country</Type>
 		</Container>
-		<BaseObject>true</BaseObject>
+		<BaseObject>false</BaseObject>
 	</Object>
 </Objects>
 

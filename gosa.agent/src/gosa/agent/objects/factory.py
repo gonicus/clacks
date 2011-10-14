@@ -197,12 +197,12 @@ class GOsaObjectFactory(object):
                 if info['base']:
                     if fixed_rdn:
                         if id_base_fixed:
-                            raise FactoryException("object looks like beeing '%s' and '%s' at the same time - multiple base objects are not supported" % (id_base, name))
+                            raise FactoryException("looks like '%s' beeing '%s' and '%s' at the same time - multiple base objects are not supported" % (dn, id_base, name))
                         id_base_fixed = name
 
                     else:
                         if id_base:
-                            raise FactoryException("object looks like beeing '%s' and '%s' at the same time - multiple base objects are not supported" % (id_base, name))
+                            raise FactoryException("looks like '%s' beeing '%s' and '%s' at the same time - multiple base objects are not supported" % (dn, id_base, name))
                         id_base = name
                 else:
                     id_extend.append(name)
@@ -1626,6 +1626,7 @@ class ObjectChanged(object):
     def __init__(self, reason, obj):
         self.reason = reason
         self.uuid = obj.uuid
+        self.dn = obj.dn
 
 
 class AttributeChanged(object):
