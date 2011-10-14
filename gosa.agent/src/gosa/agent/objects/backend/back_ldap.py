@@ -66,6 +66,12 @@ class LDAP(ObjectBackend):
         return items
 
     def identify(self, dn, params, fixed_rdn=None):
+        # Check for special RDN attribute
+        if 'RDN' in params:
+            rdns = [o.strip() for o in params['RDN'].split(",")]
+            if not dn.split('=')[0] in rdns:
+                return False
+
         ocs = [o.strip() for o in params['objectClasses'].split(",")]
 
         # Remove cache if too old
