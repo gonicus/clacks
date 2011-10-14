@@ -5,13 +5,13 @@ from gosa.agent.objects.index import ObjectIndex, SCOPE_ONE, SCOPE_BASE, SCOPE_S
 
 ie = ObjectIndex()
 
-u1 = str(uuid.uuid4())
-ie.insert(u1, dn=u"cn=Cajus Pollmeier,ou=people,ou=Technik,dc=gonicus,dc=de", sn=u"Pollmeier", givenName=u"Cajus", uid="cajus", mail=['cajus@debian.org', 'cajus@naasa.net', 'pollmeier@gonicus.de'], _lastChanged=datetime.datetime.now())
-print ie.exists(u1)
+#u1 = str(uuid.uuid4())
+#ie.insert(u1, dn=u"cn=Cajus Pollmeier,ou=people,ou=Technik,dc=gonicus,dc=de", sn=u"Pollmeier", givenName=u"Cajus", uid="cajus", mail=['cajus@debian.org', 'cajus@naasa.net', 'pollmeier@gonicus.de'], _lastChanged=datetime.datetime.now())
+#print ie.exists(u1)
 
 #fltr = {}
 #fltr = {'uid': '*us'}
-fltr = {'mail': 'cajus@*'}
+fltr = {'mail': 'stefan.grote@*'}
 #fltr = {'_and': {'uid': 'lorenz', 'givenName': u'Cajus', '_or': {'sn': u'ding', 'sn_2': u'dong', '_gt': ['dob', datetime.datetime.now()]}}}
 #fltr = {'_and': {'uid': 'lorenz', 'givenName': u'Cajus', '_or': {'_in': {'sn': [u'ding', u'dong']}, '_gt': ['dob', datetime.datetime.now()]}}}
 
@@ -23,5 +23,3 @@ for e in ie.search(base=u"dc=gonicus,dc=de", scope=SCOPE_SUB, fltr=fltr,
 
 #ie.remove(u1)
 #print ie.exists(u1)
-
-#ie.refresh()
