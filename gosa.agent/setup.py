@@ -135,6 +135,7 @@ setup(
         filter.sambaacctflagsout = gosa.agent.plugins.samba.utils:SambaAcctFlagsOut
         filter.sambamungedialin = gosa.agent.plugins.samba.utils:SambaMungedDialIn
         filter.sambamungedialout = gosa.agent.plugins.samba.utils:SambaMungedDialOut
+        filter.generatesambasid = gosa.agent.plugins.samba.utils:GenerateSambaSid
         filter.posixgetnextid = gosa.agent.plugins.posix.utils:GetNextID
 
         [gosa.object.operator]
