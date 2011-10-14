@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+dn: sambaDomainName=GONICUS,dc=gonicus,dc=de
+sambaDomainName: GONICUS
+sambaSID: S-1-5-21-328194278-237061239-1145748033
+sambaAlgorithmicRidBase: 1000
+objectClass: sambaDomain
+sambaNextUserRid: 1000
+sambaMinPwdLength: 5
+sambaPwdHistoryLength: 0
+sambaLogonToChgPwd: 0
+sambaMaxPwdAge: -1
+sambaMinPwdAge: 0
+sambaLockoutDuration: 30
+sambaLockoutObservationWindow: 30
+sambaLockoutThreshold: 0
+sambaForceLogoff: -1
+sambaRefuseMachinePwdChange: 0
+sambaNextRid: 1018
+-->
+<Objects xmlns="http://www.gonicus.de/Objects">
+	<Object>
+		<Name>SambaDomain</Name>
+		<Description>Samba domain</Description>
+		<DisplayName>Samba domain</DisplayName>
+		<BackendParameters>
+			<Backend objectClasses="sambaDomain" RDN="sambaDomainName">LDAP</Backend>
+		</BackendParameters>
+		<Backend>LDAP</Backend>
+		<Attributes>
+                        <Attribute>
+                                <Name>sambaDomainName</Name>
+                                <Description></Description>
+                                <Type>UnicodeString</Type>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+                        <Attribute>
+                                <Name>sambaSID</Name>
+                                <Description></Description>
+                                <Type>UnicodeString</Type>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+                        <Attribute>
+                                <Name>sambaAlgorithmicRidBase</Name>
+                                <Description></Description>
+                                <Type>Integer</Type>
+                                <Default>1000</Default>
+                        </Attribute>
+                        <Attribute>
+                                <Name>sambaNextUserRid</Name>
+                                <Description></Description>
+                                <Type>Integer</Type>
+                        </Attribute>
+                        <Attribute>
+                                <Name>sambaMinPwdLength</Name>
+                                <Description></Description>
+                                <Type>Integer</Type>
+                        </Attribute>
+                        <Attribute>
+                                <Name>sambaPwdHistoryLength</Name>
+                                <Description></Description>
+                                <Type>Integer</Type>
+                        </Attribute>
+                        <Attribute>
+                                <Name>sambaLogonToChgPwd</Name>
+                                <Description></Description>
+                                <Type>Integer</Type>
+                        </Attribute>
+                        <Attribute>
+                                <Name>sambaMaxPwdAge</Name>
+                                <Description></Description>
+                                <Type>Integer</Type>
+                        </Attribute>
+                        <Attribute>
+                                <Name>sambaMinPwdAge</Name>
+                                <Description></Description>
+                                <Type>Integer</Type>
+                        </Attribute>
+                        <Attribute>
+                                <Name>sambaLockoutDuration</Name>
+                                <Description></Description>
+                                <Type>Integer</Type>
+                        </Attribute>
+                        <Attribute>
+                                <Name>sambaLockoutObservationWindow</Name>
+                                <Description></Description>
+                                <Type>Integer</Type>
+                        </Attribute>
+                        <Attribute>
+                                <Name>sambaLockoutThreshold</Name>
+                                <Description></Description>
+                                <Type>Integer</Type>
+                        </Attribute>
+                        <Attribute>
+                                <Name>sambaForceLogoff</Name>
+                                <Description></Description>
+                                <Type>Integer</Type>
+                        </Attribute>
+                        <Attribute>
+                                <Name>sambaRefuseMachinePwdChange</Name>
+                                <Description></Description>
+                                <Type>Integer</Type>
+                        </Attribute>
+                        <Attribute>
+                                <Name>sambaNextRid</Name>
+                                <Description></Description>
+                                <Type>Integer</Type>
+                        </Attribute>
+                </Attributes>
+		<Extends>
+			<Value>GenericUser</Value>
+		</Extends>
+		<BaseObject>false</BaseObject>
+	</Object>
+</Objects>
+
+
+
