@@ -370,7 +370,7 @@ class ObjectIndex(Plugin):
         arg = []
 
         for el, value in fltr.items():
-            cel = el.split("_")[0]
+            cel = el
             value = value.replace("*", "%")
 
             if el in ["_and", "_or", "_not"]:
@@ -406,8 +406,11 @@ class ObjectIndex(Plugin):
 
                 arg.append(getattr(self.__index.c, k).in_(v))
 
+            elif el == "type":
+                arg.append(or_(self.__index.c._type == value, self.__index.c._extensions.op('regexp')(r"\%s%s\%s" % (self.__sep, value, self.__sep))))
+
             elif not cel in self.__types:
-                raise FilterException("attribute '%s' is not indexed" % el.split("_")[0])
+                raise FilterException("attribute '%s' is not indexed" % cel)
 
             elif self.__types[cel]['multivalue']:
                 if '%' in value:
@@ -496,7 +499,7 @@ class ObjectIndex(Plugin):
                 self.remove(entry[0])
 
         t1 = time()
-        self.log.info("processed %d entries in %ds" % (len(res), t1 - t0))
+        self.log.info("processed %d objects in %ds" % (len(res), t1 - t0))
 
     def __handle_events(self, event):
         print "%s event catched: %s of %s" % (event.__class__.__name__, event.reason, event.uuid)
