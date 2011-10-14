@@ -15,6 +15,18 @@
                                 <Description>Security ID</Description>
                                 <Type>String</Type>
                                 <Mandatory>true</Mandatory>
+				<OutFilter>
+                                        <FilterChain>
+                                                <FilterEntry>
+                                                        <Filter>
+                                                                <Name>GenerateSambaSid</Name>
+								<Param>uidNumber</Param>
+								<Param>%(sambaDomainName)s</Param>
+								<Param>%(sambaGroupType)s</Param>
+                                                        </Filter>
+                                                </FilterEntry>
+                                        </FilterChain>
+                                </OutFilter>
                         </Attribute>
 
            		<Attribute>

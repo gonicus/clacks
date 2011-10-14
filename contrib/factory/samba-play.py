@@ -32,4 +32,5 @@ for entry in p.listProperties():
 p = f.getObject('SambaUser', u'cn=Playground Tester,ou=people,dc=gonicus,dc=de', mode='update')
 p.sambaSID = "1111222"
 p.CtxKeyboardLayout = ""
+p.sambaDomainName = u"tester"
 p.commit()
