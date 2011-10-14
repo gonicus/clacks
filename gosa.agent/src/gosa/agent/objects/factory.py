@@ -1582,11 +1582,8 @@ class GOsaObject(object):
         zope.event.notify(ObjectChanged("pre retract", obj))
 
     def _del_(self):
-        """
-        Internal cleanup method ...
-        """
         #TODO
-        print "--> cleanup"
+        pass
 
 
 class FactoryException(Exception):
