@@ -14,20 +14,18 @@ f = GOsaObjectFactory()
 
 cn = u"hickert-test4"
 
-try:
-    object_type, extensions =  f.identifyObject(u'cn=%s,ou=groups,dc=gonicus,dc=de' % (cn,))
-    p = f.getObject('PosixGroup', u'cn=%s,ou=groups,dc=gonicus,dc=de' % (cn,), mode='update')
-    for entry in p.listProperties():
-        print "%30s" % (entry,), getattr(p, entry)
+object_type, extensions =  f.identifyObject(u'cn=%s,ou=groups,dc=gonicus,dc=de' % (cn,))
+p = f.getObject('PosixGroup', u'cn=%s,ou=groups,dc=gonicus,dc=de' % (cn,), mode='update')
+for entry in p.listProperties():
+    print "%30s" % (entry,), getattr(p, entry)
 
-    p.memberUid= u"hickert"
-    p.commit()
+p.memberUid= [u"hickert"]
+p.commit()
 
-except:
-    p = f.getObject('PosixGroup', u'ou=groups,dc=gonicus,dc=de', mode='create')
-    p.cn = cn
-    p.commit()
-    print "created!"
+#p = f.getObject('PosixGroup', u'ou=groups,dc=gonicus,dc=de', mode='create')
+#p.cn = cn
+#p.commit()
+#print "created!"
 
 
 ## Add or remove samba
