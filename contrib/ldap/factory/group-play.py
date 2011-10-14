@@ -22,6 +22,12 @@ for entry in p.listProperties():
 p.memberUid= [u"hickert"]
 p.commit()
 
+p = f.getObject('SambaGroup', u'cn=%s,ou=groups,dc=gonicus,dc=de' % (cn,), mode='update')
+p.sambaDomainName = "GONICUS2"
+p.sambaDomainName = "GONICUS"
+p.sambaGroupType = 514
+p.commit()
+
 #p = f.getObject('PosixGroup', u'ou=groups,dc=gonicus,dc=de', mode='create')
 #p.cn = cn
 #p.commit()

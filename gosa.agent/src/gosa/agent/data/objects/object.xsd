@@ -84,7 +84,17 @@
         		maxOccurs="1" minOccurs="1"
         	>
         	</element>
-        	<element name="Default" type="string" maxOccurs="1" minOccurs="0"></element>
+        	<element name="Values" maxOccurs="1" minOccurs="0">
+        		<complexType>
+        			<sequence>
+        				<element name="Value" type="string" maxOccurs="unbounded" minOccurs="1"></element>
+        			</sequence>
+        		</complexType>
+        	</element>
+        	<element name="Default" type="string" maxOccurs="1"
+        		minOccurs="0"
+        	>
+        	</element>
         	<element name="BackendType"
         		type="gosa:AttributeBackendTypes" maxOccurs="1"
         		minOccurs="0"

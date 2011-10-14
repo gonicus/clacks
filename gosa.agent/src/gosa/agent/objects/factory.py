@@ -457,9 +457,18 @@ class GOsaObjectFactory(object):
                     for d in prop.__dict__['DependsOn'].iterchildren():
                         depends_on.append(str(d))
 
+                # Check for valid value list
+                values = None
+                if "Values" in prop.__dict__:
+                    values = []
+                    for d in prop.__dict__['Values'].iterchildren():
+                        values.append(str(d))
+                    values = self.__attribute_type['String'].convert_to(syntax,values)
+
                 # Create a new property with the given information
                 props[str(prop['Name'])] =  {
                     'value': [],
+                    'values': values,
                     'status': STATUS_OK,
                     'depends_on': depends_on,
                     'type': syntax,
@@ -1040,6 +1049,10 @@ class GOsaObject(object):
             if props[name]['readonly']:
                 raise AttributeError("Cannot write to readonly attribute '%s'" % name)
 
+            # Check if the given value has to match one out of a given list.
+            if props[name]['values'] != None and value not in props[name]['values']:
+                raise TypeError("Invalid value given for %s! Expected is one of %s" % (name,str(props[name]['values'])))
+
             # Set the new value
             if props[name]['multivalue']:
 
@@ -1054,6 +1067,7 @@ class GOsaObject(object):
             s_type = props[name]['type']
             if not self._objectFactory.getAttributeTypes()[s_type].is_valid_value(new_value):
                 raise TypeError("Invalid value given for %s" % (name,))
+
 
             # Validate value
             if props[name]['validator']:

@@ -200,6 +200,34 @@ class SambaAcctFlagsIn(ElementFilter):
         return key, valDict
 
 
+class GenerateSambaSid(ElementFilter):
+    """
+    Out filter to generate a new sambaSid
+
+    """
+
+    def __init__(self, obj):
+        super(GenerateSambaSid, self).__init__(obj)
+
+    def process(self, obj, key, valDict, attribute, domain, group_type = 0):
+        ridbase= 1000
+        group_type = int(group_type)
+        if "gidNumber" == attribute:
+            gidNumber = 1002
+            dsid = "S-1-5-21-328194278-237061239-1145748033"
+            if group_type == 0:
+                sid = dsid + "-" + str(gidNumber * 2 + ridbase + 1)
+            else:
+                sid = dsid + "-" + str(group_type)
+            valDict[key]['value'] = [sid]
+        elif "uidNumber" == attribute:
+            pass
+        else:
+            raise Exception("Invalid attribute (%s) given to generate samba SID!" % (attribute,))
+
+        return key, valDict
+
+
 class SambaLogonHoursAttribute(AttributeType):
     """
     This is a special object-attribute-type for sambaLogonHours.
