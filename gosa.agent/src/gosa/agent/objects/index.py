@@ -5,6 +5,7 @@ import sqlalchemy.sql
 import logging
 import collections
 import ldap.dn
+from time import time
 from base64 import b64encode, b64decode
 from ldap import DN_FORMAT_LDAPV3
 from gosa.common import Environment
@@ -38,7 +39,7 @@ class ObjectIndex(Plugin):
     __types = None
     __engine = None
     __conn = None
-    __fixed = ['id', '_dn', '_parent_dn', '_uuid', '_lastChanged', '_extensions']
+    __fixed = ['id', '_dn', '_parent_dn', '_uuid', '_lastChanged', '_extensions', '_type']
     _priority_ = 20
     _target_ = 'core'
 
@@ -124,6 +125,7 @@ class ObjectIndex(Plugin):
             Column('_dn', String(1024)),
             Column('_parent_dn', String(1024)),
             Column('_lastChanged', DateTime),
+            Column('_type', String(256)),
             Column('_extensions', String(256)),
             *props)
 
@@ -141,6 +143,9 @@ class ObjectIndex(Plugin):
 
             self.__conn.connection.create_function("regexp", 2, sqlite_regexp)
 
+        # Sync index
+        self.sync_index()
+
     @Command(__help__=N_("Check if an object with the given UUID exists."))
     def exists(self, uuid):
         """
@@ -155,7 +160,7 @@ class ObjectIndex(Plugin):
 
         ``Return``: True/False
         """
-        tmp = self.__conn.execute(select([self.__index], self.__index.c._uuid == uuid))
+        tmp = self.__conn.execute(select([self.__index.c._uuid], self.__index.c._uuid == uuid))
         res = bool(tmp.fetchone())
         tmp.close()
         return res
@@ -174,13 +179,14 @@ class ObjectIndex(Plugin):
         self.__conn.execute(self.__index.delete().where(self.__index.c._uuid == uuid))
 
     def move(self, uuid, dn):
-        dn = self.dn2b64(dn)
-        prnt_helper = dn.split(",")
-        parent_dn = ",".join(prnt_helper[1:]) if len(prnt_helper) > 1 else ""
-        self.update(uuid, _dn=dn, _parent_dn=parent_dn)
+        self.update(uuid, _dn=dn)
 
     def update(self, uuid, **props):
-        # Convert all list types to Unicode strings
+        if '_dn'  in props:
+            props['_dn']= self.dn2b64(props['_dn'])
+            prnt_helper = props['_dn'].split(",")
+            props['_parent_dn'] = ",".join(prnt_helper[1:]) if len(prnt_helper) > 1 else ""
+
         props = dict([(attr, self.__sep + self.__sep.join(key) + self.__sep if type(key) == list else key) for attr, key in props.items()])
         self.__conn.execute(self.__index.update().where(self.__index.c._uuid == uuid), [props])
 
@@ -407,8 +413,76 @@ class ObjectIndex(Plugin):
         return arg
 
     def dn2b64(self, dn):
-        parts = ldap.dn.explode_dn(dn.lower(), flags=DN_FORMAT_LDAPV3)
+        parts = ldap.dn.explode_dn(dn.encode('utf-8').lower(), flags=DN_FORMAT_LDAPV3)
         return ",".join([b64encode(p) for p in parts])
 
     def b642dn(self, b64dn):
-        return u",".join([b64decode(p).encode('utf-8') for p in b64dn.split(",")])
+        return u",".join([b64decode(p).decode('utf-8') for p in b64dn.split(",")])
+
+    def sync_index(self):
+        t0 = time()
+        f = GOsaObjectFactory.getInstance()
+
+        def resolve_children(dn):
+            print " * found", dn
+            res = {}
+
+            children = f.getObjectChildren(dn)
+            res = dict(res.items() + children.items())
+
+            for chld in children.keys():
+                res = dict(res.items() + resolve_children(chld).items())
+
+            return res
+
+        self.log.info("scanning for objects")
+        res = resolve_children(u"ou=Vertrieb,dc=gonicus,dc=de")
+
+        self.log.info("generating object index")
+        to_be_indexed = ['uid', 'givenName', 'sn', 'mail']
+
+        # Find new entries
+        backend_objects = []
+        for o, o_type in res.items():
+
+            # Get object
+            obj = f.getObject(o_type, o)
+
+            # Check for index entry
+            tmp = self.__conn.execute(select([self.__index.c._lastChanged], self.__index.c._uuid == obj.uuid))
+            r = tmp.fetchone()
+            tmp.close()
+
+            # Gather index attributes
+            attrs = {}
+            for attr in to_be_indexed:
+                if obj.hasattr(attr):
+                    attrs[attr] = getattr(obj, attr)
+
+            # Entry is not in the database
+            if r == None:
+                self.log.debug("creating object index for %s" % obj.uuid)
+                ext = f.identifyObject(o)[1]
+                self.insert(obj.uuid, o, _lastChanged=obj.modifyTimestamp, _type=o_type, _extensions=ext, **attrs)
+
+            # Entry is in the database
+            else:
+                # OK: already there
+                if obj.modifyTimestamp == r[0]:
+                    self.log.debug("found up-to-date object index for %s" % obj.uuid)
+                else:
+                    self.log.debug("updating object index for %s" % obj.uuid)
+                    ext = f.identifyObject(o)[1]
+                    self.update(obj.uuid, _dn=o, _lastChanged=obj.modifyTimestamp, _type=o_type, _extension=ext, **attrs)
+
+            backend_objects.append(obj.uuid)
+            del obj
+
+        # Remove old entries
+        for entry in self.__conn.execute(select([self.__index.c._uuid])).fetchall():
+            if entry[0] not in backend_objects:
+                self.log.debug("removing object index for %s" % entry[0])
+                self.remove(entry[0])
+
+        t1 = time()
+        self.log.info("processed %d entries in %ds" % (len(res), t1 - t0))
