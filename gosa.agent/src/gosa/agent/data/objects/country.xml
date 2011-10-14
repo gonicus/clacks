@@ -5,7 +5,7 @@
 		<DisplayName>Country</DisplayName>
 		<Description>A country</Description>
 		<BackendParameters>
-			<Backend objectClasses="country">LDAP</Backend>
+			<Backend objectClasses="country" RDN="c">LDAP</Backend>
 		</BackendParameters>
 		<Backend>LDAP</Backend>
 

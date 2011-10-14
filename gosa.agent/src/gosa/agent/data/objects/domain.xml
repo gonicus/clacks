@@ -5,7 +5,7 @@
 		<DisplayName>Domain</DisplayName>
 		<Description>A domain</Description>
 		<BackendParameters>
-			<Backend objectClasses="domain">LDAP</Backend>
+			<Backend objectClasses="domain" RDN="d">LDAP</Backend>
 		</BackendParameters>
 		<Backend>LDAP</Backend>
 

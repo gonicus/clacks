@@ -5,7 +5,7 @@
 		<DisplayName>Users</DisplayName>
 		<Description>Organizational unit that can contain users</Description>
 		<BackendParameters>
-			<Backend objectClasses="organizationalUnit">LDAP</Backend>
+			<Backend objectClasses="organizationalUnit" RDN="ou">LDAP</Backend>
 		</BackendParameters>
 		<Backend>LDAP</Backend>
 		<Container>

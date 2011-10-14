@@ -5,7 +5,7 @@
 		<Description>Locality</Description>
 		<DisplayName>Locality</DisplayName>
 		<BackendParameters>
-			<Backend objectClasses="locality">LDAP</Backend>
+			<Backend objectClasses="locality" RDN="l">LDAP</Backend>
 		</BackendParameters>
 		<Backend>LDAP</Backend>
 

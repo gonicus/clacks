@@ -5,7 +5,7 @@
 		<DisplayName>Groups</DisplayName>
 		<Description>Organizational unit that can contain groups</Description>
 		<BackendParameters>
-			<Backend objectClasses="organizationalUnit">LDAP</Backend>
+			<Backend objectClasses="organizationalUnit" RDN="ou">LDAP</Backend>
 		</BackendParameters>
 		<Backend>LDAP</Backend>
 

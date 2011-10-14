@@ -5,7 +5,7 @@
 		<Description>An organization</Description>
 		<DisplayName>Organization</DisplayName>
 		<BackendParameters>
-			<Backend objectClasses="organization">LDAP</Backend>
+			<Backend objectClasses="organization" RDN="o">LDAP</Backend>
 		</BackendParameters>
 		<Backend>LDAP</Backend>
 
