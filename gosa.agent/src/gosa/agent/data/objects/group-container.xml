@@ -11,6 +11,9 @@
 
 		<BaseObject>true</BaseObject>
 		<FixedRDN>ou=groups</FixedRDN>
+		<Container>
+			<Type>PosixGroup</Type>
+		</Container>
 	</Object>
 </Objects>
 

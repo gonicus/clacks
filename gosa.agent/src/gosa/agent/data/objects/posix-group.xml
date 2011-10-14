@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Objects xmlns="http://www.gonicus.de/Objects">
+	<Object>
+		<Name>PosixGroup</Name>
+		<Description>A posix group</Description>
+		<DisplayName>Posix group</DisplayName>
+		<BackendParameters>
+			<Backend objectClasses="posixGroup"
+				RDN="cn">LDAP</Backend>
+		</BackendParameters>
+		<Backend>LDAP</Backend>
+
+		<Attributes>
+                        <Attribute>
+                                <Name>cn</Name>
+                                <Description></Description>
+                                <Type>UnicodeString</Type>
+                                <MultiValue>false</MultiValue>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+                        <Attribute>
+                                <Name>description</Name>
+                                <Description></Description>
+                                <Type>UnicodeString</Type>
+                                <MultiValue>false</MultiValue>
+                                <Mandatory>false</Mandatory>
+                        </Attribute>
+                        <Attribute>
+                                <Name>gidNumber</Name>
+                                <Description></Description>
+                                <Type>Integer</Type>
+                                <MultiValue>false</MultiValue>
+                                <Mandatory>true</Mandatory>
+                                <Default>-1</Default>
+                                <OutFilter>
+                                        <FilterChain>
+                                                <FilterEntry>
+                                                        <Filter>
+                                                                <Name>GetNextID</Name>
+                                                                <Param>uidNumber</Param>
+                                                        </Filter>
+                                                </FilterEntry>
+                                        </FilterChain>
+                                </OutFilter>
+                        </Attribute>
+                        <Attribute>
+                                <Name>memberUid</Name>
+                                <Description>A list of member-uids</Description>
+                                <Type>UnicodeString</Type>
+                                <MultiValue>true</MultiValue>
+                                <Mandatory>false</Mandatory>
+                        </Attribute>
+                        <Attribute>
+                                <Name>sambaGroupType</Name>
+                                <Description></Description>
+                                <Type>UnicodeString</Type>
+                                <MultiValue>false</MultiValue>
+                                <Mandatory>false</Mandatory>
+                        </Attribute>
+                        <Attribute>
+                                <Name>sambaSID</Name>
+                                <Description></Description>
+                                <Type>UnicodeString</Type>
+                                <MultiValue>false</MultiValue>
+                                <Mandatory>false</Mandatory>
+                        </Attribute>
+                </Attributes>
+
+		<BaseObject>true</BaseObject>
+	</Object>
+</Objects>
+
