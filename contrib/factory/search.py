@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from gosa.agent.objects.index import ObjectIndex, SCOPE_ONE, SCOPE_BASE, SCOPE_SUB
 
