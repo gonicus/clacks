@@ -529,8 +529,6 @@ class ObjectIndex(Plugin):
 
             if event.reason in ["post retract", "post update", "post extend"]:
                 self.log.debug("updating object index for %s" % uuid)
-                print event.dn
-                print f.identifyObject(event.dn)
                 o_type, ext = f.identifyObject(event.dn)
                 obj = f.getObject(o_type, event.dn)
 
