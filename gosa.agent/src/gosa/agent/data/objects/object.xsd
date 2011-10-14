@@ -87,7 +87,10 @@
         	<element name="Values" maxOccurs="1" minOccurs="0">
         		<complexType>
         			<sequence>
-        				<element name="Value" type="string" maxOccurs="unbounded" minOccurs="1"></element>
+        				<element name="Value" type="string"
+        					maxOccurs="unbounded" minOccurs="1"
+        				>
+        				</element>
         			</sequence>
         		</complexType>
         	</element>
@@ -128,6 +131,7 @@
         		minOccurs="0"
         	>
         	</element>
+        	<element name="Foreign" type="boolean" maxOccurs="1" minOccurs="0"></element>
         </all>
     </complexType>
 

@@ -209,24 +209,22 @@ class GenerateSambaSid(ElementFilter):
     def __init__(self, obj):
         super(GenerateSambaSid, self).__init__(obj)
 
-    def process(self, obj, key, valDict, attribute, domain, group_type = 0):
+    def process(self, obj, key, valDict, method, number, domain, group_type = 0):
 
         #TODO: Get this information from the backend/config
-        uidNumber = 1002
-        gidNumber = 1002
         ridbase= 1000
 
         # Generate a sid for groups or users.
         group_type = int(group_type)
-        if "gidNumber" == attribute:
+        if "group" == method:
             dsid = "S-1-5-21-328194278-237061239-1145748033"
             if group_type == 0:
-                sid = dsid + "-" + str(gidNumber * 2 + ridbase + 1)
+                sid = dsid + "-" + str(number * 2 + ridbase + 1)
             else:
                 sid = dsid + "-" + str(group_type)
             valDict[key]['value'] = [sid]
-        elif "uidNumber" == attribute:
-            sid = dsid + "-" + str(uidNumber * 2 + ridbase)
+        elif "user" == method:
+            sid = dsid + "-" + str(number * 2 + ridbase)
             valDict[key]['value'] = [sid]
         else:
             raise Exception("Invalid attribute (%s) given to generate samba SID!" % (attribute,))

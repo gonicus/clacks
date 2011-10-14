@@ -24,7 +24,8 @@
                                                 <FilterEntry>
                                                         <Filter>
                                                                 <Name>GenerateSambaSid</Name>
-								<Param>gidNumber</Param>
+								<Param>group</Param>
+								<Param>%(gidNumber)</Param>
 								<Param>%(sambaDomainName)s</Param>
 								<Param>%(sambaGroupType)s</Param>
                                                         </Filter>
@@ -39,6 +40,12 @@
                                 <Type>String</Type>
                                 <ReadOnly>false</ReadOnly>
                                 <Mandatory>true</Mandatory>
+                        </Attribute>
+           		<Attribute>
+                                <Name>gidNumber</Name>
+                                <Type>Integer</Type>
+                                <Description></Description>
+                                <Foreign>true</Foreign>
                         </Attribute>
            		<Attribute>
                                 <Name>sambaGroupType</Name>

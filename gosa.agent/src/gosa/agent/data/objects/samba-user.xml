@@ -20,7 +20,8 @@
                                                 <FilterEntry>
                                                         <Filter>
                                                                 <Name>GenerateSambaSid</Name>
-								<Param>uidNumber</Param>
+								<Param>user</Param>
+								<Param>%(uidNumber)s</Param>
 								<Param>%(sambaDomainName)s</Param>
 								<Param>%(sambaGroupType)s</Param>
                                                         </Filter>
@@ -28,7 +29,12 @@
                                         </FilterChain>
                                 </OutFilter>
                         </Attribute>
-
+           		<Attribute>
+                                <Name>uidNumber</Name>
+                                <Description></Description>
+                                <Type>Integer</Type>
+                                <Foreign>true</Foreign>
+                        </Attribute>
            		<Attribute>
                                 <Name>sambaLMPassword</Name>
                                 <Description>LanManager Password</Description>
