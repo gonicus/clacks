@@ -56,6 +56,9 @@ class SchedulerService(Plugin):
             engine=env.getDatabaseEngine('scheduler'),
             tablename='scheduler_jobs'), 'db')
 
+    def getScheduler(self):
+        return self.sched
+
     def serve(self):
         """
         Start the scheduler service.

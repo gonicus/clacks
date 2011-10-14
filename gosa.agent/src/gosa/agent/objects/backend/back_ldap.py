@@ -34,6 +34,10 @@ class LDAP(ObjectBackend):
         self.create_ts_entry = self.env.config.get("ldap.create_attribute", "createTimestamp")
         self.modify_ts_entry = self.env.config.get("ldap.modify_attribute", "modifyTimestamp")
 
+        # Internal identify cache
+        self.__i_cache = {}
+        self.__i_cache_ttl = {}
+
     def __del__(self):
         self.lh.free_connection(self.con)
 
@@ -62,12 +66,54 @@ class LDAP(ObjectBackend):
         return items
 
     def identify(self, dn, params, fixed_rdn=None):
-        ocs = ["(objectClass=%s)" % o.strip() for o in params['objectClasses'].split(",")]
-        fltr = "(&" + "".join(ocs) + (ldap.filter.filter_format("(%s)", [fixed_rdn]) if fixed_rdn else "") + ")"
-        res = self.con.search_s(dn.encode('utf-8'), ldap.SCOPE_BASE, fltr,
-                [self.uuid_entry])
+        ocs = [o.strip() for o in params['objectClasses'].split(",")]
 
-        return len(res) == 1
+        # Remove cache if too old
+        if dn in self.__i_cache_ttl and self.__i_cache_ttl[dn] - time.time() > 60:
+            del self.__i_cache[dn]
+            del self.__i_cache_ttl[dn]
+
+        # Split for fixed attrs
+        fixed_rdn_filter = ""
+        attr = None
+        if fixed_rdn:
+            attr, value, nocare = ldap.dn.str2dn(fixed_rdn.encode('utf-8'), flags=ldap.DN_FORMAT_LDAPV3)[0][0]
+            fixed_rdn_filter = ldap.filter.filter_format("(%s=*)", [attr])
+
+        # If we just query for an objectClass, try to get the
+        # answer from the cache.
+        if dn in self.__i_cache:
+
+            if fixed_rdn:
+                if dn in self.__i_cache and attr in self.__i_cache[dn]:
+                    self.__i_cache_ttl[dn] = time.time()
+                    return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0 and len(set([value])- set(self.__i_cache[dn][attr])) == 0
+
+            else:
+                self.__i_cache_ttl[dn] = time.time()
+                return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0
+
+        fltr = "(&(objectClass=*)" + fixed_rdn_filter + ")"
+        res = self.con.search_s(dn.encode('utf-8'), ldap.SCOPE_BASE, fltr,
+                [self.uuid_entry, 'objectClass'] + ([attr] if attr else []))
+
+        if len(res) == 1:
+            if not dn in self.__i_cache:
+                self.__i_cache[dn] = {}
+
+            self.__i_cache[dn]['objectClass'] = res[0][1]['objectClass']
+            self.__i_cache_ttl[dn] = time.time()
+
+            if fixed_rdn:
+                if attr in res[0][1]:
+                    self.__i_cache[dn][attr] = [x.decode('utf-8') for x in res[0][1][attr]]
+                else:
+                    self.__i_cache[dn][attr] = []
+                return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0 and len(set([value])- set(self.__i_cache[dn][attr])) == 0
+            else:
+                return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0
+
+        return False
 
     def query(self, base, scope, params, fixed_rdn=None):
         ocs = ["(objectClass=%s)" % o.strip() for o in params['objectClasses'].split(",")]
