@@ -1042,6 +1042,10 @@ class GOsaObject(object):
 
             # Set the new value
             if props[name]['multivalue']:
+
+                # Check if the new value is s list.
+                if not type(value) == list:
+                    raise TypeError("Invalid value given for %s, expected is a list for multi value fields!" % (name,))
                 new_value = value
             else:
                 new_value = [value]
