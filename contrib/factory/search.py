@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from gosa.agent.objects.index import ObjectIndex, SCOPE_ONE, SCOPE_BASE, SCOPE_SUB
 
-ie = ObjectIndex(False)
+ie = ObjectIndex()
 
 fltr = {}
 #fltr = {'uid': '*us'}

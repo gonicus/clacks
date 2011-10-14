@@ -5,12 +5,16 @@ import sqlalchemy.sql
 import logging
 import collections
 import ldap.dn
+import zope.event
+import datetime
+from zope.interface import implements
 from time import time
 from base64 import b64encode, b64decode
 from ldap import DN_FORMAT_LDAPV3
 from gosa.common import Environment
 from gosa.common.utils import N_
-from gosa.common.components import Command, Plugin
+from gosa.common.handler import IInterfaceHandler
+from gosa.common.components import Command, Plugin, PluginRegistry
 from gosa.agent.objects import GOsaObjectFactory, SCOPE_BASE, SCOPE_ONE, SCOPE_SUB
 from sqlalchemy.sql import select, and_, or_, func, asc
 from sqlalchemy.dialects.sqlite.base import SQLiteDialect
@@ -27,6 +31,8 @@ class ObjectIndex(Plugin):
     is the search engine that allows quick querries on the data set with
     paged results and wildcards.
     """
+    implements(IInterfaceHandler)
+
     __type_conv = {
             'Integer': Integer,
             'Boolean': Boolean,
@@ -43,7 +49,7 @@ class ObjectIndex(Plugin):
     _priority_ = 20
     _target_ = 'core'
 
-    def __init__(self, run_index=True):
+    def __init__(self):
         self.env = Environment.getInstance()
         self.log = logging.getLogger(__name__)
         self.log.info("initializing object index handler")
@@ -143,9 +149,13 @@ class ObjectIndex(Plugin):
 
             self.__conn.connection.create_function("regexp", 2, sqlite_regexp)
 
+    def serve(self):
         # Sync index
-        if run_index:
-            self.sync_index()
+        sobj = PluginRegistry.getInstance("SchedulerService")
+        sobj.getScheduler().add_date_job(self.sync_index, datetime.datetime.now() + datetime.timedelta(seconds=5), tag='_internal')
+
+        # Listen for object events
+        zope.event.subscribers.append(self.__handle_events)
 
     @Command(__help__=N_("Check if an object with the given UUID exists."))
     def exists(self, uuid):
@@ -425,7 +435,7 @@ class ObjectIndex(Plugin):
         f = GOsaObjectFactory.getInstance()
 
         def resolve_children(dn):
-            print " * found", dn
+            self.log.debug("found object '%s'" % dn)
             res = {}
 
             children = f.getObjectChildren(dn)
@@ -474,7 +484,7 @@ class ObjectIndex(Plugin):
                 else:
                     self.log.debug("updating object index for %s" % obj.uuid)
                     ext = f.identifyObject(o)[1]
-                    self.update(obj.uuid, _dn=o, _lastChanged=obj.modifyTimestamp, _type=o_type, _extension=ext, **attrs)
+                    self.update(obj.uuid, _dn=o, _lastChanged=obj.modifyTimestamp, _type=o_type, _extensions=ext, **attrs)
 
             backend_objects.append(obj.uuid)
             del obj
@@ -487,3 +497,6 @@ class ObjectIndex(Plugin):
 
         t1 = time()
         self.log.info("processed %d entries in %ds" % (len(res), t1 - t0))
+
+    def __handle_events(self, event):
+        print "%s event catched: %s of %s" % (event.__class__.__name__, event.reason, event.uuid)
