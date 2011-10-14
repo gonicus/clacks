@@ -43,7 +43,7 @@ class ObjectIndex(Plugin):
     _priority_ = 20
     _target_ = 'core'
 
-    def __init__(self):
+    def __init__(self, run_index=True):
         self.env = Environment.getInstance()
         self.log = logging.getLogger(__name__)
         self.log.info("initializing object index handler")
@@ -144,7 +144,8 @@ class ObjectIndex(Plugin):
             self.__conn.connection.create_function("regexp", 2, sqlite_regexp)
 
         # Sync index
-        self.sync_index()
+        if run_index:
+            self.sync_index()
 
     @Command(__help__=N_("Check if an object with the given UUID exists."))
     def exists(self, uuid):
