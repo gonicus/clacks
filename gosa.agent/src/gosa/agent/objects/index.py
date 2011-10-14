@@ -17,7 +17,7 @@ from gosa.common.handler import IInterfaceHandler
 from gosa.common.components import Command, Plugin, PluginRegistry
 from gosa.agent.objects import GOsaObjectFactory, ObjectChanged, SCOPE_BASE, SCOPE_ONE, SCOPE_SUB
 from gosa.agent.ldap_utils import LDAPHandler
-from sqlalchemy.sql import select, and_, or_, func, asc
+from sqlalchemy.sql import select, and_, or_, func, asc, desc
 from sqlalchemy.dialects.sqlite.base import SQLiteDialect
 from sqlalchemy import Table, Column, Integer, Boolean, String, DateTime, Date, Unicode, MetaData
 
@@ -338,7 +338,7 @@ class ObjectIndex(Plugin):
         # Apply ordering
         if order_by:
             if descending:
-                sl = sl.order_by(order_by)
+                sl = sl.order_by(desc(order_by))
             else:
                 sl = sl.order_by(asc(order_by))
 
@@ -529,6 +529,8 @@ class ObjectIndex(Plugin):
 
             if event.reason in ["post retract", "post update", "post extend"]:
                 self.log.debug("updating object index for %s" % uuid)
+                print event.dn
+                print f.identifyObject(event.dn)
                 o_type, ext = f.identifyObject(event.dn)
                 obj = f.getObject(o_type, event.dn)
 

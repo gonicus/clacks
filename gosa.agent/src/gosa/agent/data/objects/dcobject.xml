@@ -5,7 +5,7 @@
 		<DisplayName>Domain component</DisplayName>
 		<Description>A domain component</Description>
 		<BackendParameters>
-			<Backend objectClasses="dcObject" RDN="dc">LDAP</Backend>
+			<Backend objectClasses="dcObject,locality" RDN="dc">LDAP</Backend>
 		</BackendParameters>
 		<Backend>LDAP</Backend>
 
