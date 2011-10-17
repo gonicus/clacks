@@ -137,6 +137,8 @@ setup(
         filter.sambamungedialout = gosa.agent.plugins.samba.utils:SambaMungedDialOut
         filter.generatesambasid = gosa.agent.plugins.samba.utils:GenerateSambaSid
         filter.posixgetnextid = gosa.agent.plugins.posix.utils:GetNextID
+        filter.datetoshadowdays = gosa.agent.plugins.posix.utils:DateToShadowDays
+        filter.shadowdaystodate = gosa.agent.plugins.posix.utils:ShadowDaysToDate
 
         [gosa.object.operator]
         operator.and = gosa.agent.objects.operator.bool:And

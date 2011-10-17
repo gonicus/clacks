@@ -14,7 +14,26 @@
            		<Attribute>
                                 <Name>shadowLastChange</Name>
                                 <Description></Description>
-                                <Type>UnicodeString</Type>
+                                <Type>Date</Type>
+                                <BackendType>Integer</BackendType>
+	                       	<InFilter>
+                                        <FilterChain>
+                                                <FilterEntry>
+                                                        <Filter>
+                                                                <Name>ShadowDaysToDate</Name>
+                                                        </Filter>
+                                                </FilterEntry>
+                                        </FilterChain>
+                                </InFilter>
+	                       	<OutFilter>
+                                        <FilterChain>
+                                                <FilterEntry>
+                                                        <Filter>
+                                                                <Name>DateToShadowDays</Name>
+                                                        </Filter>
+                                                </FilterEntry>
+                                        </FilterChain>
+                                </OutFilter>
                         </Attribute>
 
            		<Attribute>
