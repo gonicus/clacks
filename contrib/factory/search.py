@@ -6,7 +6,7 @@ from gosa.agent.objects.index import ObjectIndex, SCOPE_ONE, SCOPE_BASE, SCOPE_S
 ie = ObjectIndex()
 
 # Test synchronisation
-if 1 == 0:
+if 1 == 1:
     print "-"*80 + "\nSync\n" + "-"*80
     ie.sync_index()
     print "-"*80 + "\nSearch\n" + "-"*80
