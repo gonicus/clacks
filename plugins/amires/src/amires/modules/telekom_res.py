@@ -38,13 +38,13 @@ class TelekomNumberResolver(PhoneNumberResolver):
         """
         Probe a couple of numbers in order to find one which is
         available in the official phone book. Number needs to be
-        normalized to internatial format (+...) with nothing but
+        normalized to international format (+...) with nothing but
         the starting + and digits.
         """
         number = self.replaceNumber(number)
 
         if not re.match(r"\+\d{4,}", number):
-            raise ValueError("number needs to be in stripped international format")
+            raise ValueError("number needs to be in stripped international format: %s" % number)
 
         # Does the number match completely?
         res = self._resolve_telekom(number)
