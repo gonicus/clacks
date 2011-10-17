@@ -11,9 +11,7 @@ The object abstraction module allows to access managed-information in an object 
 You can get an object instance like this:
 
 >>> from gosa.agent.objects import GOsaObjectFactory
->>> person = f.getObjectInstance('Person', "cn=Cajus Pollmeier,ou=people,ou=Technik,dc=gonicus,dc=de")
-
-``(Instead of getting things by their 'dn', we will later use an UUID)``
+>>> person = f.getObject('GenericUser', "cn=Cajus Pollmeier,ou=people,ou=Technik,dc=gonicus,dc=de")
 
 and then you can access, update and persist values like this:
 
@@ -24,25 +22,31 @@ and then you can access, update and persist values like this:
 >>> person->commit()
 >>> person->close()
 
-or call object methods:
+... or call object methods:
 
 >>> person->notify(u"Shutdown of your client", u"Please prepare yourselves for a system reboot!")
 
-.. warning::
-    The following is not implemented yet!
+... create new users:
 
-or add and remove extension:
+>>> person = f.getObject('GenericUser', u'ou=people,dc=gonicus,dc=de', mode="create")
+>>> person.uid = u"..."
+>>> person.sn = u"..."
+>>> person.givenName = u"..."
+>>> person.commit()
 
->>> person->addExtension('Mail')
->>> person->removeExtension('POSIX')
+... or add and remove extension:
 
-.. warning::
-    The following is not implemented yet!
+>>> person = f.getObject('PosixUser', u'cn=Klaus Mustermann,ou=people,dc=gonicus,dc=de', mode="extend")
+>>> person->homeDirectory = u"..."
+>>> person->commit()
 
-Each object modification sends an event, with the related action and the objects uuid. These action
+>>> person = f.getObject('PosixUser', u'cn=Klaus Mustermann,ou=people,dc=gonicus,dc=de')
+>>> person->retract()
+
+(Each object modification sends an event, with the related action and the objects uuid. These action
 can then be caught later to perform different tasks, e.g. remove the mail-account from the server when
-a Mail extension is removed.
- 
+a Mail extension is removed)
+
 
 How does it work - XML definition for GOsa objects
 --------------------------------------------------
@@ -52,18 +56,21 @@ Each of these XML files can contain one or more object definition, you can find 
 
 An object definition consist of the following information:
 
-=============== ===========================
-Name            Description
-=============== ===========================
-Name            The Name of the object
-Description     A description
-DefaultBackend  A default backend which defines which storage backend is used to persist the data
-Attributes      Attributes that are provided by this object
-Methods         Methods that can be called on object instances
-Container       A list of potential sub-objects this object can contain
-Extends         Another objects name that we can extend. E.g. POSIX can extend a Person object
-BaseObject      Defines this object as root object. E.g. Person is a base object
-=============== ===========================
+=================== ===========================
+Name                Description
+=================== ===========================
+Name                The Name of the object
+Description         A description
+DisplayName         A display name for the object.
+Backend             A backend which defines which storage backend is used to persist the data
+BackendParameters   A list parameters for the backend.
+Attributes          Attributes that are provided by this object
+Methods             Methods that can be called on object instances
+Container           A list of potential sub-objects this object can contain
+Extends             Another objects name that we can extend. E.g. PosixUser can extend a GenericUser object
+BaseObject          Defines this object as root object. E.g. GenericUser is a base object
+FixedRDN            A RDN. For objects that are bound to a specific name. E.g. PeopleContainer (ou=people)
+=================== ===========================
 
 
 XML definition of GOsa-objects in detail
@@ -79,8 +86,8 @@ A minimum example
 ~~~~~~~~~~~~~~~~~
 
 All starts with an ``<Object>`` tag which introduces a new GOsa-object, this
-``<Object>`` tag must contain at least a ``<Name>``, a ``<Description>`` and a
-``<DefaultBackend>`` tag. The name and the description are self-explaining.
+``<Object>`` tag must contain at least a ``<Name>``, a ``<Description>``, a ``<DisplayName>`` and a
+``<Backend>`` tag. The name and the description are self-explaining.
 The default-backend specifies which backend has to be used as default, for example
 a LDAP or a MySQL backend - There may be more depending on your setup.
 
@@ -98,8 +105,9 @@ methods nor attributes:
         ...
         <Object>
             <Name>Dummy</Name>
+            <DisplayName>A dummy</DisplayName>
             <Description>A dummy class</Description>
-            <DefaultBackend>LDAP</DefaultBackend>
+            <Backend>LDAP</Backend>
         </Object>
         ...
     </Objects>
@@ -117,9 +125,10 @@ lacks attribute and method definitions:
     <Objects xmlns="http://www.gonicus.de/Objects">
         ...
         <Object>
-            <Name>Person</Name>
-            <Description>Person class</Description>
-            <DefaultBackend>LDAP</DefaultBackend>
+            <Name>GenericUser</Name>
+            <DisplayName>A dummy</DisplayName>
+            <Description>GenericUser class</Description>
+            <Backend>LDAP</Backend>
 
             <Container>
                 <Type>Something</Type>
@@ -133,10 +142,10 @@ lacks attribute and method definitions:
 As you can see, three more tags were introduced here.
 
 A ``<Container>`` tag which specifies for which objects we are a container.
-For example an ``OrganizationalUnit`` can be a container for ``Person`` or ``Group`` objects.
-In this example we could place ``Something`` objects under ``Person`` objects.
+For example an ``OrganizationalUnit`` is a container for ``PeopleContainer`` and ``GroupContainer`` objects.
+In this example we could place ``Something`` objects under ``GenericUser`` objects.
 
-A ``Person`` object may have extensions like mail, posix, samba, ...  which can be added to or
+A ``GenericUser`` object may have extensions like mail, posix, samba, ...  which can be added to or
 removed from our object dynamically.
 To be able to identify those addable extension we have the ``<Extends>`` tag, it specifies
 which objects could be added to our object as extension.
@@ -145,14 +154,8 @@ The ``<BaseObject>`` tag, defines our object as root object, (if set to true) it
 to some other objects, like described above in the ``<Extends>`` tag.
 
 
-With the above example we can now instantiate a ``Person`` object, it has no attributes
-nor methods, but we could add a ``POSIX`` and a ``Mail`` extension to it. And the backend
-is told to store Person objects in 'ou=people'.
-
-.. warning::
-    The inheritance and extension handling is not implemented yet. But it will follow soon.
-    In other words, these tags do not affect a GOsa-object right now: 
-    ``Container``, ``BaseObject``, ``Extends``
+With the above example we can now instantiate a ``GenericUser`` object, it has no attributes
+nor methods, but we could add a ``PosixUser`` and a ``Mail`` extension to it.
 
 
 Adding attributes and their in- and out-filters
@@ -176,14 +179,16 @@ Here is a minimum example of an attribute:
     <Objects xmlns="http://www.gonicus.de/Objects">
         ...
         <Object>
-            <Name>Person</Name>
-            <DefaultBackend>LDAP</DefaultBackend>
+            <Name>GenericUser</Name>
+            <DisplayName>GenericUser</DisplayName>
+            <Description>GenericUser</Description>
+            <Backend>LDAP</Backend>
             ...
             <Attributes>
                 <Attribute>
                     <Name>sn</Name>
                     <Description>Surname</Description>
-                    <Syntax>String</Syntax>
+                    <Type>String</Type>
                 </Attribute>
             </Attributes>
             ...
@@ -200,15 +205,15 @@ you can specify it explicitly like this:
     <Objects xmlns="http://www.gonicus.de/Objects">
         ...
         <Object>
-            <Name>Person</Name>
-            <DefaultBackend>LDAP</DefaultBackend>
+            ...
+            <Backend>LDAP</Backend>
             ...
             <Attributes>
                 <Attribute>
                     <Name>sn</Name>
                     <Description>Surname</Description>
                     <Backend>LDAP</Backend>
-                    <Syntax>String</Syntax>
+                    <Type>String</Type>
                 </Attribute>
             </Attributes>
             ...
@@ -221,18 +226,20 @@ Attribute definition can contain the following tags, including optional:
 =============== =========== ===========================
 Name            Optional    Description
 =============== =========== ===========================
-Name            No          The attributes name
-Description     No          A short description for the attribute
-DependsOn       Yes         A list of attributes that depends on this attribute
-Backend         Yes         The backend to store this attribute
-Syntax          No          A simple string which defines the attributes syntax, e.g. String
-Validators      Yes         A validation rule
-InFilter        Yes         A filter which is used to read the attribute from the backend
-OutFilter       Yes         A filter which is used to store the attribute in the backend
-MultiValue      Yes         A boolean flag, which marks this value as multiple value
-Readonly        Yes         Marks the attribute as read only
-Mandatory       Yes         Marks the attribute as mandatory
-Unique          Yes         Marks the attribute as system-wide unique
+Name            No          The attributes name.
+Description     No          A short description for the attribute.
+DependsOn       Yes         A list of attributes that depends on this attribute.
+Backend         Yes         The backend to store this attribute.
+Type            No          A simple string which defines the attributes syntax, e.g. String.
+BackendType     Yes         Some attributes use a different type to be stored the backend.
+Validators      Yes         A validation rule.
+InFilter        Yes         A filter which is used to read the attribute from the backend.
+OutFilter       Yes         A filter which is used to store the attribute in the backend.
+MultiValue      Yes         A boolean flag, which marks this value as multiple value.
+Readonly        Yes         Marks the attribute as read only.
+Mandatory       Yes         Marks the attribute as mandatory.
+Unique          Yes         Marks the attribute as system-wide unique.
+Foreign         Yes         This Attribute is part of another object.
 =============== =========== ===========================
 
 Here is an explanation of the simple properties above, the complex properties like ``Validators``,
@@ -247,9 +254,9 @@ to be saved again. (How sn and givenName are combined into the cn attribute will
 when the in- and out-filters are described).
 
 With ``<Backend>`` you can specifiy another backend then defined in the ``<Object>s
-<DefaultBackend>`` tag.
+<Backend>`` tag.
 
-The ``<Syntax>`` specifies which syntax this attribute has, here is a list of all available values:
+The ``<Type>`` specifies which syntax this attribute has, here is the list of the default types:
 
    * Boolean: bool
    * String: unicode
@@ -604,7 +611,7 @@ Here is the XML code for the above method call, all other object tags are remove
     <Objects xmlns="http://www.gonicus.de/Objects">
         ...
         <Object>
-            <Name>Person</Name>
+            <Name>GenericUser</Name>
             ...
             <Methods>
                 <Method>
