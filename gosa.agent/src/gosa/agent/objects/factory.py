@@ -216,21 +216,26 @@ class GOsaObjectFactory(object):
         res = {}
 
         # Identify possible children types
-        o_type = self.identifyObject(dn)[0]
-        o = self.__xml_defs[o_type].Object
+        ido = self.identifyObject(dn)
+        if ido:
+            o_type = ido[0]
+            o = self.__xml_defs[o_type].Object
 
-        if 'Container' in o.__dict__:
+            if 'Container' in o.__dict__:
 
-            # Ask base backends for a one level query
-            for c_type in o.Container.iterchildren():
-                c = self.__xml_defs[c_type.text].Object
+                # Ask base backends for a one level query
+                for c_type in o.Container.iterchildren():
+                    c = self.__xml_defs[c_type.text].Object
 
-                be = ObjectBackendRegistry.getBackend(c.Backend.text)
-                fixed_rdn = c.FixedRDN.text if 'FixedRDN' in c.__dict__ else None
-                for r in be.query(dn, scope=SCOPE_ONE,
-                        params=self.__get_backend_parameters(c),
-                        fixed_rdn=fixed_rdn):
-                    res[r] = c_type.text
+                    be = ObjectBackendRegistry.getBackend(c.Backend.text)
+                    fixed_rdn = c.FixedRDN.text if 'FixedRDN' in c.__dict__ else None
+                    for r in be.query(dn, scope=SCOPE_ONE,
+                            params=self.__get_backend_parameters(c),
+                            fixed_rdn=fixed_rdn):
+                        res[r] = c_type.text
+
+        else:
+            self.log.warning("cannot identify child %s" % dn)
 
         return res
 

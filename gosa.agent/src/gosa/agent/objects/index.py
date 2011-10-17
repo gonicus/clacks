@@ -155,8 +155,9 @@ class ObjectIndex(Plugin):
 
     def serve(self):
         # Sync index
-        sobj = PluginRegistry.getInstance("SchedulerService")
-        sobj.getScheduler().add_date_job(self.sync_index, datetime.datetime.now() + datetime.timedelta(seconds=5), tag='_internal')
+        if self.env.config.get("index.disable", "False").lower() != "true":
+            sobj = PluginRegistry.getInstance("SchedulerService")
+            sobj.getScheduler().add_date_job(self.sync_index, datetime.datetime.now() + datetime.timedelta(seconds=5), tag='_internal')
 
     @Command(__help__=N_("Check if an object with the given UUID exists."))
     def exists(self, uuid):
@@ -476,6 +477,9 @@ class ObjectIndex(Plugin):
             # Entry is not in the database
             if r == None:
                 self.log.debug("creating object index for %s" % obj.uuid)
+                if not f.identifyObject(o):
+                    self.log.warning("failed to identify %s" % o)
+                    continue
                 ext = f.identifyObject(o)[1]
                 self.insert(obj.uuid, o, _lastChanged=obj.modifyTimestamp, _type=o_type, _extensions=ext, **attrs)
 

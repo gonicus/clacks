@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Objects xmlns="http://www.gonicus.de/Objects">
 	<Object>
-		<Name>DomainComponent</Name>
+		<Name>DomainComponentOrg</Name>
 		<DisplayName>Domain component</DisplayName>
 		<Description>A domain component</Description>
 		<BackendParameters>
-			<Backend objectClasses="dcObject,locality" RDN="dc">LDAP</Backend>
+			<Backend objectClasses="dcObject,organization" RDN="dc">LDAP</Backend>
 		</BackendParameters>
 		<Backend>LDAP</Backend>
 
