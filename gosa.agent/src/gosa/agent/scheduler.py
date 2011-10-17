@@ -53,7 +53,7 @@ class SchedulerService(Plugin):
 
         self.sched = Scheduler(origin=self.env.id)
         self.sched.add_jobstore(SQLAlchemyJobStore(
-            engine=env.getDatabaseEngine('scheduler'),
+            engine=env.getDatabaseEngine('core'),
             tablename='scheduler_jobs'), 'db')
 
     def getScheduler(self):

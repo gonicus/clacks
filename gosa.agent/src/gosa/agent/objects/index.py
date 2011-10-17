@@ -70,7 +70,7 @@ class ObjectIndex(Plugin):
 
             self.__types[ia] = available_attrs[ia]
 
-        self.__engine = self.env.getDatabaseEngine('index')
+        self.__engine = self.env.getDatabaseEngine('core')
 
         # Table name
         idx = self.env.config.get("index.table", default="index")
@@ -157,7 +157,7 @@ class ObjectIndex(Plugin):
         # Sync index
         if self.env.config.get("index.disable", "False").lower() != "true":
             sobj = PluginRegistry.getInstance("SchedulerService")
-            sobj.getScheduler().add_date_job(self.sync_index, datetime.datetime.now() + datetime.timedelta(seconds=5), tag='_internal')
+            sobj.getScheduler().add_date_job(self.sync_index, datetime.datetime.now() + datetime.timedelta(seconds=30), tag='_internal')
 
     @Command(__help__=N_("Check if an object with the given UUID exists."))
     def exists(self, uuid):
