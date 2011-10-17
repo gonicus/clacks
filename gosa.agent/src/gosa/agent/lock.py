@@ -4,7 +4,7 @@ import datetime
 from inspect import stack
 from gosa.common import Environment
 from sqlalchemy.sql import select
-from sqlalchemy import Table, Column, Integer, Boolean, String, DateTime, Date, Unicode, MetaData
+from sqlalchemy import Table, Column, String, DateTime, MetaData
 
 
 class LockError(Exception):

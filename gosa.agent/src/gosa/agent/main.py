@@ -50,6 +50,7 @@ def mainLoop(env):
         pr = PluginRegistry()
         cr = PluginRegistry.getInstance("CommandRegistry")
         amqp = PluginRegistry.getInstance("AMQPHandler")
+        index = PluginRegistry.getInstance("ObjectIndex")
 
         wait = 2
         notifyInterval = 10
@@ -83,6 +84,8 @@ def mainLoop(env):
                             e.Load(str(load)),
                             e.Latency(str(latency)),
                             e.Workers(str(workers)),
+                            e.Indexed("true" if index.index_active() else
+                                "false"),
                         )
                     )
                     amqp.sendEvent(status)
