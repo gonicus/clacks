@@ -111,11 +111,11 @@ setup(
         [gosa.object.comparator]
         comparator.like = gosa.agent.objects.comparator.strings:Like
         comparator.regex = gosa.agent.objects.comparator.strings:RegEx
-        comparator.isstring = gosa.agent.objects.comparator.strings:isString
         comparator.stringlength = gosa.agent.objects.comparator.strings:stringLength
         comparator.equals = gosa.agent.objects.comparator.basic:Equals
         comparator.greater = gosa.agent.objects.comparator.basic:Greater
         comparator.smaller = gosa.agent.objects.comparator.basic:Smaller
+        filter.isvalidsambadomainname = gosa.agent.plugins.samba.utils:IsValidSambaDomainName
 
         [gosa.object.filter]
         filter.concatstring = gosa.agent.objects.filter.strings:ConcatString

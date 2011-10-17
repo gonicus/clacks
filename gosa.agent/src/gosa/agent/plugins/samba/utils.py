@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import smbpasswd
-
+import gettext
 from gosa.common.components import Command
 from gosa.common.components import Plugin
 from gosa.common.utils import N_
@@ -8,6 +8,15 @@ from gosa.common import Environment
 from gosa.agent.objects.filter import ElementFilter
 from gosa.agent.objects.types import AttributeType
 from gosa.agent.plugins.samba.SambaMungedDial import SambaMungedDial
+from gosa.agent.ldap_utils import LDAPHandler
+from gosa.agent.objects.comparator import ElementComparator
+from gosa.agent.objects.index import ObjectIndex, SCOPE_ONE, SCOPE_BASE, SCOPE_SUB
+from pkg_resources import resource_filename
+
+
+# Include locales
+t = gettext.translation('messages', resource_filename("gosa.agent", "locale"), fallback=True)
+_ = t.ugettext
 
 
 # SambaAcctFlags mapping.
@@ -315,3 +324,26 @@ class SambaLogonHoursAttribute(AttributeType):
             value = [res]
 
         return(value)
+
+
+class IsValidSambaDomainName(ElementComparator):
+    """
+    Validates a given sambaDomainName.
+    """
+
+    def __init__(self, obj):
+        super(IsValidSambaDomainName, self).__init__()
+
+    def process(self, key, value, errors=[]):
+
+        fltr = {'sambaDomainName': '*'}
+        attrs = ['sambaDomainName']
+
+        ie = ObjectIndex()
+        d =[]
+        for e in ie.search(fltr=fltr, attrs=attrs):
+            if value[0] == e['sambaDomainName']:
+                return True
+            d.append(e['sambaDomainName'])
+        errors.append(_("The given sambaDomainName '%s' does not exists! Choose one of '%s'!") % (value[0], ', '.join(d)))
+        return False

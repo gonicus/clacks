@@ -48,6 +48,7 @@
 			<Type>DomainComponent</Type>
 			<Type>Domain</Type>
 			<Type>Country</Type>
+			<Type>SambaDomain</Type>
 		</Container>
 		<BaseObject>true</BaseObject>
 	</Object>
