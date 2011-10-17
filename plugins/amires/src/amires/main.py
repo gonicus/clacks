@@ -70,13 +70,11 @@ class AsteriskNotificationReceiver(object):
 
     # Event callback
     def process(self, data):
+        dat = data.AMINotification['Call']
 
-        # for some reason we need to convert to string and back
-        cstr = etree.tostring(data, pretty_print = True)
-        dat = etree.fromstring(cstr)
-
+        # Load information into dict
         event = {}
-        for t in dat[0]:
+        for t in dat.iterchildren():
             tag = re.sub(r"^\{.*\}(.*)$", r"\1", t.tag)
             if t.tag == 'From':
                 event[tag] = t.text.split(" ")[0]
