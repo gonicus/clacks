@@ -9,9 +9,9 @@ from gosa.agent.objects import GOsaObjectFactory
 
 f = GOsaObjectFactory()
 p = f.getObject('SambaDomain', u'sambaDomainName=FabianSuperDomain,sambaDomainName=GONICUS,dc=gonicus,dc=de', mode='remove')
-p.commit();
 
 for entry in p.listProperties():
     print "%30s" % (entry,), getattr(p, entry)
 
 #p.commit()
+p.remove();
