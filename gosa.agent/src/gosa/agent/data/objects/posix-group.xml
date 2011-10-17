@@ -37,7 +37,7 @@
                                                 <FilterEntry>
                                                         <Filter>
                                                                 <Name>GetNextID</Name>
-                                                                <Param>uidNumber</Param>
+                                                                <Param>gidNumber</Param>
                                                         </Filter>
                                                 </FilterEntry>
                                         </FilterChain>
