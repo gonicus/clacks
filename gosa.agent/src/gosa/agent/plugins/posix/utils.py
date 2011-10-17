@@ -14,6 +14,13 @@ class GetNextID(ElementFilter):
     """
     An object filter which inserts the next free ID for the property given as parameter.
     But only if the current value is empty.
+
+    =============== =======================
+    Name            Description
+    =============== =======================
+    attributeName   The target attribute we want to generate an ID for. uidNumber/gidNumber
+    maxValue        The maximum value that would be dsitributed.
+    =============== =======================
     """
     def __init__(self, obj):
         super(GetNextID, self).__init__(obj)
