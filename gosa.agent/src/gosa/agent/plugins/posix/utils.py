@@ -30,6 +30,7 @@ class GetNextID(ElementFilter):
             maxValue = int(maxValue)
             be = ObjectBackendRegistry.getBackend(valDict[key]['backend'])
             gid = be.get_next_id(attributeName)
+            print gid,"11"
             if gid > maxValue:
                 raise Exception("Gid number generation exceeded limitation of %s!" % (maxValue,))
             valDict[key]['value'] = [gid]
