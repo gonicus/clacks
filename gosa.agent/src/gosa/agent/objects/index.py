@@ -16,6 +16,7 @@ from gosa.common.utils import N_
 from gosa.common.handler import IInterfaceHandler
 from gosa.common.components import Command, Plugin, PluginRegistry
 from gosa.agent.objects import GOsaObjectFactory, ObjectChanged, SCOPE_BASE, SCOPE_ONE, SCOPE_SUB
+from gosa.agent.lock import GlobalLock
 from gosa.agent.ldap_utils import LDAPHandler
 from sqlalchemy.sql import select, and_, or_, func, asc, desc
 from sqlalchemy.dialects.sqlite.base import SQLiteDialect
@@ -436,6 +437,7 @@ class ObjectIndex(Plugin):
         return u",".join([b64decode(p).decode('utf-8') for p in b64dn.split(",")])
 
     def sync_index(self):
+        GlobalLock.acquire()
         t0 = time()
         f = GOsaObjectFactory.getInstance()
 
@@ -504,6 +506,7 @@ class ObjectIndex(Plugin):
 
         t1 = time()
         self.log.info("processed %d objects in %ds" % (len(res), t1 - t0))
+        GlobalLock.release()
 
     def __handle_events(self, event):
         if isinstance(event, ObjectChanged):
