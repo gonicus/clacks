@@ -61,8 +61,8 @@ class AsteriskNotificationReceiver(object):
             amqp.getConnection(),
             xquery="""
                 declare namespace f='http://www.gonicus.de/Events';
-                let $e := ./f:Event
-                return $e/f:AsteriskNotification
+                let $e := ./f:Event/f:AMINotification
+                return $e/f:Call
             """,
             callback=self.process)
 
