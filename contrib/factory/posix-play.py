@@ -34,4 +34,5 @@ for entry in p.listProperties():
 
 p = f.getObject('PosixUser', u'cn=Playground Tester,ou=people,dc=gonicus,dc=de', mode='update')
 p.shadowLastChange = datetime.datetime.today().date()
+p.shadowExpire = datetime.datetime.today().date()
 p.commit()
