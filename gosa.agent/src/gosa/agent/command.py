@@ -545,6 +545,7 @@ class CommandRegistry(Plugin):
             'load': float(data.Load),
             'latency': float(data.Latency),
             'workers': int(data.Workers),
+            'indexed': bool(data.Indexed),
             'received': time.mktime(t.timetuple())}
 
     def _handleNodeLeave(self, data):

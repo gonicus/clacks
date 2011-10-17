@@ -50,6 +50,7 @@ class ObjectIndex(Plugin):
     __fixed = ['id', '_dn', '_parent_dn', '_uuid', '_lastChanged', '_extensions', '_type']
     _priority_ = 20
     _target_ = 'core'
+    _indexed = False
 
     def __init__(self):
         self.env = Environment.getInstance()
@@ -441,7 +442,16 @@ class ObjectIndex(Plugin):
         if GlobalLock.exists():
             return
 
+        # Don't run index, if someone else already did until the last
+        # restart.
+        cr = PluginRegistry.getInstance("CommandRegistry")
+        nodes = cr.getNodes()
+        if len([n for n, v in nodes.items() if 'Indexed' in v and v['Indexed']]):
+            return
+
         GlobalLock.acquire()
+        self._indexed = True
+
         t0 = time()
         f = GOsaObjectFactory.getInstance()
 
@@ -512,6 +522,9 @@ class ObjectIndex(Plugin):
         self.log.info("processed %d objects in %ds" % (len(res), t1 - t0))
         GlobalLock.release()
 
+    def index_active(self):
+        return self._indexed
+
     def __handle_events(self, event):
         if isinstance(event, ObjectChanged):
             uuid = event.uuid
@@ -523,7 +536,7 @@ class ObjectIndex(Plugin):
 
             if event.reason == "post move":
                 self.log.debug("updating object index for %s" % uuid)
-                self.move(uuid, obj.dn)
+                self.move(uuid, event.dn)
 
             if event.reason == "post create":
                 self.log.debug("creating object index for %s" % uuid)

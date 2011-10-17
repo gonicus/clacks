@@ -9,13 +9,11 @@
     		</documentation>
     	</annotation>
         <all>
-    		<element name="Load" type="float" maxOccurs="1" minOccurs="1">
-    		</element>
-    		<element name="Latency" type="float" maxOccurs="1" minOccurs="1">
-    		</element>
-    		<element name="Workers" type="int" maxOccurs="1" minOccurs="1">
-    		</element>
+    		<element name="Load" type="float" maxOccurs="1" minOccurs="1"></element>
+    		<element name="Latency" type="float" maxOccurs="1" minOccurs="1"></element>
+    		<element name="Workers" type="int" maxOccurs="1" minOccurs="1"></element>
     		<element name="Id" type="string" maxOccurs="1" minOccurs="1"></element>
+    		<element name="Indexed" type="boolean" maxOccurs="1" minOccurs="0"></element>
     	</all>
     </complexType>
     
