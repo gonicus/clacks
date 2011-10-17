@@ -37,11 +37,17 @@
                                                 <FilterEntry>
                                                         <Filter>
                                                                 <Name>GetNextID</Name>
-                                                                <Param>uidNumber</Param>
+                                                                <Param>gidNumber</Param>
                                                         </Filter>
                                                 </FilterEntry>
                                         </FilterChain>
                                 </OutFilter>
+ 				<Validators>
+					<Condition>
+						<Name>Smaller</Name>
+						<Param>65500</Param>
+					</Condition>
+                                </Validators>
                         </Attribute>
                         <Attribute>
                                 <Name>memberUid</Name>
