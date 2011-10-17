@@ -384,6 +384,30 @@ class LDAP(ObjectBackend):
 
         return sorted(dn_list, key=len)
 
+    def get_next_id(self, attr):
+        fltr = self.env.config.get("posix.pool_filter", "(objectClass=sambaUnixIdPool)")
+        res = self.con.search_s(self.lh.get_base(), ldap.SCOPE_SUBTREE, fltr, [attr])
+
+        if not res:
+            raise EntryNotFound("please configure an ID pool")
+
+        if len(res) != 1:
+            raise EntryNotFound("found multiple ID pool entries")
+
+        # Current value
+        old_value = res[0][1][attr][0]
+        new_value = str(int(old_value) + 1)
+
+        # Remove old, add new
+        mod_attrs = [
+                (ldap.MOD_DELETE, attr, [old_value]),
+                (ldap.MOD_ADD, attr, [new_value]),
+                ]
+
+        self.con.modify_s(res[0][0], mod_attrs)
+
+        return int(new_value)
+
     def __check_res(self, uuid, res):
         if not res:
             raise EntryNotFound("entry '%s' is not present" % uuid)
