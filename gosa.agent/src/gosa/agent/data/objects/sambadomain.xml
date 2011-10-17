@@ -119,10 +119,7 @@ sambaNextRid: 1018
                                 <Type>Integer</Type>
                         </Attribute>
                 </Attributes>
-		<Extends>
-			<Value>GenericUser</Value>
-		</Extends>
-		<BaseObject>false</BaseObject>
+		<BaseObject>true</BaseObject>
 	</Object>
 </Objects>
 
