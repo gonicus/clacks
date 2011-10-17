@@ -13,21 +13,21 @@
 		<Attributes>
                         <Attribute>
                                 <Name>cn</Name>
-                                <Description></Description>
+                                <Description>Common Name</Description>
                                 <Type>UnicodeString</Type>
                                 <MultiValue>false</MultiValue>
                                 <Mandatory>true</Mandatory>
                         </Attribute>
                         <Attribute>
                                 <Name>description</Name>
-                                <Description></Description>
+                                <Description>Description</Description>
                                 <Type>UnicodeString</Type>
                                 <MultiValue>false</MultiValue>
                                 <Mandatory>false</Mandatory>
                         </Attribute>
                         <Attribute>
                                 <Name>gidNumber</Name>
-                                <Description></Description>
+                                <Description>Group identification number</Description>
                                 <Type>Integer</Type>
                                 <MultiValue>false</MultiValue>
                                 <Mandatory>true</Mandatory>
@@ -50,22 +50,7 @@
                                 <MultiValue>true</MultiValue>
                                 <Mandatory>false</Mandatory>
                         </Attribute>
-                        <Attribute>
-                                <Name>sambaGroupType</Name>
-                                <Description></Description>
-                                <Type>UnicodeString</Type>
-                                <MultiValue>false</MultiValue>
-                                <Mandatory>false</Mandatory>
-                        </Attribute>
-                        <Attribute>
-                                <Name>sambaSID</Name>
-                                <Description></Description>
-                                <Type>UnicodeString</Type>
-                                <MultiValue>false</MultiValue>
-                                <Mandatory>false</Mandatory>
-                        </Attribute>
                 </Attributes>
-
 		<BaseObject>true</BaseObject>
 	</Object>
 </Objects>

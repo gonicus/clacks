@@ -14,14 +14,25 @@ class GetNextID(ElementFilter):
     """
     An object filter which inserts the next free ID for the property given as parameter.
     But only if the current value is empty.
+
+    =============== =======================
+    Name            Description
+    =============== =======================
+    attributeName   The target attribute we want to generate an ID for. uidNumber/gidNumber
+    maxValue        The maximum value that would be dsitributed.
+    =============== =======================
     """
     def __init__(self, obj):
         super(GetNextID, self).__init__(obj)
 
-    def process(self, obj, key, valDict, attributeName="uidNumber"):
+    def process(self, obj, key, valDict, attributeName="uidNumber", maxValue=65500):
         if len(valDict[key]['value']) and (valDict[key]['value'][0] == -1):
+            maxValue = int(maxValue)
             be = ObjectBackendRegistry.getBackend(valDict[key]['backend'])
-            valDict[key]['value'] = [be.get_next_id(attributeName)]
+            gid = be.get_next_id(attributeName)
+            if gid > maxValue:
+                raise Exception("Gid number generation exceeded limitation of %s!" % (maxValue,))
+            valDict[key]['value'] = [gid]
 
         return key, valDict
 
