@@ -78,6 +78,13 @@ class GlobalLock(object):
         GlobalLock.get_instance()._release(name)
 
     @staticmethod
+    def exists(name=None):
+        if not name:
+            name = stack()[1][3]
+
+        return GlobalLock.get_instance()._exists(name)
+
+    @staticmethod
     def get_instance():
         if not GlobalLock.instance:
             GlobalLock.instance = GlobalLock()

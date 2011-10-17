@@ -437,6 +437,10 @@ class ObjectIndex(Plugin):
         return u",".join([b64decode(p).decode('utf-8') for p in b64dn.split(",")])
 
     def sync_index(self):
+        # Don't index if someone else is already doing it
+        if GlobalLock.exists():
+            return
+
         GlobalLock.acquire()
         t0 = time()
         f = GOsaObjectFactory.getInstance()
