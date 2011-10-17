@@ -20,7 +20,7 @@ args = parser.parse_args()
 # Load filter
 try:
     if args.query:
-        fltr = json.loads(args.query[0])
+        fltr = json.loads(args.query)
     else:
         fltr = {}
 except:
