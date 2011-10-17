@@ -94,6 +94,5 @@ class ObjectBackend(object):
     def query(self, base, scope, params, fixed_rdn=None):
         raise NotImplementedError("object backend is missing query()")
 
-    def get_next_id(self, attr, base=1000):
-        #TODO: needs to be moved to the LDAP backend
-        return base
+    def get_next_id(self, attr):
+        raise NotImplementedError("object backend is missing get_next_id()")
