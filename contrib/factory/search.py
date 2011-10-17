@@ -8,7 +8,7 @@ from gosa.agent.objects.index import ObjectIndex, SCOPE_ONE, SCOPE_BASE, SCOPE_S
 
 # Define cla parser
 parser = argparse.ArgumentParser(description='Search test')
-parser.add_argument('query', metavar='QUERY', type=unicode, help='JSON query', nargs=1)
+parser.add_argument('query', metavar='QUERY', type=unicode, help='JSON query', default=None, nargs='?')
 parser.add_argument('attrs', metavar='ATTRIBUTE', type=str, help='query attributes', nargs="*")
 parser.add_argument('--sync', dest='sync', action='store_true', default=False, help='sync index')
 parser.add_argument('--base', dest='base', type=unicode, default="dc=gonicus,dc=de", help='the search base')
@@ -19,7 +19,10 @@ args = parser.parse_args()
 
 # Load filter
 try:
-    fltr = json.loads(args.query[0])
+    if args.query:
+        fltr = json.loads(args.query[0])
+    else:
+        fltr = {}
 except:
     print "Error: invalid filter\n"
     print "Examples:"
