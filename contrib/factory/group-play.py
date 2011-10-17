@@ -15,7 +15,10 @@ f = GOsaObjectFactory()
 cn = u"hickert-test4"
 
 object_type, extensions =  f.identifyObject(u'cn=%s,ou=groups,dc=gonicus,dc=de' % (cn,))
-p = f.getObject('PosixGroup', u'cn=%s,ou=groups,dc=gonicus,dc=de' % (cn,), mode='update')
+
+print object_type, extensions 
+
+p = f.getObject('SambaGroup', u'cn=%s,ou=groups,dc=gonicus,dc=de' % (cn,), mode='update')
 for entry in p.listProperties():
     print "%30s" % (entry,), getattr(p, entry)
 
