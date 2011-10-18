@@ -160,10 +160,16 @@ class GOsaObjectFactory(object):
             backend = str(t_obj.Backend)
             backend_attrs = self.__get_backend_parameters(t_obj)
 
+            methods = []
+            if hasattr(t_obj, "Methods"):
+                for method in t_obj.Methods.iterchildren():
+                    methods.append(method.Name.text)
+
             types[name] = {
                 'backend': backend,
                 'backend_attrs': backend_attrs,
                 'extended_by': [],
+                'methods': methods,
                 'base': is_base,
             }
 
