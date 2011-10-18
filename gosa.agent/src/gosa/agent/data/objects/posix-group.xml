@@ -27,7 +27,7 @@
                         </Attribute>
                         <Attribute>
                                 <Name>gidNumber</Name>
-                                <Description>Group identification number</Description>
+                                <Description>The primary group number  number</Description>
                                 <Type>Integer</Type>
                                 <MultiValue>false</MultiValue>
                                 <Mandatory>true</Mandatory>
