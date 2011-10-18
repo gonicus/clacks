@@ -253,6 +253,9 @@ class ObjectIndex(Plugin):
 
         ``Return``: Integer
         """
+        if GlobalLock.exists("scan_index"):
+            raise FilterException("index rebuild in progress - try again later")
+
         base_filter = None
 
         if scope == None or not scope in [SCOPE_ONE, SCOPE_BASE, SCOPE_SUB]:
@@ -309,6 +312,9 @@ class ObjectIndex(Plugin):
 
         ``Return``: List of dicts
         """
+        if GlobalLock.exists("scan_index"):
+            raise FilterException("index rebuild in progress - try again later")
+
         base_filter = None
 
         if not attrs:
