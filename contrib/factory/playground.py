@@ -23,45 +23,6 @@ else:
 
 f = GOsaObjectFactory.getInstance()
 
-#-Test-------------------------------------------------------------------------
-
-def resolve_children(dn):
-    sys.stdout.write(".")
-    sys.stdout.flush()
-
-    res = {}
-
-    children = f.getObjectChildren(dn)
-    res = dict(res.items() + children.items())
-
-    for chld in children.keys():
-        res = dict(res.items() + resolve_children(chld).items())
-
-    return res
-
-print "Scanning for objects",
-res = resolve_children(u"ou=Vertrieb,dc=gonicus,dc=de")
-print "done"
-
-print "Generating index:"
-to_be_indexed = ['uid', 'givenName', 'sn', 'mail']
-for o, o_type in res.items():
-    obj = f.getObject(o_type, o)
-    print obj.uuid
-    print obj.createTimestamp
-    print obj.modifyTimestamp
-    for attr in to_be_indexed:
-        if obj.hasattr(attr):
-            print "->", getattr(obj, attr)
-    del obj
-
-print "Processed %d entries" % len(res)
-
-# Break for now...
-exit(0)
-
-#-------------------------------------------------------------------------Test-
-
 if mode == "create":
     p = f.getObject('GenericUser', u'ou=people,dc=gonicus,dc=de', mode="create")
 
