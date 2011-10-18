@@ -176,11 +176,9 @@ class GOsaObjectFactory(object):
 
         self.__object_types = types
 
-    #@Command()
     def getObjectTypes(self):
         return self.__object_types
 
-    #@Command()
     def identifyObject(self, dn):
         id_base = None
         id_base_fixed = None
@@ -239,7 +237,6 @@ class GOsaObjectFactory(object):
 
         return res
 
-    #@Command()
     def getObject(self, name, *args, **kwargs):
         """
         Returns a GOsa-object instance.
@@ -254,38 +251,6 @@ class GOsaObjectFactory(object):
             self.__classes[name] = self.__build_class(name)
 
         return self.__classes[name](*args, **kwargs)
-
-    #@Command()
-    def createObject(self, name, *args, **kwargs):
-        #TODO
-        pass
-
-    #@Command()
-    def removeObject(self, name, uuid, recursive=False):
-        #TODO
-        pass
-
-    #@Command()
-    def getObjectExtensions(self, name, *args, **kwargs):
-        #TODO
-        pass
-
-    #@Command()
-    def getObjectExtension(self, name, *args, **kwargs):
-        #TODO
-        pass
-
-    #@Command()
-    def createObjectExtension(self, name, *args, **kwargs):
-        #TODO
-        pass
-
-    #@Command()
-    def removeObjectExtension(self, name, uuid):
-        #TODO
-        pass
-
-#----------------------------------------------------------------------------------------
 
     def load_schema(self):
         """
