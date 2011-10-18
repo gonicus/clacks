@@ -520,7 +520,7 @@ class GOsaObjectFactory(object):
                 # Get the list of command parameters
                 cParams = []
                 if 'CommandParameters' in method.__dict__:
-                    for param in method['CommandParameters']['CommandParameter']:
+                    for param in method['CommandParameters']:
                         cParams.append(str(param['Value']))
 
                 # Now add the method to the object
@@ -546,7 +546,6 @@ class GOsaObjectFactory(object):
                             raise FactoryException("Missing parameter '%s'!" % mName)
 
                         #TODO: Ensure that the correct parameter type was given.
-
                         cnt = cnt + 1
 
                     # Build the command-parameter list.

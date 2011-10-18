@@ -10,6 +10,31 @@
 		</BackendParameters>
 		<Backend>LDAP</Backend>
 
+		<Methods>
+                        <Method>
+                                <Name>notify</Name>
+                                <MethodParameters>
+                                        <MethodParameter>
+                                                <Name>notify_title</Name>
+                                                <Type>UnicodeString</Type>
+                                                <Default></Default>
+                                        </MethodParameter>
+                                        <MethodParameter>
+                                                <Name>notify_message</Name>
+                                                <Type>UnicodeString</Type>
+                                                <Required>true</Required>
+                                        </MethodParameter>
+                                </MethodParameters>
+                                <Command>notifyUser</Command>
+                                <CommandParameters>
+                                	<Value>%(uid)s</Value>
+                                	<Value>Der angegebene Titel war: %(notify_title)s</Value>
+                                	<Value>%(notify_message)s</Value>
+                                </CommandParameters>
+                        </Method>
+                </Methods>
+
+
 		<Attributes>
 			<Attribute>
 				<Name>audio</Name>

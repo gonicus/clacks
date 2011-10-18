@@ -200,7 +200,7 @@
     		>
     		</element>
     		<element name="CommandParameters"
-    			type="gosa:CommandParameters" maxOccurs="1" minOccurs="0"
+    			type="gosa:CommandParameter" maxOccurs="1" minOccurs="0"
     		>
     		</element>
     	</all>
@@ -338,18 +338,10 @@
 
     <complexType name="CommandParameter">
     	<sequence>
-    		<element name="Value" type="string" maxOccurs="1" minOccurs="1"></element>
+    		<element name="Value" type="string" maxOccurs="unbounded" minOccurs="1"></element>
     	</sequence>
     </complexType>
     
-    <complexType name="CommandParameters">
-    	<sequence>
-    		<element name="CommandParameter"
-    			type="gosa:CommandParameter"
-    		maxOccurs="unbounded" minOccurs="1">
-    		</element>
-    	</sequence>
-    </complexType>
 
     <complexType name="MethodParameter">
     	<all>
