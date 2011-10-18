@@ -548,7 +548,7 @@ class GOsaObjectFactory(object):
                         if props[key]['value']:
                             propList[key] = props[key]['value'][0]
                         else:
-                            propList[key] = ''
+                            propList[key] = None
 
                     # Add method-parameters passed to this method.
                     for entry in arguments:
@@ -557,7 +557,6 @@ class GOsaObjectFactory(object):
                     # Fill in the placeholders of the command-parameters now.
                     parmList = []
                     for value in cParams:
-
                         if value in propList:
                             parmList.append(propList[value])
                         else:
