@@ -47,6 +47,7 @@ import ldap.dn
 from zope.interface import Interface, implements
 from lxml import etree, objectify
 from gosa.common import Environment
+from gosa.common.components import PluginRegistry
 from gosa.agent.objects.filter import get_filter
 from gosa.agent.objects.backend.registry import ObjectBackendRegistry
 from gosa.agent.objects.comparator import get_comparator
@@ -568,8 +569,9 @@ class GOsaObjectFactory(object):
                         else:
                             raise FactoryException("Method '%s' depends on unknown attribute '%s'!" % (command, value))
 
-                    #TODO: Execute real-stuff later
-                    print "Calling class method:", parmList, command
+                    # Dispatch message
+                    cr = PluginRegistry.getInstance('CommandRegistry')
+                    cr.dispatch(command, *paramList)
 
                 # Append the method to the list of registered methods for this
                 # object
