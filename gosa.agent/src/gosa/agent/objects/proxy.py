@@ -10,6 +10,7 @@ class GOsaObjectProxy(object):
     __base = None
     __extensions = {}
     __factory = None
+    __attribute_map = {}
 
     def __init__(self, dn_or_base, what=None):
         self.__env = Environment.getInstance()
@@ -42,16 +43,13 @@ class GOsaObjectProxy(object):
                 self.__extensions[extension] = None
 
         # Generate read and write mapping for attributes
-        #-> read: only exclusive guest
-        #-> write: write to all guests
+        self.__attribute_map = self.__factory.getAttributes()
 
         print "-"*80
         print "Base type:", base
         print "Installed extensions:", extensions
         print "Available extensions:", all_extensions
         print "-"*80
-
-        print self.__factory.getAttributes()
 
     def extend(self, extension):
         raise NotImplemented()
@@ -69,8 +67,15 @@ class GOsaObjectProxy(object):
         raise NotImplemented()
 
     def __getattr__(self, name):
-        #TODO: Handle methods and attributes here
-        return getattr(self.__base, name)
+        objs = self.__attribute_map[name]['primary']
+        for obj in objs:
+            if self.__base.__class__.__name__ == obj:
+                return getattr(self.__base, name)
+
+            if obj in self.__extensions:
+                return getattr(self.__extensions[obj], name)
+
+        raise AttributeError("no such primary attribute '%s'" % name)
 
     def __setattr__(self, name, value):
         # Store non property values
@@ -81,5 +86,16 @@ class GOsaObjectProxy(object):
         except AttributeError:
             pass
 
-        #TODO: handle write path
-        print "%s = %s" % (name, value)
+        found = False
+        for obj in self.__attribute_map[name]['primary'] + self.__attribute_map[name]['objects']:
+            if self.__base.__class__.__name__ == obj:
+                found = True
+                setattr(self.__base, name, value)
+                continue
+
+            if obj in self.__extensions:
+                found = True
+                setattr(self.__extensions[obj], name, value)
+
+        if not found:
+            raise AttributeError("no such attribute '%s'" % name)
