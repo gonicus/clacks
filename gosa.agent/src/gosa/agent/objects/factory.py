@@ -570,8 +570,12 @@ class GOsaObjectFactory(object):
                             raise FactoryException("Method '%s' depends on unknown attribute '%s'!" % (command, value))
 
                     # Dispatch message
-                    cr = PluginRegistry.getInstance('CommandRegistry')
-                    cr.dispatch(command, *paramList)
+                    try:
+                        cr = PluginRegistry.getInstance('CommandRegistry')
+                    except:
+                        raise FactoryException("The command registry could not be found, are you running things manually?!")
+
+                    return(cr.dispatch(command, *paramList))
 
                 # Append the method to the list of registered methods for this
                 # object
