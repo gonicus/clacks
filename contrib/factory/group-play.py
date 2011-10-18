@@ -27,6 +27,7 @@ p.gidNumber = -1
 p.commit()
 
 p = f.getObject('SambaGroup', u'cn=%s,ou=groups,dc=gonicus,dc=de' % (cn,), mode='update')
+p.sambaGroupType = 513
 p.sambaGroupType = 514
 p.sambaDomainName = "WINNT-TEST"
 p.commit()

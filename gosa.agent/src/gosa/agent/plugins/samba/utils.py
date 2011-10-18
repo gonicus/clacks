@@ -221,7 +221,7 @@ class GenerateSambaSid(ElementFilter):
     def process(self, obj, key, valDict, method, number, domain, group_type = 0):
 
         #TODO: Get this information from the backend/config
-        ridbase= 1000
+        ridbase = 1000
 
         # Generate a sid for groups or users.
         group_type = int(group_type)

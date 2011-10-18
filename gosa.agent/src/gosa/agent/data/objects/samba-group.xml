@@ -31,7 +31,8 @@
                                                         </Filter>
                                                 </FilterEntry>
                                         </FilterChain>
-                                </OutFilter>
+				</OutFilter>
+				<ReadOnly>true</ReadOnly>
                         </Attribute>
            		<Attribute>
                                 <Name>sambaDomainName</Name>
