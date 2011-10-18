@@ -990,7 +990,7 @@ class GOsaObject(object):
             # Check if this attribute is blocked by another attribute and its value.
             for bb in  props[name]['blocked_by']:
                 if bb['value'] in props[bb['name']]['value']:
-                    raise AttributeError("This attribute is blocked by '%(name)s:%(value)s'!" % bb)
+                    raise AttributeError("This attribute is blocked by %(name)s = '%(value)s'!" % bb)
 
             # Do not allow to write to read-only attributes.
             if props[name]['readonly']:
@@ -1031,7 +1031,7 @@ class GOsaObject(object):
             # Check if this attribute is blocked by another attribute and its value.
             for bb in  props[name]['blocked_by']:
                 if bb['value'] in props[bb['name']]['value']:
-                    raise AttributeError("This attribute is blocked by '%(name)s:%(value)s'!" % bb)
+                    raise AttributeError("This attribute is blocked by %(name)s = '%(value)s'!" % bb)
 
             # Do not allow to write to read-only attributes.
             if props[name]['readonly']:
@@ -1142,15 +1142,22 @@ class GOsaObject(object):
 
         self.log.debug("saving object modifications for [%s|%s]" % (type(self).__name__, self.uuid))
 
-        # Check if all required attributes are set.
-        for key in props:
-            if props[key]['mandatory'] and not len(props[key]['value']):
-                raise FactoryException("The required property '%s' is not set!" % (key,))
-
         # Collect values by store and process the property filters
         toStore = {}
         collectedAttrs = {}
         for key in props:
+
+            # Check if this attribute is blocked by another attribute and its value.
+            is_blocked = False
+            for bb in  props[key]['blocked_by']:
+                if bb['value'] in props[bb['name']]['value']:
+                    props[key]['value'] = []
+                    is_blocked = True
+                    break
+
+            # Check if all required attributes are set. (Skip blocked once, they cannot be set!)
+            if not is_blocked and props[key]['mandatory'] and not len(props[key]['value']):
+                raise FactoryException("The required property '%s' is not set!" % (key,))
 
             # Adapt status from dependent properties.
             props[key]['commit_status'] = props[key]['status']
