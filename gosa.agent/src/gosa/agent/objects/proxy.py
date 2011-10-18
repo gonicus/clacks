@@ -16,7 +16,7 @@ class GOsaObjectProxy(object):
     def __init__(self, dn_or_base, what=None):
         self.__env = Environment.getInstance()
         self.__log = getLogger(__name__)
-        self.__factory = GOsaObjectFactory()
+        self.__factory = GOsaObjectFactory.getInstance()
 
         # Load available object types
         object_types = self.__factory.getObjectTypes()
@@ -41,7 +41,7 @@ class GOsaObjectProxy(object):
         self.__base = self.__factory.getObject(base, dn_or_base, mode=base_mode)
         for extension in extensions:
             self.__log.info("loading %s extension for %s" % (extension, dn_or_base))
-            self.__extensions[extension] = self.__factory.getObject(extension, dn_or_base)
+            self.__extensions[extension] = self.__factory.getObject(extension, self.__base.uuid)
         for extension in all_extensions:
             if extension not in self.__extensions:
                 self.__extensions[extension] = None
@@ -59,10 +59,27 @@ class GOsaObjectProxy(object):
         self.__attribute_map = self.__factory.getAttributes()
 
     def extend(self, extension):
-        raise NotImplemented()
+        if not extension in self.__extensions:
+            raise Exception("extension '%s' not allowed" % extension)
+
+        if self.__extensions[extensions] != None:
+            raise Exception("extension '%s' already defined" % extension)
+
+        # Create extension
+        self.__extensions[extension] = self.__factory.getObject(extension,
+                self.__base.uuid, mode="extend")
 
     def retract(self, extension):
-        raise NotImplemented()
+        if not extension in self.__extensions:
+            raise Exception("extension '%s' not allowed" % extension)
+
+        if self.__extensions[extension] == None:
+            raise Exception("extension '%s' already retracted" % extension)
+
+        # Immediately remove extension
+        #TODO: maybe we want to do that on commit?
+        self.__extensions[extension].retract()
+        self.__extensions[extension] = None
 
     def move(self, new_base):
         raise NotImplemented()
@@ -71,7 +88,10 @@ class GOsaObjectProxy(object):
         raise NotImplemented()
 
     def commit(self):
-        raise NotImplemented()
+        self.__base.commit()
+
+        for extension in self.__extensions:
+            extension.commit()
 
     def __getattr__(self, name):
         # Valid method?

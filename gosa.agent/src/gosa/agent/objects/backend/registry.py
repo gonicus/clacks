@@ -18,6 +18,9 @@ class ObjectBackendRegistry(object):
     def dn2uuid(self, backend, dn):
         return ObjectBackendRegistry.backends[backend].dn2uuid(dn)
 
+    def uuid2dn(self, backend, uuid):
+        return ObjectBackendRegistry.backends[backend].uuid2dn(uuid)
+
     def get_timestamps(self, backend, dn):
         return ObjectBackendRegistry.backends[backend].get_timestamps(dn)
 

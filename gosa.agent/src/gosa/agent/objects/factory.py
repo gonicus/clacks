@@ -63,6 +63,8 @@ SCOPE_BASE = ldap.SCOPE_BASE
 SCOPE_ONE = ldap.SCOPE_ONELEVEL
 SCOPE_SUB = ldap.SCOPE_SUBTREE
 
+_is_uuid = re.compile(r'^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$')
+
 
 def load(attr, element, default=None):
     """
@@ -874,14 +876,12 @@ class GOsaObject(object):
     modifyTimestamp = None
 
 
-    def __init__(self, dn=None, mode="update"):
+    def __init__(self, where=None, mode="update"):
 
         # Instantiate Backend-Registry
         self._reg = ObjectBackendRegistry.getInstance()
-        self. dn = dn
         self.log = getLogger(__name__)
         self.log.debug("new object instantiated '%s'" % (type(self).__name__))
-        self.log.debug("object dn '%s'" % (dn))
 
         # Group attributes by Backend
         propsByBackend = {}
@@ -899,8 +899,14 @@ class GOsaObject(object):
         self._mode = mode
 
         # Initialize object using a DN
-        if dn and mode != "create":
-            self._read(dn)
+        if where:
+            if mode == "create":
+                if _is_uuid.match(where):
+                    raise Exception("create mode needs a base DN")
+                self.dn = where
+
+            else:
+                self._read(where)
 
         # Use default value for newly created objects.
         for key in props:
@@ -923,7 +929,7 @@ class GOsaObject(object):
         props = getattr(self, '__properties')
         return attr in props
 
-    def _read(self, dn):
+    def _read(self, where):
         """
         This method tries to initialize a GOsa-object instance by reading data
         from the defined backend.
@@ -934,9 +940,16 @@ class GOsaObject(object):
         """
         props = getattr(self, '__properties')
 
+        # Generate missing values
+        if _is_uuid.match(where):
+            self.dn = self._reg.uuid2dn(self._backend, where)
+            self.uuid = where
+        else:
+            self.dn = where
+            self.uuid = self._reg.dn2uuid(self._backend, where)
+
         # Instantiate Backend-Registry
-        self.uuid = self._reg.dn2uuid(self._backend, dn)
-        self.createTimestamp, self.modifyTimestamp = self._reg.get_timestamps(self._backend, dn)
+        self.createTimestamp, self.modifyTimestamp = self._reg.get_timestamps(self._backend, self.dn)
 
         # Load attributes for each backend.
         # And then assign the values to the properties.
