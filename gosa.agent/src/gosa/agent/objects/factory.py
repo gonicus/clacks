@@ -413,7 +413,7 @@ class GOsaObjectFactory(object):
                 blocked_by = []
                 if "BlockedBy" in prop.__dict__:
                     name = str(prop['BlockedBy'].Name)
-                    value = self.__attribute_type['String'].convert_to(syntax, [str(prop['BlockedBy'].Value)])[0]
+                    value = str(prop['BlockedBy'].Value)
                     blocked_by.append({'name': name, 'value': value})
 
                 # Convert the default to the corresponding type.
@@ -464,8 +464,22 @@ class GOsaObjectFactory(object):
                     'multivalue': multivalue,
                     'blocked_by': blocked_by}
 
-        # Validate the properties depends_on list
+        # Validate the properties 'depends_on' and 'blocked_by' lists
         for pname in props:
+
+            # Blocked by
+            for bentry in props[pname]['blocked_by']:
+
+                # Does the blocking property exists?
+                if bentry['name'] not in props:
+                    raise FactoryException("Property '%s' cannot be blocked by a non existing property '%s', please check the XML definition!" % (
+                            pname, bentry['name']))
+
+                # Convert the blocking condition to its expected value-type
+                syntax = props[bentry['name']]['type']
+                bentry['value'] = self.__attribute_type['String'].convert_to(syntax, [bentry['value']])[0]
+
+            # Depends on
             for dentry in props[pname]['depends_on']:
                 if dentry not in props:
                     raise FactoryException("Property '%s' cannot depend on non existing property '%s', please check the XML definition!" % (

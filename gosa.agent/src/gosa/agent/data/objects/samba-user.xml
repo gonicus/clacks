@@ -399,6 +399,10 @@
                                 <Type>String</Type>
 				<Default></Default>
                                 <Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>
@@ -408,6 +412,10 @@
                                 <Type>UnicodeString</Type>
 				<Default></Default>
                                 <Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>
@@ -417,6 +425,10 @@
 				<Type>String</Type>
 				<Default></Default>
                                 <Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>
@@ -427,6 +439,10 @@
 				<Default>01000000</Default>
 				<ReadOnly>true</ReadOnly>
                                 <Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>
@@ -436,6 +452,10 @@
                                 <Type>UnicodeString</Type>
 				<Default></Default>
                                 <Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>
@@ -444,7 +464,7 @@
 				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Default>false</Default>
-                                <Mandatory>true</Mandatory>
+                                <ReadOnly>true</ReadOnly>
                         </Attribute>
 
                         <Attribute>
@@ -454,6 +474,10 @@
                                 <Type>Boolean</Type>
                                 <Default>true</Default>
                                 <Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>
@@ -463,6 +487,10 @@
                                 <Type>UnicodeString</Type>
 				<Default></Default>
                                 <Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>
@@ -472,6 +500,10 @@
                                 <Type>Integer</Type>
 				<Default>0</Default>
                                 <Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>
@@ -481,6 +513,10 @@
                                 <Type>Boolean</Type>
                                 <Default>false</Default>
                                 <Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>
@@ -490,6 +526,10 @@
                                 <Type>String</Type>
 				<Default>551e0bb0</Default>
                                 <Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>
@@ -499,6 +539,10 @@
                                 <Type>UnicodeString</Type>
 				<Default></Default>
                                 <Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>
@@ -508,6 +552,10 @@
                                 <Type>Boolean</Type>
                                 <Default>true</Default>
                                 <Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>
@@ -517,6 +565,10 @@
                                 <Type>UnicodeString</Type>
 				<Default></Default>
                                 <Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>
@@ -526,6 +578,10 @@
                                 <Type>UnicodeString</Type>
 				<Default></Default>
                                 <Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>
@@ -535,6 +591,10 @@
                                 <Type>Integer</Type>
 				<Default>0</Default>
                                 <Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>
@@ -544,6 +604,10 @@
                                 <Type>Integer</Type>
 				<Default>0</Default>
                                 <Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>
@@ -553,6 +617,10 @@
                                 <Type>UnicodeString</Type>
 				<Default></Default>
                                 <Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>
@@ -563,6 +631,10 @@
 				<Default>00e00010</Default>
 				<ReadOnly>true</ReadOnly>
                                 <Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>
@@ -572,6 +644,10 @@
                                 <Type>Boolean</Type>
                                 <Default>false</Default>
                                 <Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>
@@ -581,6 +657,10 @@
                                 <Type>Boolean</Type>
                                 <Default>true</Default>
                                 <Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>
@@ -590,6 +670,10 @@
                                 <Type>Integer</Type>
 				<Default>0</Default>
                                 <Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>
@@ -599,6 +683,10 @@
                                 <Type>Integer</Type>
 				<Default>1</Default>
                                 <Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>
