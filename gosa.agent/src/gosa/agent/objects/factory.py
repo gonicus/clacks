@@ -130,7 +130,7 @@ class GOsaObjectFactory(object):
             find = objectify.ObjectPath("Objects.Object.Attributes")
             if find.hasattr(element):
                 for attr in find(element).iterchildren():
-                    print "->!", attr.getparent().getparent().Name.text
+                    print "->!", attr.getparent().getparent().Name.text, attr.Name.text
                     res[attr.Name.text] = {
                             'description': attr.Description.text,
                             'type': attr.Type.text,

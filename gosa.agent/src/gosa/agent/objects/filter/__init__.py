@@ -14,6 +14,9 @@ def get_filter(name):
 
 class ElementFilter(object):
 
+    def __init__(self, obj):
+        pass
+
     def process(self, obj, key, value):
         raise NotImplementedError("not implemented")
 
