@@ -25,7 +25,7 @@
                                                 <Required>true</Required>
                                         </MethodParameter>
                                         <MethodParameter>
-                                                <Name>duration</Name>
+                                                <Name>notify_duration</Name>
                                                 <Type>Integer</Type>
                                                 <Required>false</Required>
                                                 <Default>60</Default>
@@ -35,7 +35,7 @@
                                 <CommandParameters>
                                 	<Value>uid</Value>
                                 	<Value>notify_title</Value>
-                                	<Value>notify_messages</Value>
+                                	<Value>notify_message</Value>
                                 	<Value>notify_duration</Value>
                                 </CommandParameters>
                         </Method>
