@@ -11,18 +11,22 @@ class GOsaObjectProxy(object):
     __extensions = {}
     __factory = None
     __attribute_map = {}
+    __method_map = {}
 
     def __init__(self, dn_or_base, what=None):
         self.__env = Environment.getInstance()
         self.__log = getLogger(__name__)
         self.__factory = GOsaObjectFactory()
 
+        # Load available object types
+        object_types = self.__factory.getObjectTypes()
+
         base_mode = "update"
         base, extensions = self.__factory.identifyObject(dn_or_base)
         if base == None:
             if what == None:
                 raise Exception("the object does not exist - in order to create it, I need to know the target base type")
-            if not what in self.__factory.getObjectTypes():
+            if not what in object_types:
                 raise Exception("unknown object type '%s'" % what)
 
             base = what
@@ -31,7 +35,7 @@ class GOsaObjectProxy(object):
 
         # Get available extensions
         self.__log.info("loading %s base object for %s" % (base, dn_or_base))
-        all_extensions = self.__factory.getObjectTypes()[base]['extended_by']
+        all_extensions = object_types[base]['extended_by']
 
         # Load base object and extenions
         self.__base = self.__factory.getObject(base, dn_or_base, mode=base_mode)
@@ -41,6 +45,15 @@ class GOsaObjectProxy(object):
         for extension in all_extensions:
             if extension not in self.__extensions:
                 self.__extensions[extension] = None
+
+        # Generate method mapping
+        for obj in [base] + extensions:
+            for method in object_types[obj]['methods']:
+                if obj == self.__base.__class__.__name__:
+                    self.__method_map[method] = getattr(self.__base, method)
+                    continue
+                if obj in self.__extensions:
+                    self.__method_map[method] = getattr(self.__extensions[obj], method)
 
         # Generate read and write mapping for attributes
         self.__attribute_map = self.__factory.getAttributes()
@@ -61,6 +74,15 @@ class GOsaObjectProxy(object):
         raise NotImplemented()
 
     def __getattr__(self, name):
+        # Valid method?
+        if name in self.__method_map:
+            return self.__method_map[name]
+
+        # Valid attribute?
+        if not name in self.__attribute_map:
+            raise AttributeError("no such primary attribute '%s'" % name)
+
+        # Load from primary object
         objs = self.__attribute_map[name]['primary']
         for obj in objs:
             if self.__base.__class__.__name__ == obj:
