@@ -131,7 +131,19 @@
         		minOccurs="0"
         	>
         	</element>
-        	<element name="Foreign" type="boolean" maxOccurs="1" minOccurs="0"></element>
+        	<element name="Foreign" type="boolean" maxOccurs="1"
+        		minOccurs="0"
+        	>
+        	</element>
+        	<element name="BlockedBy" maxOccurs="1" minOccurs="0">
+        		<complexType>
+        			<sequence>
+        				<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+        				<element name="Value" type="string" maxOccurs="1" minOccurs="1"></element>
+        			</sequence>
+        			
+        		</complexType>
+        	</element>
         </all>
     </complexType>
 
