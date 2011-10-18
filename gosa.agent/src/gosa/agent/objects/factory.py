@@ -903,6 +903,10 @@ class GOsaObject(object):
         props = getattr(self, '__properties')
         return(props.keys())
 
+    def listMethods(self):
+        methods = getattr(self, '__methods')
+        return(methods.keys())
+
     def hasattr(self, attr):
         props = getattr(self, '__properties')
         return attr in props
