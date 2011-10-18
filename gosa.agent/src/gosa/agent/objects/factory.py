@@ -1165,7 +1165,11 @@ class GOsaObject(object):
             is_blocked = False
             for bb in  props[key]['blocked_by']:
                 if bb['value'] in props[bb['name']]['value']:
-                    props[key]['value'] = []
+                    if props[key]['default']:
+                        props[key]['value'] = copy.deepcopy(props[key]['default'])
+                    else:
+                        props[key]['value'] = props[key]['default']
+
                     is_blocked = True
                     break
 
