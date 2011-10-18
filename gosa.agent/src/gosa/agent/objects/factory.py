@@ -130,6 +130,7 @@ class GOsaObjectFactory(object):
             find = objectify.ObjectPath("Objects.Object.Attributes")
             if find.hasattr(element):
                 for attr in find(element).iterchildren():
+                    print "->!", attr.getparent().getparent().Name.text
                     res[attr.Name.text] = {
                             'description': attr.Description.text,
                             'type': attr.Type.text,
@@ -205,10 +206,10 @@ class GOsaObjectFactory(object):
                 else:
                     id_extend.append(name)
 
-        if id_base:
+        if id_base or id_base_fixed:
             return (id_base_fixed or id_base, id_extend)
 
-        return None
+        return None, None
 
     def getObjectChildren(self, dn):
         res = {}
@@ -320,9 +321,6 @@ class GOsaObjectFactory(object):
             def __delattr__(me, name):
                 me._delattr_(name)
 
-            #pylint: disable=E0213
-            def __del__(me):
-                me._del_()
 
         # Collect Backend attributes per Backend
         back_attrs = {}
@@ -1574,10 +1572,6 @@ class GOsaObject(object):
             be.retract(self.uuid, [a for a in remove_attrs if getattr(obj, a)], self._backendAttrs[backend] if backend in self._backendAttrs else None)
 
         zope.event.notify(ObjectChanged("pre retract", obj))
-
-    def _del_(self):
-        #TODO
-        pass
 
 
 class FactoryException(Exception):
