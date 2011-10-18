@@ -407,6 +407,13 @@ class GOsaObjectFactory(object):
                 if "BackendType" in prop.__dict__:
                     backend_syntax = str(prop['BackendType'])
 
+                # Read blocked by settings - When they are fullfilled, these property cannot be changed.
+                blocked_by = []
+                if "BlockedBy" in prop.__dict__:
+                    name = str(prop['BlockedBy'].Name)
+                    value = str(prop['BlockedBy'].Value)
+                    blocked_by.append({'name': name, 'value': value})
+
                 # Convert the default to the corresponding type.
                 default = None
                 if "Default" in prop.__dict__:
@@ -452,10 +459,25 @@ class GOsaObjectFactory(object):
                     'unique': unique,
                     'mandatory': mandatory,
                     'readonly': readonly,
-                    'multivalue': multivalue}
+                    'multivalue': multivalue,
+                    'blocked_by': blocked_by}
 
-        # Validate the properties depends_on list
+        # Validate the properties 'depends_on' and 'blocked_by' lists
         for pname in props:
+
+            # Blocked by
+            for bentry in props[pname]['blocked_by']:
+
+                # Does the blocking property exists?
+                if bentry['name'] not in props:
+                    raise FactoryException("Property '%s' cannot be blocked by a non existing property '%s', please check the XML definition!" % (
+                            pname, bentry['name']))
+
+                # Convert the blocking condition to its expected value-type
+                syntax = props[bentry['name']]['type']
+                bentry['value'] = self.__attribute_type['String'].convert_to(syntax, [bentry['value']])[0]
+
+            # Depends on
             for dentry in props[pname]['depends_on']:
                 if dentry not in props:
                     raise FactoryException("Property '%s' cannot depend on non existing property '%s', please check the XML definition!" % (
@@ -977,6 +999,11 @@ class GOsaObject(object):
         props = getattr(self, '__properties')
         if name in props:
 
+            # Check if this attribute is blocked by another attribute and its value.
+            for bb in  props[name]['blocked_by']:
+                if bb['value'] in props[bb['name']]['value']:
+                    raise AttributeError("This attribute is blocked by %(name)s = '%(value)s'!" % bb)
+
             # Do not allow to write to read-only attributes.
             if props[name]['readonly']:
                 raise AttributeError("Cannot write to readonly attribute '%s'" % name)
@@ -1012,6 +1039,11 @@ class GOsaObject(object):
         # Try to save as property value
         props = getattr(self, '__properties')
         if name in props:
+
+            # Check if this attribute is blocked by another attribute and its value.
+            for bb in  props[name]['blocked_by']:
+                if bb['value'] in props[bb['name']]['value']:
+                    raise AttributeError("This attribute is blocked by %(name)s = '%(value)s'!" % bb)
 
             # Do not allow to write to read-only attributes.
             if props[name]['readonly']:
@@ -1122,15 +1154,26 @@ class GOsaObject(object):
 
         self.log.debug("saving object modifications for [%s|%s]" % (type(self).__name__, self.uuid))
 
-        # Check if all required attributes are set.
-        for key in props:
-            if props[key]['mandatory'] and not len(props[key]['value']):
-                raise FactoryException("The required property '%s' is not set!" % (key,))
-
         # Collect values by store and process the property filters
         toStore = {}
         collectedAttrs = {}
         for key in props:
+
+            # Check if this attribute is blocked by another attribute and its value.
+            is_blocked = False
+            for bb in  props[key]['blocked_by']:
+                if bb['value'] in props[bb['name']]['value']:
+                    if props[key]['default']:
+                        props[key]['value'] = copy.deepcopy(props[key]['default'])
+                    else:
+                        props[key]['value'] = props[key]['default']
+
+                    is_blocked = True
+                    break
+
+            # Check if all required attributes are set. (Skip blocked once, they cannot be set!)
+            if not is_blocked and props[key]['mandatory'] and not len(props[key]['value']):
+                raise FactoryException("The required property '%s' is not set!" % (key,))
 
             # Adapt status from dependent properties.
             props[key]['commit_status'] = props[key]['status']
