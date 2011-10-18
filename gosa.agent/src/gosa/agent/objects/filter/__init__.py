@@ -15,8 +15,6 @@ def get_filter(name):
 class ElementFilter(object):
 
     def __init__(self, obj):
-        #TODO: load parameters
-        #      decide what we "need"
         pass
 
     def process(self, obj, key, value):

@@ -100,8 +100,11 @@ class LDAP(ObjectBackend):
                 return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0
 
         fltr = "(&(objectClass=*)" + fixed_rdn_filter + ")"
-        res = self.con.search_s(dn.encode('utf-8'), ldap.SCOPE_BASE, fltr,
-                [self.uuid_entry, 'objectClass'] + ([attr] if attr else []))
+        try:
+            res = self.con.search_s(dn.encode('utf-8'), ldap.SCOPE_BASE, fltr,
+                    [self.uuid_entry, 'objectClass'] + ([attr] if attr else []))
+        except ldap.NO_SUCH_OBJECT:
+            return False
 
         if len(res) == 1:
             if not dn in self.__i_cache:
