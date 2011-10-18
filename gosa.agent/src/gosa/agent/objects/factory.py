@@ -515,8 +515,8 @@ class GOsaObjectFactory(object):
                 # Get the list of command parameters
                 cParams = []
                 if 'CommandParameters' in method.__dict__:
-                    for param in method['CommandParameters']:
-                        cParams.append(str(param['Value']))
+                    for param in method['CommandParameters']['Value']:
+                        cParams.append(str(param))
 
                 # Now add the method to the object
                 def funk(*args, **kwargs):
@@ -532,15 +532,12 @@ class GOsaObjectFactory(object):
                         elif cnt < len(args):
                             arguments[mName] = args[cnt]
                         elif mDefault:
-
-                            #TODO: Ensure that the given default has the correct type
-                            # The default is always a string value, due to the fact that
-                            # it was read from an xml tag.
                             arguments[mName] = mDefault
                         else:
                             raise FactoryException("Missing parameter '%s'!" % mName)
 
-                        #TODO: Ensure that the correct parameter type was given.
+                        # Convert value to its required type.
+                        arguments[mName] = self.__attribute_type['String'].convert_to(mType,[arguments[mName]])[0]
                         cnt = cnt + 1
 
                     # Build the command-parameter list.
@@ -548,26 +545,26 @@ class GOsaObjectFactory(object):
                     # placeholders in command-parameters later.
                     propList = {}
                     for key in props:
-                        propList[key] = props[key]['value']
+                        if props[key]['value']:
+                            propList[key] = props[key]['value'][0]
+                        else:
+                            propList[key] = ''
 
                     # Add method-parameters passed to this method.
                     for entry in arguments:
                         propList[entry] = arguments[entry]
 
                     # Fill in the placeholders of the command-parameters now.
-                    parameterList = []
+                    parmList = []
                     for value in cParams:
-                        try:
-                            value = value % propList
-                        except:
-                            raise FactoryException("Cannot call method '%s', error while filling "
-                                " in placeholders! Error processing: %s!" %
-                                (methodName, value))
 
-                        parameterList.append(value)
+                        if value in propList:
+                            parmList.append(propList[value])
+                        else:
+                            raise FactoryException("Method '%s' depends on unknown attribute '%s'!" % (command, value))
 
                     #TODO: Execute real-stuff later
-                    print "Calling class method:", parameterList, command
+                    print "Calling class method:", parmList, command
 
                 # Append the method to the list of registered methods for this
                 # object

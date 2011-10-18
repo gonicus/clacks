@@ -24,12 +24,19 @@
                                                 <Type>UnicodeString</Type>
                                                 <Required>true</Required>
                                         </MethodParameter>
+                                        <MethodParameter>
+                                                <Name>duration</Name>
+                                                <Type>Integer</Type>
+                                                <Required>false</Required>
+                                                <Default>60</Default>
+                                        </MethodParameter>
                                 </MethodParameters>
                                 <Command>notifyUser</Command>
                                 <CommandParameters>
-                                	<Value>%(uid)s</Value>
-                                	<Value>Der angegebene Titel war: %(notify_title)s</Value>
-                                	<Value>%(notify_message)s</Value>
+                                	<Value>uid</Value>
+                                	<Value>notify_title</Value>
+                                	<Value>notify_messages</Value>
+                                	<Value>notify_duration</Value>
                                 </CommandParameters>
                         </Method>
                 </Methods>
