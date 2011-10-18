@@ -159,7 +159,9 @@ class ObjectIndex(Plugin):
         # Sync index
         if self.env.config.get("index.disable", "False").lower() != "true":
             sobj = PluginRegistry.getInstance("SchedulerService")
-            sobj.getScheduler().add_date_job(self.sync_index, datetime.datetime.now() + datetime.timedelta(seconds=30), tag='_internal')
+            sobj.getScheduler().add_date_job(self.sync_index,
+                    datetime.datetime.now() + datetime.timedelta(seconds=30),
+                    tag='_internal', jobstore='ram')
 
     @Command(__help__=N_("Check if an object with the given UUID exists."))
     def exists(self, uuid):
