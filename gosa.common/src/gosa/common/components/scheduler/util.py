@@ -1,12 +1,12 @@
 """
 This module contains several handy functions primarily meant for internal use.
 """
-
-from datetime import date, datetime, timedelta
-from time import mktime
 import re
 import sys
+from datetime import date, datetime, timedelta
+from time import mktime
 from types import MethodType
+from gosa.common.components import PluginRegistry
 
 __all__ = ('asint', 'asbool', 'convert_to_datetime', 'timedelta_seconds',
            'time_difference', 'datetime_ceil', 'combine_opts',
@@ -169,7 +169,7 @@ def obj_to_ref(obj):
             raise ValueError
     except Exception:
         raise ValueError('Cannot determine the reference to %s' % repr(obj))
-    
+
     return ref
 
 
@@ -181,6 +181,9 @@ def ref_to_obj(ref):
         raise TypeError('References must be strings')
     if not ':' in ref:
         raise ValueError('Invalid reference')
+
+    if ref == "gosa.agent.command:CommandRegistry.dispatch":
+        return getattr(PluginRegistry.getInstance('CommandRegistry'), "dispatch")
 
     modulename, rest = ref.split(':', 1)
     try:

@@ -29,6 +29,7 @@ from gosa.common.components import Command, PluginRegistry, Plugin
 from gosa.common.components.scheduler import Scheduler
 from gosa.common.components.scheduler.job import JOB_RUNNING
 from gosa.common.components.scheduler.jobstores.sqlalchemy_store import SQLAlchemyJobStore
+from gosa.common.components.scheduler.jobstores.ram_store import RAMJobStore
 from gosa.common.components.scheduler.triggers import SimpleTrigger, IntervalTrigger, CronTrigger
 from gosa.common.components.scheduler.events import EVENT_JOBSTORE_JOB_REMOVED, EVENT_JOBSTORE_JOB_ADDED, EVENT_JOB_EXECUTED
 from gosa.common.components.amqp import EventConsumer
@@ -54,7 +55,8 @@ class SchedulerService(Plugin):
         self.sched = Scheduler(origin=self.env.id)
         self.sched.add_jobstore(SQLAlchemyJobStore(
             engine=env.getDatabaseEngine('core'),
-            tablename='scheduler_jobs'), 'db')
+            tablename='scheduler'), 'default')
+        self.sched.add_jobstore(RAMJobStore(), 'ram', True)
 
     def getScheduler(self):
         return self.sched
@@ -66,7 +68,8 @@ class SchedulerService(Plugin):
         self.sched.start()
 
         # Start migration job
-        self.sched.add_interval_job(self.migrate, seconds=60, tag='_internal')
+        self.sched.add_interval_job(self.migrate, seconds=60, tag='_internal',
+                jobstore="ram")
 
         # Notify others about local scheduler job changes
         self.sched.add_listener(self.__notify, EVENT_JOBSTORE_JOB_REMOVED |
