@@ -607,7 +607,11 @@
 				<Backend>NULL</Backend>
                                 <Type>Boolean</Type>
                                 <Default>false</Default>
-                                <Mandatory>true</Mandatory>
+				<Mandatory>true</Mandatory>
+				<BlockedBy>
+					<Name>Ctx_flag_tsLogin</Name>
+					<Value>False</Value>
+				</BlockedBy>
                         </Attribute>
 
                         <Attribute>

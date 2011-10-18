@@ -409,6 +409,13 @@ class GOsaObjectFactory(object):
                 if "BackendType" in prop.__dict__:
                     backend_syntax = str(prop['BackendType'])
 
+                # Read blocked by settings - When they are fullfilled, these property cannot be changed.
+                blocked_by = []
+                if "BlockedBy" in prop.__dict__:
+                    name = str(prop['BlockedBy'].Name)
+                    value = self.__attribute_type['String'].convert_to(syntax, [str(prop['BlockedBy'].Value)])[0]
+                    blocked_by.append({'name': name, 'value': value})
+
                 # Convert the default to the corresponding type.
                 default = None
                 if "Default" in prop.__dict__:
@@ -454,7 +461,8 @@ class GOsaObjectFactory(object):
                     'unique': unique,
                     'mandatory': mandatory,
                     'readonly': readonly,
-                    'multivalue': multivalue}
+                    'multivalue': multivalue,
+                    'blocked_by': blocked_by}
 
         # Validate the properties depends_on list
         for pname in props:
@@ -979,6 +987,11 @@ class GOsaObject(object):
         props = getattr(self, '__properties')
         if name in props:
 
+            # Check if this attribute is blocked by another attribute and its value.
+            for bb in  props[name]['blocked_by']:
+                if bb['value'] in props[bb['name']]['value']:
+                    raise AttributeError("This attribute is blocked by '%(name)s:%(value)s'!" % bb)
+
             # Do not allow to write to read-only attributes.
             if props[name]['readonly']:
                 raise AttributeError("Cannot write to readonly attribute '%s'" % name)
@@ -1014,6 +1027,11 @@ class GOsaObject(object):
         # Try to save as property value
         props = getattr(self, '__properties')
         if name in props:
+
+            # Check if this attribute is blocked by another attribute and its value.
+            for bb in  props[name]['blocked_by']:
+                if bb['value'] in props[bb['name']]['value']:
+                    raise AttributeError("This attribute is blocked by '%(name)s:%(value)s'!" % bb)
 
             # Do not allow to write to read-only attributes.
             if props[name]['readonly']:
