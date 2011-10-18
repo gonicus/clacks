@@ -160,6 +160,11 @@ class GOsaObjectFactory(object):
             backend = str(t_obj.Backend)
             backend_attrs = self.__get_backend_parameters(t_obj)
 
+            if hasattr(t_obj, "Methods"):
+                print "----->"
+                print objectify.dump(t_obj.Methods)
+                print "----->"
+
             types[name] = {
                 'backend': backend,
                 'backend_attrs': backend_attrs,

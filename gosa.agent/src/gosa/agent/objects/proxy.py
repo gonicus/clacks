@@ -45,12 +45,6 @@ class GOsaObjectProxy(object):
         # Generate read and write mapping for attributes
         self.__attribute_map = self.__factory.getAttributes()
 
-        print "-"*80
-        print "Base type:", base
-        print "Installed extensions:", extensions
-        print "Available extensions:", all_extensions
-        print "-"*80
-
     def extend(self, extension):
         raise NotImplemented()
 
@@ -96,6 +90,7 @@ class GOsaObjectProxy(object):
             if obj in self.__extensions:
                 found = True
                 setattr(self.__extensions[obj], name, value)
+                continue
 
         if not found:
             raise AttributeError("no such attribute '%s'" % name)
