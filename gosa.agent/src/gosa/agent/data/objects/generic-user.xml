@@ -244,9 +244,57 @@
 				<Type>UnicodeString</Type>
 			</Attribute>
 			<Attribute>
+				<Name>passwordMethod</Name>
+				<Description>The selected password encryption method</Description>
+				<Type>String</Type>
+                                <InFilter>
+                                        <FilterChain>
+                                                <FilterEntry>
+                                                        <Filter>
+                                                                <Name>DetectPasswordMethod</Name>
+                                                                <Param>%(userPassword)s</Param>
+                                                        </Filter>
+                                                </FilterEntry>
+                                        </FilterChain>
+                                </InFilter>
+				<Backend>NULL</Backend>
+			</Attribute>
+			<Attribute>
+				<Name>isLocked</Name>
+				<Description>Represents the account locking status. True means locked!</Description>
+				<Type>Boolean</Type>
+				<Default>false</Default>
+				<Backend>NULL</Backend>
+                                <InFilter>
+                                        <FilterChain>
+                                                <FilterEntry>
+                                                        <Filter>
+                                                                <Name>DetectAccountLockStatus</Name>
+                                                                <Param>%(userPassword)s</Param>
+                                                        </Filter>
+                                                </FilterEntry>
+                                        </FilterChain>
+                                </InFilter>
+			</Attribute>
+			<Attribute>
 				<Name>userPassword</Name>
+				<DependsOn>
+					<Attribute>passwordMethod</Attribute>
+					<Attribute>isLocked</Attribute>
+				</DependsOn>
 				<Description>Passwords are stored using an Octet String syntax and are not encrypted.  Transfer of cleartext passwords are strongly discouraged where the underlying transport service cannot guarantee confidentiality and may result in disclosure of the password to unauthorized parties.</Description>
 				<Type>UnicodeString</Type>
+                                <OutFilter>
+                                        <FilterChain>
+                                                <FilterEntry>
+                                                        <Filter>
+                                                                <Name>GeneratePasswordHash</Name>
+                                                                <Param>%(passwordMethod)s</Param>
+                                                                <Param>%(isLocked)s</Param>
+                                                        </Filter>
+                                                </FilterEntry>
+                                        </FilterChain>
+                                </OutFilter>
 			</Attribute>
 			<Attribute>
 				<Name>seeAlso</Name>

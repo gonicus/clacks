@@ -496,7 +496,7 @@ class GOsaObjectFactory(object):
             for dentry in props[pname]['depends_on']:
                 if dentry not in props:
                     raise FactoryException("Property '%s' cannot depend on non existing property '%s', please check the XML definition!" % (
-                            pname, pentry))
+                            pname, dentry))
 
         # Build up a list of callable methods
         if 'Methods' in classr.__dict__:
@@ -968,23 +968,23 @@ class GOsaObject(object):
                 props[key]['in_value'] = props[key]['value'] = attrs[key]
                 self.log.debug("%s: %s" % (key, props[key]['value']))
 
-            # Once we've loaded all properties from the backend, execute the
-            # in-filters.
-            for key in self._propsByBackend[backend]:
+        # Once we've loaded all properties from the backend, execute the
+        # in-filters.
+        for key in props:
 
-                # Skip loading in-filters for None values
-                if props[key]['value'] == None:
-                    props[key]['in_value'] = props[key]['value'] = []
-                    continue
+            # Skip loading in-filters for None values
+            if props[key]['value'] == None:
+                props[key]['in_value'] = props[key]['value'] = []
+                continue
 
-                # Execute defined in-filters.
-                if len(props[key]['in_filter']):
-                    self.log.debug("found %s in-filter(s)  for attribute '%s'" % (str(len(props[key]['in_filter'])),key))
-                    value = props[key]['value']
+            # Execute defined in-filters.
+            if len(props[key]['in_filter']):
+                self.log.debug("found %s in-filter(s)  for attribute '%s'" % (str(len(props[key]['in_filter'])),key))
+                value = props[key]['value']
 
-                    # Execute each in-filter
-                    for in_f in props[key]['in_filter']:
-                        self.__processFilter(in_f, key, props)
+                # Execute each in-filter
+                for in_f in props[key]['in_filter']:
+                    self.__processFilter(in_f, key, props)
 
         # Convert the received type into the target type if not done already
         atypes = self._objectFactory.getAttributeTypes()
@@ -1170,11 +1170,12 @@ class GOsaObject(object):
         for key in props:
 
             # Adapt status from dependent properties.
+            props[key]['commit_status'] = props[key]['status']
             for propname in props[key]['depends_on']:
-                props[key]['status'] |= props[propname]['status'] & STATUS_CHANGED
+                props[key]['commit_status'] |= props[propname]['status'] & STATUS_CHANGED
 
             # Do not save untouched values
-            if not props[key]['status'] & STATUS_CHANGED:
+            if not props[key]['commit_status'] & STATUS_CHANGED:
                 continue
 
             # Get the new value for the property and execute the out-filter
@@ -1194,7 +1195,7 @@ class GOsaObject(object):
         for prop_key in props:
 
             # Do not save untouched values
-            if not props[prop_key]['status'] & STATUS_CHANGED:
+            if not props[prop_key]['commit_status'] & STATUS_CHANGED:
                 continue
 
             # Create backend entry in the target list.
@@ -1393,7 +1394,12 @@ class GOsaObject(object):
                     args.append(entry)
 
                 # Process filter and keep results
-                key, prop = (curline['filter']).process(*args)
+                try:
+                    key, prop = (curline['filter']).process(*args)
+                except Exception as e:
+                    print e
+                    raise FactoryException("Failed to execute filter '%s' for attribute '%s'!" % (fname, key))
+
 
                 # Ensure that the processed data is still valid.
                 # Filter may mess things up and then the next cannot process correctly.
