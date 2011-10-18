@@ -139,6 +139,9 @@ setup(
         filter.posixgetnextid = gosa.agent.plugins.posix.utils:GetNextID
         filter.datetoshadowdays = gosa.agent.plugins.posix.utils:DateToShadowDays
         filter.shadowdaystodate = gosa.agent.plugins.posix.utils:ShadowDaysToDate
+        filter.detectpasswordmethod = gosa.agent.plugins.password.utils:DetectPasswordMethod
+        filter.detectaccountlockstatus = gosa.agent.plugins.password.utils:DetectAccountLockStatus
+        filter.generatepasswordhash = gosa.agent.plugins.password.utils:GeneratePasswordHash
 
         [gosa.object.operator]
         operator.and = gosa.agent.objects.operator.bool:And
