@@ -5,6 +5,12 @@ from autobahn.websocket import WebSocketServerFactory, WebSocketServerProtocol
 
 import pprint
 
+
+# !
+# You can create cookies by modifying the autobahn/websocket.py +1411
+# response += "Set-Cookie: SessID=%s; Domain=localhost;Path=/; Expires=Wed, 13-Jan-2021 22:23:01 GMT\x0d\x0a" % ("28173781237",)
+# If you need to
+
 class BroadcastServerProtocol(WebSocketServerProtocol):
 
    def onOpen(self):
