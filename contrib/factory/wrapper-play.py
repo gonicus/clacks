@@ -7,11 +7,27 @@ from gosa.agent.objects.index import ObjectIndex, SCOPE_SUB
 # Do some searching
 ie = ObjectIndex()
 
-obj = GOsaObjectProxy(u"ou=people,dc=gonicus,dc=de", "GenericUser")
-obj.uid = 'claudia'
-obj.sn = u'Mustermann'
-obj.givenName = u'Claudia'
-obj.commit()
+# Create
+#obj = GOsaObjectProxy(u"ou=people,dc=gonicus,dc=de", "GenericUser")
+#obj.uid = "eike"
+#obj.sn = u"Kunst"
+#obj.givenName = u"Eike"
+#obj.commit()
+
+# Extend and retract
+#obj = GOsaObjectProxy(u"cn=Claudia Mustermann,ou=people,dc=gonicus,dc=de")
+#et = obj.get_extension_types()
+#if 'PosixUser' in et and not et['PosixUser']:
+#    obj.extend('PosixUser')
+#    obj.homeDirectory = '/home/' + obj.uid
+#    obj.gidNumber = 4711
+#    obj.commit()
+#else:
+#    obj.retract('PosixUser')
+
+# Delete
+obj = GOsaObjectProxy(u"cn=Eike Kunst,ou=people,dc=gonicus,dc=de")
+obj.remove()
 
 exit(0)
 

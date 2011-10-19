@@ -79,7 +79,7 @@ class GOsaObjectProxy(object):
         if not extension in self.__extensions:
             raise Exception("extension '%s' not allowed" % extension)
 
-        if self.__extensions[extensions] != None:
+        if self.__extensions[extension] != None:
             raise Exception("extension '%s' already defined" % extension)
 
         # Create extension
@@ -106,7 +106,7 @@ class GOsaObjectProxy(object):
             raise NotImplemented("recursive remove is not implemented")
 
         #TODO: dependency sort
-        for extension in self.__extensions:
+        for extension in [e for x, e in self.__extensions.iteritems() if e]:
             extension.remove()
 
         self.__base.remove()

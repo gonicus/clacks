@@ -134,7 +134,8 @@ class GOsaObjectFactory(object):
             if find.hasattr(element):
                 for attr in find(element).iterchildren():
                     obj = attr.getparent().getparent().Name.text
-                    res[attr.Name.text] = {
+                    if not attr.Name.text in res:
+                        res[attr.Name.text] = {
                             'description': attr.Description.text,
                             'type': attr.Type.text,
                             'multivalue': bool(load(attr, "MultiValue", False)),
@@ -144,11 +145,11 @@ class GOsaObjectFactory(object):
                             'objects': [],
                             'primary': [],
                             }
-                    if attr.Name.text in res:
-                        if bool(load(attr, "Foreign", False)):
-                            res[attr.Name.text]['objects'].append(obj)
-                        else:
-                            res[attr.Name.text]['primary'].append(obj)
+                    if bool(load(attr, "Foreign", False)):
+                        res[attr.Name.text]['objects'].append(obj)
+                    else:
+                        res[attr.Name.text]['primary'].append(obj)
+
         return res
 
     def load_object_types(self):
