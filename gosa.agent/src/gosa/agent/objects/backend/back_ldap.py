@@ -287,7 +287,7 @@ class LDAP(ObjectBackend):
 
         # Did we change one of the RDN attributes?
         new_rdn_parts = []
-        rdns = ldap.dn.str2dn(dn, flags=ldap.DN_FORMAT_LDAPV3)
+        rdns = ldap.dn.str2dn(dn.encode('utf-8'), flags=ldap.DN_FORMAT_LDAPV3)
         rdn_parts = rdns[0]
 
         for attr, value, idx in rdn_parts:
@@ -298,14 +298,14 @@ class LDAP(ObjectBackend):
                 new_rdn_parts.append((attr, value, idx))
 
         # Build new target DN and check if it has changed...
-        tdn = ldap.dn.dn2str([new_rdn_parts] + rdns[1:])
+        tdn = ldap.dn.dn2str([new_rdn_parts] + rdns[1:]).decode('utf-8')
         if tdn != dn:
             self.log.debug("entry needs a rename from '%s' to '%s'" % (dn, tdn))
-            self.con.rename_s(dn, ldap.dn.dn2str([new_rdn_parts]))
+            self.con.rename_s(dn.encode('utf-8'), ldap.dn.dn2str([new_rdn_parts]))
 
         # Write back...
         self.log.debug("saving entry '%s'" % tdn)
-        return self.con.modify_s(tdn, mod_attrs)
+        return self.con.modify_s(tdn.encode('utf-8'), mod_attrs)
 
     def uuid2dn(self, uuid):
         # Get DN of entry
@@ -319,7 +319,7 @@ class LDAP(ObjectBackend):
 
         self.__check_res(uuid, res)
 
-        return res[0][0]
+        return res[0][0].decode('utf-8')
 
     def dn2uuid(self, dn):
         res = self.con.search_s(dn.encode('utf-8'), ldap.SCOPE_BASE, '(objectClass=*)',

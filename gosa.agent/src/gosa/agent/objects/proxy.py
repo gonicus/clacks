@@ -1,22 +1,29 @@
 # -*- coding: utf-8 -*-
+from ldap.dn import str2dn, dn2str
 from logging import getLogger
 from gosa.common import Environment
 from gosa.agent.objects import GOsaObjectFactory
 
 
 class GOsaObjectProxy(object):
+    dn = None
+    uuid = None
     __env = None
     __log = None
     __base = None
-    __extensions = {}
+    __extensions = None
     __factory = None
-    __attribute_map = {}
-    __method_map = {}
+    __attribute_map = None
+    __method_map = None
 
     def __init__(self, dn_or_base, what=None):
         self.__env = Environment.getInstance()
         self.__log = getLogger(__name__)
         self.__factory = GOsaObjectFactory.getInstance()
+        self.__base = None
+        self.__extensions = {}
+        self.__attribute_map = {}
+        self.__method_map = {}
 
         # Load available object types
         object_types = self.__factory.getObjectTypes()
@@ -58,6 +65,18 @@ class GOsaObjectProxy(object):
         # Generate read and write mapping for attributes
         self.__attribute_map = self.__factory.getAttributes()
 
+        self.uuid = self.__base.uuid
+        self.dn = self.__base.dn
+
+    def get_parent_dn(self):
+        return dn2str(str2dn(self.__base.dn.encode('utf-8'))[1:]).decode('utf-8')
+
+    def get_base_type(self):
+        return self.__base.__class__.__name__
+
+    def get_extension_types(self):
+        return dict([(e, i != None) for e, i in self.__extensions.iteritems()])
+
     def extend(self, extension):
         if not extension in self.__extensions:
             raise Exception("extension '%s' not allowed" % extension)
@@ -77,7 +96,7 @@ class GOsaObjectProxy(object):
             raise Exception("extension '%s' already retracted" % extension)
 
         # Immediately remove extension
-        #TODO: maybe we want to do that on commit?
+        #TODO: delayed retract on commit
         self.__extensions[extension].retract()
         self.__extensions[extension] = None
 
@@ -85,13 +104,24 @@ class GOsaObjectProxy(object):
         raise NotImplemented()
 
     def remove(self, recursive=False):
-        raise NotImplemented()
+        if recursive:
+            raise NotImplemented("recursive remove is not implemented")
+
+        #TODO: dependency sort
+        for extension in self.__extensions:
+            extension.remove()
+
+        self.__base.remove()
 
     def commit(self):
         self.__base.commit()
 
-        for extension in self.__extensions:
+        #TODO: handle retracts
+        for extension in [e for x, e in self.__extensions.iteritems() if e]:
             extension.commit()
+
+    def __repr__(self):
+        return "<wopper>"
 
     def __getattr__(self, name):
         # Valid method?

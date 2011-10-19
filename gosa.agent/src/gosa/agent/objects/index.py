@@ -534,6 +534,7 @@ class ObjectIndex(Plugin):
         return self._indexed
 
     def __handle_events(self, event):
+        uuid = event.uuid
         if isinstance(event, ObjectChanged):
             uuid = event.uuid
             f = GOsaObjectFactory.getInstance()
@@ -544,7 +545,7 @@ class ObjectIndex(Plugin):
 
             if event.reason == "post move":
                 self.log.debug("updating object index for %s" % uuid)
-                self.move(uuid, event.dn)
+                #self.move(uuid, event.dn)
 
             if event.reason == "post create":
                 self.log.debug("creating object index for %s" % uuid)
