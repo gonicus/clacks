@@ -949,6 +949,8 @@ class GOsaObject(object):
             self.dn = where
             self.uuid = self._reg.dn2uuid(self._backend, where)
 
+        print self.dn, self.uuid
+
         # Instantiate Backend-Registry
         self.createTimestamp, self.modifyTimestamp = self._reg.get_timestamps(self._backend, self.dn)
 

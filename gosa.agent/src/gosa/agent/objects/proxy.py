@@ -38,6 +38,9 @@ class GOsaObjectProxy(object):
             base_mode = "create"
             extensions = []
 
+        if not base:
+            raise Exception("object '%s' not found" % dn_or_base)
+
         # Get available extensions
         self.__log.debug("loading %s base object for %s" % (base, dn_or_base))
         all_extensions = object_types[base]['extended_by']
