@@ -32,14 +32,16 @@ class BroadcastServerFactory(WebSocketServerFactory):
 
    def tick(self):
       self.tickcount += 1
-      self.broadcast("tick %d" % self.tickcount)
-      reactor.callLater(1, self.tick)
+      #self.broadcast("tick %d" % self.tickcount)
+      #reactor.callLater(1, self.tick)
 
    def register(self, client):
       if not client in self.clients:
          print "registered client " + client.peerstr
-         pprint.pprint(client.__dict__)
-         self.clients.append(client)
+         if 'Cookie' in client.http_headers:
+            print "Got Cookie:",client.http_headers['Cookie']
+         else:
+            print "No Cookie!!"
 
    def unregister(self, client):
       if client in self.clients:
