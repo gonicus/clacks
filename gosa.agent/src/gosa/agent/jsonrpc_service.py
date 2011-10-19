@@ -153,6 +153,8 @@ class JsonRpcApp(object):
         # Create an authentication cookie on login
         if method == 'login':
             (user, password) = params
+            user = user.encode('utf-8')
+            password = password.encode('utf-8')
 
             # Check password and create session id on success
             if self.authenticate(user, password):
