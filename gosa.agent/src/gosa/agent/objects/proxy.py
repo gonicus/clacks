@@ -30,9 +30,7 @@ class GOsaObjectProxy(object):
 
         base_mode = "update"
         base, extensions = self.__factory.identifyObject(dn_or_base)
-        if base == None:
-            if what == None:
-                raise Exception("the object does not exist - in order to create it, I need to know the target base type")
+        if what:
             if not what in object_types:
                 raise Exception("unknown object type '%s'" % what)
 
@@ -41,13 +39,13 @@ class GOsaObjectProxy(object):
             extensions = []
 
         # Get available extensions
-        self.__log.info("loading %s base object for %s" % (base, dn_or_base))
+        self.__log.debug("loading %s base object for %s" % (base, dn_or_base))
         all_extensions = object_types[base]['extended_by']
 
         # Load base object and extenions
         self.__base = self.__factory.getObject(base, dn_or_base, mode=base_mode)
         for extension in extensions:
-            self.__log.info("loading %s extension for %s" % (extension, dn_or_base))
+            self.__log.debug("loading %s extension for %s" % (extension, dn_or_base))
             self.__extensions[extension] = self.__factory.getObject(extension, self.__base.uuid)
         for extension in all_extensions:
             if extension not in self.__extensions:

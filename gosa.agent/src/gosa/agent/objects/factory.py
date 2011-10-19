@@ -1278,11 +1278,13 @@ class GOsaObject(object):
         if p_backend in toStore:
             be = ObjectBackendRegistry.getBackend(p_backend)
             if self._mode == "create":
-                be.create(self.dn, toStore[p_backend], self._backendAttrs[p_backend])
+                obj.uuid = be.create(self.dn, toStore[p_backend], self._backendAttrs[p_backend])
+
             elif self._mode == "extend":
                 be.extend(self.uuid, toStore[p_backend],
                         self._backendAttrs[p_backend],
                         self.getForeignProperties())
+
             else:
                 be.update(self.uuid, toStore[p_backend])
 
@@ -1442,7 +1444,6 @@ class GOsaObject(object):
                 try:
                     key, prop = (curline['filter']).process(*args)
                 except Exception as e:
-                    print e
                     raise FactoryException("Failed to execute filter '%s' for attribute '%s'!" % (fname, key))
 
 

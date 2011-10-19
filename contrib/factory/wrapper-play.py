@@ -7,12 +7,19 @@ from gosa.agent.objects.index import ObjectIndex, SCOPE_SUB
 # Do some searching
 ie = ObjectIndex()
 
+obj = GOsaObjectProxy(u"ou=people,dc=gonicus,dc=de", "GenericUser")
+obj.uid = 'claudia'
+obj.sn = u'Mustermann'
+obj.givenName = u'Claudia'
+obj.commit()
+
+exit(0)
+
 print "*" * 80
 print "Search"
 print "*" * 80
 
 for entry in ie.search(base=u"dc=gonicus,dc=de", scope=SCOPE_SUB, fltr={'sn': u'Mustermann'}, attrs=['_dn']):
-    print entry['_dn']
     obj = GOsaObjectProxy(entry['_dn'])
     print "* Found", obj.dn
     print "  Parent DN:", obj.get_parent_dn()

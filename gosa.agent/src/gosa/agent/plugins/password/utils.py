@@ -44,7 +44,6 @@ class GeneratePasswordHash(ElementFilter):
 
     def process(self, obj, key, valDict, method, is_locked):
 
-        print is_locked
         is_locked = is_locked == "True"
 
         # Get current pwdhash
