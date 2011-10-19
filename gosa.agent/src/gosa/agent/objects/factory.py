@@ -232,7 +232,7 @@ class GOsaObjectFactory(object):
 
         # Identify possible children types
         ido = self.identifyObject(dn)
-        if ido:
+        if ido[0]:
             o_type = ido[0]
             o = self.__xml_defs[o_type].Object
 

@@ -144,7 +144,7 @@
 			<Attribute>
 				<Name>roomNumber</Name>
 				<Description>The Room Number attribute type specifies the room number of an object.  Note that the commonName attribute should be used for naming room objects.</Description>
-				<Type>Integer</Type>
+				<Type>String</Type>
 			</Attribute>
 			<Attribute>
 				<Name>secretary</Name>
