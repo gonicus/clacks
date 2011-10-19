@@ -571,4 +571,5 @@ class ObjectIndex(Plugin):
                     if obj.hasattr(attr):
                         attrs[attr] = getattr(obj, attr)
 
+                attrs['_dn']= event.dn
                 self.update(uuid, _type=o_type, _lastChanged=obj.modifyTimestamp, _extensions=ext, **attrs)
