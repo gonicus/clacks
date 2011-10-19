@@ -1264,22 +1264,32 @@ class GOsaObject(object):
                                 'value': collectedAttrs[prop_key]['value'],
                                 'type': collectedAttrs[prop_key]['backend_type']}
 
+        # Leave the show if there's nothing to do
+        if not toStore:
+            return
+
         # Handle by backend
         p_backend = getattr(self, '_backend')
         obj = self
+
         zope.event.notify(ObjectChanged("pre %s" % self._mode, obj))
 
         # First, take care about the primary backend...
         if p_backend in toStore:
             be = ObjectBackendRegistry.getBackend(p_backend)
             if self._mode == "create":
-                be.create(self.dn, toStore[p_backend], self._backendAttrs[p_backend])
+                obj.uuid = be.create(self.dn, toStore[p_backend], self._backendAttrs[p_backend])
+
             elif self._mode == "extend":
                 be.extend(self.uuid, toStore[p_backend],
                         self._backendAttrs[p_backend],
                         self.getForeignProperties())
+
             else:
                 be.update(self.uuid, toStore[p_backend])
+
+            # Eventually the DN has changed
+            obj.dn = be.uuid2dn(self.uuid)
 
         # ... then walk thru the remaining ones
         for backend, data in toStore.items():
@@ -1434,7 +1444,6 @@ class GOsaObject(object):
                 try:
                     key, prop = (curline['filter']).process(*args)
                 except Exception as e:
-                    print e
                     raise FactoryException("Failed to execute filter '%s' for attribute '%s'!" % (fname, key))
 
 
