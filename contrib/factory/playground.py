@@ -95,7 +95,7 @@ p.sn = u"Mustermann"
 p.userPassword = u"secret"
 
 #del(p.uid)
-p.roomNumber = 22
+p.roomNumber = "22"
 #open('dummy.gif_read', 'w').write(p.jpegPhoto)
 #p.jpegPhoto =  open('dummy.gif', 'r').read()
 #p.gotoLastSystemLogin = datetime.datetime.today()
