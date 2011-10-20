@@ -943,14 +943,19 @@ class GOsaObject(object):
 
         # Generate missing values
         if _is_uuid.match(where):
-            self.dn = self._reg.uuid2dn(self._backend, where)
+            if self._base_object:
+                self.dn = self._reg.uuid2dn(self._backend, where)
+            else:
+                self.dn = None
+
             self.uuid = where
         else:
             self.dn = where
             self.uuid = self._reg.dn2uuid(self._backend, where)
 
-        # Instantiate Backend-Registry
-        self.createTimestamp, self.modifyTimestamp = self._reg.get_timestamps(self._backend, self.dn)
+        # Get last change timestamp
+        if self.dn:
+            self.createTimestamp, self.modifyTimestamp = self._reg.get_timestamps(self._backend, self.dn)
 
         # Load attributes for each backend.
         # And then assign the values to the properties.
