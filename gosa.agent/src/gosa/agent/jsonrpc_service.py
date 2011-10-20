@@ -20,6 +20,7 @@ from gosa.common.utils import repr2json, f_print
 from gosa.common.handler import IInterfaceHandler
 from gosa.common import Environment
 from gosa.common.components import PluginRegistry, ZeroconfService, JSONRPCException
+from gosa.agent import __version__ as VERSION
 
 
 class JSONRPCService(object):
@@ -75,7 +76,7 @@ class JSONRPCService(object):
                 default="TecloigJink4")))
 
         # Announce service
-        self.__zeroconf = ZeroconfService(name="GOsa JSONRPC command service",
+        self.__zeroconf = ZeroconfService(name="GOsa JSON-RPC service",
             port=self.__http.port,
             stype="_%s._tcp" % self.__http.scheme,
             text="path=%s\001service=gosa" % self.path)
@@ -102,6 +103,7 @@ class JsonRpcApp(object):
         self.dispatcher = dispatcher
         self.env = Environment.getInstance()
         self.log = logging.getLogger(__name__)
+        self.ident = "GOsa JSON-RPC service (%s)" % VERSION
 
     def __call__(self, environ, start_response):
         req = Request(environ)
@@ -127,6 +129,13 @@ class JsonRpcApp(object):
 
         ``Return``: varries
         """
+        # Handle OPTIONS
+        if req.method == 'OPTIONS':
+            return Response(
+                    server=self.ident,
+                    allow='POST'
+                    )
+
         if not req.method == 'POST':
             raise exc.HTTPMethodNotAllowed(
                 "Only POST allowed",
@@ -176,6 +185,7 @@ class JsonRpcApp(object):
                     allow='POST').exception
 
             return Response(
+                server=self.ident,
                 content_type='application/json',
                 charset='utf8',
                 body=dumps(dict(result=result,
@@ -201,6 +211,7 @@ class JsonRpcApp(object):
                 self.log.info("logout for user '%s' succeeded" % environ.get('REMOTE_USER'))
 
             return Response(
+                server=self.ident,
                 content_type='application/json',
                 charset='utf8',
                 body=dumps(dict(result=True,
@@ -218,6 +229,7 @@ class JsonRpcApp(object):
             self.log.warning(text)
 
             return Response(
+                server=self.ident,
                 status=500,
                 content_type='application/json',
                 charset='utf8',
@@ -261,6 +273,7 @@ class JsonRpcApp(object):
                 error=e.error)
             self.log.error(e.error)
             return Response(
+                server=self.ident,
                 status=500,
                 content_type='application/json',
                 charset='utf8',
@@ -290,6 +303,7 @@ class JsonRpcApp(object):
             self.log.error(text)
 
             return Response(
+                server=self.ident,
                 content_type='application/json',
                 charset='utf8',
                 body=dumps(dict(result=None,
@@ -299,6 +313,7 @@ class JsonRpcApp(object):
         self.log.debug("returning call [%s]: %s / %s" % (jid, result, None))
 
         return Response(
+            server=self.ident,
             content_type='application/json',
             charset='utf8',
             body=dumps(dict(result=result,
