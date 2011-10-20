@@ -148,15 +148,11 @@ class LDAP(ObjectBackend):
 
         return len(res) == 1
 
-    def remove(self, uuid, recursive=False):
+    def remove(self, uuid):
         dn = self.uuid2dn(uuid)
 
-        if recursive:
-            return self.__delete_children(dn)
-
-        else:
-            self.log.debug("removing entry '%s'" % dn)
-            return self.con.delete_s(dn)
+        self.log.debug("removing entry '%s'" % dn)
+        return self.con.delete_s(dn)
 
     def __delete_children(self, dn):
         res = self.con.search_s(dn, ldap.SCOPE_ONELEVEL, '(objectClass=*)',

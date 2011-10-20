@@ -97,7 +97,6 @@ class GOsaObjectProxy(object):
             raise Exception("extension '%s' already retracted" % extension)
 
         # Immediately remove extension
-        #TODO: delayed retract on commit
         self.__extensions[extension].retract()
         self.__extensions[extension] = None
 
@@ -108,7 +107,6 @@ class GOsaObjectProxy(object):
         if recursive:
             raise NotImplemented("recursive remove is not implemented")
 
-        #TODO: dependency sort
         for extension in [e for x, e in self.__extensions.iteritems() if e]:
             extension.remove()
 
@@ -117,7 +115,6 @@ class GOsaObjectProxy(object):
     def commit(self):
         self.__base.commit()
 
-        #TODO: handle retracts
         for extension in [e for x, e in self.__extensions.iteritems() if e]:
             extension.commit()
 
