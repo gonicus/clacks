@@ -1315,7 +1315,7 @@ class GOsaObject(object):
             dn = be.uuid2dn(self.uuid)
             if dn != obj.dn:
                 obj.dn = dn
-                if self.__base_object:
+                if self._base_object:
                     zope.event.notify(ObjectChanged("relocated", obj))
                 obj.orig_dn = dn
 
@@ -1597,7 +1597,7 @@ class GOsaObject(object):
             be = ObjectBackendRegistry.getBackend(backend)
             be.remove(obj.uuid)
 
-        if self.__base_object:
+        if self._base_object:
             zope.event.notify(ObjectChanged("removed", obj))
 
         zope.event.notify(ObjectChanged("post remove", obj))
@@ -1631,7 +1631,7 @@ class GOsaObject(object):
         dn = be.uuid2dn(self.uuid)
         if dn != obj.dn:
             obj.dn = dn
-            if self.__base_object:
+            if self._base_object:
                 zope.event.notify(ObjectChanged("relocated", obj))
 
         zope.event.notify(ObjectChanged("post move", obj))
