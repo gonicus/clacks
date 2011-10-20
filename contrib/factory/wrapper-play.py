@@ -7,29 +7,36 @@ from gosa.agent.objects.index import ObjectIndex, SCOPE_SUB
 # Do some searching
 ie = ObjectIndex()
 
-# Create
-#obj = GOsaObjectProxy(u"ou=people,dc=gonicus,dc=de", "GenericUser")
-#obj.uid = "eike"
-#obj.sn = u"Kunst"
-#obj.givenName = u"Eike"
-#obj.commit()
+print "*" * 80
+print "Create"
+print "*" * 80
 
-# Extend and retract
-#obj = GOsaObjectProxy(u"cn=Claudia Mustermann,ou=people,dc=gonicus,dc=de")
-#et = obj.get_extension_types()
-#if 'PosixUser' in et and not et['PosixUser']:
-#    obj.extend('PosixUser')
-#    obj.homeDirectory = '/home/' + obj.uid
-#    obj.gidNumber = 4711
-#    obj.commit()
-#else:
-#    obj.retract('PosixUser')
+obj = GOsaObjectProxy(u"ou=people,dc=gonicus,dc=de", "GenericUser")
+obj.uid = "eike"
+obj.sn = u"Kunst"
+obj.givenName = u"Eike"
+obj.commit()
 
-# Delete
+print "*" * 80
+print "Delete"
+print "*" * 80
+
 obj = GOsaObjectProxy(u"cn=Eike Kunst,ou=people,dc=gonicus,dc=de")
 obj.remove()
 
-exit(0)
+print "*" * 80
+print "Extend or retract"
+print "*" * 80
+
+obj = GOsaObjectProxy(u"cn=Claudia Mustermann,ou=people,dc=gonicus,dc=de")
+et = obj.get_extension_types()
+if 'PosixUser' in et and not et['PosixUser']:
+    obj.extend('PosixUser')
+    obj.homeDirectory = '/home/' + obj.uid
+    obj.gidNumber = 4711
+    obj.commit()
+else:
+    obj.retract('PosixUser')
 
 print "*" * 80
 print "Search"

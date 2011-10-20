@@ -100,12 +100,17 @@ class GOsaObjectProxy(object):
         self.__extensions[extension].retract()
         self.__extensions[extension] = None
 
-    def move(self, new_base):
+    def move(self, new_base, recursive=False):
         raise NotImplemented()
 
     def remove(self, recursive=False):
         if recursive:
             raise NotImplemented("recursive remove is not implemented")
+
+        else:
+            # Test if we've children
+            if len(self.__factory.getObjectChildren(self.__base.dn)):
+                raise Exception("specified object has children - use the recursive flag to remove them")
 
         for extension in [e for x, e in self.__extensions.iteritems() if e]:
             extension.remove()
