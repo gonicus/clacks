@@ -123,6 +123,9 @@ class GOsaObjectFactory(object):
         self.load_schema()
         self.load_object_types()
 
+        # Listen for certain object events
+        zope.event.subscribers.append(self.__handle_refs)
+
     def getAttributeTypes(self):
         return(self.__attribute_type)
 
@@ -291,6 +294,18 @@ class GOsaObjectFactory(object):
         if os.path.isdir(path):
             for f in [n for n in os.listdir(path) if n.endswith(os.extsep + 'xml')]:
                 self.__parse_schema(os.path.join(path, f))
+
+    def __handle_refs(self, event):
+        #TODO: missing
+        uuid = event.uuid
+        if isinstance(event, ObjectChanged):
+
+            if event.reason == "removed":
+                self.log.critical("object %s removed - refs needs to be maintained" % uuid)
+
+            if event.reason == "relocated":
+                print "---> moved from %s to %s" % (event.orig_dn, event.dn)
+                self.log.critical("object %s moved - refs need to be maintained" % uuid)
 
     def __parse_schema(self, path):
         """
@@ -872,6 +887,7 @@ class GOsaObject(object):
     _propsByBackend = {}
     uuid = None
     dn = None
+    orig_dn = None
     log = None
     createTimestamp = None
     modifyTimestamp = None
@@ -904,7 +920,7 @@ class GOsaObject(object):
             if mode == "create":
                 if _is_uuid.match(where):
                     raise Exception("create mode needs a base DN")
-                self.dn = where
+                self.orig_dn = self.dn = where
 
             else:
                 self._read(where)
@@ -954,6 +970,7 @@ class GOsaObject(object):
             self.uuid = self._reg.dn2uuid(self._backend, where)
 
         # Get last change timestamp
+        self.orig_dn = self.dn
         if self.dn:
             self.createTimestamp, self.modifyTimestamp = self._reg.get_timestamps(self._backend, self.dn)
 
@@ -1295,7 +1312,12 @@ class GOsaObject(object):
                 be.update(self.uuid, toStore[p_backend])
 
             # Eventually the DN has changed
-            obj.dn = be.uuid2dn(self.uuid)
+            dn = be.uuid2dn(self.uuid)
+            if dn != obj.dn:
+                obj.dn = dn
+                if self.__base_object:
+                    zope.event.notify(ObjectChanged("relocated", obj))
+                obj.orig_dn = dn
 
         # ... then walk thru the remaining ones
         for backend, data in toStore.items():
@@ -1550,16 +1572,12 @@ class GOsaObject(object):
                         fltr[line]['params'])
         return fltr
 
-    def remove(self, recursive=False):
+    def remove(self):
         """
         Removes this object - and eventually it's containements.
         """
         if not self._base_object:
             raise FactoryException("cannot remove non base object - use retract")
-
-        #TODO: notify extension about remove
-        #for every used extension:
-        #   extension.retract()
 
         props = getattr(self, '__properties')
 
@@ -1573,21 +1591,16 @@ class GOsaObject(object):
         # Remove for all backends, removing the primary one as the last one
         backends.reverse()
         obj = self
-        if recursive:
-            #TODO: emit a "move" signal for all affected objects
-            raise NotImplemented("recursive removal is not implemented")
-        else:
-            zope.event.notify(ObjectChanged("pre remove", obj))
+        zope.event.notify(ObjectChanged("pre remove", obj))
 
-            for backend in backends:
-                be = ObjectBackendRegistry.getBackend(backend)
-                be.remove(obj.uuid)
+        for backend in backends:
+            be = ObjectBackendRegistry.getBackend(backend)
+            be.remove(obj.uuid)
 
-            zope.event.notify(ObjectChanged("post remove", obj))
+        if self.__base_object:
+            zope.event.notify(ObjectChanged("removed", obj))
 
-    def move_extension(self, new_base):
-        #TODO: do whatever needed to move (or just notify) an extension object
-        pass
+        zope.event.notify(ObjectChanged("post remove", obj))
 
     def move(self, new_base):
         """
@@ -1597,10 +1610,6 @@ class GOsaObject(object):
             raise FactoryException("cannot move non base objects")
 
         props = getattr(self, '__properties')
-
-        #TODO: notify extension about move
-        #for every used extension:
-        #   extension.move_extension(self.uuid, new_base)
 
         # Collect backends
         backends = [getattr(self, '_backend')]
@@ -1618,7 +1627,13 @@ class GOsaObject(object):
             be = ObjectBackendRegistry.getBackend(backend)
             be.move(self.uuid, new_base)
 
-        #TODO: emit a "move" signal for all affected objects
+        # Most likely the has changed
+        dn = be.uuid2dn(self.uuid)
+        if dn != obj.dn:
+            obj.dn = dn
+            if self.__base_object:
+                zope.event.notify(ObjectChanged("relocated", obj))
+
         zope.event.notify(ObjectChanged("post move", obj))
 
     def retract(self):
@@ -1686,6 +1701,7 @@ class ObjectChanged(object):
         self.reason = reason
         self.uuid = obj.uuid
         self.dn = obj.dn
+        self.orig_dn = obj.orig_dn
 
 
 class AttributeChanged(object):
