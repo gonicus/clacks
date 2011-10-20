@@ -5,6 +5,10 @@ from gosa.common import Environment
 from gosa.agent.objects import GOsaObjectFactory
 
 
+class ProxyException(Exception):
+    pass
+
+
 class GOsaObjectProxy(object):
     dn = None
     uuid = None
@@ -32,14 +36,14 @@ class GOsaObjectProxy(object):
         base, extensions = self.__factory.identifyObject(dn_or_base)
         if what:
             if not what in object_types:
-                raise Exception("unknown object type '%s'" % what)
+                raise ProxyException("unknown object type '%s'" % what)
 
             base = what
             base_mode = "create"
             extensions = []
 
         if not base:
-            raise Exception("object '%s' not found" % dn_or_base)
+            raise ProxyException("object '%s' not found" % dn_or_base)
 
         # Get available extensions
         self.__log.debug("loading %s base object for %s" % (base, dn_or_base))
@@ -80,10 +84,10 @@ class GOsaObjectProxy(object):
 
     def extend(self, extension):
         if not extension in self.__extensions:
-            raise Exception("extension '%s' not allowed" % extension)
+            raise ProxyException("extension '%s' not allowed" % extension)
 
         if self.__extensions[extension] != None:
-            raise Exception("extension '%s' already defined" % extension)
+            raise ProxyException("extension '%s' already defined" % extension)
 
         # Create extension
         self.__extensions[extension] = self.__factory.getObject(extension,
@@ -91,10 +95,10 @@ class GOsaObjectProxy(object):
 
     def retract(self, extension):
         if not extension in self.__extensions:
-            raise Exception("extension '%s' not allowed" % extension)
+            raise ProxyException("extension '%s' not allowed" % extension)
 
         if self.__extensions[extension] == None:
-            raise Exception("extension '%s' already retracted" % extension)
+            raise ProxyException("extension '%s' already retracted" % extension)
 
         # Immediately remove extension
         self.__extensions[extension].retract()
@@ -110,7 +114,7 @@ class GOsaObjectProxy(object):
         else:
             # Test if we've children
             if len(self.__factory.getObjectChildren(self.__base.dn)):
-                raise Exception("specified object has children - use the recursive flag to remove them")
+                raise ProxyException("specified object has children - use the recursive flag to remove them")
 
         for extension in [e for x, e in self.__extensions.iteritems() if e]:
             extension.remove()
