@@ -463,6 +463,10 @@ class GOsaObject(object):
                         self.getForeignProperties())
 
             else:
+
+                #TODO: update - check for changed attrs, if they affect something,
+                #      let all backends remove the refs.
+
                 be.update(self.uuid, toStore[p_backend])
 
             # Eventually the DN has changed
@@ -487,6 +491,8 @@ class GOsaObject(object):
             elif self._mode == "extend":
                 be.extend(self.uuid, data, beAttrs, self.getForeignProperties())
             else:
+                #TODO: update - check for changed attrs, if they affect something,
+                #      let all backends remove the refs.
                 be.update(self.uuid, data)
 
         zope.event.notify(ObjectChanged("post %s" % self._mode, obj))
@@ -749,13 +755,12 @@ class GOsaObject(object):
         obj = self
         zope.event.notify(ObjectChanged("pre remove", obj))
 
+        #TODO: update - check for remove_attrs, if they affect something,
+        #      let all backends remove the refs.
+
         for backend in backends:
             be = ObjectBackendRegistry.getBackend(backend)
             be.remove(obj.uuid)
-
-        #pylint: disable=E1101
-        if self._base_object:
-            zope.event.notify(ObjectChanged("removed", obj))
 
         zope.event.notify(ObjectChanged("post remove", obj))
 
@@ -785,12 +790,8 @@ class GOsaObject(object):
             be = ObjectBackendRegistry.getBackend(backend)
             be.move(self.uuid, new_base)
 
-        # Most likely the has changed
-        dn = be.uuid2dn(self.uuid)
-        if dn != obj.dn:
-            obj.dn = dn
-            if self._base_object:
-                zope.event.notify(ObjectChanged("relocated", obj))
+        # Check if the move interacts with other objects
+        #TODO
 
         zope.event.notify(ObjectChanged("post move", obj))
 
@@ -832,10 +833,14 @@ class GOsaObject(object):
                 if attr in r_attrs:
                     remove_attrs.append(attr)
 
+            # Check if the move interacts with other objects
+            #TODO: update - check for remove_attrs, if they affect something,
+            #      let all backends remove the refs.
+
             #pylint: disable=E1101
             be.retract(self.uuid, [a for a in remove_attrs if getattr(obj, a)], self._backendAttrs[backend] if backend in self._backendAttrs else None)
 
-        zope.event.notify(ObjectChanged("pre retract", obj))
+        zope.event.notify(ObjectChanged("post retract", obj))
 
 
 class IObjectChanged(Interface):

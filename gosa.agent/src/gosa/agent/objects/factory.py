@@ -125,9 +125,6 @@ class GOsaObjectFactory(object):
         self.load_schema()
         self.load_object_types()
 
-        # Listen for certain object events
-        zope.event.subscribers.append(self.__handle_refs)
-
     def getAttributeTypes(self):
         return(self.__attribute_type)
 
@@ -296,18 +293,6 @@ class GOsaObjectFactory(object):
         if os.path.isdir(path):
             for f in [n for n in os.listdir(path) if n.endswith(os.extsep + 'xml')]:
                 self.__parse_schema(os.path.join(path, f))
-
-    def __handle_refs(self, event):
-        #TODO: missing ref handling
-        uuid = event.uuid
-        if isinstance(event, ObjectChanged):
-
-            if event.reason == "removed":
-                self.log.critical("object %s removed - refs needs to be maintained" % uuid)
-
-            if event.reason == "relocated":
-                print "---> moved from %s to %s" % (event.orig_dn, event.dn)
-                self.log.critical("object %s moved - refs need to be maintained" % uuid)
 
     def __parse_schema(self, path):
         """

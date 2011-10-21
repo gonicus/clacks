@@ -431,6 +431,9 @@ class ObjectIndex(Plugin):
             elif el == "type":
                 arg.append(or_(self.__index.c._type == value, self.__index.c._extensions.op('regexp')(r"\%s%s\%s" % (self.__sep, value, self.__sep))))
 
+            elif el == "uuid":
+                arg.append(or_(self.__index.c._uuid == value, self.__index.c._extensions.op('regexp')(r"\%s%s\%s" % (self.__sep, value, self.__sep))))
+
             elif not cel in self.__types:
                 raise FilterException("attribute '%s' is not indexed" % cel)
 
@@ -555,7 +558,7 @@ class ObjectIndex(Plugin):
 
             if event.reason == "post move":
                 self.log.debug("updating object index for %s" % uuid)
-                #self.move(uuid, event.dn)
+                self.move(uuid, event.dn)
 
             if event.reason == "post create":
                 self.log.debug("creating object index for %s" % uuid)
@@ -572,6 +575,11 @@ class ObjectIndex(Plugin):
 
             if event.reason in ["post retract", "post update", "post extend"]:
                 self.log.debug("updating object index for %s" % uuid)
+
+                # Eventually try to resolve the DN for non base objects
+                if not event.dn:
+                    event.dn = self.search(fltr={'uuid': uuid}, attrs=['_dn'])[0]['_dn']
+
                 o_type, ext = f.identifyObject(event.dn)
                 obj = f.getObject(o_type, event.dn)
 

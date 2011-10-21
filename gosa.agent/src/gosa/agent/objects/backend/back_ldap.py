@@ -69,7 +69,13 @@ class LDAP(ObjectBackend):
         # Check for special RDN attribute
         if 'RDN' in params:
             rdns = [o.strip() for o in params['RDN'].split(",")]
-            if not dn.split('=')[0] in rdns:
+            rdn_parts = ldap.dn.str2dn(dn.encode('utf-8'), flags=ldap.DN_FORMAT_LDAPV3)[0]
+            found = False
+            for rdn_a, rdn_v, dummy in rdn_parts:
+                if rdn_a in rdns:
+                    found = True
+
+            if not found:
                 return False
 
         ocs = [o.strip() for o in params['objectClasses'].split(",")]
