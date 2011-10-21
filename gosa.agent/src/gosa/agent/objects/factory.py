@@ -593,7 +593,7 @@ class GOsaObjectFactory(object):
                     except:
                         raise FactoryException("The command registry could not be found, are you running things manually?!")
 
-                    return(cr.dispatch(command, *paramList))
+                    return(cr.dispatch(command, *parmList))
 
                 # Append the method to the list of registered methods for this
                 # object
@@ -959,6 +959,7 @@ class GOsaObject(object):
 
         # Generate missing values
         if _is_uuid.match(where):
+            #pylint: disable=E1101
             if self._base_object:
                 self.dn = self._reg.uuid2dn(self._backend, where)
             else:
@@ -1026,6 +1027,7 @@ class GOsaObject(object):
                     self.__processFilter(in_f, key, props)
 
         # Convert the received type into the target type if not done already
+        #pylint: disable=E1101
         atypes = self._objectFactory.getAttributeTypes()
         for key in props:
 
@@ -1119,6 +1121,7 @@ class GOsaObject(object):
 
             # Check if the new value is valid
             s_type = props[name]['type']
+            #pylint: disable=E1101
             if not self._objectFactory.getAttributeTypes()[s_type].is_valid_value(new_value):
                 raise TypeError("Invalid value given for %s" % (name,))
 
@@ -1145,6 +1148,7 @@ class GOsaObject(object):
             # Update status if there's a change
             t = props[name]['type']
             current = copy.deepcopy(props[name]['value'])
+            #pylint: disable=E1101
             if not self._objectFactory.getAttributeTypes()[t].values_match(props[name]['value'], props[name]['orig_value']):
                 props[name]['status'] = STATUS_CHANGED
                 props[name]['last_value'] = current
@@ -1201,6 +1205,7 @@ class GOsaObject(object):
         props = copy.deepcopy(getattr(self, '__properties'))
 
         # Check if _mode matches with the current object type
+        #pylint: disable=E1101
         if self._base_object and not self._mode in ['create', 'remove', 'update']:
             raise FactoryException("mode '%s' not available for base objects" % self._mode)
         if not self._base_object and self._mode in ['create', 'remove']:
@@ -1576,6 +1581,7 @@ class GOsaObject(object):
         """
         Removes this object - and eventually it's containements.
         """
+        #pylint: disable=E1101
         if not self._base_object:
             raise FactoryException("cannot remove non base object - use retract")
 
@@ -1597,6 +1603,7 @@ class GOsaObject(object):
             be = ObjectBackendRegistry.getBackend(backend)
             be.remove(obj.uuid)
 
+        #pylint: disable=E1101
         if self._base_object:
             zope.event.notify(ObjectChanged("removed", obj))
 
@@ -1606,6 +1613,7 @@ class GOsaObject(object):
         """
         Moves this object - and eventually it's containements.
         """
+        #pylint: disable=E1101
         if not self._base_object:
             raise FactoryException("cannot move non base objects")
 
@@ -1640,6 +1648,7 @@ class GOsaObject(object):
         """
         Removes this object extension
         """
+        #pylint: disable=E1101
         if self._base_object:
             raise FactoryException("base objects cannot be retracted")
 
@@ -1673,6 +1682,7 @@ class GOsaObject(object):
                 if attr in r_attrs:
                     remove_attrs.append(attr)
 
+            #pylint: disable=E1101
             be.retract(self.uuid, [a for a in remove_attrs if getattr(obj, a)], self._backendAttrs[backend] if backend in self._backendAttrs else None)
 
         zope.event.notify(ObjectChanged("pre retract", obj))
