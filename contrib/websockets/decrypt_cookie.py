@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import hmac, base64, random, time, warnings
 from hashlib import sha1
 
@@ -14,7 +15,23 @@ def auth(cookie):
     expires = decode[_signature_size:_header_size]
     content = decode[_header_size:]
 
-    print [signature,expires,content]
+    if signature == hmac.new("TecloigJink4", content, sha1).digest():
+        if int(expires) > int(make_time(time.time())):
+            return content
+        else:
+            # This is the normal case of an expired cookie; just
+            # don't bother doing anything here.
+            raise(Exception("Nö du darfst nicht! Abgelaufen"));
+    else:
+        # This case can happen if the server is restarted with a
+        # different secret; or if the user's IP address changed
+        # due to a proxy.  However, it could also be a break-in
+        # attempt -- so should it be reported?
+        raise(Exception("Nö du darfst nicht! Signatur falsch"));
 
 
-auth("7v8bsXUEVJ9ddJrvzG8nM5SN_HcyMDExMTAyMjE4NTJSRU1PVEVfVVNFUj1jYWp1cztSRU1PVEVfU0VTU0lPTj03ZjRlZThkMi1mYmUzLTExZTAtYjM0NS01NDUyMDA1ZjEyNTA~")
+c_str = "7v8bsXUEVJ9ddJrvzG8nM5SN_HcyMDExMTAyMjE4NTJSRU1PVEVfVVNFUj1jYWp1cztSRU1PVEVfU0VTU0lPTj03ZjRlZThkMi1mYmUzLTExZTAtYjM0NS01NDUyMDA1ZjEyNTA~"
+
+
+if(auth(c_str)):
+    print "Geht klar"
