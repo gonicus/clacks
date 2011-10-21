@@ -44,6 +44,7 @@ class BroadcastServerFactory(WebSocketServerFactory):
    def register(self, client):
       if not client in self.clients:
          print "registered client " + client.peerstr
+         self.clients.append(client)
          if 'Cookie' in client.http_headers:
             print "Got Cookie:",client.http_headers['Cookie']
          else:
