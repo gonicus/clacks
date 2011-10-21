@@ -104,33 +104,25 @@ and a readline based join mechanism. More can be added using the setuptools
 has a couple of command line arguments:</p>
 <blockquote>
 <div><div class="highlight-text"><div class="highlight"><pre>$ gosa-client --help
-Usage: gosa-client - the GOsa core daemon
+usage: gosa-client - the GOsa core daemon
 
-Options:
-  --version             show program&#39;s version number and exit
+optional arguments:
   -h, --help            show this help message and exit
-  -c FILE, --config=FILE
+  --version
+  -c FILE, --config FILE
                         read configuration from FILE [/etc/gosa/config]
-  -f                    run daemon in foreground [none]
-  -u USER, --user=USER  run daemon as USER [none]
-  -g GROUP, --group=GROUP
-                        run daemon as GROUP [none]
-  -p FILE, --pid-file=FILE
-                        store PID information into FILE [none]
+  -f                    run daemon in foreground [False]
+  -u USER, --user USER  run daemon as USER [None]
+  -g GROUP, --group GROUP
+                        run daemon as GROUP [None]
+  -p FILE, --pid-file FILE
+                        store PID information into FILE [None]
   --profile             write profiling information (only if daemon runs in
-                        foreground mode [none]
+                        foreground mode [False]
 
-  Logging options:
-    -v LOGLEVEL, --log-level=LOGLEVEL
-                        log level 0 - INFO, 1 - WARNING, 2 - ERROR, 4 -
-                        CRITICAL, 5 - DEBUG
-    -l METHOD, --log-mode=METHOD
-                        method used for logging (syslog, stderr, file) [none]
-    --log-file=FILE     if the file method is used, log to FILE
-
-  Advanced options:
-    --umask=UMASK       run daemon with UMASK [none]
-    --workdir=DIR       change directory to DIR after starting up [none]
+Advanced options:
+  --umask UMASK         run daemon with UMASK [None]
+  --workdir DIR         change directory to DIR after starting up [None]
 </pre></div>
 </div>
 </div></blockquote>

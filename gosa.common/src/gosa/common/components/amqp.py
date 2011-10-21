@@ -135,8 +135,12 @@ class AMQPHandler(object):
         try:
             conn = Connection.establish(url, transport=self.url['transport'], username=user, password=password)
             conn.close()
-        except ConnectionError, e:
+        except ConnectionError as e:
             self.log.debug("AMQP service authentication reports: %s" % str(e))
+            return False
+        except Exception as e:
+            self.log.critical("cannot proceed with authentication")
+            self.log.exception(e)
             return False
 
         return True

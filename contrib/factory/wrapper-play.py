@@ -1,19 +1,42 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
-from gosa.agent.objects.proxy import GOsaObjectProxy
+from gosa.agent.objects import GOsaObjectProxy
 from gosa.agent.objects.index import ObjectIndex, SCOPE_SUB
 
 # Do some searching
 ie = ObjectIndex()
 
+print "*" * 80
+print "Create"
+print "*" * 80
+
 obj = GOsaObjectProxy(u"ou=people,dc=gonicus,dc=de", "GenericUser")
-obj.uid = 'claudia'
-obj.sn = u'Mustermann'
-obj.givenName = u'Claudia'
+obj.uid = "eike"
+obj.sn = u"Kunst"
+obj.givenName = u"Eike"
 obj.commit()
 
-exit(0)
+print "*" * 80
+print "Delete"
+print "*" * 80
+
+obj = GOsaObjectProxy(u"cn=Eike Kunst,ou=people,dc=gonicus,dc=de")
+obj.remove()
+
+print "*" * 80
+print "Extend or retract"
+print "*" * 80
+
+obj = GOsaObjectProxy(u"cn=Claudia Mustermann,ou=people,dc=gonicus,dc=de")
+et = obj.get_extension_types()
+if 'PosixUser' in et and not et['PosixUser']:
+    obj.extend('PosixUser')
+    obj.homeDirectory = '/home/' + obj.uid
+    obj.gidNumber = 4711
+    obj.commit()
+else:
+    obj.retract('PosixUser')
 
 print "*" * 80
 print "Search"

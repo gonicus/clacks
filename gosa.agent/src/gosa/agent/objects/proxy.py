@@ -1,8 +1,42 @@
 # -*- coding: utf-8 -*-
+"""
+GOsa Object Proxy
+=================
+
+The GOsa object proxy sits on top of the :ref:`gosa.agent.object.factory:GOsaObjectFactory`
+and is the glue between objects that are defined via XML descriptions. The proxy should
+be used to load, remove and modify objects.
+
+Here are some examples:
+
+    >>> obj = GOsaObjectProxy(u"ou=people,dc=example,dc=net", "GenericUser")
+    >>> obj.uid = "user1"
+    >>> obj.sn = u"Mustermann"
+    >>> obj.givenName = u"Eike"
+    >>> obj.commit()
+
+This fragment creates a new user on the given base.
+
+    >>> obj.extend('PosixUser')
+    >>> obj.homeDirectory = '/home/' + obj.uid
+    >>> obj.gidNumber = 4711
+    >>> obj.commit()
+
+This fragment will add the *PosixUser* extension to the object, while
+
+    >>> obj.get_extension_types()
+
+will list the available extension types for that specific object.
+----
+"""
 from ldap.dn import str2dn, dn2str
 from logging import getLogger
 from gosa.common import Environment
 from gosa.agent.objects import GOsaObjectFactory
+
+
+class ProxyException(Exception):
+    pass
 
 
 class GOsaObjectProxy(object):
@@ -32,11 +66,14 @@ class GOsaObjectProxy(object):
         base, extensions = self.__factory.identifyObject(dn_or_base)
         if what:
             if not what in object_types:
-                raise Exception("unknown object type '%s'" % what)
+                raise ProxyException("unknown object type '%s'" % what)
 
             base = what
             base_mode = "create"
             extensions = []
+
+        if not base:
+            raise ProxyException("object '%s' not found" % dn_or_base)
 
         # Get available extensions
         self.__log.debug("loading %s base object for %s" % (base, dn_or_base))
@@ -77,10 +114,10 @@ class GOsaObjectProxy(object):
 
     def extend(self, extension):
         if not extension in self.__extensions:
-            raise Exception("extension '%s' not allowed" % extension)
+            raise ProxyException("extension '%s' not allowed" % extension)
 
-        if self.__extensions[extensions] != None:
-            raise Exception("extension '%s' already defined" % extension)
+        if self.__extensions[extension] != None:
+            raise ProxyException("extension '%s' already defined" % extension)
 
         # Create extension
         self.__extensions[extension] = self.__factory.getObject(extension,
@@ -88,25 +125,28 @@ class GOsaObjectProxy(object):
 
     def retract(self, extension):
         if not extension in self.__extensions:
-            raise Exception("extension '%s' not allowed" % extension)
+            raise ProxyException("extension '%s' not allowed" % extension)
 
         if self.__extensions[extension] == None:
-            raise Exception("extension '%s' already retracted" % extension)
+            raise ProxyException("extension '%s' already retracted" % extension)
 
         # Immediately remove extension
-        #TODO: delayed retract on commit
         self.__extensions[extension].retract()
         self.__extensions[extension] = None
 
-    def move(self, new_base):
+    def move(self, new_base, recursive=False):
         raise NotImplemented()
 
     def remove(self, recursive=False):
         if recursive:
             raise NotImplemented("recursive remove is not implemented")
 
-        #TODO: dependency sort
-        for extension in self.__extensions:
+        else:
+            # Test if we've children
+            if len(self.__factory.getObjectChildren(self.__base.dn)):
+                raise ProxyException("specified object has children - use the recursive flag to remove them")
+
+        for extension in [e for x, e in self.__extensions.iteritems() if e]:
             extension.remove()
 
         self.__base.remove()
@@ -114,7 +154,6 @@ class GOsaObjectProxy(object):
     def commit(self):
         self.__base.commit()
 
-        #TODO: handle retracts
         for extension in [e for x, e in self.__extensions.iteritems() if e]:
             extension.commit()
 

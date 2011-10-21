@@ -7,6 +7,7 @@ is redirecting a path to a module.
 
 -------
 """
+import os
 import thread
 import logging
 from zope.interface import implements
@@ -36,8 +37,10 @@ class HTTPDispatcher(object):
 
     def __call__(self, environ, start_response):
         path = environ.get('PATH_INFO')
-        for app_path, app in self.__app.items():
-            if hasattr(app, "http_subtree") and path.startswith(app_path + "/"):
+        for app_path in sorted(self.__app, key=len, reverse=True):
+            app = self.__app[app_path]
+
+            if hasattr(app, "http_subtree") and path.startswith(app_path if app_path == "/" else app_path + "/"):
                 return app.__call__(environ, start_response)
             elif path == app_path:
                 return app.__call__(environ, start_response)

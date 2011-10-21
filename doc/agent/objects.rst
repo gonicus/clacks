@@ -10,5 +10,10 @@
 
 ------
 
+.. automodule:: gosa.agent.objects.proxy
+   :members:
+
+------
+
 .. automodule:: gosa.agent.objects.index
    :members:

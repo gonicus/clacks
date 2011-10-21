@@ -69,8 +69,8 @@ with potential command line parameters.</p>
 <p>Here is an example on how to use the common module:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">gosa.common</span> <span class="kn">import</span> <span class="n">Environment</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">Environment</span><span class="o">.</span><span class="n">getInstance</span><span class="p">()</span><span class="o">.</span><span class="n">config</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;core.loglevel&#39;</span><span class="p">)</span>
-<span class="go">DEBUG</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;core.id&#39;</span><span class="p">)</span>
+<span class="go">amqp</span>
 </pre></div>
 </div>
 <p>If no configuration is present, the system will raise a
@@ -106,10 +106,10 @@ and parse the <tt class="docutils literal"><span class="pre">sys.argv</span></tt
 <dd><p><em>get</em> allows dot-separated access to the configuration structure.
 If the desired value is not defined, you can specify a default
 value.</p>
-<p>For example, if you want to access the <em>loglevel</em> option located
+<p>For example, if you want to access the <em>id</em> option located
 in the section <em>[core]</em>, the path is:</p>
 <blockquote>
-<div>core.loglevel</div></blockquote>
+<div>core.id</div></blockquote>
 <table border="1" class="docutils">
 <colgroup>
 <col width="16%" />

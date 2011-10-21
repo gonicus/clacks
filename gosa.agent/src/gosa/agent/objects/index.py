@@ -1,4 +1,14 @@
 # -*- coding: utf-8 -*-
+"""
+Object Index
+============
+
+The Object Index is the search engine in GOsa. It keeps track about
+all defined object types and can find references to it inside of its
+local index database
+
+----
+"""
 import re
 import inspect
 import sqlalchemy.sql
