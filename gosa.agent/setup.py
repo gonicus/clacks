@@ -87,6 +87,7 @@ setup(
         gosa-agent.acl = gosa.agent.acl:ACLResolver
         gosa-agent.objects = gosa.agent.objects.index:ObjectIndex
         gosa-agent.jsonrpc_service = gosa.agent.jsonrpc_service:JSONRPCService
+        gosa-agent.web_service = gosa.agent.static_web:StaticWebService
         gosa-agent.jsonrpc_om = gosa.agent.jsonrpc_objects:JSONRPCObjectMapper
         gosa-agent.plugins.samba.utils = gosa.agent.plugins.samba.utils:SambaUtils
         gosa-agent.plugins.misc.utils = gosa.agent.plugins.misc.utils:MiscUtils
