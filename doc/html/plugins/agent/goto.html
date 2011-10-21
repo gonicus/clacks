@@ -72,7 +72,33 @@ to the users.</p>
 <p class="first admonition-title">Note</p>
 <p class="last"><strong>This method will be exported by the CommandRegistry.</strong></p>
 </div>
-<p>TODO</p>
+<p>Dispatch a method on the client.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="78%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>client</td>
+<td>Device UUID of the client</td>
+</tr>
+<tr><td>method</td>
+<td>Method name to call</td>
+</tr>
+<tr><td><ul class="first last simple">
+<li></li>
+</ul>
+</td>
+<td>Method arguments</td>
+</tr>
+</tbody>
+</table>
+<p><tt class="docutils literal"><span class="pre">Return:</span></tt> varies</p>
 </dd></dl>
 
 <dl class="method">
@@ -84,7 +110,8 @@ to the users.</p>
 <p class="first admonition-title">Note</p>
 <p class="last"><strong>This method will be exported by the CommandRegistry.</strong></p>
 </div>
-<p>TODO</p>
+<p>Get list of available client methods and their signature.</p>
+<p><tt class="docutils literal"><span class="pre">Return:</span></tt> dict of client methods</p>
 </dd></dl>
 
 <dl class="method">
@@ -96,7 +123,13 @@ to the users.</p>
 <p class="first admonition-title">Note</p>
 <p class="last"><strong>This method will be exported by the CommandRegistry.</strong></p>
 </div>
-<p>TODO</p>
+<p>Get brief information about the client network setup.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">gosa</span><span class="o">.</span><span class="n">getClientNetInfo</span><span class="p">(</span><span class="s">&#39;eb5e72d4-c53f-4612-81a3-602b14a8da69&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>{&#8216;eth0&#8217;: {&#8216;Broadcast&#8217;: &#8216;10.89.1.255&#8217;, &#8216;MAC&#8217;: &#8216;00:01:6c:9d:b9:fa&#8217;, &#8216;IPAddress&#8217;: &#8216;10.89.1.31&#8217;, &#8216;Netmask&#8217;: &#8216;255.255.255.0&#8217;, &#8216;IPv6Address&#8217;: &#8216;fe80::201:6cff:fe9d:b9fa/64&#8217;}}</p>
+<p><tt class="docutils literal"><span class="pre">Return:</span></tt> dict with network information</p>
 </dd></dl>
 
 <dl class="method">
@@ -108,7 +141,8 @@ to the users.</p>
 <p class="first admonition-title">Note</p>
 <p class="last"><strong>This method will be exported by the CommandRegistry.</strong></p>
 </div>
-<p>TODO</p>
+<p>List available domain clients.</p>
+<p><tt class="docutils literal"><span class="pre">Return:</span></tt> dict with name and timestamp informatio, indexed by UUID</p>
 </dd></dl>
 
 <dl class="method">
@@ -200,6 +234,8 @@ manufacturer resolving.</p>
 <p class="first admonition-title">Note</p>
 <p class="last"><strong>This method will be exported by the CommandRegistry.</strong></p>
 </div>
+<p>This function uses the ieee file provided at
+<a class="reference external" href="http://standards.ieee.org/regauth/oui/oui.txt">http://standards.ieee.org/regauth/oui/oui.txt</a></p>
 <p>TODO</p>
 </dd></dl>
 
