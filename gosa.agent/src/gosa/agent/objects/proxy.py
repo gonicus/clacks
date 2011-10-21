@@ -1,4 +1,34 @@
 # -*- coding: utf-8 -*-
+"""
+GOsa Object Proxy
+=================
+
+The GOsa object proxy sits on top of the :ref:`gosa.agent.object.factory:GOsaObjectFactory`
+and is the glue between objects that are defined via XML descriptions. The proxy should
+be used to load, remove and modify objects.
+
+Here are some examples:
+
+    >>> obj = GOsaObjectProxy(u"ou=people,dc=example,dc=net", "GenericUser")
+    >>> obj.uid = "user1"
+    >>> obj.sn = u"Mustermann"
+    >>> obj.givenName = u"Eike"
+    >>> obj.commit()
+
+This fragment creates a new user on the given base.
+
+    >>> obj.extend('PosixUser')
+    >>> obj.homeDirectory = '/home/' + obj.uid
+    >>> obj.gidNumber = 4711
+    >>> obj.commit()
+
+This fragment will add the *PosixUser* extension to the object, while
+
+    >>> obj.get_extension_types()
+
+will list the available extension types for that specific object.
+----
+"""
 from ldap.dn import str2dn, dn2str
 from logging import getLogger
 from gosa.common import Environment

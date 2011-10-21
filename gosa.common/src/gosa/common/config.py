@@ -100,28 +100,28 @@ class Config(object):
 
         parser.add_argument("-c", "--config", dest="config",
                           default="/etc/gosa/config",
-                          help="read configuration from FILE [%default]",
+                          help="read configuration from FILE [%(default)s]",
                           metavar="FILE")
         parser.add_argument("-f", action="store_true", dest="foreground",
-                          help="run daemon in foreground [%default]")
+                          help="run daemon in foreground [%(default)s]")
         parser.add_argument("-u", "--user", dest="user",
-                          help="run daemon as USER [%default]",
+                          help="run daemon as USER [%(default)s]",
                           metavar="USER")
         parser.add_argument("-g", "--group", dest="group",
-                          help="run daemon as GROUP [%default]",
+                          help="run daemon as GROUP [%(default)s]",
                           metavar="GROUP")
         parser.add_argument("-p", "--pid-file", dest="pidfile",
-                          help="store PID information into FILE [%default]",
+                          help="store PID information into FILE [%(default)s]",
                           metavar="FILE")
         parser.add_argument("--profile", action="store_true", dest="profile",
-                          help="write profiling information (only if daemon runs in foreground mode [%default]")
+                          help="write profiling information (only if daemon runs in foreground mode [%(default)s]")
 
         group = parser.add_argument_group("Advanced options")
         group.add_argument("--umask", dest="umask",
-                          help="run daemon with UMASK [%default]",
+                          help="run daemon with UMASK [%(default)s]",
                           metavar="UMASK")
         group.add_argument("--workdir", dest="workdir",
-                          help="change directory to DIR after starting up [%default]",
+                          help="change directory to DIR after starting up [%(default)s]",
                           metavar="DIR")
 
         options = parser.parse_args()
