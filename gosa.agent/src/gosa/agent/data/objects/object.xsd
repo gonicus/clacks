@@ -154,6 +154,10 @@
         		minOccurs="0"
         	>
         	</element>
+        	<element name="References" type="gosa:References"
+        		maxOccurs="1" minOccurs="0"
+        	>
+        	</element>
         </all>
     </complexType>
 
@@ -392,5 +396,21 @@
     		>
     		</element>
     	</sequence>
+    </complexType>
+
+    <complexType name="References">
+    	<sequence>
+    		<element name="Reference" type="gosa:Reference"
+    			maxOccurs="unbounded" minOccurs="1"
+    		>
+    		</element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="Reference">
+    	<sequence>
+    		<element name="Object" type="string"></element>
+            <element name="Attribute" type="string"></element>
+        </sequence>
     </complexType>
 </schema>

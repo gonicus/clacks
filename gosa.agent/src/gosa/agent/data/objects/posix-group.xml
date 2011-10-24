@@ -54,7 +54,13 @@
                                 <Description>A list of member-uids</Description>
                                 <Type>UnicodeString</Type>
                                 <MultiValue>true</MultiValue>
-                                <Mandatory>false</Mandatory>
+				<Mandatory>false</Mandatory>
+				<References>
+					<Reference>
+						<Object>PosixUser</Object>
+						<Attribute>uid</Attribute>
+					</Reference>
+				</References>
                         </Attribute>
                 </Attributes>
 		<BaseObject>true</BaseObject>
