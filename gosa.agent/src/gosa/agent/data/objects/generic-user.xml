@@ -84,6 +84,7 @@
 				<Description>The givenName attribute is used to hold the part of a person's name which is not their surname nor middle name.</Description>
 				<Type>UnicodeString</Type>
 				<Mandatory>true</Mandatory>
+				<Indexed>true</Indexed>
 			</Attribute>
 			<Attribute>
 				<Name>homePhone</Name>
@@ -115,6 +116,7 @@
 				<Description>RFC1274: RFC822 Mailbox</Description>
 				<Type>String</Type>
 				<MultiValue>true</MultiValue>
+				<Indexed>true</Indexed>
 			</Attribute>
 			<Attribute>
 				<Name>manager</Name>
@@ -156,6 +158,7 @@
 				<Description>The Userid attribute type specifies a computer system login name.</Description>
 				<Type>String</Type>
 				<Mandatory>true</Mandatory>
+				<Indexed>true</Indexed>
 			</Attribute>
 			<Attribute>
 				<Name>userCertificate</Name>
@@ -225,6 +228,7 @@
 				<Description>Telephone number</Description>
 				<Type>String</Type>
 				<MultiValue>true</MultiValue>
+				<Indexed>true</Indexed>
 			</Attribute>
 			<Attribute>
 				<Name>internationaliSDNNumber</Name>
@@ -235,6 +239,7 @@
 				<Name>facsimileTelephoneNumber</Name>
 				<Description>Facsimile telephone number</Description>
 				<Type>String</Type>
+				<Indexed>true</Indexed>
 			</Attribute>
 			<Attribute>
 				<Name>street</Name>
@@ -328,6 +333,7 @@
                                                 </FilterEntry>
                                         </FilterChain>
                                 </OutFilter>
+				<Indexed>true</Indexed>
 			</Attribute>
 			<Attribute>
 				<Name>seeAlso</Name>
@@ -344,6 +350,7 @@
 				<Description>This is the X.500 surname attribute, which contains the family name of a person.</Description>
 				<Mandatory>true</Mandatory>
 				<Type>UnicodeString</Type>
+				<Indexed>true</Indexed>
 			</Attribute>
 			<Attribute>
 				<Name>cn</Name>
@@ -371,6 +378,7 @@
                                 </OutFilter>
                                 <MultiValue>false</MultiValue>
                                 <ReadOnly>true</ReadOnly>
+				<Indexed>true</Indexed>
                         </Attribute>
                 </Attributes>
 		<BaseObject>true</BaseObject>

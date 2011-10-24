@@ -128,6 +128,18 @@ class GOsaObjectFactory(object):
     def getAttributeTypes(self):
         return(self.__attribute_type)
 
+    def getIndexedAttributes(self):
+        res = []
+        for element in self.__xml_defs.values():
+
+            # Get all <Attributes> tag and iterate through their children
+            find = objectify.ObjectPath("Objects.Object.Attributes.Attribute")
+            if find.hasattr(element):
+                for attr in find(element):
+                    if bool(load(attr, "Indexed", False)):
+                        res.append(attr.Name.text)
+        return res
+
     def getReferences(self, s_obj=None, s_attr=None):
         res = {}
 
