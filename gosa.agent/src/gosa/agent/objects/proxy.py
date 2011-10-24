@@ -196,7 +196,9 @@ class GOsaObjectProxy(object):
                 setattr(self.__base, name, value)
                 continue
 
-            if obj in self.__extensions:
+            # Forward attribute modification to all extension that provide
+            # that given value (even if it is foreign)
+            if obj in self.__extensions and self.__extensions[obj]:
                 found = True
                 setattr(self.__extensions[obj], name, value)
                 continue
