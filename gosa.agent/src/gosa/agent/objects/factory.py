@@ -128,6 +128,34 @@ class GOsaObjectFactory(object):
     def getAttributeTypes(self):
         return(self.__attribute_type)
 
+    def getReferences(self, s_obj=None, s_attr=None):
+        res = {}
+
+        for element in self.__xml_defs.values():
+
+            # Get all <Attributes> tag and iterate through their children
+            find = objectify.ObjectPath("Objects.Object.Attributes")
+            if find.hasattr(element):
+                for attr in find(element).iterchildren():
+
+                    # Extract the objects name.
+                    obj = attr.getparent().getparent().Name.text
+
+                    # Extract reference information
+                    if bool(load(attr, "References", False)):
+
+                        # Ensure that values are initialized
+                        if obj not in res:
+                            res[obj] = {}
+
+                        # Append the result if it matches the given parameters.
+                        res[obj][attr.Name.text] = []
+                        for ref in attr.References.iterchildren():
+                            if (s_obj == None or s_obj == ref.Object.text) or (s_attr == None or s_attr == ref.Attribute.text):
+                                res[obj][attr.Name.text].append((ref.Object.text, ref.Attribute.text))
+
+        return res
+
     def getAttributes(self):
         res = {}
 
