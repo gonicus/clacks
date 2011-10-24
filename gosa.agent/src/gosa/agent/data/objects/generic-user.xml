@@ -173,6 +173,7 @@
 				<Name>preferredLanguage</Name>
 				<Description>Preferred written or spoken language for a person</Description>
 				<Type>String</Type>
+				<CaseSensitive>true</CaseSensitive>
 			</Attribute>
 			<Attribute>
 				<Name>userSMIMECertificate</Name>

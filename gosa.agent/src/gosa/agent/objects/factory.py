@@ -143,6 +143,7 @@ class GOsaObjectFactory(object):
                             'multivalue': bool(load(attr, "MultiValue", False)),
                             'mandatory': bool(load(attr, "Mandatory", False)),
                             'read-only': bool(load(attr, "ReadOnly", False)),
+                            'case-sensitive': bool(load(attr, "CaseSensitive", False)),
                             'unique': bool(load(attr, "Unique", False)),
                             'objects': [],
                             'primary': [],
@@ -443,6 +444,7 @@ class GOsaObjectFactory(object):
                 unique = bool(load(prop, "Unique", False))
                 mandatory = bool(load(prop, "Mandatory", False))
                 readonly = bool(load(prop, "ReadOnly", False))
+                case_sensitive = bool(load(prop, "CaseSensitive", False))
                 foreign = bool(load(prop, "Foreign", False))
 
                 # Check for property dependencies
@@ -478,6 +480,7 @@ class GOsaObjectFactory(object):
                     'unique': unique,
                     'mandatory': mandatory,
                     'readonly': readonly,
+                    'case_sensitive': case_sensitive,
                     'multivalue': multivalue,
                     'blocked_by': blocked_by}
 
