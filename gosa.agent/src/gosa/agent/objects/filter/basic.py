@@ -42,7 +42,18 @@ class SetBackend(ElementFilter):
         super(SetBackend, self).__init__(obj)
 
     def process(self, obj, key, valDict, new_backend):
-        valDict[key]['backend'] = new_backend
+        valDict[key]['backend'] = [new_backend]
+        return key, valDict
+
+
+class AddBackend(ElementFilter):
+    """
+    """
+    def __init__(self, obj):
+        super(AddBackend, self).__init__(obj)
+
+    def process(self, obj, key, valDict, new_backend):
+        valDict[key]['backend'].append(new_backend)
         return key, valDict
 
 

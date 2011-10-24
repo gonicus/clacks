@@ -154,13 +154,6 @@
 				<Type>UnicodeString</Type>
 			</Attribute>
 			<Attribute>
-				<Name>uid</Name>
-				<Description>The Userid attribute type specifies a computer system login name.</Description>
-				<Type>String</Type>
-				<Mandatory>true</Mandatory>
-				<Indexed>true</Indexed>
-			</Attribute>
-			<Attribute>
 				<Name>userCertificate</Name>
 				<Description>This attribute is to be stored and requested in the binary form, as 'userCertificate;binary'.</Description>
 				<Type>Binary</Type>
@@ -380,6 +373,23 @@
                                 <ReadOnly>true</ReadOnly>
 				<Indexed>true</Indexed>
                         </Attribute>
+			<Attribute>
+				<Name>uid</Name>
+				<Description>The Userid attribute type specifies a computer system login name.</Description>
+				<Type>String</Type>
+				<Mandatory>true</Mandatory>
+				<OutFilter>
+                                        <FilterChain>
+                                                <FilterEntry>
+                                                        <Filter>
+                                                                <Name>AddBackend</Name>
+                                                                <Param>NULL</Param>
+                                                        </Filter>
+                                                </FilterEntry>
+                                        </FilterChain>
+                                </OutFilter>
+				<Indexed>true</Indexed>
+			</Attribute>
                 </Attributes>
 		<BaseObject>true</BaseObject>
 	</Object>

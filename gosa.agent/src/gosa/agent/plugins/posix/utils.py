@@ -28,7 +28,11 @@ class GetNextID(ElementFilter):
     def process(self, obj, key, valDict, attributeName="uidNumber", maxValue=65500):
         if len(valDict[key]['value']) and (valDict[key]['value'][0] == -1):
             maxValue = int(maxValue)
-            be = ObjectBackendRegistry.getBackend(valDict[key]['backend'])
+
+            if len(valDict[key]['backend']) > 1:
+                raise Exception("GetNextID filter does not support multiple backends!")
+
+            be = ObjectBackendRegistry.getBackend(valDict[key]['backend'][0])
             gid = be.get_next_id(attributeName)
             if gid > maxValue:
                 raise Exception("Gid number generation exceeded limitation of %s!" % (maxValue,))

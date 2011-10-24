@@ -512,7 +512,7 @@ class GOsaObjectFactory(object):
                     'validator': validator,
                     'out_filter': out_f,
                     'in_filter': in_f,
-                    'backend': backend,
+                    'backend': [backend],
                     'in_value': [],
                     'default': default,
                     'orig_value': None,

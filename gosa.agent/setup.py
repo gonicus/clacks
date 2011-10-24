@@ -142,6 +142,7 @@ setup(
         filter.detectpasswordmethod = gosa.agent.plugins.password.utils:DetectPasswordMethod
         filter.detectaccountlockstatus = gosa.agent.plugins.password.utils:DetectAccountLockStatus
         filter.generatepasswordhash = gosa.agent.plugins.password.utils:GeneratePasswordHash
+        filter.addbackend = gosa.agent.objects.filter.basic:AddBackend
 
         [gosa.object.operator]
         operator.and = gosa.agent.objects.operator.bool:And

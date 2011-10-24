@@ -59,11 +59,12 @@ class GOsaObject(object):
         for key in props:
 
             # Initialize an empty array for each backend
-            if props[key]['backend'] not in propsByBackend:
-                propsByBackend[props[key]['backend']] = []
+            for be in props[key]['backend']:
+                if be not in propsByBackend:
+                    propsByBackend[be] = []
 
-            # Append property
-            propsByBackend[props[key]['backend']].append(key)
+                # Append property
+                propsByBackend[be].append(key)
 
         self._propsByBackend = propsByBackend
         self._mode = mode
@@ -412,11 +413,6 @@ class GOsaObject(object):
             if not props[prop_key]['commit_status'] & STATUS_CHANGED:
                 continue
 
-            # Create backend entry in the target list.
-            be = props[prop_key]['backend']
-            if not be in toStore:
-                toStore[be] = {}
-
             collectedAttrs[prop_key] = props[prop_key]
 
         # Create a backend compatible list of all changed attributes.
@@ -424,22 +420,23 @@ class GOsaObject(object):
         for prop_key in collectedAttrs:
 
             # Collect properties by backend
-            be = collectedAttrs[prop_key]['backend']
-            if not be in toStore:
-                toStore[be] = {}
+            for be in props[prop_key]['backend']:
 
-            # Convert the properities type to the required format - if its not of the expected type.
-            be_type = collectedAttrs[prop_key]['backend_type']
-            s_type = collectedAttrs[prop_key]['type']
-            if not self._objectFactory.getAttributeTypes()[be_type].is_valid_value(collectedAttrs[prop_key]['value']):
-                collectedAttrs[prop_key]['value'] = self._objectFactory.getAttributeTypes()[s_type].convert_to(
-                        be_type, collectedAttrs[prop_key]['value'])
+                if not be in toStore:
+                    toStore[be] = {}
 
-            # Append entry to the to-be-stored list
-            toStore[be][prop_key] = {'foreign': collectedAttrs[prop_key]['foreign'],
-                                'orig': collectedAttrs[prop_key]['in_value'],
-                                'value': collectedAttrs[prop_key]['value'],
-                                'type': collectedAttrs[prop_key]['backend_type']}
+                # Convert the properities type to the required format - if its not of the expected type.
+                be_type = collectedAttrs[prop_key]['backend_type']
+                s_type = collectedAttrs[prop_key]['type']
+                if not self._objectFactory.getAttributeTypes()[be_type].is_valid_value(collectedAttrs[prop_key]['value']):
+                    collectedAttrs[prop_key]['value'] = self._objectFactory.getAttributeTypes()[s_type].convert_to(
+                            be_type, collectedAttrs[prop_key]['value'])
+
+                # Append entry to the to-be-stored list
+                toStore[be][prop_key] = {'foreign': collectedAttrs[prop_key]['foreign'],
+                                    'orig': collectedAttrs[prop_key]['in_value'],
+                                    'value': collectedAttrs[prop_key]['value'],
+                                    'type': collectedAttrs[prop_key]['backend_type']}
 
         # Leave the show if there's nothing to do
         if not toStore:
@@ -746,9 +743,11 @@ class GOsaObject(object):
         # Collect backends
         backends = [getattr(self, '_backend')]
 
+        # Collect all used backends
         for info in props.values():
-            if not info['backend'] in backends:
-                backends.append(info['backend'])
+            for be in info['backend']:
+                if not be in backends:
+                   backends.append(be)
 
         # Remove for all backends, removing the primary one as the last one
         backends.reverse()
@@ -777,9 +776,11 @@ class GOsaObject(object):
         # Collect backends
         backends = [getattr(self, '_backend')]
 
+        # Collect all other backends
         for info in props.values():
-            if not info['backend'] in backends:
-                backends.append(info['backend'])
+            for be in info['backend']:
+                if not be in backends:
+                   backends.append(be)
 
         obj = self
         zope.event.notify(ObjectChanged("pre move", obj))
@@ -810,13 +811,13 @@ class GOsaObject(object):
         be_attrs = {}
 
         for prop, info in props.items():
-            backend = info['backend']
-            if not backend in backends:
-                backends.append(info['backend'])
+            for backend in info['backend']:
+                if not backend in backends:
+                    backends.append(backend)
 
-            if not backend in be_attrs:
-                be_attrs[backend] = []
-            be_attrs[backend].append(prop)
+                if not backend in be_attrs:
+                    be_attrs[backend] = []
+                be_attrs[backend].append(prop)
 
         # Retract for all backends, removing the primary one as the last one
         backends.reverse()
