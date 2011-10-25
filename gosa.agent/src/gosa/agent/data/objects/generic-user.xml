@@ -382,13 +382,9 @@
                                         <FilterChain>
                                                 <FilterEntry>
                                                         <Filter>
-                                                                <Name>Clear</Name>
-                                                        </Filter>
-                                                </FilterEntry>
-                                                <FilterEntry>
-                                                        <Filter>
-                                                                <Name>SetValue</Name>
-                                                                <Param>hickert</Param>
+                                                                <Name>SetBackends</Name>
+                                                                <Param>NULL</Param>
+                                                                <Param>LDAP</Param>
                                                         </Filter>
                                                 </FilterEntry>
                                         </FilterChain>
