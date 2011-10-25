@@ -26,23 +26,26 @@ class Target(ElementFilter):
         return new_key, valDict
 
 
-class SetBackend(ElementFilter):
+class SetBackends(ElementFilter):
     """
     This filter allows to change the target backend of an attrbiute.
+    It also allows to specify a various amount of backends, see example below.
     e.g.::
 
       <FilterEntry>
        <Filter>
-        <Name>SetBackend</Name>
+        <Name>SetBackends</Name>
         <Param>LDAP</Param>
+        <Param>NULL</Param>
+        <Param>...</Param>
        </Filter>
       </FilterEntry>
     """
     def __init__(self, obj):
-        super(SetBackend, self).__init__(obj)
+        super(SetBackends, self).__init__(obj)
 
-    def process(self, obj, key, valDict, new_backend):
-        valDict[key]['backend'] = [new_backend]
+    def process(self, obj, key, valDict, *new_backends):
+        valDict[key]['backend'] = list(new_backends)
         return key, valDict
 
 

@@ -382,8 +382,9 @@
                                         <FilterChain>
                                                 <FilterEntry>
                                                         <Filter>
-                                                                <Name>AddBackend</Name>
+                                                                <Name>SetBackends</Name>
                                                                 <Param>NULL</Param>
+                                                                <Param>LDAP</Param>
                                                         </Filter>
                                                 </FilterEntry>
                                         </FilterChain>
