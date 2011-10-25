@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from gosa.agent.objects.filter import ElementFilter, ElementFilterException
+from gosa.agent.objects import GOsaObjectFactory
 import copy
 import time
 import datetime
@@ -51,6 +52,7 @@ class SetBackends(ElementFilter):
 
 class AddBackend(ElementFilter):
     """
+    Add another backend to the existing ones.
     """
     def __init__(self, obj):
         super(AddBackend, self).__init__(obj)
@@ -69,20 +71,16 @@ class SetValue(ElementFilter):
        <Filter>
         <Name>SetValue</Name>
         <Param>Hallo mein name ist Peter</Param>
-        <Param>UnicodeString</Param>
        </Filter>
       </FilterEntry>
     """
     def __init__(self, obj):
         super(SetValue, self).__init__(obj)
 
-    def process(self, obj, key, valDict, value, vtype="String"):
-
-        #TODO: Handle all possible property types and remember! Values are lists always.
-        if vtype == "String":
-            valDict[key]['value'] = str(value)
-        else:
-            raise ElementFilterException("Invalid type value (%s) given for filter '%s'!" % (vtype,'SetValue'))
+    def process(self, obj, key, valDict, value):
+        f = GOsaObjectFactory()
+        types = f.getAttributeTypes()
+        valDict[key]['value'] = types['String'].convert_to(valDict[key]['type'], [value])
         return key, valDict
 
 
@@ -94,7 +92,9 @@ class Clear(ElementFilter):
         super(Clear, self).__init__(obj)
 
     def process(self, obj, key, valDict):
-        valDict[key]['value'] = ['']
+        f = GOsaObjectFactory()
+        types = f.getAttributeTypes()
+        valDict[key]['value'] = types['String'].convert_to(valDict[key]['type'], [''])
         return key, valDict
 
 

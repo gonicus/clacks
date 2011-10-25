@@ -442,6 +442,9 @@ class GOsaObject(object):
         if not toStore:
             return
 
+        from pprint import pprint
+        pprint(toStore)
+
         # Handle by backend
         p_backend = getattr(self, '_backend')
         obj = self
