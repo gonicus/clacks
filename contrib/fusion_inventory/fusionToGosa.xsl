@@ -6,6 +6,12 @@
 	<xsl:template match="/">
 		<Event xmlns="http://www.gonicus.de/Events">
 
+			<ClientInformation>
+				<DeviceID><xsl:value-of select="/REQUEST/DEVICEID" /></DeviceID>
+				<QueryType><xsl:value-of select="/REQUEST/QUERY" /></QueryType>
+				<ClientVersion><xsl:value-of select="/REQUEST/CONTENT/VERSIONCLIENT" /></ClientVersion>
+			</ClientInformation>
+
 			<xsl:for-each select="/REQUEST/CONTENT/STORAGES">
 			<Storage>
 				<Description><xsl:value-of select="DESCRIPTION" /></Description>
