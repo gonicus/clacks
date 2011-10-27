@@ -6,7 +6,7 @@ from gosa.common.event import EventMaker
 from lxml import etree
 
 # Connect to AMQP bus
-#proxy = AMQPServiceProxy('amqp://admin:secret@localhost/org.gosa')
+proxy = AMQPServiceProxy('amqp://admin:secret@localhost/org.gosa')
 
 # Example of building event without direct strings...
 e = EventMaker()
@@ -21,6 +21,5 @@ status = e.Event(
 # ... which in turn needs to be converted to a string
 status = etree.tostring(status, pretty_print=True)
 
-print status
 # Send it
-#proxy.sendEvent(status)
+proxy.sendEvent(status)

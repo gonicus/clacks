@@ -60,15 +60,18 @@
 
     <xs:complexType name="QueueMemberStatus" mixed="true">
         <xs:sequence>
-            <xs:element name="Queue" type="xs:string" />
-            <xs:element name="Location" type="xs:string" />
-            <xs:element name="MemberName" type="xs:string" />
-            <xs:element name="Membership" type="xs:string" />
-            <xs:element name="Penalty" type="xs:integer" />
-            <xs:element name="CallsTaken" type="xs:integer" />
-            <xs:element name="LastCall" type="xs:integer" />
-            <xs:element name="Status" type="gosa:AstDeviceState" />
-            <xs:element name="Paused" type="xs:double" />
+            <xs:element name="Queue" type="xs:string" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Location" type="xs:string" minOccurs="1" maxOccurs="1" />
+            <xs:element name="MemberName" type="xs:string" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Membership" type="xs:string" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Penalty" type="xs:integer" minOccurs="1" maxOccurs="1" />
+            <xs:element name="CallsTaken" type="xs:integer" minOccurs="1" maxOccurs="1" />
+            <xs:element name="LastCall" type="xs:integer" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Status" type="gosa:AstDeviceState" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Paused" type="xs:double" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Reason" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Loginchan" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Logintime" type="xs:double" minOccurs="0" maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
     
