@@ -16,20 +16,20 @@
 						<Manufacturer><xsl:value-of select="MANUFACTURER" /></Manufacturer>
 						<Driver><xsl:value-of select="DRIVER" /></Driver>
 						<PCIClass><xsl:value-of select="PCICLASS" /></PCIClass>
-						<PCIId><xsl:value-of select="PCIID" /></PCIId>
+						<PCIID><xsl:value-of select="PCIID" /></PCIID>
 						<PCISlot><xsl:value-of select="PCISLOT" /></PCISlot>
 					</Controller>
 				</xsl:for-each>
 
 				<xsl:for-each select="/REQUEST/CONTENT/MODEMS">
-					<Modems>
+					<Modem>
 						<Description><xsl:value-of select="DESCRIPTION" /></Description>
 						<Name><xsl:value-of select="NAME" /></Name>
-					</Modems>
+					</Modem>
 				</xsl:for-each> 
 
 				<xsl:for-each select="/REQUEST/CONTENT/DRIVES">
-					<Drives>
+					<Drive>
 						<Device><xsl:value-of select="VOLUMN" /></Device>
 						<MountPoint><xsl:value-of select="TYPE" /></MountPoint>
 						<Filesystem><xsl:value-of select="FILESYSTEM" /></Filesystem>
@@ -38,7 +38,7 @@
 						<CreateDate><xsl:value-of select="CREATEDATE" /></CreateDate>
 						<TotalSpace><xsl:value-of select="TOTAL" /></TotalSpace>
 						<FreeSpace><xsl:value-of select="FREE" /></FreeSpace>
-					</Drives>
+					</Drive>
 				</xsl:for-each>
 
 				<xsl:for-each select="/REQUEST/CONTENT/STORAGES">
@@ -71,21 +71,21 @@
 				</xsl:for-each> 
 
 				<xsl:for-each select="/REQUEST/CONTENT/PORTS">
-					<Ports>
+					<Port>
 						<Caption><xsl:value-of select="CAPTION" /></Caption>
 						<Description><xsl:value-of select="DESCRIPTION" /></Description>
 						<Name><xsl:value-of select="NAME" /></Name>
 						<Type><xsl:value-of select="TYPE" /></Type>
-					</Ports>
+					</Port>
 				</xsl:for-each> 
 
 				<xsl:for-each select="/REQUEST/CONTENT/SLOTS">
-					<Slots>
+					<Slot>
 						<Description><xsl:value-of select="DESCRIPTION" /></Description>
 						<Designation><xsl:value-of select="DESIGNATION" /></Designation>
 						<Name><xsl:value-of select="NAME" /></Name>
 						<Status><xsl:value-of select="STATUS" /></Status>
-					</Slots>
+					</Slot>
 				</xsl:for-each> 
 
 				<xsl:for-each select="/REQUEST/CONTENT/SOFTWARES">
@@ -150,10 +150,10 @@
 				<xsl:for-each select="/REQUEST/CONTENT/HARDWARE">
 					<Hardware>
 						<Name><xsl:value-of select="NAME" /></Name>
-						<ArchitectureName><xsl:value-of select="ARCHNAME" /></ArchitectureName>
+						<Architecture><xsl:value-of select="ARCHNAME" /></Architecture>
 						<Checksum><xsl:value-of select="CHECKSUM" /></Checksum>
-						<DateLastLoggedUser><xsl:value-of select="DATELASTLOGGEDUSER" /></DateLastLoggedUser>
 						<LastLoggedUser><xsl:value-of select="LASTLOGGEDUSER" /></LastLoggedUser>
+						<DateLastLoggedUser><xsl:value-of select="DATELASTLOGGEDUSER" /></DateLastLoggedUser>
 						<DefaultGateway><xsl:value-of select="DEFAULTGATEWAY" /></DefaultGateway>
 						<Description><xsl:value-of select="DESCRIPTION" /></Description>
 						<IpAddress><xsl:value-of select="IPADDR" /></IpAddress>
@@ -204,9 +204,9 @@
 				</xsl:for-each>
 
 				<xsl:for-each select="/REQUEST/CONTENT/USERS">
-					<Users>
+					<User>
 						<Login><xsl:value-of select="LOGIN" /></Login>
-					</Users>
+					</User>
 				</xsl:for-each> 
 
 				<xsl:for-each select="/REQUEST/CONTENT/PRINTERS">
@@ -219,7 +219,7 @@
 				</xsl:for-each> 
 
 				<xsl:for-each select="/REQUEST/CONTENT/VIRTUALMACHINES">
-					<VirtualMachines>
+					<VirtualMachine>
 						<Memory><xsl:value-of select="MEMORY" /></Memory>
 						<Name><xsl:value-of select="NAME" /></Name>
 						<UUID><xsl:value-of select="UUID" /></UUID>
@@ -228,7 +228,7 @@
 						<Type><xsl:value-of select="VMTYPE" /></Type>
 						<CPUs><xsl:value-of select="VCPU" /></CPUs>
 						<VirtualMachineID><xsl:value-of select="VMID" /></VirtualMachineID>
-					</VirtualMachines>
+					</VirtualMachine>
 				</xsl:for-each> 
 
 				<xsl:for-each select="/REQUEST/CONTENT/PROCESSES">
@@ -293,18 +293,18 @@
 				</xsl:for-each> 
 
 				<xsl:for-each select="/REQUEST/CONTENT/LOGICAL_VOLUMES">
-					<LogicalVolumes>
+					<LogicalVolume>
 						<Name><xsl:value-of select="LV_NAME" /></Name>
 						<UUID><xsl:value-of select="LV_UUID" /></UUID>
 						<VolumeGroupName><xsl:value-of select="VG_NAME" /></VolumeGroupName>
 						<Parameters><xsl:value-of select="ATTR" /></Parameters>
 						<Size><xsl:value-of select="SIZE" /></Size>
 						<SegmentCount><xsl:value-of select="SEG_COUNT" /></SegmentCount>
-					</LogicalVolumes>
+					</LogicalVolume>
 				</xsl:for-each> 
 
 				<xsl:for-each select="/REQUEST/CONTENT/PHYSICAL_VOLUMES">
-					<PhysicalVolumes>
+					<PhysicalVolume>
 						<Device><xsl:value-of select="DEVICE" /></Device>
 						<Name><xsl:value-of select="PV_NAME" /></Name>
 						<UUID><xsl:value-of select="PV_UUID" /></UUID>
@@ -314,11 +314,11 @@
 						<Free><xsl:value-of select="FREE" /></Free>
 						<ExtendSize><xsl:value-of select="PE_SIZE" /></ExtendSize>
 						<ExtendCount><xsl:value-of select="PV_PE_COUNT" /></ExtendCount>
-					</PhysicalVolumes>
+					</PhysicalVolume>
 				</xsl:for-each> 
 
 				<xsl:for-each select="/REQUEST/CONTENT/VOLUME_GROUPS">
-					<VolumeGroups>
+					<VolumeGroup>
 						<Name><xsl:value-of select="VG_NAME" /></Name>
 						<PhysicalVolumeCount><xsl:value-of select="PV_COUNT" /></PhysicalVolumeCount>
 						<LogicalVolumeCount><xsl:value-of select="LV_COUNT" /></LogicalVolumeCount>
@@ -327,7 +327,7 @@
 						<Free><xsl:value-of select="FREE" /></Free>
 						<UUID><xsl:value-of select="VG_UUID" /></UUID>
 						<ExtendSize><xsl:value-of select="VG_EXTENT_SIZE" /></ExtendSize>
-					</VolumeGroups>
+					</VolumeGroup>
 				</xsl:for-each> 
 			</Inventory>
 		</Event>
