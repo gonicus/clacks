@@ -2,7 +2,10 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<xsl:output method="xml" indent="yes" encoding="UTF-8" />
 	<xsl:template match="/">
-		<Event xmlns="http://www.gonicus.de/Events">
+		<Event xmlns="http://www.gonicus.de/Events" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.gonicus.de/Events inventory.xsd ">
+
 
 			<Inventory>
 				<DeviceID><xsl:value-of select="/REQUEST/DEVICEID" /></DeviceID>

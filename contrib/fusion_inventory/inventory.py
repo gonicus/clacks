@@ -29,7 +29,7 @@ class client(object):
             process.communicate()
         else:
             # !! A workaround to avoid executing the report agent over and over again.
-            shutil.copyfile('cajus_test', '/tmp/fusion_tmp/dyn-153-2011-10-26-15-01-12.ocs')
+            shutil.copyfile('examples/cajus', '/tmp/fusion_tmp/dyn-153-2011-10-26-15-01-12.ocs')
 
         # Open resulting xml file
         flist = os.listdir('/tmp/fusion_tmp')
