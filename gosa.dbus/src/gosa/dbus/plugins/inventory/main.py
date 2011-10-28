@@ -15,5 +15,5 @@ class DBusInventoryHandler(dbus.service.Object, Plugin):
         self.env = Environment.getInstance()
 
     @dbus.service.method('com.gonicus.gosa', in_signature='', out_signature='s')
-    def inventory():
+    def inventory(self):
         return "Ja"
