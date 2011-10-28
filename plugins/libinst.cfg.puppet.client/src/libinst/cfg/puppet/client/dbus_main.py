@@ -35,8 +35,8 @@ class PuppetDBusHandler(dbus.service.Object, Plugin):
                 raise OptionMissing("puppet has no reporting enabled")
 
             if config.get("main", "reportdir", "") != self.logdir:
-                raise OptionMissing("reportdir configured in
-                        /etc/puppet/puppet.conf and %s do not match" % self.env.config.get('core.config'))
+                raise OptionMissing("reportdir configured in " \
+                        "/etc/puppet/puppet.conf and %s do not match" % self.env.config.get('core.config'))
 
             if config.get("main", "reports", "") != "store_gosa":
                 raise OptionMissing("storage module probably not compatible")

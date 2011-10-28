@@ -20,22 +20,22 @@ class client(object):
     def tranform_xml(self):
 
         # Clean up old reports
-        if os.path.exists('/tmp/fusion_tmp'):
-            shutil.rmtree('/tmp/fusion_tmp')
-        os.mkdir('/tmp/fusion_tmp')
+        path = '/tmp/fusion_tmp'
+        if os.path.exists(path):
+            shutil.rmtree(path)
+        os.mkdir(path)
 
-        if False:
-            # Execute the fusion-invetory agent
-            process = subprocess.Popen(["fusioninventory-agent","--local=/tmp/fusion_tmp"], \
-                      shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            process.communicate()
-        else:
-            # !! A workaround to avoid executing the report agent over and over again.
-            shutil.copyfile('examples/cajus', '/tmp/fusion_tmp/dyn-153-2011-10-26-15-01-12.ocs')
+        # Execute the fusion-invetory agent
+        process = subprocess.Popen(["fusioninventory-agent","--local="+path], \
+                  shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process.communicate()
+
+        #shutil.copyfile('examples/lars2', '/tmp/fusion_tmp/dyn-153-2011-10-26-15-01-12.ocs')
 
         # Open resulting xml file
-        flist = os.listdir('/tmp/fusion_tmp')
+        flist = os.listdir(path)
         result = None
+        checksum = None
         if flist:
             xml_doc = etree.parse(os.path.join('/tmp/fusion_tmp',flist[0]))
             xslt_doc = etree.parse('fusionToGosa.xsl')
@@ -48,17 +48,16 @@ class client(object):
             checksum_doc = etree.parse('xmlToChecksumXml.xsl')
             check_trans = etree.XSLT(checksum_doc)
             checksum_result = check_trans(xml_doc)
-            print checksum_result
             m = hashlib.md5()
             m.update(etree.tostring(checksum_result))
-            print m.hexdigest()
+            checksum = m.hexdigest()
 
         # Remove temporary files
         shutil.rmtree('/tmp/fusion_tmp')
-        return result
+        return checksum, result
 
 # Client part
 c = client(uuid='Blafasel')
-xml = c.tranform_xml()
-#print xml
+checksum, xml = c.tranform_xml()
+print checksum
 
