@@ -29,6 +29,3 @@ class Inventory(Plugin):
         result = gosa_dbus.inventory()
         print result
 
-a = Inventory()
-a.request_inventory()
-

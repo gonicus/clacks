@@ -55,8 +55,3 @@ class Notify(Plugin):
         o = gosa_dbus.notify_all(title, message, timeout, urgency,
             icon, actions, recurrence, dbus_interface="com.gonicus.gosa")
         return(int(o))
-
-
-
-i = Notify()
-i.notify('hickert', 'hallo', "klaus")
