@@ -6,7 +6,6 @@
 			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			xsi:schemaLocation="http://www.gonicus.de/Events inventory.xsd ">
 
-
 			<Inventory>
 				<DeviceID><xsl:value-of select="/REQUEST/DEVICEID" /></DeviceID>
 				<QueryType><xsl:value-of select="/REQUEST/QUERY" /></QueryType>

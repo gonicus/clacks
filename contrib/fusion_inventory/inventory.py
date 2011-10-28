@@ -6,6 +6,8 @@ import re
 import os
 import shutil
 import json
+import StringIO
+import hashlib
 
 
 class client(object):
@@ -40,6 +42,17 @@ class client(object):
             transform = etree.XSLT(xslt_doc)
             result = transform(xml_doc)
 
+            # Remove time base or frequently changing values (like processes) from the xml file
+            # to be able to generate a useable checksum.
+            xml_doc = etree.parse(StringIO.StringIO(result))
+            checksum_doc = etree.parse('xmlToChecksumXml.xsl')
+            check_trans = etree.XSLT(checksum_doc)
+            checksum_result = check_trans(xml_doc)
+            print checksum_result
+            m = hashlib.md5()
+            m.update(etree.tostring(checksum_result))
+            print m.hexdigest()
+
         # Remove temporary files
         shutil.rmtree('/tmp/fusion_tmp')
         return result
@@ -47,5 +60,5 @@ class client(object):
 # Client part
 c = client(uuid='Blafasel')
 xml = c.tranform_xml()
-print xml
+#print xml
 
