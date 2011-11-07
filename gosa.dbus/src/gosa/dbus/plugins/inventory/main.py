@@ -23,7 +23,7 @@ class DBusInventoryHandler(dbus.service.Object, Plugin):
         dbus.service.Object.__init__(self, conn, '/com/gonicus/gosa/inventory')
         self.env = Environment.getInstance()
 
-    @dbus.service.method('com.gonicus.gosa', in_signature='', out_signature='s')
+    @dbus.service.method('com.gonicus.gosa', in_signature='', out_signature='ss')
     def inventory(self):
         """
         Start inventory client and transform the results into a GOsa usable way.
@@ -53,7 +53,7 @@ class DBusInventoryHandler(dbus.service.Object, Plugin):
         m = hashlib.md5()
         m.update(etree.tostring(checksum_result))
         checksum = m.hexdigest()
-        return checksum, result
+        return (checksum, result)
 
     def load_from_fusion_agent(self):
 
@@ -88,7 +88,6 @@ class DBusInventoryHandler(dbus.service.Object, Plugin):
                 transform = etree.XSLT(xslt_doc)
                 result = transform(xml_doc)
             except Exception as e:
-                print e
                 raise InventoryException("Failed to read and transform fusion-invetory-agent results (%s)!" % (
                     os.path.join('/tmp/fusion_tmp',flist[0])))
 
@@ -97,4 +96,4 @@ class DBusInventoryHandler(dbus.service.Object, Plugin):
 
         # Remove temporary created files created by the inventory agent.
         shutil.rmtree('/tmp/fusion_tmp')
-        return result
+        return etree.tostring(result)
