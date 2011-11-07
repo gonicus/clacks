@@ -73,7 +73,7 @@ class AMQPClientService(object):
                     create:always,
                     node:{
                         type:queue,
-                        durable:false,
+                        durable: False,
                         x-declare: {
                             exclusive: True,
                             auto-delete: True },
