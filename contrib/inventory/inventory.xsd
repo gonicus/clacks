@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
 	targetNamespace="http://www.gonicus.de/Events" 
-	xmlns:gosa="http://www.gonicus.de/Events" 
+	xmlns:gosa_inv="http://www.gonicus.de/Events" 
 	elementFormDefault="qualified">
 
-	<element name="Iventory" type="gosa:Inventory"></element>
+	<element name="Iventory" type="gosa_inv:Inventory"></element>
 
 	<complexType name="Inventory">
 		<sequence>
 			<element name="DeviceID" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="QueryType" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="ClientVersion" type="string" maxOccurs="1" minOccurs="1"></element>
-			<element name="Controller" type="gosa:Controller" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="Modem" type="gosa:Modem" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="Drive" type="gosa:Drive" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="Storage" type="gosa:Storage" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="Memory" type="gosa:Memory" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="Port" type="gosa:Port" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="Slot" type="gosa:Slot" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="Software" type="gosa:Software" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="Monitor" type="gosa:Monitor" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="Video" type="gosa:Video" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="Sound" type="gosa:Sound" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="Network" type="gosa:Network" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="Hardware" type="gosa:Hardware" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="Bios" type="gosa:Bios" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="Cpu" type="gosa:Cpu" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="User" type="gosa:User" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="Printer" type="gosa:Printer" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="VirtualMachine" type="gosa:VirtualMachine" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="Process" type="gosa:Process" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="AccessLog" type="gosa:AccessLog" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="Environment" type="gosa:Environment" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="USBDevice" type="gosa:USBDevice" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="Batterie" type="gosa:Batterie" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="Antivirus" type="gosa:Antivirus" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="LogicalVolume" type="gosa:LogicalVolume" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="PhysicalVolume" type="gosa:PhysicalVolume" maxOccurs="unbounded" minOccurs="0"></element>
-			<element name="VolumeGroup" type="gosa:VolumeGroup" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Controller" type="gosa_inv:Controller" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Modem" type="gosa_inv:Modem" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Drive" type="gosa_inv:Drive" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Storage" type="gosa_inv:Storage" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Memory" type="gosa_inv:Memory" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Port" type="gosa_inv:Port" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Slot" type="gosa_inv:Slot" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Software" type="gosa_inv:Software" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Monitor" type="gosa_inv:Monitor" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Video" type="gosa_inv:Video" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Sound" type="gosa_inv:Sound" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Network" type="gosa_inv:Network" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Hardware" type="gosa_inv:Hardware" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Bios" type="gosa_inv:Bios" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Cpu" type="gosa_inv:Cpu" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="User" type="gosa_inv:User" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Printer" type="gosa_inv:Printer" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="VirtualMachine" type="gosa_inv:VirtualMachine" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Process" type="gosa_inv:Process" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="AccessLog" type="gosa_inv:AccessLog" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Environment" type="gosa_inv:Environment" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="USBDevice" type="gosa_inv:USBDevice" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Batterie" type="gosa_inv:Batterie" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Antivirus" type="gosa_inv:Antivirus" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="LogicalVolume" type="gosa_inv:LogicalVolume" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="PhysicalVolume" type="gosa_inv:PhysicalVolume" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="VolumeGroup" type="gosa_inv:VolumeGroup" maxOccurs="unbounded" minOccurs="0"></element>
 		</sequence>
 	</complexType>
 
