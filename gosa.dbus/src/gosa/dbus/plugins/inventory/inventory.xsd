@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.gonicus.de/Events" 
+	elementFormDefault="qualified">
+
+	<element name="Iventory" type="Inventory"></element>
+
+	<complexType name="Inventory">
+		<sequence>
+			<element name="DeviceID" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="QueryType" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="ClientVersion" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Controller" type="Controller" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Modem" type="Modem" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Drive" type="Drive" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Storage" type="Storage" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Memory" type="Memory" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Port" type="Port" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Slot" type="Slot" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Software" type="Software" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Monitor" type="Monitor" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Video" type="Video" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Sound" type="Sound" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Network" type="Network" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Hardware" type="Hardware" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Bios" type="Bios" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Cpu" type="Cpu" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="User" type="User" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Printer" type="Printer" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="VirtualMachine" type="VirtualMachine" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Process" type="Process" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="AccessLog" type="AccessLog" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Environment" type="Environment" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="USBDevice" type="USBDevice" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Batterie" type="Batterie" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="Antivirus" type="Antivirus" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="LogicalVolume" type="LogicalVolume" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="PhysicalVolume" type="PhysicalVolume" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="VolumeGroup" type="VolumeGroup" maxOccurs="unbounded" minOccurs="0"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Controller">
+		<sequence>
+			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Type" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Manufacturer" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Driver" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="PCIClass" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="PCIID" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="PCISlot" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Modem">
+		<sequence>
+			<element name="Description" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Drive">
+		<sequence>
+			<element name="Device" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="MountPoint" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Filesystem" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Serial" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Label" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="CreateDate" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="TotalSpace" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="FreeSpace" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Storage">
+		<sequence>
+			<element name="Description" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="DiskSize" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Firmware" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Manufacturer" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Model" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="SCSI_CHID" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="SCSI_COID" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="SCSI_LUN" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="SCSI_UNID" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Serial" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Type" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Memory">
+		<sequence>
+			<element name="Capacity" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Description" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Caption" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Speed" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Type" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="NumberOfSlots" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Serial" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Port">
+		<sequence>
+			<element name="Caption" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Description" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Type" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Slot">
+		<sequence>
+			<element name="Description" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Designation" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Status" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Software">
+		<sequence>
+			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Type" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Version" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Publisher" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="InstallDate" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Comments" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Size" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Folder" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Monitor">
+		<sequence>
+			<element name="EDID_Base64" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="EDID_UUEncode" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Caption" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Description" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Manufacturer" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Serial" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Video">
+		<sequence>
+			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Memory" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Chipset" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Resolution" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Sound">
+		<sequence>
+			<element name="Description" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Manufacturer" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Network">
+		<sequence>
+			<element name="Description" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Driver" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="IpAddress" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="DhcpIp" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="GatewayIp" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="SubnetMask" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Subnet" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="MacAddress" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="PCISlot" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Slaves" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Status" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Type" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="VirtualDevice" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Hardware">
+		<sequence>
+			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Architecture" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Checksum" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="LastLoggedUser" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="DateLastLoggedUser" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="DefaultGateway" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Description" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="IpAddress" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Memory" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="OperatingSystemComment" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="OperatingSystem" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="OperatingSystemVersion" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="UserID" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Processors" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="ProcessorSpeed" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="ProcessorType" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="SwapMemory" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="VirtualMachineSystem" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Workgroup" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="DNS" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="ReportGenerationTime" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Type" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Bios">
+		<sequence>
+			<element name="BiosDate" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="BiosManufacturer" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="BiosVersion" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="SystenManufacturer" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="SystemModel" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="SystemSerial" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="BiosAssetTag" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Cpu">
+		<sequence>
+			<element name="Manufacturer" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Type" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Core" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Speed" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Serial" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Thread" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="User">
+		<sequence>
+			<element name="Login" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Printer">
+		<sequence>
+			<element name="Description" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Driver" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Port" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="VirtualMachine">
+		<sequence>
+			<element name="Memory" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="UUID" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Status" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="SubSystem" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Type" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="CPUs" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="VirtualMachineID" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Process">
+		<sequence>
+			<element name="Command" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="CpuUsage" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="MemoryUsagePercent" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="StartDate" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="User" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="VirtualMemory" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="TTY" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="PID" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="AccessLog">
+		<sequence>
+			<element name="LoginDate" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="UserID" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Environment">
+		<sequence>
+			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Value" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="USBDevice">
+		<sequence>
+			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="VendorID" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="ProductID" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Serial" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Class" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="SubClass" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Batterie">
+		<sequence>
+			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Serial" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Manufacturer" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Voltage" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Date" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Chemistry" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Capacity" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Antivirus">
+		<sequence>
+			<element name="Company" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="GUID" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Enabled" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="UpToDate" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Version" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="LogicalVolume">
+		<sequence>
+			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="UUID" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="VolumeGroupName" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Parameters" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Size" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="SegmentCount" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="PhysicalVolume">
+		<sequence>
+			<element name="Device" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="UUID" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Format" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Parameters" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Size" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Free" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="ExtendSize" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="ExtendCount" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="VolumeGroup">
+		<sequence>
+			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="PhysicalVolumeCount" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="LogicalVolumeCount" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Parameters" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Size" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="Free" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="UUID" type="string" maxOccurs="1" minOccurs="1"></element>
+			<element name="ExtendSize" type="string" maxOccurs="1" minOccurs="1"></element>
+		</sequence>
+	</complexType>
+</schema>
