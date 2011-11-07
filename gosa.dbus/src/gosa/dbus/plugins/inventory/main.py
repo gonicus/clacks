@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import dbus.service
 from gosa.common import Environment
@@ -16,4 +15,5 @@ class DBusInventoryHandler(dbus.service.Object, Plugin):
 
     @dbus.service.method('com.gonicus.gosa', in_signature='', out_signature='s')
     def inventory(self):
+        print "wopperich"
         return "Ja"
