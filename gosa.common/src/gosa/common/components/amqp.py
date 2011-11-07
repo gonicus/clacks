@@ -165,7 +165,10 @@ class AMQPHandler(object):
                 event += etree.tostring(data, pretty_print=True)
 
             # Validate event
-            xml = objectify.fromstring(event, self._parser)
+            if hasattr(self, '_parser'):
+                xml = objectify.fromstring(event, self._parser)
+            else:
+                xml = objectify.fromstring(event)
 
             # If a user was supplied, check if she's authorized...
             if user:
