@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" 
-	targetNamespace="http://www.gonicus.de/Events" 
+<schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.gonicus.de/Events/Inventory" 
 	elementFormDefault="qualified">
 
-	<element name="Iventory" type="Inventory"></element>
+	<element name="Iventory" type="Inventory" xmlns="http://www.gonicus.de/Events/Inventory"></element>
 
-	<complexType name="Inventory">
+	<complexType name="Inventory" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="DeviceID" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="QueryType" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -40,7 +40,7 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="Controller">
+	<complexType name="Controller" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="Type" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -52,14 +52,14 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="Modem">
+	<complexType name="Modem" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Description" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
 		</sequence>
 	</complexType>
 
-	<complexType name="Drive">
+	<complexType name="Drive" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Device" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="MountPoint" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -72,7 +72,7 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="Storage">
+	<complexType name="Storage" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Description" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="DiskSize" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -89,7 +89,7 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="Memory">
+	<complexType name="Memory" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Capacity" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="Description" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -101,7 +101,7 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="Port">
+	<complexType name="Port" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Caption" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="Description" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -110,7 +110,7 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="Slot">
+	<complexType name="Slot" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Description" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="Designation" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -119,7 +119,7 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="Software">
+	<complexType name="Software" xmlns="http://www.gonicus.de/Events/Inventory"> 
 		<sequence>
 			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="Type" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -132,7 +132,7 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="Monitor">
+	<complexType name="Monitor" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="EDID_Base64" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="EDID_UUEncode" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -143,7 +143,7 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="Video">
+	<complexType name="Video" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="Memory" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -152,7 +152,7 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="Sound">
+	<complexType name="Sound" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Description" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="Manufacturer" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -160,7 +160,7 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="Network">
+	<complexType name="Network" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Description" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="Driver" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -178,7 +178,7 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="Hardware">
+	<complexType name="Hardware" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="Architecture" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -205,7 +205,7 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="Bios">
+	<complexType name="Bios" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="BiosDate" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="BiosManufacturer" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -217,7 +217,7 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="Cpu">
+	<complexType name="Cpu" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Manufacturer" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="Type" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -228,13 +228,13 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="User">
+	<complexType name="User" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Login" type="string" maxOccurs="1" minOccurs="1"></element>
 		</sequence>
 	</complexType>
 
-	<complexType name="Printer">
+	<complexType name="Printer" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Description" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="Driver" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -243,7 +243,7 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="VirtualMachine">
+	<complexType name="VirtualMachine" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Memory" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -256,7 +256,7 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="Process">
+	<complexType name="Process" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Command" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="CpuUsage" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -269,21 +269,21 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="AccessLog">
+	<complexType name="AccessLog" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="LoginDate" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="UserID" type="string" maxOccurs="1" minOccurs="1"></element>
 		</sequence>
 	</complexType>
 
-	<complexType name="Environment">
+	<complexType name="Environment" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="Value" type="string" maxOccurs="1" minOccurs="1"></element>
 		</sequence>
 	</complexType>
 
-	<complexType name="USBDevice">
+	<complexType name="USBDevice" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="VendorID" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -294,7 +294,7 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="Batterie">
+	<complexType name="Batterie" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="Serial" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -306,7 +306,7 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="Antivirus">
+	<complexType name="Antivirus" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Company" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -317,7 +317,7 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="LogicalVolume">
+	<complexType name="LogicalVolume" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="UUID" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -328,7 +328,7 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="PhysicalVolume">
+	<complexType name="PhysicalVolume" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Device" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
@@ -342,7 +342,7 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="VolumeGroup">
+	<complexType name="VolumeGroup" xmlns="http://www.gonicus.de/Events/Inventory">
 		<sequence>
 			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
 			<element name="PhysicalVolumeCount" type="string" maxOccurs="1" minOccurs="1"></element>
