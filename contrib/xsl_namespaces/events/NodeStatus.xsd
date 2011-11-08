@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 	targetNamespace="http://www.gonicus.de/Events/NodeStatus" 
+		elementFormDefault="qualified" 
+		xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		xmlns="http://www.gonicus.de/Events/NodeStatus">
+
+    <xs:complexType name="NodeStatus">
+    	<xs:annotation>
+    		<xs:documentation>
+    			The NodeStatus event is fired regulary and contains
+    			information on current node loads.
+    		</xs:documentation>
+    	</xs:annotation>
+        <xs:all>
+    		<xs:element name="Load" type="xs:float" maxOccurs="1" minOccurs="1"></xs:element>
+    		<xs:element name="Latency" type="xs:float" maxOccurs="1" minOccurs="1"></xs:element>
+    		<xs:element name="Workers" type="xs:int" maxOccurs="1" minOccurs="1"></xs:element>
+    		<xs:element name="Id" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+    		<xs:element name="Indexed" type="xs:boolean" maxOccurs="1" minOccurs="0"></xs:element>
+    	</xs:all>
+    </xs:complexType>
+    <xs:element name="NodeStatus" type="NodeStatus"></xs:element>
+</xs:schema>

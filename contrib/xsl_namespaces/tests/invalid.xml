@@ -1,0 +1,11 @@
+<event:Event 	xmlns:event="http://www.gonicus.de/Events" 
+		xmlns="http://www.gonicus.de/Events/Inventory" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xsi:schemaLocation="http://www.gonicus.de/Events inventory.xsd ">
+		
+	<event:Inventory>
+		<BlaDeviceID>garnele-2011-10-27-16-23-21</BlaDeviceID>
+		<QueryType>INVENTORY</QueryType>
+		<ClientVersion>FusionInventory-Agent_v2.0.6</ClientVersion>
+	</event:Inventory>
+</event:Event>
