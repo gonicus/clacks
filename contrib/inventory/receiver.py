@@ -4,9 +4,21 @@
 from gosa.common.components import AMQPEventConsumer
 from lxml import etree
 
-# Event callback
-def process(data):
-    print type(etree.tostring(data, pretty_print=True))
+
+class InventoryCosumer(object):
+    """
+    Consumer for inventory events emitted from clients.
+    """
+
+    def process(self, data):
+        print "Ja", type(data)
+
+
+
+
+c = InventoryCosumer()
+
+
 
 # Create event consumer
 consumer = AMQPEventConsumer("amqps://amqp:secret@amqp.intranet.gonicus.de:5671/org.gosa",
@@ -15,7 +27,7 @@ consumer = AMQPEventConsumer("amqps://amqp:secret@amqp.intranet.gonicus.de:5671/
                 let $e := ./f:Event
                 return $e/f:Inventory
             """,
-            callback=process)
+            callback=c.process)
 
 # Main loop, process threads
 try:
