@@ -66,16 +66,16 @@
 			<xs:element name="Filesystem" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Serial" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Label" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-			<xs:element name="CreateDate" type="xs:date" maxOccurs="1" minOccurs="1"></xs:element>
-			<xs:element name="TotalSpace" type="xs:integer" maxOccurs="1" minOccurs="1"></xs:element>
-			<xs:element name="FreeSpace" type="xs:integer" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element nillable="true" name="CreateDate" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="TotalSpace" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="FreeSpace" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 		</xs:sequence>
 	</xs:complexType>
 
 	<xs:complexType name="Storage">
 		<xs:sequence>
 			<xs:element name="Description" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-			<xs:element name="DiskSize" type="xs:integer" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="DiskSize" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Firmware" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Manufacturer" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Model" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
@@ -261,7 +261,7 @@
 			<xs:element name="Command" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="CpuUsage" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="MemoryUsagePercent" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-			<xs:element name="StartDate" type="xs:date" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="StartDate" type="xs:dateTime" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="User" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="VirtualMemory" type="xs:integer" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="TTY" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
@@ -271,7 +271,7 @@
 
 	<xs:complexType name="AccessLog">
 		<xs:sequence>
-			<xs:element name="LoginDate" type="xs:date" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="LoginDate" type="xs:dateTime" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="UserID" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 		</xs:sequence>
 	</xs:complexType>
