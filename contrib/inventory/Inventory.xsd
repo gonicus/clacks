@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema targetNamespace="http://www.gonicus.de/Events/Inventory" elementFormDefault="qualified" 
-	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.gonicus.de/Events/Inventory">
+<xs:schema targetNamespace="http://www.gonicus.de/Events" elementFormDefault="qualified" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.gonicus.de/Events">
 
 	<xs:element name="Inventory" type="Inventory"></xs:element>
 
@@ -24,7 +24,7 @@
 			<xs:element name="Hardware" type="Hardware" maxOccurs="unbounded" minOccurs="0"></xs:element>
 			<xs:element name="Bios" type="Bios" maxOccurs="unbounded" minOccurs="0"></xs:element>
 			<xs:element name="Cpu" type="Cpu" maxOccurs="unbounded" minOccurs="0"></xs:element>
-			<xs:element name="User" type="User" maxOccurs="unbounded" minOccurs="0"></xs:element>
+			<xs:element name="Login" type="Login" maxOccurs="unbounded" minOccurs="0"></xs:element>
 			<xs:element name="Printer" type="Printer" maxOccurs="unbounded" minOccurs="0"></xs:element>
 			<xs:element name="VirtualMachine" type="VirtualMachine" maxOccurs="unbounded" minOccurs="0"></xs:element>
 			<xs:element name="Process" type="Process" maxOccurs="unbounded" minOccurs="0"></xs:element>
@@ -227,7 +227,7 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="User">
+	<xs:complexType name="Login">
 		<xs:sequence>
 			<xs:element name="Login" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 		</xs:sequence>
