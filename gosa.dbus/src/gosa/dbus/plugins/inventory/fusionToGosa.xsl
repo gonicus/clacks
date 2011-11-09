@@ -206,9 +206,9 @@
 				</xsl:for-each>
 
 				<xsl:for-each select="/REQUEST/CONTENT/USERS">
-					<User>
+					<Login>
 						<Login><xsl:value-of select="LOGIN" /></Login>
-					</User>
+					</Login>
 				</xsl:for-each> 
 
 				<xsl:for-each select="/REQUEST/CONTENT/PRINTERS">
