@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 import dbus
-from lxml import etree
 import StringIO
+import hashlib
+from lxml import etree
 from gosa.common.event import EventMaker
 from gosa.common.components import Plugin
 from gosa.common.components import Command
 from gosa.common import Environment
 from gosa.common.components import PluginRegistry, AMQPServiceProxy
 from gosa.common.components.amqp import AMQPHandler
+from pkg_resources import resource_filename
+
 
 class Inventory(Plugin):
     """
@@ -30,7 +33,23 @@ class Inventory(Plugin):
         gosa_dbus = bus.get_object('com.gonicus.gosa', '/com/gonicus/gosa/inventory')
 
         # Send notification and keep return code
-        checksum, result = gosa_dbus.inventory(dbus_interface="com.gonicus.gosa")
+        result = gosa_dbus.inventory(dbus_interface="com.gonicus.gosa")
+
+        # Remove time base or frequently changing values (like processes) from the
+        # result to generate a useable checksum.
+        # We use a XSL file which reads the result and skips some tags.
+        try:
+            xml_doc = etree.parse(StringIO.StringIO(result))
+            checksum_doc = etree.parse(resource_filename("gosa.dbus",'plugins/inventory/xmlToChecksumXml.xsl'))
+            check_trans = etree.XSLT(checksum_doc)
+            checksum_result = check_trans(xml_doc)
+        except Exception as e:
+            raise Exception("No report files could be found in '%s'" % (path,))
+
+        # Once we've got a 'clean' result, create the checksum.
+        m = hashlib.md5()
+        m.update(etree.tostring(checksum_result))
+        checksum = m.hexdigest()
 
         # Establish amqp connection
         env = Environment.getInstance()

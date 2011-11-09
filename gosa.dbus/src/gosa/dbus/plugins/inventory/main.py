@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 import shutil
-import StringIO
-import hashlib
 import subprocess
 import dbus.service
 from pkg_resources import resource_filename
@@ -23,7 +21,7 @@ class DBusInventoryHandler(dbus.service.Object, Plugin):
         dbus.service.Object.__init__(self, conn, '/com/gonicus/gosa/inventory')
         self.env = Environment.getInstance()
 
-    @dbus.service.method('com.gonicus.gosa', in_signature='', out_signature='ss')
+    @dbus.service.method('com.gonicus.gosa', in_signature='', out_signature='s')
     def inventory(self):
         """
         Start inventory client and transform the results into a GOsa usable way.
@@ -32,28 +30,8 @@ class DBusInventoryHandler(dbus.service.Object, Plugin):
         """
 
         # Added other report types here
-        result = ""
-        if True:
-
-            # Fusion Inventory Client
-            result = self.load_from_fusion_agent()
-
-        # Remove time base or frequently changing values (like processes) from the
-        # result to generate a useable checksum.
-        # We use a XSL file which reads the result and skips some tags.
-        try:
-            xml_doc = etree.parse(StringIO.StringIO(result))
-            checksum_doc = etree.parse(resource_filename("gosa.dbus",'plugins/inventory/xmlToChecksumXml.xsl'))
-            check_trans = etree.XSLT(checksum_doc)
-            checksum_result = check_trans(xml_doc)
-        except Exception as e:
-            raise InventoryException("No report files could be found in '%s'" % (path,))
-
-        # Once we've got a 'clean' result, create the checksum.
-        m = hashlib.md5()
-        m.update(etree.tostring(checksum_result))
-        checksum = m.hexdigest()
-        return (checksum, result)
+        result = self.load_from_fusion_agent()
+        return result
 
     def load_from_fusion_agent(self):
 
