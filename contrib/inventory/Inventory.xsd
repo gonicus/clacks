@@ -65,16 +65,16 @@
 			<xs:element name="Filesystem" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Serial" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Label" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-			<xs:element name="CreateDate" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-			<xs:element name="TotalSpace" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-			<xs:element name="FreeSpace" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="CreateDate" type="xs:date" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="TotalSpace" type="xs:integer" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="FreeSpace" type="xs:integer" maxOccurs="1" minOccurs="1"></xs:element>
 		</xs:sequence>
 	</xs:complexType>
 
 	<xs:complexType name="Storage">
 		<xs:sequence>
 			<xs:element name="Description" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-			<xs:element name="DiskSize" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="DiskSize" type="xs:integer" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Firmware" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Manufacturer" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Model" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
@@ -90,12 +90,12 @@
 
 	<xs:complexType name="Memory">
 		<xs:sequence>
-			<xs:element name="Capacity" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="Capacity" type="xs:integer" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Description" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Caption" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Speed" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Type" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-			<xs:element name="NumberOfSlots" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="NumberOfSlots" type="xs:integer" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Serial" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 		</xs:sequence>
 	</xs:complexType>
@@ -126,7 +126,7 @@
 			<xs:element name="Publisher" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="InstallDate" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Comments" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-			<xs:element name="Size" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="Size" type="xs:integer" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Folder" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 		</xs:sequence>
 	</xs:complexType>
@@ -187,19 +187,19 @@
 			<xs:element name="DefaultGateway" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Description" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="IpAddress" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-			<xs:element name="Memory" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="Memory" type="xs:integer" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="OperatingSystemComment" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="OperatingSystem" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="OperatingSystemVersion" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="UserID" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-			<xs:element name="Processors" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="Processors" type="xs:integer" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="ProcessorSpeed" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="ProcessorType" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-			<xs:element name="SwapMemory" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="SwapMemory" type="xs:integer" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="VirtualMachineSystem" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Workgroup" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="DNS" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-			<xs:element name="ReportGenerationTime" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="ReportGenerationTime" type="xs:integer" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Type" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 		</xs:sequence>
 	</xs:complexType>
@@ -221,7 +221,7 @@
 			<xs:element name="Manufacturer" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Type" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Core" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-			<xs:element name="Speed" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="Speed" type="xs:integer" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Serial" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Thread" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 		</xs:sequence>
@@ -260,9 +260,9 @@
 			<xs:element name="Command" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="CpuUsage" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="MemoryUsagePercent" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-			<xs:element name="StartDate" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="StartDate" type="xs:date" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="User" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-			<xs:element name="VirtualMemory" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="VirtualMemory" type="xs:integer" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="TTY" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="PID" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 		</xs:sequence>
@@ -270,7 +270,7 @@
 
 	<xs:complexType name="AccessLog">
 		<xs:sequence>
-			<xs:element name="LoginDate" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="LoginDate" type="xs:date" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="UserID" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 		</xs:sequence>
 	</xs:complexType>

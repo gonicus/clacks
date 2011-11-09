@@ -37,7 +37,9 @@
 						<Filesystem><xsl:value-of select="FILESYSTEM" /></Filesystem>
 						<Serial><xsl:value-of select="SERIAL" /></Serial>
 						<Label><xsl:value-of select="LABEL" /></Label>
-						<CreateDate><xsl:value-of select="CREATEDATE" /></CreateDate>
+						<CreateDate><xsl:call-template name="FormatDate_CreateDate">
+								<xsl:with-param name="DateTime" select="CREATEDATE"/>
+							</xsl:call-template></CreateDate>
 						<TotalSpace><xsl:value-of select="TOTAL" /></TotalSpace>
 						<FreeSpace><xsl:value-of select="FREE" /></FreeSpace>
 					</Drive>
@@ -238,7 +240,9 @@
 						<Command><xsl:value-of select="CMD" /></Command>
 						<CpuUsage><xsl:value-of select="CPUUSAGE" /></CpuUsage>
 						<MemoryUsagePercent><xsl:value-of select="MEM" /></MemoryUsagePercent>
-						<StartDate><xsl:value-of select="STARTED" /></StartDate>
+						<StartDate><xsl:call-template name="FormatDate_StartDate">
+								<xsl:with-param name="DateTime" select="STARTED"/>
+							</xsl:call-template></StartDate>
 						<User><xsl:value-of select="USER" /></User>
 						<VirtualMemory><xsl:value-of select="VIRTUALMEMORY" /></VirtualMemory>
 						<TTY><xsl:value-of select="TTY" /></TTY>
@@ -248,7 +252,9 @@
 
 				<xsl:for-each select="/REQUEST/CONTENT/ACCESSLOG">
 					<AccessLog>
-						<LoginDate><xsl:value-of select="LOGDATE" /></LoginDate>
+						<LoginDate><xsl:call-template name="FormatDate_LoginDate">
+								<xsl:with-param name="DateTime" select="LOGDATE"/>
+							</xsl:call-template></LoginDate>
 						<UserID><xsl:value-of select="USERID" /></UserID>
 					</AccessLog>
 				</xsl:for-each> 
@@ -333,5 +339,141 @@
 				</xsl:for-each> 
 			</Inventory>
 		</Event>
-        </xsl:template>
+	</xsl:template>
+
+	<!-- Converts  <<2011-10-9 07:20:00>> to <<2002-10-10T17:00:00Z>> -->
+	<xsl:template name="FormatDate_StartDate">
+		<xsl:param name="DateTime" />
+
+		<xsl:if test="(string-length($DateTime) != 0)">
+
+			<xsl:variable name="year">
+				<xsl:value-of select="substring($DateTime,1,4)" />
+			</xsl:variable>
+
+			<xsl:variable name="month-temp">
+				<xsl:value-of select="substring-after($DateTime,'-')" />
+			</xsl:variable>
+			<xsl:variable name="month">
+				<xsl:value-of select="substring-before($month-temp,'-')" />
+			</xsl:variable>
+
+			<xsl:variable name="day-temp">
+				<xsl:value-of select="substring-after($month-temp,'-')" />
+			</xsl:variable>
+			<xsl:variable name="day">
+				<xsl:value-of select="substring-before($day-temp,' ')" />
+			</xsl:variable>
+			<xsl:variable name="time">
+				<xsl:value-of select="substring-after($day-temp,' ')" />
+			</xsl:variable>
+
+			<xsl:value-of select="$year"/>
+			<xsl:value-of select="'-'"/>
+
+			<xsl:if test="(string-length($month) &lt; 2)">
+				<xsl:value-of select="0"/>
+			</xsl:if>
+			<xsl:value-of select="$month"/>
+			<xsl:value-of select="'-'"/>
+			<xsl:if test="(string-length($day) &lt; 2)">
+				<xsl:value-of select="0"/>
+			</xsl:if>
+			<xsl:value-of select="$day"/>
+			<xsl:value-of select="'T'"/>
+			<xsl:value-of select="$time"/>
+			<xsl:value-of select="':00Z'"/>
+		</xsl:if>
+	</xsl:template>
+
+	<!-- Converts  <<2011-10-9 07:20>> to <<2002-10-10T17:00:00Z>> -->
+	<xsl:template name="FormatDate_LoginDate">
+		<xsl:param name="DateTime" />
+
+		<xsl:if test="(string-length($DateTime) != 0)">
+
+			<xsl:variable name="year">
+				<xsl:value-of select="substring($DateTime,1,4)" />
+			</xsl:variable>
+
+			<xsl:variable name="month-temp">
+				<xsl:value-of select="substring-after($DateTime,'-')" />
+			</xsl:variable>
+			<xsl:variable name="month">
+				<xsl:value-of select="substring-before($month-temp,'-')" />
+			</xsl:variable>
+
+			<xsl:variable name="day-temp">
+				<xsl:value-of select="substring-after($month-temp,'-')" />
+			</xsl:variable>
+			<xsl:variable name="day">
+				<xsl:value-of select="substring-before($day-temp,' ')" />
+			</xsl:variable>
+			<xsl:variable name="time">
+				<xsl:value-of select="substring-after($day-temp,' ')" />
+			</xsl:variable>
+
+			<xsl:value-of select="$year"/>
+			<xsl:value-of select="'-'"/>
+
+			<xsl:if test="(string-length($month) &lt; 2)">
+				<xsl:value-of select="0"/>
+			</xsl:if>
+			<xsl:value-of select="$month"/>
+			<xsl:value-of select="'-'"/>
+			<xsl:if test="(string-length($day) &lt; 2)">
+				<xsl:value-of select="0"/>
+			</xsl:if>
+			<xsl:value-of select="$day"/>
+			<xsl:value-of select="'T'"/>
+			<xsl:value-of select="$time"/>
+			<xsl:value-of select="'Z'"/>
+		</xsl:if>
+	</xsl:template>
+
+	<!-- Converts  <<2011/3/1 14:36:06>> to <<2002-10-10T17:00:00Z>> -->
+	<xsl:template name="FormatDate_CreateDate">
+		<xsl:param name="DateTime" />
+
+		<xsl:if test="(string-length($DateTime) != 0)">
+
+			<xsl:variable name="year">
+				<xsl:value-of select="substring($DateTime,1,4)" />
+			</xsl:variable>
+
+			<xsl:variable name="month-temp">
+				<xsl:value-of select="substring-after($DateTime,'/')" />
+			</xsl:variable>
+			<xsl:variable name="month">
+				<xsl:value-of select="substring-before($month-temp,'/')" />
+			</xsl:variable>
+
+			<xsl:variable name="day-temp">
+				<xsl:value-of select="substring-after($month-temp,'/')" />
+			</xsl:variable>
+			<xsl:variable name="day">
+				<xsl:value-of select="substring-before($day-temp,' ')" />
+			</xsl:variable>
+			<xsl:variable name="time">
+				<xsl:value-of select="substring-after($day-temp,' ')" />
+			</xsl:variable>
+
+			<xsl:value-of select="$year"/>
+			<xsl:value-of select="'-'"/>
+
+			<xsl:if test="(string-length($month) &lt; 2)">
+				<xsl:value-of select="0"/>
+			</xsl:if>
+			<xsl:value-of select="$month"/>
+			<xsl:value-of select="'-'"/>
+			<xsl:if test="(string-length($day) &lt; 2)">
+				<xsl:value-of select="0"/>
+			</xsl:if>
+			<xsl:value-of select="$day"/>
+			<xsl:value-of select="'T'"/>
+			<xsl:value-of select="$time"/>
+			<xsl:value-of select="'Z'"/>
+		</xsl:if>
+	</xsl:template>
+
 </xsl:stylesheet>
