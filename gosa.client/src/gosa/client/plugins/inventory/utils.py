@@ -37,7 +37,6 @@ class Inventory(Plugin):
 
         # # Request inventory result from dbus-client (He is running as root and can do much more than we can)
         result = gosa_dbus.inventory(dbus_interface="com.gonicus.gosa")
-        print result
 
         # Remove time base or frequently changing values (like processes) from the
         # result to generate a useable checksum.
