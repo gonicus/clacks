@@ -7,6 +7,7 @@
 			xsi:schemaLocation="http://www.gonicus.de/Events inventory.xsd ">
 
 			<Inventory>
+				<GOsaChecksum>%(GOsa_Checksum)s</GOsaChecksum>
 				<DeviceID><xsl:value-of select="/REQUEST/DEVICEID" /></DeviceID>
 				<QueryType><xsl:value-of select="/REQUEST/QUERY" /></QueryType>
 				<ClientVersion><xsl:value-of select="/REQUEST/CONTENT/VERSIONCLIENT" /></ClientVersion>

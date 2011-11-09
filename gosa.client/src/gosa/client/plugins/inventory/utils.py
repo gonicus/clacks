@@ -32,24 +32,28 @@ class Inventory(Plugin):
         bus = dbus.SystemBus()
         gosa_dbus = bus.get_object('com.gonicus.gosa', '/com/gonicus/gosa/inventory')
 
-        # Send notification and keep return code
+        #print "FIXME: client directly load dummy result insted of calling a dbus method!"
+        #result = open('/home/hickert/gosa-ng/src/contrib/inventory/dummy.xml').read()
+
+        # # Request inventory result from dbus-client (He is running as root and can do much more than we can)
         result = gosa_dbus.inventory(dbus_interface="com.gonicus.gosa")
+        print result
 
         # Remove time base or frequently changing values (like processes) from the
         # result to generate a useable checksum.
         # We use a XSL file which reads the result and skips some tags.
-        try:
-            xml_doc = etree.parse(StringIO.StringIO(result))
-            checksum_doc = etree.parse(resource_filename("gosa.dbus",'plugins/inventory/xmlToChecksumXml.xsl'))
-            check_trans = etree.XSLT(checksum_doc)
-            checksum_result = check_trans(xml_doc)
-        except Exception as e:
-            raise Exception("No report files could be found in '%s'" % (path,))
+        xml_doc = etree.parse(StringIO.StringIO(result))
+        checksum_doc = etree.parse(resource_filename("gosa.dbus",'plugins/inventory/xmlToChecksumXml.xsl'))
+        check_trans = etree.XSLT(checksum_doc)
+        checksum_result = check_trans(xml_doc)
 
         # Once we've got a 'clean' result, create the checksum.
         m = hashlib.md5()
         m.update(etree.tostring(checksum_result))
         checksum = m.hexdigest()
+
+        # Insert the checksum into the resulting event
+        result = result % {'GOsa_Checksum': checksum}
 
         # Establish amqp connection
         env = Environment.getInstance()
