@@ -5,6 +5,7 @@ import logging
 from urlparse import urlparse
 from qpid.messaging import Connection
 from qpid.messaging.util import auto_fetch_reconnect_urls
+from gosa.common.components import AMQPServiceProxy
 from gosa.common.components.amqp import AMQPHandler, EventProvider
 from gosa.common.components.zeroconf_client import ZeroconfClient
 from gosa.common.utils import parseURL
@@ -23,6 +24,7 @@ class AMQPClientHandler(AMQPHandler):
     __capabilities = {}
     __peers = {}
     _eventProvider = None
+    __proxy = None
     url = None
     joined = False
 
@@ -69,6 +71,9 @@ class AMQPClientHandler(AMQPHandler):
             else:
                 self.url = parseURL(url)
 
+        # Make proxy connection
+        self.__proxy = AMQPServiceProxy(self.url['source'])
+
         # Set params and go for it
         self.reconnect = self.env.config.get('amqp.reconnect', True)
         self.reconnect_interval = self.env.config.get('amqp.reconnect-interval', 3)
@@ -80,6 +85,13 @@ class AMQPClientHandler(AMQPHandler):
 
         # Start connection
         self.start()
+
+    def get_proxy(self):
+        return self.__proxy
+
+    def sendEvent(self, data):
+        """ Override original sendEvent. Use proxy instead. """
+        return self.__proxy.sendEvent(data)
 
     def start(self):
         """

@@ -56,11 +56,6 @@ class Inventory(Plugin):
 
         # Establish amqp connection
         env = Environment.getInstance()
-        try:
-            amqp = PluginRegistry.getInstance("AMQPHandler")
-            proxy = AMQPServiceProxy(amqp.url['source'])
-        except:
-            proxy = AMQPServiceProxy('amqps://amqp:secret@amqp.intranet.gonicus.de:5671/org.gosa')
-
+        amqp = PluginRegistry.getInstance("AMQPHandler")
+        proxy = AMQPServiceProxy(amqp.url['source'])
         proxy.sendEvent(result)
-        return
