@@ -1,8 +1,11 @@
 <xsl:stylesheet version="1.0"
-	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
 	<xsl:output method="xml" indent="yes" encoding="UTF-8" />
 	<xsl:template match="/">
-		<Event xmlns="http://www.gonicus.de/Events" 
+		<Event  xmlns="http://www.gonicus.de/Events" 
+			xmlns:gosa="http://www.gonicus.de/Events"
 			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			xsi:schemaLocation="http://www.gonicus.de/Events inventory.xsd ">
 
@@ -38,9 +41,9 @@
 						<Filesystem><xsl:value-of select="FILESYSTEM" /></Filesystem>
 						<Serial><xsl:value-of select="SERIAL" /></Serial>
 						<Label><xsl:value-of select="LABEL" /></Label>
-						<CreateDate><xsl:call-template name="FormatDate_CreateDate">
-								<xsl:with-param name="DateTime" select="CREATEDATE"/>
-							</xsl:call-template></CreateDate>
+						<xsl:call-template name="FormatDate_CreateDate">
+							<xsl:with-param name="DateTime" select="CREATEDATE"/>
+						</xsl:call-template>
 						<TotalSpace><xsl:value-of select="TOTAL" /></TotalSpace>
 						<FreeSpace><xsl:value-of select="FREE" /></FreeSpace>
 					</Drive>
@@ -241,9 +244,9 @@
 						<Command><xsl:value-of select="CMD" /></Command>
 						<CpuUsage><xsl:value-of select="CPUUSAGE" /></CpuUsage>
 						<MemoryUsagePercent><xsl:value-of select="MEM" /></MemoryUsagePercent>
-						<StartDate><xsl:call-template name="FormatDate_StartDate">
-								<xsl:with-param name="DateTime" select="STARTED"/>
-							</xsl:call-template></StartDate>
+						<xsl:call-template name="FormatDate_StartDate">
+							<xsl:with-param name="DateTime" select="STARTED"/>
+						</xsl:call-template>
 						<User><xsl:value-of select="USER" /></User>
 						<VirtualMemory><xsl:value-of select="VIRTUALMEMORY" /></VirtualMemory>
 						<TTY><xsl:value-of select="TTY" /></TTY>
@@ -253,9 +256,9 @@
 
 				<xsl:for-each select="/REQUEST/CONTENT/ACCESSLOG">
 					<AccessLog>
-						<LoginDate><xsl:call-template name="FormatDate_LoginDate">
-								<xsl:with-param name="DateTime" select="LOGDATE"/>
-							</xsl:call-template></LoginDate>
+						<xsl:call-template name="FormatDate_LoginDate">
+							<xsl:with-param name="DateTime" select="LOGDATE"/>
+						</xsl:call-template>
 						<UserID><xsl:value-of select="USERID" /></UserID>
 					</AccessLog>
 				</xsl:for-each> 
@@ -346,6 +349,14 @@
 	<xsl:template name="FormatDate_StartDate">
 		<xsl:param name="DateTime" />
 
+		<!-- If the value is empty, then create a 'nil' statement -->
+		<xsl:if test="(string-length($DateTime) = 0)">
+			<xsl:element name="StartDate" namespace="http://www.gonicus.de/Events">
+				<xsl:attribute name="nil" namespace="http://www.w3.org/2001/XMLSchema-instance">true</xsl:attribute>
+			</xsl:element>
+		</xsl:if>
+
+		<!-- If the value is NOT empty, then create a valid xs:dateTime statement -->
 		<xsl:if test="(string-length($DateTime) != 0)">
 
 			<xsl:variable name="year">
@@ -369,21 +380,24 @@
 				<xsl:value-of select="substring-after($day-temp,' ')" />
 			</xsl:variable>
 
-			<xsl:value-of select="$year"/>
-			<xsl:value-of select="'-'"/>
+			<xsl:element name="StartDate" namespace="http://www.gonicus.de/Events">
 
-			<xsl:if test="(string-length($month) &lt; 2)">
-				<xsl:value-of select="0"/>
-			</xsl:if>
-			<xsl:value-of select="$month"/>
-			<xsl:value-of select="'-'"/>
-			<xsl:if test="(string-length($day) &lt; 2)">
-				<xsl:value-of select="0"/>
-			</xsl:if>
-			<xsl:value-of select="$day"/>
-			<xsl:value-of select="'T'"/>
-			<xsl:value-of select="$time"/>
-			<xsl:value-of select="':00Z'"/>
+				<xsl:value-of select="$year"/>
+				<xsl:value-of select="'-'"/>
+
+				<xsl:if test="(string-length($month) &lt; 2)">
+					<xsl:value-of select="0"/>
+				</xsl:if>
+				<xsl:value-of select="$month"/>
+				<xsl:value-of select="'-'"/>
+				<xsl:if test="(string-length($day) &lt; 2)">
+					<xsl:value-of select="0"/>
+				</xsl:if>
+				<xsl:value-of select="$day"/>
+				<xsl:value-of select="'T'"/>
+				<xsl:value-of select="$time"/>
+				<xsl:value-of select="':00Z'"/>
+			</xsl:element>
 		</xsl:if>
 	</xsl:template>
 
@@ -391,6 +405,14 @@
 	<xsl:template name="FormatDate_LoginDate">
 		<xsl:param name="DateTime" />
 
+		<!-- If the value is empty, then create a 'nil' statement -->
+		<xsl:if test="(string-length($DateTime) = 0)">
+			<xsl:element name="LoginDate" namespace="http://www.gonicus.de/Events">
+				<xsl:attribute name="nil" namespace="http://www.w3.org/2001/XMLSchema-instance">true</xsl:attribute>
+			</xsl:element>
+		</xsl:if>
+
+		<!-- If the value is NOT empty, then create a valid xs:dateTime statement -->
 		<xsl:if test="(string-length($DateTime) != 0)">
 
 			<xsl:variable name="year">
@@ -414,21 +436,23 @@
 				<xsl:value-of select="substring-after($day-temp,' ')" />
 			</xsl:variable>
 
-			<xsl:value-of select="$year"/>
-			<xsl:value-of select="'-'"/>
+			<xsl:element name="LoginDate" namespace="http://www.gonicus.de/Events">
+				<xsl:value-of select="$year"/>
+				<xsl:value-of select="'-'"/>
 
-			<xsl:if test="(string-length($month) &lt; 2)">
-				<xsl:value-of select="0"/>
-			</xsl:if>
-			<xsl:value-of select="$month"/>
-			<xsl:value-of select="'-'"/>
-			<xsl:if test="(string-length($day) &lt; 2)">
-				<xsl:value-of select="0"/>
-			</xsl:if>
-			<xsl:value-of select="$day"/>
-			<xsl:value-of select="'T'"/>
-			<xsl:value-of select="$time"/>
-			<xsl:value-of select="'Z'"/>
+				<xsl:if test="(string-length($month) &lt; 2)">
+					<xsl:value-of select="0"/>
+				</xsl:if>
+				<xsl:value-of select="$month"/>
+				<xsl:value-of select="'-'"/>
+				<xsl:if test="(string-length($day) &lt; 2)">
+					<xsl:value-of select="0"/>
+				</xsl:if>
+				<xsl:value-of select="$day"/>
+				<xsl:value-of select="'T'"/>
+				<xsl:value-of select="$time"/>
+				<xsl:value-of select="'Z'"/>
+			</xsl:element>
 		</xsl:if>
 	</xsl:template>
 
@@ -436,8 +460,15 @@
 	<xsl:template name="FormatDate_CreateDate">
 		<xsl:param name="DateTime" />
 
-		<xsl:if test="(string-length($DateTime) != 0)">
+		<!-- If the value is empty, then create a 'nil' statement -->
+		<xsl:if test="(string-length($DateTime) = 0)">
+			<xsl:element name="CreateDate" namespace="http://www.gonicus.de/Events">
+				<xsl:attribute name="nil" namespace="http://www.w3.org/2001/XMLSchema-instance">true</xsl:attribute>
+			</xsl:element>
+		</xsl:if>
 
+		<!-- If the value is NOT empty, then create a valid xs:dateTime statement -->
+		<xsl:if test="(string-length($DateTime) != 0)">
 			<xsl:variable name="year">
 				<xsl:value-of select="substring($DateTime,1,4)" />
 			</xsl:variable>
@@ -459,21 +490,23 @@
 				<xsl:value-of select="substring-after($day-temp,' ')" />
 			</xsl:variable>
 
-			<xsl:value-of select="$year"/>
-			<xsl:value-of select="'-'"/>
+			<xsl:element name="CreateDate" namespace="http://www.gonicus.de/Events">
+				<xsl:value-of select="$year"/>
+				<xsl:value-of select="'-'"/>
 
-			<xsl:if test="(string-length($month) &lt; 2)">
-				<xsl:value-of select="0"/>
-			</xsl:if>
-			<xsl:value-of select="$month"/>
-			<xsl:value-of select="'-'"/>
-			<xsl:if test="(string-length($day) &lt; 2)">
-				<xsl:value-of select="0"/>
-			</xsl:if>
-			<xsl:value-of select="$day"/>
-			<xsl:value-of select="'T'"/>
-			<xsl:value-of select="$time"/>
-			<xsl:value-of select="'Z'"/>
+				<xsl:if test="(string-length($month) &lt; 2)">
+					<xsl:value-of select="0"/>
+				</xsl:if>
+				<xsl:value-of select="$month"/>
+				<xsl:value-of select="'-'"/>
+				<xsl:if test="(string-length($day) &lt; 2)">
+					<xsl:value-of select="0"/>
+				</xsl:if>
+				<xsl:value-of select="$day"/>
+				<xsl:value-of select="'T'"/>
+				<xsl:value-of select="$time"/>
+				<xsl:value-of select="'Z'"/>
+			</xsl:element>
 		</xsl:if>
 	</xsl:template>
 
