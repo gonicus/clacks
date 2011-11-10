@@ -8,4 +8,4 @@ from gosa.client.plugins.inventory.utils import Inventory
 
 
 a = Inventory()
-print a.request_inventory()
+a.request_inventory()
