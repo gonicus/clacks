@@ -48,14 +48,16 @@ parser = objectify.makeparser(schema=schema)
 try:
     d = objectify.fromstring(open('tests/valid.xml').read(), parser)
     print "OK: Schema file tests/valid.xml is valid! (As expected)"
+
+    print objectify.dump(d)
+
 except Exception as e:
     print "FAILED: Schema file tests/valid.xml is INvalid! (Unexpected!!)"
     print e
 
-try:
-    d = objectify.fromstring(open('tests/invalid.xml').read(), parser)
-    print "FAILED: Schema file tests/valid.xml is valid! (Unexpected!!)"
-except Exception as e:
-    print "OK: Schema file tests/valid.xml is INvalid! (As expected)"
-    print e
-
+#try:
+#    d = objectify.fromstring(open('tests/invalid.xml').read(), parser)
+#    print "FAILED: Schema file tests/valid.xml is valid! (Unexpected!!)"
+#except Exception as e:
+#    print "OK: Schema file tests/valid.xml is INvalid! (As expected)"
+#    print e
