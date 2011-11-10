@@ -66,7 +66,7 @@
 			<xs:element name="Filesystem" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Serial" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Label" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-			<xs:element nillable="true" name="CreateDate" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element nillable="true" name="CreateDate" type="xs:dateTime" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="TotalSpace" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="FreeSpace" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 		</xs:sequence>
