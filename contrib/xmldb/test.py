@@ -10,7 +10,7 @@ if __name__ == "__main__":
     containerName = r"inventory.dbxml"
 
     mgr = XmlManager()
-    mgr.removeContainer(containerName)
+    #mgr.removeContainer(containerName)
 
     uc = mgr.createUpdateContext()
     if mgr.existsContainer(containerName) != 0:
