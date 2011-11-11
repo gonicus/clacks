@@ -11,7 +11,6 @@ if __name__ == "__main__":
 
     mgr = XmlManager()
     #mgr.removeContainer(containerName)
-
     uc = mgr.createUpdateContext()
     if mgr.existsContainer(containerName) != 0:
         print "XML DB existiert bereits!"
@@ -36,20 +35,17 @@ if __name__ == "__main__":
     print "Found client inventory data sets for:"
     for value in results:
         print " * %s" % (value.asString(),)
+        DeviceID=value.asString()
 
         # Query for garneles
-        results2 = mgr.query("collection('inventory.dbxml')/Event/Inventory[DeviceID='%s']/ClientVersion/string()" % (value.asString(),), qc)
-        results2.reset()
-        for value in results2:
+        cversion = mgr.query("collection('inventory.dbxml')/Event/Inventory[DeviceID='%s']/ClientVersion/string()" % (DeviceID,), qc)
+        cversion.reset()
+        for value in cversion:
             print "   is using client version: %s" % (value.asString(),)
 
-        print
+    # Remove garnele from the collection add re-add it
+    cont.deleteDocument(r"garnele-2011-10-27-16-23-21", uc)
+    cont.putDocument(r"garnele-2011-10-27-16-23-21", open('xml_content.xml').read(), uc)
 
-    # # Query for all used 'Memory' tags
-    # results = mgr.query("collection('inventory.dbxml')//Memory", qc)
-    # results.reset()
-    # for value in results:
-    #     document = value.asDocument()
-    #     print document.getName(), "=", value.asString()
-
+    # Got schema validation STILL NOT working ...
 
