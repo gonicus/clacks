@@ -47,5 +47,26 @@ if __name__ == "__main__":
     cont.deleteDocument(r"garnele-2011-10-27-16-23-21", uc)
     cont.putDocument(r"garnele-2011-10-27-16-23-21", open('xml_content.xml').read(), uc)
 
+    # Query for the used DeviceIDs
+    print "\nListing DeviceIDs"
+    results = mgr.query("collection('inventory.dbxml')/Event/Inventory/DeviceID/string()", qc)
+    results.reset()
+    print "Found client inventory data sets for:"
+    for value in results:
+        print " * %s" % (value.asString(),)
+
+    # Update the DeviceID of garnele to dummy
+    print "\nUpdating DeviceID of garnele-2011-10-27-16-23-21 to Dummy"
+    mgr.query("replace value of node collection('inventory.dbxml')/Event/Inventory[DeviceID='garnele-2011-10-27-16-23-21']/DeviceID with 'Dummy'", qc)
+
+    # Query for the used DeviceIDs
+    print "\nListing DeviceIDs"
+    results = mgr.query("collection('inventory.dbxml')/Event/Inventory/DeviceID/string()", qc)
+    results.reset()
+    print "Found client inventory data sets for:"
+    for value in results:
+        print " * %s" % (value.asString(),)
+
     # Got schema validation STILL NOT working ...
 
+    
