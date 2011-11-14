@@ -7,7 +7,7 @@ from dbxml import *
 import sys
 if __name__ == "__main__":
 
-    containerName = r"inventory.dbxml"
+    containerName = r"database.dbxml"
 
     # External access is required to validate against a given xml-schema
     mgr = XmlManager(DBXML_ALLOW_EXTERNAL_ACCESS)
@@ -37,7 +37,7 @@ if __name__ == "__main__":
     # Query for the used DeviceIDs
     print
     print "Searching for client-inventory data ..."
-    results = mgr.query("collection('inventory.dbxml')/Event/Inventory/DeviceID/string()", qc)
+    results = mgr.query("collection('%s')/Event/Inventory/DeviceID/string()" % (containerName,), qc)
     results.reset()
     print "Found client inventory data sets for:"
     for value in results:
@@ -45,7 +45,7 @@ if __name__ == "__main__":
         DeviceID=value.asString()
 
         # Query for garneles
-        cversion = mgr.query("collection('inventory.dbxml')/Event/Inventory[DeviceID='%s']/ClientVersion/string()" % (DeviceID,), qc)
+        cversion = mgr.query("collection('%s')/Event/Inventory[DeviceID='%s']/ClientVersion/string()" % (containerName, DeviceID,), qc)
         cversion.reset()
         for value in cversion:
             print "   is using client version: %s" % (value.asString(),)
@@ -56,7 +56,7 @@ if __name__ == "__main__":
 
     # Query for the used DeviceIDs
     print "\nListing DeviceIDs"
-    results = mgr.query("collection('inventory.dbxml')/Event/Inventory/DeviceID/string()", qc)
+    results = mgr.query("collection('%s')/Event/Inventory/DeviceID/string()" % (containerName,), qc)
     results.reset()
     print "Found client inventory data sets for:"
     for value in results:
@@ -64,11 +64,11 @@ if __name__ == "__main__":
 
     # Update the DeviceID of garnele to dummy
     print "\nUpdating DeviceID of garnele-2011-10-27-16-23-21 to Dummy"
-    mgr.query("replace value of node collection('inventory.dbxml')/Event/Inventory[DeviceID='garnele-2011-10-27-16-23-21']/DeviceID with 'Dummy'", qc)
+    mgr.query("replace value of node collection('%s')/Event/Inventory[DeviceID='garnele-2011-10-27-16-23-21']/DeviceID with 'Dummy'" % (containerName,), qc)
 
     # Query for the used DeviceIDs
     print "\nListing DeviceIDs"
-    results = mgr.query("collection('inventory.dbxml')/Event/Inventory/DeviceID/string()", qc)
+    results = mgr.query("collection('%s')/Event/Inventory/DeviceID/string()" % (containerName,), qc)
     results.reset()
     print "Found client inventory data sets for:"
     for value in results:
