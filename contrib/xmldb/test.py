@@ -25,8 +25,8 @@ if __name__ == "__main__":
     else:
         print "XML DB erstellt!"
         cont = mgr.createContainer(containerName, DBXML_ALLOW_VALIDATION, XmlContainer.NodeContainer)
-        cont.putDocument(r"garnele-2011-10-27-16-23-21", open('xml_content.xml').read(), uc)
-        cont.putDocument(r"independence-2011-10-27-16-19-50", open('xml_content2.xml').read(), uc)
+        cont.putDocument(r"garnele-2011-10-27-16-23-21", open('data/xml_content.xml').read(), uc)
+        cont.putDocument(r"independence-2011-10-27-16-19-50", open('data/xml_content2.xml').read(), uc)
 
     # Create query context and populate used namespaces
     qc = mgr.createQueryContext()
@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
     # Remove garnele from the collection add re-add it
     cont.deleteDocument(r"garnele-2011-10-27-16-23-21", uc)
-    cont.putDocument(r"garnele-2011-10-27-16-23-21", open('xml_content.xml').read(), uc)
+    cont.putDocument(r"garnele-2011-10-27-16-23-21", open('data/xml_content.xml').read(), uc)
 
     # Query for the used DeviceIDs
     print "\nListing DeviceIDs"
@@ -73,5 +73,3 @@ if __name__ == "__main__":
     print "Found client inventory data sets for:"
     for value in results:
         print " * %s" % (value.asString(),)
-
-    # Got schema validation STILL NOT working ...
