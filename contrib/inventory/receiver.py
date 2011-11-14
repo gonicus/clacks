@@ -2,34 +2,36 @@
 # -*- coding: utf-8 -*-
 
 from sqlalchemy import create_engine
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, mapper, relationship, backref
 from gosa.common.components import AMQPEventConsumer
-from lxml import etree
+from lxml import etree, objectify
 from bsddb3.db import *
 from dbxml import *
+import os
 import sys
-
+import StringIO
+import datetime
 
 Base = declarative_base()
+
+
 class Inventory(Base):
-
     __tablename__ = 'inventory'
-
     id = Column(Integer, primary_key=True)
-    checksum = Column(String)
-    uuid = Column(String)
-    hostname = Column(String)
-    content = Column(String)
+    checksum = Column(String(255))
+    uuid = Column(String(255))
+    hostname = Column(String(255))
+    content = Column('content', Text(4294967295), nullable=False)
     date = Column(DateTime)
 
 
 class InventoryDBMySql(object):
 
     def __init__(self, base):
-        self.engine = create_engine('sqlite:///:memory:', echo=True)
-        #self.engine = create_engine('mysql://root:tester@gosa-playground-squeeze/tester', echo=True)
+        #self.engine = create_engine('sqlite:///:memory:', echo=True)
+        self.engine = create_engine('mysql://root:tester@gosa-playground-squeeze/tester', echo=False)
         base.metadata.create_all(self.engine)
 
     def deleteByUUID(self, uuid):
@@ -40,8 +42,8 @@ class InventoryDBMySql(object):
         session = Session()
 
         # Should only be one, but to be sure - delete all occurrences
-        for entry in  session.query(Client).filter_by(uuid=uuid).all():
-            entry.delete()
+        for entry in  session.query(Inventory).filter_by(uuid=uuid).all():
+            session.delete(entry)
 
         session.commit()
 
@@ -53,7 +55,7 @@ class InventoryDBMySql(object):
         Session = sessionmaker(bind=self.engine)
         session = Session()
 
-        c = Client()
+        c = Inventory()
         c.checksum = checksum
         c.uuid = uuid
         c.hostname = hostname
@@ -62,6 +64,17 @@ class InventoryDBMySql(object):
 
         session.add(c)
         session.commit()
+
+    def listAll(self):
+        """
+        Returns a list with all inventory information
+        """
+        ret = []
+        Session = sessionmaker(bind=self.engine)
+        session = Session()
+        for entry in session.query(Inventory).all():
+            ret.append(entry.content)
+        return(ret)
 
 
 class InventoryDBXml(object):
@@ -75,7 +88,7 @@ class InventoryDBXml(object):
     queryContext = None
     container = None
 
-    def __init__(self, dbname="xmldb.xmldb"):
+    def __init__(self, dbname=r"xmldb.xmldb"):
         """
         Creates and establishes a dbxml container connection.
         """
@@ -85,10 +98,11 @@ class InventoryDBXml(object):
 
         # Create the database container on demand
         self.dbname = dbname
-        if self.manager.existsContainer(self.dbname) != 0:
-            self.container = self.manager.openContainer(self.dbname)
-        else:
-            self.container = self.manager.createContainer(self.dbname, DBXML_ALLOW_VALIDATION, XmlContainer.NodeContainer)
+
+        #TODO: Check why the 'existsContainer' does not work and then remove the os.path check.
+        if os.path.exists(self.dbname) or self.manager.existsContainer(self.dbname) != 0:
+            self.manager.removeContainer(self.dbname)
+        self.container = self.manager.createContainer(self.dbname, DBXML_ALLOW_VALIDATION)
 
         # Create the update context, it is required to query and manipulate data later.
         self.updateContext = self.manager.createUpdateContext()
@@ -99,16 +113,26 @@ class InventoryDBXml(object):
         self.queryContext.setNamespace("gosa", "http://www.gonicus.de/Events")
         self.queryContext.setNamespace("xsi","http://www.w3.org/2001/XMLSchema-instance")
 
-    def clientDataExists(self, uuid):
+    def uuidExists(self, uuid):
         """
         Checks whether an inventory exists for the given client ID or not.
         """
-        #TODO: Use client-UUID to check for existing entries.
-        results = self.manager.query("collection('%s')/Event/Inventory[DeviceID='%s']/DeviceID/string()" % (self.dbname, uuid), self.queryContext)
+        results = self.manager.query("collection('%s')/Event/Inventory[ClientUUID='%s']/ClientUUID/string()" % (self.dbname, uuid), self.queryContext)
         results.reset()
         for value in results:
+            print value.asString()
             return True
         return False
+
+    def getChecksumByUuid(self, uuid):
+        """
+        Returns the checksum of a specific entry.
+        """
+        results = self.manager.query("collection('%s')/Event/Inventory[ClientUUID='%s']/GOsaChecksum/string()" % (self.dbname, uuid), self.queryContext)
+        results.reset()
+        for value in results:
+            return value.asString()
+        return None
 
     def addClientInventoryData(self, uuid, data):
         """
@@ -116,6 +140,12 @@ class InventoryDBXml(object):
         """
         self.container.putDocument(uuid, data, self.updateContext)
 
+    def deleteByUUID(self, uuid):
+        results = self.manager.query("collection('%s')/Event/Inventory[ClientUUID='%s']" % (self.dbname, uuid), self.queryContext)
+        results.reset()
+        for value in results:
+            self.container.deleteDocument(value.asDocument().getName(), self.updateContext)
+        return None
 
 # --------------------------
 
@@ -125,7 +155,7 @@ class InventoryCosumer(object):
     Consumer for inventory events emitted from clients.
     """
 
-    xmldbname = "dbinv.dbmx"
+    xmldbname = r"dbinv.dbxml"
     xmldb = None
 
     inv_db = None
@@ -133,12 +163,51 @@ class InventoryCosumer(object):
         self.xmldb = InventoryDBXml(self.xmldbname)
         self.mysqldb = InventoryDBMySql(Base)
 
+        xml_list = self.mysqldb.listAll()
+        for entry in xml_list:
+
+            # Try to extract the clients uuid and hostname out of the received data
+            data = objectify.parse(StringIO.StringIO(entry))
+            binfo = data.xpath('/gosa:Event/gosa:Inventory', namespaces={'gosa': 'http://www.gonicus.de/Events'})[0]
+            uuid = str(binfo['ClientUUID'])
+
+            # Add data read from mysql db
+            print "Adding ... ", uuid
+            datas = etree.tostring(data, pretty_print=True)
+            self.xmldb.addClientInventoryData(uuid, datas)
 
     def process(self, data):
         """
         Receives a new inventory-event and updates the corresponding
         database entries (MySql and dbxml)
         """
+
+        # Try to extract the clients uuid and hostname out of the received data
+        binfo = data.xpath('/gosa:Event/gosa:Inventory', namespaces={'gosa': 'http://www.gonicus.de/Events'})[0]
+        hostname = str(binfo['Hostname'])
+        uuid = str(binfo['ClientUUID'])
+        checksum = str(binfo['GOsaChecksum'])
+
+        # Check if the given uuid is already part of the inventory database
+        if self.xmldb.uuidExists(uuid):
+            # check checksums.
+            print "Schon da", hostname
+            if checksum == self.xmldb.getChecksumByUuid(uuid):
+                print "Gleich!"
+            else:
+                print "Updated!"
+                self.mysqldb.deleteByUUID(uuid)
+                self.xmldb.deleteByUUID(uuid)
+                datas = etree.tostring(data, pretty_print=True)
+                self.xmldb.addClientInventoryData(uuid, datas)
+                self.mysqldb.add(uuid, checksum, hostname, datas)
+
+        else:
+            # import data to both dbxml and mysql
+            print "Add", hostname
+            datas = etree.tostring(data, pretty_print=True)
+            self.xmldb.addClientInventoryData(uuid, datas)
+            self.mysqldb.add(uuid, checksum, hostname, datas)
 
 
 # Create event consumer
