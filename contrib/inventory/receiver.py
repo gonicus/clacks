@@ -7,20 +7,87 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, mapper, relationship, backref
 from gosa.common.components import AMQPEventConsumer
 from lxml import etree
+from bsddb3.db import *
+from dbxml import *
+import sys
 
-from inventory_types import *
 
-engine = create_engine('sqlite:///:memory:', echo=True)
-#engine = create_engine('mysql://root:tester@gosa-playground-squeeze/tester', echo=True)
-Session = sessionmaker(bind=engine)
-session = Session()
-Base.metadata.create_all(engine)
+Base = declarative_base()
+class Inventory(Base):
 
-slot = Slot()
-ed_user = Client()
-ed_user.slots.append(slot)
-session.add(ed_user)
-session.commit()
+    __tablename__ = 'inventory'
+
+    id = Column(Integer, primary_key=True)
+    checksum = Column(String)
+    uuid = Column(String)
+    hostname = Column(String)
+    last_update = Column(String)
+
+
+class InventoryDBMySql(object):
+
+    def __init__(self, base):
+        self.engine = create_engine('sqlite:///:memory:', echo=True)
+        #self.engine = create_engine('mysql://root:tester@gosa-playground-squeeze/tester', echo=True)
+        base.metadata.create_all(self.engine)
+        Session = sessionmaker(bind=self.engine)
+        session = Session()
+
+
+class InventoryDBXml(object):
+    """
+    GOsa client-inventory database based on DBXML
+    """
+
+    dbname = None
+    manager = None
+    updateContext = None
+    queryContext = None
+    container = None
+
+    def __init__(self, dbname="xmldb.xmldb"):
+        """
+        Creates and establishes a dbxml container connection.
+        """
+
+        # External access is required to validate against a given xml-schema
+        self.manager = XmlManager(DBXML_ALLOW_EXTERNAL_ACCESS)
+
+        # Create the database container on demand
+        self.dbname = dbname
+        if self.manager.existsContainer(self.dbname) != 0:
+            self.container = self.manager.openContainer(self.dbname)
+        else:
+            self.container = self.manager.createContainer(self.dbname, DBXML_ALLOW_VALIDATION, XmlContainer.NodeContainer)
+
+        # Create the update context, it is required to query and manipulate data later.
+        self.updateContext = self.manager.createUpdateContext()
+
+        # Create query context and set namespaces
+        self.queryContext = self.manager.createQueryContext()
+        self.queryContext.setNamespace("", "http://www.gonicus.de/Events")
+        self.queryContext.setNamespace("gosa", "http://www.gonicus.de/Events")
+        self.queryContext.setNamespace("xsi","http://www.w3.org/2001/XMLSchema-instance")
+
+    def clientDataExists(self, uuid):
+        """
+        Checks whether an inventory exists for the given client ID or not.
+        """
+        #TODO: Use client-UUID to check for existing entries.
+        results = self.manager.query("collection('%s')/Event/Inventory[DeviceID='%s']/DeviceID/string()" % (self.dbname, uuid), self.queryContext)
+        results.reset()
+        for value in results:
+            return True
+        return False
+
+    def addClientInventoryData(self, uuid, data):
+        """
+        Adds client inventory data to the database.
+        """
+        self.container.putDocument(uuid, data, self.updateContext)
+
+
+# --------------------------
 
 
 class InventoryCosumer(object):
@@ -28,12 +95,24 @@ class InventoryCosumer(object):
     Consumer for inventory events emitted from clients.
     """
 
-    def process(self, data):
-        print "Ja", type(data)
+    xmldbname = "dbinv.dbmx"
+    xmldb = None
 
-c = InventoryCosumer()
+    inv_db = None
+    def __init__(self):
+        self.xmldb = InventoryDBXml(self.xmldbname)
+        self.mysqldb = InventoryDBMySql(Base)
+
+
+    def process(self, data):
+        """
+        Receives a new inventory-event and updates the corresponding
+        database entries (MySql and dbxml)
+        """
+
 
 # Create event consumer
+c = InventoryCosumer()
 consumer = AMQPEventConsumer("amqps://amqp:secret@amqp.intranet.gonicus.de:5671/org.gosa",
             xquery="""
                 declare namespace f='http://www.gonicus.de/Events';
@@ -46,10 +125,6 @@ consumer = AMQPEventConsumer("amqps://amqp:secret@amqp.intranet.gonicus.de:5671/
 try:
     while True:
         consumer.join()
-
-
 except KeyboardInterrupt:
     del consumer
     exit(0)
-
-
