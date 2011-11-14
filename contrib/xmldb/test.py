@@ -9,15 +9,22 @@ if __name__ == "__main__":
 
     containerName = r"inventory.dbxml"
 
-    mgr = XmlManager()
-    #mgr.removeContainer(containerName)
+    # External access is required to validate against a given xml-schema
+    mgr = XmlManager(DBXML_ALLOW_EXTERNAL_ACCESS)
+
+    #if mgr.existsContainer(containerName) != 0:
+    #    mgr.removeContainer(containerName)
+
+    # Create the update context, it is required to query and manipulate data later.
     uc = mgr.createUpdateContext()
+
+    # Create the database container on demand
     if mgr.existsContainer(containerName) != 0:
         print "XML DB existiert bereits!"
         cont = mgr.openContainer(containerName)
     else:
         print "XML DB erstellt!"
-        cont = mgr.createContainer(containerName)
+        cont = mgr.createContainer(containerName, DBXML_ALLOW_VALIDATION, XmlContainer.NodeContainer)
         cont.putDocument(r"garnele-2011-10-27-16-23-21", open('xml_content.xml').read(), uc)
         cont.putDocument(r"independence-2011-10-27-16-19-50", open('xml_content2.xml').read(), uc)
 
@@ -68,5 +75,3 @@ if __name__ == "__main__":
         print " * %s" % (value.asString(),)
 
     # Got schema validation STILL NOT working ...
-
-    
