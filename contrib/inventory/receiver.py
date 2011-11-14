@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from sqlalchemy import create_engine
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, mapper, relationship, backref
 from gosa.common.components import AMQPEventConsumer
@@ -21,7 +21,8 @@ class Inventory(Base):
     checksum = Column(String)
     uuid = Column(String)
     hostname = Column(String)
-    last_update = Column(String)
+    content = Column(String)
+    date = Column(DateTime)
 
 
 class InventoryDBMySql(object):
@@ -30,8 +31,37 @@ class InventoryDBMySql(object):
         self.engine = create_engine('sqlite:///:memory:', echo=True)
         #self.engine = create_engine('mysql://root:tester@gosa-playground-squeeze/tester', echo=True)
         base.metadata.create_all(self.engine)
+
+    def deleteByUUID(self, uuid):
+        """
+        Removes an inventory entry by client-uuid.
+        """
         Session = sessionmaker(bind=self.engine)
         session = Session()
+
+        # Should only be one, but to be sure - delete all occurrences
+        for entry in  session.query(Client).filter_by(uuid=uuid).all():
+            entry.delete()
+
+        session.commit()
+
+
+    def add(self, uuid, checksum, hostname, xml):
+        """
+        Removes an inventory entry by client-uuid.
+        """
+        Session = sessionmaker(bind=self.engine)
+        session = Session()
+
+        c = Client()
+        c.checksum = checksum
+        c.uuid = uuid
+        c.hostname = hostname
+        c.content = xml
+        c.date = datetime.datetime.today()
+
+        session.add(c)
+        session.commit()
 
 
 class InventoryDBXml(object):
