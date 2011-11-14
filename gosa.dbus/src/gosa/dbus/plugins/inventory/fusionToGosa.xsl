@@ -395,6 +395,10 @@
 				</xsl:if>
 				<xsl:value-of select="$day"/>
 				<xsl:value-of select="'T'"/>
+				<xsl:if test="(string-length($time) &lt; 5)">
+					<xsl:value-of select="0"/>
+				</xsl:if>
+
 				<xsl:value-of select="$time"/>
 				<xsl:value-of select="':00Z'"/>
 			</xsl:element>
