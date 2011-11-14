@@ -1,7 +1,7 @@
 <Event xmlns="http://www.gonicus.de/Events" xmlns:gosa="http://www.gonicus.de/Events" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gonicus.de/Events Inventory.xsd ">
   <Inventory>
     <GOsaChecksum>%(GOsa_Checksum)s</GOsaChecksum>
-    <DeviceID>garnele-2011-10-27-16-23-21</DeviceID>
+    <DeviceID>garnele</DeviceID>
     <QueryType>INVENTORY</QueryType>
     <ClientVersion>FusionInventory-Agent_v2.0.6</ClientVersion>
     <Controller>

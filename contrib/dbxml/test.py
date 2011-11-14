@@ -25,8 +25,8 @@ if __name__ == "__main__":
     else:
         print "XML DB erstellt!"
         cont = mgr.createContainer(containerName, DBXML_ALLOW_VALIDATION, XmlContainer.NodeContainer)
-        cont.putDocument(r"garnele-2011-10-27-16-23-21", open('data/xml_content.xml').read(), uc)
-        cont.putDocument(r"independence-2011-10-27-16-19-50", open('data/xml_content2.xml').read(), uc)
+        cont.putDocument(r"garnele", open('data/xml_content.xml').read(), uc)
+        cont.putDocument(r"independence", open('data/xml_content2.xml').read(), uc)
 
     # Create query context and populate used namespaces
     qc = mgr.createQueryContext()
@@ -51,8 +51,8 @@ if __name__ == "__main__":
             print "   is using client version: %s" % (value.asString(),)
 
     # Remove garnele from the collection add re-add it
-    cont.deleteDocument(r"garnele-2011-10-27-16-23-21", uc)
-    cont.putDocument(r"garnele-2011-10-27-16-23-21", open('data/xml_content.xml').read(), uc)
+    cont.deleteDocument(r"garnele", uc)
+    cont.putDocument(r"garnele", open('data/xml_content.xml').read(), uc)
 
     # Query for the used DeviceIDs
     print "\nListing DeviceIDs"
@@ -63,8 +63,8 @@ if __name__ == "__main__":
         print " * %s" % (value.asString(),)
 
     # Update the DeviceID of garnele to dummy
-    print "\nUpdating DeviceID of garnele-2011-10-27-16-23-21 to Dummy"
-    mgr.query("replace value of node collection('%s')/Event/Inventory[DeviceID='garnele-2011-10-27-16-23-21']/DeviceID with 'Dummy'" % (containerName,), qc)
+    print "\nUpdating DeviceID of garnele to Dummy"
+    mgr.query("replace value of node collection('%s')/Event/Inventory[DeviceID='garnele']/DeviceID with 'Dummy'" % (containerName,), qc)
 
     # Query for the used DeviceIDs
     print "\nListing DeviceIDs"
