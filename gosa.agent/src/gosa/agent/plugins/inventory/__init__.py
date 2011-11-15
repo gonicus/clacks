@@ -1,4 +1,4 @@
-from gosa.agent.plugins.inventory.InventoryConsumer import InventoryConsumer
+from gosa.agent.plugins.inventory.consumer import InventoryConsumer
 from gosa.common.components import AMQPEventConsumer
 from gosa.common.components.amqp import EventConsumer
 from gosa.common.components.registry import PluginRegistry
