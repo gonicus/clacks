@@ -13,8 +13,13 @@ import os
 import sys
 import StringIO
 import datetime
+import logging
 
 Base = declarative_base()
+
+
+class InventoryException(Exception):
+    pass
 
 
 class Inventory(Base):
@@ -48,7 +53,7 @@ class InventoryDBMySql(object):
         session.commit()
 
 
-    def add(self, uuid, checksum, hostname, xml):
+    def addClientInventoryData(self, uuid, checksum, hostname, xml):
         """
         Removes an inventory entry by client-uuid.
         """
@@ -73,7 +78,7 @@ class InventoryDBMySql(object):
         Session = sessionmaker(bind=self.engine)
         session = Session()
         for entry in session.query(Inventory).all():
-            ret.append(entry.content)
+            ret.append((entry.content, entry.id))
         return(ret)
 
 
@@ -88,7 +93,7 @@ class InventoryDBXml(object):
     queryContext = None
     container = None
 
-    def __init__(self, dbname=r"xmldb.xmldb"):
+    def __init__(self, dbname):
         """
         Creates and establishes a dbxml container connection.
         """
@@ -157,24 +162,48 @@ class InventoryCosumer(object):
 
     xmldbname = r"dbinv.dbxml"
     xmldb = None
+    log = None
 
     inv_db = None
     def __init__(self):
+
+        # Enable logging
+        self.log = logging.getLogger(__name__)
+
+        # Try to establish the database connections
+        self.log.debug("Initializing client-inventory databases")
         self.xmldb = InventoryDBXml(self.xmldbname)
         self.mysqldb = InventoryDBMySql(Base)
+        self.log.debug("Initializing client-inventory databases - done!")
 
+        # Load all existing inventory entries from the MySql database and put them into them
+        # dbxml database
         xml_list = self.mysqldb.listAll()
-        for entry in xml_list:
+        self.log.debug("Found %s existing client inventory data sets" % (len(xml_list),))
+        for entry, eid in xml_list:
 
             # Try to extract the clients uuid and hostname out of the received data
-            data = objectify.parse(StringIO.StringIO(entry))
-            binfo = data.xpath('/gosa:Event/gosa:Inventory', namespaces={'gosa': 'http://www.gonicus.de/Events'})[0]
-            uuid = str(binfo['ClientUUID'])
+            self.log.debug("Try to add client inventory data set with id %s" % (eid,))
+            try:
+                data = objectify.parse(StringIO.StringIO(entry))
+                binfo = data.xpath('/gosa:Event/gosa:Inventory', namespaces={'gosa': 'http://www.gonicus.de/Events'})[0]
+                uuid = str(binfo['ClientUUID'])
+                hostname = str(binfo['Hostname'])
+            except Exception as e:
+                self.log.error("Failed to read MySql inventory entry with id '%s', error was: %s" % (eid, str(e)))
+                raise InventoryException("Failed to read MySql inventory entry with id '%s', error was: %s" % (eid, str(e)))
 
             # Add data read from mysql db
-            print "Adding ... ", uuid
-            datas = etree.tostring(data, pretty_print=True)
-            self.xmldb.addClientInventoryData(uuid, datas)
+            self.log.debug("Adding inventory data for '%s' from MySql database ..." % (hostname))
+            try:
+                datas = etree.tostring(data, pretty_print=True)
+                self.xmldb.addClientInventoryData(uuid, datas)
+            except Exception as e:
+                self.log.error("Failed to import MySql inventory entry with id '%s', error was: %s" % (eid, str(e)))
+                raise InventoryException("Failed to import MySql inventory entry with id '%s', error was: %s" % (eid, str(e)))
+
+        # Let the user know that things went fine
+        self.log.info("Client-inventory databases successfully initialized")
 
     def process(self, data):
         """
@@ -183,31 +212,38 @@ class InventoryCosumer(object):
         """
 
         # Try to extract the clients uuid and hostname out of the received data
-        binfo = data.xpath('/gosa:Event/gosa:Inventory', namespaces={'gosa': 'http://www.gonicus.de/Events'})[0]
-        hostname = str(binfo['Hostname'])
-        uuid = str(binfo['ClientUUID'])
-        checksum = str(binfo['GOsaChecksum'])
+        self.log.debug("New incoming client inventory event")
+        try:
+            binfo = data.xpath('/gosa:Event/gosa:Inventory', namespaces={'gosa': 'http://www.gonicus.de/Events'})[0]
+            hostname = str(binfo['Hostname'])
+            uuid = str(binfo['ClientUUID'])
+            checksum = str(binfo['GOsaChecksum'])
+            self.log.debug("Client inventory event received for hostname %s (%s)" % (hostname,uuid))
+        except Exception as e:
+            msg = "Failed extract client info out of received Inventory-Event! Error was: %s" % (str(e),)
+            self.log.error(msg)
+            raise InventoryException(msg)
 
-        # Check if the given uuid is already part of the inventory database
+        # The client is already part of our inventory database
         if self.xmldb.uuidExists(uuid):
-            # check checksums.
-            print "Schon da", hostname
+
+            # Now check if the checksums match or if we've to update our databases
             if checksum == self.xmldb.getChecksumByUuid(uuid):
-                print "Gleich!"
+                self.log.debug("Client data set already exists and checksums (%s) are equal, skipping addition!" % (checksum))
             else:
-                print "Updated!"
+                self.log.debug("Client data set already exists but the checksum had changed, updated entry!" % (checksum))
                 self.mysqldb.deleteByUUID(uuid)
                 self.xmldb.deleteByUUID(uuid)
                 datas = etree.tostring(data, pretty_print=True)
                 self.xmldb.addClientInventoryData(uuid, datas)
-                self.mysqldb.add(uuid, checksum, hostname, datas)
-
+                self.mysqldb.addClientInventoryData(uuid, checksum, hostname, datas)
         else:
-            # import data to both dbxml and mysql
-            print "Add", hostname
+
+            # A new client has send its inventory data - Import data to both dbxml and mysql
+            self.log.debug("Client data set is new and will be added!" % (checksum))
             datas = etree.tostring(data, pretty_print=True)
             self.xmldb.addClientInventoryData(uuid, datas)
-            self.mysqldb.add(uuid, checksum, hostname, datas)
+            self.mysqldb.addClientInventoryData(uuid, checksum, hostname, datas)
 
 
 # Create event consumer
