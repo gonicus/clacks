@@ -47,8 +47,8 @@ class join_method(object):
         self.log = logging.getLogger(__name__)
         self.uuid = dmi_system("uuid")
         self.mac = self.get_mac_address()
-        self.get_service()
         self.domain = socket.getfqdn().split('.', 1)[1]
+        self.get_service()
 
     def url_builder(self, username, password):
         username = quote(username)
@@ -108,6 +108,8 @@ class join_method(object):
                 url = parser.get("amqp", "url")
             except ConfigParser.NoSectionError:
                 parser.add_section("amqp")
+            except ConfigParser.NoOptionError:
+                pass
 
             # Set url and key
             parser.set("amqp", "url", self.url)

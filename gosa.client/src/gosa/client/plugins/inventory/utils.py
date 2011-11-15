@@ -8,7 +8,6 @@ from gosa.common.components import Plugin
 from gosa.common.components import Command
 from gosa.common import Environment
 from gosa.common.components import PluginRegistry, AMQPServiceProxy
-from gosa.common.components.amqp import AMQPHandler
 from pkg_resources import resource_filename
 
 
@@ -56,5 +55,5 @@ class Inventory(Plugin):
         result = result % {'GOsa_Checksum': checksum}
 
         # Establish amqp connection
-        amqp = PluginRegistry.getInstance("AMQPHandler")
+        amqp = PluginRegistry.getInstance("AMQPClientHandler")
         amqp.sendEvent(result)

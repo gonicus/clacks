@@ -220,7 +220,11 @@ class Config(object):
             self.__registry[section].update(config.items(section))
 
         # Initialize the logging module on the fly
-        tmp = StringIO.StringIO()
-        config.write(tmp)
-        tmp2 = StringIO.StringIO(tmp.getvalue())
-        logging.config.fileConfig(tmp2)
+        try:
+            tmp = StringIO.StringIO()
+            config.write(tmp)
+            tmp2 = StringIO.StringIO(tmp.getvalue())
+            logging.config.fileConfig(tmp2)
+
+        except ConfigParser.NoSectionError:
+            logging.basicConfig(level=logging.ERROR, format='%(asctime)s (%(levelname)s): %(message)s')

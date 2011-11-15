@@ -11,7 +11,7 @@ from bsddb3.db import *
 from lxml import etree, objectify
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import create_engine, Column, String, DateTime, Text
+from sqlalchemy import create_engine, Column, String, DateTime, Text, Integer
 from gosa.common.components import AMQPEventConsumer
 
 Base = declarative_base()
