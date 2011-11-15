@@ -1,28 +1,33 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from sqlalchemy import create_engine
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Text
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, mapper, relationship, backref
-from gosa.common.components import AMQPEventConsumer
-from lxml import etree, objectify
-from bsddb3.db import *
-from dbxml import *
 import os
 import sys
 import StringIO
 import datetime
 import logging
+from dbxml import *
+from bsddb3.db import *
+from lxml import etree, objectify
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import create_engine, Column, String, DateTime, Text
+from gosa.common.components import AMQPEventConsumer
 
 Base = declarative_base()
 
 
 class InventoryException(Exception):
+    """
+    Inventory exception class
+    """
     pass
 
 
 class Inventory(Base):
+    """
+    SqlAlchemy orm class, which stores inventory information for us.
+    """
     __tablename__ = 'inventory'
     id = Column(Integer, primary_key=True)
     checksum = Column(String(255))
@@ -33,8 +38,17 @@ class Inventory(Base):
 
 
 class InventoryDBMySql(object):
+    """
+    MySql inventory database handler.
+    This class is used to persist inventory events in the MySql database.
+    """
 
     def __init__(self, base):
+        """
+        Initializes the database connection.
+        """
+
+        #TODO: Use real agent database connection
         #self.engine = create_engine('sqlite:///:memory:', echo=True)
         self.engine = create_engine('mysql://root:tester@gosa-playground-squeeze/tester', echo=False)
         base.metadata.create_all(self.engine)
@@ -52,14 +66,16 @@ class InventoryDBMySql(object):
 
         session.commit()
 
-
     def addClientInventoryData(self, uuid, checksum, hostname, xml):
         """
-        Removes an inventory entry by client-uuid.
+        Adds a new inventory record to the MySql database.
         """
+
+        # Open a connection session
         Session = sessionmaker(bind=self.engine)
         session = Session()
 
+        # Create the new database record
         c = Inventory()
         c.checksum = checksum
         c.uuid = uuid
@@ -67,12 +83,13 @@ class InventoryDBMySql(object):
         c.content = xml
         c.date = datetime.datetime.today()
 
+        # Add the record and commit actions.
         session.add(c)
         session.commit()
 
     def listAll(self):
         """
-        Returns a list with all inventory information
+        Returns a list with all inventory records
         """
         ret = []
         Session = sessionmaker(bind=self.engine)
@@ -101,10 +118,9 @@ class InventoryDBXml(object):
         # External access is required to validate against a given xml-schema
         self.manager = XmlManager(DBXML_ALLOW_EXTERNAL_ACCESS)
 
+        #TODO: Check why the 'existsContainer' does not work and then remove the os.path check.
         # Create the database container on demand
         self.dbname = dbname
-
-        #TODO: Check why the 'existsContainer' does not work and then remove the os.path check.
         if os.path.exists(self.dbname) or self.manager.existsContainer(self.dbname) != 0:
             self.manager.removeContainer(self.dbname)
         self.container = self.manager.createContainer(self.dbname, DBXML_ALLOW_VALIDATION)
@@ -116,16 +132,18 @@ class InventoryDBXml(object):
         self.queryContext = self.manager.createQueryContext()
         self.queryContext.setNamespace("", "http://www.gonicus.de/Events")
         self.queryContext.setNamespace("gosa", "http://www.gonicus.de/Events")
-        self.queryContext.setNamespace("xsi","http://www.w3.org/2001/XMLSchema-instance")
+        self.queryContext.setNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance")
 
     def uuidExists(self, uuid):
         """
         Checks whether an inventory exists for the given client ID or not.
         """
-        results = self.manager.query("collection('%s')/Event/Inventory[ClientUUID='%s']/ClientUUID/string()" % (self.dbname, uuid), self.queryContext)
+        results = self.manager.query("collection('%s')/Event/Inventory[ClientUUID='%s']/ClientUUID/string()" % (
+            self.dbname, uuid), self.queryContext)
+
+        # Walk through results if there are any and return True in that case.
         results.reset()
         for value in results:
-            print value.asString()
             return True
         return False
 
@@ -133,7 +151,10 @@ class InventoryDBXml(object):
         """
         Returns the checksum of a specific entry.
         """
-        results = self.manager.query("collection('%s')/Event/Inventory[ClientUUID='%s']/GOsaChecksum/string()" % (self.dbname, uuid), self.queryContext)
+        results = self.manager.query("collection('%s')/Event/Inventory[ClientUUID='%s']/GOsaChecksum/string()" % (
+            self.dbname, uuid), self.queryContext)
+
+        # Walk through results and return the found checksum
         results.reset()
         for value in results:
             return value.asString()
@@ -163,12 +184,14 @@ class InventoryConsumer(object):
     xmldbname = r"dbinv.dbxml"
     xmldb = None
     log = None
-
     inv_db = None
+
     def __init__(self):
 
         # Enable logging
         self.log = logging.getLogger(__name__)
+
+        #TODO: Ensure that the database is stored in the correct agent-cache dir. See xmldbname.
 
         # Try to establish the database connections
         self.log.debug("Initializing client-inventory databases")
@@ -179,11 +202,11 @@ class InventoryConsumer(object):
         # Load all existing inventory entries from the MySql database and put them into them
         # dbxml database
         xml_list = self.mysqldb.listAll()
-        self.log.debug("Found %s existing client inventory data sets" % (len(xml_list),))
+        self.log.debug("Found %s existing client inventory data sets" % (len(xml_list), ))
         for entry, eid in xml_list:
 
             # Try to extract the clients uuid and hostname out of the received data
-            self.log.debug("Try to add client inventory data set with id %s" % (eid,))
+            self.log.debug("Try to add client inventory data set with id %s" % (eid, ))
             try:
                 data = objectify.parse(StringIO.StringIO(entry))
                 binfo = data.xpath('/gosa:Event/gosa:Inventory', namespaces={'gosa': 'http://www.gonicus.de/Events'})[0]
@@ -218,9 +241,9 @@ class InventoryConsumer(object):
             hostname = str(binfo['Hostname'])
             uuid = str(binfo['ClientUUID'])
             checksum = str(binfo['GOsaChecksum'])
-            self.log.debug("Client inventory event received for hostname %s (%s)" % (hostname,uuid))
+            self.log.debug("Client inventory event received for hostname %s (%s)" % (hostname, uuid))
         except Exception as e:
-            msg = "Failed extract client info out of received Inventory-Event! Error was: %s" % (str(e),)
+            msg = "Failed extract client info out of received Inventory-Event! Error was: %s" % (str(e), )
             self.log.error(msg)
             raise InventoryException(msg)
 
