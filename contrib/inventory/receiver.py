@@ -150,7 +150,7 @@ class InventoryDBXml(object):
 # --------------------------
 
 
-class InventoryCosumer(object):
+class InventoryConsumer(object):
     """
     Consumer for inventory events emitted from clients.
     """
@@ -211,7 +211,7 @@ class InventoryCosumer(object):
 
 
 # Create event consumer
-c = InventoryCosumer()
+c = InventoryConsumer()
 consumer = AMQPEventConsumer("amqps://amqp:secret@amqp.intranet.gonicus.de:5671/org.gosa",
             xquery="""
                 declare namespace f='http://www.gonicus.de/Events';
