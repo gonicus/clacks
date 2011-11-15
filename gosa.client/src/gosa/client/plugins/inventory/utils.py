@@ -2,6 +2,7 @@
 import dbus
 import StringIO
 import hashlib
+from threading import Thread
 from lxml import etree
 from gosa.common.event import EventMaker
 from gosa.common.components import Plugin
@@ -28,8 +29,8 @@ class Inventory(Plugin):
         """ Sent a notification to a given user """
 
         # Get BUS connection
-        bus = dbus.SystemBus()
-        gosa_dbus = bus.get_object('com.gonicus.gosa', '/com/gonicus/gosa/inventory')
+        #bus = dbus.SystemBus()
+        #gosa_dbus = bus.get_object('com.gonicus.gosa', '/com/gonicus/gosa/inventory')
 
         #print "FIXME: client directly load dummy result insted of calling a dbus method!"
         result = open('/home/hickert/gosa-ng/src/contrib/inventory/dummy.xml').read()
@@ -54,6 +55,10 @@ class Inventory(Plugin):
         # Insert the checksum into the resulting event
         result = result % {'GOsa_Checksum': checksum}
 
-        # Establish amqp connection
-        amqp = PluginRegistry.getInstance("AMQPClientHandler")
-        amqp.sendEvent(result)
+        def runner():
+            # Establish amqp connection
+            amqp = PluginRegistry.getInstance("AMQPClientHandler")
+            amqp.sendEvent(result)
+
+        self.__thread = Thread(target=runner)
+        self.__thread.start()
