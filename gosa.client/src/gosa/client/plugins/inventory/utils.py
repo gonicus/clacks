@@ -56,12 +56,5 @@ class Inventory(Plugin):
         result = result % {'GOsa_Checksum': checksum}
 
         # Establish amqp connection
-        env = Environment.getInstance()
-        try:
-            amqp = PluginRegistry.getInstance("AMQPHandler")
-            proxy = AMQPServiceProxy(amqp.url['source'])
-        except:
-            proxy = AMQPServiceProxy('amqps://amqp:secret@amqp.intranet.gonicus.de:5671/org.gosa')
-
-        proxy.sendEvent(result)
-        return
+        amqp = PluginRegistry.getInstance("AMQPHandler")
+        amqp.sendEvent(result)
