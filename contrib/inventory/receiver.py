@@ -7,6 +7,7 @@ import logging
 from dbxml import *
 from bsddb3.db import *
 from lxml import etree, objectify
+from gosa.common import Environment
 from gosa.common.components import AMQPEventConsumer
 
 
@@ -22,23 +23,27 @@ class InventoryDBXml(object):
     GOsa client-inventory database based on DBXML
     """
 
-    dbname = None
+    dbpath = None
     manager = None
     updateContext = None
     queryContext = None
     container = None
 
-    def __init__(self, dbname):
+    def __init__(self, dbpath):
         """
         Creates and establishes a dbxml container connection.
         """
+
+        # Ensure that the given dbpath is accessible
+        if not os.path.exists(os.path.dirname(dbpath)):
+            os.makedirs(os.path.dirname(dbpath))
 
         # External access is required to validate against a given xml-schema
         self.manager = XmlManager(DBXML_ALLOW_EXTERNAL_ACCESS)
 
         # Open (create) the database container
-        self.dbname = dbname
-        self.container = self.manager.openContainer(self.dbname, DB_CREATE|DBXML_ALLOW_VALIDATION)
+        self.container = self.manager.openContainer(dbpath, DB_CREATE|DBXML_ALLOW_VALIDATION)
+        self.dbpath = "dbxml:///%s" % (dbpath,)
 
         # Create the update context, it is required to query and manipulate data later.
         self.updateContext = self.manager.createUpdateContext()
@@ -54,7 +59,7 @@ class InventoryDBXml(object):
         Checks whether an inventory exists for the given client ID or not.
         """
         results = self.manager.query("collection('%s')/Event/Inventory[ClientUUID='%s']/ClientUUID/string()" % (
-            self.dbname, uuid), self.queryContext)
+            self.dbpath, uuid), self.queryContext)
 
         # Walk through results if there are any and return True in that case.
         results.reset()
@@ -67,7 +72,7 @@ class InventoryDBXml(object):
         Returns the checksum of a specific entry.
         """
         results = self.manager.query("collection('%s')/Event/Inventory[ClientUUID='%s']/GOsaChecksum/string()" % (
-            self.dbname, uuid), self.queryContext)
+            self.dbpath, uuid), self.queryContext)
 
         # Walk through results and return the found checksum
         results.reset()
@@ -82,7 +87,7 @@ class InventoryDBXml(object):
         self.container.putDocument(uuid, data, self.updateContext)
 
     def deleteByUUID(self, uuid):
-        results = self.manager.query("collection('%s')/Event/Inventory[ClientUUID='%s']" % (self.dbname, uuid), self.queryContext)
+        results = self.manager.query("collection('%s')/Event/Inventory[ClientUUID='%s']" % (self.dbpath, uuid), self.queryContext)
         results.reset()
         for value in results:
             self.container.deleteDocument(value.asDocument().getName(), self.updateContext)
@@ -96,7 +101,6 @@ class InventoryConsumer(object):
     Consumer for inventory events emitted from clients.
     """
 
-    xmldbname = "dbinv.dbxml"
     xmldb = None
     log = None
     inv_db = None
@@ -105,11 +109,10 @@ class InventoryConsumer(object):
 
         # Enable logging
         self.log = logging.getLogger(__name__)
-
-        #TODO: Ensure that the database is stored in the correct agent-cache dir. See xmldbname.
+        self.env = Environment.getInstance()
 
         # Try to establish the database connections
-        self.xmldb = InventoryDBXml(self.xmldbname)
+        self.xmldb = InventoryDBXml(self.env.config.get("inventory.dbpath", "/var/lib/gosa/inventory/db.dbxml"))
 
         # Let the user know that things went fine
         self.log.info("Client-inventory databases successfully initialized")
