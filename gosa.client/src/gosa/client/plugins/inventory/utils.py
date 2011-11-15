@@ -29,14 +29,11 @@ class Inventory(Plugin):
         """ Sent a notification to a given user """
 
         # Get BUS connection
-        #bus = dbus.SystemBus()
-        #gosa_dbus = bus.get_object('com.gonicus.gosa', '/com/gonicus/gosa/inventory')
+        bus = dbus.SystemBus()
+        gosa_dbus = bus.get_object('com.gonicus.gosa', '/com/gonicus/gosa/inventory')
 
-        #print "FIXME: client directly load dummy result insted of calling a dbus method!"
-        result = open('/home/hickert/gosa-ng/src/contrib/inventory/dummy.xml').read()
-
-        # # Request inventory result from dbus-client (He is running as root and can do much more than we can)
-        #result = gosa_dbus.inventory(dbus_interface="com.gonicus.gosa")
+        # Request inventory result from dbus-client (He is running as root and can do much more than we can)
+        result = gosa_dbus.inventory(dbus_interface="com.gonicus.gosa")
 
         # Remove time base or frequently changing values (like processes) from the
         # result to generate a useable checksum.
@@ -58,7 +55,7 @@ class Inventory(Plugin):
         def runner():
             # Establish amqp connection
             amqp = PluginRegistry.getInstance("AMQPClientHandler")
-            amqp.sendEvent(result)
+            amqp.sendEvent(str(result))
 
         self.__thread = Thread(target=runner)
         self.__thread.start()
