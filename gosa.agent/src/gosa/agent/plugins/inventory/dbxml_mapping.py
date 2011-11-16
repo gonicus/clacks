@@ -15,7 +15,6 @@ class InventoryDBXml(object):
     GOsa client-inventory database based on DBXML
     """
     dbpath = None
-    dbpath_clear = None
     manager = None
     updateContext = None
     queryContext = None
@@ -27,8 +26,7 @@ class InventoryDBXml(object):
         Creates and establishes a dbxml container connection.
         """
 
-        self.dbpath_clear = dbpath
-        self.dbpath = "dbxml:///%s" % (dbpath,)
+        self.dbpath = dbpath
 
         # Enable logging
         self.log = logging.getLogger(__name__)
@@ -40,6 +38,7 @@ class InventoryDBXml(object):
 
         # External access is required to validate against a given xml-schema
         self.manager = XmlManager(DBXML_ALLOW_EXTERNAL_ACCESS)
+        #self.manager.setLogLevel(LEVEL_INFO, True)
 
         # Create the update context, it is required to query and manipulate data later.
         self.updateContext = self.manager.createUpdateContext()
@@ -50,12 +49,17 @@ class InventoryDBXml(object):
         self.queryContext.setNamespace("gosa", "http://www.gonicus.de/Events")
         self.queryContext.setNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance")
 
+        # Set a variable named $doc which contains the path to the dbxml container
+        # This make queries a lot shorter.
+        self.queryContext.setVariableValue("doc", XmlValue("dbxml:///%s" % (self.dbpath,)));
+
         # Let the user know that things went fine
         self.log.info("inventory database successfully initialized")
 
         # List all known inventory clients
         self.open()
-        results = self.manager.query("collection('%s')/Event/Inventory/ClientUUID/text()" % (self.dbpath,), self.queryContext)
+        results = self.manager.query("collection($doc)/Event/Inventory/"
+                "ClientUUID/text()", self.queryContext)
         results.reset()
         for value in results:
             self.log.debug("inventory database contains client-uuid %s'" % (value.asString(),))
@@ -64,14 +68,14 @@ class InventoryDBXml(object):
         """
         Syncs database changes back to the filesystem
         """
-        self.log.debug("inventory database '%s' synced" % (self.dbpath_clear))
+        self.log.debug("inventory database '%s' synced" % (self.dbpath))
         self.container.sync()
 
     def close(self):
         """
         Closes the opened inventory container
         """
-        self.log.debug("inventory database '%s' closed" % (self.dbpath_clear))
+        self.log.debug("inventory database '%s' closed" % (self.dbpath))
         self.container.close()
 
     def open(self):
@@ -80,19 +84,19 @@ class InventoryDBXml(object):
         """
 
         # Open (create) the database container
-        if self.manager.existsContainer(self.dbpath_clear) != 0:
-            self.log.debug("inventory database '%s' opened" % (self.dbpath_clear))
-            self.container = self.manager.openContainer(self.dbpath_clear)
+        if self.manager.existsContainer(self.dbpath) != 0:
+            self.log.debug("inventory database '%s' opened" % (self.dbpath))
+            self.container = self.manager.openContainer(self.dbpath)
         else:
-            self.log.debug("inventory database '%s' created and opened" % (self.dbpath_clear))
-            self.container = self.manager.createContainer(self.dbpath_clear, DBXML_ALLOW_VALIDATION, XmlContainer.NodeContainer)
+            self.log.debug("inventory database '%s' created and opened" % (self.dbpath))
+            self.container = self.manager.createContainer(self.dbpath, DBXML_ALLOW_VALIDATION, XmlContainer.NodeContainer)
 
     def hardwareUUIDExists(self, huuid):
         """
         Checks whether an inventory exists for the given client ID or not.
         """
-        results = self.manager.query("collection('%s')/Event/Inventory[HardwareUUID='%s']/HardwareUUID/string()" % (
-            self.dbpath, huuid), self.queryContext)
+        results = self.manager.query("collection($doc)/Event/Inventory"
+                "[HardwareUUID='%s']/HardwareUUID/string()" % (huuid), self.queryContext)
 
         # Walk through results if there are any and return True in that case.
         results.reset()
@@ -102,8 +106,8 @@ class InventoryDBXml(object):
         """
         Returns the ClientUUID used by the given HardwareUUID.
         """
-        results = self.manager.query("collection('%s')/Event/Inventory[HardwareUUID='%s']/ClientUUID/string()" % (
-            self.dbpath, huuid), self.queryContext)
+        results = self.manager.query("collection($doc)/Event/Inventory"
+                "[HardwareUUID='%s']/ClientUUID/string()" % (huuid), self.queryContext)
 
         # Walk through results and return the ClientUUID
         results.reset()
@@ -116,8 +120,8 @@ class InventoryDBXml(object):
         """
         Returns the checksum of a specific entry.
         """
-        results = self.manager.query("collection('%s')/Event/Inventory[ClientUUID='%s']/GOsaChecksum/string()" % (
-            self.dbpath, uuid), self.queryContext)
+        results = self.manager.query("collection($doc)/Event/Inventory"
+                "[ClientUUID='%s']/GOsaChecksum/string()" % (uuid), self.queryContext)
 
         # Walk through results and return the found checksum
         results.reset()
@@ -133,12 +137,12 @@ class InventoryDBXml(object):
         self.container.putDocument(huuid, data, self.updateContext)
 
         # Update the entries HardwareUUID to the correct (encoded) one.
-        self.manager.query("replace value of node "
-                "collection('%s')/Event/Inventory[ClientUUID='%s']/HardwareUUID with '%s'" % (
-                    self.dbpath, uuid, huuid), self.queryContext)
+        self.manager.query("replace value of node collection($doc)/Event/Inventory"
+                "[ClientUUID='%s']/HardwareUUID with '%s'" % (uuid, huuid), self.queryContext)
 
     def deleteByHardwareUUID(self, huuid):
-        results = self.manager.query("collection('%s')/Event/Inventory[HardwareUUID='%s']" % (self.dbpath, huuid), self.queryContext)
+        results = self.manager.query("collection($doc)/Event/Inventory"
+                "[HardwareUUID='%s']" % (huuid), self.queryContext)
         results.reset()
         if results.size() == 1:
             self.container.deleteDocument(value.asDocument().getName(), self.updateContext)
