@@ -3,10 +3,10 @@
 
 import os
 import logging
-from dbxml import *
-from bsddb3.db import *
 from lxml import etree, objectify
 from gosa.common import Environment
+from dbxml import *
+from bsddb3.db import *
 
 
 class InventoryDBXml(object):

@@ -11,7 +11,7 @@ from gosa.common import Environment
 from gosa.common.components import AMQPEventConsumer, Plugin
 from gosa.common.components.amqp import EventConsumer
 from gosa.common.components.registry import PluginRegistry
-from gosa.agent.plugins.inventory.dbxml import InventoryDBXml
+from gosa.agent.plugins.inventory.dbxml_mapping import InventoryDBXml
 
 
 
