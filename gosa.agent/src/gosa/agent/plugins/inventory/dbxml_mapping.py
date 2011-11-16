@@ -6,6 +6,10 @@ from dbxml import *
 from bsddb3.db import *
 
 
+class DbxmlException(Exception):
+    pass
+
+
 class InventoryDBXml(object):
     """
     GOsa client-inventory database based on DBXML
@@ -55,10 +59,7 @@ class InventoryDBXml(object):
 
         # Walk through results if there are any and return True in that case.
         results.reset()
-        #TODO: fix me
-        for value in results:
-            return True
-        return False
+        return(results.size() != 0)
 
     def getClientUUIDByHardwareUUID(self, huuid):
         """
@@ -69,9 +70,10 @@ class InventoryDBXml(object):
 
         # Walk through results and return the ClientUUID
         results.reset()
-        for value in results:
-            return value.asString()
-        return None
+        if results.size() == 1:
+            return(results.next().asString())
+        else:
+            raise DbxmlException("No or more than one ClientUUID was found for HardwareUUID")
 
     def getChecksumByUUID(self, uuid):
         """
@@ -82,9 +84,10 @@ class InventoryDBXml(object):
 
         # Walk through results and return the found checksum
         results.reset()
-        for value in results:
-            return value.asString()
-        return None
+        if results.size() == 1:
+            return(results.next().asString())
+        else:
+            raise DbxmlException("No or more than one checksums found for ClientUUID=%s" % (uuid))
 
     def addClientInventoryData(self, uuid, huuid, data):
         """
@@ -100,6 +103,8 @@ class InventoryDBXml(object):
     def deleteByHardwareUUID(self, huuid):
         results = self.manager.query("collection('%s')/Event/Inventory[HardwareUUID='%s']" % (self.dbpath, huuid), self.queryContext)
         results.reset()
-        for value in results:
+        if results.size() == 1:
             self.container.deleteDocument(value.asDocument().getName(), self.updateContext)
+        else:
+            raise DbxmlException("No or more than one document found, removal aborted!")
         return None

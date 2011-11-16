@@ -19,14 +19,15 @@ if __name__ == "__main__":
     uc = mgr.createUpdateContext()
 
     # Create the database container on demand
-    if mgr.existsContainer(containerName) != 0:
-        print "XML DB existiert bereits!"
-        cont = mgr.openContainer(containerName)
-    else:
-        print "XML DB erstellt!"
-        cont = mgr.createContainer(containerName, DBXML_ALLOW_VALIDATION, XmlContainer.NodeContainer)
-        cont.putDocument(r"garnele", open('data/xml_content.xml').read(), uc)
-        cont.putDocument(r"independence", open('data/xml_content2.xml').read(), uc)
+    cont = mgr.openContainer(containerName, DB_CREATE|DBXML_ALLOW_VALIDATION)
+    #if mgr.existsContainer(containerName) != 0:
+    #    print "XML DB existiert bereits!"
+    #    cont = mgr.openContainer(containerName)
+    #else:
+    #    print "XML DB erstellt!"
+    #    cont = mgr.createContainer(containerName, DBXML_ALLOW_VALIDATION, XmlContainer.NodeContainer)
+    #    cont.putDocument(r"garnele", open('data/xml_content.xml').read(), uc)
+    #    cont.putDocument(r"independence", open('data/xml_content2.xml').read(), uc)
 
     # Create query context and populate used namespaces
     qc = mgr.createQueryContext()
@@ -50,9 +51,9 @@ if __name__ == "__main__":
         for value in cversion:
             print "   is using client version: %s" % (value.asString(),)
 
-    # Remove garnele from the collection add re-add it
-    cont.deleteDocument(r"garnele", uc)
-    cont.putDocument(r"garnele", open('data/xml_content.xml').read(), uc)
+    ## Remove garnele from the collection add re-add it
+    #cont.deleteDocument(r"garnele", uc)
+    #cont.putDocument(r"garnele", open('data/xml_content.xml').read(), uc)
 
     # Query for the used DeviceIDs
     print "\nListing DeviceIDs"
@@ -62,9 +63,9 @@ if __name__ == "__main__":
     for value in results:
         print " * %s" % (value.asString(),)
 
-    # Update the DeviceID of garnele to dummy
-    print "\nUpdating DeviceID of garnele to Dummy"
-    mgr.query("replace value of node collection('%s')/Event/Inventory[DeviceID='garnele']/DeviceID with 'Dummy'" % (containerName,), qc)
+    ## Update the DeviceID of garnele to dummy
+    #print "\nUpdating DeviceID of garnele to Dummy"
+    #mgr.query("replace value of node collection('%s')/Event/Inventory[DeviceID='garnele']/DeviceID with 'Dummy'" % (containerName,), qc)
 
     # Query for the used DeviceIDs
     print "\nListing DeviceIDs"

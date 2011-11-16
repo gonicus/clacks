@@ -34,10 +34,11 @@ class InventoryConsumer(Plugin):
         self.env = Environment.getInstance()
 
         # Try to establish the database connections
-        self.xmldb = InventoryDBXml(self.env.config.get("inventory.dbpath", "/var/lib/gosa/inventory/db.dbxml"))
+        path = self.env.config.get("inventory.dbpath", "/var/lib/gosa/inventory/db.dbxml")
+        self.xmldb = InventoryDBXml(path)
 
         # Let the user know that things went fine
-        self.log.info("inventory databases successfully initialized")
+        self.log.info("inventory databases successfully initialized in '%s'" % (path,))
 
         # Create event consumer
         if not skip_serve:
