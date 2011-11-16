@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-import os
-import StringIO
 import logging
 from dbxml import *
 from bsddb3.db import *
-from lxml import etree, objectify
+from lxml import etree
 from gosa.common import Environment
-from gosa.common.components import AMQPEventConsumer, Plugin
+from gosa.common.components import Plugin
 from gosa.common.components.amqp import EventConsumer
 from gosa.common.components.registry import PluginRegistry
 from gosa.agent.plugins.inventory.dbxml_mapping import InventoryDBXml

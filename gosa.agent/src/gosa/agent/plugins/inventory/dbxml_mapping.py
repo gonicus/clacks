@@ -1,9 +1,6 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 import os
 import logging
-from lxml import etree, objectify
 from gosa.common import Environment
 from dbxml import *
 from bsddb3.db import *
@@ -13,14 +10,12 @@ class InventoryDBXml(object):
     """
     GOsa client-inventory database based on DBXML
     """
-
     dbpath = None
     manager = None
     updateContext = None
     queryContext = None
     container = None
-    env = None
-    log = None
+
 
     def __init__(self, dbpath):
         """
@@ -60,6 +55,7 @@ class InventoryDBXml(object):
 
         # Walk through results if there are any and return True in that case.
         results.reset()
+        #TODO: fix me
         for value in results:
             return True
         return False
