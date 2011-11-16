@@ -26,7 +26,7 @@ class InventoryConsumer(Plugin):
     inv_db = None
 
 
-    def __init__(self):
+    def __init__(self, skip_serve=False):
         # Enable logging
         self.log = logging.getLogger(__name__)
         self.env = Environment.getInstance()
@@ -38,15 +38,16 @@ class InventoryConsumer(Plugin):
         self.log.info("inventory databases successfully initialized")
 
         # Create event consumer
-        amqp = PluginRegistry.getInstance('AMQPHandler')
-        EventConsumer(self.env,
-            amqp.getConnection(),
-            xquery="""
-                declare namespace f='http://www.gonicus.de/Events';
-                let $e := ./f:Event
-                return $e/f:Inventory
-            """,
-            callback=self.process)
+        if not skip_serve:
+            amqp = PluginRegistry.getInstance('AMQPHandler')
+            EventConsumer(self.env,
+                amqp.getConnection(),
+                xquery="""
+                    declare namespace f='http://www.gonicus.de/Events';
+                    let $e := ./f:Event
+                    return $e/f:Inventory
+                """,
+                callback=self.process)
 
     def process(self, data):
         """
@@ -60,6 +61,7 @@ class InventoryConsumer(Plugin):
             binfo = data.xpath('/gosa:Event/gosa:Inventory', namespaces={'gosa': 'http://www.gonicus.de/Events'})[0]
             hostname = str(binfo['Hostname'])
             uuid = str(binfo['ClientUUID'])
+            huuid = str(binfo['HardwareUUID'])
             checksum = str(binfo['GOsaChecksum'])
             self.log.debug("inventory event received for hostname %s (%s)" % (hostname, uuid))
 
@@ -68,20 +70,36 @@ class InventoryConsumer(Plugin):
             self.log.error(msg)
             raise InventoryException(msg)
 
-        # The client is already part of our inventory database
-        if self.xmldb.uuidExists(uuid):
+        # The given hardware-uuid is already part of our inventory database
+        if self.xmldb.hardwareUUIDExists(huuid):
 
-            # Now check if the checksums match or if we've to update our databases
-            if checksum == self.xmldb.getChecksumByUuid(uuid):
-                self.log.debug("record already exists and checksums (%s) are equal - entry up to date" % checksum)
-            else:
-                self.log.debug("record already exists but the checksum has changed - updating entry")
-                self.xmldb.deleteByUUID(uuid)
+            # Now check if the client-uuid for the given hardware-uuid has changed.
+            # This is the case, when the same hardware is joined as new gosa-client again.
+            # - In that case: drop the old entry and add the new one.
+            if uuid != self.xmldb.getClientUUIDByHardwareUUID(huuid):
+                self.xmldb.deleteByHardwareUUID(huuid)
                 datas = etree.tostring(data, pretty_print=True)
                 self.xmldb.addClientInventoryData(uuid, datas)
 
+            # The client-uuid is still the same
+            else:
+
+                # Now check if the checksums match or if we've to update our databases
+                if checksum == self.xmldb.getChecksumByUUID(uuid):
+                    self.log.debug("record for '%s' with uuid (%s) already exists and checksums are equal"
+                            " - entry up to date" % (hostname, uuid))
+                else:
+                    self.log.debug("record for '%s' with uuid (%s) already exists but the checksum has changed"
+                            " - updating entry" % (hostname, uuid))
+                    self.xmldb.deleteByHardwareUUID(huuid)
+                    datas = etree.tostring(data, pretty_print=True)
+                    self.xmldb.addClientInventoryData(uuid, datas)
+
         else:
             # A new client has send its inventory data - Import data into dbxml
-            self.log.debug("adding new record for %s" % uuid)
+            self.log.debug("adding new record for '%s' with uuid (%s)" % (hostname, uuid))
             datas = etree.tostring(data, pretty_print=True)
             self.xmldb.addClientInventoryData(uuid, datas)
+
+    def decodeHardwareUUID(self):
+        return("Bla")

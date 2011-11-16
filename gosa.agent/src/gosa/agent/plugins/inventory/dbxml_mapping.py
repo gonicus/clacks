@@ -46,12 +46,12 @@ class InventoryDBXml(object):
         self.queryContext.setNamespace("gosa", "http://www.gonicus.de/Events")
         self.queryContext.setNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance")
 
-    def uuidExists(self, uuid):
+    def hardwareUUIDExists(self, huuid):
         """
         Checks whether an inventory exists for the given client ID or not.
         """
-        results = self.manager.query("collection('%s')/Event/Inventory[ClientUUID='%s']/ClientUUID/string()" % (
-            self.dbpath, uuid), self.queryContext)
+        results = self.manager.query("collection('%s')/Event/Inventory[HardwareUUID='%s']/HardwareUUID/string()" % (
+            self.dbpath, huuid), self.queryContext)
 
         # Walk through results if there are any and return True in that case.
         results.reset()
@@ -60,7 +60,20 @@ class InventoryDBXml(object):
             return True
         return False
 
-    def getChecksumByUuid(self, uuid):
+    def getClientUUIDByHardwareUUID(self, huuid):
+        """
+        Returns the ClientUUID used by the given HardwareUUID.
+        """
+        results = self.manager.query("collection('%s')/Event/Inventory[HardwareUUID='%s']/ClientUUID/string()" % (
+            self.dbpath, huuid), self.queryContext)
+
+        # Walk through results and return the ClientUUID
+        results.reset()
+        for value in results:
+            return value.asString()
+        return None
+
+    def getChecksumByUUID(self, uuid):
         """
         Returns the checksum of a specific entry.
         """
@@ -79,8 +92,8 @@ class InventoryDBXml(object):
         """
         self.container.putDocument(uuid, data, self.updateContext)
 
-    def deleteByUUID(self, uuid):
-        results = self.manager.query("collection('%s')/Event/Inventory[ClientUUID='%s']" % (self.dbpath, uuid), self.queryContext)
+    def deleteByHardwareUUID(self, huuid):
+        results = self.manager.query("collection('%s')/Event/Inventory[HardwareUUID='%s']" % (self.dbpath, huuid), self.queryContext)
         results.reset()
         for value in results:
             self.container.deleteDocument(value.asDocument().getName(), self.updateContext)
