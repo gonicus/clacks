@@ -19,11 +19,17 @@ class InventoryDBXml(object):
     updateContext = None
     queryContext = None
     container = None
+    env = None
+    log = None
 
     def __init__(self, dbpath):
         """
         Creates and establishes a dbxml container connection.
         """
+
+        # Enable logging
+        self.log = logging.getLogger(__name__)
+        self.env = Environment.getInstance()
 
         # Ensure that the given dbpath is accessible
         if not os.path.exists(os.path.dirname(dbpath)):
