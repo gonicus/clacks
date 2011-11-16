@@ -10,11 +10,11 @@
 			xsi:schemaLocation="http://www.gonicus.de/Events inventory.xsd ">
 
 			<Inventory>
-				<GOsaChecksum>%(GOsa_Checksum)s</GOsaChecksum>
+				<GOsaChecksum>%%CHECKSUM%%</GOsaChecksum>
 				<DeviceID><xsl:value-of select="/REQUEST/DEVICEID" /></DeviceID>
 				<QueryType><xsl:value-of select="/REQUEST/QUERY" /></QueryType>
 				<ClientVersion><xsl:value-of select="/REQUEST/CONTENT/VERSIONCLIENT" /></ClientVersion>
-				<ClientUUID><xsl:value-of select="/REQUEST/CONTENT/HARDWARE/NAME" /></ClientUUID>
+				<ClientUUID>%%CUUID%%</ClientUUID>
 				<HardwareUUID>%%HWUUID%%</HardwareUUID>
 				<Hostname><xsl:value-of select="/REQUEST/CONTENT/HARDWARE/NAME" /></Hostname>
 

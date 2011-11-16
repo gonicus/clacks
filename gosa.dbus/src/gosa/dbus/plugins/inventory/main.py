@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import re
 import shutil
 import subprocess
 import dbus.service
@@ -76,8 +77,8 @@ class DBusInventoryHandler(dbus.service.Object, Plugin):
         else:
             raise InventoryException("No report files could be found in '%s'" % (path,))
 
-        # Add the encoded HardwareUUID to the result
-        import re
+        # Add the ClientUUID and the encoded HardwareUUID to the result
+        result = re.sub(r"%%CUUID%%", self.env.uuid, result)
         result = re.sub(r"%%HWUUID%%", huuid, result)
 
         # Remove temporary created files created by the inventory agent.

@@ -77,6 +77,8 @@ class InventoryConsumer(Plugin):
             # This is the case, when the same hardware is joined as new gosa-client again.
             # - In that case: drop the old entry and add the new one.
             if uuid != self.xmldb.getClientUUIDByHardwareUUID(huuid):
+                self.log.debug("record for '%s' with uuid (%s) already exists but hardware-uuid has changed"
+                        " - removing old entry and adding new one" % (hostname, uuid))
                 self.xmldb.deleteByHardwareUUID(huuid)
                 datas = etree.tostring(data, pretty_print=True)
                 self.xmldb.addClientInventoryData(uuid, datas)

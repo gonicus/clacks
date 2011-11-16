@@ -2,6 +2,7 @@
 import dbus
 import StringIO
 import hashlib
+import re
 from threading import Thread
 from lxml import etree
 from gosa.common.event import EventMaker
@@ -50,7 +51,7 @@ class Inventory(Plugin):
         checksum = m.hexdigest()
 
         # Insert the checksum into the resulting event
-        result = result % {'GOsa_Checksum': checksum}
+        result = re.sub(r"%%CHECKSUM%%", checksum, result)
 
         def runner():
             # Establish amqp connection
