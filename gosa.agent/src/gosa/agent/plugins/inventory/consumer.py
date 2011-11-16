@@ -72,7 +72,10 @@ class InventoryConsumer(Plugin):
             self.log.error(msg)
             raise InventoryException(msg)
 
+        #TODO: Use the clients real hardware uuid - I dont't know how to get it.
         chuuid = "8C492981-4A82-11CB-B73B-FB1675859266"
+
+        # Decode received hardware uuid
         huuid = self.decodeHardwareUUID(chuuid.replace("-", ""), huuid)
 
         # The given hardware-uuid is already part of our inventory database
