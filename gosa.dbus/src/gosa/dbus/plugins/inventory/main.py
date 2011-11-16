@@ -4,12 +4,15 @@ import re
 import shutil
 import subprocess
 import dbus.service
+import random
+import string
 from pkg_resources import resource_filename
 from lxml import etree, objectify
 from gosa.common import Environment
 from gosa.common.components import Plugin
 from gosa.dbus import get_system_bus
-
+from Crypto.Cipher import AES
+from base64 import b64encode
 
 class InventoryException(Exception):
     pass
@@ -79,8 +82,30 @@ class DBusInventoryHandler(dbus.service.Object, Plugin):
 
         # Add the ClientUUID and the encoded HardwareUUID to the result
         result = re.sub(r"%%CUUID%%", self.env.uuid, result)
-        result = re.sub(r"%%HWUUID%%", huuid, result)
+        result = re.sub(r"%%HWUUID%%", self.encrypt_hardware_uuid(huuid), result)
 
         # Remove temporary created files created by the inventory agent.
         shutil.rmtree('/tmp/fusion_tmp')
         return result
+
+    def encrypt_hardware_uuid(self, huuid):
+        """
+        Encrypts the hardware uuid
+        """
+        
+        # Create a random string which will be added to the hardware-uuid
+        # before we encrypt it
+        data = ''.join(random.choice(string.letters + string.digits) for x in range(20)) + huuid
+        key = huuid.replace('-', '')
+
+        # Calculate padding length
+        key_pad = AES.block_size - len(key) % AES.block_size
+        data_pad = AES.block_size - len(data) % AES.block_size
+
+        # Pad data PKCS12 style
+        if key_pad != AES.block_size:
+            key += chr(key_pad) * key_pad
+        if data_pad != AES.block_size:
+            data += chr(data_pad) * data_pad
+
+        return b64encode(AES.new(key, AES.MODE_ECB).encrypt(data))
