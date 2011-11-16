@@ -1,6 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 import os
 import StringIO
 import logging
@@ -14,11 +12,7 @@ from gosa.common.components.registry import PluginRegistry
 from gosa.agent.plugins.inventory.dbxml_mapping import InventoryDBXml
 
 
-
 class InventoryException(Exception):
-    """
-    Inventory exception class
-    """
     pass
 
 
@@ -26,15 +20,15 @@ class InventoryConsumer(Plugin):
     """
     Consumer for inventory events emitted from clients.
     """
-
     _target_ = 'inventory'
+    _priority_ = 92
 
     xmldb = None
     log = None
     inv_db = None
 
-    def __init__(self):
 
+    def __init__(self):
         # Enable logging
         self.log = logging.getLogger(__name__)
         self.env = Environment.getInstance()
@@ -43,7 +37,7 @@ class InventoryConsumer(Plugin):
         self.xmldb = InventoryDBXml(self.env.config.get("inventory.dbpath", "/var/lib/gosa/inventory/db.dbxml"))
 
         # Let the user know that things went fine
-        self.log.info("Client-inventory databases successfully initialized")
+        self.log.info("inventory databases successfully initialized")
 
         # Create event consumer
         amqp = PluginRegistry.getInstance('AMQPHandler')
@@ -63,15 +57,16 @@ class InventoryConsumer(Plugin):
         """
 
         # Try to extract the clients uuid and hostname out of the received data
-        self.log.debug("New incoming client inventory event")
+        self.log.debug("new incoming client inventory event")
         try:
             binfo = data.xpath('/gosa:Event/gosa:Inventory', namespaces={'gosa': 'http://www.gonicus.de/Events'})[0]
             hostname = str(binfo['Hostname'])
             uuid = str(binfo['ClientUUID'])
             checksum = str(binfo['GOsaChecksum'])
-            self.log.debug("Client inventory event received for hostname %s (%s)" % (hostname, uuid))
+            self.log.debug("inventory event received for hostname %s (%s)" % (hostname, uuid))
+
         except Exception as e:
-            msg = "Failed extract client info out of received Inventory-Event! Error was: %s" % (str(e), )
+            msg = "failed extract client info out of received Inventory event: %s" % str(e)
             self.log.error(msg)
             raise InventoryException(msg)
 
@@ -80,15 +75,15 @@ class InventoryConsumer(Plugin):
 
             # Now check if the checksums match or if we've to update our databases
             if checksum == self.xmldb.getChecksumByUuid(uuid):
-                self.log.debug("Client record already exists and checksums (%s) are equal, skipping addition." % (checksum))
+                self.log.debug("record already exists and checksums (%s) are equal - entry up to date" % checksum)
             else:
-                self.log.debug("Client record already exists but the checksum had changed, updated entry.")
+                self.log.debug("record already exists but the checksum has changed - updating entry")
                 self.xmldb.deleteByUUID(uuid)
                 datas = etree.tostring(data, pretty_print=True)
                 self.xmldb.addClientInventoryData(uuid, datas)
-        else:
 
+        else:
             # A new client has send its inventory data - Import data into dbxml
-            self.log.debug("Client record is new and will be added!")
+            self.log.debug("adding new record for %s" % uuid)
             datas = etree.tostring(data, pretty_print=True)
             self.xmldb.addClientInventoryData(uuid, datas)
