@@ -15,6 +15,7 @@ class InventoryDBXml(object):
     GOsa client-inventory database based on DBXML
     """
     dbpath = None
+    dbpath_clear = None
     manager = None
     updateContext = None
     queryContext = None
@@ -25,6 +26,9 @@ class InventoryDBXml(object):
         """
         Creates and establishes a dbxml container connection.
         """
+
+        self.dbpath_clear = dbpath
+        self.dbpath = "dbxml:///%s" % (dbpath,)
 
         # Enable logging
         self.log = logging.getLogger(__name__)
@@ -37,10 +41,6 @@ class InventoryDBXml(object):
         # External access is required to validate against a given xml-schema
         self.manager = XmlManager(DBXML_ALLOW_EXTERNAL_ACCESS)
 
-        # Open (create) the database container
-        self.container = self.manager.openContainer(dbpath, DB_CREATE|DBXML_ALLOW_VALIDATION)
-        self.dbpath = "dbxml:///%s" % (dbpath,)
-
         # Create the update context, it is required to query and manipulate data later.
         self.updateContext = self.manager.createUpdateContext()
 
@@ -49,6 +49,43 @@ class InventoryDBXml(object):
         self.queryContext.setNamespace("", "http://www.gonicus.de/Events")
         self.queryContext.setNamespace("gosa", "http://www.gonicus.de/Events")
         self.queryContext.setNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance")
+
+        # Let the user know that things went fine
+        self.log.info("inventory database successfully initialized")
+
+        # List all known inventory clients
+        self.open()
+        results = self.manager.query("collection('%s')/Event/Inventory/ClientUUID/text()" % (self.dbpath,), self.queryContext)
+        results.reset()
+        for value in results:
+            self.log.debug("inventory database contains client-uuid %s'" % (value.asString(),))
+
+    def sync(self):
+        """
+        Syncs database changes back to the filesystem
+        """
+        self.log.debug("inventory database '%s' synced" % (self.dbpath_clear))
+        self.container.sync()
+
+    def close(self):
+        """
+        Closes the opened inventory container
+        """
+        self.log.debug("inventory database '%s' closed" % (self.dbpath_clear))
+        self.container.close()
+
+    def open(self):
+        """
+        Opens the inventory container file.
+        """
+
+        # Open (create) the database container
+        if self.manager.existsContainer(self.dbpath_clear) != 0:
+            self.log.debug("inventory database '%s' opened" % (self.dbpath_clear))
+            self.container = self.manager.openContainer(self.dbpath_clear)
+        else:
+            self.log.debug("inventory database '%s' created and opened" % (self.dbpath_clear))
+            self.container = self.manager.createContainer(self.dbpath_clear, DBXML_ALLOW_VALIDATION, XmlContainer.NodeContainer)
 
     def hardwareUUIDExists(self, huuid):
         """

@@ -37,9 +37,6 @@ class InventoryConsumer(Plugin):
         path = self.env.config.get("inventory.dbpath", "/var/lib/gosa/inventory/db.dbxml")
         self.xmldb = InventoryDBXml(path)
 
-        # Let the user know that things went fine
-        self.log.info("inventory databases successfully initialized in '%s'" % (path,))
-
         # Create event consumer
         if not skip_serve:
             amqp = PluginRegistry.getInstance('AMQPHandler')
@@ -80,6 +77,7 @@ class InventoryConsumer(Plugin):
         huuid = self.decodeHardwareUUID(chuuid.replace("-", ""), huuid)
 
         # The given hardware-uuid is already part of our inventory database
+        self.xmldb.open()
         if self.xmldb.hardwareUUIDExists(huuid):
 
             # Now check if the client-uuid for the given hardware-uuid has changed.
@@ -111,6 +109,9 @@ class InventoryConsumer(Plugin):
             self.log.debug("adding new record for '%s' with uuid (%s)" % (hostname, uuid))
             datas = etree.tostring(data, pretty_print=True)
             self.xmldb.addClientInventoryData(uuid, huuid, datas)
+
+        # Sync database container - things will not work without it - even the database cannot be opened again
+        self.xmldb.sync()
 
     def decodeHardwareUUID(self, key, data):
         """
