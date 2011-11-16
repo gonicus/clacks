@@ -93,7 +93,6 @@ setup(
         gosa-agent.plugins.gravatar.utils = gosa.agent.plugins.gravatar.utils:GravatarUtils
         gosa-agent.plugins.goto.network = gosa.agent.plugins.goto.network:NetworkUtils
         gosa-agent.plugins.goto.client_service = gosa.agent.plugins.goto.client_service:ClientService
-        gosa-agent.plugins.inventory.consumer = gosa.agent.plugins.inventory.consumer:InventoryConsumer
 
         [gosa.object.type]
         type.string = gosa.agent.objects.types.base:StringAttribute
