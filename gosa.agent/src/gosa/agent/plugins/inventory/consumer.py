@@ -8,6 +8,8 @@ from gosa.common.components import Plugin
 from gosa.common.components.amqp import EventConsumer
 from gosa.common.components.registry import PluginRegistry
 from gosa.agent.plugins.inventory.dbxml_mapping import InventoryDBXml
+from base64 import b64decode
+from Crypto.Cipher import AES
 
 
 class InventoryException(Exception):
@@ -70,6 +72,9 @@ class InventoryConsumer(Plugin):
             self.log.error(msg)
             raise InventoryException(msg)
 
+        chuuid = "8C492981-4A82-11CB-B73B-FB1675859266"
+        huuid = self.decodeHardwareUUID(chuuid.replace("-", ""), huuid)
+
         # The given hardware-uuid is already part of our inventory database
         if self.xmldb.hardwareUUIDExists(huuid):
 
@@ -81,7 +86,7 @@ class InventoryConsumer(Plugin):
                         " - removing old entry and adding new one" % (hostname, uuid))
                 self.xmldb.deleteByHardwareUUID(huuid)
                 datas = etree.tostring(data, pretty_print=True)
-                self.xmldb.addClientInventoryData(uuid, datas)
+                self.xmldb.addClientInventoryData(uuid, huuid, datas)
 
             # The client-uuid is still the same
             else:
@@ -95,13 +100,23 @@ class InventoryConsumer(Plugin):
                             " - updating entry" % (hostname, uuid))
                     self.xmldb.deleteByHardwareUUID(huuid)
                     datas = etree.tostring(data, pretty_print=True)
-                    self.xmldb.addClientInventoryData(uuid, datas)
+                    self.xmldb.addClientInventoryData(uuid, huuid, datas)
 
         else:
             # A new client has send its inventory data - Import data into dbxml
             self.log.debug("adding new record for '%s' with uuid (%s)" % (hostname, uuid))
             datas = etree.tostring(data, pretty_print=True)
-            self.xmldb.addClientInventoryData(uuid, datas)
+            self.xmldb.addClientInventoryData(uuid, huuid, datas)
 
-    def decodeHardwareUUID(self):
-        return("Bla")
+    def decodeHardwareUUID(self, key, data):
+        """
+        Decodes the received HardwareUUID string
+        """
+        data = b64decode(data)
+        key_pad = AES.block_size - len(key) % AES.block_size
+        if key_pad != AES.block_size:
+            key += chr(key_pad) * key_pad
+        data = AES.new(key, AES.MODE_ECB).decrypt(data)
+        return data[20:-ord(data[-1])]
+
+

@@ -86,11 +86,16 @@ class InventoryDBXml(object):
             return value.asString()
         return None
 
-    def addClientInventoryData(self, uuid, data):
+    def addClientInventoryData(self, uuid, huuid, data):
         """
         Adds client inventory data to the database.
         """
-        self.container.putDocument(uuid, data, self.updateContext)
+        self.container.putDocument(huuid, data, self.updateContext)
+
+        # Update the entries HardwareUUID to the correct (encoded) one.
+        self.manager.query("replace value of node "
+                "collection('%s')/Event/Inventory[ClientUUID='%s']/HardwareUUID with '%s'" % (
+                    self.dbpath, uuid, huuid), self.queryContext)
 
     def deleteByHardwareUUID(self, huuid):
         results = self.manager.query("collection('%s')/Event/Inventory[HardwareUUID='%s']" % (self.dbpath, huuid), self.queryContext)
