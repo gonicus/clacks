@@ -11,6 +11,7 @@
 			<xs:element name="QueryType" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="ClientVersion" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="ClientUUID" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="HardwareUUID" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Hostname" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="Controller" type="Controller" maxOccurs="unbounded" minOccurs="0"></xs:element>
 			<xs:element name="Modem" type="Modem" maxOccurs="unbounded" minOccurs="0"></xs:element>

@@ -15,6 +15,7 @@
 				<QueryType><xsl:value-of select="/REQUEST/QUERY" /></QueryType>
 				<ClientVersion><xsl:value-of select="/REQUEST/CONTENT/VERSIONCLIENT" /></ClientVersion>
 				<ClientUUID><xsl:value-of select="/REQUEST/CONTENT/HARDWARE/NAME" /></ClientUUID>
+				<HardwareUUID>%%HWUUID%%</HardwareUUID>
 				<Hostname><xsl:value-of select="/REQUEST/CONTENT/HARDWARE/NAME" /></Hostname>
 
 				<xsl:for-each select="/REQUEST/CONTENT/CONTROLLERS">

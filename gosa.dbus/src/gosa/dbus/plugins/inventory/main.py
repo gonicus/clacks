@@ -58,20 +58,28 @@ class DBusInventoryHandler(dbus.service.Object, Plugin):
         checksum = None
         if flist:
 
+            # Try to extract HardwareUUID
+            tmp = objectify.fromstring(open(os.path.join('/tmp/fusion_tmp',flist[0])).read())
+            huuid = tmp.xpath('/REQUEST/CONTENT/HARDWARE/UUID/text()')[0]
+
             # Open the first found result file and transform it into a GOsa usable
             # event-style xml.
             try:
                 xml_doc = etree.parse(os.path.join('/tmp/fusion_tmp',flist[0]))
                 xslt_doc = etree.parse(resource_filename("gosa.dbus", "plugins/inventory/fusionToGosa.xsl"))
                 transform = etree.XSLT(xslt_doc)
-                result = transform(xml_doc)
+                result = etree.tostring(transform(xml_doc))
             except Exception as e:
-                raise InventoryException("Failed to read and transform fusion-invetory-agent results (%s)!" % (
+                raise InventoryException("Failed to read and transform fusion-inventory-agent results (%s)!" % (
                     os.path.join('/tmp/fusion_tmp',flist[0])))
 
         else:
             raise InventoryException("No report files could be found in '%s'" % (path,))
 
+        # Add the encoded HardwareUUID to the result
+        import re
+        result = re.sub(r"%%HWUUID%%", huuid, result)
+
         # Remove temporary created files created by the inventory agent.
         shutil.rmtree('/tmp/fusion_tmp')
-        return etree.tostring(result)
+        return result
