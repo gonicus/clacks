@@ -145,6 +145,7 @@ class InventoryDBXml(object):
                 "[HardwareUUID='%s']" % (huuid), self.queryContext)
         results.reset()
         if results.size() == 1:
+            value = results.next()
             self.container.deleteDocument(value.asDocument().getName(), self.updateContext)
         else:
             raise DbxmlException("No or more than one document found, removal aborted!")
