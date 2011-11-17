@@ -205,3 +205,9 @@ class GOsaObjectProxy(object):
 
         if not found:
             raise AttributeError("no such attribute '%s'" % name)
+
+
+    def asXml(self):
+        return self.__base.asXml()
+
+

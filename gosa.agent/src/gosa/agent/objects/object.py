@@ -4,9 +4,12 @@ import re
 import zope.event
 import ldap
 import ldap.dn
+import StringIO
+import pkg_resources
 from logging import getLogger
 from zope.interface import Interface, implements
 from gosa.agent.objects.backend.registry import ObjectBackendRegistry
+from lxml import etree
 
 # Status
 STATUS_OK = 0
@@ -442,9 +445,6 @@ class GOsaObject(object):
         if not toStore:
             return
 
-        from pprint import pprint
-        pprint(toStore)
-
         # Handle by backend
         p_backend = getattr(self, '_backend')
         obj = self
@@ -845,6 +845,58 @@ class GOsaObject(object):
             be.retract(self.uuid, [a for a in remove_attrs if getattr(obj, a)], self._backendAttrs[backend] if backend in self._backendAttrs else None)
 
         zope.event.notify(ObjectChanged("post retract", obj))
+
+    def asXml(self):
+        """
+        Represents the current object as xml.
+        """
+
+        # Get the xml definitions combined for all objects.
+        cname = self.__class__.__name__
+        xmldefs = etree.tostring(self._objectFactory.getXmlDefinitionsCombined())
+
+        # Create a document wich contains all necessary information to create
+        # xml reprentation of our own.
+        # The class-name, all property values and the object definitions
+        classtag = etree.Element("class")
+        classtag.text = cname
+
+        # Create a list of all class information required to build an
+        # xml represention of this class
+        props = getattr(self, '__properties')
+        propertiestag = etree.Element("properties")
+        attrs = {}
+        attrs['entry-uuid'] = [self.uuid]
+        attrs['dn'] = [self.dn]
+        attrs['modify-date'] = [str(self.modifyTimestamp)]
+
+        # Add class properties to the list of information
+        for key in props:
+            attrs[key] = props[key]['value']
+
+        # Build a xml represention of the collected properties
+        for key in attrs:
+            t = etree.Element("value")
+            for value in attrs[key]:
+                v = etree.Element("value")
+                v.text = str(value)
+                n = etree.Element('name')
+                n.text = str(key)
+                t.append(n)
+                t.append(v)
+            propertiestag.append(t)
+
+        # Combine all collected class info in a single xml file, this
+        # enables us to compute things using xsl
+        xml = "<merge>%s<defs>%s</defs>%s</merge>" % (etree.tostring(classtag), \
+                xmldefs, etree.tostring(propertiestag))
+
+        # Transform xml-combination into a useable xml-class representation
+        xml_doc = etree.parse(StringIO.StringIO(xml))
+        xslt_doc = etree.parse(pkg_resources.resource_filename('gosa.agent', 'data/object_to_xml.xsl'))
+        transform = etree.XSLT(xslt_doc)
+        res = transform(xml_doc)
+        return etree.tostring(res, pretty_print=True)
 
 
 class IObjectChanged(Interface):

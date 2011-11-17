@@ -41,6 +41,7 @@ import logging
 import zope.event
 import ldap
 import ldap.dn
+import StringIO
 from lxml import etree, objectify
 from gosa.common import Environment
 from gosa.common.components import PluginRegistry
@@ -88,6 +89,7 @@ class GOsaObjectFactory(object):
     __var_regex = re.compile('^[a-z_][a-z0-9\-_]*$', re.IGNORECASE)
     __attribute_type = {}
     __object_types = {}
+    __xml_objects_combined = None
 
     def __init__(self):
         self.env = Environment.getInstance()
@@ -127,6 +129,12 @@ class GOsaObjectFactory(object):
 
     def getAttributeTypes(self):
         return(self.__attribute_type)
+
+    def getXmlDefinitionsCombined(self):
+        """
+        Returns a complete XML of all defined objects.
+        """
+        return self.__xml_objects_combined
 
     def getIndexedAttributes(self):
         res = []
@@ -326,7 +334,9 @@ class GOsaObjectFactory(object):
         path = pkg_resources.resource_filename('gosa.agent', 'data/objects')
 
         # Include built in schema
+        schema_paths = []
         for f in [n for n in os.listdir(path) if n.endswith(os.extsep + 'xml')]:
+            schema_paths.append(os.path.join(path, f))
             self.__parse_schema(os.path.join(path, f))
 
         # Include additional schema configuration
@@ -334,6 +344,19 @@ class GOsaObjectFactory(object):
         if os.path.isdir(path):
             for f in [n for n in os.listdir(path) if n.endswith(os.extsep + 'xml')]:
                 self.__parse_schema(os.path.join(path, f))
+
+        # Combine all object definition file into one single doc
+        import pprint
+        xstr = "<Paths xmlns=\"http://www.gonicus.de/Objects\">";
+        for path in schema_paths:
+            xstr += "<Path>%s</Path>" % path
+        xstr += "</Paths>";
+
+        # Now combine all files into one single xml construct
+        xml_doc = etree.parse(StringIO.StringIO(xstr))
+        xslt_doc = etree.parse(pkg_resources.resource_filename('gosa.agent', 'data/combine_objects.xsl'))
+        transform = etree.XSLT(xslt_doc)
+        self.__xml_objects_combined = transform(xml_doc)
 
     def __parse_schema(self, path):
         """
