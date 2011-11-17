@@ -8,8 +8,6 @@ from gosa.common.components import Plugin
 from gosa.common.components.amqp import EventConsumer
 from gosa.common.components.registry import PluginRegistry
 from gosa.agent.plugins.inventory.dbxml_mapping import InventoryDBXml
-from base64 import b64decode
-from Crypto.Cipher import AES
 
 
 class InventoryException(Exception):
@@ -70,12 +68,6 @@ class InventoryConsumer(Plugin):
             self.log.error(msg)
             raise InventoryException(msg)
 
-        #TODO: Use the clients real hardware uuid - I dont't know how to get it.
-        chuuid = "8C492981-4A82-11CB-B73B-FB1675859266"
-
-        # Decode received hardware uuid
-        huuid = self.decodeHardwareUUID(chuuid.replace("-", ""), huuid)
-
         # The given hardware-uuid is already part of our inventory database
         self.xmldb.open()
         if self.xmldb.hardwareUUIDExists(huuid):
@@ -112,16 +104,3 @@ class InventoryConsumer(Plugin):
 
         # Sync database container - things will not work without it - even the database cannot be opened again
         self.xmldb.sync()
-
-    def decodeHardwareUUID(self, key, data):
-        """
-        Decodes the received HardwareUUID string
-        """
-        data = b64decode(data)
-        key_pad = AES.block_size - len(key) % AES.block_size
-        if key_pad != AES.block_size:
-            key += chr(key_pad) * key_pad
-        data = AES.new(key, AES.MODE_ECB).decrypt(data)
-        return data[20:-ord(data[-1])]
-
-

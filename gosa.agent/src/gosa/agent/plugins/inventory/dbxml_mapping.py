@@ -136,10 +136,6 @@ class InventoryDBXml(object):
         """
         self.container.putDocument(huuid, data, self.updateContext)
 
-        # Update the entries HardwareUUID to the correct (encoded) one.
-        self.manager.query("replace value of node collection($doc)/Event/Inventory"
-                "[ClientUUID='%s']/HardwareUUID with '%s'" % (uuid, huuid), self.queryContext)
-
     def deleteByHardwareUUID(self, huuid):
         results = self.manager.query("collection($doc)/Event/Inventory"
                 "[HardwareUUID='%s']" % (huuid), self.queryContext)
