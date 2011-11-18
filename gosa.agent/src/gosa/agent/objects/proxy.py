@@ -226,30 +226,39 @@ class GOsaObjectProxy(object):
 
         # Create a list of all class information required to build an
         # xml represention of this class
-        atypes = self.__factory.getAttributeTypes()
         propertiestag = etree.Element("properties")
         attrs = {}
-        attrs['entry-uuid'] = [str(self.__base.uuid)]
         attrs['dn'] = [str(self.__base.dn)]
+        attrs['entry-uuid'] = [str(self.__base.uuid)]
         attrs['modify-date'] = [str(self.__base.modifyTimestamp)]
 
-        # Create a list of extensions
+        # Create a list of extensions and their properties
         exttag = etree.Element("extensions")
+        atypes = self.__factory.getAttributeTypes()
         for name in self.__extensions.keys():
             if self.__extensions[name]:
                 ext = etree.Element("extension")
                 ext.text = name
                 exttag.append(ext)
+
+                # Append extension properties to the list of attributes
+                # passed to the xsl
                 props = self.__extensions[name].getProperties()
                 for propname in props:
+
+                    # Use the object-type conversion method to get valid item string-representations.
                     v = props[propname]['value']
                     attrs[propname] = atypes[props[propname]['type']].convert_to("String",v)
 
         # Build a xml represention of the collected properties
         for key in attrs:
+
+            # Skip empty ones
             if not len(attrs[key]):
                 continue
-            t = etree.Element("value")
+
+            # Build up xml-elements
+            t = etree.Element("property")
             for value in attrs[key]:
                 v = etree.Element("value")
                 v.text = str(value)
@@ -261,9 +270,8 @@ class GOsaObjectProxy(object):
 
         # Combine all collected class info in a single xml file, this
         # enables us to compute things using xsl
-        xml = "<merge>%s<defs>%s</defs>%s%s</merge>" % (etree.tostring(classtag,pretty_print=True), \
-                xmldefs, etree.tostring(propertiestag, pretty_print=True), \
-                etree.tostring(exttag, pretty_print=True))
+        xml = "<merge>%s<defs>%s</defs>%s%s</merge>" % (etree.tostring(classtag), \
+                xmldefs, etree.tostring(propertiestag), etree.tostring(exttag))
 
         # Transform xml-combination into a useable xml-class representation
         xml_doc = etree.parse(StringIO.StringIO(xml))
