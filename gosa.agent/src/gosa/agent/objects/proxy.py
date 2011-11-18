@@ -232,9 +232,17 @@ class GOsaObjectProxy(object):
         attrs['entry-uuid'] = [str(self.__base.uuid)]
         attrs['modify-date'] = [str(self.__base.modifyTimestamp)]
 
+        # Add base class properties
+        atypes = self.__factory.getAttributeTypes()
+        props = self.__base.getProperties()
+        for propname in props:
+
+            # Use the object-type conversion method to get valid item string-representations.
+            v = props[propname]['value']
+            attrs[propname] = atypes[props[propname]['type']].convert_to("String",v)
+
         # Create a list of extensions and their properties
         exttag = etree.Element("extensions")
-        atypes = self.__factory.getAttributeTypes()
         for name in self.__extensions.keys():
             if self.__extensions[name]:
                 ext = etree.Element("extension")
