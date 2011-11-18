@@ -25,7 +25,5 @@ print "Receive object as xml"
 print "*" * 80
 
 
-for name, val in obj.asXml().items():
-    print "### %s ###" % (name,)
-    print val
+print  obj.asXml()
 

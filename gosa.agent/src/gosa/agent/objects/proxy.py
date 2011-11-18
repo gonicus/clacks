@@ -29,6 +29,9 @@ This fragment will add the *PosixUser* extension to the object, while
 will list the available extension types for that specific object.
 ----
 """
+import StringIO
+import pkg_resources
+from lxml import etree
 from ldap.dn import str2dn, dn2str
 from logging import getLogger
 from gosa.common import Environment
@@ -211,11 +214,58 @@ class GOsaObjectProxy(object):
         """
         Returns XML representations for the base-object and all its extensions.
         """
-        res = {}
-        res[self.__base.__class__.__name__] = self.__base.asXml()
-        for name, ext in self.__extensions.items():
-            if ext:
-                res[name] = ext.asXml()
-        return res
 
+        # Get the xml definitions combined for all objects.
+        xmldefs = etree.tostring(self.__factory.getXmlDefinitionsCombined())
 
+        # Create a document wich contains all necessary information to create
+        # xml reprentation of our own.
+        # The class-name, all property values and the object definitions
+        classtag = etree.Element("class")
+        classtag.text = self.__base.__class__.__name__
+
+        # Create a list of all class information required to build an
+        # xml represention of this class
+        atypes = self.__factory.getAttributeTypes()
+        propertiestag = etree.Element("properties")
+        attrs = {}
+        attrs['entry-uuid'] = [str(self.__base.uuid)]
+        attrs['dn'] = [str(self.__base.dn)]
+        attrs['modify-date'] = [str(self.__base.modifyTimestamp)]
+
+        # Create a list of extensions
+        exttag = etree.Element("extensions")
+        for name in self.__extensions.keys():
+            if self.__extensions[name]:
+                ext = etree.Element("extension")
+                ext.text = name
+                props = self.__extensions[name].getProperties()
+                for propname in props:
+                    v = props[propname]['value']
+                    attrs[propname] = atypes[props[propname]['type']].convert_to("String",v)
+
+        # Build a xml represention of the collected properties
+        for key in attrs:
+            if not len(attrs[key]):
+                continue
+            t = etree.Element("value")
+            for value in attrs[key]:
+                v = etree.Element("value")
+                v.text = str(value)
+                n = etree.Element('name')
+                n.text = str(key)
+                t.append(n)
+                t.append(v)
+            propertiestag.append(t)
+
+        # Combine all collected class info in a single xml file, this
+        # enables us to compute things using xsl
+        xml = "<merge>%s<defs>%s</defs>%s</merge>" % (etree.tostring(classtag,pretty_print=True), \
+                xmldefs, etree.tostring(propertiestag, pretty_print=True))
+
+        # Transform xml-combination into a useable xml-class representation
+        xml_doc = etree.parse(StringIO.StringIO(xml))
+        xslt_doc = etree.parse(pkg_resources.resource_filename('gosa.agent', 'data/object_to_xml.xsl'))
+        transform = etree.XSLT(xslt_doc)
+        res = transform(xml_doc)
+        return etree.tostring(res, pretty_print=True)
