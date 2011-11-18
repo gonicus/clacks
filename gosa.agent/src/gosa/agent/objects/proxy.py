@@ -208,6 +208,14 @@ class GOsaObjectProxy(object):
 
 
     def asXml(self):
-        return self.__base.asXml()
+        """
+        Returns XML representations for the base-object and all its extensions.
+        """
+        res = {}
+        res[self.__base.__class__.__name__] = self.__base.asXml()
+        for name, ext in self.__extensions.items():
+            if ext:
+                res[name] = ext.asXml()
+        return res
 
 

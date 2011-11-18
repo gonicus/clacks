@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
+from pprint import pprint
 from gosa.agent.objects import GOsaObjectProxy
 from gosa.agent.objects.index import ObjectIndex, SCOPE_SUB
 
@@ -24,5 +25,7 @@ print "Receive object as xml"
 print "*" * 80
 
 
-print obj.asXml()
+for name, val in obj.asXml().items():
+    print "### %s ###" % (name,)
+    print val
 

@@ -863,16 +863,17 @@ class GOsaObject(object):
 
         # Create a list of all class information required to build an
         # xml represention of this class
+        atypes = self._objectFactory.getAttributeTypes()
         props = getattr(self, '__properties')
         propertiestag = etree.Element("properties")
         attrs = {}
-        attrs['entry-uuid'] = [self.uuid]
-        attrs['dn'] = [self.dn]
+        attrs['entry-uuid'] = [str(self.uuid)]
+        attrs['dn'] = [str(self.dn)]
         attrs['modify-date'] = [str(self.modifyTimestamp)]
 
         # Add class properties to the list of information
         for key in props:
-            attrs[key] = props[key]['value']
+            attrs[key] = atypes[props[key]['type']].convert_to("String", props[key]['value'])
 
         # Build a xml represention of the collected properties
         for key in attrs:

@@ -29,6 +29,9 @@ class StringAttribute(AttributeType):
     def _convert_to_unicodestring(self, value):
         return(map(lambda x: unicode(x), value))
 
+    def _convert_from_datetime(self, value):
+        return(map(lambda x: str(x), value))
+
 class IntegerAttribute(AttributeType):
     __alias__ = "Integer"
 
@@ -43,6 +46,9 @@ class IntegerAttribute(AttributeType):
 
     def values_match(self, value1, value2):
         return(value1 == value2)
+
+    def _convert_to_string(self, value):
+        return(map(lambda x: str(x), value))
 
 
 class BooleanAttribute(AttributeType):
@@ -60,6 +66,9 @@ class BooleanAttribute(AttributeType):
     def values_match(self, value1, value2):
         return(value1 == value2)
 
+    def _convert_to_string(self, value):
+        return(map(lambda x: str(x), value))
+
 
 class BinaryAttribute(AttributeType):
     __alias__ = "Binary"
@@ -75,6 +84,9 @@ class BinaryAttribute(AttributeType):
 
     def values_match(self, value1, value2):
         return(value1 == value2)
+
+    def _convert_to_string(self, value):
+        return(map(lambda x: str(x), value))
 
 
 class UnicodeStringAttribute(AttributeType):
@@ -92,6 +104,8 @@ class UnicodeStringAttribute(AttributeType):
     def values_match(self, value1, value2):
         return(value1 == value2)
 
+    def _convert_to_string(self, value):
+        return(map(lambda x: str(x), value))
 
 class DateAttribute(AttributeType):
     __alias__ = "Date"
@@ -108,6 +122,8 @@ class DateAttribute(AttributeType):
     def values_match(self, value1, value2):
         return(value1 == value2)
 
+    def _convert_to_string(self, value):
+        return(map(lambda x: str(x), value))
 
 class TimestampAttribute(AttributeType):
     __alias__ = "Timestamp"
@@ -123,3 +139,6 @@ class TimestampAttribute(AttributeType):
 
     def values_match(self, value1, value2):
         return(value1 == value2)
+
+    def _convert_to_string(self, value):
+        return(map(lambda x: str(x), value))
