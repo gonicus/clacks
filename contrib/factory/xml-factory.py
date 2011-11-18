@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import StringIO
 import logging
+from lxml import etree, objectify
 from pprint import pprint
 from gosa.agent.objects import GOsaObjectProxy
 from gosa.agent.objects.index import ObjectIndex, SCOPE_SUB
@@ -25,5 +27,9 @@ print "Receive object as xml"
 print "*" * 80
 
 
-print  obj.asXml()
-
+xml = obj.asXml()
+print xml
+schema_root = etree.XML(open("/home/hickert/gosa-ng/src/gosa.agent/src/gosa/agent/data/object_to_xml.xsd").read())
+schema = etree.XMLSchema(schema_root)
+parser = objectify.makeparser(schema=schema)
+xml = objectify.fromstring(xml, parser)

@@ -36,6 +36,8 @@
 				</xsl:for-each>
 			</CanExtend>
 			-->
+
+			<Attributes>
 			<xsl:for-each select="/merge/defs/g:Objects/g:Object[g:Name=$class]/g:Attributes/g:Attribute">
 
 				<!-- Skip attributes that do not have to be indexed-->
@@ -52,6 +54,7 @@
 					</Attribute>
 				</xsl:if>
 			</xsl:for-each>
+			</Attributes>
 		</Object>
 	</xsl:template>
 </xsl:stylesheet>
