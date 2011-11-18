@@ -6,7 +6,7 @@
 	
     <complexType name="Object">
         <all>
-        	<element name="Name" type="string" maxOccurs="1"
+        	<element name="Name" type="token" maxOccurs="1"
         		minOccurs="1"
         	>
         	</element>
@@ -19,7 +19,7 @@
         		type="gosa:BackendParameters" maxOccurs="1" minOccurs="0"
         	>
         	</element>
-        	<element name="Backend" type="string" maxOccurs="1"
+        	<element name="Backend" type="token" maxOccurs="1"
         		minOccurs="1"
         	>
         	</element>
@@ -64,7 +64,7 @@
 
     <complexType name="Attribute">
         <all>
-        	<element name="Name" type="string" maxOccurs="1"
+        	<element name="Name" type="token" maxOccurs="1"
         		minOccurs="1"
         	>
         	</element>
@@ -76,7 +76,7 @@
         		maxOccurs="1" minOccurs="0"
         	>
         	</element>
-        	<element name="Backend" type="string" maxOccurs="1"
+        	<element name="Backend" type="token" maxOccurs="1"
         		minOccurs="0"
         	>
         	</element>
@@ -182,7 +182,7 @@
 
     <complexType name="ContainerType">
     	<sequence>
-    		<element name="Type" type="string" maxOccurs="unbounded" minOccurs="1"></element>
+    		<element name="Type" type="token" maxOccurs="unbounded" minOccurs="1"></element>
     	</sequence>
     </complexType>
 
@@ -202,7 +202,7 @@
 
     <complexType name="Method">
     	<all>
-    		<element name="Name" type="string" maxOccurs="1"
+    		<element name="Name" type="token" maxOccurs="1"
     			minOccurs="1"
     		>
     		</element>
@@ -224,7 +224,7 @@
 
     <complexType name="Parameter">
     	<all>
-    		<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+    		<element name="Name" type="token" maxOccurs="1" minOccurs="1"></element>
     		<element name="Type" type="gosa:AttributeTypes" maxOccurs="1" minOccurs="1"></element>
     		<element name="Required" type="boolean" maxOccurs="1" minOccurs="0"></element>
     	</all>
@@ -268,7 +268,7 @@
 
     <complexType name="Filter">
     	<sequence>
-    		<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+    		<element name="Name" type="token" maxOccurs="1" minOccurs="1"></element>
     		<element name="Param" type="string" maxOccurs="unbounded"
     			minOccurs="0"
     		>
@@ -294,7 +294,7 @@
 
     <complexType name="Condition">
     	<sequence>
-    		<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+    		<element name="Name" type="token" maxOccurs="1" minOccurs="1"></element>
     		<element name="Param" type="string" maxOccurs="unbounded" minOccurs="0"></element>
     	</sequence>
     </complexType>
@@ -338,7 +338,7 @@
     </complexType>
 
     <simpleType name="NewType">
-    	<restriction base="string">
+    	<restriction base="token">
     		<enumeration value="or"></enumeration>
     		<enumeration value="and"></enumeration>
     	</restriction>
@@ -360,7 +360,7 @@
 
     <complexType name="MethodParameter">
     	<all>
-    		<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+    		<element name="Name" type="token" maxOccurs="1" minOccurs="1"></element>
     		<element name="Required" type="boolean" maxOccurs="1"
     			minOccurs="0"
     		>
@@ -410,8 +410,8 @@
 
     <complexType name="Reference">
     	<sequence>
-    		<element name="Object" type="string"></element>
-            <element name="Attribute" type="string"></element>
+	    <element name="Object" type="token"></element>
+            <element name="Attribute" type="token"></element>
         </sequence>
     </complexType>
 </schema>
