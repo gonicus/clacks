@@ -15,19 +15,29 @@
 			<DN><xsl:value-of select="/merge/properties/value[name='dn']/value/text()" /></DN>
 			<LastChanged><xsl:value-of select="/merge/properties/value[name='modify-date']/value/text()" /></LastChanged>
 			<Extensions>
+				<xsl:for-each select="/merge/extensions">
+					<Extension>
+						<xsl:value-of select="extension" />
+					</Extension>
+				</xsl:for-each>
+			</Extensions>
+
+			<!--
+			<AvailableExtensions>
 				<xsl:for-each select="/merge/defs/g:Objects/g:Object[g:Extends/g:Value=$class]">
 					<Extension>
 						<xsl:value-of select="g:Name" />
 					</Extension>
 				</xsl:for-each>
-			</Extensions>
-			<Extends>
+			</AvailableExtensions>
+			<CanExtend>
 				<xsl:for-each select="/merge/defs/g:Objects/g:Object[g:Name=$class]/g:Extends">
 					<Extension>
 						<xsl:value-of select="g:Value" />
 					</Extension>
 				</xsl:for-each>
-			</Extends>
+			</CanExtend>
+			-->
 			<xsl:for-each select="/merge/defs/g:Objects/g:Object[g:Name=$class]/g:Attributes/g:Attribute">
 				<xsl:if test="g:Indexed='true'">
 					<xsl:variable name="propname">

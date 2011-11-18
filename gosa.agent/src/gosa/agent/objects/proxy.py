@@ -239,6 +239,7 @@ class GOsaObjectProxy(object):
             if self.__extensions[name]:
                 ext = etree.Element("extension")
                 ext.text = name
+                exttag.append(ext)
                 props = self.__extensions[name].getProperties()
                 for propname in props:
                     v = props[propname]['value']
@@ -260,8 +261,9 @@ class GOsaObjectProxy(object):
 
         # Combine all collected class info in a single xml file, this
         # enables us to compute things using xsl
-        xml = "<merge>%s<defs>%s</defs>%s</merge>" % (etree.tostring(classtag,pretty_print=True), \
-                xmldefs, etree.tostring(propertiestag, pretty_print=True))
+        xml = "<merge>%s<defs>%s</defs>%s%s</merge>" % (etree.tostring(classtag,pretty_print=True), \
+                xmldefs, etree.tostring(propertiestag, pretty_print=True), \
+                etree.tostring(exttag, pretty_print=True))
 
         # Transform xml-combination into a useable xml-class representation
         xml_doc = etree.parse(StringIO.StringIO(xml))
