@@ -44,6 +44,7 @@ class GOsaObject(object):
     log = None
     createTimestamp = None
     modifyTimestamp = None
+    myProperties = None
 
 
     def __init__(self, where=None, mode="update"):
@@ -56,10 +57,13 @@ class GOsaObject(object):
         # Group attributes by Backend
         propsByBackend = {}
         props = getattr(self, '__properties')
-        for key in props:
+
+        self.myProperties = copy.deepcopy(props)
+
+        for key in self.myProperties:
 
             # Initialize an empty array for each backend
-            for be in props[key]['backend']:
+            for be in self.myProperties[key]['backend']:
                 if be not in propsByBackend:
                     propsByBackend[be] = []
 
@@ -80,29 +84,26 @@ class GOsaObject(object):
                 self._read(where)
 
         # Use default value for newly created objects.
-        for key in props:
-            if not(props[key]['value']) and props[key]['default'] != None:
-                props[key]['value'] = copy.deepcopy(props[key]['default'])
+        for key in self.myProperties:
+            if not(self.myProperties[key]['value']) and self.myProperties[key]['default'] != None:
+                self.myProperties[key]['value'] = copy.deepcopy(self.myProperties[key]['default'])
 
                 # Only set status to modified for values with a valid default.
-                if len(props[key]['default']):
-                    props[key]['status'] = STATUS_CHANGED
+                if len(self.myProperties[key]['default']):
+                    self.myProperties[key]['status'] = STATUS_CHANGED
 
     def listProperties(self):
-        props = getattr(self, '__properties')
-        return(props.keys())
+        return(self.myProperties.keys())
 
     def getProperties(self):
-        props = getattr(self, '__properties')
-        return(copy.deepcopy(props))
+        return(copy.deepcopy(self.myProperties))
 
     def listMethods(self):
         methods = getattr(self, '__methods')
         return(methods.keys())
 
     def hasattr(self, attr):
-        props = getattr(self, '__properties')
-        return attr in props
+        return attr in self.myProperties
 
     def _read(self, where):
         """
@@ -113,8 +114,6 @@ class GOsaObject(object):
         request per backend will be performed.
 
         """
-        props = getattr(self, '__properties')
-
         # Generate missing values
         if _is_uuid.match(where):
             #pylint: disable=E1101
@@ -142,7 +141,7 @@ class GOsaObject(object):
             try:
                 # Create a dictionary with all attributes we want to fetch
                 # {attribute_name: type, name: type}
-                info = dict([(k, props[k]['backend_type']) for k in self._propsByBackend[backend]])
+                info = dict([(k, self.myProperties[k]['backend_type']) for k in self._propsByBackend[backend]])
                 self.log.debug("loading attributes for backend '%s': %s" % (backend, str(info)))
                 be = ObjectBackendRegistry.getBackend(backend)
                 attrs = be.load(self.uuid, info)
@@ -162,69 +161,68 @@ class GOsaObject(object):
                     continue
 
                 # Keep original values, they may be overwritten in the in-filters.
-                props[key]['in_value'] = props[key]['value'] = attrs[key]
-                self.log.debug("%s: %s" % (key, props[key]['value']))
+                self.myProperties[key]['in_value'] = self.myProperties[key]['value'] = attrs[key]
+                self.log.debug("%s: %s" % (key, self.myProperties[key]['value']))
 
         # Once we've loaded all properties from the backend, execute the
         # in-filters.
-        for key in props:
+        for key in self.myProperties:
 
             # Skip loading in-filters for None values
-            if props[key]['value'] == None:
-                props[key]['in_value'] = props[key]['value'] = []
+            if self.myProperties[key]['value'] == None:
+                self.myProperties[key]['in_value'] = self.myProperties[key]['value'] = []
                 continue
 
             # Execute defined in-filters.
-            if len(props[key]['in_filter']):
-                self.log.debug("found %s in-filter(s)  for attribute '%s'" % (str(len(props[key]['in_filter'])),key))
+            if len(self.myProperties[key]['in_filter']):
+                self.log.debug("found %s in-filter(s)  for attribute '%s'" % (str(len(self.myProperties[key]['in_filter'])),key))
 
                 # Execute each in-filter
-                for in_f in props[key]['in_filter']:
-                    self.__processFilter(in_f, key, props)
+                for in_f in self.myProperties[key]['in_filter']:
+                    self.__processFilter(in_f, key, self.myProperties)
 
         # Convert the received type into the target type if not done already
         #pylint: disable=E1101
         atypes = self._objectFactory.getAttributeTypes()
-        for key in props:
+        for key in self.myProperties:
 
             # Convert values from incoming backend-type to required type
-            if props[key]['value']:
-                a_type = props[key]['type']
-                be_type = props[key]['backend_type']
+            if self.myProperties[key]['value']:
+                a_type = self.myProperties[key]['type']
+                be_type = self.myProperties[key]['backend_type']
 
                 #  Convert all values to required type
-                if not atypes[a_type].is_valid_value(props[key]['value']):
+                if not atypes[a_type].is_valid_value(self.myProperties[key]['value']):
                     try:
-                        props[key]['value'] = atypes[a_type].convert_from(be_type, props[key]['value'])
+                        self.myProperties[key]['value'] = atypes[a_type].convert_from(be_type, self.myProperties[key]['value'])
                     except Exception as e:
                         self.log.error("conversion of '%s' from '%s' to type '%s' failed: %s", (key, be_type, a_type, str(e)))
                     else:
                         self.log.debug("converted '%s' from type '%s' to type '%s'!" % (key, be_type, a_type))
 
             # Keep the initial value
-            props[key]['last_value'] = props[key]['orig_value'] = copy.deepcopy(props[key]['value'])
+            self.myProperties[key]['last_value'] = self.myProperties[key]['orig_value'] = copy.deepcopy(self.myProperties[key]['value'])
 
     def _delattr_(self, name):
         """
         Deleter method for properties.
         """
-        props = getattr(self, '__properties')
-        if name in props:
+        if name in self.myProperties:
 
             # Check if this attribute is blocked by another attribute and its value.
-            for bb in  props[name]['blocked_by']:
-                if bb['value'] in props[bb['name']]['value']:
+            for bb in  self.myProperties[name]['blocked_by']:
+                if bb['value'] in self.myProperties[bb['name']]['value']:
                     raise AttributeError("This attribute is blocked by %(name)s = '%(value)s'!" % bb)
 
             # Do not allow to write to read-only attributes.
-            if props[name]['readonly']:
+            if self.myProperties[name]['readonly']:
                 raise AttributeError("Cannot write to readonly attribute '%s'" % name)
 
             # Do not allow remove mandatory attributes
-            if props[name]['mandatory']:
+            if self.myProperties[name]['mandatory']:
                 raise AttributeError("Cannot remove mandatory attribute '%s'" % name)
 
-            props[name]['value'] = []
+            self.myProperties[name]['value'] = []
         else:
             raise AttributeError("no such property '%s'" % name)
 
@@ -249,24 +247,23 @@ class GOsaObject(object):
             return
 
         # Try to save as property value
-        props = getattr(self, '__properties')
-        if name in props:
+        if name in self.myProperties:
 
             # Check if this attribute is blocked by another attribute and its value.
-            for bb in  props[name]['blocked_by']:
-                if bb['value'] in props[bb['name']]['value']:
+            for bb in  self.myProperties[name]['blocked_by']:
+                if bb['value'] in self.myProperties[bb['name']]['value']:
                     raise AttributeError("This attribute is blocked by %(name)s = '%(value)s'!" % bb)
 
             # Do not allow to write to read-only attributes.
-            if props[name]['readonly']:
+            if self.myProperties[name]['readonly']:
                 raise AttributeError("Cannot write to readonly attribute '%s'" % name)
 
             # Check if the given value has to match one out of a given list.
-            if props[name]['values'] != None and value not in props[name]['values']:
-                raise TypeError("Invalid value given for %s! Expected is one of %s" % (name,str(props[name]['values'])))
+            if self.myProperties[name]['values'] != None and value not in self.myProperties[name]['values']:
+                raise TypeError("Invalid value given for %s! Expected is one of %s" % (name,str(self.myProperties[name]['values'])))
 
             # Set the new value
-            if props[name]['multivalue']:
+            if self.myProperties[name]['multivalue']:
 
                 # Check if the new value is s list.
                 if type(value) != list:
@@ -276,15 +273,15 @@ class GOsaObject(object):
                 new_value = [value]
 
             # Check if the new value is valid
-            s_type = props[name]['type']
+            s_type = self.myProperties[name]['type']
             #pylint: disable=E1101
             if not self._objectFactory.getAttributeTypes()[s_type].is_valid_value(new_value):
                 raise TypeError("Invalid value given for %s" % (name,))
 
 
             # Validate value
-            if props[name]['validator']:
-                res, error = self.__processValidator(props[name]['validator'], name, new_value)
+            if self.myProperties[name]['validator']:
+                res, error = self.__processValidator(self.myProperties[name]['validator'], name, new_value)
                 if not res:
                     if len(error):
                         raise ValueError("Property (%s) validation failed! Last error was: %s" % (name, error[0]))
@@ -292,22 +289,22 @@ class GOsaObject(object):
                         raise ValueError("Property (%s) validation failed without error!" % (name,))
 
             # Ensure that unique values stay unique. Let the backend test this.
-            #if props[name]['unique']:
-            #    backendI = ObjectBackendRegistry.getBackend(props[name]['backend'])
+            #if self.myProperties[name]['unique']:
+            #    backendI = ObjectBackendRegistry.getBackend(self.myProperties[name]['backend'])
             #    if not backendI.is_uniq(name, new_value):
             #        raise ObjectException("The property value '%s' for property %s is not unique!" % (value, name))
 
             # Assign the properties new value.
-            props[name]['value'] = new_value
+            self.myProperties[name]['value'] = new_value
             self.log.debug("updated property value of [%s|%s] %s:%s" % (type(self).__name__, self.uuid, name, new_value))
 
             # Update status if there's a change
-            t = props[name]['type']
-            current = copy.deepcopy(props[name]['value'])
+            t = self.myProperties[name]['type']
+            current = copy.deepcopy(self.myProperties[name]['value'])
             #pylint: disable=E1101
-            if not self._objectFactory.getAttributeTypes()[t].values_match(props[name]['value'], props[name]['orig_value']):
-                props[name]['status'] = STATUS_CHANGED
-                props[name]['last_value'] = current
+            if not self._objectFactory.getAttributeTypes()[t].values_match(self.myProperties[name]['value'], self.myProperties[name]['orig_value']):
+                self.myProperties[name]['status'] = STATUS_CHANGED
+                self.myProperties[name]['last_value'] = current
 
         else:
             raise AttributeError("no such property '%s'" % name)
@@ -318,18 +315,17 @@ class GOsaObject(object):
 
         (It differentiates between GOsa-object attributes and class-members)
         """
-        props = getattr(self, '__properties')
         methods = getattr(self, '__methods')
 
         # If the requested property exists in the object-attributes, then return it.
-        if name in props:
+        if name in self.myProperties:
 
             # We can have single and multivalues, return the correct type here.
-            if props[name]['multivalue']:
-                value = props[name]['value']
+            if self.myProperties[name]['multivalue']:
+                value = self.myProperties[name]['value']
             else:
-                if len(props[name]['value']):
-                    value = props[name]['value'][0]
+                if len(self.myProperties[name]['value']):
+                    value = self.myProperties[name]['value'][0]
                 else:
                     value = None
 
@@ -347,9 +343,8 @@ class GOsaObject(object):
         Return the type of a given GOsa-object attribute.
         """
 
-        props = getattr(self, '__properties')
-        if name in props:
-            return props[name]['type']
+        if name in self.myProperties:
+            return self.myProperties[name]['type']
 
         raise AttributeError("no such property '%s'" % name)
 
@@ -358,7 +353,7 @@ class GOsaObject(object):
         Commits changes of an GOsa-object to the corresponding backends.
         """
         # Create a copy to avoid touching the original values
-        props = copy.deepcopy(getattr(self, '__properties'))
+        props = copy.deepcopy(self.myProperties)
 
         # Check if _mode matches with the current object type
         #pylint: disable=E1101
@@ -502,19 +497,16 @@ class GOsaObject(object):
         """
         Reverts all changes made to this object since it was loaded.
         """
-        props = getattr(self, '__properties')
-        for key in props:
-            props[key]['value'] = props[key]['last_value']
+        for key in self.myProperties:
+            self.myProperties[key]['value'] = self.myProperties[key]['last_value']
 
         self.log.debug("reverted object modifications for [%s|%s]" % (type(self).__name__, self.uuid))
 
     def getExclusiveProperties(self):
-        props = getattr(self, '__properties')
-        return [x for x, y in props.items() if not y['foreign']]
+        return [x for x, y in self.myProperties.items() if not y['foreign']]
 
     def getForeignProperties(self):
-        props = getattr(self, '__properties')
-        return [x for x, y in props.items() if y['foreign']]
+        return [x for x, y in self.myProperties.items() if y['foreign']]
 
     def __processValidator(self, fltr, key, value):
         """
@@ -708,13 +700,12 @@ class GOsaObject(object):
 
         # Collect all property values
         propList = {}
-        props = getattr(self, '__properties')
-        for key in props:
-            if props[key]['multivalue']:
-                propList[key] = props[key]['value']
+        for key in self.myProperties:
+            if self.myProperties[key]['multivalue']:
+                propList[key] = self.myProperties[key]['value']
             else:
-                if props[key]['value'] and len(props[key]['value']):
-                    propList[key] = props[key]['value'][0]
+                if self.myProperties[key]['value'] and len(self.myProperties[key]['value']):
+                    propList[key] = self.myProperties[key]['value'][0]
                 else:
                     propList[key] = None
 
@@ -742,13 +733,11 @@ class GOsaObject(object):
         if not self._base_object:
             raise ObjectException("cannot remove non base object - use retract")
 
-        props = getattr(self, '__properties')
-
         # Collect backends
         backends = [getattr(self, '_backend')]
 
         # Collect all used backends
-        for info in props.values():
+        for info in self.myProperties.values():
             for be in info['backend']:
                 if not be in backends:
                    backends.append(be)
@@ -775,13 +764,11 @@ class GOsaObject(object):
         if not self._base_object:
             raise ObjectException("cannot move non base objects")
 
-        props = getattr(self, '__properties')
-
         # Collect backends
         backends = [getattr(self, '_backend')]
 
         # Collect all other backends
-        for info in props.values():
+        for info in self.myProperties.values():
             for be in info['backend']:
                 if not be in backends:
                    backends.append(be)
@@ -808,13 +795,11 @@ class GOsaObject(object):
         if self._base_object:
             raise ObjectException("base objects cannot be retracted")
 
-        props = getattr(self, '__properties')
-
         # Collect backends
         backends = [getattr(self, '_backend')]
         be_attrs = {}
 
-        for prop, info in props.items():
+        for prop, info in self.myProperties.items():
             for backend in info['backend']:
                 if not backend in backends:
                     backends.append(backend)
