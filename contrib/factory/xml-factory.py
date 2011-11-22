@@ -32,10 +32,8 @@ print obj.getXmlObjectSchema()
 
 xml = obj.asXml()
 
-print xml
-
-#schema_root = etree.XML(etree.tostring(obj.getXmlObjectSchema(), pretty_print=True))
-schema_root = etree.XML(open('a').read())
+schema_root = etree.XML(etree.tostring(obj.getXmlObjectSchema(), pretty_print=True))
+#schema_root = etree.XML(open('a').read())
 schema = etree.XMLSchema(schema_root)
 parser = objectify.makeparser(schema=schema)
 xml = objectify.fromstring(xml, parser)

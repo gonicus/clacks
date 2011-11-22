@@ -39,6 +39,7 @@
 
     		<Attributes>
     		<xsl:for-each select="/merge/defs/g:Objects/g:Object[g:Name=$class]/g:Attributes/g:Attribute">
+                <xsl:sort select="g:Name"/>
     			<!-- Skip attributes that do not have to be indexed-->
     			<!--<xsl:if test="g:Indexed='true'">-->
                     <xsl:variable name="propname">

@@ -45,32 +45,69 @@
                             <xsl:value-of select="g:Name" />
                         </xsl:variable>
                         <xsl:for-each select="g:Attributes/g:Attribute">
+                            <xsl:sort select="g:Name"/>
+
                             <xsl:variable name="attr">
                                 <xsl:value-of select="g:Name" />
                             </xsl:variable>
                             <xsl:variable name="type">
                                 <xsl:choose>
-                                    <xsl:when test="g:Type='String'">xsd:string</xsl:when>
-                                    <xsl:when test="g:Type='Integer'">xsd:integer</xsl:when>
-                                    <xsl:when test="g:Type='Boolean'">xsd:string</xsl:when>
-                                    <xsl:when test="g:Type='Timestamp'">xsd:dateTime</xsl:when>
-                                    <xsl:when test="g:Type='Date'">xsd:date</xsl:when>
-                                    <xsl:otherwise>xsd:string</xsl:otherwise>
+                                    <xsl:when test="g:Type='String'">StringAttribute</xsl:when>
+                                    <xsl:when test="g:Type='Integer'">IntegerAttribute</xsl:when>
+                                    <xsl:when test="g:Type='Boolean'">BooleanAttribute</xsl:when>
+                                    <xsl:when test="g:Type='Timestamp'">DateTimeAttribute</xsl:when>
+                                    <xsl:when test="g:Type='Date'">DateAttribute</xsl:when>
+                                    <xsl:otherwise>StringAttribute</xsl:otherwise>
                                 </xsl:choose>
                             </xsl:variable>
+
                             <xsl:element name="xsd:element">
                                 <xsl:attribute name="type"><xsl:value-of select="$type" /></xsl:attribute>
+                                <xsl:attribute name="name"><xsl:value-of select="g:Name" /></xsl:attribute>
+                                <!--
                                 <xsl:attribute name="xmlns">
                                     <xsl:value-of select="concat('http://www.gonicus.de/Objects/',$object)" />
                                 </xsl:attribute>
-                                <xsl:attribute name="name"><xsl:value-of select="g:Name" /></xsl:attribute>
+                                -->
                                 <xsl:attribute name="minOccurs">0</xsl:attribute>
-                                <xsl:attribute name="maxOccurs">unbounded</xsl:attribute>
+                                <xsl:attribute name="maxOccurs">1</xsl:attribute>
                             </xsl:element>
                         </xsl:for-each>
                     </xsl:for-each>
                 </xsd:sequence>
             </xsd:complexType>
+
+            <xsd:complexType name="StringAttribute">
+                <xsd:sequence>
+                    <xsd:element name="value" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="BooleanAttribute">
+                <xsd:sequence>
+                    <xsd:element name="value" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="DateTimeAttribute">
+                <xsd:sequence>
+                    <xsd:element name="value" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="DateAttribute">
+                <xsd:sequence>
+                    <xsd:element name="value" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="IntegerAttribute">
+                <xsd:sequence>
+                    <xsd:element name="value" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+
         </xsd:schema>
     </xsl:template>
 </xsl:stylesheet>
