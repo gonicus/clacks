@@ -249,7 +249,7 @@ class GOsaObjectProxy(object):
 
             # Use the object-type conversion method to get valid item string-representations.
             v = props[propname]['value']
-            attrs[propname] = atypes[props[propname]['type']].convert_to("String",v)
+            attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString",v)
 
         # Create a list of extensions and their properties
         exttag = etree.Element("extensions")
@@ -266,7 +266,7 @@ class GOsaObjectProxy(object):
 
                     # Use the object-type conversion method to get valid item string-representations.
                     v = props[propname]['value']
-                    attrs[propname] = atypes[props[propname]['type']].convert_to("String",v)
+                    attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString",v)
 
         # Build a xml represention of the collected properties
         for key in attrs:
@@ -279,9 +279,9 @@ class GOsaObjectProxy(object):
             t = etree.Element("property")
             for value in attrs[key]:
                 v = etree.Element("value")
-                v.text = str(value)
+                v.text = unicode(value)
                 n = etree.Element('name')
-                n.text = str(key)
+                n.text = unicode(key)
                 t.append(n)
                 t.append(v)
             propertiestag.append(t)
