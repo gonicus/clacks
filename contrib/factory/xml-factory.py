@@ -27,9 +27,15 @@ print "Receive object as xml"
 print "*" * 80
 
 
+print obj.getXmlObjectSchema()
+
+
 xml = obj.asXml()
+
 print xml
-schema_root = etree.XML(open("/home/hickert/gosa-ng/src/gosa.agent/src/gosa/agent/data/object_to_xml.xsd").read())
+
+#schema_root = etree.XML(etree.tostring(obj.getXmlObjectSchema(), pretty_print=True))
+schema_root = etree.XML(open('a').read())
 schema = etree.XMLSchema(schema_root)
 parser = objectify.makeparser(schema=schema)
 xml = objectify.fromstring(xml, parser)
