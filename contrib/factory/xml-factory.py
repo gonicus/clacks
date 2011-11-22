@@ -27,9 +27,6 @@ print "Receive object as xml"
 print "*" * 80
 
 
-print obj.getXmlObjectSchema()
-
-
 xml = obj.asXml()
 
 schema_root = etree.XML(etree.tostring(obj.getXmlObjectSchema(), pretty_print=True))
@@ -37,3 +34,5 @@ schema_root = etree.XML(etree.tostring(obj.getXmlObjectSchema(), pretty_print=Tr
 schema = etree.XMLSchema(schema_root)
 parser = objectify.makeparser(schema=schema)
 xml = objectify.fromstring(xml, parser)
+
+print etree.tostring(xml, pretty_print=True)

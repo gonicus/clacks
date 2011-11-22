@@ -3,11 +3,10 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <xsl:output method="xml" indent="yes" encoding="UTF-8" />
     <xsl:template match="/">
-    	<Object xmlns="http://www.gonicus.de/Objects" 
-    		xmlns:g="http://www.gonicus.de/Objects">
-    		<xsl:variable name="class">
-    			<xsl:value-of select="/merge/class" />
-    		</xsl:variable>
+        <xsl:variable name="class">
+            <xsl:value-of select="/merge/class" />
+        </xsl:variable>
+        <xsl:element name="{$class}" xmlns="http://www.gonicus.de/Objects" xmlns:g="http://www.gonicus.de/Objects">
     		<Type><xsl:value-of select="$class" /></Type>
     		<UUID><xsl:value-of select="/merge/properties/property[name='entry-uuid']/value/text()" /></UUID>
     		<DN><xsl:value-of select="/merge/properties/property[name='dn']/value/text()" /></DN>
@@ -55,6 +54,6 @@
     			<!--</xsl:if>-->
     		</xsl:for-each>
     		</Attributes>
-    	</Object>
+        </xsl:element>
     </xsl:template>
 </xsl:stylesheet>
