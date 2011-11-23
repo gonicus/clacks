@@ -209,17 +209,6 @@ class GOsaObjectProxy(object):
         if not found:
             raise AttributeError("no such attribute '%s'" % name)
 
-    def getXmlObjectSchema(self):
-        """
-        Returns a xml-schema definition that can be used to validate the
-        xml-objects returned by 'asXml()'
-        """
-        # Transform xml-combination into a useable xml-class representation
-        xmldefs = self.__factory.getXmlDefinitionsCombined()
-        xslt_doc = etree.parse(pkg_resources.resource_filename('gosa.agent', 'data/xml_object_schema.xsl'))
-        transform = etree.XSLT(xslt_doc)
-        return transform(xmldefs)
-
     def asXml(self):
         """
         Returns XML representations for the base-object and all its extensions.

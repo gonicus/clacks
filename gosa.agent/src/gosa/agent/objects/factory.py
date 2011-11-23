@@ -918,3 +918,18 @@ class GOsaObjectFactory(object):
                     break
 
         return backend_attrs
+
+    def getXmlObjectSchema(self, asString=False):
+        """
+        Returns a xml-schema definition that can be used to validate the
+        xml-objects returned by 'asXml()'
+        """
+        # Transform xml-combination into a useable xml-class representation
+        xmldefs = self.getXmlDefinitionsCombined()
+        xslt_doc = etree.parse(pkg_resources.resource_filename('gosa.agent', 'data/xml_object_schema.xsl'))
+        transform = etree.XSLT(xslt_doc)
+        if not asString:
+            return transform(xmldefs)
+        else:
+            return etree.tostring(transform(xmldefs), pretty_print=True)
+
