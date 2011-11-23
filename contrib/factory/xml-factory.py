@@ -1,15 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import sys
-import pprint
-import StringIO
-import logging
 from dbxml import *
-from bsddb3.db import *
-from lxml import etree, objectify
 from gosa.agent.objects import GOsaObjectProxy, GOsaObjectFactory
 from gosa.agent.objects.index import ObjectIndex, SCOPE_SUB
-from pprint import pprint
+
 
 class dictSchemaResolver(XmlResolver):
     """
@@ -46,22 +40,16 @@ class dictSchemaResolver(XmlResolver):
 l = [
     'cn=Rainer Luelsdorf,ou=people,ou=GL,dc=gonicus,dc=de',
     'cn=Lars Scheiter,ou=people,ou=Technik,dc=gonicus,dc=de',
-    #'uid=FS-1$,ou=winstations,ou=systems,dc=gonicus,dc=de',
-    #'uid=WS-WINXP02$,ou=winstations,ou=systems,dc=gonicus,dc=de',
-    #'uid=XP2TEST$,ou=winstations,ou=systems,dc=gonicus,dc=de',
-    #'cn=Webadmin Desch,ou=people,ou=Webspace,ou=Extern,dc=gonicus,dc=de',
-    #'cn=GONICUS Webadmin,ou=people,ou=Webspace,ou=Extern,dc=gonicus,dc=de',
-    #'cn=Konrad Kleine,ou=people,ou=Technik,dc=gonicus,dc=de',
-    #'uid=INDEPENDENCE$,ou=winstations,ou=systems,dc=gonicus,dc=de',
+    'uid=FS-1$,ou=winstations,ou=systems,dc=gonicus,dc=de',
+    'uid=WS-WINXP02$,ou=winstations,ou=systems,dc=gonicus,dc=de',
+    'uid=XP2TEST$,ou=winstations,ou=systems,dc=gonicus,dc=de',
+    'cn=Webadmin Desch,ou=people,ou=Webspace,ou=Extern,dc=gonicus,dc=de',
+    'cn=GONICUS Webadmin,ou=people,ou=Webspace,ou=Extern,dc=gonicus,dc=de',
+    'cn=Konrad Kleine,ou=people,ou=Technik,dc=gonicus,dc=de',
+    'uid=INDEPENDENCE$,ou=winstations,ou=systems,dc=gonicus,dc=de',
     'cn=GO Alfresco,ou=people,dc=gonicus,dc=de']
 
-# Do some searching
-ie = ObjectIndex()
-
-print "=" * 80
-print "=" * 80
-
-# Create Database connection
+# Set database info
 containerName = r"database.dbxml"
 mgr = XmlManager(DBXML_ALLOW_EXTERNAL_ACCESS)
 uc = mgr.createUpdateContext()
@@ -74,13 +62,11 @@ qc.setNamespace("xsi","http://www.w3.org/2001/XMLSchema-instance")
 factory = GOsaObjectFactory.getInstance()
 schemaResolver = dictSchemaResolver({'objects.xsd': factory.getXmlObjectSchema(True)})
 mgr.registerResolver(schemaResolver)
-
-
 if mgr.existsContainer(containerName):
     mgr.removeContainer(containerName)
-
 cont = mgr.createContainer(containerName, DBXML_ALLOW_VALIDATION, XmlContainer.NodeContainer)
-parser = None
+
+# Add entries
 for entry in l:
     print entry
     try:
@@ -91,7 +77,7 @@ for entry in l:
     except Exception as e:
         print e
 
-# Query for the used DeviceIDs
+# Query for PosixUsers
 results = mgr.query("collection('%s')/GenericUser[Extensions/Extension='PosixUser']/Attributes/cn/string()" % (containerName,), qc)
 results.reset()
 print "Found users with posix extensions"
