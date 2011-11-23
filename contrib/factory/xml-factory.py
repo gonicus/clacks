@@ -8,9 +8,9 @@ from gosa.agent.objects.index import ObjectIndex, SCOPE_SUB
 class dictSchemaResolver(XmlResolver):
     """
     A self made schema resolver which allows DBXML to validate against
-    schemata which is not physically available, but as string.
+    schema that is not physically available, but as string.
     This function receives a dictionary containing the name of the
-    schema file as key and the schema-data as value.
+    schema file as key and the schema-definition as value.
     e.g.:
         res = dictSchemaResolver({'objects': "<?xml versio..."})
 
@@ -36,19 +36,6 @@ class dictSchemaResolver(XmlResolver):
             print "Invalid schema file %s" % (schemaLocation)
             return(None)
 
-
-l = [
-    'cn=Rainer Luelsdorf,ou=people,ou=GL,dc=gonicus,dc=de',
-    'cn=Lars Scheiter,ou=people,ou=Technik,dc=gonicus,dc=de',
-    'uid=FS-1$,ou=winstations,ou=systems,dc=gonicus,dc=de',
-    'uid=WS-WINXP02$,ou=winstations,ou=systems,dc=gonicus,dc=de',
-    'uid=XP2TEST$,ou=winstations,ou=systems,dc=gonicus,dc=de',
-    'cn=Webadmin Desch,ou=people,ou=Webspace,ou=Extern,dc=gonicus,dc=de',
-    'cn=GONICUS Webadmin,ou=people,ou=Webspace,ou=Extern,dc=gonicus,dc=de',
-    'cn=Konrad Kleine,ou=people,ou=Technik,dc=gonicus,dc=de',
-    'uid=INDEPENDENCE$,ou=winstations,ou=systems,dc=gonicus,dc=de',
-    'cn=GO Alfresco,ou=people,dc=gonicus,dc=de']
-
 # Set database info
 containerName = r"database.dbxml"
 #mgr = XmlManager(DBXML_ALLOW_EXTERNAL_ACCESS)
@@ -71,6 +58,18 @@ cont = mgr.createContainer(containerName, DBXML_ALLOW_VALIDATION, XmlContainer.N
 cont.sync()
 
 # Add entries
+l = [
+    'cn=Rainer Luelsdorf,ou=people,ou=GL,dc=gonicus,dc=de',
+    'cn=Lars Scheiter,ou=people,ou=Technik,dc=gonicus,dc=de',
+    'uid=FS-1$,ou=winstations,ou=systems,dc=gonicus,dc=de',
+    'uid=WS-WINXP02$,ou=winstations,ou=systems,dc=gonicus,dc=de',
+    'uid=XP2TEST$,ou=winstations,ou=systems,dc=gonicus,dc=de',
+    'cn=Webadmin Desch,ou=people,ou=Webspace,ou=Extern,dc=gonicus,dc=de',
+    'cn=GONICUS Webadmin,ou=people,ou=Webspace,ou=Extern,dc=gonicus,dc=de',
+    'cn=Konrad Kleine,ou=people,ou=Technik,dc=gonicus,dc=de',
+    'uid=INDEPENDENCE$,ou=winstations,ou=systems,dc=gonicus,dc=de',
+    'cn=GO Alfresco,ou=people,dc=gonicus,dc=de']
+
 for entry in l:
     try:
         # Get the object by its dn and then add it to the container.
