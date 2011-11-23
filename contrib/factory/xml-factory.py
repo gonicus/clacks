@@ -64,16 +64,23 @@ l = [
     'cn=GO Alfresco,ou=people,dc=gonicus,dc=de']
 
 
-# Create parse for objects
-#schema_root = etree.XML(etree.tostring(obj.getXmlObjectSchema(), pretty_print=True))
-#schema = etree.XMLSchema(schema_root)
-#parser = objectify.makeparser(schema=schema)
 
+parser = None
 for entry in l:
     print entry
     try:
         obj = GOsaObjectProxy(entry)
         xml = obj.asXml()
+
+        # Create parse for objects
+        if not parser:
+            schema_root = etree.XML(etree.tostring(obj.getXmlObjectSchema(), pretty_print=True))
+            schema = etree.XMLSchema(schema_root)
+            parser = objectify.makeparser(schema=schema)
+
+        xml = objectify.fromstring(xml, parser)
+
+        print etree.tostring(xml, pretty_print=True)
     except Exception as e:
         print e
 

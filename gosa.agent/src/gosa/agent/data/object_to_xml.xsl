@@ -45,11 +45,9 @@
                         <xsl:value-of select="g:Name" />
                     </xsl:variable>
                     <xsl:if test="/merge/properties/property[name=$propname]/value">
-                        <xsl:element name="{$propname}">
-                            <xsl:for-each select="/merge/properties/property[name=$propname]">
-                                <xsl:element name="value"><xsl:value-of select="value" /></xsl:element>
-                            </xsl:for-each>
-                        </xsl:element>
+                        <xsl:for-each select="/merge/properties/property[name=$propname]">
+                            <xsl:element name="{$propname}"><xsl:value-of select="value" /></xsl:element>
+                        </xsl:for-each>
                     </xsl:if>
     			<!--</xsl:if>-->
     		</xsl:for-each>

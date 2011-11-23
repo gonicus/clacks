@@ -19,36 +19,6 @@
                 </xsd:sequence>
             </xsd:complexType>
 
-            <xsd:complexType name="StringAttribute">
-                <xsd:sequence>
-                    <xsd:element name="value" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
-                </xsd:sequence>
-            </xsd:complexType>
-
-            <xsd:complexType name="BooleanAttribute">
-                <xsd:sequence>
-                    <xsd:element name="value" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
-                </xsd:sequence>
-            </xsd:complexType>
-
-            <xsd:complexType name="DateTimeAttribute">
-                <xsd:sequence>
-                    <xsd:element name="value" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
-                </xsd:sequence>
-            </xsd:complexType>
-
-            <xsd:complexType name="DateAttribute">
-                <xsd:sequence>
-                    <xsd:element name="value" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
-                </xsd:sequence>
-            </xsd:complexType>
-
-            <xsd:complexType name="IntegerAttribute">
-                <xsd:sequence>
-                    <xsd:element name="value" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
-                </xsd:sequence>
-            </xsd:complexType>
-
             <xsl:for-each select="/g:Objects/g:Object">
                 <xsl:variable name="classname">
                     <xsl:value-of select="g:Name" />
@@ -70,12 +40,12 @@
                                         <xsl:sort select="g:Name"/>
                                         <xsl:variable name="type">
                                             <xsl:choose>
-                                                <xsl:when test="g:Type='String'">StringAttribute</xsl:when>
-                                                <xsl:when test="g:Type='Integer'">IntegerAttribute</xsl:when>
-                                                <xsl:when test="g:Type='Boolean'">BooleanAttribute</xsl:when>
-                                                <xsl:when test="g:Type='Timestamp'">DateTimeAttribute</xsl:when>
-                                                <xsl:when test="g:Type='Date'">DateAttribute</xsl:when>
-                                                <xsl:otherwise>StringAttribute</xsl:otherwise>
+                                                <xsl:when test="g:Type='String'">xsd:string</xsl:when>
+                                                <xsl:when test="g:Type='Integer'">xsd:integer</xsl:when>
+                                                <xsl:when test="g:Type='Boolean'">xsd:string</xsl:when>
+                                                <xsl:when test="g:Type='Timestamp'">xsd:dateTime</xsl:when>
+                                                <xsl:when test="g:Type='Date'">xsd:date</xsl:when>
+                                                <xsl:otherwise>xsd:string</xsl:otherwise>
                                             </xsl:choose>
                                         </xsl:variable>
                                         <xsl:variable name="attr">
