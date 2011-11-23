@@ -51,30 +51,38 @@ l = [
 
 # Set database info
 containerName = r"database.dbxml"
-mgr = XmlManager(DBXML_ALLOW_EXTERNAL_ACCESS)
+#mgr = XmlManager(DBXML_ALLOW_EXTERNAL_ACCESS)
+mgr = XmlManager()
 uc = mgr.createUpdateContext()
 qc = mgr.createQueryContext()
 qc.setNamespace("", "http://www.gonicus.de/Objects")
 qc.setNamespace("gosa", "http://www.gonicus.de/Objects")
 qc.setNamespace("xsi","http://www.w3.org/2001/XMLSchema-instance")
 
-# Register out own schema resolver
+# Register our own schema resolver
 factory = GOsaObjectFactory.getInstance()
 schemaResolver = dictSchemaResolver({'objects.xsd': factory.getXmlObjectSchema(True)})
 mgr.registerResolver(schemaResolver)
+
+# Create a clean new database/container on startup that allows schema validation
 if mgr.existsContainer(containerName):
     mgr.removeContainer(containerName)
 cont = mgr.createContainer(containerName, DBXML_ALLOW_VALIDATION, XmlContainer.NodeContainer)
+cont.sync()
 
 # Add entries
 for entry in l:
-    print entry
     try:
+        # Get the object by its dn and then add it to the container.
         obj = GOsaObjectProxy(entry)
-        xml = obj.asXml()
-        cont.putDocument(obj.uuid, xml, uc)
+        cont.putDocument(obj.uuid, obj.asXml(), uc)
+
+        # A sync is required to get changes synced to the filesystem
         cont.sync()
+        print "Added: %s" % (entry,)
+
     except Exception as e:
+        print "Failed to add: %s" % (entry,)
         print e
 
 # Query for PosixUsers
