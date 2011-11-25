@@ -34,6 +34,18 @@ def test_db(db):
     for entry in db.xquery("collection('host')/gosa:GenericUser[gosa:UUID='03a82842-ed95-102f-8038-812492b1b75c']/gosa:Attributes/gosa:uid/text()"):
         print "\t\t", entry
 
+    print "Concurrent queries: "
+    res = db.xquery("collection('host')//gosa:UUID/text()")
+    for entry in res:
+        res2 = db.xquery("collection('host')//gosa:Attributes/gosa:sn/text()")
+        print "\t\t", entry
+        for entry2 in res2:
+            print "\t\t\t", entry2
+            res3 = db.xquery("collection('host')//gosa:Extensions/gosa:Extension/text()")
+            for entry3 in res3:
+                print "\t\t\t\t", entry3
+
+
     print "DB Exists:\t", db.databaseExists("host")
     print "Docs: \t\t", db.getDocuments()
     db.deleteDocument("/a/b/c/world2")
