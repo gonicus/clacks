@@ -8,6 +8,20 @@ import re
 class DBXmlException(Exception):
     pass
 
+
+class DBXmlResult(object):
+    result = None
+    def __init__(self, dbxml_res):
+        self.result = dbxml_res
+        self.result.reset()
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        return self.result.next().asString()
+
+
 class DBXml(XMLDBInt):
 
     currentdb = None
@@ -65,7 +79,7 @@ class DBXml(XMLDBInt):
 
     def xquery(self, query):
         res = self.manager.query(query, self.queryContext)
-        return res.next().asString()
+        return DBXmlResult(res)
 
     def __normalizeDocPath(self, name):
         return(re.sub("^\/*","", os.path.normpath(name)))
