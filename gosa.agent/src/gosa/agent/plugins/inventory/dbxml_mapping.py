@@ -3,7 +3,6 @@ import os
 import logging
 from gosa.common import Environment
 from dbxml import *
-from bsddb3.db import *
 
 
 class DbxmlException(Exception):

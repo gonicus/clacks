@@ -38,7 +38,7 @@ for various systems in your setup.
     test_suite = "nose.collector",
     zip_safe = False,
 
-    setup_requires = ['nose==0.11.1', 'NoseXUnit', 'pylint'],
+    setup_requires = ['pylint'],
     install_requires = [
         'libinst',
         'GitPython',

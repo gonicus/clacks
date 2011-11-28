@@ -51,8 +51,8 @@ setup(
     zip_safe = False,
 
     setup_requires = [
-        'nose==0.11.1',
-        'NoseXUnit',
+        #'nose==0.11.1',
+        #'NoseXUnit',
         'pylint',
         ],
     install_requires = [
@@ -93,6 +93,7 @@ setup(
         gosa-agent.plugins.gravatar.utils = gosa.agent.plugins.gravatar.utils:GravatarUtils
         gosa-agent.plugins.goto.network = gosa.agent.plugins.goto.network:NetworkUtils
         gosa-agent.plugins.goto.client_service = gosa.agent.plugins.goto.client_service:ClientService
+        gosa-agent.plugins.inventory = gosa.agent.plugins.inventory.consumer:InventoryConsumer
 
         [gosa.object.type]
         type.string = gosa.agent.objects.types.base:StringAttribute

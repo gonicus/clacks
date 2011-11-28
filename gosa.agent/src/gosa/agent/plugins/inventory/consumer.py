@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import logging
 from dbxml import *
-from bsddb3.db import *
 from lxml import etree
+from zope.interface import implements
 from gosa.common import Environment
 from gosa.common.components import Plugin
+from gosa.common.handler import IInterfaceHandler
 from gosa.common.components.amqp import EventConsumer
 from gosa.common.components.registry import PluginRegistry
 from gosa.agent.plugins.inventory.dbxml_mapping import InventoryDBXml
@@ -18,7 +19,10 @@ class InventoryConsumer(Plugin):
     """
     Consumer for inventory events emitted from clients.
     """
-    _target_ = 'inventory'
+    implements(IInterfaceHandler)
+
+    # Leave this in core as long we've no @Command
+    _target_ = 'core'
     _priority_ = 92
 
     xmldb = None
@@ -26,7 +30,7 @@ class InventoryConsumer(Plugin):
     inv_db = None
 
 
-    def __init__(self, skip_serve=False):
+    def __init__(self):
         # Enable logging
         self.log = logging.getLogger(__name__)
         self.env = Environment.getInstance()
@@ -35,17 +39,19 @@ class InventoryConsumer(Plugin):
         path = self.env.config.get("inventory.dbpath", "/var/lib/gosa/inventory/db.dbxml")
         self.xmldb = InventoryDBXml(path)
 
+    def serve(self):
         # Create event consumer
-        if not skip_serve:
-            amqp = PluginRegistry.getInstance('AMQPHandler')
-            EventConsumer(self.env,
-                amqp.getConnection(),
-                xquery="""
-                    declare namespace f='http://www.gonicus.de/Events';
-                    let $e := ./f:Event
-                    return $e/f:Inventory
-                """,
-                callback=self.process)
+        amqp = PluginRegistry.getInstance('AMQPHandler')
+        EventConsumer(self.env,
+            amqp.getConnection(),
+            xquery="""
+                declare namespace f='http://www.gonicus.de/Events';
+                let $e := ./f:Event
+                return $e/f:Inventory
+            """,
+            callback=self.process)
+
+        self.log.info("listening for incoming inventory notifications")
 
     def process(self, data):
         """
@@ -54,17 +60,15 @@ class InventoryConsumer(Plugin):
         """
 
         # Try to extract the clients uuid and hostname out of the received data
-        self.log.debug("new incoming client inventory event")
         try:
             binfo = data.xpath('/gosa:Event/gosa:Inventory', namespaces={'gosa': 'http://www.gonicus.de/Events'})[0]
-            hostname = str(binfo['Hostname'])
             uuid = str(binfo['ClientUUID'])
             huuid = str(binfo['HardwareUUID'])
             checksum = str(binfo['GOsaChecksum'])
-            self.log.debug("inventory event received for hostname %s (%s)" % (hostname, uuid))
+            self.log.debug("inventory information received for client %s" % uuid)
 
         except Exception as e:
-            msg = "failed extract client info out of received Inventory event: %s" % str(e)
+            msg = "failed to extract information from received inventory data: %s" % str(e)
             self.log.error(msg)
             raise InventoryException(msg)
 
@@ -76,29 +80,21 @@ class InventoryConsumer(Plugin):
             # This is the case, when the same hardware is joined as new gosa-client again.
             # - In that case: drop the old entry and add the new one.
             if uuid != self.xmldb.getClientUUIDByHardwareUUID(huuid):
-                self.log.debug("record for '%s' with uuid (%s) already exists but hardware-uuid has changed"
-                        " - removing old entry and adding new one" % (hostname, uuid))
+                self.log.debug("replacing inventory information for %s" % uuid)
                 self.xmldb.deleteByHardwareUUID(huuid)
                 datas = etree.tostring(data, pretty_print=True)
                 self.xmldb.addClientInventoryData(uuid, huuid, datas)
 
             # The client-uuid is still the same
-            else:
-
-                # Now check if the checksums match or if we've to update our databases
-                if checksum == self.xmldb.getChecksumByUUID(uuid):
-                    self.log.debug("record for '%s' with uuid (%s) already exists and checksums are equal"
-                            " - entry up to date" % (hostname, uuid))
-                else:
-                    self.log.debug("record for '%s' with uuid (%s) already exists but the checksum has changed"
-                            " - updating entry" % (hostname, uuid))
-                    self.xmldb.deleteByHardwareUUID(huuid)
-                    datas = etree.tostring(data, pretty_print=True)
-                    self.xmldb.addClientInventoryData(uuid, huuid, datas)
+            elif checksum != self.xmldb.getChecksumByUUID(uuid):
+                self.log.debug("updating inventory information for %s" % uuid)
+                self.xmldb.deleteByHardwareUUID(huuid)
+                datas = etree.tostring(data, pretty_print=True)
+                self.xmldb.addClientInventoryData(uuid, huuid, datas)
 
         else:
             # A new client has send its inventory data - Import data into dbxml
-            self.log.debug("adding new record for '%s' with uuid (%s)" % (hostname, uuid))
+            self.log.debug("adding inventory information %s" % uuid)
             datas = etree.tostring(data, pretty_print=True)
             self.xmldb.addClientInventoryData(uuid, huuid, datas)
 
