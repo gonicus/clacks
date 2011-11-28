@@ -217,7 +217,7 @@ class ACLAdmin(object):
                     "\n  reset - Revokes previously defined acls, except for those with scope 'psub'"),
                 "priority": _("An integer value to prioritize an acl-rule. (Lower values mean higher priority)"
                     "\n  highest priority: -100"
-                    "\n  lowest priority: -100"),
+                    "\n  lowest priority: 100"),
                 "members": _("The names of the users/clients the acl-rule should be valid for. "
                     "\n  A comma separated list:"
                     "\n   e.g.: hubert,peter,klaus"),
@@ -415,9 +415,9 @@ class ACLAdmin(object):
                 m_list = []
                 for member in members:
                     member = member.strip()
-                    if not re.match("^[a-zA-Z][a-zA-Z0-9\.-]*$", member):
-                        self.para_invalid(name)
-                        sys.exit(1)
+                    #if not re.match("^[a-zA-Z][a-zA-Z0-9\.-]*$", member):
+                    #    self.para_invalid(name)
+                    #    sys.exit(1)
                     m_list.append(member)
                 return(m_list)
             else:
