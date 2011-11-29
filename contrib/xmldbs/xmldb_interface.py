@@ -9,17 +9,17 @@ class XMLDBInterface(object):
         """
         raise NotImplemented("openCollection")
 
-    def createCollection(self, name):
-        """
-        Creates a new collection collection.
+    #def createCollection(self, name):
+    #    """
+    #    Creates a new collection collection.
 
-        =========== ======================
-        Key         Value
-        =========== ======================
-        name        The name of the collection to create
-        =========== ======================
-        """
-        raise NotImplemented("createCollection")
+    #    =========== ======================
+    #    Key         Value
+    #    =========== ======================
+    #    name        The name of the collection to create
+    #    =========== ======================
+    #    """
+    #    raise NotImplemented("createCollection")
 
     def collectionExists(self, name):
         """

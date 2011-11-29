@@ -57,13 +57,15 @@ class BaseX(XMLDBInterface):
         =========== ======================
         """
 
+        if not self.collectionExists(name):
+            self.__createCollection(name)
         try:
             self.session.execute("open %s" % (name))
         except Exception as e:
             raise BaseXException("Collection '%s' could not be opened! Error was: %s" % (name, str(e)))
         self.currentdb = name
 
-    def createCollection(self, name):
+    def __createCollection(self, name):
         """
         Creates a new collection
 

@@ -17,8 +17,8 @@ def test_db(db):
         print "... exists"
         db.dropCollection('host')
 
-    print "Create collection"
-    db.createCollection('host')
+    #print "Create collection"
+    #db.createCollection('host')
     print "Open collection"
     db.openCollection('host')
     print "Add documents"

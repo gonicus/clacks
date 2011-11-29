@@ -41,7 +41,7 @@ class DBXml(XMLDBInterface):
         """
         self.queryContext.setNamespace(name, namespace)
 
-    def createCollection(self, dbname):
+    def __createCollection(self, dbname):
         """
         Creates a new collection
 
@@ -66,6 +66,8 @@ class DBXml(XMLDBInterface):
         =========== ======================
         """
 
+        if not self.collectionExists(dbname):
+            self.__createCollection(dbname)
         self.container = self.manager.openContainer(dbname)
         self.currentdb = dbname
 
