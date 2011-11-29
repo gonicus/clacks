@@ -11,39 +11,44 @@ class XMLDBException(Exception):
 
 class XMLDBInterface(object):
 
-    def openDatabase(self):
-        """
-        Opens an existing database
-        """
-        raise NotImplementedError("openDatabase")
+    def __init__(self, collection, schema=None):
+        if not self.collectionExists(collection):
+            self._createCollection(collection, schema)
 
-    def createDatabase(self, name):
-        """
-        Creates a new database collection.
+        self._openCollection(collection)
 
+    def _openCollection(self):
+        """
+        Opens an existing collection
+        """
+        raise NotImplementedErrorError("openCollection")
+
+    def _createCollection(self, name):
+        """
+        Creates a new collection collection.
         =========== ======================
         Key         Value
         =========== ======================
-        name        The name of the database to create
+        name        The name of the collection to create
         =========== ======================
         """
-        raise NotImplementedError("createDatabase")
+        raise NotImplementedError("createCollection")
 
-    def databaseExists(self, name):
+    def collectionExists(self, name):
         """
         Checks whethter a databse exists or not
 
         =========== ======================
         Key         Value
         =========== ======================
-        name        The name of the database to check for.
+        name        The name of the collection to check for.
         =========== ======================
         """
-        raise NotImplementedError("databaseExists")
+        raise NotImplementedError("collectionExists")
 
     def addDocument(self, name, contents):
         """
-        Adds a new document to the database
+        Adds a new document to the collection
 
         addDocument('/path/world.xml', contents)
 
@@ -54,7 +59,7 @@ class XMLDBInterface(object):
         content     The xml content of the document as string
         =========== ======================
         """
-        raise NotImplementedError("addDocument")
+        raise NotImplementedErrorError("addDocument")
 
     def documentExists(self, name):
         """
@@ -66,13 +71,13 @@ class XMLDBInterface(object):
         name        The name of the document to check for.
         =========== ======================
         """
-        raise NotImplementedError("documentExists")
+        raise NotImplementedErrorError("documentExists")
 
     def getDocuments(self):
         """
-        Returns a list of all documents attached to the given database.
+        Returns a list of all documents attached to the given collection.
         """
-        raise NotImplementedError("getDocuments")
+        raise NotImplementedErrorError("getDocuments")
 
     def xquery(self, query):
         """
@@ -87,7 +92,7 @@ class XMLDBInterface(object):
 
         Returns an interable result set.
         """
-        raise NotImplementedError("xquery")
+        raise NotImplementedErrorError("xquery")
 
     def setNamespace(self, abbr, namespace):
         """
@@ -100,23 +105,23 @@ class XMLDBInterface(object):
         uri         The namespace uri
         =========== ======================
         """
-        raise NotImplementedError("setNamespace")
+        raise NotImplementedErrorError("setNamespace")
 
-    def dropDatabase(self, name):
+    def dropCollection(self, name):
         """
-        Drops the given database
+        Drops the given collection
 
         =========== ======================
         Key         Value
         =========== ======================
-        name        The name of the database to drop
+        name        The name of the collection to drop
         =========== ======================
         """
-        raise NotImplementedError("dropDatabase")
+        raise NotImplementedError("dropCollection")
 
     def deleteDocument(self, name):
         """
-        Removes the given document from the currently openened database
+        Removes the given document from the currently openened collection
 
         =========== ======================
         Key         Value
@@ -124,4 +129,4 @@ class XMLDBInterface(object):
         name        The name of the document to delete
         =========== ======================
         """
-        raise NotImplementedError("deleteDocument")
+        raise NotImplementedErrorError("deleteDocument")

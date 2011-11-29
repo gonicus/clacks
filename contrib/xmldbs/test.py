@@ -12,15 +12,15 @@ def test_db(db):
     db.setNamespace("gosa", "http://www.gonicus.de/Objects")
     db.setNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance")
 
-    print "Drop database if exists"
-    if db.databaseExists('host'):
+    print "Drop collection if exists"
+    if db.collectionExists('host'):
         print "... exists"
-        db.dropDatabase('host')
+        db.dropCollection('host')
 
-    print "Create database"
-    db.createDatabase('host')
-    print "Open database"
-    db.openDatabase('host')
+    #print "Create collection"
+    #db.createCollection('host')
+    print "Open collection"
+    db.openCollection('host')
     print "Add documents"
     db.addDocument('/world1', open("dummy.xml").read())
     db.addDocument('/world2', open("dummy2.xml").read())
@@ -52,13 +52,13 @@ def test_db(db):
                 print "\t\t\t\t", entry3
 
 
-    print "DB Exists:\t", db.databaseExists("host")
+    print "DB Exists:\t", db.collectionExists("host")
     print "Docs: \t\t", db.getDocuments()
     db.deleteDocument("/a/world2")
     db.deleteDocument("/world2")
     db.deleteDocument("/a/b/c/world2")
     db.deleteDocument("/b/world2")
-    db.dropDatabase('host')
+    db.dropCollection('host')
 
 
 

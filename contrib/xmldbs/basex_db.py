@@ -11,45 +11,6 @@ class BaseXException(Exception):
     pass
 
 
-class BaseXResult(object):
-    """
-    Iterable Result-Set for BaseX query results.
-    """
-    result = None
-    closed = None
-
-    def __init__(self, res):
-        """
-        A BaseXResult is an iterable result-set of Base-X Queries
-
-        =========== ======================
-        Key         Value
-        =========== ======================
-        res         BaseX - Query object (See BaseXClient)
-        =========== ======================
-
-        """
-        self.result = res
-        self.result.init()
-        self.closed = False
-
-    def __iter__(self):
-        """
-        Returns an iterator for the query results.
-        """
-        return self
-
-    def next(self):
-        """
-        Returns the next element of the result, until none is left.
-        """
-        if self.result.more():
-            return self.result.next()
-        else:
-            self.result.close()
-            raise StopIteration
-
-
 class BaseX(XMLDBInterface):
     session = None
     currentdb = None
@@ -85,53 +46,55 @@ class BaseX(XMLDBInterface):
         """
         self.namespaces[name] = uri
 
-    def openDatabase(self, name):
+    def openCollection(self, name):
         """
-        Open the given database
+        Open the given collection
 
         =========== ======================
         Key         Value
         =========== ======================
-        name        The name of the database to open
+        name        The name of the collection to open
         =========== ======================
         """
 
+        if not self.collectionExists(name):
+            self.__createCollection(name)
         try:
             self.session.execute("open %s" % (name))
         except Exception as e:
-            raise BaseXException("Database '%s' could not be opened! Error was: %s" % (name, str(e)))
+            raise BaseXException("Collection '%s' could not be opened! Error was: %s" % (name, str(e)))
         self.currentdb = name
 
-    def createDatabase(self, name):
+    def __createCollection(self, name):
         """
-        Creates a new database
+        Creates a new collection
 
         =========== ======================
         Key         Value
         =========== ======================
-        name        The name of the database to create
+        name        The name of the collection to create
         =========== ======================
         """
         try:
             self.session.execute("create db %s" % (name))
         except Exception as e:
-            raise BaseXException("Database '%s' could not be created! Error was: %s" % (name, str(e)))
+            raise BaseXException("Collection '%s' could not be created! Error was: %s" % (name, str(e)))
         self.currentdb = name
 
-    def dropDatabase(self, name):
+    def dropCollection(self, name):
         """
-        Drops a given database
+        Drops a given collection
 
         =========== ======================
         Key         Value
         =========== ======================
-        name        The name of the database to drop
+        name        The name of the collection to drop
         =========== ======================
         """
         try:
             self.session.execute("drop db %s" % (name))
         except Exception as e:
-            raise BaseXException("Database '%s' could not be dropped! Error was: %s" % (name, str(e)))
+            raise BaseXException("Collection '%s' could not be dropped! Error was: %s" % (name, str(e)))
 
     def getDocuments(self):
         """
@@ -155,25 +118,25 @@ class BaseX(XMLDBInterface):
         name = self.__normalizeDocPath(name)
         return name in self.getDocuments()
 
-    def __getDatabases(self):
+    def __getCollections(self):
         res = self.session.execute("list").split("\n")[2:-3:]
         return(map(lambda x: x.split(" ")[0] , res))
 
-    def databaseExists(self, name):
+    def collectionExists(self, name):
         """
         Check whether a given databse exists
 
         =========== ======================
         Key         Value
         =========== ======================
-        name        The name of the database to check for.
+        name        The name of the collection to check for.
         =========== ======================
         """
-        return name in self.__getDatabases()
+        return name in self.__getCollections()
 
     def addDocument(self, name, content):
         """
-        Adds a new document to the currently opened database.
+        Adds a new document to the currently opened collection.
 
         =========== ======================
         Key         Value
@@ -195,7 +158,7 @@ class BaseX(XMLDBInterface):
 
     def deleteDocument(self, name):
         """
-        Deletes a document from the currently opened database.
+        Deletes a document from the currently opened collection.
 
         =========== ======================
         Key         Value
@@ -220,7 +183,7 @@ class BaseX(XMLDBInterface):
 
     def xquery(self, query):
         """
-        Starts a x-query on an opened database.
+        Starts a x-query on an opened collection.
         Returns an iterable result set.
 
         =========== ======================
@@ -231,5 +194,10 @@ class BaseX(XMLDBInterface):
         """
         for name, url in self.namespaces.items():
             query = "declare namespace %s='%s';\n" % (name, url) + query
-        self.__result = BaseXResult(self.session.query(query))
-        return(self.__result)
+        ret = []
+        res = self.session.query(query)
+        res.init()
+        while res.more():
+            ret.append(res.next())
+        res.close()
+        return ret
