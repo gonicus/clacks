@@ -33,8 +33,6 @@ class DBXml(XMLDBInterface):
             raise XMLDBException("Database storage path '%s' has to be writeable!")
 
         # Open all configured databases
-        self.databases = {}
-        self.namespaces = {}
         self.__loadDatabases()
 
     def __loadDatabases(self):
@@ -45,16 +43,20 @@ class DBXml(XMLDBInterface):
         # Search directories containing a db.config file
         dbs = [n for n in os.listdir(self.db_storage_path) \
                 if os.path.exists(os.path.join(self.db_storage_path, n, "db.config"))]
+        self.databases = {}
         self.namespaces = {}
         self.namespaces['xsi'] = "http://www.w3.org/2001/XMLSchema-instance"
         for db in dbs:
 
             # Read the config file
+            print db
             data = self.__readConfig(db)
-            dfile = os.path.join(self.db_storage_path,n,data['db_name'])
+            dfile = os.path.join(self.db_storage_path, db, data['db_name'])
 
             # Try opening the collection file
+            print dfile
             cont = self.manager.openContainer(str(dfile))
+            self.databases[data['db_name']] = {}
             self.databases[data['db_name']]['config'] = data
             self.databases[data['db_name']]['container'] = cont
 
@@ -119,7 +121,7 @@ class DBXml(XMLDBInterface):
             self.namespaces[name] = namespace
             self.queryContext.setNamespace(name, namespace)
 
-    def createCollection(self, dbname):
+    def createCollection(self, dbname, namespaces={}, schema={}):
         """
         Creates a new collection
 
@@ -141,15 +143,16 @@ class DBXml(XMLDBInterface):
         try:
 
             # Create a new database config object
-            data = {'db_name': dbname, 'namespaces': {}, 'schema': ''}
+            data = {'db_name': dbname, 'namespaces': namespaces, 'schema': schema}
             f = open(os.path.join(path, 'db.config'), 'w')
             f.write(json.dumps(data, indent=2))
             f.close()
 
             # Create the dbxml collection
-            cont = self.manager.createContainer(os.path.join(path, dbname))#, DBXML_ALLOW_VALIDATION)
+            cont = self.manager.createContainer(str(os.path.join(path, dbname)))#, DBXML_ALLOW_VALIDATION)
             cont.sync()
 
+            self.databases[dbname] = {}
             self.databases[dbname]['config'] = data
             self.databases[dbname]['container'] = cont
 
