@@ -489,6 +489,10 @@ class ClientService(Plugin):
             except ValueError:
                 pass
 
+        # Send an inventory information with the current checksum -
+        # if available
+        #TODO
+
     def _handleClientLeave(self, data):
         data = data.ClientLeave
         client = data.Id.text

@@ -158,7 +158,7 @@ class AMQPHandler(object):
         ``Return:`` Bool, success or failure
         """
         try:
-            event = "<?xml version='1.0' encoding='utf-8'?>\n"
+            event = u"<?xml version='1.0'?>\n"
             if isinstance(data, basestring):
                 event += data
             else:
