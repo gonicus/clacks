@@ -13,6 +13,7 @@ You can import it to your own code like this::
 """
 import logging
 import platform
+import pkg_resources
 from gosa.common.config import Config
 try:
     from sqlalchemy.orm import sessionmaker, scoped_session
@@ -36,6 +37,7 @@ class Environment:
     noargs = False
     __instance = None
     __db = {}
+    __xml_driver = None
 
     def __init__(self):
         # Load configuration
@@ -70,6 +72,24 @@ class Environment:
                 raise Exception("No system id found")
 
         self.active = True
+
+    @staticmethod
+    def getXMLDBDriver():
+        if self.__xml_driver:
+            return self.__xml_driver
+
+        # Create instance
+        driver = self.config.get("core.xmldb-driver", default="DBXml")
+        for entry in pkg_resources.iter_entry_points("xmldb"):
+            mod = entry.load()
+            if mod.__class__.__name__ == driver:
+                self.__xml_driver = mod()
+                break
+
+        if not self.__xml_driver:
+            raise ValueError("there is no xmldb driver '%s' available" % driver)
+
+        return self.__xml_driver
 
     def getDatabaseEngine(self, section, key="database"):
         """
