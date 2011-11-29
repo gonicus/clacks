@@ -11,45 +11,6 @@ class BaseXException(Exception):
     pass
 
 
-class BaseXResult(object):
-    """
-    Iterable Result-Set for BaseX query results.
-    """
-    result = None
-    closed = None
-
-    def __init__(self, res):
-        """
-        A BaseXResult is an iterable result-set of Base-X Queries
-
-        =========== ======================
-        Key         Value
-        =========== ======================
-        res         BaseX - Query object (See BaseXClient)
-        =========== ======================
-
-        """
-        self.result = res
-        self.result.init()
-        self.closed = False
-
-    def __iter__(self):
-        """
-        Returns an iterator for the query results.
-        """
-        return self
-
-    def next(self):
-        """
-        Returns the next element of the result, until none is left.
-        """
-        if self.result.more():
-            return self.result.next()
-        else:
-            self.result.close()
-            raise StopIteration
-
-
 class BaseX(XMLDBInterface):
     session = None
     currentdb = None
@@ -231,5 +192,10 @@ class BaseX(XMLDBInterface):
         """
         for name, url in self.namespaces.items():
             query = "declare namespace %s='%s';\n" % (name, url) + query
-        self.__result = BaseXResult(self.session.query(query))
-        return(self.__result)
+        ret = []
+        res = self.session.query(query)
+        res.init()
+        while res.more():
+            ret.append(res.next())
+        res.close()
+        return ret
