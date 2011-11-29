@@ -73,8 +73,7 @@ class Environment:
 
         self.active = True
 
-    @staticmethod
-    def getXMLDBDriver():
+    def getXMLDBDriver(self):
         if self.__xml_driver:
             return self.__xml_driver
 
