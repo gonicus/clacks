@@ -54,11 +54,11 @@ def test_db(db):
 
     print "DB Exists:\t", db.collectionExists("host")
     print "Docs: \t\t", db.getDocuments()
-    db.deleteDocument("/a/world2")
-    db.deleteDocument("/world2")
-    db.deleteDocument("/a/b/c/world2")
-    db.deleteDocument("/b/world2")
-    db.dropCollection('host')
+    #db.deleteDocument("/a/world2")
+    #db.deleteDocument("/world2")
+    #db.deleteDocument("/a/b/c/world2")
+    #db.deleteDocument("/b/world2")
+    #db.dropCollection('host')
 
 
 
