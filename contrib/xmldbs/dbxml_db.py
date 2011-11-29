@@ -49,12 +49,10 @@ class DBXml(XMLDBInterface):
         for db in dbs:
 
             # Read the config file
-            print db
             data = self.__readConfig(db)
             dfile = os.path.join(self.db_storage_path, db, data['db_name'])
 
             # Try opening the collection file
-            print dfile
             cont = self.manager.openContainer(str(dfile))
             self.databases[data['db_name']] = {}
             self.databases[data['db_name']]['config'] = data

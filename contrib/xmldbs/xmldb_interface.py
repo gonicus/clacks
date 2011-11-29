@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 
+#TODO
+print "#TODO - Update interface methods they are no longer up to date"
+
 class XMLDBException(Exception):
     """
     Exception used for DBXml errors
