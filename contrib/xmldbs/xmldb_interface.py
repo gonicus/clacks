@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 
 
 class XMLDBInterface(object):
@@ -7,7 +7,7 @@ class XMLDBInterface(object):
         """
         Opens an existing database
         """
-        raise NotImplemented("openDatabase")
+        raise NotImplementedError("openDatabase")
 
     def createDatabase(self, name):
         """
@@ -19,7 +19,7 @@ class XMLDBInterface(object):
         name        The name of the database to create
         =========== ======================
         """
-        raise NotImplemented("createDatabase")
+        raise NotImplementedError("createDatabase")
 
     def databaseExists(self, name):
         """
@@ -31,7 +31,7 @@ class XMLDBInterface(object):
         name        The name of the database to check for.
         =========== ======================
         """
-        raise NotImplemented("databaseExists")
+        raise NotImplementedError("databaseExists")
 
     def addDocument(self, name, contents):
         """
@@ -46,7 +46,7 @@ class XMLDBInterface(object):
         content     The xml content of the document as string
         =========== ======================
         """
-        raise NotImplemented("addDocument")
+        raise NotImplementedError("addDocument")
 
     def documentExists(self, name):
         """
@@ -58,13 +58,13 @@ class XMLDBInterface(object):
         name        The name of the document to check for.
         =========== ======================
         """
-        raise NotImplemented("documentExists")
+        raise NotImplementedError("documentExists")
 
     def getDocuments(self):
         """
         Returns a list of all documents attached to the given database.
         """
-        raise NotImplemented("getDocuments")
+        raise NotImplementedError("getDocuments")
 
     def xquery(self, query):
         """
@@ -79,7 +79,7 @@ class XMLDBInterface(object):
 
         Returns an interable result set.
         """
-        raise NotImplemented("xquery")
+        raise NotImplementedError("xquery")
 
     def setNamespace(self, abbr, namespace):
         """
@@ -92,7 +92,7 @@ class XMLDBInterface(object):
         uri         The namespace uri
         =========== ======================
         """
-        raise NotImplemented("setNamespace")
+        raise NotImplementedError("setNamespace")
 
     def dropDatabase(self, name):
         """
@@ -104,7 +104,7 @@ class XMLDBInterface(object):
         name        The name of the database to drop
         =========== ======================
         """
-        raise NotImplemented("dropDatabase")
+        raise NotImplementedError("dropDatabase")
 
     def deleteDocument(self, name):
         """
@@ -116,4 +116,4 @@ class XMLDBInterface(object):
         name        The name of the document to delete
         =========== ======================
         """
-        raise NotImplemented("deleteDocument")
+        raise NotImplementedError("deleteDocument")

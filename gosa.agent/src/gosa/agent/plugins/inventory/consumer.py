@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-from dbxml import *
 from lxml import etree
 from zope.interface import implements
 from gosa.common import Environment

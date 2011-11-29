@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 import logging
+from dbxml import XmlManager, DBXML_ALLOW_EXTERNAL_ACCESS, XmlValue, DBXML_ALLOW_VALIDATION, XmlContainer
 from gosa.common import Environment
-from dbxml import *
 
 
 class DbxmlException(Exception):
@@ -50,7 +50,7 @@ class InventoryDBXml(object):
 
         # Set a variable named $doc which contains the path to the dbxml container
         # This make queries a lot shorter.
-        self.queryContext.setVariableValue("doc", XmlValue("dbxml:///%s" % (self.dbpath,)));
+        self.queryContext.setVariableValue("doc", XmlValue("dbxml:///%s" % self.dbpath))
 
         # Let the user know that things went fine
         self.log.info("inventory database successfully initialized")
@@ -61,20 +61,20 @@ class InventoryDBXml(object):
                 "ClientUUID/text()", self.queryContext)
         results.reset()
         for value in results:
-            self.log.debug("inventory database contains client-uuid %s'" % (value.asString(),))
+            self.log.debug("inventory database contains client-uuid %s'" % value.asString())
 
     def sync(self):
         """
         Syncs database changes back to the filesystem
         """
-        self.log.debug("inventory database '%s' synced" % (self.dbpath))
+        self.log.debug("inventory database '%s' synced" % self.dbpath)
         self.container.sync()
 
     def close(self):
         """
         Closes the opened inventory container
         """
-        self.log.debug("inventory database '%s' closed" % (self.dbpath))
+        self.log.debug("inventory database '%s' closed" % self.dbpath)
         self.container.close()
 
     def open(self):
@@ -84,10 +84,10 @@ class InventoryDBXml(object):
 
         # Open (create) the database container
         if self.manager.existsContainer(self.dbpath) != 0:
-            self.log.debug("inventory database '%s' opened" % (self.dbpath))
+            self.log.debug("inventory database '%s' opened" % self.dbpath)
             self.container = self.manager.openContainer(self.dbpath)
         else:
-            self.log.debug("inventory database '%s' created and opened" % (self.dbpath))
+            self.log.debug("inventory database '%s' created and opened" % self.dbpath)
             self.container = self.manager.createContainer(self.dbpath, DBXML_ALLOW_VALIDATION, XmlContainer.NodeContainer)
 
     def hardwareUUIDExists(self, huuid):
@@ -133,6 +133,7 @@ class InventoryDBXml(object):
         """
         Adds client inventory data to the database.
         """
+        #TODO: what for is uuid?
         self.container.putDocument(huuid, data, self.updateContext)
 
     def deleteByHardwareUUID(self, huuid):
