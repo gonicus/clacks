@@ -12,39 +12,6 @@ class DBXmlException(Exception):
     pass
 
 
-class DBXmlResult(object):
-    """
-    Iterable Result-Set for query results.
-    """
-
-    result = None
-    def __init__(self, dbxml_res):
-        """
-        An iterable result-set for DBXml Queries
-
-        =========== ======================
-        Key         Value
-        =========== ======================
-        res         DBXml - Query object
-        =========== ======================
-        """
-
-        self.result = dbxml_res
-        self.result.reset()
-
-    def __iter__(self):
-        """
-        Returns an iterator for the query results.
-        """
-        return self
-
-    def next(self):
-        """
-        Returns the next element of the result, until none is left.
-        """
-        return self.result.next().asString()
-
-
 class DBXml(XMLDBInterface):
 
     currentdb = None
@@ -199,8 +166,11 @@ class DBXml(XMLDBInterface):
         =========== ======================
         """
 
+        ret = []
         res = self.manager.query(query, self.queryContext)
-        return DBXmlResult(res)
+        for t in res:
+            ret.append(t.asString())
+        return ret
 
     def __normalizeDocPath(self, name):
         return(re.sub("^\/*","", os.path.normpath(name)))
