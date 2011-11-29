@@ -46,53 +46,53 @@ class BaseX(XMLDBInterface):
         """
         self.namespaces[name] = uri
 
-    def openDatabase(self, name):
+    def openCollection(self, name):
         """
-        Open the given database
+        Open the given collection
 
         =========== ======================
         Key         Value
         =========== ======================
-        name        The name of the database to open
+        name        The name of the collection to open
         =========== ======================
         """
 
         try:
             self.session.execute("open %s" % (name))
         except Exception as e:
-            raise BaseXException("Database '%s' could not be opened! Error was: %s" % (name, str(e)))
+            raise BaseXException("Collection '%s' could not be opened! Error was: %s" % (name, str(e)))
         self.currentdb = name
 
-    def createDatabase(self, name):
+    def createCollection(self, name):
         """
-        Creates a new database
+        Creates a new collection
 
         =========== ======================
         Key         Value
         =========== ======================
-        name        The name of the database to create
+        name        The name of the collection to create
         =========== ======================
         """
         try:
             self.session.execute("create db %s" % (name))
         except Exception as e:
-            raise BaseXException("Database '%s' could not be created! Error was: %s" % (name, str(e)))
+            raise BaseXException("Collection '%s' could not be created! Error was: %s" % (name, str(e)))
         self.currentdb = name
 
-    def dropDatabase(self, name):
+    def dropCollection(self, name):
         """
-        Drops a given database
+        Drops a given collection
 
         =========== ======================
         Key         Value
         =========== ======================
-        name        The name of the database to drop
+        name        The name of the collection to drop
         =========== ======================
         """
         try:
             self.session.execute("drop db %s" % (name))
         except Exception as e:
-            raise BaseXException("Database '%s' could not be dropped! Error was: %s" % (name, str(e)))
+            raise BaseXException("Collection '%s' could not be dropped! Error was: %s" % (name, str(e)))
 
     def getDocuments(self):
         """
@@ -116,25 +116,25 @@ class BaseX(XMLDBInterface):
         name = self.__normalizeDocPath(name)
         return name in self.getDocuments()
 
-    def __getDatabases(self):
+    def __getCollections(self):
         res = self.session.execute("list").split("\n")[2:-3:]
         return(map(lambda x: x.split(" ")[0] , res))
 
-    def databaseExists(self, name):
+    def collectionExists(self, name):
         """
         Check whether a given databse exists
 
         =========== ======================
         Key         Value
         =========== ======================
-        name        The name of the database to check for.
+        name        The name of the collection to check for.
         =========== ======================
         """
-        return name in self.__getDatabases()
+        return name in self.__getCollections()
 
     def addDocument(self, name, content):
         """
-        Adds a new document to the currently opened database.
+        Adds a new document to the currently opened collection.
 
         =========== ======================
         Key         Value
@@ -156,7 +156,7 @@ class BaseX(XMLDBInterface):
 
     def deleteDocument(self, name):
         """
-        Deletes a document from the currently opened database.
+        Deletes a document from the currently opened collection.
 
         =========== ======================
         Key         Value
@@ -181,7 +181,7 @@ class BaseX(XMLDBInterface):
 
     def xquery(self, query):
         """
-        Starts a x-query on an opened database.
+        Starts a x-query on an opened collection.
         Returns an iterable result set.
 
         =========== ======================

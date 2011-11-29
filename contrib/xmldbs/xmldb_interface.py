@@ -3,39 +3,39 @@
 
 class XMLDBInterface(object):
 
-    def openDatabase(self):
+    def openCollection(self):
         """
-        Opens an existing database
+        Opens an existing collection
         """
-        raise NotImplemented("openDatabase")
+        raise NotImplemented("openCollection")
 
-    def createDatabase(self, name):
+    def createCollection(self, name):
         """
-        Creates a new database collection.
+        Creates a new collection collection.
 
         =========== ======================
         Key         Value
         =========== ======================
-        name        The name of the database to create
+        name        The name of the collection to create
         =========== ======================
         """
-        raise NotImplemented("createDatabase")
+        raise NotImplemented("createCollection")
 
-    def databaseExists(self, name):
+    def collectionExists(self, name):
         """
         Checks whethter a databse exists or not
 
         =========== ======================
         Key         Value
         =========== ======================
-        name        The name of the database to check for.
+        name        The name of the collection to check for.
         =========== ======================
         """
-        raise NotImplemented("databaseExists")
+        raise NotImplemented("collectionExists")
 
     def addDocument(self, name, contents):
         """
-        Adds a new document to the database
+        Adds a new document to the collection
 
         addDocument('/path/world.xml', contents)
 
@@ -62,7 +62,7 @@ class XMLDBInterface(object):
 
     def getDocuments(self):
         """
-        Returns a list of all documents attached to the given database.
+        Returns a list of all documents attached to the given collection.
         """
         raise NotImplemented("getDocuments")
 
@@ -94,21 +94,21 @@ class XMLDBInterface(object):
         """
         raise NotImplemented("setNamespace")
 
-    def dropDatabase(self, name):
+    def dropCollection(self, name):
         """
-        Drops the given database
+        Drops the given collection
 
         =========== ======================
         Key         Value
         =========== ======================
-        name        The name of the database to drop
+        name        The name of the collection to drop
         =========== ======================
         """
-        raise NotImplemented("dropDatabase")
+        raise NotImplemented("dropCollection")
 
     def deleteDocument(self, name):
         """
-        Removes the given document from the currently openened database
+        Removes the given document from the currently openened collection
 
         =========== ======================
         Key         Value

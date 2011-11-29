@@ -22,7 +22,7 @@ class DBXml(XMLDBInterface):
 
     def __init__(self):
         """
-        DBXml class that is able to communicate database files.
+        DBXml class that is able to communicate collection files.
         """
         self.manager = XmlManager()
         self.updateContext = self.manager.createUpdateContext()
@@ -41,55 +41,55 @@ class DBXml(XMLDBInterface):
         """
         self.queryContext.setNamespace(name, namespace)
 
-    def createDatabase(self, dbname):
+    def createCollection(self, dbname):
         """
-        Creates a new database
+        Creates a new collection
 
         =========== ======================
         Key         Value
         =========== ======================
-        name        The name of the database to create
+        name        The name of the collection to create
         =========== ======================
         """
 
         self.container = self.manager.createContainer(dbname)#, DBXML_ALLOW_VALIDATION)
         self.currentdb = dbname
 
-    def openDatabase(self, dbname):
+    def openCollection(self, dbname):
         """
-        Open the given database
+        Open the given collection
 
         =========== ======================
         Key         Value
         =========== ======================
-        name        The name of the database to open
+        name        The name of the collection to open
         =========== ======================
         """
 
         self.container = self.manager.openContainer(dbname)
         self.currentdb = dbname
 
-    def databaseExists(self, dbname):
+    def collectionExists(self, dbname):
         """
         Check whether a given databse exists
 
         =========== ======================
         Key         Value
         =========== ======================
-        name        The name of the database to check for.
+        name        The name of the collection to check for.
         =========== ======================
         """
 
         return self.manager.existsContainer(dbname) != 0
 
-    def dropDatabase(self, dbname):
+    def dropCollection(self, dbname):
         """
-        Drops a given database
+        Drops a given collection
 
         =========== ======================
         Key         Value
         =========== ======================
-        name        The name of the database to drop
+        name        The name of the collection to drop
         =========== ======================
         """
 
@@ -100,7 +100,7 @@ class DBXml(XMLDBInterface):
 
     def addDocument(self, name, content):
         """
-        Adds a new document to the currently opened database.
+        Adds a new document to the currently opened collection.
 
         =========== ======================
         Key         Value
@@ -115,7 +115,7 @@ class DBXml(XMLDBInterface):
 
     def deleteDocument(self, name):
         """
-        Deletes a document from the currently opened database.
+        Deletes a document from the currently opened collection.
 
         =========== ======================
         Key         Value
@@ -156,7 +156,7 @@ class DBXml(XMLDBInterface):
 
     def xquery(self, query):
         """
-        Starts a x-query on an opened database.
+        Starts a x-query on an opened collection.
         Returns an iterable result set.
 
         =========== ======================
