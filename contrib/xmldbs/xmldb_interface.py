@@ -1,6 +1,14 @@
 # -*- coding: utf-8 -*-
 
 
+class XMLDBException(Exception):
+    """
+    Exception used for DBXml errors
+    """
+    pass
+
+
+
 class XMLDBInterface(object):
 
     def openDatabase(self):

@@ -1,6 +1,6 @@
 
-from basex_db import BaseXException, BaseX
-from dbxml_db import DBXmlException, DBXml
+from basex_db import BaseX
+from dbxml_db import DBXml
 
 def test_db(db):
 

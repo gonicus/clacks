@@ -1,15 +1,7 @@
-from xmldb_interface import XMLDBInterface
-from dbxml import *
-
 import os
 import re
-
-
-class DBXmlException(Exception):
-    """
-    Exception used for DBXml errors
-    """
-    pass
+from dbxml import XmlManager, DBXML_LAZY_DOCS
+from xmldb_interface import XMLDBInterface, XMLDBException
 
 
 class DBXmlResult(object):
