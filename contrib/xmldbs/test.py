@@ -1,5 +1,5 @@
 
-from basex_db import BaseX
+#from basex_db import BaseX
 from dbxml_db import DBXml
 
 def test_db(db):
@@ -62,8 +62,8 @@ def test_db(db):
 
 
 
-b = BaseX()
-test_db(b)
+#b = BaseX()
+#test_db(b)
 
 x = DBXml()
 test_db(x)
