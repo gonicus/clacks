@@ -89,15 +89,17 @@ class XMLDBInterface(object):
         """
         raise NotImplementedErrorError("xquery")
 
-    def setNamespace(self, abbr, namespace):
+    def setNamespace(self, collection, alias, namespace):
+
         """
         Sets a namespace abbreviation
 
         =========== ======================
         Key         Value
         =========== ======================
-        name        The abbreviation/short-name of the namespace
-        uri         The namespace uri
+        collection  What collection keeps that namespace
+        alias       The abbreviation/short-name of the namespace
+        namespace   The namespace uri
         =========== ======================
         """
         raise NotImplementedErrorError("setNamespace")

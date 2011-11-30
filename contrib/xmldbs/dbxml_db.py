@@ -18,6 +18,8 @@ class DBXml(XMLDBInterface):
     namespaces = None
 
     def __init__(self):
+        super(DBXml, self).__init__()
+
         #TODO: load me from the env
         db_path = "/tmp/dbs"
 
@@ -140,6 +142,7 @@ class DBXml(XMLDBInterface):
         except Exception as e:
             try:
                 shutil.rmtree(path)
+            #TODO: specify the exception to catch
             except:
                 pass
             raise XMLDBException("failed to create collection '%s': %s" % (name, str(e)))
