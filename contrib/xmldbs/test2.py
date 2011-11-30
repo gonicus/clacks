@@ -20,6 +20,14 @@ if db.collectionExists("a"):
 db.createCollection("a", {'gosa2': "hallo"}, {})
 db.setNamespace("a", "gosa", "http://www.gonicus.de/Objects")
 db.addDocument("a", "test", open('dummy.xml').read())
+db.addDocument("a", "test2", open('dummy2.xml').read())
+
+print "Documents"
+print db.getDocuments("a")
+print db.deleteDocument("a", "test2")
+print db.documentExists("a", "test")
+print db.documentExists("a", "testNe")
+print db.getDocuments("a")
 
 if db.collectionExists("b"):
     db.dropCollection("b")

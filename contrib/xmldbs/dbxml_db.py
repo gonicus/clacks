@@ -183,17 +183,20 @@ class DBXml(XMLDBInterface):
         self.collections[collection]['container'].deleteDocument(name, self.updateContext)
         self.collections[collection]['container'].sync()
 
-    def getDocuments(self):
+    def getDocuments(self, collection):
+        # Check for collection existence
+        if not collection in self.collections:
+            raise XMLDBException("collection '%s' does not exists" % collection)
         value = []
-        res = self.container.getAllDocuments(DBXML_LAZY_DOCS)
+        res = self.collections[collection]['container'].getAllDocuments(DBXML_LAZY_DOCS)
         res.reset()
         for entry in res:
             value.append(entry.asDocument().getName())
         return(value)
 
-    def documentExists(self, name):
+    def documentExists(self, collection, name):
         name = self.__normalizeDocPath(name)
-        return (name in self.getDocuments())
+        return (name in self.getDocuments(str(collection)))
 
     def xquery(self, collections, query):
         # Prepare collection part for queries.
