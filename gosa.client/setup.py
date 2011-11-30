@@ -86,8 +86,8 @@ setup(
     zip_safe = False,
 
     setup_requires = [
-        'nose==0.11.1',
-        'NoseXUnit',
+        #'nose==0.11.1',
+        #'NoseXUnit',
         'pylint',
         'babel',
         ],
