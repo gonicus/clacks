@@ -28,9 +28,9 @@ class DBXml(XMLDBInterface):
         # Check the given database storage path it has to be writeable
         self.db_storage_path = db_path
         if not os.path.exists(self.db_storage_path):
-            raise XMLDBException("Database storage path '%s' does not exists!")
+            raise XMLDBException("Database storage path '%s' does not exists!" % (self.db_storage_path,))
         if not os.access(self.db_storage_path, os.W_OK):
-            raise XMLDBException("Database storage path '%s' has to be writeable!")
+            raise XMLDBException("Database storage path '%s' has to be writeable!" % (self.db_storage_path,))
 
         # Open all configured databases
         self.__loadDatabases()
@@ -57,6 +57,8 @@ class DBXml(XMLDBInterface):
             self.databases[data['db_name']] = {}
             self.databases[data['db_name']]['config'] = data
             self.databases[data['db_name']]['container'] = cont
+            self.databases[data['db_name']]['path'] = os.path.join(self.db_storage_path, db)
+            self.databases[data['db_name']]['db_path'] = str(dfile)
 
             # Merge namespace list
             for abbr, ns in data['namespaces'].items():
@@ -150,12 +152,12 @@ class DBXml(XMLDBInterface):
             cont = self.manager.createContainer(str(os.path.join(path, dbname)))#, DBXML_ALLOW_VALIDATION)
             cont.sync()
 
+            # Add the new database to the already-known-list.
             self.databases[dbname] = {}
             self.databases[dbname]['config'] = data
             self.databases[dbname]['container'] = cont
-
-            # Add the new database to the already-known-list.
-            self.databases[dbname] = data
+            self.databases[dbname]['path'] = path
+            self.databases[dbname]['db_path'] = str(os.path.join(path, dbname))
 
         # Try some cleanup in case of an error
         except Exception as e:
@@ -175,8 +177,7 @@ class DBXml(XMLDBInterface):
         name        The name of the collection to check for.
         =========== ======================
         """
-
-        return self.manager.existsContainer(dbname) != 0
+        return dbname in self.databases
 
     def dropCollection(self, dbname):
         """
@@ -189,39 +190,60 @@ class DBXml(XMLDBInterface):
         =========== ======================
         """
 
-        if dbname == self.currentdb:
-            #self.container.close()
-            del(self.container)
-        return self.manager.removeContainer(dbname)
+        if not dbname in self.databases:
+            raise XMLDBException("Collection '%s' does not exists!" % (dbname,))
 
-    def addDocument(self, name, content):
+        # Close the database container
+        self.databases[dbname]['container'].sync()
+        del(self.databases[dbname]['container'])
+        self.manager.removeContainer(self.databases[dbname]['db_path'])
+
+        # Remove the database directory.
+        shutil.rmtree(self.databases[dbname]['path'])
+        del(self.databases[dbname])
+
+    def addDocument(self, dbname, docname, content):
         """
         Adds a new document to the currently opened collection.
 
         =========== ======================
         Key         Value
         =========== ======================
-        name        The name of the document to add
+        dbname      The name of the collection to add the document to.
+        docname     The name of the document to add
         content     The xml content of the document as string
         =========== ======================
         """
 
-        name = self.__normalizeDocPath(name)
-        return self.container.putDocument(name, content, self.updateContext)
+        # Check for collection existence
+        if not dbname in self.databases:
+            raise XMLDBException("Collection '%s' does not exists!" % (dbname,))
 
-    def deleteDocument(self, name):
+        # Normalize the document path and then add it.
+        docname = self.__normalizeDocPath(docname)
+        self.databases[dbname]['container'].putDocument(docname, content, self.updateContext)
+        self.databases[dbname]['container'].sync()
+
+    def deleteDocument(self, dbname, docname):
         """
         Deletes a document from the currently opened collection.
 
         =========== ======================
         Key         Value
         =========== ======================
-        name        The name of the document to delete
+        dbname      The name of the database to remove from.
+        docname     The name of the document to delete
         =========== ======================
         """
 
-        name = self.__normalizeDocPath(name)
-        return self.container.deleteDocument(name, self.updateContext)
+        # Check for collection existence
+        if not dbname in self.databases:
+            raise XMLDBException("Collection '%s' does not exists!" % (dbname,))
+
+        # Remove the document
+        docname = self.__normalizeDocPath(docname)
+        self.databases[dbname]['container'].deleteDocument(docname, self.updateContext)
+        self.databases[dbname]['container'].sync()
 
     def getDocuments(self):
         """
@@ -250,7 +272,7 @@ class DBXml(XMLDBInterface):
         name = self.__normalizeDocPath(name)
         return (name in self.getDocuments())
 
-    def xquery(self, query):
+    def xquery(self, dbs, query):
         """
         Starts a x-query on an opened collection.
         Returns an iterable result set.
@@ -258,12 +280,22 @@ class DBXml(XMLDBInterface):
         =========== ======================
         Key         Value
         =========== ======================
+        dbs         A list of databases included in this query
         query       The query to execute.
         =========== ======================
         """
 
+        # Prepare collection part for queries.
+        dbpaths = []
+        for entry in dbs:
+            dbpaths.append("collection('dbxml:///" + self.databases[entry]['db_path'] + "')")
+
+        # Combine collection-part and query-part
+        q = "(" + "|".join(dbpaths) + ")" + query
+
+        # Query and fetch all results
+        res = self.manager.query(q, self.queryContext)
         ret = []
-        res = self.manager.query(query, self.queryContext)
         for t in res:
             ret.append(t.asString())
         return ret
