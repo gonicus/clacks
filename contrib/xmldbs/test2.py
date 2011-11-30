@@ -2,6 +2,10 @@
 #from basex_db import BaseX
 from dbxml_db import DBXml
 
+
+obj_schema = open("objects.xsd").read()
+
+
 db = DBXml()
 print "Start"
 if not db.collectionExists("horsttest.dbxml"):
@@ -17,8 +21,7 @@ print "Query test"
 print "---"
 if db.collectionExists("a"):
     db.dropCollection("a")
-db.createCollection("a", {'gosa2': "hallo"}, {})
-db.setNamespace("a", "gosa", "http://www.gonicus.de/Objects")
+db.createCollection("a", {'gosa': "http://www.gonicus.de/Objects"}, {'objects.xsd': obj_schema})
 db.addDocument("a", "test", open('dummy.xml').read())
 db.addDocument("a", "test2", open('dummy2.xml').read())
 
@@ -31,8 +34,7 @@ print db.getDocuments("a")
 
 if db.collectionExists("b"):
     db.dropCollection("b")
-db.createCollection("b", {'gosa2': "hallo"}, {})
-db.setNamespace("b", "gosa", "http://www.gonicus.de/Objects")
+db.createCollection("b", {'gosa': "http://www.gonicus.de/Objects"}, {'objects.xsd': obj_schema})
 db.addDocument("b", "test", open('dummy2.xml').read())
 
 print

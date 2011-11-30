@@ -2,8 +2,40 @@ import os
 import re
 import json
 import shutil
-from dbxml import XmlManager, DBXML_LAZY_DOCS
+from dbxml import XmlManager, XmlResolver, DBXML_LAZY_DOCS, DBXML_ALLOW_VALIDATION
 from xmldb_interface import XMLDBInterface, XMLDBException
+
+
+class dictSchemaResolver(XmlResolver):
+    """
+    A self made schema resolver which allows DBXML to validate against
+    schema that is not physically available, but as string.
+    This function receives a dictionary containing the name of the
+    schema file as key and the schema-definition as value.
+    e.g.:
+        res = dictSchemaResolver({'objects': "<?xml versio..."})
+
+    You have to register this resolver to the manager like this.
+        resolver = dictSchemaResolver({'..'})
+        mgr = XmlManager()
+        mgr.registerResolver(resolver)
+
+    """
+    schemaData = {}
+
+    def addSchema(self, name, content):
+        self.schemaData[name] = content
+
+    def resolveSchema(self, transactionC, mgr, schemaLocation, namespace):
+        """
+        Used by the dbxml itself, to resolve schema informations.
+        """
+        if schemaLocation in self.schemaData:
+            s = self.schemaData[schemaLocation]
+            return(mgr.createMemBufInputStream(s, len(s), True))
+        else:
+            print "Invalid schema file %s" % (schemaLocation)
+            return(None)
 
 
 class DBXml(XMLDBInterface):
@@ -16,6 +48,7 @@ class DBXml(XMLDBInterface):
     db_storage_path = None
     collections = None
     namespaces = None
+    schemata = None
 
     def __init__(self):
         super(DBXml, self).__init__()
@@ -24,6 +57,9 @@ class DBXml(XMLDBInterface):
         db_path = "/tmp/dbs"
 
         self.manager = XmlManager()
+        self.schemaResolver = dictSchemaResolver()
+        self.manager.registerResolver(self.schemaResolver)
+
         self.updateContext = self.manager.createUpdateContext()
         self.queryContext = self.manager.createQueryContext()
 
@@ -47,6 +83,7 @@ class DBXml(XMLDBInterface):
                 if os.path.exists(os.path.join(self.db_storage_path, n, "db.config"))]
         self.collections = {}
         self.namespaces = {}
+        self.schemata = {}
         self.namespaces['xsi'] = "http://www.w3.org/2001/XMLSchema-instance"
 
         for db in dbs:
@@ -67,9 +104,17 @@ class DBXml(XMLDBInterface):
             for alias, uri in data['namespaces'].items():
                 self.namespaces[alias] = uri
 
+            # Merge list of xml-schema files
+            for alias, uri in data['schema'].items():
+                self.schemata[alias] = uri
+
         # Forward the collected namespaces to the queryContext
         for alias, uri in self.namespaces.items():
             self.queryContext.setNamespace(str(alias), str(uri))
+
+        # Populate known schema files
+        for name, schema in self.schemata.items():
+            self.schemaResolver.addSchema(str(name), str(schema))
 
     def __readConfig(self, collection):
         """
@@ -128,7 +173,7 @@ class DBXml(XMLDBInterface):
             f.close()
 
             # Create the dbxml collection
-            cont = self.manager.createContainer(os.path.join(path, name))#, DBXML_ALLOW_VALIDATION)
+            cont = self.manager.createContainer(os.path.join(path, name), DBXML_ALLOW_VALIDATION)
             cont.addAlias(str(name))
             cont.sync()
 
@@ -138,6 +183,16 @@ class DBXml(XMLDBInterface):
                     'container': cont,
                     'path': path,
                     'db_path': os.path.join(path, name)}
+
+            # Only load namespace if not done already - duplicted definition causes errors
+            for alias, namespace in data['namespaces'].items():
+                if alias not in self.namespaces:
+                    self.namespaces[alias] = namespace
+                    self.queryContext.setNamespace(alias, namespace)
+
+            # Populate known schema files
+            for name, schema in data['schema'].items():
+                self.schemaResolver.addSchema(str(name), str(schema))
 
         # Try some cleanup in case of an error
         except Exception as e:
