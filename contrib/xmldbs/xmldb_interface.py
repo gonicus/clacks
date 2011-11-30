@@ -80,12 +80,11 @@ class XMLDBInterface(object):
         """
         raise NotImplementedErrorError("getDocuments")
 
-    def xquery(self, collections, query):
+    def xquery(self, query):
         """
         =========== ======================
         Key         Value
         =========== ======================
-        collections The collections where the query should take place.
         query       The query to execute.
         =========== ======================
 

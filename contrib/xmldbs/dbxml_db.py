@@ -56,7 +56,7 @@ class DBXml(XMLDBInterface):
             dfile = os.path.join(self.db_storage_path, db, data['collection'])
 
             # Try opening the collection file
-            cont = self.manager.openContainer(dfile)
+            cont = self.manager.openContainer(str(dfile))
             self.collections[data['collection']] = {
                     'config': data,
                     'container': cont,
@@ -69,7 +69,7 @@ class DBXml(XMLDBInterface):
 
         # Forward the collected namespaces to the queryContext
         for alias, uri in self.namespaces.items():
-            self.queryContext.setNamespace(alias, uri)
+            self.queryContext.setNamespace(str(alias), str(uri))
 
     def __readConfig(self, collection):
         """
@@ -129,6 +129,7 @@ class DBXml(XMLDBInterface):
 
             # Create the dbxml collection
             cont = self.manager.createContainer(os.path.join(path, name))#, DBXML_ALLOW_VALIDATION)
+            cont.addAlias(str(name))
             cont.sync()
 
             # Add the new collection to the already-known-list.
@@ -157,7 +158,7 @@ class DBXml(XMLDBInterface):
         # Close the collection container
         self.collections[name]['container'].sync()
         del(self.collections[name]['container'])
-        self.manager.removeContainer(self.collections[name]['db_path'])
+        self.manager.removeContainer(str(self.collections[name]['db_path']))
 
         # Remove the collection directory.
         shutil.rmtree(self.collections[name]['path'])
@@ -170,7 +171,7 @@ class DBXml(XMLDBInterface):
 
         # Normalize the document path and then add it.
         name = self.__normalizeDocPath(name)
-        self.collections[collection]['container'].putDocument(name, contents, self.updateContext)
+        self.collections[collection]['container'].putDocument(str(name), contents, self.updateContext)
         self.collections[collection]['container'].sync()
 
     def deleteDocument(self, collection, name):
@@ -180,7 +181,7 @@ class DBXml(XMLDBInterface):
 
         # Remove the document
         name = self.__normalizeDocPath(name)
-        self.collections[collection]['container'].deleteDocument(name, self.updateContext)
+        self.collections[collection]['container'].deleteDocument(str(name), self.updateContext)
         self.collections[collection]['container'].sync()
 
     def getDocuments(self, collection):
@@ -198,16 +199,17 @@ class DBXml(XMLDBInterface):
         name = self.__normalizeDocPath(name)
         return (name in self.getDocuments(str(collection)))
 
-    def xquery(self, collections, query):
+    def xquery(self, query):
         # Prepare collection part for queries.
-        dbpaths = []
-        for collection in collections:
-            dbpaths.append("collection('dbxml:///%s')" % self.collections[collection]['db_path'])
+        #dbpaths = []
+        #for collection in collections:
+        #    dbpaths.append("collection('dbxml:///%s')" % self.collections[collection]['db_path'])
 
         # Combine collection-part and query-part
-        q = "(" + "|".join(dbpaths) + ")" + query
+        #q = "(" + "|".join(dbpaths) + ")" + query
 
         # Query and fetch all results
+        q=query
         res = self.manager.query(q, self.queryContext)
         ret = []
         for t in res:
