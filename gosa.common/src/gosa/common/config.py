@@ -102,6 +102,9 @@ class Config(object):
                           default="/etc/gosa/config",
                           help="read configuration from FILE [%(default)s]",
                           metavar="FILE")
+        parser.add_argument("--url", dest="url",
+                          help="AMQP broker URL",
+                          metavar="URL")
         parser.add_argument("-f", action="store_true", dest="foreground",
                           help="run daemon in foreground [%(default)s]")
         parser.add_argument("-u", "--user", dest="user",
@@ -128,6 +131,9 @@ class Config(object):
 
         items = options.__dict__
         self.__registry['core'].update(dict([(k, items[k]) for k in items if items[k] != None]))
+        if self.get("core.url", None):
+            self.__registry['amqp'] = {'url': self.get("core.url")}
+            del self.__registry['core']['url']
 
     def getBaseDir(self):
         bd = os.path.dirname(self.__registry['core']['config'])

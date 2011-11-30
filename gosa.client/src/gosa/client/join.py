@@ -49,17 +49,27 @@ def main():
         env = Environment.getInstance()
     except ConfigNoFile:
         config_file = "/etc/gosa/config"
+        service = None
 
         # Try to find config file without optparser
         for (i, arg) in enumerate(sys.argv):
             r = re.match(r"--config=(.*)", arg)
             if r:
                 config_file = r.groups(0)[0]
-                break
+                continue
 
             if arg == "--config" or arg == "-c":
                 config_file = sys.argv[i+1]
-                break
+                continue
+
+            r = re.match(r"--url=(.*)", arg)
+            if r:
+                service = r.groups(0)[0]
+                continue
+
+            if arg == "--url":
+                service = sys.argv[i+1]
+                continue
 
         # Check if config path exists
         config_dir = os.path.dirname(config_file)
@@ -72,6 +82,8 @@ def main():
 
         # Read default config and write it back to config_file
         config = open(resource_filename("gosa.client", "data/client.conf")).read()
+        if service:
+            config = re.sub(r"#url = %URL%", "url = %s" % service, config)
         with open(config_file, "w") as f:
             f.write(config)
 
