@@ -8,14 +8,6 @@ class XMLDBException(Exception):
     pass
 
 
-#createCollection(self, name, namespaces, schema):
-#collectionExists(self, name):
-#dropCollection(self, name):
-#addDocument(self, collection, docname, content):
-#deleteDocument(self, collection, docname):
-#getDocuments(self):
-#documentExists(self, name):
-#xquery(self, collections, query):
 
 class XMLDBInterface(object):
 
@@ -47,7 +39,7 @@ class XMLDBInterface(object):
         """
         raise NotImplementedError("collectionExists")
 
-    def addDocument(self, name, contents):
+    def addDocument(self, collection, name, contents):
         """
         Adds a new document to the collection
 
@@ -56,8 +48,9 @@ class XMLDBInterface(object):
         =========== ======================
         Key         Value
         =========== ======================
+        collection  The collection this document belongs to
         name        The name of the document to add
-        content     The xml content of the document as string
+        contents    The XML content of the document as string
         =========== ======================
         """
         raise NotImplementedErrorError("addDocument")
@@ -80,11 +73,12 @@ class XMLDBInterface(object):
         """
         raise NotImplementedErrorError("getDocuments")
 
-    def xquery(self, query):
+    def xquery(self, collections, query):
         """
         =========== ======================
         Key         Value
         =========== ======================
+        collections The collections where the query should take place.
         query       The query to execute.
         =========== ======================
 
@@ -120,13 +114,14 @@ class XMLDBInterface(object):
         """
         raise NotImplementedError("dropCollection")
 
-    def deleteDocument(self, name):
+    def deleteDocument(self, collection, name):
         """
         Removes the given document from the currently openened collection
 
         =========== ======================
         Key         Value
         =========== ======================
+        collection  The collection where the document is stored
         name        The name of the document to delete
         =========== ======================
         """

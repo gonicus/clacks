@@ -25,19 +25,19 @@ class DBXml(XMLDBInterface):
         self.updateContext = self.manager.createUpdateContext()
         self.queryContext = self.manager.createQueryContext()
 
-        # Check the given database storage path it has to be writeable
+        # Check the given storage path - it has to be writeable
         self.db_storage_path = db_path
         if not os.path.exists(self.db_storage_path):
-            raise XMLDBException("database storage path '%s' does not exists" % self.db_storage_path)
+            raise XMLDBException("storage path '%s' does not exists" % self.db_storage_path)
         if not os.access(self.db_storage_path, os.W_OK):
-            raise XMLDBException("database storage path '%s' has to be writeable" % self.db_storage_path)
+            raise XMLDBException("storage path '%s' is not writeable" % self.db_storage_path)
 
-        # Open all configured databases
-        self.__loadDatabases()
+        # Open all configured collections
+        self.__loadCollections()
 
-    def __loadDatabases(self):
+    def __loadCollections(self):
         """
-        Pre-loads all databases of the configured storage path.
+        Pre-load all collections of the configured storage path.
         """
 
         # Search directories containing a db.config file
@@ -71,7 +71,7 @@ class DBXml(XMLDBInterface):
 
     def __readConfig(self, collection):
         """
-        Returns the collection config file as dictionary.
+        Return the collection config file as dictionary.
         """
 
         # Read the config file
@@ -98,18 +98,6 @@ class DBXml(XMLDBInterface):
         f.close()
 
     def setNamespace(self, collection, alias, namespace):
-        """
-        Sets a new namespace prefix, which can then be used in queries aso.
-
-        =========== ======================
-        Key         Value
-        =========== ======================
-        collection  The collection to set the namespaces for
-        alias       The alias of the namespace
-        uri         The namespace uri
-        =========== ======================
-        """
-
         # Read the config file
         data = self.__readConfig(collection)
         data['namespaces'][alias] = namespace
@@ -121,16 +109,6 @@ class DBXml(XMLDBInterface):
             self.queryContext.setNamespace(alias, namespace)
 
     def createCollection(self, name, namespaces, schema):
-        """
-        Creates a new collection
-
-        =========== ======================
-        Key         Value
-        =========== ======================
-        name        The name of the collection to create
-        =========== ======================
-        """
-
         # Assemble db target path
         path = os.path.join(self.db_storage_path, name)
         if not os.path.exists(path):
@@ -151,7 +129,7 @@ class DBXml(XMLDBInterface):
             cont = self.manager.createContainer(os.path.join(path, name))#, DBXML_ALLOW_VALIDATION)
             cont.sync()
 
-            # Add the new database to the already-known-list.
+            # Add the new collection to the already-known-list.
             self.collections[name] = {
                     'config': data,
                     'container': cont,
@@ -167,88 +145,42 @@ class DBXml(XMLDBInterface):
             raise XMLDBException("failed to create collection '%s': %s" % (name, str(e)))
 
     def collectionExists(self, name):
-        """
-        Check whether a given databse exists
-
-        =========== ======================
-        Key         Value
-        =========== ======================
-        name        The name of the collection to check for.
-        =========== ======================
-        """
         return name in self.collections
 
     def dropCollection(self, name):
-        """
-        Drops a given collection
-
-        =========== ======================
-        Key         Value
-        =========== ======================
-        name        The name of the collection to drop
-        =========== ======================
-        """
-
         if not name in self.collections:
             raise XMLDBException("collection '%s' does not exists!" % name)
 
-        # Close the database container
+        # Close the collection container
         self.collections[name]['container'].sync()
         del(self.collections[name]['container'])
         self.manager.removeContainer(self.collections[name]['db_path'])
 
-        # Remove the database directory.
+        # Remove the collection directory.
         shutil.rmtree(self.collections[name]['path'])
         del(self.collections[name])
 
-    def addDocument(self, collection, docname, content):
-        """
-        Adds a new document to the currently opened collection.
-
-        =========== ======================
-        Key         Value
-        =========== ======================
-        collection  The name of the collection to add the document to.
-        docname     The name of the document to add
-        content     The xml content of the document as string
-        =========== ======================
-        """
-
+    def addDocument(self, collection, name, contents):
         # Check for collection existence
         if not collection in self.collections:
             raise XMLDBException("collection '%s' does not exists" % collection)
 
         # Normalize the document path and then add it.
-        docname = self.__normalizeDocPath(docname)
-        self.collections[collection]['container'].putDocument(docname, content, self.updateContext)
+        name = self.__normalizeDocPath(name)
+        self.collections[collection]['container'].putDocument(name, contents, self.updateContext)
         self.collections[collection]['container'].sync()
 
-    def deleteDocument(self, collection, docname):
-        """
-        Deletes a document from the currently opened collection.
-
-        =========== ======================
-        Key         Value
-        =========== ======================
-        collection      The name of the database to remove from.
-        docname     The name of the document to delete
-        =========== ======================
-        """
-
+    def deleteDocument(self, collection, name):
         # Check for collection existence
         if not collection in self.collections:
             raise XMLDBException("collection '%s' does not exists" % collection)
 
         # Remove the document
-        docname = self.__normalizeDocPath(docname)
-        self.collections[collection]['container'].deleteDocument(docname, self.updateContext)
+        name = self.__normalizeDocPath(name)
+        self.collections[collection]['container'].deleteDocument(name, self.updateContext)
         self.collections[collection]['container'].sync()
 
     def getDocuments(self):
-        """
-        Returns a list of all documents of the currently opened databse.
-        """
-
         value = []
         res = self.container.getAllDocuments(DBXML_LAZY_DOCS)
         res.reset()
@@ -257,33 +189,10 @@ class DBXml(XMLDBInterface):
         return(value)
 
     def documentExists(self, name):
-        """
-        Check whether a given document exists in the
-        currently opnened databse or not
-
-        =========== ======================
-        Key         Value
-        =========== ======================
-        name        The name of the document to check for.
-        =========== ======================
-        """
-
         name = self.__normalizeDocPath(name)
         return (name in self.getDocuments())
 
     def xquery(self, collections, query):
-        """
-        Starts a x-query on an opened collection.
-        Returns an iterable result set.
-
-        =========== ======================
-        Key         Value
-        =========== ======================
-        collections A list of databases included in this query
-        query       The query to execute.
-        =========== ======================
-        """
-
         # Prepare collection part for queries.
         dbpaths = []
         for collection in collections:
