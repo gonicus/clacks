@@ -4,6 +4,7 @@ import json
 import shutil
 from dbxml import XmlManager, DBXML_LAZY_DOCS
 from xmldb_interface import XMLDBInterface, XMLDBException
+from gosa.common import Environment
 
 
 class DBXml(XMLDBInterface):
@@ -19,9 +20,8 @@ class DBXml(XMLDBInterface):
 
     def __init__(self):
         super(DBXml, self).__init__()
-
-        #TODO: load me from the env
-        db_path = "/tmp/dbs"
+        self.env = Environment.getInstance()
+        db_path = self.env.config.get("dbxml.path", "/var/lib/gosa/database")
 
         self.manager = XmlManager()
         self.updateContext = self.manager.createUpdateContext()
