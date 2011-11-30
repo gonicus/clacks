@@ -14,13 +14,13 @@ class DBXml(XMLDBInterface):
     queryContext = None
     container = None
     db_storage_path = None
-    databases = None
+    collections = None
     namespaces = None
 
-    def __init__(self, db_path):
-        """
-        DBXml class that is able to communicate collection files.
-        """
+    def __init__(self):
+        #TODO: load me from the env
+        db_path = "/tmp/dbs"
+
         self.manager = XmlManager()
         self.updateContext = self.manager.createUpdateContext()
         self.queryContext = self.manager.createQueryContext()
@@ -28,9 +28,9 @@ class DBXml(XMLDBInterface):
         # Check the given database storage path it has to be writeable
         self.db_storage_path = db_path
         if not os.path.exists(self.db_storage_path):
-            raise XMLDBException("Database storage path '%s' does not exists!" % (self.db_storage_path,))
+            raise XMLDBException("database storage path '%s' does not exists" % self.db_storage_path)
         if not os.access(self.db_storage_path, os.W_OK):
-            raise XMLDBException("Database storage path '%s' has to be writeable!" % (self.db_storage_path,))
+            raise XMLDBException("database storage path '%s' has to be writeable" % self.db_storage_path)
 
         # Open all configured databases
         self.__loadDatabases()
@@ -43,85 +43,84 @@ class DBXml(XMLDBInterface):
         # Search directories containing a db.config file
         dbs = [n for n in os.listdir(self.db_storage_path) \
                 if os.path.exists(os.path.join(self.db_storage_path, n, "db.config"))]
-        self.databases = {}
+        self.collections = {}
         self.namespaces = {}
         self.namespaces['xsi'] = "http://www.w3.org/2001/XMLSchema-instance"
+
         for db in dbs:
 
             # Read the config file
             data = self.__readConfig(db)
-            dfile = os.path.join(self.db_storage_path, db, data['db_name'])
+            dfile = os.path.join(self.db_storage_path, db, data['collection'])
 
             # Try opening the collection file
-            cont = self.manager.openContainer(str(dfile))
-            self.databases[data['db_name']] = {}
-            self.databases[data['db_name']]['config'] = data
-            self.databases[data['db_name']]['container'] = cont
-            self.databases[data['db_name']]['path'] = os.path.join(self.db_storage_path, db)
-            self.databases[data['db_name']]['db_path'] = str(dfile)
+            cont = self.manager.openContainer(dfile)
+            self.collections[data['collection']] = {
+                    'config': data,
+                    'container': cont,
+                    'path': os.path.join(self.db_storage_path, db),
+                    'db_path': dfile}
 
             # Merge namespace list
-            for abbr, ns in data['namespaces'].items():
-                self.namespaces[str(abbr)] = str(ns)
+            for alias, uri in data['namespaces'].items():
+                self.namespaces[alias] = uri
 
         # Forward the collected namespaces to the queryContext
-        for abbr, ns in self.namespaces.items():
-            self.queryContext.setNamespace(abbr, ns)
+        for alias, uri in self.namespaces.items():
+            self.queryContext.setNamespace(alias, uri)
 
-    def __readConfig(self, db_name):
+    def __readConfig(self, collection):
         """
         Returns the collection config file as dictionary.
         """
 
         # Read the config file
-        db = os.path.join(self.db_storage_path, db_name)
+        db = os.path.join(self.db_storage_path, collection)
         cfile = os.path.join(db, 'db.config')
         try:
             data = json.loads(open(cfile).read())
         except Exception as e:
-            raise XMLDBException("Failed loadind collection config file '%s'! %s" % (cfile, str(e)))
-        if not 'db_name' in data:
-            raise XMLDBException("Invalid collection config file in '%s', missing tag '%s'!" % (db, 'db_name'))
+            raise XMLDBException("failed loading collection configuration '%s': %s" % (cfile, str(e)))
+        if not 'collection' in data:
+            raise XMLDBException("invalid collection configuration '%s': missing 'collection' tag" % db)
         if not 'namespaces' in data:
-            raise XMLDBException("Invalid collection config file in '%s', missing tag '%s'!" % (db, 'namespaces'))
+            raise XMLDBException("invalid collection configuration '%s': missing namespaces tag" % db)
         return data
 
-    def __saveConfig(self, db_name, data):
+    def __saveConfig(self, collection, data):
         """
         Stores 'data' to the collection-config file.
         """
-        db = os.path.join(self.db_storage_path, db_name)
+        db = os.path.join(self.db_storage_path, collection)
         cfile = os.path.join(db, 'db.config')
         f = open(cfile, 'w')
         f.write(json.dumps(data, indent=2))
         f.close()
 
-    def setNamespace(self, db, name, namespace):
+    def setNamespace(self, collection, alias, namespace):
         """
         Sets a new namespace prefix, which can then be used in queries aso.
 
         =========== ======================
         Key         Value
         =========== ======================
-        db          The database to set the namespaces for
-        name        The abbreviation/short-name of the namespace
+        collection  The collection to set the namespaces for
+        alias       The alias of the namespace
         uri         The namespace uri
         =========== ======================
         """
 
         # Read the config file
-        name = str(name)
-        namespace = str(namespace)
-        data = self.__readConfig(db)
-        data['namespaces'][name] = namespace
-        self.__saveConfig(db, data)
+        data = self.__readConfig(collection)
+        data['namespaces'][alias] = namespace
+        self.__saveConfig(collection, data)
 
         # Only load namespace if not done already - duplicted definition causes errors
-        if name not in self.namespaces:
-            self.namespaces[name] = namespace
-            self.queryContext.setNamespace(name, namespace)
+        if alias not in self.namespaces:
+            self.namespaces[alias] = namespace
+            self.queryContext.setNamespace(alias, namespace)
 
-    def createCollection(self, dbname, namespaces={}, schema={}):
+    def createCollection(self, name, namespaces, schema):
         """
         Creates a new collection
 
@@ -133,31 +132,31 @@ class DBXml(XMLDBInterface):
         """
 
         # Assemble db target path
-        path = os.path.join(self.db_storage_path, dbname)
+        path = os.path.join(self.db_storage_path, name)
         if not os.path.exists(path):
             os.makedirs(path)
         else:
-            raise XMLDBException("Database '%s' already exists!" % (dbname,))
+            raise XMLDBException("collection '%s' exists" % name)
 
         # Create a new dbxml collection
         try:
 
-            # Create a new database config object
-            data = {'db_name': dbname, 'namespaces': namespaces, 'schema': schema}
+            # Create a new collection config object
+            data = {'collection': name, 'namespaces': namespaces, 'schema': schema}
             f = open(os.path.join(path, 'db.config'), 'w')
             f.write(json.dumps(data, indent=2))
             f.close()
 
             # Create the dbxml collection
-            cont = self.manager.createContainer(str(os.path.join(path, dbname)))#, DBXML_ALLOW_VALIDATION)
+            cont = self.manager.createContainer(os.path.join(path, name))#, DBXML_ALLOW_VALIDATION)
             cont.sync()
 
             # Add the new database to the already-known-list.
-            self.databases[dbname] = {}
-            self.databases[dbname]['config'] = data
-            self.databases[dbname]['container'] = cont
-            self.databases[dbname]['path'] = path
-            self.databases[dbname]['db_path'] = str(os.path.join(path, dbname))
+            self.collections[name] = {
+                    'config': data,
+                    'container': cont,
+                    'path': path,
+                    'db_path': os.path.join(path, name)}
 
         # Try some cleanup in case of an error
         except Exception as e:
@@ -165,9 +164,9 @@ class DBXml(XMLDBInterface):
                 shutil.rmtree(path)
             except:
                 pass
-            raise XMLDBException("Failed to create collection '%s'! %s" % (dbname, str(e)))
+            raise XMLDBException("failed to create collection '%s': %s" % (name, str(e)))
 
-    def collectionExists(self, dbname):
+    def collectionExists(self, name):
         """
         Check whether a given databse exists
 
@@ -177,9 +176,9 @@ class DBXml(XMLDBInterface):
         name        The name of the collection to check for.
         =========== ======================
         """
-        return dbname in self.databases
+        return name in self.collections
 
-    def dropCollection(self, dbname):
+    def dropCollection(self, name):
         """
         Drops a given collection
 
@@ -190,60 +189,60 @@ class DBXml(XMLDBInterface):
         =========== ======================
         """
 
-        if not dbname in self.databases:
-            raise XMLDBException("Collection '%s' does not exists!" % (dbname,))
+        if not name in self.collections:
+            raise XMLDBException("collection '%s' does not exists!" % name)
 
         # Close the database container
-        self.databases[dbname]['container'].sync()
-        del(self.databases[dbname]['container'])
-        self.manager.removeContainer(self.databases[dbname]['db_path'])
+        self.collections[name]['container'].sync()
+        del(self.collections[name]['container'])
+        self.manager.removeContainer(self.collections[name]['db_path'])
 
         # Remove the database directory.
-        shutil.rmtree(self.databases[dbname]['path'])
-        del(self.databases[dbname])
+        shutil.rmtree(self.collections[name]['path'])
+        del(self.collections[name])
 
-    def addDocument(self, dbname, docname, content):
+    def addDocument(self, collection, docname, content):
         """
         Adds a new document to the currently opened collection.
 
         =========== ======================
         Key         Value
         =========== ======================
-        dbname      The name of the collection to add the document to.
+        collection  The name of the collection to add the document to.
         docname     The name of the document to add
         content     The xml content of the document as string
         =========== ======================
         """
 
         # Check for collection existence
-        if not dbname in self.databases:
-            raise XMLDBException("Collection '%s' does not exists!" % (dbname,))
+        if not collection in self.collections:
+            raise XMLDBException("collection '%s' does not exists" % collection)
 
         # Normalize the document path and then add it.
         docname = self.__normalizeDocPath(docname)
-        self.databases[dbname]['container'].putDocument(docname, content, self.updateContext)
-        self.databases[dbname]['container'].sync()
+        self.collections[collection]['container'].putDocument(docname, content, self.updateContext)
+        self.collections[collection]['container'].sync()
 
-    def deleteDocument(self, dbname, docname):
+    def deleteDocument(self, collection, docname):
         """
         Deletes a document from the currently opened collection.
 
         =========== ======================
         Key         Value
         =========== ======================
-        dbname      The name of the database to remove from.
+        collection      The name of the database to remove from.
         docname     The name of the document to delete
         =========== ======================
         """
 
         # Check for collection existence
-        if not dbname in self.databases:
-            raise XMLDBException("Collection '%s' does not exists!" % (dbname,))
+        if not collection in self.collections:
+            raise XMLDBException("collection '%s' does not exists" % collection)
 
         # Remove the document
         docname = self.__normalizeDocPath(docname)
-        self.databases[dbname]['container'].deleteDocument(docname, self.updateContext)
-        self.databases[dbname]['container'].sync()
+        self.collections[collection]['container'].deleteDocument(docname, self.updateContext)
+        self.collections[collection]['container'].sync()
 
     def getDocuments(self):
         """
@@ -272,7 +271,7 @@ class DBXml(XMLDBInterface):
         name = self.__normalizeDocPath(name)
         return (name in self.getDocuments())
 
-    def xquery(self, dbs, query):
+    def xquery(self, collections, query):
         """
         Starts a x-query on an opened collection.
         Returns an iterable result set.
@@ -280,15 +279,15 @@ class DBXml(XMLDBInterface):
         =========== ======================
         Key         Value
         =========== ======================
-        dbs         A list of databases included in this query
+        collections A list of databases included in this query
         query       The query to execute.
         =========== ======================
         """
 
         # Prepare collection part for queries.
         dbpaths = []
-        for entry in dbs:
-            dbpaths.append("collection('dbxml:///" + self.databases[entry]['db_path'] + "')")
+        for collection in collections:
+            dbpaths.append("collection('dbxml:///%s')" % self.collections[collection]['db_path'])
 
         # Combine collection-part and query-part
         q = "(" + "|".join(dbpaths) + ")" + query

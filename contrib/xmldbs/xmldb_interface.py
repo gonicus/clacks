@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-#TODO
-print "#TODO - Update interface methods they are no longer up to date"
-
 class XMLDBException(Exception):
     """
     Exception used for DBXml errors
@@ -11,28 +8,29 @@ class XMLDBException(Exception):
     pass
 
 
+#createCollection(self, name, namespaces, schema):
+#collectionExists(self, name):
+#dropCollection(self, name):
+#addDocument(self, collection, docname, content):
+#deleteDocument(self, collection, docname):
+#getDocuments(self):
+#documentExists(self, name):
+#xquery(self, collections, query):
 
 class XMLDBInterface(object):
 
-    def __init__(self, collection, schema=None):
-        if not self.collectionExists(collection):
-            self._createCollection(collection, schema)
+    def __init__(self):
+        pass
 
-        self._openCollection(collection)
-
-    def _openCollection(self):
-        """
-        Opens an existing collection
-        """
-        raise NotImplementedErrorError("openCollection")
-
-    def _createCollection(self, name):
+    def createCollection(self, name, namespaces, schema):
         """
         Creates a new collection collection.
         =========== ======================
         Key         Value
         =========== ======================
         name        The name of the collection to create
+        namespaces  Dictionary of namespaces
+        schema      List of schema(s) to include
         =========== ======================
         """
         raise NotImplementedError("createCollection")

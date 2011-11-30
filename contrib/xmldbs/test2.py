@@ -2,11 +2,11 @@
 #from basex_db import BaseX
 from dbxml_db import DBXml
 
-db = DBXml("/tmp/dbs")
+db = DBXml()
 print "Start"
 if not db.collectionExists("horsttest.dbxml"):
     print "Create"
-    db.createCollection("horsttest.dbxml", {'gosa2': "hallo"})
+    db.createCollection("horsttest.dbxml", {'gosa2': "hallo"}, {})
 print "Set namespace"
 db.setNamespace("horsttest.dbxml", "gosa", "http://www.gonicus.de/Objects")
 print "Drop"
@@ -17,13 +17,13 @@ print "Query test"
 print "---"
 if db.collectionExists("a"):
     db.dropCollection("a")
-db.createCollection("a", {'gosa2': "hallo"})
+db.createCollection("a", {'gosa2': "hallo"}, {})
 db.setNamespace("a", "gosa", "http://www.gonicus.de/Objects")
 db.addDocument("a", "test", open('dummy.xml').read())
 
 if db.collectionExists("b"):
     db.dropCollection("b")
-db.createCollection("b", {'gosa2': "hallo"})
+db.createCollection("b", {'gosa2': "hallo"}, {})
 db.setNamespace("b", "gosa", "http://www.gonicus.de/Objects")
 db.addDocument("b", "test", open('dummy2.xml').read())
 
