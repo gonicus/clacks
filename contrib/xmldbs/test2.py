@@ -34,71 +34,18 @@ db.createCollection("b", {'gosa2': "hallo"}, {})
 db.setNamespace("b", "gosa", "http://www.gonicus.de/Objects")
 db.addDocument("b", "test", open('dummy2.xml').read())
 
-print "Query something"
-print db.xquery(['b'], "/gosa:GenericUser/gosa:Attributes/gosa:uid/text()")
-print db.xquery(['a', 'b'], "/gosa:GenericUser/gosa:Attributes/gosa:uid/text()")
+print
+q = "collection('a')/gosa:GenericUser/gosa:Attributes/gosa:uid/text()"
+print "Query single collection: " + q
+print db.xquery(q)
+
+print
+q = "(collection('a')|collection('b'))/gosa:GenericUser/gosa:Attributes/gosa:uid/text()"
+print "Query multiple collections: " + q
+print db.xquery(q)
 
 db.dropCollection("a")
 db.dropCollection("b")
 
 print "done"
-
-
-
-import sys
-sys.exit(1)
-
-print "Set namespaces"
-db.setNamespace("gosa", "http://www.gonicus.de/Objects")
-db.setNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance")
-
-print "Drop collection if exists"
-if db.collectionExists('host'):
-    print "... exists"
-    db.dropCollection('host')
-
-#print "Create collection"
-#db.createCollection('host')
-print "Open collection"
-db.openCollection('host')
-print "Add documents"
-db.addDocument('/world1', open("dummy.xml").read())
-db.addDocument('/world2', open("dummy2.xml").read())
-db.addDocument('/a/world2', "<a>/a/world2</a>")
-db.addDocument('/b/world2', "<a><b>/b/world2</b></a>")
-db.addDocument('//a//b//c//world2', "<a><b><c>/b/world2</c></b></a>")
-
-print "Exists:\t\t", db.documentExists("/a/b/c/world2")
-print "Exists:\t\t", db.documentExists("/a/b/c/world")
-print "Query: "
-for entry in db.xquery("collection('host')/gosa:GenericUser/gosa:Attributes/gosa:uid/text()"):
-    print "\t\t", entry
-print "Query: "
-for entry in db.xquery("collection('host')/gosa:GenericUser[gosa:UUID='03a82842-ed95-102f-8038-812492b1b75c']/gosa:Extensions/gosa:Extension/text()"):
-    print "\t\t", entry
-print "Query: "
-for entry in db.xquery("collection('host')/gosa:GenericUser[gosa:UUID='03a82842-ed95-102f-8038-812492b1b75c']/gosa:Attributes/gosa:uid/text()"):
-    print "\t\t", entry
-
-print "Concurrent queries: "
-res = db.xquery("collection('host')//gosa:UUID/text()")
-for entry in res:
-    res2 = db.xquery("collection('host')//gosa:Attributes/gosa:sn/text()")
-    print "\t\t", entry
-    for entry2 in res2:
-        print "\t\t\t", entry2
-        res3 = db.xquery("collection('host')//gosa:Extensions/gosa:Extension/text()")
-        for entry3 in res3:
-            print "\t\t\t\t", entry3
-
-
-print "DB Exists:\t", db.collectionExists("host")
-print "Docs: \t\t", db.getDocuments()
-db.deleteDocument("/a/world2")
-db.deleteDocument("/world2")
-db.deleteDocument("/a/b/c/world2")
-db.deleteDocument("/b/world2")
-db.dropCollection('host')
-
-
 
