@@ -55,21 +55,28 @@ class XMLDBInterface(object):
         """
         raise NotImplementedErrorError("addDocument")
 
-    def documentExists(self, name):
+    def documentExists(self, collection, name):
         """
         Checks whethter a document exists or not
 
         =========== ======================
         Key         Value
         =========== ======================
+        collection  The collection this document belongs to
         name        The name of the document to check for.
         =========== ======================
         """
         raise NotImplementedErrorError("documentExists")
 
-    def getDocuments(self):
+    def getDocuments(self, collection):
         """
         Returns a list of all documents attached to the given collection.
+
+        =========== ======================
+        Key         Value
+        =========== ======================
+        collection  The collection this document belongs to
+        =========== ======================
         """
         raise NotImplementedErrorError("getDocuments")
 
