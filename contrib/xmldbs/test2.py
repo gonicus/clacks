@@ -54,16 +54,14 @@ print "---"
 print "Query multiple collections with join test"
 print "---"
 
-if db.collectionExists("users"):
-    db.dropCollection("users")
-db.createCollection("users", {'gosa': "http://www.gonicus.de/Objects"}, {'objects.xsd': obj_schema})
-db.addDocument("users", "hickert", open('dummy2.xml').read())
-db.addDocument("users", "rainer", open('dummy.xml').read())
+if not db.collectionExists("users"):
+    db.createCollection("users", {'gosa': "http://www.gonicus.de/Objects"}, {'objects.xsd': obj_schema})
+    db.addDocument("users", "user/hickert", open('dummy2.xml').read())
+    db.addDocument("users", "user/rainer", open('dummy.xml').read())
 
-if db.collectionExists("groups"):
-    db.dropCollection("groups")
-db.createCollection("groups", {'gosa': "http://www.gonicus.de/Objects"}, {'objects.xsd': obj_schema})
-db.addDocument("groups", "groups", open('dummy3.xml').read())
+if not db.collectionExists("groups"):
+    db.createCollection("groups", {'gosa': "http://www.gonicus.de/Objects"}, {'objects.xsd': obj_schema})
+    db.addDocument("groups", "groups", open('dummy3.xml').read())
 
 q = """
 <Status>
@@ -84,9 +82,27 @@ q = """
 """
 print(db.xquery(str(q))[0])
 
+q = """
+"Produkt von 12*12",
+12*12,
+"Ende"
+"""
+print(db.xquery(str(q)))
+
+q = """
+    for $component in collection("users")/gosa:GenericUser
+       return
+            let $groups := collection("groups")/gosa:Groups/gosa:Group[gosa:Member=$component/gosa:Attributes/gosa:uid]
+            for $group in $groups
+            return
+                concat("User: ", $component/gosa:Attributes/gosa:uid/string(), " Group: ", $group/gosa:Name/string())
+
+"""
+for entry in db.xquery(str(q)):
+    print entry
+
 db.dropCollection("users")
 db.dropCollection("groups")
-
 
 print "done"
 

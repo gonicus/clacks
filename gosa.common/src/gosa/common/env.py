@@ -37,7 +37,7 @@ class Environment:
     noargs = False
     __instance = None
     __db = {}
-    __xml_driver = None
+    __xml_handler = None
 
     def __init__(self):
         # Load configuration
@@ -73,22 +73,11 @@ class Environment:
 
         self.active = True
 
-    def getXMLDBDriver(self):
-        if self.__xml_driver:
-            return self.__xml_driver
+    def getXMLDBHandler(self):
+        if not self.__xml_handler:
+            self.__xml_handler = XMLDBHandler()
 
-        # Create instance
-        driver = self.config.get("core.xmldb-driver", default="DBXml")
-        for entry in pkg_resources.iter_entry_points("xmldb"):
-            mod = entry.load()
-            if mod.__class__.__name__ == driver:
-                self.__xml_driver = mod()
-                break
-
-        if not self.__xml_driver:
-            raise ValueError("there is no xmldb driver '%s' available" % driver)
-
-        return self.__xml_driver
+        return self.__xml_handler
 
     def getDatabaseEngine(self, section, key="database"):
         """

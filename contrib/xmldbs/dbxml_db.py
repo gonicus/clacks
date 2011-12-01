@@ -2,6 +2,8 @@ import os
 import re
 import json
 import shutil
+import logging
+from gosa.common import Environment
 from dbxml import XmlManager, XmlResolver, DBXML_LAZY_DOCS, DBXML_ALLOW_VALIDATION
 from xmldb_interface import XMLDBInterface, XMLDBException
 from gosa.common import Environment
@@ -25,6 +27,17 @@ class dictSchemaResolver(XmlResolver):
     schemaData = {}
 
     def addSchema(self, name, content):
+        """
+        Adds a new schema to the resolver.
+
+        ======= ===============
+        Name    Description
+        ======= ===============
+        name    The name of the schema file
+        content The content (schema-definition)
+        ======= ===============
+
+        """
         self.schemaData[name] = content
 
     def resolveSchema(self, transactionC, mgr, schemaLocation, namespace):
@@ -35,36 +48,51 @@ class dictSchemaResolver(XmlResolver):
             s = self.schemaData[schemaLocation]
             return(mgr.createMemBufInputStream(s, len(s), True))
         else:
-            print "Invalid schema file %s" % (schemaLocation)
+
+            # No schema found, give another resolver a try.
             return(None)
 
 
 class DBXml(XMLDBInterface):
 
-    currentdb = None
+    # Logger and gosa-ng environment object
+    log = None
+    env = None
+
+    # dbxml reslated object
     manager = None
     updateContext = None
     queryContext = None
-    container = None
+
+    # Storage path for dbxml databases
     db_storage_path = None
+
+    # A list of all known collections, namespaces and schemata
     collections = None
     namespaces = None
     schemata = None
 
     def __init__(self):
         super(DBXml, self).__init__()
+<<<<<<< HEAD
         self.env = Environment.getInstance()
         db_path = self.env.config.get("dbxml.path", "/var/lib/gosa/database")
+=======
 
+        # Enable logging
+        self.log = logging.getLogger(__name__)
+        self.env = Environment.getInstance()
+>>>>>>> 9c04eecc03cb233d1dff2b07b5873f5c880632c6
+
+        # Create dbxml manager and create schema resolver.
         self.manager = XmlManager()
         self.schemaResolver = dictSchemaResolver()
         self.manager.registerResolver(self.schemaResolver)
-
         self.updateContext = self.manager.createUpdateContext()
         self.queryContext = self.manager.createQueryContext()
 
         # Check the given storage path - it has to be writeable
-        self.db_storage_path = db_path
+        self.db_storage_path = self.env.config.get("dbxml.path", "/var/lib/gosa/database")
         if not os.path.exists(self.db_storage_path):
             raise XMLDBException("storage path '%s' does not exists" % self.db_storage_path)
         if not os.access(self.db_storage_path, os.W_OK):
@@ -94,6 +122,7 @@ class DBXml(XMLDBInterface):
 
             # Try opening the collection file
             cont = self.manager.openContainer(str(dfile))
+            cont.addAlias(str(data['collection']))
             self.collections[data['collection']] = {
                     'config': data,
                     'container': cont,
@@ -225,7 +254,10 @@ class DBXml(XMLDBInterface):
             raise XMLDBException("collection '%s' does not exists" % collection)
 
         # Normalize the document path and then add it.
-        name = self.__normalizeDocPath(name)
+        name = os.path.normpath(name)
+        if re.match("^\/", name):
+            raise XMLDBException("document names cannot begin with a '/'!")
+
         self.collections[collection]['container'].putDocument(str(name), contents, self.updateContext)
         self.collections[collection]['container'].sync()
 
@@ -235,7 +267,7 @@ class DBXml(XMLDBInterface):
             raise XMLDBException("collection '%s' does not exists" % collection)
 
         # Remove the document
-        name = self.__normalizeDocPath(name)
+        name = os.path.normpath(name)
         self.collections[collection]['container'].deleteDocument(str(name), self.updateContext)
         self.collections[collection]['container'].sync()
 
@@ -251,26 +283,13 @@ class DBXml(XMLDBInterface):
         return(value)
 
     def documentExists(self, collection, name):
-        name = self.__normalizeDocPath(name)
+        name = os.path.normpath(name)
         return (name in self.getDocuments(str(collection)))
 
     def xquery(self, query):
-        # Prepare collection part for queries.
-        #dbpaths = []
-        #for collection in collections:
-        #    dbpaths.append("collection('dbxml:///%s')" % self.collections[collection]['db_path'])
-
-        # Combine collection-part and query-part
-        #q = "(" + "|".join(dbpaths) + ")" + query
-
-        # Query and fetch all results
         q=query
         res = self.manager.query(q, self.queryContext)
         ret = []
         for t in res:
             ret.append(t.asString())
         return ret
-
-    def __normalizeDocPath(self, name):
-        return(re.sub("^\/*","", os.path.normpath(name)))
-
