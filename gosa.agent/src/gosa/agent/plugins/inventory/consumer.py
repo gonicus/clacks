@@ -10,7 +10,6 @@ from gosa.common.components.amqp import EventConsumer
 from gosa.common.components.registry import PluginRegistry
 from gosa.agent.xmldb import XMLDBHandler
 from gosa.agent.objects import GOsaObjectFactory
-from gosa.agent.plugins.inventory.dbxml_mapping import InventoryDBXml
 
 
 class InventoryException(Exception):
@@ -43,7 +42,7 @@ class InventoryConsumer(Plugin):
         if not self.db.collectionExists("inventory"):
             sf = pkg_resources.resource_filename('gosa.agent', 'plugins/goto/data/events/Inventory.xsd')
             self.__factory = GOsaObjectFactory.getInstance()
-            self.db.createCollection("inventory", {"gosa": "http://www.gonicus.de/Events"},{"objects":  open(sf).read()})
+            self.db.createCollection("inventory", {"gosa": "http://www.gonicus.de/Events"},{"inventory.xsd":  open(sf).read()})
 
     def serve(self):
         # Create event consumer
@@ -78,35 +77,81 @@ class InventoryConsumer(Plugin):
             self.log.error(msg)
             raise InventoryException(msg)
 
+        # Get the Inventory part of the event only
+        inv_only =  etree.tostring(data.xpath('/gosa:Event/gosa:Inventory', \
+                namespaces={'gosa': 'http://www.gonicus.de/Events'})[0], pretty_print=True)
+
         # The given hardware-uuid is already part of our inventory database
-        print "ok"
-        print data
-        import sys
-        sys.exit(0)
-        self.xmldb.open()
-        if self.xmldb.hardwareUUIDExists(huuid):
+        if self.hardwareUUIDExists(huuid):
 
             # Now check if the client-uuid for the given hardware-uuid has changed.
             # This is the case, when the same hardware is joined as new gosa-client again.
             # - In that case: drop the old entry and add the new one.
-            if uuid != self.xmldb.getClientUUIDByHardwareUUID(huuid):
+            if uuid != self.getClientUUIDByHardwareUUID(huuid):
                 self.log.debug("replacing inventory information for %s" % uuid)
-                self.xmldb.deleteByHardwareUUID(huuid)
-                datas = etree.tostring(data, pretty_print=True)
-                self.xmldb.addClientInventoryData(uuid, huuid, datas)
+                self.deleteByHardwareUUID(huuid)
+                self.addClientInventoryData(huuid, inv_only)
 
             # The client-uuid is still the same
-            elif checksum != self.xmldb.getChecksumByUUID(uuid):
+            elif checksum != self.getChecksumByUUID(uuid):
                 self.log.debug("updating inventory information for %s" % uuid)
-                self.xmldb.deleteByHardwareUUID(huuid)
-                datas = etree.tostring(data, pretty_print=True)
-                self.xmldb.addClientInventoryData(uuid, huuid, datas)
+                self.deleteByHardwareUUID(huuid)
+                self.addClientInventoryData(huuid, inv_only)
 
         else:
             # A new client has send its inventory data - Import data into dbxml
             self.log.debug("adding inventory information %s" % uuid)
-            datas = etree.tostring(data, pretty_print=True)
-            self.xmldb.addClientInventoryData(uuid, huuid, datas)
+            self.addClientInventoryData(huuid, inv_only)
 
-        # Sync database container - things will not work without it - even the database cannot be opened again
-        self.xmldb.sync()
+    def getClientUUIDByHardwareUUID(self, huuid):
+        """
+        Returns the ClientUUID used by the given HardwareUUID.
+        """
+        results = self.db.xquery("collection('inventory')/gosa:Inventory"
+                "[gosa:HardwareUUID='%s']/gosa:ClientUUID/string()" % (huuid))
+
+        # Walk through results and return the ClientUUID
+        if len(results) == 1:
+            return(results[0])
+        else:
+            raise InventoryException("No or more than one ClientUUID was found for HardwareUUID")
+
+    def getChecksumByUUID(self, uuid):
+        """
+        Returns the checksum of a specific entry.
+        """
+        results = self.db.xquery("collection('inventory')/gosa:Inventory"
+                "[gosa:ClientUUID='%s']/gosa:GOsaChecksum/string()" % (uuid))
+
+        # Walk through results and return the found checksum
+        if len(results) == 1:
+            return(results[0])
+        else:
+            raise InventoryException("No or more than one checksums found for ClientUUID=%s" % (uuid))
+
+    def hardwareUUIDExists(self, huuid):
+        """
+        Checks whether an inventory exists for the given client ID or not.
+        """
+        results = self.db.xquery("collection('inventory')/gosa:Inventory"
+                "[gosa:HardwareUUID='%s']/gosa:HardwareUUID/string()" % (huuid))
+
+        # Walk through results if there are any and return True in that case.
+        return(len(results) != 0)
+
+    def addClientInventoryData(self, huuid, data):
+        """
+        Adds client inventory data to the database.
+        """
+        self.db.addDocument('inventory', huuid, data)
+
+    def deleteByHardwareUUID(self, huuid):
+        results = self.db.xquery("collection('inventory')/gosa:Inventory"
+                "[gosa:HardwareUUID='%s']" % (huuid))
+        if len(results) == 1:
+            self.db.deleteDocument('inventory', huuid)
+        else:
+            raise InventoryException("No or more than one document found, removal aborted!")
+        return None
+
+

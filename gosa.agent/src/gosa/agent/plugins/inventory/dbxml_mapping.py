@@ -5,8 +5,6 @@ from dbxml import XmlManager, DBXML_ALLOW_EXTERNAL_ACCESS, XmlValue, DBXML_ALLOW
 from gosa.common import Environment
 
 
-class DbxmlException(Exception):
-    pass
 
 
 class InventoryDBXml(object):
@@ -89,60 +87,3 @@ class InventoryDBXml(object):
         else:
             self.log.debug("inventory database '%s' created and opened" % self.dbpath)
             self.container = self.manager.createContainer(self.dbpath, DBXML_ALLOW_VALIDATION, XmlContainer.NodeContainer)
-
-    def hardwareUUIDExists(self, huuid):
-        """
-        Checks whether an inventory exists for the given client ID or not.
-        """
-        results = self.manager.query("collection($doc)/Event/Inventory"
-                "[HardwareUUID='%s']/HardwareUUID/string()" % (huuid), self.queryContext)
-
-        # Walk through results if there are any and return True in that case.
-        results.reset()
-        return(results.size() != 0)
-
-    def getClientUUIDByHardwareUUID(self, huuid):
-        """
-        Returns the ClientUUID used by the given HardwareUUID.
-        """
-        results = self.manager.query("collection($doc)/Event/Inventory"
-                "[HardwareUUID='%s']/ClientUUID/string()" % (huuid), self.queryContext)
-
-        # Walk through results and return the ClientUUID
-        results.reset()
-        if results.size() == 1:
-            return(results.next().asString())
-        else:
-            raise DbxmlException("No or more than one ClientUUID was found for HardwareUUID")
-
-    def getChecksumByUUID(self, uuid):
-        """
-        Returns the checksum of a specific entry.
-        """
-        results = self.manager.query("collection($doc)/Event/Inventory"
-                "[ClientUUID='%s']/GOsaChecksum/string()" % (uuid), self.queryContext)
-
-        # Walk through results and return the found checksum
-        results.reset()
-        if results.size() == 1:
-            return(results.next().asString())
-        else:
-            raise DbxmlException("No or more than one checksums found for ClientUUID=%s" % (uuid))
-
-    def addClientInventoryData(self, uuid, huuid, data):
-        """
-        Adds client inventory data to the database.
-        """
-        #TODO: what for is uuid?
-        self.container.putDocument(huuid, data, self.updateContext)
-
-    def deleteByHardwareUUID(self, huuid):
-        results = self.manager.query("collection($doc)/Event/Inventory"
-                "[HardwareUUID='%s']" % (huuid), self.queryContext)
-        results.reset()
-        if results.size() == 1:
-            value = results.next()
-            self.container.deleteDocument(value.asDocument().getName(), self.updateContext)
-        else:
-            raise DbxmlException("No or more than one document found, removal aborted!")
-        return None
