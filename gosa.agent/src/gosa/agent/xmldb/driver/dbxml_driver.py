@@ -4,9 +4,8 @@ import json
 import shutil
 import logging
 from gosa.common import Environment
+from gosa.agent.xmldb.interface import XMLDBInterface, XMLDBException
 from dbxml import XmlManager, XmlResolver, DBXML_LAZY_DOCS, DBXML_ALLOW_VALIDATION
-from xmldb_interface import XMLDBInterface, XMLDBException
-from gosa.common import Environment
 
 
 class dictSchemaResolver(XmlResolver):
@@ -222,8 +221,7 @@ class DBXml(XMLDBInterface):
         except Exception as e:
             try:
                 shutil.rmtree(path)
-            #TODO: specify the exception to catch
-            except:
+            except OSError:
                 pass
             raise XMLDBException("failed to create collection '%s': %s" % (name, str(e)))
 

@@ -149,5 +149,8 @@ setup(
         operator.and = gosa.agent.objects.operator.bool:And
         operator.or = gosa.agent.objects.operator.bool:Or
         operator.not = gosa.agent.objects.operator.bool:Not
+
+        [xmldb]
+        berkley.driver = gosa.agent.xmldb.driver.dbxml_driver:DBXml
     """,
 )

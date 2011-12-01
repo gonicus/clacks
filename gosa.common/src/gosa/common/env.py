@@ -13,7 +13,6 @@ You can import it to your own code like this::
 """
 import logging
 import platform
-import pkg_resources
 from gosa.common.config import Config
 try:
     from sqlalchemy.orm import sessionmaker, scoped_session
@@ -72,12 +71,6 @@ class Environment:
                 raise Exception("No system id found")
 
         self.active = True
-
-    def getXMLDBHandler(self):
-        if not self.__xml_handler:
-            self.__xml_handler = XMLDBHandler()
-
-        return self.__xml_handler
 
     def getDatabaseEngine(self, section, key="database"):
         """
