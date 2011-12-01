@@ -74,15 +74,10 @@ class DBXml(XMLDBInterface):
 
     def __init__(self):
         super(DBXml, self).__init__()
-<<<<<<< HEAD
-        self.env = Environment.getInstance()
-        db_path = self.env.config.get("dbxml.path", "/var/lib/gosa/database")
-=======
 
         # Enable logging
         self.log = logging.getLogger(__name__)
         self.env = Environment.getInstance()
->>>>>>> 9c04eecc03cb233d1dff2b07b5873f5c880632c6
 
         # Create dbxml manager and create schema resolver.
         self.manager = XmlManager()
