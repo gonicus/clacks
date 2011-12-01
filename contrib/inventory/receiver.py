@@ -5,7 +5,6 @@ import os
 import StringIO
 import logging
 from dbxml import *
-from bsddb3.db import *
 from lxml import etree, objectify
 from gosa.common import Environment
 from gosa.common.components import AMQPEventConsumer
@@ -15,7 +14,7 @@ from gosa.agent.plugins.inventory.consumer import *
 
 # Create event consumer
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s (%(levelname)s): %(message)s')
-c = InventoryConsumer(skip_serve=True)
+c = InventoryConsumer()
 consumer = AMQPEventConsumer("amqps://cajus:tester@amqp.intranet.gonicus.de:5671/org.gosa",
             xquery="""
                 declare namespace f='http://www.gonicus.de/Events';
@@ -28,6 +27,7 @@ consumer = AMQPEventConsumer("amqps://cajus:tester@amqp.intranet.gonicus.de:5671
 try:
     while True:
         consumer.join()
+
 except KeyboardInterrupt:
     del consumer
     exit(0)

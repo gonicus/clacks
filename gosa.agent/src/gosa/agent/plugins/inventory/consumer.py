@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 import logging
 from lxml import etree
+import pkg_resources
 from zope.interface import implements
 from gosa.common import Environment
 from gosa.common.components import Plugin
 from gosa.common.handler import IInterfaceHandler
 from gosa.common.components.amqp import EventConsumer
 from gosa.common.components.registry import PluginRegistry
+from gosa.agent.xmldb import XMLDBHandler
+from gosa.agent.objects import GOsaObjectFactory
 from gosa.agent.plugins.inventory.dbxml_mapping import InventoryDBXml
 
 
@@ -28,6 +31,7 @@ class InventoryConsumer(Plugin):
     log = None
     inv_db = None
 
+    db = None
 
     def __init__(self):
         # Enable logging
@@ -35,8 +39,11 @@ class InventoryConsumer(Plugin):
         self.env = Environment.getInstance()
 
         # Try to establish the database connections
-        path = self.env.config.get("inventory.dbpath", "/var/lib/gosa/inventory/db.dbxml")
-        self.xmldb = InventoryDBXml(path)
+        self.db = XMLDBHandler.get_instance()
+        if not self.db.collectionExists("inventory"):
+            sf = pkg_resources.resource_filename('gosa.agent', 'plugins/goto/data/events/Inventory.xsd')
+            self.__factory = GOsaObjectFactory.getInstance()
+            self.db.createCollection("inventory", {"gosa": "http://www.gonicus.de/Events"},{"objects":  open(sf).read()})
 
     def serve(self):
         # Create event consumer
@@ -72,6 +79,10 @@ class InventoryConsumer(Plugin):
             raise InventoryException(msg)
 
         # The given hardware-uuid is already part of our inventory database
+        print "ok"
+        print data
+        import sys
+        sys.exit(0)
         self.xmldb.open()
         if self.xmldb.hardwareUUIDExists(huuid):
 
