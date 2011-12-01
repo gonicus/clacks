@@ -2,6 +2,8 @@ import os
 import re
 import json
 import shutil
+import logging
+from gosa.common import Environment
 from dbxml import XmlManager, XmlResolver, DBXML_LAZY_DOCS, DBXML_ALLOW_VALIDATION
 from xmldb_interface import XMLDBInterface, XMLDBException
 
@@ -24,6 +26,17 @@ class dictSchemaResolver(XmlResolver):
     schemaData = {}
 
     def addSchema(self, name, content):
+        """
+        Adds a new schema to the resolver.
+
+        ======= ===============
+        Name    Description
+        ======= ===============
+        name    The name of the schema file
+        content The content (schema-definition)
+        ======= ===============
+
+        """
         self.schemaData[name] = content
 
     def resolveSchema(self, transactionC, mgr, schemaLocation, namespace):
@@ -40,12 +53,19 @@ class dictSchemaResolver(XmlResolver):
 
 class DBXml(XMLDBInterface):
 
-    currentdb = None
+    # Logger and gosa-ng environment object
+    log = None
+    env = None
+
+    # dbxml reslated object
     manager = None
     updateContext = None
     queryContext = None
-    container = None
+
+    # Storage path for dbxml databases
     db_storage_path = None
+
+    # A list of all known collections, namespaces and schemata
     collections = None
     namespaces = None
     schemata = None
@@ -53,18 +73,19 @@ class DBXml(XMLDBInterface):
     def __init__(self):
         super(DBXml, self).__init__()
 
-        #TODO: load me from the env
-        db_path = "/tmp/dbs"
+        # Enable logging
+        self.log = logging.getLogger(__name__)
+        self.env = Environment.getInstance()
 
+        # Create dbxml manager and create schema resolver.
         self.manager = XmlManager()
         self.schemaResolver = dictSchemaResolver()
         self.manager.registerResolver(self.schemaResolver)
-
         self.updateContext = self.manager.createUpdateContext()
         self.queryContext = self.manager.createQueryContext()
 
         # Check the given storage path - it has to be writeable
-        self.db_storage_path = db_path
+        self.db_storage_path = self.env.config.get("dbxml.path", "/var/lib/gosa/database")
         if not os.path.exists(self.db_storage_path):
             raise XMLDBException("storage path '%s' does not exists" % self.db_storage_path)
         if not os.access(self.db_storage_path, os.W_OK):

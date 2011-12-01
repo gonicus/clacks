@@ -85,6 +85,25 @@ q = """
 """
 print(db.xquery(str(q))[0])
 
+q = """
+"Produkt von 12*12",
+12*12,
+"Ende"
+"""
+print(db.xquery(str(q)))
+
+q = """
+    for $component in collection("users")/gosa:GenericUser
+       return
+            let $groups := collection("groups")/gosa:Groups/gosa:Group[gosa:Member=$component/gosa:Attributes/gosa:uid]
+            for $group in $groups
+            return
+                concat("User: ", $component/gosa:Attributes/gosa:uid/string(), " Group: ", $group/gosa:Name/string())
+
+"""
+for entry in db.xquery(str(q)):
+    print entry
+
 db.dropCollection("users")
 db.dropCollection("groups")
 
