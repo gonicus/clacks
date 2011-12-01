@@ -1,0 +1,15 @@
+<Groups xmlns:ns_1="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.gonicus.de/Objects">
+    <Group>
+        <Name>Gruppe Technik</Name>
+        <Member>hickert</Member>
+    </Group>
+    <Group>
+        <Name>Gruppe Alle</Name>
+        <Member>hickert</Member>
+        <Member>rainer</Member>
+    </Group>
+    <Group>
+        <Name>Gruppe Cheffes</Name>
+        <Member>rainer</Member>
+    </Group>
+</Groups>
