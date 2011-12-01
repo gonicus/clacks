@@ -56,6 +56,10 @@ class Inventory(Plugin):
         # Insert the checksum into the resulting event
         result = re.sub(r"%%CHECKSUM%%", checksum, result)
 
-        # Establish amqp connection
-        amqp = PluginRegistry.getInstance("AMQPClientHandler")
-        amqp.sendEvent(str(result))
+        def runner():
+            # Establish amqp connection
+            amqp = PluginRegistry.getInstance("AMQPClientHandler")
+            amqp.sendEvent(str(result))
+
+        self.__thread = Thread(target=runner)
+        self.__thread.start()
