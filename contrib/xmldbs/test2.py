@@ -55,16 +55,14 @@ print "---"
 print "Query multiple collections with join test"
 print "---"
 
-if db.collectionExists("users"):
-    db.dropCollection("users")
-db.createCollection("users", {'gosa': "http://www.gonicus.de/Objects"}, {'objects.xsd': obj_schema})
-db.addDocument("users", "hickert", open('dummy2.xml').read())
-db.addDocument("users", "rainer", open('dummy.xml').read())
+if not db.collectionExists("users"):
+    db.createCollection("users", {'gosa': "http://www.gonicus.de/Objects"}, {'objects.xsd': obj_schema})
+    db.addDocument("users", "user/hickert", open('dummy2.xml').read())
+    db.addDocument("users", "user/rainer", open('dummy.xml').read())
 
-if db.collectionExists("groups"):
-    db.dropCollection("groups")
-db.createCollection("groups", {'gosa': "http://www.gonicus.de/Objects"}, {'objects.xsd': obj_schema})
-db.addDocument("groups", "groups", open('dummy3.xml').read())
+if not db.collectionExists("groups"):
+    db.createCollection("groups", {'gosa': "http://www.gonicus.de/Objects"}, {'objects.xsd': obj_schema})
+    db.addDocument("groups", "groups", open('dummy3.xml').read())
 
 q = """
 <Status>
@@ -106,7 +104,6 @@ for entry in db.xquery(str(q)):
 
 db.dropCollection("users")
 db.dropCollection("groups")
-
 
 print "done"
 

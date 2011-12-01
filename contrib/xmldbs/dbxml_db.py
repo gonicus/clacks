@@ -47,7 +47,8 @@ class dictSchemaResolver(XmlResolver):
             s = self.schemaData[schemaLocation]
             return(mgr.createMemBufInputStream(s, len(s), True))
         else:
-            print "Invalid schema file %s" % (schemaLocation)
+
+            # No schema found, give another resolver a try.
             return(None)
 
 
@@ -115,6 +116,7 @@ class DBXml(XMLDBInterface):
 
             # Try opening the collection file
             cont = self.manager.openContainer(str(dfile))
+            cont.addAlias(str(data['collection']))
             self.collections[data['collection']] = {
                     'config': data,
                     'container': cont,
@@ -246,7 +248,10 @@ class DBXml(XMLDBInterface):
             raise XMLDBException("collection '%s' does not exists" % collection)
 
         # Normalize the document path and then add it.
-        name = self.__normalizeDocPath(name)
+        name = os.path.normpath(name)
+        if re.match("^\/", name):
+            raise XMLDBException("document names cannot begin with a '/'!")
+
         self.collections[collection]['container'].putDocument(str(name), contents, self.updateContext)
         self.collections[collection]['container'].sync()
 
@@ -256,7 +261,7 @@ class DBXml(XMLDBInterface):
             raise XMLDBException("collection '%s' does not exists" % collection)
 
         # Remove the document
-        name = self.__normalizeDocPath(name)
+        name = os.path.normpath(name)
         self.collections[collection]['container'].deleteDocument(str(name), self.updateContext)
         self.collections[collection]['container'].sync()
 
@@ -272,26 +277,13 @@ class DBXml(XMLDBInterface):
         return(value)
 
     def documentExists(self, collection, name):
-        name = self.__normalizeDocPath(name)
+        name = os.path.normpath(name)
         return (name in self.getDocuments(str(collection)))
 
     def xquery(self, query):
-        # Prepare collection part for queries.
-        #dbpaths = []
-        #for collection in collections:
-        #    dbpaths.append("collection('dbxml:///%s')" % self.collections[collection]['db_path'])
-
-        # Combine collection-part and query-part
-        #q = "(" + "|".join(dbpaths) + ")" + query
-
-        # Query and fetch all results
         q=query
         res = self.manager.query(q, self.queryContext)
         ret = []
         for t in res:
             ret.append(t.asString())
         return ret
-
-    def __normalizeDocPath(self, name):
-        return(re.sub("^\/*","", os.path.normpath(name)))
-
