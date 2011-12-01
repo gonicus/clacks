@@ -39,10 +39,12 @@ class dictSchemaResolver(XmlResolver):
         """
         self.schemaData[name] = content
 
-    def resolveSchema(self, transactionC, mgr, schemaLocation, namespace):
+    def resolveSchema(self, *args):
         """
         Used by the dbxml itself, to resolve schema informations.
         """
+        mgr = args[1]
+        schemaLocation = args[2]
         if schemaLocation in self.schemaData:
             s = self.schemaData[schemaLocation]
             return(mgr.createMemBufInputStream(s, len(s), True))
