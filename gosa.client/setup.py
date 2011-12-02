@@ -80,6 +80,7 @@ setup(
     include_package_data = True,
     package_data = {
         'gosa.client': ['data/client.conf'],
+        'gosa.client.plugins.inventory': ['data/xmlToChecksumXml.xsl'],
     },
 
     test_suite = "nose.collector",

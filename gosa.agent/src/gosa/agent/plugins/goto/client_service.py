@@ -256,7 +256,8 @@ class ClientService(Plugin):
             if len(res) != 1:
                 raise ValueError("no device '%s' available" % device_uuid)
 
-            return res[0][1]["deviceStatus"][0]
+            if 'deviceStatus' in res[0][1]:
+                return res[0][1]["deviceStatus"][0]
 
         return ""
 

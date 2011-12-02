@@ -39,7 +39,7 @@ class Inventory(Plugin):
         # We use a XSL file which reads the result and skips some tags.
         xml_doc = etree.parse(StringIO.StringIO(result))
 
-        checksum_doc = etree.parse(resource_filename("gosa.dbus",'plugins/inventory/xmlToChecksumXml.xsl'))
+        checksum_doc = etree.parse(resource_filename("gosa.client.plugins.inventory", "data/xmlToChecksumXml.xsl"))
         check_trans = etree.XSLT(checksum_doc)
         checksum_result = check_trans(xml_doc)
 
