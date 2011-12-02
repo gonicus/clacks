@@ -285,7 +285,7 @@
 				</xsl:for-each> 
 
 				<xsl:for-each select="/REQUEST/CONTENT/BATTERIES">
-					<Batterie>
+					<Battery>
 						<Name><xsl:value-of select="NAME" /></Name>
 						<Serial><xsl:value-of select="SERIAL" /></Serial>
 						<Manufacturer><xsl:value-of select="MANUFACTURER" /></Manufacturer>
@@ -293,7 +293,7 @@
 						<Date><xsl:value-of select="DATE" /></Date>
 						<Chemistry><xsl:value-of select="CHEMISTRY" /></Chemistry>
 						<Capacity><xsl:value-of select="CAPACITY" /></Capacity>
-					</Batterie>
+					</Battery>
 				</xsl:for-each> 
 
 				<xsl:for-each select="/REQUEST/CONTENT/ANTIVIRUS">

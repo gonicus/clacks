@@ -32626,7 +32626,7 @@
       <Class>255</Class>
       <SubClass>0</SubClass>
     </USBDevice>
-    <Batterie>
+    <Battery>
       <Name/>
       <Serial/>
       <Manufacturer/>
@@ -32634,7 +32634,7 @@
       <Date/>
       <Chemistry/>
       <Capacity/>
-    </Batterie>
+    </Battery>
     <LogicalVolume>
       <Name>home</Name>
       <UUID>0jpMtF-nM27-JjGg-GnaG-bfOY-Qy4N-xxRxkB</UUID>
