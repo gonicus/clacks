@@ -92,11 +92,15 @@ class InventoryConsumer(Plugin):
                 self.deleteByHardwareUUID(huuid)
                 self.addClientInventoryData(huuid, inv_only)
 
-            # The client-uuid is still the same
+            # The client-uuid is still the same but the checksum has changed
             elif checksum != self.getChecksumByUUID(uuid):
                 self.log.debug("updating inventory information for %s" % uuid)
                 self.deleteByHardwareUUID(huuid)
                 self.addClientInventoryData(huuid, inv_only)
+
+            # The client-uuid and the checksums are still the same
+            else:
+                self.log.debug("inventory information still up to date for %s" % uuid)
 
         else:
             # A new client has send its inventory data - Import data into dbxml
