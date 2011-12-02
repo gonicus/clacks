@@ -119,7 +119,7 @@ class DBXml(XMLDBInterface):
             # Try opening the collection file
             cont = self.manager.openContainer(str(dfile))
             cont.addAlias(str(data['collection']))
-            self.collections[data['collection']] = {
+            self.collections[str(data['collection'])] = {
                     'config': data,
                     'container': cont,
                     'path': os.path.join(self.db_storage_path, db),
@@ -203,7 +203,7 @@ class DBXml(XMLDBInterface):
             cont.sync()
 
             # Add the new collection to the already-known-list.
-            self.collections[name] = {
+            self.collections[str(name)] = {
                     'config': data,
                     'container': cont,
                     'path': path,
@@ -226,6 +226,9 @@ class DBXml(XMLDBInterface):
             except OSError:
                 pass
             raise XMLDBException("failed to create collection '%s': %s" % (name, str(e)))
+
+    def getCollections(self):
+        return self.collections.keys()
 
     def collectionExists(self, name):
         return name in self.collections

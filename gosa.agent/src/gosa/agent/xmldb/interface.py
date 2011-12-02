@@ -27,6 +27,12 @@ class XMLDBInterface(object):
         """
         raise NotImplementedError("createCollection")
 
+    def getCollection(self):
+        """
+        Returns a list of all known collections.
+        """
+        raise NotImplementedError("createCollection")
+
     def collectionExists(self, name):
         """
         Checks whethter a databse exists or not
