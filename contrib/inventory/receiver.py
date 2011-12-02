@@ -8,7 +8,6 @@ from dbxml import *
 from lxml import etree, objectify
 from gosa.common import Environment
 from gosa.common.components import AMQPEventConsumer
-from gosa.agent.plugins.inventory.dbxml_mapping import InventoryDBXml
 from gosa.agent.plugins.inventory.consumer import *
 
 

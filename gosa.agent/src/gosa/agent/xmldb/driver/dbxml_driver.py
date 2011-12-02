@@ -80,6 +80,8 @@ class DBXml(XMLDBInterface):
         self.log = logging.getLogger(__name__)
         self.env = Environment.getInstance()
 
+        self.log.debug("initializing database driver")
+
         # Create dbxml manager and create schema resolver.
         self.manager = XmlManager()
         self.schemaResolver = dictSchemaResolver()
@@ -94,13 +96,18 @@ class DBXml(XMLDBInterface):
         if not os.access(self.db_storage_path, os.W_OK):
             raise XMLDBException("storage path '%s' is not writeable" % self.db_storage_path)
 
+        self.log.debug("... done")
+
         # Open all configured collections
         self.__loadCollections()
+        self.log.info("dbxml driver successfully initialized with %s database(s)" % (len(self.collections)))
 
     def __loadCollections(self):
         """
         Pre-load all collections of the configured storage path.
         """
+
+        self.log.debug("going to load existing collections")
 
         # Search directories containing a config file
         dbs = [n for n in os.listdir(self.db_storage_path) \
@@ -110,7 +117,10 @@ class DBXml(XMLDBInterface):
         self.schemata = {}
         self.namespaces['xsi'] = "http://www.w3.org/2001/XMLSchema-instance"
 
+        self.log.debug("found %s potential database folder(s)" % (len(dbs)))
         for db in dbs:
+
+            self.log.debug("processing collection %s" % (db))
 
             # Read the config file
             data = self.__readConfig(db)
@@ -133,13 +143,17 @@ class DBXml(XMLDBInterface):
             for alias, uri in data['schema'].items():
                 self.schemata[alias] = uri
 
+            self.log.debug("successfully read collection %s" % (db))
+
         # Forward the collected namespaces to the queryContext
         for alias, uri in self.namespaces.items():
             self.queryContext.setNamespace(str(alias), str(uri))
+            self.log.debug("setting namespace prefix %s=%s" % (str(alias), str(uri)))
 
         # Populate known schema files
         for name, schema in self.schemata.items():
             self.schemaResolver.addSchema(str(name), str(schema))
+            self.log.debug("setting schema file %s with %s bytes" % (str(name), len(schema)))
 
     def __readConfig(self, collection):
         """
@@ -147,6 +161,7 @@ class DBXml(XMLDBInterface):
         """
 
         # Read the config file
+        self.log.debug("reading config for collection '%s'" % collection)
         db = os.path.join(self.db_storage_path, collection)
         cfile = os.path.join(db, 'config')
         try:
@@ -163,6 +178,7 @@ class DBXml(XMLDBInterface):
         """
         Stores 'data' to the collection-config file.
         """
+        self.log.debug("updating config for collection '%s'" % collection)
         db = os.path.join(self.db_storage_path, collection)
         cfile = os.path.join(db, 'config')
         f = open(cfile, 'w')
@@ -175,6 +191,8 @@ class DBXml(XMLDBInterface):
         data['namespaces'][alias] = namespace
         self.__saveConfig(collection, data)
 
+        self.log.debug("added namespace prefix for collection %s %s=%s" % (collection, str(alias), str(namespace)))
+
         # Only load namespace if not done already - duplicted definition causes errors
         if alias not in self.namespaces:
             self.namespaces[alias] = namespace
@@ -183,6 +201,7 @@ class DBXml(XMLDBInterface):
     def createCollection(self, name, namespaces, schema):
         # Assemble db target path
         path = os.path.join(self.db_storage_path, name)
+        self.log.debug("going to create collection '%s'" % (name))
         if not os.path.exists(path):
             os.makedirs(path)
         else:
@@ -196,11 +215,14 @@ class DBXml(XMLDBInterface):
             f = open(os.path.join(path, 'config'), 'w')
             f.write(json.dumps(data, indent=2))
             f.close()
+            self.log.debug("config for collection '%s' written" % (name))
 
             # Create the dbxml collection
             cont = self.manager.createContainer(os.path.join(path, "data.bdb"), DBXML_ALLOW_VALIDATION)
             cont.addAlias(str(name))
             cont.sync()
+
+            self.log.debug("database created for collection '%s'" % (name))
 
             # Add the new collection to the already-known-list.
             self.collections[str(name)] = {
@@ -210,12 +232,14 @@ class DBXml(XMLDBInterface):
                     'db_path': os.path.join(path, 'data.bdb')}
 
             # Only load namespace if not done already - duplicted definition causes errors
+            self.log.debug("adding %s namespace definition(s) for collection '%s'" % (len(data['namespaces'].items()), name))
             for alias, namespace in data['namespaces'].items():
                 if alias not in self.namespaces:
                     self.namespaces[alias] = namespace
                     self.queryContext.setNamespace(alias, namespace)
 
             # Populate known schema files
+            self.log.debug("adding %s schema definition(s) for collection '%s'" % (len(data['schema'].items()), name))
             for name, schema in data['schema'].items():
                 self.schemaResolver.addSchema(str(name), str(schema))
 
@@ -226,6 +250,7 @@ class DBXml(XMLDBInterface):
             except OSError:
                 pass
             raise XMLDBException("failed to create collection '%s': %s" % (name, str(e)))
+        self.log.debug("successfully created collection '%s'" % (name))
 
     def getCollections(self):
         return self.collections.keys()
@@ -246,6 +271,8 @@ class DBXml(XMLDBInterface):
         shutil.rmtree(self.collections[name]['path'])
         del(self.collections[name])
 
+        self.log.debug("successfully dropped collection '%s'" % (name))
+
     def addDocument(self, collection, name, contents):
         # Check for collection existence
         if not collection in self.collections:
@@ -259,6 +286,8 @@ class DBXml(XMLDBInterface):
         self.collections[collection]['container'].putDocument(str(name), contents, self.updateContext)
         self.collections[collection]['container'].sync()
 
+        self.log.debug("successfully added document '%s' to collection '%s'" % (name, collection))
+
     def deleteDocument(self, collection, name):
         # Check for collection existence
         if not collection in self.collections:
@@ -268,6 +297,8 @@ class DBXml(XMLDBInterface):
         name = os.path.normpath(name)
         self.collections[collection]['container'].deleteDocument(str(name), self.updateContext)
         self.collections[collection]['container'].sync()
+
+        self.log.debug("successfully removed document '%s' from collection '%s'" % (name, collection))
 
     def getDocuments(self, collection):
         # Check for collection existence
@@ -290,4 +321,5 @@ class DBXml(XMLDBInterface):
         ret = []
         for t in res:
             ret.append(t.asString())
+        self.log.debug("performed xquery '%s' with %s results" % (query, len(ret)))
         return ret
