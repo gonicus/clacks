@@ -102,9 +102,9 @@ class DBXml(XMLDBInterface):
         Pre-load all collections of the configured storage path.
         """
 
-        # Search directories containing a db.config file
+        # Search directories containing a config file
         dbs = [n for n in os.listdir(self.db_storage_path) \
-                if os.path.exists(os.path.join(self.db_storage_path, n, "db.config"))]
+                if os.path.exists(os.path.join(self.db_storage_path, n, "config"))]
         self.collections = {}
         self.namespaces = {}
         self.schemata = {}
@@ -114,7 +114,7 @@ class DBXml(XMLDBInterface):
 
             # Read the config file
             data = self.__readConfig(db)
-            dfile = os.path.join(self.db_storage_path, db, data['collection'])
+            dfile = os.path.join(self.db_storage_path, db, 'data.bdb')
 
             # Try opening the collection file
             cont = self.manager.openContainer(str(dfile))
@@ -148,7 +148,7 @@ class DBXml(XMLDBInterface):
 
         # Read the config file
         db = os.path.join(self.db_storage_path, collection)
-        cfile = os.path.join(db, 'db.config')
+        cfile = os.path.join(db, 'config')
         try:
             data = json.loads(open(cfile).read())
         except Exception as e:
@@ -164,7 +164,7 @@ class DBXml(XMLDBInterface):
         Stores 'data' to the collection-config file.
         """
         db = os.path.join(self.db_storage_path, collection)
-        cfile = os.path.join(db, 'db.config')
+        cfile = os.path.join(db, 'config')
         f = open(cfile, 'w')
         f.write(json.dumps(data, indent=2))
         f.close()
@@ -193,12 +193,12 @@ class DBXml(XMLDBInterface):
 
             # Create a new collection config object
             data = {'collection': name, 'namespaces': namespaces, 'schema': schema}
-            f = open(os.path.join(path, 'db.config'), 'w')
+            f = open(os.path.join(path, 'config'), 'w')
             f.write(json.dumps(data, indent=2))
             f.close()
 
             # Create the dbxml collection
-            cont = self.manager.createContainer(os.path.join(path, name), DBXML_ALLOW_VALIDATION)
+            cont = self.manager.createContainer(os.path.join(path, "data.bdb"), DBXML_ALLOW_VALIDATION)
             cont.addAlias(str(name))
             cont.sync()
 
@@ -207,7 +207,7 @@ class DBXml(XMLDBInterface):
                     'config': data,
                     'container': cont,
                     'path': path,
-                    'db_path': os.path.join(path, name)}
+                    'db_path': os.path.join(path, 'data.bdb')}
 
             # Only load namespace if not done already - duplicted definition causes errors
             for alias, namespace in data['namespaces'].items():
