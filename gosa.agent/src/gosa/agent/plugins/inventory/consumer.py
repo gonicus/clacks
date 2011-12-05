@@ -93,7 +93,7 @@ class InventoryConsumer(Plugin):
                 self.addClientInventoryData(huuid, inv_only)
 
             # The client-uuid is still the same but the checksum has changed
-            elif checksum != self.getChecksumByUUID(uuid):
+            elif checksum != self.getChecksumByHardwareUUID(huuid):
                 self.log.debug("updating inventory information for %s" % uuid)
                 self.deleteByHardwareUUID(huuid)
                 self.addClientInventoryData(huuid, inv_only)
@@ -120,17 +120,18 @@ class InventoryConsumer(Plugin):
         else:
             raise InventoryException("No or more than one ClientUUID was found for HardwareUUID")
 
-    def getChecksumByUUID(self, uuid):
+    def getChecksumByHardwareUUID(self, huuid):
         """
         Returns the checksum of a specific entry.
         """
         results = self.db.xquery("collection('inventory')/gosa:Inventory"
-                "[gosa:ClientUUID='%s']/gosa:GOsaChecksum/string()" % (uuid))
+                "[gosa:HardwareUUID='%s']/gosa:GOsaChecksum/string()" % (huuid))
 
         # Walk through results and return the found checksum
         if len(results) == 1:
             return(results[0])
         else:
+            print results
             raise InventoryException("No or more than one checksums found for ClientUUID=%s" % (uuid))
 
     def hardwareUUIDExists(self, huuid):
