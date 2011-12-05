@@ -305,28 +305,6 @@
 					</VirtualMachine>
 				</xsl:for-each> 
 
-				<xsl:for-each select="/REQUEST/CONTENT/PROCESSES">
-					<Process>
-						<Command><xsl:value-of select="CMD" /></Command>
-						<CpuUsage><xsl:value-of select="CPUUSAGE" /></CpuUsage>
-						<MemoryUsagePercent><xsl:value-of select="MEM" /></MemoryUsagePercent>
-						<xsl:call-template name="FormatDate_StartDate">
-							<xsl:with-param name="DateTime" select="STARTED"/>
-						</xsl:call-template>
-						<User><xsl:value-of select="USER" /></User>
-                        <VirtualMemory>
-                            <xsl:choose>
-                                <xsl:when test="floor(VIRTUALMEMORY) = VIRTUALMEMORY">
-                                    <xsl:value-of select="VIRTUALMEMORY"/>
-                                </xsl:when>
-                                <xsl:otherwise>0</xsl:otherwise>
-                            </xsl:choose>
-                        </VirtualMemory>
-						<TTY><xsl:value-of select="TTY" /></TTY>
-						<PID><xsl:value-of select="PID" /></PID>
-					</Process>
-				</xsl:for-each>
-
 				<xsl:for-each select="/REQUEST/CONTENT/ACCESSLOG">
 					<AccessLog>
 						<xsl:call-template name="FormatDate_LoginDate">
@@ -416,66 +394,6 @@
 				</xsl:for-each> 
 			</Inventory>
 		</Event>
-	</xsl:template>
-
-	<!-- Converts  <<2011-10-9 07:20:00>> to <<2002-10-10T17:00:00Z>> -->
-	<xsl:template name="FormatDate_StartDate">
-		<xsl:param name="DateTime" />
-
-		<!-- If the value is empty, then create a 'nil' statement -->
-		<xsl:if test="(string-length($DateTime) = 0)">
-			<xsl:element name="StartDate" namespace="http://www.gonicus.de/Events">
-				<xsl:attribute name="nil" namespace="http://www.w3.org/2001/XMLSchema-instance">true</xsl:attribute>
-			</xsl:element>
-		</xsl:if>
-
-		<!-- If the value is NOT empty, then create a valid xs:dateTime statement -->
-		<xsl:if test="(string-length($DateTime) != 0)">
-
-			<xsl:variable name="year">
-				<xsl:value-of select="substring($DateTime,1,4)" />
-			</xsl:variable>
-
-			<xsl:variable name="month-temp">
-				<xsl:value-of select="substring-after($DateTime,'-')" />
-			</xsl:variable>
-			<xsl:variable name="month">
-				<xsl:value-of select="substring-before($month-temp,'-')" />
-			</xsl:variable>
-
-			<xsl:variable name="day-temp">
-				<xsl:value-of select="substring-after($month-temp,'-')" />
-			</xsl:variable>
-			<xsl:variable name="day">
-				<xsl:value-of select="substring-before($day-temp,' ')" />
-			</xsl:variable>
-			<xsl:variable name="time">
-				<xsl:value-of select="substring-after($day-temp,' ')" />
-			</xsl:variable>
-
-			<xsl:element name="StartDate" namespace="http://www.gonicus.de/Events">
-
-				<xsl:value-of select="$year"/>
-				<xsl:value-of select="'-'"/>
-
-				<xsl:if test="(string-length($month) &lt; 2)">
-					<xsl:value-of select="0"/>
-				</xsl:if>
-				<xsl:value-of select="$month"/>
-				<xsl:value-of select="'-'"/>
-				<xsl:if test="(string-length($day) &lt; 2)">
-					<xsl:value-of select="0"/>
-				</xsl:if>
-				<xsl:value-of select="$day"/>
-				<xsl:value-of select="'T'"/>
-				<xsl:if test="(string-length($time) &lt; 5)">
-					<xsl:value-of select="0"/>
-				</xsl:if>
-
-				<xsl:value-of select="$time"/>
-				<xsl:value-of select="':00Z'"/>
-			</xsl:element>
-		</xsl:if>
 	</xsl:template>
 
 	<!-- Converts  <<2011-10-9 07:20>> to <<2002-10-10T17:00:00Z>> -->
