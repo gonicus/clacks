@@ -55,7 +55,14 @@
 				<xsl:for-each select="/REQUEST/CONTENT/STORAGES">
 					<Storage>
 						<Description><xsl:value-of select="DESCRIPTION" /></Description>
-						<DiskSize><xsl:value-of select="DISKSIZE" /></DiskSize>
+                        <DiskSize>
+                             <xsl:choose>
+                                <xsl:when test="floor(DISKSIZE) = DISKSIZE">
+                                    <xsl:value-of select="DISKSIZE"/>
+                                </xsl:when>
+                                <xsl:otherwise>0</xsl:otherwise>
+                            </xsl:choose>
+                        </DiskSize>
 						<Firmware><xsl:value-of select="FIRMWARE" /></Firmware>
 						<Manufacturer><xsl:value-of select="MANUFACTURER" /></Manufacturer>
 						<Model><xsl:value-of select="MODEL" /></Model>
