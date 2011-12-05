@@ -3,6 +3,8 @@ import re
 import json
 import shutil
 import logging
+from lxml import etree, objectify
+import StringIO
 from gosa.common import Environment
 from gosa.agent.xmldb.interface import XMLDBInterface, XMLDBException
 from dbxml import XmlManager, XmlResolver, DBXML_LAZY_DOCS, DBXML_ALLOW_VALIDATION
@@ -323,3 +325,24 @@ class DBXml(XMLDBInterface):
             ret.append(t.asString())
         self.log.debug("performed xquery '%s' with %s results" % (query, len(ret)))
         return ret
+
+    def xquery_dict(self, query, strip_namespaces=False):
+        rs = self.xquery(query)
+        ret = []
+        for entry in rs:
+            res = etree.XML(entry)
+            ret.append(self.recursive_dict(res, strip_namespaces))
+        return ret
+
+    def recursive_dict(self, element, strip_namespaces=False):
+        """
+        Resursivly creates a dictionary out of the given etree.XML object.
+        """
+        res = {}
+        for item in element:
+            tag = re.sub('^\{([^\}]*)\}', '', item.tag) if strip_namespaces else item.tag
+            if len(item):
+                res[tag] = self.recursive_dict(item, strip_namespaces)
+            else:
+                res[tag] = item.text
+        return res

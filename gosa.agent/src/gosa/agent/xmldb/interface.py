@@ -86,6 +86,22 @@ class XMLDBInterface(object):
         """
         raise NotImplementedErrorError("getDocuments")
 
+    def xquery_dict(self, query, strip_namespaces=False):
+        """
+        =================== ======================
+        Key                 Value
+        =================== ======================
+        query               The query to execute.
+        strip_namespaces    Strips namespace prefixed from the result.
+        =================== ======================
+
+        Executes an xquery statement
+            xquery_dict("collection('db/universe/world.xml')")
+
+        Returns a list of dictionaries
+        """
+        raise NotImplementedErrorError("xquery_dict")
+
     def xquery(self, query):
         """
         =========== ======================
