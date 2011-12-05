@@ -78,12 +78,26 @@
 
 				<xsl:for-each select="/REQUEST/CONTENT/MEMORIES">
 					<Memory>
-						<Capacity><xsl:value-of select="CAPACITY" /></Capacity>
+                        <Capacity>
+                            <xsl:choose>
+                                <xsl:when test="floor(CAPACITY) = CAPACITY">
+                                    <xsl:value-of select="CAPACITY"/>
+                                </xsl:when>
+                                <xsl:otherwise>0</xsl:otherwise>
+                            </xsl:choose>
+                        </Capacity>
 						<Description><xsl:value-of select="DESCRIPTION" /></Description>
 						<Caption><xsl:value-of select="CAPTION" /></Caption>
 						<Speed><xsl:value-of select="SPEED" /></Speed>
 						<Type><xsl:value-of select="TYPE" /></Type>
-						<NumberOfSlots><xsl:value-of select="NUMSLOTS" /></NumberOfSlots>
+                        <NumberOfSlots>
+                            <xsl:choose>
+                                <xsl:when test="floor(NUMSLOTS) = NUMSLOTS">
+                                    <xsl:value-of select="NUMSLOTS"/>
+                                </xsl:when>
+                                <xsl:otherwise>0</xsl:otherwise>
+                            </xsl:choose>
+                        </NumberOfSlots>
 						<Serial><xsl:value-of select="SERIALNUMBER" /></Serial>
 					</Memory>
 				</xsl:for-each> 
@@ -114,7 +128,14 @@
 						<Publisher><xsl:value-of select="PUBLISHER" /></Publisher>
 						<InstallDate><xsl:value-of select="INSTALLDATE" /></InstallDate>
 						<Comments><xsl:value-of select="COMMENTS" /></Comments>
-						<Size><xsl:value-of select="FILESIZE" /></Size>
+                        <Size>
+                             <xsl:choose>
+                                <xsl:when test="floor(FILESIZE) = FILESIZE">
+                                    <xsl:value-of select="FILESIZE"/>
+                                </xsl:when>
+                                <xsl:otherwise>0</xsl:otherwise>
+                            </xsl:choose>
+                        </Size>
 						<Folder><xsl:value-of select="FOLDER" /></Folder>
 					</Software>
 				</xsl:for-each> 
@@ -175,19 +196,47 @@
 						<DefaultGateway><xsl:value-of select="DEFAULTGATEWAY" /></DefaultGateway>
 						<Description><xsl:value-of select="DESCRIPTION" /></Description>
 						<IpAddress><xsl:value-of select="IPADDR" /></IpAddress>
-						<Memory><xsl:value-of select="MEMORY" /></Memory>
+                        <Memory>
+                             <xsl:choose>
+                                <xsl:when test="floor(MEMORY) = MEMORY">
+                                    <xsl:value-of select="MEMORY"/>
+                                </xsl:when>
+                                <xsl:otherwise>0</xsl:otherwise>
+                            </xsl:choose>
+                        </Memory>
 						<OperatingSystemComment><xsl:value-of select="OSCOMMENTS" /></OperatingSystemComment>
 						<OperatingSystem><xsl:value-of select="OSNAME" /></OperatingSystem>
 						<OperatingSystemVersion><xsl:value-of select="OSVERSION" /></OperatingSystemVersion>
 						<UserID><xsl:value-of select="USERID" /></UserID>
-						<Processors><xsl:value-of select="PROCESSORN" /></Processors>
+                        <Processors>
+                            <xsl:choose>
+                                <xsl:when test="floor(PROCESSORN) = PROCESSORN">
+                                    <xsl:value-of select="PROCESSORN"/>
+                                </xsl:when>
+                                <xsl:otherwise>0</xsl:otherwise>
+                            </xsl:choose>
+                        </Processors>
 						<ProcessorSpeed><xsl:value-of select="PROCESSORS" /></ProcessorSpeed>
 						<ProcessorType><xsl:value-of select="PROCESSORT" /></ProcessorType>
-						<SwapMemory><xsl:value-of select="SWAP" /></SwapMemory>
+                        <SwapMemory>
+                            <xsl:choose>
+                                <xsl:when test="floor(SWAP) = SWAP">
+                                    <xsl:value-of select="SWAP"/>
+                                </xsl:when>
+                                <xsl:otherwise>0</xsl:otherwise>
+                            </xsl:choose>
+                        </SwapMemory>
 						<VirtualMachineSystem><xsl:value-of select="VMSYSTEM" /></VirtualMachineSystem>
 						<Workgroup><xsl:value-of select="WORKGROUP" /></Workgroup>
 						<DNS><xsl:value-of select="DNS" /></DNS>
-						<ReportGenerationTime><xsl:value-of select="ETIME" /></ReportGenerationTime>
+                        <ReportGenerationTime>
+                            <xsl:choose>
+                                <xsl:when test="floor(ETIME) = ETIME">
+                                    <xsl:value-of select="ETIME"/>
+                                </xsl:when>
+                                <xsl:otherwise>0</xsl:otherwise>
+                            </xsl:choose>
+                        </ReportGenerationTime>
 						<Type><xsl:value-of select="TYPE" /></Type>
 					</Hardware>
 				</xsl:for-each>
@@ -215,7 +264,14 @@
 						<Manufacturer><xsl:value-of select="MANUFACTURER" /></Manufacturer>
 						<Type><xsl:value-of select="TYPE" /></Type>
 						<Core><xsl:value-of select="CORE" /></Core>
-						<Speed><xsl:value-of select="SPEED" /></Speed>
+                        <Speed>
+                            <xsl:choose>
+                                <xsl:when test="floor(SPEED) = SPEED">
+                                    <xsl:value-of select="SPEED"/>
+                                </xsl:when>
+                                <xsl:otherwise>0</xsl:otherwise>
+                            </xsl:choose>
+                        </Speed>
 						<Serial><xsl:value-of select="SERIAL" /></Serial>
 						<Thread><xsl:value-of select="THREAD" /></Thread>
 					</Cpu>
@@ -258,7 +314,14 @@
 							<xsl:with-param name="DateTime" select="STARTED"/>
 						</xsl:call-template>
 						<User><xsl:value-of select="USER" /></User>
-						<VirtualMemory><xsl:value-of select="VIRTUALMEMORY" /></VirtualMemory>
+                        <VirtualMemory>
+                            <xsl:choose>
+                                <xsl:when test="floor(VIRTUALMEMORY) = VIRTUALMEMORY">
+                                    <xsl:value-of select="VIRTUALMEMORY"/>
+                                </xsl:when>
+                                <xsl:otherwise>0</xsl:otherwise>
+                            </xsl:choose>
+                        </VirtualMemory>
 						<TTY><xsl:value-of select="TTY" /></TTY>
 						<PID><xsl:value-of select="PID" /></PID>
 					</Process>
