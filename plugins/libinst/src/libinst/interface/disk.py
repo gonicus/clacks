@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import re
 import itertools
+from lxml import etree, objectify
+from gosa.agent.xmldb import XMLDBHandler
 from gosa.common.components.registry import PluginRegistry
 
 LINUX = 2 ** 0
@@ -28,12 +30,13 @@ class DiskDefinition(object):
     supportedDeviceTypes = []
     supportEncryption = False
 
-    def __init__(self, definition=None):
+    def __init__(self, definition=None, uuid=None):
         self._disks = []
         self._parts = []
         self._raids = []
         self._volgroups = []
         self._vols = []
+        self.uuid = uuid
 
         if definition:
             self._parseDiskDefinition(definition)
@@ -852,11 +855,23 @@ class DiskDefinition(object):
 
         ``Return::`` string
         """
-        #TODO: take from inventory instead of hard coded values
-        available_disks = {"sda": 20000, "sdb": 100000}
+        available_disks = {}
+        info = {'disk': {}, 'raid': {}, 'vg': {}, 'part': {}}
+
+        # Load values from system inventory if available
+        if self.uuid:
+            db = XMLDBHandler.get_instance()
+            res = db.xquery("collection('inventory')/gosa:Inventory[gosa:ClientUUID/string()='%s']/gosa:Storage[gosa:Type/string()='disk']" % self.uuid)
+
+            for r in res:
+                o = objectify.fromstring(r)
+                available_disks[o.Name.text] = o.DiskSize.text
+
+        else:
+            for disk in self._disks:
+                available_disks[disk['device']] = None
 
         # Calculate disks
-        info = {'disk': {}, 'raid': {}, 'vg': {}, 'part': {}}
         for disk, size in available_disks.items():
             usage = sum([part['size'] for part in self._parts if part['onDisk'] == disk])
             info['disk'][disk] = {"size": size, "usage": usage}
