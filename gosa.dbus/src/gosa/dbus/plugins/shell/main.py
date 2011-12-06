@@ -3,6 +3,7 @@ from gosa.common import Environment
 from gosa.common.components import Plugin
 from gosa.dbus import get_system_bus
 
+#TODO: this module is in the works
 
 class DBusShellHandler(dbus.service.Object, Plugin):
     """ Shell handler, exporting shell commands to the bus """
