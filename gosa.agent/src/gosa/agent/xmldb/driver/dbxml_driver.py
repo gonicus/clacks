@@ -318,7 +318,7 @@ class DBXml(XMLDBInterface):
         return (name in self.getDocuments(str(collection)))
 
     def xquery(self, query):
-        q=query
+        q = query.encode('utf-8') if isinstance(query, unicode) else query
         res = self.manager.query(q, self.queryContext)
         ret = []
         for t in res:

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from lxml import etree, objectify
 from gosa.agent.xmldb import XMLDBHandler
 
@@ -21,7 +22,7 @@ print available_disks
 
 
 print "Generic xquery tests"
-print db.xquery('"What is 12*12?", 12*12')
+print db.xquery(u'"What is über 12*12?", 12*12')
 print db.xquery('let $seq := ("one", "two", "three")\nreturn $seq')
 print db.xquery('let $seq := ("one", "two", "three")\nreturn $seq')
 print db.xquery('collection("inventory")//gosa:Type[contains(., "disk")]')
