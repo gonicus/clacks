@@ -1093,7 +1093,7 @@ class ACLResolver(Plugin):
 
         # Remove the first part of the dn, until we reach the ldap base.
         orig_loc = base
-        while self.base in base:
+        while self.base in base and len(base):
 
             # Check acls for each acl set.
             for acl_set in self.acl_sets:
