@@ -9,8 +9,8 @@ class DebianDiskDefinition(DiskDefinition):
     supportedDeviceTypes = ["hd[a-z]", "sd[a-z]", "cciss/c[0-9]d[0-9]"]
     supportEncryption = False
 
-    def __init__(self, definition=None):
-        super(DebianDiskDefinition, self).__init__(definition)
+    def __init__(self, definition=None, uuid=None):
+        super(DebianDiskDefinition, self).__init__(definition, uuid)
 
     def __str__(self):
         output = ""
