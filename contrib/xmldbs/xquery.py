@@ -26,19 +26,25 @@ print db.xquery('let $seq := ("one", "two", "three")\nreturn $seq')
 print db.xquery('let $seq := ("one", "two", "three")\nreturn $seq')
 print db.xquery('collection("inventory")//gosa:Type[contains(., "disk")]')
 res = db.xquery("""xquery version '1.0';
-<Results>
+<table>
+    <tr>
+      <td>uuid</td>
+      <td>Device name</td>
+      <td>Disk size</td>
+    </tr>
 {
   let $doc := collection('inventory')
   for $x in $doc//gosa:Storage
   where $x/gosa:Name[contains(., 'sda')] and $x/gosa:Type = 'disk'
   order by $x/gosa:Name
   return
-    <Result>
-      {$x/gosa:Name}
-      {$x/gosa:DiskSize}
-    </Result>
+    <tr>
+      <td>{$x/../gosa:ClientUUID}</td>
+      <td>{$x/gosa:Name}</td>
+      <td>{$x/gosa:DiskSize}</td>
+    </tr>
 }
-</Results>
+</table>
 """)
 
 print_res(res)
