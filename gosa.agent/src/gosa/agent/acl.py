@@ -678,13 +678,8 @@ class ACL(object):
             else:
                 for act in self.actions:
 
-                    # check for # and * placeholders
-                    test_act = re.escape(act['topic'])
-                    test_act = re.sub(r'(^|\\.)(\\\*)(\\.|$)', '\\1.*\\3', test_act)
-                    test_act = re.sub(r'(^|\\.)(\\#)(\\.|$)', '\\1[^\.]*\\3', test_act)
-
                     # Check if the requested-action matches the acl-action.
-                    if not re.match(test_act, topic):
+                    if not re.match(act['topic'], topic):
                         continue
 
                     # Check if the required permission are allowed.
@@ -1093,7 +1088,7 @@ class ACLResolver(Plugin):
 
         # Remove the first part of the dn, until we reach the ldap base.
         orig_loc = base
-        while self.base in base:
+        while self.base in base and len(base):
 
             # Check acls for each acl set.
             for acl_set in self.acl_sets:
