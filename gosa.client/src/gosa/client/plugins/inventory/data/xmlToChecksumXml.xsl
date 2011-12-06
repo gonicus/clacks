@@ -10,6 +10,7 @@
 		</xsl:copy>
 	</xsl:template>
 	<xsl:template match="/gosa:Event/gosa:Inventory/gosa:DeviceID"></xsl:template>
+	<xsl:template match="/gosa:Event/gosa:Inventory/gosa:GOsaChecksum"></xsl:template>
 	<xsl:template match="/gosa:Event/gosa:Inventory/gosa:HardwareUUID"></xsl:template>
 	<xsl:template match="/gosa:Event/gosa:Inventory/gosa:AccessLog"></xsl:template>
 	<xsl:template match="/gosa:Event/gosa:Inventory/gosa:USBDevice"></xsl:template>

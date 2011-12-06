@@ -86,6 +86,7 @@ setup(
         gosa-agent.scheduler = gosa.agent.scheduler:SchedulerService
         gosa-agent.acl = gosa.agent.acl:ACLResolver
         gosa-agent.objects = gosa.agent.objects.index:ObjectIndex
+        gosa-agent.xmldb = gosa.agent.xmldb.handler:XMLDBHandler
         gosa-agent.jsonrpc_service = gosa.agent.jsonrpc_service:JSONRPCService
         gosa-agent.jsonrpc_om = gosa.agent.jsonrpc_objects:JSONRPCObjectMapper
         gosa-agent.plugins.samba.utils = gosa.agent.plugins.samba.utils:SambaUtils

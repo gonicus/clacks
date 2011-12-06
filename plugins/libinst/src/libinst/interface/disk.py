@@ -2,7 +2,6 @@
 import re
 import itertools
 from lxml import etree, objectify
-from gosa.agent.xmldb import XMLDBHandler
 from gosa.common.components.registry import PluginRegistry
 
 LINUX = 2 ** 0
@@ -860,12 +859,12 @@ class DiskDefinition(object):
 
         # Load values from system inventory if available
         if self.uuid:
-            db = XMLDBHandler.get_instance()
+            db = PluginRegistry.getInstance("XMLDBHandler")
             res = db.xquery("collection('inventory')/gosa:Inventory[gosa:ClientUUID/string()='%s']/gosa:Storage[gosa:Type/string()='disk']" % self.uuid)
 
             for r in res:
                 o = objectify.fromstring(r)
-                available_disks[o.Name.text] = o.DiskSize.text
+                available_disks[o.Name.text] = int(o.DiskSize.text)
 
         else:
             for disk in self._disks:

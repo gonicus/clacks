@@ -8,7 +8,6 @@ from gosa.common.components import Plugin
 from gosa.common.handler import IInterfaceHandler
 from gosa.common.components.amqp import EventConsumer
 from gosa.common.components.registry import PluginRegistry
-from gosa.agent.xmldb import XMLDBHandler
 from gosa.agent.objects import GOsaObjectFactory
 
 
@@ -37,14 +36,14 @@ class InventoryConsumer(Plugin):
         self.log = logging.getLogger(__name__)
         self.env = Environment.getInstance()
 
+    def serve(self):
         # Try to establish the database connections
-        self.db = XMLDBHandler.get_instance()
+        self.db = PluginRegistry.getInstance("XMLDBHandler")
         if not self.db.collectionExists("inventory"):
             sf = pkg_resources.resource_filename('gosa.agent', 'plugins/goto/data/events/Inventory.xsd')
             self.__factory = GOsaObjectFactory.getInstance()
             self.db.createCollection("inventory", {"gosa": "http://www.gonicus.de/Events"},{"inventory.xsd":  open(sf).read()})
 
-    def serve(self):
         # Create event consumer
         amqp = PluginRegistry.getInstance('AMQPHandler')
         EventConsumer(self.env,

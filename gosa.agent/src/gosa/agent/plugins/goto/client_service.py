@@ -13,7 +13,6 @@ from threading import Timer
 from zope.interface import implements
 from gosa.common.components.jsonrpc_proxy import JSONRPCException
 from qpid.messaging import uuid4
-from gosa.agent.xmldb import XMLDBHandler
 from gosa.common.handler import IInterfaceHandler
 from gosa.common.event import EventMaker
 from gosa.common import Environment
@@ -494,10 +493,10 @@ class ClientService(Plugin):
         # if available
         if 'request_inventory' in self.__client[client]['caps']:
             self.log.info("requesting inventory from client %s" % client)
-            db = XMLDBHandler.get_instance()
+            db = PluginRegistry.getInstance("XMLDBHandler")
             checksum = db.xquery("collection('inventory')/gosa:Inventory[gosa:ClientUUID/string()='%s']/gosa:GOsaChecksum/string()" % client)
             if checksum:
-                self.clientDispatch(client, "request_inventory", [checksum[0]])
+                self.clientDispatch(client, "request_inventory", str(checksum[0]))
             else:
                 self.clientDispatch(client, "request_inventory")
 
