@@ -14,7 +14,7 @@ _ = gettext.gettext
 
 class helpDecorator(object):
     """
-    A method decoratot which allows to mark those methods that can be used
+    A method decorator which allows to mark those methods that can be used
     as script parameters.
 
     e.g.

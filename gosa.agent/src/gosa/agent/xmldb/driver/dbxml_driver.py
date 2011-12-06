@@ -341,8 +341,10 @@ class DBXml(XMLDBInterface):
         res = {}
         for item in element:
             tag = re.sub('^\{([^\}]*)\}', '', item.tag) if strip_namespaces else item.tag
+            if not  tag in res:
+                res[tag] = []
             if len(item):
-                res[tag] = self.recursive_dict(item, strip_namespaces)
+                res[tag].append(self.recursive_dict(item, strip_namespaces))
             else:
-                res[tag] = item.text
+                res[tag].append(item.text)
         return res
