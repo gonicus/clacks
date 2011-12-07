@@ -130,7 +130,7 @@ class GOsaObjectFactory(object):
     def getAttributeTypes(self):
         return(self.__attribute_type)
 
-    def getXmlDefinitionsCombined(self):
+    def getXMLDefinitionsCombined(self):
         """
         Returns a complete XML of all defined objects.
         """
@@ -919,17 +919,17 @@ class GOsaObjectFactory(object):
 
         return backend_attrs
 
-    def getXmlObjectSchema(self, asString=False):
+    def getXMLObjectSchema(self, asString=False):
         """
         Returns a xml-schema definition that can be used to validate the
-        xml-objects returned by 'asXml()'
+        xml-objects returned by 'asXML()'
         """
         # Transform xml-combination into a useable xml-class representation
-        xmldefs = self.getXmlDefinitionsCombined()
+        xmldefs = self.getXMLDefinitionsCombined()
         xslt_doc = etree.parse(pkg_resources.resource_filename('gosa.agent', 'data/xml_object_schema.xsl'))
         transform = etree.XSLT(xslt_doc)
         if not asString:
             return transform(xmldefs)
         else:
-            return etree.tostring(transform(xmldefs), pretty_print=True)
+            return etree.tostring(transform(xmldefs))
 

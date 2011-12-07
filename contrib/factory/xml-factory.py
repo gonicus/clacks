@@ -48,13 +48,13 @@ qc.setNamespace("xsi","http://www.w3.org/2001/XMLSchema-instance")
 
 # Register our own schema resolver
 factory = GOsaObjectFactory.getInstance()
-schemaResolver = dictSchemaResolver({'objects.xsd': factory.getXmlObjectSchema(True)})
+schemaResolver = dictSchemaResolver({'objects.xsd': factory.getXMLObjectSchema(True)})
 mgr.registerResolver(schemaResolver)
 
 # Create a clean new database/container on startup that allows schema validation
 if mgr.existsContainer(containerName):
     mgr.removeContainer(containerName)
-cont = mgr.createContainer(containerName, DBXML_ALLOW_VALIDATION, XmlContainer.NodeContainer)
+cont = mgr.createContainer(containerName, DBXML_ALLOW_VALIDATION, XMLContainer.NodeContainer)
 cont.sync()
 
 # Add entries
@@ -74,7 +74,7 @@ for entry in l:
     try:
         # Get the object by its dn and then add it to the container.
         obj = GOsaObjectProxy(entry)
-        cont.putDocument(obj.uuid, obj.asXml(), uc)
+        cont.putDocument(obj.uuid, obj.asXML(), uc)
 
         # A sync is required to get changes synced to the filesystem
         cont.sync()

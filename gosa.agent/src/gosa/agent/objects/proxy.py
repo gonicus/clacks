@@ -209,13 +209,13 @@ class GOsaObjectProxy(object):
         if not found:
             raise AttributeError("no such attribute '%s'" % name)
 
-    def asXml(self):
+    def asXML(self):
         """
         Returns XML representations for the base-object and all its extensions.
         """
 
         # Get the xml definitions combined for all objects.
-        xmldefs = etree.tostring(self.__factory.getXmlDefinitionsCombined())
+        xmldefs = etree.tostring(self.__factory.getXMLDefinitionsCombined())
 
         # Create a document wich contains all necessary information to create
         # xml reprentation of our own.
@@ -285,4 +285,4 @@ class GOsaObjectProxy(object):
         xslt_doc = etree.parse(pkg_resources.resource_filename('gosa.agent', 'data/object_to_xml.xsl'))
         transform = etree.XSLT(xslt_doc)
         res = transform(xml_doc)
-        return etree.tostring(res, pretty_print=True)
+        return etree.tostring(res)

@@ -34,6 +34,8 @@ class XMLDBHandler(Plugin):
         if not XMLDBHandler.instance:
             XMLDBHandler.instance = XMLDBHandler()
 
+        return XMLDBHandler.instance
+
     @Command(__help__=N_("Create a new XML database collection"))
     def createCollection(self, name, namespaces, schema):
         return self.__driver.createCollection(name, namespaces, schema)
