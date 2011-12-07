@@ -627,7 +627,6 @@ class GOsaObject(object):
                 except Exception as e:
                     raise ObjectException("Failed to execute filter '%s' for attribute '%s': %s" % (fname, key, str(e)))
 
-
                 # Ensure that the processed data is still valid.
                 # Filter may mess things up and then the next cannot process correctly.
                 if (key not in prop):

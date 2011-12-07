@@ -155,8 +155,9 @@ class SambaMungedDialIn(ElementFilter):
             md = valDict[key]['value'][0]
             res = SambaMungedDial.decode(md)
             for entry in alist:
-                valDict[entry]['value'] = [res[entry]]
-                valDict[entry]['skip_save'] = True
+                if entry in res:
+                    valDict[entry]['value'] = [res[entry]]
+                    valDict[entry]['skip_save'] = True
         return key, valDict
 
 
