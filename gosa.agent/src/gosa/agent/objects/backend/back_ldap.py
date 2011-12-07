@@ -427,7 +427,7 @@ class LDAP(ObjectBackend):
         return str(value)
 
     def _convert_from_unicodestring(self, value):
-        return unicode(value.decode('utf-8'))
+        return value.decode('utf-8')
 
     def _convert_from_integer(self, value):
         return int(value)
