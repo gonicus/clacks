@@ -31,6 +31,19 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         if action and not action in services[service]['actions']:
             raise ServiceException("action '%s' not supported for service %s" % (action, name))
 
+    @dbus.service.method('com.gonicus.gosa', out_signature='i')
+    def get_runlevel(self):
+        #TODO
+        # who -r
+        # run-level 2  2011-12-06 15:01                   last=S
+        return 5
+
+    @dbus.service.method('com.gonicus.gosa', in_signature='i', out_signature='i')
+    def set_runlevel(self, level):
+        #TODO
+        # init $level
+        return 0
+
     @dbus.service.method('com.gonicus.gosa', in_signature='s', out_signature='b')
     def start(self, name):
         service = self._validate(name, "start")
@@ -78,6 +91,14 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
 
     @dbus.service.method('com.gonicus.gosa', out_signature='e{se{ss}}')
     def get_services(self):
+
+        #TODO: change this from the current implementation to:
+        #      get_runlevel()
+        #      for service in /etc/init.d/rc%level%.d/S* (not really, see "man run-parts" for more information)
+        #          run "$svc_command $service" to find out about the usage
+        #          if usage supports "status", run "$svc_command $service status" to find out if it's running
+        #          if there is an icon for $service.(png|gif|jpeg), save the path
+
         services = {}
         state = re.compile(r"^\s*\[\s+([?+-])\s+\]\s+([^\s]+)\s*$")
 
@@ -91,7 +112,6 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
                 status, service = state.match(svc).groups()
                 services[service] = {
                         'running': self.__status_map[status],
-                        #TODO: load possible values from scripts
                         'methods': ['start', 'stop', 'restart', 'reload'],
                         'icon': None}
 
