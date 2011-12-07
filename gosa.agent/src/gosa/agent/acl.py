@@ -96,7 +96,9 @@ class ACLSet(list):
             aclset = ACLSet()
             acl = ACL(scope=ACL.ONE)
             acl.set_members([u'tester1', u'tester2'])
-            acl.add_action('com.#.factory', 'rwx')
+
+            # "[^\.]*" means everything one level
+            acl.add_action('^org\.gosa\.event\.[^\.]*$', 'rwx')
             acl.set_priority(100)
             aclset.add(acl)
 
@@ -124,7 +126,7 @@ class ACLSet(list):
             aclset = ACLSet()
             acl = ACL(scope=ACL.ONE)
             acl.set_members([u'tester1', u'tester2'])
-            acl.add_action('com.#.factory', 'rwx')
+            acl.add_action('^org\.gosa\.event\.ClientLeave$', 'rwx')
             acl.set_priority(100)
             aclset.add(acl)
 
@@ -155,7 +157,7 @@ class ACLSet(list):
             aclset = ACLSet()
             acl = ACL(scope=ACL.ONE)
             acl.set_members([u'tester1', u'tester2'])
-            acl.add_action('com.#.factory', 'rwx')
+            acl.add_action('^org\.gosa\.event\.ClientLeave$', 'rwx')
             acl.set_priority(100)
 
             aclset.add(acl)
@@ -275,7 +277,7 @@ class ACLRole(list):
             # Create an ACLRole
             role = ACLRole('role1')
             acl = ACLRoleEntry(scope=ACL.ONE)
-            acl.add_action('com.gosa.factory', 'rwx')
+            acl.add_action('^org\.gosa\.event\.ClientLeave$', 'rwx')
 
             role.add(acl)
 
@@ -366,7 +368,7 @@ class ACL(object):
         >>> acl = ACL()
         >>> acl.set_priority(0)
         >>> acl.set_members([u"user1", u"user2"])
-        >>> acl.add_action('org.gosa.factory.Person.cn','rwx')
+        >>> acl.add_action('^org\.gosa\.event\.ClientLeave$', 'rwx')
         >>> aclset.add(acl)
 
         >>> # Now add the set to the resolver
@@ -374,25 +376,15 @@ class ACL(object):
         >>> resolver.add_acl_set(aclset)
 
         >>> # You can now check for acls, both should return True now.
-        >>> resolver.check('user1', 'org.gosa.factory.Person.cn', 'r')
-        >>> resolver.check('user1', 'org.gosa.factory.Person.cn', 'rwx')
+        >>> resolver.check('user1', 'org.gosa.event.ClientLeave', 'r')
+        >>> resolver.check('user1', 'org.gosa.event.ClientLeave', 'rwx')
 
     ACL members can also contain regular expressions, like this:
 
         >>> acl.set_members([u"user1", u"^user[0-9]*$"])
         >>> ...
-        >>> resolver.check('user45', 'org.gosa.factory.Person.cn', 'r')
+        >>> resolver.check('user45', 'org.gosa.event.ClientLeave', 'r')
 
-    Also action can have wildcards, but only two right now:
-
-        >>> acl.add_action('org.gosa.#.Person.cn','rwx')
-        >>> acl.add_action('org.gosa.*.Person.cn','rwx')
-
-    Where ``#`` allow to ignore one level on the topic action and ``*`` allows to ignore one or more levels:
-
-    ``com.#.factory`` would match with ``com.test.factory`` or ``com.something.factory``
-
-    ``com.*.factory`` would match with ``com.test.factory``, ``com.something.factory`` or ``com.level1.level2.level3.factory``
     """
     priority = None
 
@@ -488,7 +480,7 @@ class ACL(object):
             aclset = ACLSet()
             acl = ACL(scope=ACL.ONE)
             acl.set_members([u'tester1', u'tester2'])
-            acl.add_action('com.#.factory', 'rwx')
+            acl.add_action('^org\.gosa\.event\.ClientLeave$', 'rwx')
 
             acl.set_priority(100)
 
@@ -542,17 +534,16 @@ class ACL(object):
 
         **Topic**
 
-        Topics can contain placeholder to be more flexible when it come to resolving acls.
-        You can use ``#`` and ``*`` where ``#`` matches for one level and ``*`` for multiple topic levels.
+        Topics are defined as regular expressions, which gives a huge flexibility.
 
-        For example ``gosa.#.factory`` would match for:
+        For example ``^gosa\.[^\.]*\.factory$`` would match for:
          * gosa.test.factory
          * gosa.hallo.factory
         but not for:
          * gosa.factory
          * gosa.level1.level2.factory
 
-        Where ``gosa.*.factory`` matches for:
+        Where ``^gosa\..*\.factory$`` matches for:
          * gosa.factory
          * gosa.level1.factory
          * gosa.level1.level2.factory
@@ -574,7 +565,7 @@ class ACL(object):
          * e - Receive event
 
         The actions have to passed as a string, which contains all actions at once::
-            >>> add_action('topic', "rwcdm", ``options``)
+            >>> add_action(``topic``, "rwcdm", ``options``)
 
         .. _options_description:
 
@@ -585,7 +576,7 @@ class ACL(object):
         The ``options`` parameter is a dictionary which contains a key and a value for each additional option we want to check for, e.g. ::
             >>> add_action('topic', 'acls', {'uid': 'hanspeter', 'ou': 'technik'})
 
-        If you've got a user object as dictionary, then you can check permissions like this::
+        If you've got a user object (``user1``) as dictionary, then you can check permissions like this::
             >>> resolver.check('some.topic', 'rwcdm', user1)
 
         The resolver will then check if the keys ``uid`` and ``ou`` are present in the user1 dictionary and then check if the values match.
@@ -1305,7 +1296,7 @@ class ACLResolver(Plugin):
             aclset = ACLSet()
             acl = ACL(scope=ACL.ONE)
             acl.set_members([u'tester1', u'tester2'])
-            acl.add_action('com.#.factory', 'rwx')
+            acl.add_action('...', 'rwx')
             acl.set_priority(100)
             aclset.add(acl)
             resolver.add(aclset)
@@ -1331,7 +1322,7 @@ class ACLResolver(Plugin):
         Example::
 
             >>> getACls(base='dc=gonicus,dc=de')
-            >>> getACls(topic='com\.gonicus\.factory\..*')
+            >>> getACls(topic=r'^com\.gonicus\.factory$')
 
         ============== =============
         Key            Description
@@ -1414,7 +1405,7 @@ class ACLResolver(Plugin):
 
         Example:
             >>> getACls(base='dc=gonicus,dc=de')
-            >>> getACls(topic='com\.gonicus\.factory\..*')
+            >>> getACls(topic=r'com\.gonicus\.factory')
 
         """
 
@@ -1462,11 +1453,11 @@ class ACLResolver(Plugin):
 
         Example:
 
-            >>> resolver.addACL('dc=gonicus,dc=de', 'sub', 0, [u'tester1'], [{'topic': 'com.gosa.*', 'acls': 'rwcdm'}])
+            >>> resolver.addACL('dc=gonicus,dc=de', 'sub', 0, [u'tester1'], [{'topic': r'^some\.topic.*$', 'acls': 'rwcdm'}])
 
         or with some options:
 
-            >>> resolver.addACL('dc=gonicus,dc=de', 'sub', 0, [u'tester1'], [{'topic': 'com.gosa.*', 'acls': 'rwcdm', 'options': {'uid': '^u[0-9]'}}])
+            >>> resolver.addACL('dc=gonicus,dc=de', 'sub', 0, [u'tester1'], [{'topic': r'^some\.topic.*$', 'acls': 'rwcdm', 'options': {'uid': '^u[0-9]'}}])
 
         """
 
@@ -1559,11 +1550,11 @@ class ACLResolver(Plugin):
 
         Example:
 
-            >>> resolver.addACLtoRole('rolle1', 'sub', 0, ['peter'], [{'topic': 'com.gosa.*', 'acls': 'rwcdm'}])
+            >>> resolver.addACLtoRole('rolle1', 'sub', 0, ['peter'], [{'topic': '^some\.topic.*$', 'acls': 'rwcdm'}])
 
         or with some options:
 
-            >>> resolver.addACLtoRole('rolle1', 'sub', 0, ['peter'], [{'topic': 'com.gosa.*', 'acls': 'rwcdm', 'options': {'uid': '^u[0-9]'}}])
+            >>> resolver.addACLtoRole('rolle1', 'sub', 0, ['peter'], [{'topic': '^some\.topic.*$', 'acls': 'rwcdm', 'options': {'uid': '^u[0-9]'}}])
 
         """
         # Validate the given scope
@@ -1735,11 +1726,11 @@ class ACLResolver(Plugin):
 
         Example:
 
-            >>> resolver.addACLtoRole('rolle1', 'sub', 0, [{'topic': 'com.gosa.*', 'acls': 'rwcdm'}])
+            >>> resolver.addACLtoRole('rolle1', 'sub', 0, [{'topic': r'^some\.topic.*$', 'acls': 'rwcdm'}])
 
         or with some options:
 
-            >>> resolver.addACLtoRole('rolle1', 'sub', 0, [{'topic': 'com.gosa.*', 'acls': 'rwcdm', 'options': {'uid': '^u[0-9]'}}])
+            >>> resolver.addACLtoRole('rolle1', 'sub', 0, [{'topic': r'^some\.topic.*$', 'acls': 'rwcdm', 'options': {'uid': '^u[0-9]'}}])
 
         """
 
@@ -1829,11 +1820,11 @@ class ACLResolver(Plugin):
 
         Example:
 
-            >>> resolver.updateACLRole(1, 'sub', 0, ['peter'], [{'topic': 'com.gosa.*', 'acls': 'rwcdm'}])
+            >>> resolver.updateACLRole(1, 'sub', 0, ['peter'], [{'topic': '^some\.topic.*$', 'acls': 'rwcdm'}])
 
         or with some options:
 
-            >>> resolver.updateACLRole(1, 'sub', 0, ['peter'], [{'topic': 'com.gosa.*', 'acls': 'rwcdm', 'options': {'uid': '^u[0-9]'}}])
+            >>> resolver.updateACLRole(1, 'sub', 0, ['peter'], [{'topic': '^some\.topic.*$', 'acls': 'rwcdm', 'options': {'uid': '^u[0-9]'}}])
 
         """
 
