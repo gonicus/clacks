@@ -20,6 +20,9 @@
             </xsd:complexType>
 
             <xsl:for-each select="/g:Objects/g:Object">
+
+                <xsl:sort select="g:Name"/>
+
                 <xsl:variable name="classname">
                     <xsl:value-of select="g:Name" />
                 </xsl:variable>
