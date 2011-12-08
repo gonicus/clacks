@@ -56,18 +56,18 @@
     		</CanExtend>
     		-->
 
-            <!-- Handle object properties -->
+            <!-- Handle object attributes -->
             <Attributes>
 
-                <!-- Combine all BaseObject-properties with those of the ExtensionObjects -->
+                <!-- Combine all BaseObject-attributes with those of the ExtensionObjects -->
                 <xsl:variable name="result">
 
-                    <!-- Base-Object properties --> 
+                    <!-- Base-Object attributes --> 
                     <xsl:for-each select="/g:merge/g:defs/g:Objects/g:Object[g:Name = $class]/g:Attributes/g:Attribute">
                         <xsl:copy-of select="." />
                     </xsl:for-each>
 
-                    <!-- Extension properties --> 
+                    <!-- Extension attributes --> 
     			    <xsl:for-each select="/g:merge/g:extensions">
                         <xsl:variable name="ext" select="g:extension" />
                         <xsl:for-each select="/g:merge/g:defs/g:Objects/g:Object[g:Name = $ext]/g:Attributes/g:Attribute">
@@ -76,7 +76,7 @@
                     </xsl:for-each>
                 </xsl:variable>
 
-                <!-- Append all collected properties with their values -->
+                <!-- Append all collected attributes with their values -->
                 <xsl:for-each select="exslt:node-set($result)/g:Attribute">
 
                     <!-- Sort by attribute name -->
@@ -86,7 +86,7 @@
                             1. Skip foreign attributes
                             2. Skip attributes we've already added.
                     -->
-                    <xsl:if test="not(g:Foreign='true') and g:Name!=preceding-sibling::g:Attribute/g:Name">
+                    <xsl:if test="not(g:Foreign='true') and not(g:Name=preceding-sibling::g:Attribute/g:Name)">
 
                         <!-- Skip attributes that do not have to be indexed-->
                         <!--<xsl:if test="g:Indexed='true'">-->
