@@ -277,7 +277,7 @@ class GOsaObjectProxy(object):
 
         # Combine all collected class info in a single xml file, this
         # enables us to compute things using xsl
-        xml = "<merge>%s<defs>%s</defs>%s%s</merge>" % (etree.tostring(classtag), \
+        xml = "<merge xmlns=\"http://www.gonicus.de/Objects\">%s<defs>%s</defs>%s%s</merge>" % (etree.tostring(classtag), \
                 xmldefs, etree.tostring(propertiestag), etree.tostring(exttag))
 
         # Transform xml-combination into a useable xml-class representation
