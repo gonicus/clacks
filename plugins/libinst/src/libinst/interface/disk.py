@@ -308,7 +308,7 @@ class DiskDefinition(object):
 
         # Check for space
         info = self.getDeviceUsage()
-        if info['disk'][onDisk]['size'] - info['disk'][onDisk]['usage'] < size:
+        if onDisk in info['disk'] and info['disk'][onDisk]['size'] - info['disk'][onDisk]['usage'] < size:
             raise ValueError("not enough remaining space available")
 
         # Check fs options
