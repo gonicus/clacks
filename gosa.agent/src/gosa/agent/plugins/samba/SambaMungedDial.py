@@ -260,9 +260,9 @@ class SambaMungedDial(object):
         result[u'Ctx_flag_defaultPrinter'] = bool(connections & 2)
 
         # Convert integer values to integer
-        for entry in ['CtxMinEncryptionLevel', 'Ctx_shadow']:
-            try:
-                result[entry] = int(result[entry])
-            except:
-                result[entry] = None
+        result['Ctx_shadow'] = int(result['Ctx_shadow'])
+        try:
+            result['CtxMinEncryptionLevel'] = int(result['CtxMinEncryptionLevel'])
+        except:
+            result['CtxMinEncryptionLevel'] = 0
         return result
