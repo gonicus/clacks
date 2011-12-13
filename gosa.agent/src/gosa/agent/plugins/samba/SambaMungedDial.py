@@ -261,8 +261,8 @@ class SambaMungedDial(object):
 
         # Convert integer values to integer
         for entry in ['CtxMinEncryptionLevel', 'Ctx_shadow']:
-            result[entry] = int(result[entry])
-
+            try:
+                result[entry] = int(result[entry])
+            except:
+                result[entry] = None
         return result
-
-
