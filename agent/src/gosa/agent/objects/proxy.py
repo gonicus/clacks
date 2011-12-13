@@ -238,6 +238,7 @@ class GOsaObjectProxy(object):
 
             # Use the object-type conversion method to get valid item string-representations.
             v = props[propname]['value']
+            print ":", propname
             attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString",v)
 
         # Create a list of extensions and their properties

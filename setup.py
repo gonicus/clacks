@@ -2,11 +2,11 @@
 import os
 import sys
 
-modules = ['gosa.common',
-    'gosa.agent',
-    'gosa.dbus',
-    'gosa.client',
-    'gosa.shell']
+modules = ['common',
+    'agent',
+    'dbus',
+    'client',
+    'shell']
 
 for module in modules:
     os.system("cd %s && ./setup.py %s" % (module, " ".join(sys.argv[1:])))
