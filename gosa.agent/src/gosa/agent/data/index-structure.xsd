@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema 
+    targetNamespace="http://www.gonicus.de/Structure" 
+    elementFormDefault="qualified" 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+    xmlns:gosa="http://www.gonicus.de/Structure">
+
+    <xsd:element name="Node" type="gosa:Node" />
+
+    <xsd:complexType name="Node">
+        <xsd:sequence>
+            <xsd:element name="Node" type="gosa:Node" maxOccurs="unbounded" minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="dn" type="xsd:string" />
+        <xsd:attribute name="uuid" type="xsd:string" />
+    </xsd:complexType>
+
+</xsd:schema>                                                

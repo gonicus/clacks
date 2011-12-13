@@ -117,6 +117,9 @@ class XMLDBInterface(object):
         """
         raise NotImplementedErrorError("xquery")
 
+    def setSchema(self, collection, filename, content):
+        raise NotImplementedErrorError("setSchema")
+
     def setNamespace(self, collection, alias, namespace):
 
         """
