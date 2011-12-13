@@ -129,7 +129,7 @@ class DBXml(XMLDBInterface):
             dfile = os.path.join(self.db_storage_path, db, 'data.bdb')
 
             # Try opening the collection file
-            cont = self.manager.openContainer(str(dfile))
+            cont = self.manager.openContainer(str(dfile), DBXML_ALLOW_VALIDATION)
             cont.addAlias(str(data['collection']))
             self.collections[str(data['collection'])] = {
                     'config': data,
@@ -186,6 +186,15 @@ class DBXml(XMLDBInterface):
         f = open(cfile, 'w')
         f.write(json.dumps(data, indent=2))
         f.close()
+
+    def setSchema(self, collection, filename, schema):
+        # Read the config file
+        data = self.__readConfig(collection)
+        data['schema'][filename] = schema
+        self.__saveConfig(collection, data)
+
+        self.log.debug("added/updated schema for collection %s %s (%s bytes)" % (collection, str(filename), len(schema)))
+        self.schemaResolver.addSchema(filename, schema)
 
     def setNamespace(self, collection, alias, namespace):
         # Read the config file

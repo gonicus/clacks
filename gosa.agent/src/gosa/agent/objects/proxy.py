@@ -285,4 +285,4 @@ class GOsaObjectProxy(object):
         xslt_doc = etree.parse(pkg_resources.resource_filename('gosa.agent', 'data/object_to_xml.xsl'))
         transform = etree.XSLT(xslt_doc)
         res = transform(xml_doc)
-        return etree.tostring(res)
+        return etree.tostring(res, pretty_print=True)

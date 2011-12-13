@@ -72,6 +72,10 @@ class XMLDBHandler(Plugin):
     def setNamespace(self, collection, alias, namespace):
         return self.__driver.setNamespace(collection, alias, namespace)
 
+    @Command(__help__=N_("Set a schema for a collection"))
+    def setSchema(self, collection, filename, content):
+        return self.__driver.setSchema(collection, filename, content)
+
     @Command(__help__=N_("Remove a collection"))
     def dropCollection(self, name):
         return self.__driver.dropCollection(name)
