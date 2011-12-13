@@ -89,7 +89,7 @@
                     <xsl:if test="not(g:Foreign='true') and not(g:Name=preceding-sibling::g:Attribute/g:Name)">
 
                         <!-- Skip attributes that do not have to be indexed-->
-                        <!--<xsl:if test="g:Indexed='true'">-->
+                        <xsl:if test="not(g:NotIndexed='true')">
                             <xsl:variable name="propname">
                                 <xsl:value-of select="g:Name" />
                             </xsl:variable>
@@ -98,7 +98,7 @@
                                     <xsl:element name="{$propname}"><xsl:value-of select="g:value" /></xsl:element>
                                 </xsl:for-each>
                             </xsl:if>
-                        <!--</xsl:if>-->
+                        </xsl:if>
                     </xsl:if>
                 </xsl:for-each>
             </Attributes>

@@ -144,7 +144,7 @@ class GOsaObjectFactory(object):
             find = objectify.ObjectPath("Objects.Object.Attributes.Attribute")
             if find.hasattr(element):
                 for attr in find(element):
-                    if bool(load(attr, "Indexed", False)):
+                    if bool(load(attr, "NotIndexed", True)):
                         res.append(attr.Name.text)
         return res
 

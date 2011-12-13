@@ -293,6 +293,7 @@
                 <Name>sambaPasswordHistory</Name>
                 <Description>Concatenated MD5 hashes of the salted NT passwords used on this account</Description>
                 <Type>UnicodeString</Type>
+                <NotIndexed>true</NotIndexed>
             </Attribute>
 
             <Attribute>
@@ -344,6 +345,7 @@
                         </FilterEntry>
                     </FilterChain>
                 </OutFilter>
+                <NotIndexed>true</NotIndexed>
             </Attribute>
 
             <Attribute>
