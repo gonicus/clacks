@@ -11,6 +11,7 @@
         <!-- Create some variables -->
         <xsl:variable name="class" select="/g:merge/g:class" />
         <xsl:variable name="props" select="/g:merge/g:properties/g:property" />
+        <xsl:variable name="only_indexed" select="/g:merge/g:only_indexed/text()" />
 
         <!-- Create the 'Class' element -->
         <xsl:element name="{$class}" 
@@ -89,7 +90,7 @@
                     <xsl:if test="not(g:Foreign='true') and not(g:Name=preceding-sibling::g:Attribute/g:Name)">
 
                         <!-- Skip attributes that do not have to be indexed-->
-                        <xsl:if test="not(g:NotIndexed='true')">
+                        <xsl:if test="($only_indexed='false') or ($only_indexed='true') and not(g:NotIndexed='true')">
                             <xsl:variable name="propname">
                                 <xsl:value-of select="g:Name" />
                             </xsl:variable>

@@ -209,7 +209,7 @@ class GOsaObjectProxy(object):
         if not found:
             raise AttributeError("no such attribute '%s'" % name)
 
-    def asXML(self):
+    def asXML(self, only_indexed=False):
         """
         Returns XML representations for the base-object and all its extensions.
         """
@@ -277,8 +277,9 @@ class GOsaObjectProxy(object):
 
         # Combine all collected class info in a single xml file, this
         # enables us to compute things using xsl
-        xml = "<merge xmlns=\"http://www.gonicus.de/Objects\">%s<defs>%s</defs>%s%s</merge>" % (etree.tostring(classtag), \
-                xmldefs, etree.tostring(propertiestag), etree.tostring(exttag))
+        use_index = "<only_indexed>true</only_indexed>" if only_indexed else "<only_indexed>false</only_indexed>"
+        xml = "<merge xmlns=\"http://www.gonicus.de/Objects\">%s<defs>%s</defs>%s%s%s</merge>" % (etree.tostring(classtag), \
+                xmldefs, etree.tostring(propertiestag), etree.tostring(exttag), use_index)
 
         # Transform xml-combination into a useable xml-class representation
         xml_doc = etree.parse(StringIO.StringIO(xml))
