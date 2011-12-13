@@ -25,9 +25,12 @@ from gosa.common import Environment
 from gosa.common.utils import N_
 from gosa.common.handler import IInterfaceHandler
 from gosa.common.components import Command, Plugin, PluginRegistry
-from gosa.agent.objects import GOsaObjectFactory, ObjectChanged, SCOPE_BASE, SCOPE_ONE, SCOPE_SUB
+from gosa.agent.objects import GOsaObjectFactory, GOsaObjectProxy, ObjectChanged, SCOPE_BASE, SCOPE_ONE, SCOPE_SUB, ProxyException
 from gosa.agent.lock import GlobalLock
+from gosa.agent.xmldb import XMLDBHandler
 from gosa.agent.ldap_utils import LDAPHandler
+
+#TODO: to be removed
 from sqlalchemy.sql import select, and_, or_, func, asc, desc
 from sqlalchemy.dialects.sqlite.base import SQLiteDialect
 from sqlalchemy import Table, Column, Integer, Boolean, String, DateTime, Date, Unicode, MetaData
@@ -53,11 +56,6 @@ class ObjectIndex(Plugin):
             'Date': Date,
             'Timestamp': DateTime,
             }
-    __sep = '|'
-    __types = None
-    __engine = None
-    __conn = None
-    __fixed = ['id', '_dn', '_parent_dn', '_uuid', '_lastChanged', '_extensions', '_type']
     _priority_ = 20
     _target_ = 'core'
     _indexed = False
@@ -68,110 +66,123 @@ class ObjectIndex(Plugin):
         self.log.info("initializing object index handler")
         self.factory = GOsaObjectFactory.getInstance()
 
-        self.__bl = re.compile(r'([^%s]+)' % self.__sep)
-
-        # Define attributes to be indexed from configuration
-        self.index_attrs = [s.strip() for s in self.env.config.get("index.attributes").split(",")]
-        available_attrs = self.factory.getAttributes()
-
-        self.__types = {}
-        for ia in self.index_attrs:
-            if not ia in available_attrs:
-                self.log.warning("attribute '%s' is not available" % ia)
-                continue
-
-            self.__types[ia] = available_attrs[ia]
-
-        self.__engine = self.env.getDatabaseEngine('core')
-
-        # Table name
-        idx = self.env.config.get("index.table", default="index")
-
-        # Load current database setup
-        meta = MetaData(self.__engine)
-        meta.reflect()
-
-        reset = True
-        if idx in meta.tables:
-            current_attrs = set(self.__types.keys())
-            db_attrs = set([str(x)[len(idx) + 1:] for x in meta.tables[idx].columns if not str(x)[len(idx) + 1:] in self.__fixed])
-
-            if current_attrs == db_attrs:
-
-                for attr in db_attrs:
-
-                    # Check if we at least subclass the type we got from the
-                    # database
-                    s_type = type(getattr(meta.tables[idx].columns, attr).type)
-                    try:
-                        d_type = self.__type_conv[self.__types[attr]['type']]
-                        if not inspect.isclass(d_type):
-                            d_type = d_type.__class__
-
-                    except KeyError:
-                        self.log.warning("type '%s' not supported in index - skipping" % self.__types[attr]['type'])
-                        continue
-
-                    if (not issubclass(s_type, d_type)):
-
-                        # If that fails, maybe there's one other try in the
-                        # class hierachy
-                        superiours = inspect.getmro(d_type)
-                        if not (len(superiours) > 1 and issubclass(s_type, superiours[1])):
-                            break
-                else:
-                    reset = False
-
-        # Create schema for storing indexed attributes
-        if reset and idx in meta.tables:
-            self.log.info("index attributes changed - clearing index table")
-            meta.tables[idx].drop(checkfirst=False)
-            del meta
-
-        metadata = MetaData()
-
-        props = []
-        for attr in self.__types.keys():
-            try:
-                d_type = self.__type_conv[self.__types[attr]['type']]
-            except KeyError:
-                self.log.warning("type '%s' not supported in index - skipping" % self.__types[attr]['type'])
-                continue
-            props.append(Column(attr, d_type))
-
-        self.__index = Table(idx, metadata,
-            Column('_uuid', String(36), primary_key=True),
-            Column('_dn', String(1024)),
-            Column('_parent_dn', String(1024)),
-            Column('_lastChanged', DateTime),
-            Column('_type', String(256)),
-            Column('_extensions', String(256)),
-            *props)
-
-        metadata.create_all(self.__engine)
-
-        # Establish the connection
-        self.__conn = self.__engine.connect()
-
-        # SQlite needs a custom regex function
-        if issubclass(type(self.__engine.dialect), SQLiteDialect):
-
-            def sqlite_regexp(expr, item):
-                r = re.compile(expr)
-                return r.match(item) is not None
-
-            self.__conn.connection.create_function("regexp", 2, sqlite_regexp)
-
         # Listen for object events
         zope.event.subscribers.append(self.__handle_events)
 
     def serve(self):
+        # Load db instance
+        self.db = PluginRegistry.getInstance("XMLDBHandler")
+
+        #TODO: for the initial testing, always drop the collection to
+        #      have a clean start
+        if self.db.collectionExists("objects"):
+            self.db.dropCollection("objects")
+
+        schema = self.factory.getXMLObjectSchema(True)
+        self.db.createCollection("objects",
+            {"": "http://www.gonicus.de/Objects", "xsi": "http://www.w3.org/2001/XMLSchema-instance"},
+            {"objects.xsd": schema})
+
         # Sync index
         if self.env.config.get("index.disable", "False").lower() != "true":
             sobj = PluginRegistry.getInstance("SchedulerService")
             sobj.getScheduler().add_date_job(self.sync_index,
                     datetime.datetime.now() + datetime.timedelta(seconds=30),
                     tag='_internal', jobstore='ram')
+
+    def escape(data):
+        html_escape_table = [
+                ("$", "&#36;"), ("{", "&#123;"), ("}", "&#125;"),
+                ("(", "&#40;"), (")", "&#41;")]
+
+        for a, b in html_escape_table:
+            data = data.replace(a, b)
+
+        return data
+
+    def sync_index(self):
+        # Don't index if someone else is already doing it
+        print "------> TODO: re-enable me!"
+        #if GlobalLock.exists():
+        #    return
+
+        # Don't run index, if someone else already did until the last
+        # restart.
+        cr = PluginRegistry.getInstance("CommandRegistry")
+        nodes = cr.getNodes()
+        if len([n for n, v in nodes.items() if 'Indexed' in v and v['Indexed']]):
+            return
+
+        #GlobalLock.acquire()
+        self._indexed = True
+
+        t0 = time()
+
+        def resolve_children(dn):
+            self.log.debug("found object '%s'" % dn)
+            res = {}
+
+            children = self.factory.getObjectChildren(dn)
+            res = dict(res.items() + children.items())
+
+            for chld in children.keys():
+                res = dict(res.items() + resolve_children(chld).items())
+
+            return res
+
+        self.log.info("scanning for objects")
+        res = resolve_children(LDAPHandler.get_instance().get_base())
+
+        self.log.info("generating object index")
+
+        # Find new entries
+        backend_objects = []
+        for o in res.keys():
+
+            # Get object
+            try:
+                obj = GOsaObjectProxy(o)
+
+            except ProxyException:
+                continue
+
+            # Check for index entry
+            changed = self.db.xquery("collection('objects')/*[UUID/string() = '%s']/LastChanged/string()" % obj.uuid)
+
+            # Entry is not in the database
+            if not changed:
+                self.log.debug("creating object index for %s" % obj.uuid)
+                self.db.addDocument('objects', obj.uuid, obj.asXML())
+
+                #TODO: maintain structure
+
+            # Entry is in the database
+            else:
+                # OK: already there
+                if obj.modifyTimestamp == datetime.strptime(changed[0], "%Y-%m-%d %H:%M:%S"):
+                    self.log.debug("found up-to-date object index for %s" % obj.uuid)
+
+                else:
+                    self.log.debug("updating object index for %s" % obj.uuid)
+                    self.db.xquery("replace node doc('dbxml:/objects/%s')/* with %s" % (obj.uuid, escape(obj.asXML())))
+
+                    #TODO: maintain structure
+
+            backend_objects.append(obj.uuid)
+            del obj
+
+        # Remove entries that are in XMLDB, but not in any other backends
+        for entry in db.getDocuments('objects'):
+            if entry not in backend_objects:
+                self.log.debug("removing object index for %s" % entry)
+                self.db.deleteDocument('objects', entry)
+
+        t1 = time()
+        self.log.info("processed %d objects in %ds" % (len(res), t1 - t0))
+        GlobalLock.release()
+
+    def index_active(self):
+        return self._indexed
 
     @Command(__help__=N_("Check if an object with the given UUID exists."))
     def exists(self, uuid):
@@ -458,93 +469,6 @@ class ObjectIndex(Plugin):
     def b642dn(self, b64dn):
         return u",".join([b64decode(p).decode('utf-8') for p in b64dn.split(",")])
 
-    def sync_index(self):
-        # Don't index if someone else is already doing it
-        if GlobalLock.exists():
-            return
-
-        # Don't run index, if someone else already did until the last
-        # restart.
-        cr = PluginRegistry.getInstance("CommandRegistry")
-        nodes = cr.getNodes()
-        if len([n for n, v in nodes.items() if 'Indexed' in v and v['Indexed']]):
-            return
-
-        GlobalLock.acquire()
-        self._indexed = True
-
-        t0 = time()
-        f = GOsaObjectFactory.getInstance()
-
-        def resolve_children(dn):
-            self.log.debug("found object '%s'" % dn)
-            res = {}
-
-            children = f.getObjectChildren(dn)
-            res = dict(res.items() + children.items())
-
-            for chld in children.keys():
-                res = dict(res.items() + resolve_children(chld).items())
-
-            return res
-
-        self.log.info("scanning for objects")
-        res = resolve_children(LDAPHandler.get_instance().get_base())
-
-        self.log.info("generating object index")
-
-        # Find new entries
-        backend_objects = []
-        for o, o_type in res.items():
-
-            # Get object
-            obj = f.getObject(o_type, o)
-
-            # Check for index entry
-            tmp = self.__conn.execute(select([self.__index.c._lastChanged], self.__index.c._uuid == obj.uuid))
-            r = tmp.fetchone()
-            tmp.close()
-
-            # Gather index attributes
-            attrs = {}
-            for attr in self.index_attrs:
-                if obj.hasattr(attr):
-                    attrs[attr] = getattr(obj, attr)
-
-            # Entry is not in the database
-            if r == None:
-                self.log.debug("creating object index for %s" % obj.uuid)
-                if not f.identifyObject(o):
-                    self.log.warning("failed to identify %s" % o)
-                    continue
-                ext = f.identifyObject(o)[1]
-                self.insert(obj.uuid, o, _lastChanged=obj.modifyTimestamp, _type=o_type, _extensions=ext, **attrs)
-
-            # Entry is in the database
-            else:
-                # OK: already there
-                if obj.modifyTimestamp == r[0]:
-                    self.log.debug("found up-to-date object index for %s" % obj.uuid)
-                else:
-                    self.log.debug("updating object index for %s" % obj.uuid)
-                    ext = f.identifyObject(o)[1]
-                    self.update(obj.uuid, _dn=o, _lastChanged=obj.modifyTimestamp, _type=o_type, _extensions=ext, **attrs)
-
-            backend_objects.append(obj.uuid)
-            del obj
-
-        # Remove old entries
-        for entry in self.__conn.execute(select([self.__index.c._uuid])).fetchall():
-            if entry[0] not in backend_objects:
-                self.log.debug("removing object index for %s" % entry[0])
-                self.remove(entry[0])
-
-        t1 = time()
-        self.log.info("processed %d objects in %ds" % (len(res), t1 - t0))
-        GlobalLock.release()
-
-    def index_active(self):
-        return self._indexed
 
     def __handle_events(self, event):
         uuid = event.uuid

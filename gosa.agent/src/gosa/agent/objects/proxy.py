@@ -227,9 +227,9 @@ class GOsaObjectProxy(object):
         # xml represention of this class
         propertiestag = etree.Element("properties")
         attrs = {}
-        attrs['dn'] = [str(self.__base.dn)]
-        attrs['entry-uuid'] = [str(self.__base.uuid)]
-        attrs['modify-date'] = [str(self.__base.modifyTimestamp)]
+        attrs['dn'] = [self.__base.dn]
+        attrs['entry-uuid'] = [self.__base.uuid]
+        attrs['modify-date'] = [self.__base.modifyTimestamp]
 
         # Add base class properties
         atypes = self.__factory.getAttributeTypes()
