@@ -25,7 +25,7 @@ from gosa.common import Environment
 from gosa.common.utils import N_
 from gosa.common.handler import IInterfaceHandler
 from gosa.common.components import Command, Plugin, PluginRegistry
-from gosa.agent.objects import GOsaObjectFactory, GOsaObjectProxy, ObjectChanged, SCOPE_BASE, SCOPE_ONE, SCOPE_SUB, ProxyException
+from gosa.agent.objects import GOsaObjectFactory, GOsaObjectProxy, ObjectChanged, SCOPE_BASE, SCOPE_ONE, SCOPE_SUB, ProxyException, ObjectException
 from gosa.agent.lock import GlobalLock
 from gosa.agent.xmldb import XMLDBHandler
 from gosa.agent.ldap_utils import LDAPHandler
@@ -141,9 +141,15 @@ class ObjectIndex(Plugin):
 
             # Get object
             try:
+                print "->", o
                 obj = GOsaObjectProxy(o)
 
-            except ProxyException:
+            except ProxyException as e:
+                self.log.warning("not indexing %s: %s" % (o, str(e)))
+                continue
+
+            except ObjectException as e:
+                self.log.warning("not indexing %s: %s" % (o, str(e)))
                 continue
 
             # Check for index entry
@@ -177,9 +183,13 @@ class ObjectIndex(Plugin):
                 self.log.debug("removing object index for %s" % entry)
                 self.db.deleteDocument('objects', entry)
 
+                #TOOD: maintain structure
+
         t1 = time()
         self.log.info("processed %d objects in %ds" % (len(res), t1 - t0))
         GlobalLock.release()
+
+# TODO:-to-be-revised--------------------------------------------------------------------------------------
 
     def index_active(self):
         return self._indexed
