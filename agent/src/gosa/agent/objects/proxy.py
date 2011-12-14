@@ -237,8 +237,13 @@ class GOsaObjectProxy(object):
         for propname in props:
 
             # Use the object-type conversion method to get valid item string-representations.
+            # This does not work for boolean values, due to the fact that xml requires
+            # lowercase (true/false)
             v = props[propname]['value']
-            attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString",v)
+            if props[propname]['type'] == "Boolean":
+                attrs[propname] = map(lambda x: 'true' if x == True else 'false', v)
+            else:
+                attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString",v)
 
         # Create a list of extensions and their properties
         exttag = etree.Element("extensions")
@@ -254,8 +259,13 @@ class GOsaObjectProxy(object):
                 for propname in props:
 
                     # Use the object-type conversion method to get valid item string-representations.
+                    # This does not work for boolean values, due to the fact that xml requires
+                    # lowercase (true/false)
                     v = props[propname]['value']
-                    attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString",v)
+                    if props[propname]['type'] == "Boolean":
+                        attrs[propname] = map(lambda x: 'true' if x == True else 'false', v)
+                    else:
+                        attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString",v)
 
         # Build a xml represention of the collected properties
         for key in attrs:
