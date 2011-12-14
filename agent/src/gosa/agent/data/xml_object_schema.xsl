@@ -73,7 +73,7 @@
                                                 <xsl:choose>
                                                     <xsl:when test="g:Type='String'">xsd:string</xsl:when>
                                                     <xsl:when test="g:Type='Integer'">xsd:integer</xsl:when>
-                                                    <xsl:when test="g:Type='Boolean'">xsd:string</xsl:when>
+                                                    <xsl:when test="g:Type='Boolean'">xsd:boolean</xsl:when>
                                                     <xsl:when test="g:Type='Timestamp'">xsd:string</xsl:when>
                                                     <xsl:when test="g:Type='Date'">xsd:string</xsl:when>
                                                     <xsl:otherwise>xsd:string</xsl:otherwise>
