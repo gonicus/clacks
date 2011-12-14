@@ -9,33 +9,9 @@ def print_res(res):
 
 
 db = XMLDBHandler.get_instance()
-
-#res = db.xquery("collection('objects')/GenericUser[Attributes/uid/string()='cajus']")
-res = db.xquery("collection('objects')/o:GenericUser")
-print_res(res)
-
-
-#<GenericUser xmlns="http://www.gonicus.de/Objects" xmlns:ns_1="http://www.w3.org/2001/XMLSchema-instance" ns_1:schemaLocation="http://www.gonicus.de/Objects objects.xsd">
-#  <Type>GenericUser</Type>
-#  <UUID>0944c774-ed95-102f-8230-812492b1b75c</UUID>
-#  <DN>cn=Roland Rueckert,ou=people,ou=snoovel.com,ou=Mail-Dom&#228;nen,dc=gonicus,dc=de</DN>
-#  <LastChanged>2011-06-29T09:08:25</LastChanged>
-#  <Extensions>
-#    <Extension/>
-#  </Extensions>
-#  <Attributes>
-#    <cn>Roland Rueckert</cn>
-#    <givenName>Roland</givenName>
-#    <isLocked>false</isLocked>
-#    <mail>snoovel.roland@snoovel.com</mail>
-#    <passwordMethod>crypt</passwordMethod>
-#    <sn>Rueckert</sn>
-#    <uid>snoovel.roland</uid>
-#    <userPassword>{crypt}b9.yM3lkl4RXA</userPassword>
-#  </Attributes>
-#</GenericUser>
-
-exit(0)
+res = db.xquery("collection('objects')/o:GenericUser[o:Attributes/o:uid/string()='cajus']")
+print "Query for objects:"
+print res, "\n"
 
 uuid = "d91fe2d7-f350-443c-b2c2-afed3ac6bbb4"
 res = db.xquery("collection('inventory')/gosa:Inventory[gosa:ClientUUID/string()='%s']/gosa:Storage[gosa:Type/string()='disk']" % uuid)
@@ -46,7 +22,7 @@ for r in res:
     o = objectify.fromstring(r)
     available_disks[o.Name.text] = o.DiskSize.text
 
-print available_disks
+print available_disks, "\n"
 
 
 print "Generic xquery tests"
