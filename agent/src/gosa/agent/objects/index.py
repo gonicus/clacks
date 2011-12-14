@@ -80,7 +80,7 @@ class ObjectIndex(Plugin):
 
         schema = self.factory.getXMLObjectSchema(True)
         self.db.createCollection("objects",
-            {"": "http://www.gonicus.de/Objects", "xsi": "http://www.w3.org/2001/XMLSchema-instance"},
+            {"o": "http://www.gonicus.de/Objects", "xsi": "http://www.w3.org/2001/XMLSchema-instance"},
             {"objects.xsd": schema})
 
         # Sync index
@@ -141,7 +141,6 @@ class ObjectIndex(Plugin):
 
             # Get object
             try:
-                print "->", o
                 obj = GOsaObjectProxy(o)
 
             except ProxyException as e:
@@ -178,7 +177,7 @@ class ObjectIndex(Plugin):
             del obj
 
         # Remove entries that are in XMLDB, but not in any other backends
-        for entry in db.getDocuments('objects'):
+        for entry in self.db.getDocuments('objects'):
             if entry not in backend_objects:
                 self.log.debug("removing object index for %s" % entry)
                 self.db.deleteDocument('objects', entry)

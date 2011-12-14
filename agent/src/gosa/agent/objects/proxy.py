@@ -213,6 +213,7 @@ class GOsaObjectProxy(object):
         """
         Returns XML representations for the base-object and all its extensions.
         """
+        atypes = self.__factory.getAttributeTypes()
 
         # Get the xml definitions combined for all objects.
         xmldefs = etree.tostring(self.__factory.getXMLDefinitionsCombined())
@@ -229,14 +230,11 @@ class GOsaObjectProxy(object):
         attrs = {}
         attrs['dn'] = [self.__base.dn]
         attrs['entry-uuid'] = [self.__base.uuid]
-        attrs['modify-date'] = [self.__base.modifyTimestamp]
+        attrs['modify-date'] = atypes['Timestamp'].convert_to("UnicodeString", [self.__base.modifyTimestamp])
 
         # Add base class properties
-        atypes = self.__factory.getAttributeTypes()
         props = self.__base.getProperties()
         for propname in props:
-            print "->", propname
-            print "..", props[propname]['value']
 
             # Use the object-type conversion method to get valid item string-representations.
             # This does not work for boolean values, due to the fact that xml requires
@@ -244,10 +242,13 @@ class GOsaObjectProxy(object):
             v = props[propname]['value']
             if props[propname]['type'] == "Boolean":
                 attrs[propname] = map(lambda x: 'true' if x == True else 'false', v)
+
             elif props[propname]['type'] == "Binary":
-                attrs[propname] = v
+                #TODO: use CDATA / encode special chars
+                continue
+
             else:
-                attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString",v)
+                attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString", v)
 
         # Create a list of extensions and their properties
         exttag = etree.Element("extensions")
@@ -268,8 +269,15 @@ class GOsaObjectProxy(object):
                     v = props[propname]['value']
                     if props[propname]['type'] == "Boolean":
                         attrs[propname] = map(lambda x: 'true' if x == True else 'false', v)
+
+                    # Skip binary ones
+                    elif props[propname]['type'] == "Binary":
+                        #TODO: use CDATA / encode special chars
+                        continue
+
+                    # Make remaining values unicode
                     else:
-                        attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString",v)
+                        attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString", v)
 
         # Build a xml represention of the collected properties
         for key in attrs:
@@ -282,14 +290,9 @@ class GOsaObjectProxy(object):
             t = etree.Element("property")
             for value in attrs[key]:
                 v = etree.Element("value")
-                try:
-                    v.text = value.decode('utf-8')
-                except Exception as e:
-                    print "----->", str(e)
-                    print "kabooom:", key, value, type(value)
-                    raise Exception('doof')
+                v.text = value
                 n = etree.Element('name')
-                n.text = key.decode('utf-8')
+                n.text = key
                 t.append(n)
                 t.append(v)
 
