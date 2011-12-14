@@ -158,7 +158,7 @@ class ObjectIndex(Plugin):
             # Entry is not in the database
             if not changed:
                 self.log.debug("creating object index for %s" % obj.uuid)
-                self.db.addDocument('objects', obj.uuid, obj.asXML())
+                self.db.addDocument('objects', obj.uuid, obj.asXML(True))
 
                 #TODO: maintain structure
 
@@ -170,7 +170,7 @@ class ObjectIndex(Plugin):
 
                 else:
                     self.log.debug("updating object index for %s" % obj.uuid)
-                    self.db.xquery("replace node doc('dbxml:/objects/%s')/* with %s" % (obj.uuid, escape(obj.asXML())))
+                    self.db.xquery("replace node doc('dbxml:/objects/%s')/* with %s" % (obj.uuid, escape(obj.asXML(True))))
 
                     #TODO: maintain structure
 

@@ -235,6 +235,8 @@ class GOsaObjectProxy(object):
         atypes = self.__factory.getAttributeTypes()
         props = self.__base.getProperties()
         for propname in props:
+            print "->", propname
+            print "..", props[propname]['value']
 
             # Use the object-type conversion method to get valid item string-representations.
             # This does not work for boolean values, due to the fact that xml requires

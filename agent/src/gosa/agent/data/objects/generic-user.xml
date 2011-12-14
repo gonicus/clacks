@@ -101,6 +101,7 @@
                 <Type>String</Type>
             </Attribute>
             <Attribute>
+		<NotIndexed>true</NotIndexed>
                 <Name>jpegPhoto</Name>
                 <Description>Used to store one or more images of a person using the JPEG File Interchange Format [JFIF].</Description>
                 <Type>Binary</Type>
