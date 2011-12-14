@@ -63,13 +63,13 @@ setup(
 
     entry_points = """
         [console_scripts]
-        gosa-dbus = gosa.dbus.main:main
+        clacks-dbus = gosa.dbus.main:main
         notify-user = gosa.dbus.notify:main
 
         [gosa_dbus.modules]
-        gosa-dbus.unix = gosa.dbus.plugins.shell.main:DBusUnixServiceHandler
-        gosa-dbus.inventory = gosa.dbus.plugins.inventory.main:DBusInventoryHandler
-        gosa-dbus.notify = gosa.dbus.plugins.notify.main:DBusNotifyHandler
-        gosa-dbus.wol = gosa.dbus.plugins.wakeonlan.main:DBusWakeOnLanHandler
+        module.unix = gosa.dbus.plugins.shell.main:DBusUnixServiceHandler
+        module.inventory = gosa.dbus.plugins.inventory.main:DBusInventoryHandler
+        module.notify = gosa.dbus.plugins.notify.main:DBusNotifyHandler
+        module.wol = gosa.dbus.plugins.wakeonlan.main:DBusWakeOnLanHandler
     """,
 )

@@ -77,24 +77,24 @@ setup(
 
     entry_points = """
         [console_scripts]
-        gosa-agent = gosa.agent.main:main
+        clacks-agent = gosa.agent.main:main
 
         [gosa.modules]
-        gosa-agent.command = gosa.agent.command:CommandRegistry
-        gosa-agent.amqp_service = gosa.agent.amqp_service:AMQPService
-        gosa-agent.httpd = gosa.agent.httpd:HTTPService
-        gosa-agent.scheduler = gosa.agent.scheduler:SchedulerService
-        gosa-agent.acl = gosa.agent.acl:ACLResolver
-        gosa-agent.objects = gosa.agent.objects.index:ObjectIndex
-        gosa-agent.xmldb = gosa.agent.xmldb.handler:XMLDBHandler
-        gosa-agent.jsonrpc_service = gosa.agent.jsonrpc_service:JSONRPCService
-        gosa-agent.jsonrpc_om = gosa.agent.jsonrpc_objects:JSONRPCObjectMapper
-        gosa-agent.plugins.samba.utils = gosa.agent.plugins.samba.utils:SambaUtils
-        gosa-agent.plugins.misc.utils = gosa.agent.plugins.misc.utils:MiscUtils
-        gosa-agent.plugins.gravatar.utils = gosa.agent.plugins.gravatar.utils:GravatarUtils
-        gosa-agent.plugins.goto.network = gosa.agent.plugins.goto.network:NetworkUtils
-        gosa-agent.plugins.goto.client_service = gosa.agent.plugins.goto.client_service:ClientService
-        gosa-agent.plugins.inventory = gosa.agent.plugins.inventory.consumer:InventoryConsumer
+        module.command = gosa.agent.command:CommandRegistry
+        module.amqp_service = gosa.agent.amqp_service:AMQPService
+        module.httpd = gosa.agent.httpd:HTTPService
+        module.scheduler = gosa.agent.scheduler:SchedulerService
+        module.acl = gosa.agent.acl:ACLResolver
+        module.objects = gosa.agent.objects.index:ObjectIndex
+        module.xmldb = gosa.agent.xmldb.handler:XMLDBHandler
+        module.jsonrpc_service = gosa.agent.jsonrpc_service:JSONRPCService
+        module.jsonrpc_om = gosa.agent.jsonrpc_objects:JSONRPCObjectMapper
+        module.samba.utils = gosa.agent.plugins.samba.utils:SambaUtils
+        module.misc.utils = gosa.agent.plugins.misc.utils:MiscUtils
+        module.gravatar.utils = gosa.agent.plugins.gravatar.utils:GravatarUtils
+        module.goto.network = gosa.agent.plugins.goto.network:NetworkUtils
+        module.goto.client_service = gosa.agent.plugins.goto.client_service:ClientService
+        module.inventory = gosa.agent.plugins.inventory.consumer:InventoryConsumer
 
         [gosa.object.type]
         type.string = gosa.agent.objects.types.base:StringAttribute

@@ -1,13 +1,13 @@
 #!/bin/sh
 ### BEGIN INIT INFO
-# Provides:          gosa-client
+# Provides:          clacks-client
 # Required-Start:
 # Required-Stop:
 # Should-Start:	     $syslog
 # Should-Stop:       $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: gosa-client service
+# Short-Description: clacks-client service
 # Description:       TODO
 ### END INIT INFO
 
@@ -15,9 +15,9 @@ set -e
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 DESC="GOsa infrastructure client"
-NAME="gosa-client"
+NAME="clacks-client"
 DAEMON="/usr/sbin/$NAME"
-SCRIPTNAME=/etc/init.d/gosa.client
+SCRIPTNAME=/etc/init.d/clacks.client
 
 # Gracefully exit if the package has been removed.
 test -x $DAEMON || exit 0

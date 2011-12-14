@@ -38,11 +38,11 @@ else:
     ])
 
     modules = """
-        gosa-client.plugins.wakeonlan = gosa.client.plugins.wakeonlan.utils:WakeOnLan
-        gosa-client.plugins.notify = gosa.client.plugins.notify.utils:Notify
-        gosa-client.plugins.inventory = gosa.client.plugins.inventory.utils:Inventory
-        gosa-client.plugins.powermanagement = gosa.client.plugins.powermanagement.utils:PowerManagement
-        gosa-client.plugins.session = gosa.client.plugins.sessions.main:SessionKeeper
+        module.wakeonlan = gosa.client.plugins.wakeonlan.utils:WakeOnLan
+        module.notify = gosa.client.plugins.notify.utils:Notify
+        module.inventory = gosa.client.plugins.inventory.utils:Inventory
+        module.powermanagement = gosa.client.plugins.powermanagement.utils:PowerManagement
+        module.session = gosa.client.plugins.sessions.main:SessionKeeper
     """
     joiner = """
         join.curses = gosa.client.plugins.join.curses_gui:CursesGUI
@@ -99,16 +99,16 @@ setup(
 
     entry_points = """
         [console_scripts]
-        gosa-client = gosa.client.main:main
-        gosa-join = gosa.client.join:main
+        clacks-client = gosa.client.main:main
+        clacks-join = gosa.client.join:main
 
         [gosa_join.modules]
         %(joiner)s
 
         [gosa_client.modules]
-        gosa-client.command = gosa.client.command:ClientCommandRegistry
-        gosa-client.amqp = gosa.client.amqp:AMQPClientHandler
-        gosa-client.amqp_service = gosa.client.amqp_service:AMQPClientService
+        module.command = gosa.client.command:ClientCommandRegistry
+        module.amqp = gosa.client.amqp:AMQPClientHandler
+        module.amqp_service = gosa.client.amqp_service:AMQPClientService
         %(modules)s
     """ % {'modules': modules, 'joiner': joiner},
 

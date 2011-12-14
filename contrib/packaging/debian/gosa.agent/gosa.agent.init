@@ -1,13 +1,13 @@
 #!/bin/sh
 ### BEGIN INIT INFO
-# Provides:          gosa-agent
+# Provides:          calcks-agent
 # Required-Start:    qpid-broker
 # Required-Stop:
 # Should-Start:	     $syslog
 # Should-Stop:       $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: gosa-agent service
+# Short-Description: calcks-agent service
 # Description:       TODO
 ### END INIT INFO
 
@@ -15,7 +15,7 @@ set -e
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 DESC="AMQP agent"
-NAME="gosa.agent"
+NAME="clacks-agent"
 DAEMON="/usr/sbin/$NAME"
 SCRIPTNAME=/etc/init.d/$NAME
 
@@ -24,7 +24,7 @@ test -x $DAEMON || exit 0
 
 . /lib/lsb/init-functions
 
-# Include gosa-agent defaults if available.
+# Include calcks-agent defaults if available.
 DAEMON_OPTS="--pid-file=/var/run/gosa/$NAME.pid"
 test -f /etc/default/gosa.agent && . /etc/default/gosa.agent
 

@@ -10,6 +10,7 @@
     <xsd:complexType name="Node">
         <xsd:sequence>
             <xsd:element name="Node" type="gosa:Node" maxOccurs="unbounded" minOccurs="0" />
+	    <xs:any minOccurs="0"/>
         </xsd:sequence>
         <xsd:attribute name="dn" type="xsd:string" />
         <xsd:attribute name="uuid" type="xsd:string" />
