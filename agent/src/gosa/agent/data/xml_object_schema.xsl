@@ -74,8 +74,8 @@
                                                     <xsl:when test="g:Type='String'">xsd:string</xsl:when>
                                                     <xsl:when test="g:Type='Integer'">xsd:integer</xsl:when>
                                                     <xsl:when test="g:Type='Boolean'">xsd:boolean</xsl:when>
-                                                    <xsl:when test="g:Type='Timestamp'">xsd:string</xsl:when>
-                                                    <xsl:when test="g:Type='Date'">xsd:string</xsl:when>
+                                                    <xsl:when test="g:Type='Timestamp'">xsd:dateTime</xsl:when>
+                                                    <xsl:when test="g:Type='Date'">xsd:date</xsl:when>
                                                     <xsl:otherwise>xsd:string</xsl:otherwise>
                                                 </xsl:choose>
                                             </xsl:variable>
@@ -85,8 +85,7 @@
                                                 <xsl:attribute name="name"><xsl:value-of select="g:Name" /></xsl:attribute>
                                                 <xsl:attribute name="type"><xsl:value-of select="$type" /></xsl:attribute>
                                                 <xsl:attribute name="minOccurs">0</xsl:attribute>
-                                                <xsl:attribute name="maxOccurs">1</xsl:attribute>
-                                                <!-- <xsl:attribute name="maxOccurs">unbounded</xsl:attribute>-->
+                                                <xsl:attribute name="maxOccurs">unbounded</xsl:attribute>
                                             </xsl:element>
                                         </xsl:if>
                                     </xsl:for-each>

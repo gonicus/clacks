@@ -134,10 +134,10 @@ class DateAttribute(AttributeType):
         return(value1 == value2)
 
     def _convert_to_string(self, value):
-        return(map(lambda x: str(x), value))
+        return(map(lambda x: x.strftime("%Y-%m-%d"), value))
 
     def _convert_to_unicodestring(self, value):
-        return(map(lambda x: unicode(x), value))
+        return(map(lambda x: unicode(x.strftime("%Y-%m-%d")), value))
 
 class TimestampAttribute(AttributeType):
     __alias__ = "Timestamp"
@@ -155,7 +155,7 @@ class TimestampAttribute(AttributeType):
         return(value1 == value2)
 
     def _convert_to_string(self, value):
-        return(map(lambda x: str(x), value))
+        return(map(lambda x: x.strftime("%Y-%m-%dT%H:%M:%S%z"), value))
 
     def _convert_to_unicodestring(self, value):
-        return(map(lambda x: unicode(x), value))
+        return(map(lambda x: unicode(x.strftime("%Y-%m-%dT%H:%M:%S%z")), value))
