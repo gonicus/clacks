@@ -244,6 +244,8 @@ class GOsaObjectProxy(object):
             v = props[propname]['value']
             if props[propname]['type'] == "Boolean":
                 attrs[propname] = map(lambda x: 'true' if x == True else 'false', v)
+            elif props[propname]['type'] == "Binary":
+                attrs[propname] = v
             else:
                 attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString",v)
 
@@ -280,11 +282,17 @@ class GOsaObjectProxy(object):
             t = etree.Element("property")
             for value in attrs[key]:
                 v = etree.Element("value")
-                v.text = unicode(value)
+                try:
+                    v.text = value.decode('utf-8')
+                except Exception as e:
+                    print "----->", str(e)
+                    print "kabooom:", key, value, type(value)
+                    raise Exception('doof')
                 n = etree.Element('name')
-                n.text = unicode(key)
+                n.text = key.decode('utf-8')
                 t.append(n)
                 t.append(v)
+
             propertiestag.append(t)
 
         # Combine all collected class info in a single xml file, this
