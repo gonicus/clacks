@@ -26,8 +26,8 @@
                 name="schemaLocation">http://www.gonicus.de/Objects objects.xsd</xsl:attribute>
 
             <!-- Add elements -->
-    		<Type><xsl:value-of select="$class" /></Type>
     		<UUID><xsl:value-of select="$props[g:name='entry-uuid']/g:value/text()" /></UUID>
+    		<Type><xsl:value-of select="$class" /></Type>
     		<DN><xsl:value-of select="$props[g:name='dn']/g:value/text()" /></DN>
     		<LastChanged><xsl:value-of select="$props[g:name='modify-date']/g:value/text()" /></LastChanged>
 
@@ -96,7 +96,12 @@
                             </xsl:variable>
                             <xsl:if test="$props[g:name=$propname]/g:value">
                                 <xsl:for-each select="$props[g:name=$propname]">
-                                    <xsl:element name="{$propname}"><xsl:value-of select="g:value" /></xsl:element>
+                                    <xsl:if test="g:Type='Binary'">
+                                        <xsl:element name="{$propname}">&lt;![CDATA[<xsl:value-of select="g:value" />]]&gt;</xsl:element>
+                                    </xsl:if>
+                                    <xsl:if test="not(g:Type='Binary')">
+                                        <xsl:element name="{$propname}"><xsl:value-of select="g:value" /></xsl:element>
+                                    </xsl:if>
                                 </xsl:for-each>
                             </xsl:if>
                         </xsl:if>
