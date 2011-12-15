@@ -11983,7 +11983,7 @@ this.fireEvent(d);
 }},destruct:function(){this.__lx=this.__ly=this.__lv=null;
 }});
 })();
-(function(){var i="dc=gonicus,dc=de",h='GenericUser',g="GOsa JSON-RPC service",f="https://amqp.intranet.gonicus.de/rpc",e='sn',d="search",c='givenName',b='uid',a="rpc_test.MyModel";
+(function(){var i="dc=gonicus,dc=de",h='User',g="GOsa JSON-RPC service",f="https://amqp.intranet.gonicus.de/rpc",e='sn',d="search",c='givenName',b='uid',a="rpc_test.MyModel";
 qx.Class.define(a,{extend:qx.ui.table.model.Remote,members:{_loadRowCount:function(){var j=new qx.io.remote.Rpc(f,g);
 j.setTimeout(10000);
 that=this;

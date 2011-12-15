@@ -150,7 +150,7 @@
                 </Attributes>
 
 		<Extends>
-			<Value>GenericUser</Value>
+			<Value>User</Value>
 		</Extends>
 	</Object>
 </Objects>

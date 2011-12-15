@@ -45,12 +45,12 @@ db.addDocument("b", "rainer", open('dummy.xml').read())
 db.addDocument("b", "hickert", open('dummy2.xml').read())
 
 print
-q = "collection('a')/gosa:GenericUser/gosa:Attributes/gosa:uid/text()"
+q = "collection('a')/gosa:User/gosa:Attributes/gosa:uid/text()"
 print "Query single collection: " + q
 print db.xquery(q)
 
 print
-q = "(collection('a')|collection('b'))/gosa:GenericUser/gosa:Attributes/gosa:uid/text()"
+q = "(collection('a')|collection('b'))/gosa:User/gosa:Attributes/gosa:uid/text()"
 print "Query multiple collections: " + q
 print db.xquery(q)
 
@@ -74,7 +74,7 @@ if not db.collectionExists("groups"):
 q = """
 <Status>
     {
-       for $component in collection("users")/gosa:GenericUser
+       for $component in collection("users")/gosa:User
        return
          <User>
             <Name>{$component/gosa:Attributes/gosa:uid/string()}</Name>
@@ -98,7 +98,7 @@ q = """
 print(db.xquery(str(q)))
 
 q = """
-    for $component in collection("users")/gosa:GenericUser
+    for $component in collection("users")/gosa:User
        return
             let $groups := collection("groups")/gosa:Groups/gosa:Group[gosa:Member=$component/gosa:Attributes/gosa:uid]
             for $group in $groups

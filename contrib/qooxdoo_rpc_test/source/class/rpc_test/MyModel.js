@@ -12,7 +12,7 @@ qx.Class.define("rpc_test.MyModel",
         that = this;
         res = rpc.callAsync(function(result){
                 that._onRowCountLoaded(result.length);
-            },"search", "dc=gonicus,dc=de", 2, {'type': 'GenericUser'}, ['sn']);
+            },"search", "dc=gonicus,dc=de", 2, {'type': 'User'}, ['sn']);
     },
  
     // overloaded - called whenever the table requests new data
@@ -22,7 +22,7 @@ qx.Class.define("rpc_test.MyModel",
         rpc.setTimeout(10000);
         res = rpc.callAsync(function(result){
                 that._onRowDataLoaded(result);
-            },"search", "dc=gonicus,dc=de", 2, {'type': 'GenericUser'}, ['sn', 'givenName','uid'], firstRow,lastRow);
+            },"search", "dc=gonicus,dc=de", 2, {'type': 'User'}, ['sn', 'givenName','uid'], firstRow,lastRow);
     }
   }  
 });

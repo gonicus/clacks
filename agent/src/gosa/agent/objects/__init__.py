@@ -11,7 +11,7 @@ The object abstraction module allows to access managed-information in an object 
 You can get an object instance like this:
 
 >>> from gosa.agent.objects import GOsaObjectFactory
->>> person = f.getObject('GenericUser', "cn=Cajus Pollmeier,ou=people,ou=Technik,dc=gonicus,dc=de")
+>>> person = f.getObject('User', "cn=Cajus Pollmeier,ou=people,ou=Technik,dc=gonicus,dc=de")
 
 and then you can access, update and persist values like this:
 
@@ -28,7 +28,7 @@ and then you can access, update and persist values like this:
 
 ... create new users:
 
->>> person = f.getObject('GenericUser', u'ou=people,dc=gonicus,dc=de', mode="create")
+>>> person = f.getObject('User', u'ou=people,dc=gonicus,dc=de', mode="create")
 >>> person.uid = u"..."
 >>> person.sn = u"..."
 >>> person.givenName = u"..."
@@ -67,8 +67,8 @@ BackendParameters   A list parameters for the backend.
 Attributes          Attributes that are provided by this object
 Methods             Methods that can be called on object instances
 Container           A list of potential sub-objects this object can contain
-Extends             Another objects name that we can extend. E.g. PosixUser can extend a GenericUser object
-BaseObject          Defines this object as root object. E.g. GenericUser is a base object
+Extends             Another objects name that we can extend. E.g. PosixUser can extend a User object
+BaseObject          Defines this object as root object. E.g. User is a base object
 FixedRDN            A RDN. For objects that are bound to a specific name. E.g. PeopleContainer (ou=people)
 =================== ===========================
 
@@ -125,9 +125,9 @@ lacks attribute and method definitions:
     <Objects xmlns="http://www.gonicus.de/Objects">
         ...
         <Object>
-            <Name>GenericUser</Name>
+            <Name>User</Name>
             <DisplayName>A dummy</DisplayName>
-            <Description>GenericUser class</Description>
+            <Description>User class</Description>
             <Backend>LDAP</Backend>
 
             <Container>
@@ -143,9 +143,9 @@ As you can see, three more tags were introduced here.
 
 A ``<Container>`` tag which specifies for which objects we are a container.
 For example an ``OrganizationalUnit`` is a container for ``PeopleContainer`` and ``GroupContainer`` objects.
-In this example we could place ``Something`` objects under ``GenericUser`` objects.
+In this example we could place ``Something`` objects under ``User`` objects.
 
-A ``GenericUser`` object may have extensions like mail, posix, samba, ...  which can be added to or
+A ``User`` object may have extensions like mail, posix, samba, ...  which can be added to or
 removed from our object dynamically.
 To be able to identify those addable extension we have the ``<Extends>`` tag, it specifies
 which objects could be added to our object as extension.
@@ -154,7 +154,7 @@ The ``<BaseObject>`` tag, defines our object as root object, (if set to true) it
 to some other objects, like described above in the ``<Extends>`` tag.
 
 
-With the above example we can now instantiate a ``GenericUser`` object, it has no attributes
+With the above example we can now instantiate a ``User`` object, it has no attributes
 nor methods, but we could add a ``PosixUser`` and a ``Mail`` extension to it.
 
 
@@ -179,9 +179,9 @@ Here is a minimum example of an attribute:
     <Objects xmlns="http://www.gonicus.de/Objects">
         ...
         <Object>
-            <Name>GenericUser</Name>
-            <DisplayName>GenericUser</DisplayName>
-            <Description>GenericUser</Description>
+            <Name>User</Name>
+            <DisplayName>User</DisplayName>
+            <Description>User</Description>
             <Backend>LDAP</Backend>
             ...
             <Attributes>
@@ -611,7 +611,7 @@ Here is the XML code for the above method call, all other object tags are remove
     <Objects xmlns="http://www.gonicus.de/Objects">
         ...
         <Object>
-            <Name>GenericUser</Name>
+            <Name>User</Name>
             ...
             <Methods>
                 <Method>

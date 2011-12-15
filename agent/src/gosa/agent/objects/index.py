@@ -17,6 +17,7 @@ import collections
 import ldap.dn
 import zope.event
 import datetime
+import pkg_resources
 from zope.interface import implements
 from time import time
 from base64 import b64encode, b64decode
@@ -29,11 +30,6 @@ from gosa.agent.objects import GOsaObjectFactory, GOsaObjectProxy, ObjectChanged
 from gosa.agent.lock import GlobalLock
 from gosa.agent.xmldb import XMLDBHandler
 from gosa.agent.ldap_utils import LDAPHandler
-
-#TODO: to be removed
-from sqlalchemy.sql import select, and_, or_, func, asc, desc
-from sqlalchemy.dialects.sqlite.base import SQLiteDialect
-from sqlalchemy import Table, Column, Integer, Boolean, String, DateTime, Date, Unicode, MetaData
 
 
 class FilterException(Exception):
@@ -75,13 +71,21 @@ class ObjectIndex(Plugin):
 
         #TODO: for the initial testing, always drop the collection to
         #      have a clean start
+        print "------> TODO: remove me!"
         if self.db.collectionExists("objects"):
             self.db.dropCollection("objects")
+        if self.db.collectionExists("structure"):
+            self.db.dropCollection("structure")
 
         schema = self.factory.getXMLObjectSchema(True)
+        structure_schema = pkg_resources.resource_filename('gosa.agent', 'data/structure.xsd')
         self.db.createCollection("objects",
             {"o": "http://www.gonicus.de/Objects", "xsi": "http://www.w3.org/2001/XMLSchema-instance"},
             {"objects.xsd": schema})
+        self.db.createCollection("structure",
+            {"s": "http://www.gonicus.de/Structure", "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+             "xi": "http://www.w3.org/2001/XInclude"},
+            {"structure.xsd": open(structure_schema).read()})
 
         # Sync index
         if self.env.config.get("index.disable", "False").lower() != "true":
@@ -131,7 +135,8 @@ class ObjectIndex(Plugin):
             return res
 
         self.log.info("scanning for objects")
-        res = resolve_children(LDAPHandler.get_instance().get_base())
+        base = LDAPHandler.get_instance().get_base()
+        res = resolve_children(base)
 
         self.log.info("generating object index")
 
@@ -156,10 +161,9 @@ class ObjectIndex(Plugin):
 
             # Entry is not in the database
             if not changed:
+                #TODO: modify for big document
                 self.log.debug("creating object index for %s" % obj.uuid)
                 self.db.addDocument('objects', obj.uuid, obj.asXML(True))
-
-                #TODO: maintain structure
 
             # Entry is in the database
             else:
@@ -168,10 +172,9 @@ class ObjectIndex(Plugin):
                     self.log.debug("found up-to-date object index for %s" % obj.uuid)
 
                 else:
+                    #TODO: modify for big document
                     self.log.debug("updating object index for %s" % obj.uuid)
                     self.db.xquery("replace node doc('dbxml:/objects/%s')/* with %s" % (obj.uuid, escape(obj.asXML(True))))
-
-                    #TODO: maintain structure
 
             backend_objects.append(obj.uuid)
             del obj
@@ -179,19 +182,24 @@ class ObjectIndex(Plugin):
         # Remove entries that are in XMLDB, but not in any other backends
         for entry in self.db.getDocuments('objects'):
             if entry not in backend_objects:
+
+                #TODO: modify for big document
                 self.log.debug("removing object index for %s" % entry)
                 self.db.deleteDocument('objects', entry)
-
-                #TOOD: maintain structure
 
         t1 = time()
         self.log.info("processed %d objects in %ds" % (len(res), t1 - t0))
         GlobalLock.release()
 
-# TODO:-to-be-revised--------------------------------------------------------------------------------------
-
     def index_active(self):
         return self._indexed
+
+# TODO:-to-be-revised--------------------------------------------------------------------------------------
+
+    @Command(__help__=N_("Perform a raw xquery on the collections"))
+    def xquery(self, query):
+        #TODO
+        pass
 
     @Command(__help__=N_("Check if an object with the given UUID exists."))
     def exists(self, uuid):
@@ -211,31 +219,6 @@ class ObjectIndex(Plugin):
         res = bool(tmp.fetchone())
         tmp.close()
         return res
-
-    def insert(self, uuid, dn, **props):
-        props['_uuid'] = uuid
-        props['_dn']= self.dn2b64(dn)
-        prnt_helper = props['_dn'].split(",")
-        props['_parent_dn'] = ",".join(prnt_helper[1:]) if len(prnt_helper) > 1 else ""
-
-        # Convert all list types to Unicode strings
-        props = dict([(attr, self.__sep + self.__sep.join(key) + self.__sep if type(key) == list else key) for attr, key in props.items()])
-        self.__conn.execute(self.__index.insert(), [props])
-
-    def remove(self, uuid):
-        self.__conn.execute(self.__index.delete().where(self.__index.c._uuid == uuid))
-
-    def move(self, uuid, dn):
-        self.update(uuid, _dn=dn)
-
-    def update(self, uuid, **props):
-        if '_dn'  in props:
-            props['_dn']= self.dn2b64(props['_dn'])
-            prnt_helper = props['_dn'].split(",")
-            props['_parent_dn'] = ",".join(prnt_helper[1:]) if len(prnt_helper) > 1 else ""
-
-        props = dict([(attr, self.__sep + self.__sep.join(key) + self.__sep if type(key) == list else key) for attr, key in props.items()])
-        self.__conn.execute(self.__index.update().where(self.__index.c._uuid == uuid), [props])
 
     @Command(__help__=N_("Filter for indexed attributes and return the number of matches."))
     def count(self, base=None, scope=SCOPE_SUB, fltr=None):
@@ -393,92 +376,6 @@ class ObjectIndex(Plugin):
         res = [dict(r.items()) for r in self.__conn.execute(sl).fetchall()]
         return self.__convert_lists(res)
 
-    def __convert_lists(self, data):
-        if isinstance(data, str) or isinstance(data, unicode):
-            # Check for list conversion
-            if data[0] == self.__sep and data[-1] == self.__sep:
-                return self.__bl.findall(data)
-            return data
-        elif isinstance(data, collections.Mapping):
-            return dict(map(self.__convert_lists, data.iteritems()))
-        elif isinstance(data, collections.Iterable):
-            if len(data) and data[0] == "_dn":
-                data = (data[0], self.b642dn(data[1]))
-            return type(data)(map(self.__convert_lists, data))
-        else:
-            return data
-
-    def __build_filter(self, fltr):
-        arg = []
-
-        for el, value in fltr.items():
-            cel = el
-            value = value.replace("*", "%")
-
-            if el in ["_and", "_or", "_not"]:
-                if type(value) == dict:
-                    v = getattr(sqlalchemy.sql, el[1:] + "_")(*self.__build_filter(value))
-                    arg.append(v)
-                else:
-                    raise FilterException("operator needs a dict argument")
-
-            elif el in ["_gt", "_lt", "_ge", "_le"]:
-                if len(value) != 2:
-                    raise FilterException("operator needs a list with exactly two parameters")
-
-                if type(value) == list and len(value) == 2:
-                    if el == "_gt":
-                        arg.append(getattr(self.__index.c, value[0]) > value[1])
-                    if el == "_lt":
-                        arg.append(getattr(self.__index.c, value[0]) < value[1])
-                    if el == "_ge":
-                        arg.append(getattr(self.__index.c, value[0]) >= value[1])
-                    if el == "_le":
-                        arg.append(getattr(self.__index.c, value[0]) <= value[1])
-                else:
-                    raise FilterException("operator needs a list with exactly two parameters")
-
-            elif el == "_in":
-                if len(value) != 1:
-                    raise FilterException("operator expects a single list argument")
-
-                k, v = value.items()[0]
-                if type(v) != list:
-                    raise FilterException("operator expects a single list argument")
-
-                arg.append(getattr(self.__index.c, k).in_(v))
-
-            elif el == "type":
-                arg.append(or_(self.__index.c._type == value, self.__index.c._extensions.op('regexp')(r"\%s%s\%s" % (self.__sep, value, self.__sep))))
-
-            elif el == "uuid":
-                arg.append(or_(self.__index.c._uuid == value, self.__index.c._extensions.op('regexp')(r"\%s%s\%s" % (self.__sep, value, self.__sep))))
-
-            elif not cel in self.__types:
-                raise FilterException("attribute '%s' is not indexed" % cel)
-
-            elif self.__types[cel]['multivalue']:
-                if '%' in value:
-                    value = value.replace('%', r'[^\%s]*' % self.__sep)
-
-                arg.append(getattr(self.__index.c, cel).op('regexp')(r"\%s%s\%s" % (self.__sep, value, self.__sep)))
-
-            else:
-                if '%' in value:
-                    arg.append(getattr(self.__index.c, cel).like(value))
-                else:
-                    arg.append(getattr(self.__index.c, cel) == value)
-
-        return arg
-
-    def dn2b64(self, dn):
-        parts = ldap.dn.explode_dn(dn.encode('utf-8').lower(), flags=DN_FORMAT_LDAPV3)
-        return ",".join([b64encode(p) for p in parts])
-
-    def b642dn(self, b64dn):
-        return u",".join([b64decode(p).decode('utf-8') for p in b64dn.split(",")])
-
-
     def __handle_events(self, event):
         uuid = event.uuid
         if isinstance(event, ObjectChanged):
@@ -487,11 +384,11 @@ class ObjectIndex(Plugin):
 
             if event.reason == "post remove":
                 self.log.debug("removing object index for %s" % uuid)
-                self.remove(uuid)
+                #self.remove(uuid)
 
             if event.reason == "post move":
                 self.log.debug("updating object index for %s" % uuid)
-                self.move(uuid, event.dn)
+                #self.move(uuid, event.dn)
 
             if event.reason == "post create":
                 self.log.debug("creating object index for %s" % uuid)
@@ -504,7 +401,7 @@ class ObjectIndex(Plugin):
                     if obj.hasattr(attr):
                         attrs[attr] = getattr(obj, attr)
 
-                self.insert(uuid, event.dn, _lastChanged=obj.modifyTimestamp, _type=o_type, _extensions=ext, **attrs)
+                #self.insert(uuid, event.dn, _lastChanged=obj.modifyTimestamp, _type=o_type, _extensions=ext, **attrs)
 
             if event.reason in ["post retract", "post update", "post extend"]:
                 self.log.debug("updating object index for %s" % uuid)
@@ -523,4 +420,4 @@ class ObjectIndex(Plugin):
                         attrs[attr] = getattr(obj, attr)
 
                 attrs['_dn']= event.dn
-                self.update(uuid, _type=o_type, _lastChanged=obj.modifyTimestamp, _extensions=ext, **attrs)
+                #self.update(uuid, _type=o_type, _lastChanged=obj.modifyTimestamp, _extensions=ext, **attrs)

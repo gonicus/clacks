@@ -24,10 +24,10 @@ else:
 f = GOsaObjectFactory.getInstance()
 
 if mode == "create":
-    p = f.getObject('GenericUser', u'ou=people,dc=gonicus,dc=de', mode="create")
+    p = f.getObject('User', u'ou=people,dc=gonicus,dc=de', mode="create")
 
 if mode in ["update", "move", "remove"]:
-    p = f.getObject('GenericUser', u"cn=Klaus Mustermann,ou=people,dc=gonicus,dc=de")
+    p = f.getObject('User', u"cn=Klaus Mustermann,ou=people,dc=gonicus,dc=de")
 
 if mode == "extend":
     p = f.getObject('PosixUser', u'cn=Klaus Mustermann,ou=people,dc=gonicus,dc=de', mode="extend")
