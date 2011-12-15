@@ -92,6 +92,14 @@
                                 </xsd:sequence>
                             </xsd:complexType>
                         </xsd:element>
+
+                        <!-- Allow this object to have sub-objects
+                             e.g. Organizations can container PeopleContainer and GroupContainer
+                        -->
+                        <xsl:for-each select="g:Container">
+                            <xsl:sort select="g:Type"/>
+                            <xsd:element name="{g:Type}" type="{g:Type}" minOccurs="0" maxOccurs="unbounded" />
+                        </xsl:for-each>
                     </xsd:all>
                 </xsd:complexType>
             </xsl:for-each>
