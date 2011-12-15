@@ -66,18 +66,11 @@ class ObjectIndex(Plugin):
         print "------> TODO: remove me!"
         if self.db.collectionExists("objects"):
             self.db.dropCollection("objects")
-        if self.db.collectionExists("structure"):
-            self.db.dropCollection("structure")
 
         schema = self.factory.getXMLObjectSchema(True)
-        structure_schema = pkg_resources.resource_filename('gosa.agent', 'data/structure.xsd')
         self.db.createCollection("objects",
             {"o": "http://www.gonicus.de/Objects", "xsi": "http://www.w3.org/2001/XMLSchema-instance"},
             {"objects.xsd": schema})
-        self.db.createCollection("structure",
-            {"s": "http://www.gonicus.de/Structure", "xsi": "http://www.w3.org/2001/XMLSchema-instance",
-             "xi": "http://www.w3.org/2001/XInclude"},
-            {"structure.xsd": open(structure_schema).read()})
 
         # Sync index
         if self.env.config.get("index.disable", "False").lower() != "true":
