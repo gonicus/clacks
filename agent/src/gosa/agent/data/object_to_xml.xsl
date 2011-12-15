@@ -91,15 +91,17 @@
 
                         <!-- Skip attributes that do not have to be indexed-->
                         <xsl:if test="($only_indexed='false') or ($only_indexed='true') and not(g:NotIndexed='true')">
-                            <xsl:variable name="propname">
-                                <xsl:value-of select="g:Name" />
-                            </xsl:variable>
+                            <xsl:variable name="propname" select="g:Name" />
+                            <xsl:variable name="proptype" select="g:Type" />
                             <xsl:if test="$props[g:name=$propname]/g:value">
                                 <xsl:for-each select="$props[g:name=$propname]">
-                                    <xsl:if test="g:Type='Binary'">
-                                        <xsl:element name="{$propname}">&lt;![CDATA[<xsl:value-of select="g:value" />]]&gt;</xsl:element>
+                                    <xsl:if test="$proptype='Binary'">
+                                        <xsl:element name="{$propname}">
+                                            <xsl:attribute name="base64">true</xsl:attribute>
+                                            <xsl:value-of select="g:value" />
+                                        </xsl:element>
                                     </xsl:if>
-                                    <xsl:if test="not(g:Type='Binary')">
+                                    <xsl:if test="not($proptype='Binary')">
                                         <xsl:element name="{$propname}"><xsl:value-of select="g:value" /></xsl:element>
                                     </xsl:if>
                                 </xsl:for-each>

@@ -32,6 +32,7 @@ will list the available extension types for that specific object.
 import StringIO
 import pkg_resources
 from lxml import etree
+from base64 import b64encode
 from ldap.dn import str2dn, dn2str
 from logging import getLogger
 from gosa.common import Environment
@@ -242,11 +243,8 @@ class GOsaObjectProxy(object):
             v = props[propname]['value']
             if props[propname]['type'] == "Boolean":
                 attrs[propname] = map(lambda x: 'true' if x == True else 'false', v)
-
             elif props[propname]['type'] == "Binary":
-                #TODO: use CDATA / encode special chars
-                continue
-
+                attrs[propname] = map(lambda x: b64encode(x), v)
             else:
                 attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString", v)
 
@@ -272,8 +270,7 @@ class GOsaObjectProxy(object):
 
                     # Skip binary ones
                     elif props[propname]['type'] == "Binary":
-                        #TODO: use CDATA / encode special chars
-                        continue
+                        attrs[propname] = map(lambda x: b64encode(x), v)
 
                     # Make remaining values unicode
                     else:
