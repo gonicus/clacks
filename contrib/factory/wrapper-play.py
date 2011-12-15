@@ -11,7 +11,7 @@ print "*" * 80
 print "Create"
 print "*" * 80
 
-obj = GOsaObjectProxy(u"ou=people,dc=gonicus,dc=de", "GenericUser")
+obj = GOsaObjectProxy(u"ou=people,dc=gonicus,dc=de", "User")
 obj.uid = "eike"
 obj.sn = u"Kunst"
 obj.givenName = u"Eike"

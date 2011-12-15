@@ -813,7 +813,7 @@
 
         </Attributes>
         <Extends>
-            <Value>GenericUser</Value>
+            <Value>User</Value>
         </Extends>
         <BaseObject>false</BaseObject>
     </Object>

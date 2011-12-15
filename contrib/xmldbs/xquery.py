@@ -9,7 +9,7 @@ def print_res(res):
 
 
 db = XMLDBHandler.get_instance()
-res = db.xquery("collection('objects')/o:GenericUser[o:Attributes/o:uid/string()='cajus']")
+res = db.xquery("collection('objects')/o:User[o:Attributes/o:uid/string()='cajus']")
 print "Query for objects:"
 print res, "\n"
 

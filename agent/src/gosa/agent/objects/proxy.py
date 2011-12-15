@@ -9,7 +9,7 @@ be used to load, remove and modify objects.
 
 Here are some examples:
 
-    >>> obj = GOsaObjectProxy(u"ou=people,dc=example,dc=net", "GenericUser")
+    >>> obj = GOsaObjectProxy(u"ou=people,dc=example,dc=net", "User")
     >>> obj.uid = "user1"
     >>> obj.sn = u"Mustermann"
     >>> obj.givenName = u"Eike"

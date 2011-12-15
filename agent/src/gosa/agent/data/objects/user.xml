@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Objects xmlns="http://www.gonicus.de/Objects">
     <Object>
-        <Name>GenericUser</Name>
+        <Name>User</Name>
         <Description>A generic user</Description>
         <DisplayName>User</DisplayName>
         <BackendParameters>

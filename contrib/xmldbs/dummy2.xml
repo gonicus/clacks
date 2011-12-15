@@ -1,5 +1,5 @@
-<GenericUser xmlns:ns_1="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.gonicus.de/Objects" ns_1:schemaLocation="http://www.gonicus.de/Objects objects.xsd">
-  <Type>GenericUser</Type>
+<User xmlns:ns_1="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.gonicus.de/Objects" ns_1:schemaLocation="http://www.gonicus.de/Objects objects.xsd">
+  <Type>User</Type>
   <UUID>00000000-ed95-102f-8038-812492b1b75c</UUID>
   <DN>cn=Fabian Hickert,ou=people,ou=GL,dc=gonicus,dc=de</DN>
   <LastChanged>2011-03-28 14:40:04</LastChanged>
@@ -23,4 +23,4 @@
     <uid>hickert</uid>
     <userPassword>{crypt}1aSBsVjuehhkw</userPassword>
   </Attributes>
-</GenericUser>
+</User>
