@@ -44,7 +44,7 @@
 
                 <!-- Creat the complex type definition for the current class -->
                 <xsd:complexType name="{$classname}">
-                    <xsd:all>
+                    <xsd:sequence>
 
                         <!-- Add the basic elements, required in all objects. -->
                         <xsd:element type="xsd:string" name="UUID" minOccurs="1" maxOccurs="1"></xsd:element>
@@ -100,7 +100,7 @@
                             <xsl:sort select="g:Type"/>
                             <xsd:element name="{g:Type}" type="{g:Type}" minOccurs="0" maxOccurs="unbounded" />
                         </xsl:for-each>
-                    </xsd:all>
+                    </xsd:sequence>
                 </xsd:complexType>
             </xsl:for-each>
 
