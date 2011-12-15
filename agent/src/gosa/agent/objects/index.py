@@ -44,14 +44,6 @@ class ObjectIndex(Plugin):
     """
     implements(IInterfaceHandler)
 
-    __type_conv = {
-            'Integer': Integer,
-            'Boolean': Boolean,
-            'String': String(1024),
-            'UnicodeString': Unicode(1024),
-            'Date': Date,
-            'Timestamp': DateTime,
-            }
     _priority_ = 20
     _target_ = 'core'
     _indexed = False
