@@ -52,6 +52,7 @@
                         <xsd:element type="xsd:string" name="DN" minOccurs="1" maxOccurs="1"></xsd:element>
                         <xsd:element type="xsd:string" name="LastChanged" minOccurs="1" maxOccurs="1"></xsd:element>
                         <xsd:element type="Extensions" name="Extensions" minOccurs="0" maxOccurs="1"></xsd:element>
+                        <xsd:element type="Container" name="Container" minOccurs="0" maxOccurs="1"></xsd:element>
 
                         <!-- Add object attributes, including those from extensions -->
                         <xsd:element name="Attributes" >
@@ -111,6 +112,14 @@
                     </xsd:sequence>
                 </xsd:complexType>
             </xsl:for-each>
+
+            <!-- An xsd:complexType which represents the <Container> sequence -->
+            <xsd:complexType name="Container">
+                <xsd:sequence>
+                    <xsd:element type="xsd:string" name="Type" 
+                        minOccurs="1" maxOccurs="unbounded"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
 
             <!-- An xsd:complexType which represents the <Exstensions> sequence -->
             <xsd:complexType name="Extensions">

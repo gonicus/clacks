@@ -57,6 +57,9 @@
     		</CanExtend>
     		-->
 
+            <!-- Copy container information for this object -->
+            <xsl:value-of select="/g:merge/g:defs/g:Objects/g:Object[g:Name=$class]/g:Container/node()"/>
+    
             <!-- Handle object attributes -->
             <Attributes>
 
