@@ -67,7 +67,7 @@ setup(
         notify-user = gosa.dbus.notify:main
 
         [gosa_dbus.modules]
-        module.unix = gosa.dbus.plugins.shell.main:DBusUnixServiceHandler
+        module.unix = gosa.dbus.plugins.services.main:DBusUnixServiceHandler
         module.inventory = gosa.dbus.plugins.inventory.main:DBusInventoryHandler
         module.notify = gosa.dbus.plugins.notify.main:DBusNotifyHandler
         module.wol = gosa.dbus.plugins.wakeonlan.main:DBusWakeOnLanHandler
