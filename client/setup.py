@@ -41,6 +41,7 @@ else:
         module.wakeonlan = gosa.client.plugins.wakeonlan.utils:WakeOnLan
         module.notify = gosa.client.plugins.notify.utils:Notify
         module.inventory = gosa.client.plugins.inventory.utils:Inventory
+        module.service = gosa.client.plugins.service.utils:Service
         module.powermanagement = gosa.client.plugins.powermanagement.utils:PowerManagement
         module.session = gosa.client.plugins.sessions.main:SessionKeeper
     """

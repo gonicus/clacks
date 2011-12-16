@@ -12,6 +12,8 @@ import subprocess
 class ServiceException(Exception):
     pass
 
+class NoSuchServiceException(ServiceException):
+    pass
 
 class DBusUnixServiceHandler(dbus.service.Object, Plugin):
 
@@ -28,7 +30,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         if not name in services:
             raise ServiceException("unknown service %s" % name)
 
-        if action and not action in services[service]['actions']:
+        if action and not action in services[name]['actions']:
             raise ServiceException("action '%s' not supported for service %s" % (action, name))
 
     @dbus.service.method('com.gonicus.gosa', out_signature='i')
@@ -42,6 +44,8 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
     def set_runlevel(self, level):
         #TODO
         # init $level
+
+        print "Timmay!"
         return 0
 
     @dbus.service.method('com.gonicus.gosa', in_signature='s', out_signature='b')
@@ -79,7 +83,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         if not service['running']:
             return False
 
-        return subprocess.call([self.svc_command, name, 'reload') == 0
+        return subprocess.call([self.svc_command, name, 'reload']) == 0
 
     @dbus.service.method('com.gonicus.gosa', in_signature='s', out_signature='a{ss}')
     def get_service(self, name):
@@ -89,7 +93,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
 
         return services[name]
 
-    @dbus.service.method('com.gonicus.gosa', out_signature='e{se{ss}}')
+    @dbus.service.method('com.gonicus.gosa', out_signature='s')
     def get_services(self):
 
         #TODO: change this from the current implementation to:
