@@ -83,9 +83,17 @@
                                             <!-- Add an element describing the attribute --> 
                                             <xsl:element name="xsd:element">
                                                 <xsl:attribute name="name"><xsl:value-of select="g:Name" /></xsl:attribute>
-                                                <xsl:attribute name="type"><xsl:value-of select="$type" /></xsl:attribute>
                                                 <xsl:attribute name="minOccurs">0</xsl:attribute>
                                                 <xsl:attribute name="maxOccurs">unbounded</xsl:attribute>
+                                                <xsl:if test="g:Type='Binary'">
+                                                    <xsd:complexType>
+                                                        <xsd:simpleContent>
+                                                            <xsd:extension base="xsd:string">
+                                                                <xsd:attribute name="base64" type="xsd:boolean"></xsd:attribute>
+                                                            </xsd:extension>
+                                                        </xsd:simpleContent>
+                                                    </xsd:complexType>
+                                                </xsl:if>
                                             </xsl:element>
                                         </xsl:if>
                                     </xsl:for-each>
