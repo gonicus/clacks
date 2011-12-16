@@ -80,6 +80,10 @@ class XMLDBHandler(Plugin):
     def dropCollection(self, name):
         return self.__driver.dropCollection(name)
 
+    @Command(__help__=N_("Synchronize a collection"))
+    def syncCollection(self, name):
+        return self.__driver.syncCollection(name)
+
     @Command(__help__=N_("Remove a document from a collection"))
     def deleteDocument(self, collection, name):
         return self.__driver.deleteDocument(collection, name)

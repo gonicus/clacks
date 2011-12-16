@@ -333,7 +333,12 @@ class DBXml(XMLDBInterface):
         for t in res:
             ret.append(t.asString())
         self.log.debug("performed xquery '%s' with %s results" % (query, len(ret)))
+
         return ret
+
+    def syncCollection(self, collection):
+        if collection in self.collections:
+            self.collections[collection]['container'].sync()
 
     def xquery_dict(self, query, strip_namespaces=False):
         rs = self.xquery(query)

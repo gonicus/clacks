@@ -82,7 +82,7 @@ class ObjectIndex(Plugin):
                     datetime.datetime.now() + datetime.timedelta(seconds=3),
                     tag='_internal', jobstore='ram')
 
-    def escape(data):
+    def escape(self, data):
         html_escape_table = [
                 ("$", "&#36;"), ("{", "&#123;"), ("}", "&#125;"),
                 ("(", "&#40;"), (")", "&#41;")]
@@ -95,7 +95,6 @@ class ObjectIndex(Plugin):
     def sync_index(self):
         # Don't index if someone else is already doing it
         print "------> TODO: re-enable me!"
-        #return
         #if GlobalLock.exists():
         #    return
 
@@ -151,34 +150,37 @@ class ObjectIndex(Plugin):
 
             # Entry is not in the database
             if not changed:
+                self.log.debug("creating object index for %s" % obj.uuid)
 
                 # If this is the root node, add the root document
                 if obj.dn == base:
                     self.log.debug("creating object index for %s" % obj.uuid)
-                    self.db.addDocument('objects', 'root', obj.asXML(True))
+                    self.db.addDocument('objects', 'root', self.escape(obj.asXML(True)))
 
                 # Insert node into the root document
                 else:
                     pdn = ldap.dn.dn2str(ldap.dn.str2dn(obj.dn.encode('utf-8'), flags=ldap.DN_FORMAT_LDAPV3)[1:]).decode('utf-8')
-                    print "->", pdn
+                    children = self.db.xquery("collection('objects')//node()[o:DN='%s']/node()[not(name()=('DN','LastChanged','UUID','Type'))]/name()" % pdn)
 
-                    children = self.db.xquery("collection('objects')//node()[o:DN='%s']/node()[not(name()=('DN','LastChanged','UUID','Type','Extensions','Attributes','Container'))]/name()" % pdn)
+                    # If these are in children, remove them from pnodes
+                    pnodes = ['DN','LastChanged','UUID','Type']
+                    anodes = [i for i in children if i in ['Extensions','Attributes','Container']]
+                    children = [i for i in children if not i in ['Extensions','Attributes','Container']]
+                    otype = obj.get_base_type()
 
-                    #-> einzufügen:
-                    print "C:", children
-                    print "I:", obj.get_base_type()
+                    inode_name = otype
+                    if not obj.get_base_type() in children:
+                        children.append(otype)
+                        children.sort()
+                        pnodes = pnodes + anodes + list(set(children))
+                        inode_name = pnodes[pnodes.index(otype) - 1]
 
-#                    self.db.xquery("""
-#                        insert nodes
-#                            %s
-#                        into
-#                            collection('objects')//s:Node[@uuid='%s']
-#                    """ % (node, parent))
-
-                #TODO: modify for big document
-                #HIER
-                #self.log.debug("creating object index for %s" % obj.uuid)
-                #self.db.addDocument('objects', obj.uuid, obj.asXML(True))
+                    self.db.xquery("""
+                        insert nodes
+                            %s
+                        after
+                            collection('objects')//node()[o:DN='%s']/o:%s[last()]
+                        """ % (self.escape(obj.asXML(True)), pdn, inode_name))
 
             # Entry is in the database
             else:
@@ -187,20 +189,22 @@ class ObjectIndex(Plugin):
                     self.log.debug("found up-to-date object index for %s" % obj.uuid)
 
                 else:
-                    #TODO: modify for big document
+                    print "yes rico, cabooooom!"
                     self.log.debug("updating object index for %s" % obj.uuid)
-                    self.db.xquery("replace node doc('dbxml:/objects/%s')/* with %s" % (obj.uuid, escape(obj.asXML(True))))
+                    #TODO: modify for big document
+                    #self.db.xquery("replace node doc('dbxml:/objects/%s')/* with %s" % (obj.uuid, escape(obj.asXML(True))))
 
             backend_objects.append(obj.uuid)
             del obj
 
         # Remove entries that are in XMLDB, but not in any other backends
-        for entry in self.db.getDocuments('objects'):
+        for entry in self.db.xquery("collection('objects')//o:UUID/string()"):
             if entry not in backend_objects:
-
-                #TODO: modify for big document
                 self.log.debug("removing object index for %s" % entry)
-                self.db.deleteDocument('objects', entry)
+                self.db.xquery("delete nodes collection('objects')//node()[o:UUID/string()='%s']" % entry)
+
+        # Sync to propagate all the changes
+        self.db.syncCollection('objects')
 
         t1 = time()
         self.log.info("processed %d objects in %ds" % (len(res), t1 - t0))
