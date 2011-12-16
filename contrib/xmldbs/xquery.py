@@ -9,6 +9,12 @@ def print_res(res):
 
 
 db = XMLDBHandler.get_instance()
+
+res = db.xquery("collection('objects')//node()[o:DN='dc=gonicus,dc=de']")
+res = db.xquery("collection('objects')")
+print_res(res)
+exit(0)
+
 res = db.xquery("collection('objects')/o:User[o:Attributes/o:uid/string()='cajus']")
 print "Query for objects:"
 print res, "\n"

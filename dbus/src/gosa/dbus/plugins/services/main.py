@@ -79,7 +79,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         if not service['running']:
             return False
 
-        return subprocess.call([self.svc_command, name, 'reload') == 0
+        return subprocess.call([self.svc_command, name, 'reload']) == 0
 
     @dbus.service.method('com.gonicus.gosa', in_signature='s', out_signature='a{ss}')
     def get_service(self, name):

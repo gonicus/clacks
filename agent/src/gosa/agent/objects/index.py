@@ -18,6 +18,7 @@ import ldap.dn
 import zope.event
 import datetime
 import pkg_resources
+import ldap.dn
 from zope.interface import implements
 from time import time
 from base64 import b64encode, b64decode
@@ -67,16 +68,18 @@ class ObjectIndex(Plugin):
         if self.db.collectionExists("objects"):
             self.db.dropCollection("objects")
 
-        schema = self.factory.getXMLObjectSchema(True)
-        self.db.createCollection("objects",
-            {"o": "http://www.gonicus.de/Objects", "xsi": "http://www.w3.org/2001/XMLSchema-instance"},
-            {"objects.xsd": schema})
+        if not self.db.collectionExists("objects"):
+            schema = self.factory.getXMLObjectSchema(True)
+            self.db.createCollection("objects",
+                {"o": "http://www.gonicus.de/Objects", "xsi": "http://www.w3.org/2001/XMLSchema-instance"},
+                {"objects.xsd": schema})
 
         # Sync index
+        print "-> adjust interval!"
         if self.env.config.get("index.disable", "False").lower() != "true":
             sobj = PluginRegistry.getInstance("SchedulerService")
             sobj.getScheduler().add_date_job(self.sync_index,
-                    datetime.datetime.now() + datetime.timedelta(seconds=30),
+                    datetime.datetime.now() + datetime.timedelta(seconds=3),
                     tag='_internal', jobstore='ram')
 
     def escape(data):
@@ -92,6 +95,7 @@ class ObjectIndex(Plugin):
     def sync_index(self):
         # Don't index if someone else is already doing it
         print "------> TODO: re-enable me!"
+        #return
         #if GlobalLock.exists():
         #    return
 
@@ -122,12 +126,13 @@ class ObjectIndex(Plugin):
         self.log.info("scanning for objects")
         base = LDAPHandler.get_instance().get_base()
         res = resolve_children(base)
+        res[base] = 'dummy'
 
         self.log.info("generating object index")
 
         # Find new entries
         backend_objects = []
-        for o in res.keys():
+        for o in sorted(res.keys(), key=len):
 
             # Get object
             try:
@@ -146,9 +151,34 @@ class ObjectIndex(Plugin):
 
             # Entry is not in the database
             if not changed:
+
+                # If this is the root node, add the root document
+                if obj.dn == base:
+                    self.log.debug("creating object index for %s" % obj.uuid)
+                    self.db.addDocument('objects', 'root', obj.asXML(True))
+
+                # Insert node into the root document
+                else:
+                    pdn = ldap.dn.dn2str(ldap.dn.str2dn(obj.dn.encode('utf-8'), flags=ldap.DN_FORMAT_LDAPV3)[1:]).decode('utf-8')
+                    print "->", pdn
+
+                    children = self.db.xquery("collection('objects')//node()[o:DN='%s']/node()[not(name()=('DN','LastChanged','UUID','Type','Extensions','Attributes','Container'))]/name()" % pdn)
+
+                    #-> einzufügen:
+                    print "C:", children
+                    print "I:", obj.get_base_type()
+
+#                    self.db.xquery("""
+#                        insert nodes
+#                            %s
+#                        into
+#                            collection('objects')//s:Node[@uuid='%s']
+#                    """ % (node, parent))
+
                 #TODO: modify for big document
-                self.log.debug("creating object index for %s" % obj.uuid)
-                self.db.addDocument('objects', obj.uuid, obj.asXML(True))
+                #HIER
+                #self.log.debug("creating object index for %s" % obj.uuid)
+                #self.db.addDocument('objects', obj.uuid, obj.asXML(True))
 
             # Entry is in the database
             else:
