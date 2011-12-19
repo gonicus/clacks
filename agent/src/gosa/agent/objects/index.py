@@ -33,9 +33,6 @@ from gosa.agent.lock import GlobalLock
 from gosa.agent.xmldb import XMLDBHandler
 from gosa.agent.ldap_utils import LDAPHandler
 
-#TODO: remove me
-print "TODO: modify samba domain query to use xquery instead of the custom query function"
-
 
 class FilterException(Exception):
     pass
@@ -70,12 +67,6 @@ class ObjectIndex(Plugin):
         # Load db instance
         self.db = PluginRegistry.getInstance("XMLDBHandler")
         self.base = LDAPHandler.get_instance().get_base()
-
-        #TODO: for the initial testing, always drop the collection to
-        #      have a clean start
-        print "------> TODO: remove me!"
-        if self.db.collectionExists("objects"):
-            self.db.dropCollection("objects")
 
         if not self.db.collectionExists("objects"):
             schema = self.factory.getXMLObjectSchema(True)
@@ -333,12 +324,20 @@ class ObjectIndex(Plugin):
 
        return pdn, inode_name
 
-# TODO:-to-be-revised--------------------------------------------------------------------------------------
-
     @Command(__help__=N_("Perform a raw xquery on the collections"))
     def xquery(self, query):
-        #TODO
-        pass
+        """
+        Perform a raw xquery on the object database.
+
+        ========== ==================
+        Parameter  Description
+        ========== ==================
+        xquery     Definition of the search/action
+        ========== ==================
+
+        ``Return``: True/False
+        """
+        return self.db.xquery(query)
 
     @Command(__help__=N_("Check if an object with the given UUID exists."))
     def exists(self, uuid):
@@ -354,10 +353,9 @@ class ObjectIndex(Plugin):
 
         ``Return``: True/False
         """
-        tmp = self.__conn.execute(select([self.__index.c._uuid], self.__index.c._uuid == uuid))
-        res = bool(tmp.fetchone())
-        tmp.close()
-        return res
+        return len(self.db.xquery("collection('objects')/*[o:UUID/string() = '%s']" % uuid)) == 1
+
+# TODO:-to-be-revised--------------------------------------------------------------------------------------
 
     @Command(__help__=N_("Filter for indexed attributes and return the number of matches."))
     def count(self, base=None, scope=SCOPE_SUB, fltr=None):

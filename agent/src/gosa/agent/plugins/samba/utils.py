@@ -336,16 +336,11 @@ class IsValidSambaDomainName(ElementComparator):
         super(IsValidSambaDomainName, self).__init__()
 
     def process(self, key, value, errors=[]):
+        index = PluginRegistry.getInstance("ObjectIndex")
+        domains = index.xquery("collection('objects')//o:sambaDomain/o:sambaDomainname/string()")
 
-        #TODO: fix me, this stopped working after replacing the index implementation
-        fltr = {'sambaDomainName': '*'}
-        attrs = ['sambaDomainName']
+        if value[0] in domains:
+            return True
 
-        ie = ObjectIndex()
-        d =[]
-        for e in ie.search(fltr=fltr, attrs=attrs):
-            if value[0] == e['sambaDomainName']:
-                return True
-            d.append(e['sambaDomainName'])
         errors.append(_("The given sambaDomainName '%s' does not exists! Choose one of '%s'!") % (value[0], ', '.join(d)))
         return False
