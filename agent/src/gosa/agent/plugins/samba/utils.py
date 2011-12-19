@@ -337,6 +337,7 @@ class IsValidSambaDomainName(ElementComparator):
 
     def process(self, key, value, errors=[]):
 
+        #TODO: fix me, this stopped working after replacing the index implementation
         fltr = {'sambaDomainName': '*'}
         attrs = ['sambaDomainName']
 

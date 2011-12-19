@@ -11,7 +11,6 @@ local index database
 """
 import re
 import inspect
-import sqlalchemy.sql
 import logging
 import collections
 import ldap.dn
@@ -19,6 +18,8 @@ import zope.event
 import datetime
 import pkg_resources
 import ldap.dn
+from itertools import izip
+from lxml import etree, objectify
 from zope.interface import implements
 from time import time
 from base64 import b64encode, b64decode
@@ -32,8 +33,15 @@ from gosa.agent.lock import GlobalLock
 from gosa.agent.xmldb import XMLDBHandler
 from gosa.agent.ldap_utils import LDAPHandler
 
+#TODO: remove me
+print "TODO: modify samba domain query to use xquery instead of the custom query function"
+
 
 class FilterException(Exception):
+    pass
+
+
+class IndexException(Exception):
     pass
 
 
@@ -61,6 +69,7 @@ class ObjectIndex(Plugin):
     def serve(self):
         # Load db instance
         self.db = PluginRegistry.getInstance("XMLDBHandler")
+        self.base = LDAPHandler.get_instance().get_base()
 
         #TODO: for the initial testing, always drop the collection to
         #      have a clean start
@@ -75,11 +84,10 @@ class ObjectIndex(Plugin):
                 {"objects.xsd": schema})
 
         # Sync index
-        print "-> adjust interval!"
         if self.env.config.get("index.disable", "False").lower() != "true":
             sobj = PluginRegistry.getInstance("SchedulerService")
             sobj.getScheduler().add_date_job(self.sync_index,
-                    datetime.datetime.now() + datetime.timedelta(seconds=3),
+                    datetime.datetime.now() + datetime.timedelta(seconds=30),
                     tag='_internal', jobstore='ram')
 
     def escape(self, data):
@@ -94,9 +102,8 @@ class ObjectIndex(Plugin):
 
     def sync_index(self):
         # Don't index if someone else is already doing it
-        print "------> TODO: re-enable me!"
-        #if GlobalLock.exists():
-        #    return
+        if GlobalLock.exists():
+            return
 
         # Don't run index, if someone else already did until the last
         # restart.
@@ -105,7 +112,7 @@ class ObjectIndex(Plugin):
         if len([n for n, v in nodes.items() if 'Indexed' in v and v['Indexed']]):
             return
 
-        #GlobalLock.acquire()
+        GlobalLock.acquire()
         self._indexed = True
 
         t0 = time()
@@ -123,9 +130,8 @@ class ObjectIndex(Plugin):
             return res
 
         self.log.info("scanning for objects")
-        base = LDAPHandler.get_instance().get_base()
-        res = resolve_children(base)
-        res[base] = 'dummy'
+        res = resolve_children(self.base)
+        res[self.base] = 'dummy'
 
         self.log.info("generating object index")
 
@@ -150,49 +156,17 @@ class ObjectIndex(Plugin):
 
             # Entry is not in the database
             if not changed:
-                self.log.debug("creating object index for %s" % obj.uuid)
-
-                # If this is the root node, add the root document
-                if obj.dn == base:
-                    self.log.debug("creating object index for %s" % obj.uuid)
-                    self.db.addDocument('objects', 'root', self.escape(obj.asXML(True)))
-
-                # Insert node into the root document
-                else:
-                    pdn = ldap.dn.dn2str(ldap.dn.str2dn(obj.dn.encode('utf-8'), flags=ldap.DN_FORMAT_LDAPV3)[1:]).decode('utf-8')
-                    children = self.db.xquery("collection('objects')//node()[o:DN='%s']/node()[not(name()=('DN','LastChanged','UUID','Type'))]/name()" % pdn)
-
-                    # If these are in children, remove them from pnodes
-                    pnodes = ['DN','LastChanged','UUID','Type']
-                    anodes = [i for i in children if i in ['Extensions','Attributes','Container']]
-                    children = [i for i in children if not i in ['Extensions','Attributes','Container']]
-                    otype = obj.get_base_type()
-
-                    inode_name = otype
-                    if not obj.get_base_type() in children:
-                        children.append(otype)
-                        children.sort()
-                        pnodes = pnodes + anodes + list(set(children))
-                        inode_name = pnodes[pnodes.index(otype) - 1]
-
-                    self.db.xquery("""
-                        insert nodes
-                            %s
-                        after
-                            collection('objects')//node()[o:DN='%s']/o:%s[last()]
-                        """ % (self.escape(obj.asXML(True)), pdn, inode_name))
+                self.insert(obj)
 
             # Entry is in the database
             else:
                 # OK: already there
-                if obj.modifyTimestamp == datetime.strptime(changed[0], "%Y-%m-%d %H:%M:%S"):
+                if obj.modifyTimestamp == datetime.datetime.strptime(changed[0], "%Y-%m-%d %H:%M:%S"):
                     self.log.debug("found up-to-date object index for %s" % obj.uuid)
 
                 else:
-                    print "yes rico, cabooooom!"
                     self.log.debug("updating object index for %s" % obj.uuid)
-                    #TODO: modify for big document
-                    #self.db.xquery("replace node doc('dbxml:/objects/%s')/* with %s" % (obj.uuid, escape(obj.asXML(True))))
+                    self.update(obj)
 
             backend_objects.append(obj.uuid)
             del obj
@@ -200,8 +174,7 @@ class ObjectIndex(Plugin):
         # Remove entries that are in XMLDB, but not in any other backends
         for entry in self.db.xquery("collection('objects')//o:UUID/string()"):
             if entry not in backend_objects:
-                self.log.debug("removing object index for %s" % entry)
-                self.db.xquery("delete nodes collection('objects')//node()[o:UUID/string()='%s']" % entry)
+                self.remove_by_uuid(entry)
 
         # Sync to propagate all the changes
         self.db.syncCollection('objects')
@@ -212,6 +185,153 @@ class ObjectIndex(Plugin):
 
     def index_active(self):
         return self._indexed
+
+    def __handle_events(self, event):
+        uuid = event.uuid
+
+        if isinstance(event, ObjectChanged):
+            uuid = event.uuid
+
+            if event.reason == "post remove":
+                self.log.debug("removing object index for %s" % uuid)
+                self.remove_by_uuid(uuid)
+
+            if event.reason == "post move":
+                self.log.debug("updating object index for %s" % uuid)
+                obj = GOsaObjectProxy(event.dn)
+                self.update(obj)
+
+            if event.reason == "post create":
+                self.log.debug("creating object index for %s" % uuid)
+                obj = GOsaObjectProxy(event.dn)
+                self.insert(obj)
+
+            if event.reason in ["post retract", "post update", "post extend"]:
+                self.log.debug("updating object index for %s" % uuid)
+                if not event.dn:
+                    event.dn = self.db.xquery("collection('objects')/*[UUID/string() = '%s']/DN/string()" % event.uuid)
+
+                obj = GOsaObjectProxy(event.dn)
+                self.update(obj)
+
+    def insert(self, obj):
+        self.log.debug("creating object index for %s" % obj.uuid)
+
+        # If this is the root node, add the root document
+        if obj.dn == self.base:
+            self.log.debug("creating object index for %s" % obj.uuid)
+            self.db.addDocument('objects', 'root', self.escape(obj.asXML(True)))
+
+        # Insert node into the root document
+        else:
+            pdn, inode_name = self.get_insert_parameters(obj)
+            self.db.xquery("""
+                insert nodes
+                    %s
+                after
+                    collection('objects')//node()[o:DN='%s']/o:%s[last()]
+                """ % (self.escape(obj.asXML(True)), pdn, inode_name))
+
+    def remove(self, obj):
+        self.remove_by_uuid(obj.uuid)
+
+    def remove_by_uuid(self, entry):
+        self.log.debug("removing object index for %s" % entry)
+        self.db.xquery("delete nodes collection('objects')//node()[o:UUID/string()='%s']" % entry)
+
+    def update(self, obj):
+        # Gather information
+        current = obj.asXML(True)
+        saved = self.db.xquery("collection('objects')/*[o:UUID/string() = '%s']" % obj.uuid)
+        if not saved:
+            raise IndexException("no such object %s" % obj.uuid)
+
+        # Convert result set into handy objects
+        current = objectify.fromstring(current)
+        saved = objectify.fromstring(saved[0])
+
+        # Has the entry been moved?
+        if current.DN.text != saved.DN.text:
+
+            # Remove old entry
+            self.remove_by_uuid(obj.uuid)
+
+            # Find new parent and push 'current' to that position
+            pdn, inode_name = self.get_insert_parameters(obj)
+            self.db.xquery("""
+                insert nodes
+                    %s
+                after
+                    collection('objects')//node()[o:DN='%s']/o:%s[last()]
+                """ % (self.escape(current), pdn, inode_name))
+
+            # Adjust all DN entries inside of current
+            res = iter(self.db.xquery("""let $doc := collection('objects')
+                for $x in
+                    $doc//node()[o:DN='%s']//o:DN
+                return
+                    ($x/../o:UUID/string(), $x/string())""" % obj.dn))
+            for uuid, dn in izip(res, res):
+
+                # No need to modify the parent - it's already done
+                if dn == obj.dn:
+                    continue
+
+                # Remove parts of the old parent dn and append new pdn
+                rdn = ldap.dn.dn2str(ldap.dn.str2dn(current.DN.text.encode('utf-8'), flags=ldap.DN_FORMAT_LDAPV3)[0]).decode('utf-8')
+
+                self.db.xquery("""
+                    replace node
+                        collection('objects')/*[o:UUID/string() = '%s']/o:DN
+                    with
+                        <o:DN>%s</o:DN>
+                    """ % (obj.uuid, rdn + "," + pdn))
+
+        # Move extensions
+        self.db.xquery("""
+        replace node
+            collection('objects')/*[o:UUID/string() = '%s']/o:Extensions
+        with
+            %s
+        """ % (obj.uuid, etree.tostring(current.Extensions)))
+
+        # Move attributes
+        self.db.xquery("""
+        replace node
+            collection('objects')/*[o:UUID/string() = '%s']/o:Attributes
+        with
+            %s
+        """ % (obj.uuid, etree.tostring(current.Attributes)))
+
+        # Set LastChanged
+        self.db.xquery("""
+        replace node
+            collection('objects')/*[o:UUID/string() = '%s']/o:LastChanged
+        with
+            <o:LastChanged>%s</o:LastChanged>
+        """ % (obj.uuid, current.LastChanged.text))
+
+
+    def get_insert_parameters(self, obj):
+       otype = obj.get_base_type()
+
+       # Find new parent and push 'current' to that position
+       pdn = ldap.dn.dn2str(ldap.dn.str2dn(obj.dn.encode('utf-8'), flags=ldap.DN_FORMAT_LDAPV3)[1:]).decode('utf-8')
+       children = self.db.xquery("collection('objects')//node()[o:DN='%s']/node()[not(name()=('DN','LastChanged','UUID','Type'))]/name()" % pdn)
+
+       # If these are in children, remove them from pnodes
+       pnodes = ['DN', 'LastChanged', 'UUID', 'Type']
+       anodes = [i for i in children if i in ['Extensions','Attributes','Container']]
+       children = [i for i in children if not i in ['Extensions','Attributes','Container']]
+
+       inode_name = otype
+       if not obj.get_base_type() in children:
+           children.append(otype)
+           children.sort()
+           pnodes = pnodes + anodes + list(set(children))
+           inode_name = pnodes[pnodes.index(otype) - 1]
+
+       return pdn, inode_name
 
 # TODO:-to-be-revised--------------------------------------------------------------------------------------
 
@@ -394,49 +514,3 @@ class ObjectIndex(Plugin):
 
         res = [dict(r.items()) for r in self.__conn.execute(sl).fetchall()]
         return self.__convert_lists(res)
-
-    def __handle_events(self, event):
-        uuid = event.uuid
-        if isinstance(event, ObjectChanged):
-            uuid = event.uuid
-            f = GOsaObjectFactory.getInstance()
-
-            if event.reason == "post remove":
-                self.log.debug("removing object index for %s" % uuid)
-                #self.remove(uuid)
-
-            if event.reason == "post move":
-                self.log.debug("updating object index for %s" % uuid)
-                #self.move(uuid, event.dn)
-
-            if event.reason == "post create":
-                self.log.debug("creating object index for %s" % uuid)
-                o_type, ext = f.identifyObject(event.dn)
-                obj = f.getObject(o_type, event.dn)
-
-                # Gather index attributes
-                attrs = {}
-                for attr in self.index_attrs:
-                    if obj.hasattr(attr):
-                        attrs[attr] = getattr(obj, attr)
-
-                #self.insert(uuid, event.dn, _lastChanged=obj.modifyTimestamp, _type=o_type, _extensions=ext, **attrs)
-
-            if event.reason in ["post retract", "post update", "post extend"]:
-                self.log.debug("updating object index for %s" % uuid)
-
-                # Eventually try to resolve the DN for non base objects
-                if not event.dn:
-                    event.dn = self.search(fltr={'uuid': uuid}, attrs=['_dn'])[0]['_dn']
-
-                o_type, ext = f.identifyObject(event.dn)
-                obj = f.getObject(o_type, event.dn)
-
-                # Gather index attributes
-                attrs = {}
-                for attr in self.index_attrs:
-                    if obj.hasattr(attr):
-                        attrs[attr] = getattr(obj, attr)
-
-                attrs['_dn']= event.dn
-                #self.update(uuid, _type=o_type, _lastChanged=obj.modifyTimestamp, _extensions=ext, **attrs)
