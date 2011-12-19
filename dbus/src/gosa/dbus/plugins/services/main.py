@@ -35,17 +35,23 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
 
     @dbus.service.method('com.gonicus.gosa', out_signature='i')
     def get_runlevel(self):
-        #TODO
-        # LC_ALL=C who -r
-        # run-level 2  2011-12-06 15:01                   last=S
-        return 5
+        """
+        Returns the current runlevel of the clacks-client.
+        """
+
+        # Call 'who -r' and parse the return value to get the run-level
+        # run-level 2  Dec 19 01:21                   last=S
+        process = subprocess.Popen(["/usr/bin/who","-r"], env={'LC_ALL': 'C'}, \
+                shell=False, stdout=subprocess.PIPE,  stderr=subprocess.PIPE)
+        ret = process.communicate()
+        rl = re.sub("^run-level[ ]*([0-9]*).*$","\\1", ret[0].strip())
+        return int(rl)
 
     @dbus.service.method('com.gonicus.gosa', in_signature='i', out_signature='i')
     def set_runlevel(self, level):
         #TODO
         # init $level
 
-        print "Timmay!"
         return 0
 
     @dbus.service.method('com.gonicus.gosa', in_signature='s', out_signature='b')
@@ -106,6 +112,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         services = {}
         state = re.compile(r"^\s*\[\s+([?+-])\s+\]\s+([^\s]+)\s*$")
 
+        # Das weg, dann siehe Todo
         _svcs = subprocess.Popen([self.svc_command, '--status-all'],
                 stderr=subprocess.PIPE,
                 stdout=subprocess.PIPE).communicate()
