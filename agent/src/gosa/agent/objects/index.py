@@ -209,8 +209,7 @@ class ObjectIndex(Plugin):
         self.log.debug("creating object index for %s" % obj.uuid)
 
         # If this is the root node, add the root document
-        if obj.dn == self.base:
-            self.log.debug("creating object index for %s" % obj.uuid)
+        if obj.dn == self.base and not self.db.documentExists('objects', 'root'):
             self.db.addDocument('objects', 'root', self.escape(obj.asXML(True)))
 
         # Insert node into the root document
