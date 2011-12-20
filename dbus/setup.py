@@ -48,10 +48,6 @@ setup(
     test_suite = "nose.collector",
 
     setup_requires = [
-        'nose==0.11.1',
-        'NoseXUnit',
-        'pylint',
-        'babel',
         'python_dateutil',
         ],
     install_requires = [

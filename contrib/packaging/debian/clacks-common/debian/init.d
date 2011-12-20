@@ -21,13 +21,12 @@ SERVICES="agent dbus client"
 SCRIPTNAME=/etc/init.d/clacks
 FOUND=0
 FORCE_JOIN=0
-START_DBUS=0
-START_AGENT=0
-START_CLIENT=0
 
 
 join_required() {
     test $FORCE_JOIN -eq 0 && return 0
+    test -e /usr/sbin/clacks-client || return 0
+
     if [ -e /etc/clacks/config ]; then
         grep -q '^\s*key\s*=\s*..*$' /etc/clacks/config && return 0
     fi

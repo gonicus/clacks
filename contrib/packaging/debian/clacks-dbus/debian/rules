@@ -9,5 +9,10 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+override_dh_auto_install:
+	dh_auto_install
+	mv debian/clacks-dbus/usr/bin/* debian/clacks-dbus/usr/sbin	
+	rm -rf debian/clacks-dbus/usr/bin
+
 %:
 	dh  $@ --with python2
