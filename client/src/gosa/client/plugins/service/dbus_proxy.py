@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-import dbus
 import re
+import dbus
 import logging
-from gosa.common import Environment
 from gosa.common.components import Plugin
 from gosa.common.components import Command
-from gosa.common.components import PluginRegistry, AMQPServiceProxy
 
 
 class Service(Plugin):
@@ -29,6 +27,8 @@ class Service(Plugin):
     def __init__(self):
 
         self.log = logging.getLogger(__name__)
+
+        # Request information about registered dbus methods we can use.
         self.bus = dbus.SystemBus()
         self.log.debug('loading dbus-methods registered by clacks (introspection)')
         self.gosa_dbus = self.bus.get_object('com.gonicus.gosa', '/com/gonicus/gosa/service')
@@ -62,6 +62,6 @@ class Service(Plugin):
             raise NotImplementedError(method)
 
         # Now call the dbus method with the given list of paramters
-        m = self.gosa_dbus.get_dbus_method(method, dbus_interface="com.gonicus.gosa")
-        returnVal = m(*args)
-        return returnVal
+        method = self.gosa_dbus.get_dbus_method(method, dbus_interface="com.gonicus.gosa")
+        returnval = method(*args)
+        return returnval
