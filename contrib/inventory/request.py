@@ -17,3 +17,7 @@ print proxy.clientDispatch("49cb1287-db4b-4ddf-bc28-5f4743eac594", "callDBusMeth
 print " .. done"
 print "Status: "
 print loads(str(proxy.clientDispatch("49cb1287-db4b-4ddf-bc28-5f4743eac594", "callDBusMethod", "get_services")))['apache2']['running']
+
+print "---"
+
+print loads(str(proxy.clientDispatch("49cb1287-db4b-4ddf-bc28-5f4743eac594", "callDBusMethod", "get_service", "apache2")))

@@ -46,17 +46,15 @@ class Service(Plugin):
 
     @Command()
     def callDBusMethod(self, method, *args):
-        """
-        This method allows to access registered dbus methods by forwarding
-        methods calls to the clacls-dbus agent.
+        """ This method allows to access registered dbus methods by forwarding methods calls """
 
+        """
         ======= ==============
         Key     Description
         ======= ==============
         method  The name of method to call on dbus side.
         ...     A list of parameters for the method call.
         ======= ==============
-
         """
 
         # Check if requested dbus method is registered.
