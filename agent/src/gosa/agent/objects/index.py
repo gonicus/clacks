@@ -9,20 +9,14 @@ local index database
 
 ----
 """
-import re
-import inspect
 import logging
-import collections
 import ldap.dn
 import zope.event
 import datetime
-import pkg_resources
-import ldap.dn
 from itertools import izip
 from lxml import etree, objectify
 from zope.interface import implements
 from time import time
-from base64 import b64encode, b64decode
 from ldap import DN_FORMAT_LDAPV3
 from gosa.common import Environment
 from gosa.common.utils import N_
@@ -30,7 +24,6 @@ from gosa.common.handler import IInterfaceHandler
 from gosa.common.components import Command, Plugin, PluginRegistry
 from gosa.agent.objects import GOsaObjectFactory, GOsaObjectProxy, ObjectChanged, SCOPE_BASE, SCOPE_ONE, SCOPE_SUB, ProxyException, ObjectException
 from gosa.agent.lock import GlobalLock
-from gosa.agent.xmldb import XMLDBHandler
 from gosa.agent.ldap_utils import LDAPHandler
 
 
@@ -50,6 +43,8 @@ class ObjectIndex(Plugin):
     """
     implements(IInterfaceHandler)
 
+    db = None
+    base = None
     _priority_ = 20
     _target_ = 'core'
     _indexed = False
@@ -262,14 +257,15 @@ class ObjectIndex(Plugin):
                     $doc//node()[o:DN='%s']//o:DN
                 return
                     ($x/../o:UUID/string(), $x/string())""" % obj.dn))
-            for uuid, dn in izip(res, res):
+
+            for dn in izip(res, res).values():
 
                 # No need to modify the parent - it's already done
                 if dn == obj.dn:
                     continue
 
                 # Remove parts of the old parent dn and append new pdn
-                rdn = ldap.dn.dn2str(ldap.dn.str2dn(current.DN.text.encode('utf-8'), flags=ldap.DN_FORMAT_LDAPV3)[0]).decode('utf-8')
+                rdn = ldap.dn.dn2str(ldap.dn.str2dn(current.DN.text.encode('utf-8'), flags=DN_FORMAT_LDAPV3)[0]).decode('utf-8')
 
                 self.db.xquery("""
                     replace node
@@ -304,25 +300,25 @@ class ObjectIndex(Plugin):
 
 
     def get_insert_parameters(self, obj):
-       otype = obj.get_base_type()
+        otype = obj.get_base_type()
 
-       # Find new parent and push 'current' to that position
-       pdn = ldap.dn.dn2str(ldap.dn.str2dn(obj.dn.encode('utf-8'), flags=ldap.DN_FORMAT_LDAPV3)[1:]).decode('utf-8')
-       children = self.db.xquery("collection('objects')//node()[o:DN='%s']/node()[not(name()=('DN','LastChanged','UUID','Type'))]/name()" % pdn)
+        # Find new parent and push 'current' to that position
+        pdn = ldap.dn.dn2str(ldap.dn.str2dn(obj.dn.encode('utf-8'), flags=DN_FORMAT_LDAPV3)[1:]).decode('utf-8')
+        children = self.db.xquery("collection('objects')//node()[o:DN='%s']/node()[not(name()=('DN','LastChanged','UUID','Type'))]/name()" % pdn)
 
-       # If these are in children, remove them from pnodes
-       pnodes = ['DN', 'LastChanged', 'UUID', 'Type']
-       anodes = [i for i in children if i in ['Extensions','Attributes','Container']]
-       children = [i for i in children if not i in ['Extensions','Attributes','Container']]
+        # If these are in children, remove them from pnodes
+        pnodes = ['DN', 'LastChanged', 'UUID', 'Type']
+        anodes = [i for i in children if i in ['Extensions','Attributes','Container']]
+        children = [i for i in children if not i in ['Extensions','Attributes','Container']]
 
-       inode_name = otype
-       if not obj.get_base_type() in children:
-           children.append(otype)
-           children.sort()
-           pnodes = pnodes + anodes + list(set(children))
-           inode_name = pnodes[pnodes.index(otype) - 1]
+        inode_name = otype
+        if not obj.get_base_type() in children:
+            children.append(otype)
+            children.sort()
+            pnodes = pnodes + anodes + list(set(children))
+            inode_name = pnodes[pnodes.index(otype) - 1]
 
-       return pdn, inode_name
+        return pdn, inode_name
 
     @Command(__help__=N_("Perform a raw xquery on the collections"))
     def xquery(self, query):
@@ -356,159 +352,50 @@ class ObjectIndex(Plugin):
         return len(self.db.xquery("collection('objects')/*[o:UUID/string() = '%s']" % uuid)) == 1
 
 # TODO:-to-be-revised--------------------------------------------------------------------------------------
-
-    @Command(__help__=N_("Filter for indexed attributes and return the number of matches."))
-    def count(self, base=None, scope=SCOPE_SUB, fltr=None):
-        """
-        Query the database using the given filter and return the number
-        of matches.
-
-        ========== ==================
-        Parameter  Description
-        ========== ==================
-        base       Base to search on
-        scope      Scope to use (BASE, ONE, SUB)
-        fltr       Filter description
-        ========== ==================
-
-        Filter example:
-
-         {
-           '_and': {
-             'uid': 'foo',
-             'givenName': u'Klaus',
-             '_or': {
-               '_in': {
-                 'sn': [u'Mustermann', u'Musterfrau']
-               },
-               '_lt': ['dateOfBirth', datetime.datetime.now()]
-             }
-           }
-         }
-
-        Available filter parameters:
-
-        ============ ==================
-        Parameter    Description
-        ============ ==================
-        [a-zA-Z0-9]+ Ordinary match condition, maps to a single value
-        _and         And condition, maps to more conditions
-        _or          Or condition, maps to more conditions
-        _not         Not condition, inverts condition
-        _gt          Check if value is greater, maps to a 2 value list
-        _ge          Check if value is greater or equal, maps to a 2 value list
-        _lt          Check if value is lesser, maps to a 2 value list
-        _le          Check if value is lesser or equal, maps to a 2 value list
-        ============ ==================
-
-        ``Return``: Integer
-        """
-        if GlobalLock.exists("scan_index"):
-            raise FilterException("index rebuild in progress - try again later")
-
-        base_filter = None
-
-        if scope == None or not scope in [SCOPE_ONE, SCOPE_BASE, SCOPE_SUB]:
-            raise FilterException("invalid search scope")
-
-        if base:
-            base = self.dn2b64(base)
-            if scope == SCOPE_BASE:
-                base_filter = self.__index.c._dn == base
-
-            if scope == SCOPE_ONE:
-                base_filter = or_(self.__index.c._dn == base, self.__index.c._parent_dn == base)
-
-            if scope == SCOPE_SUB:
-                base_filter = or_(self.__index.c._dn == base, self.__index.c._parent_dn.like("%%,%s" % base))
-
-        if fltr:
-            if base:
-                fltr = and_(base_filter, *self.__build_filter(fltr))
-            else:
-                fltr = self.__build_filter(fltr)
-
-            slct = select([func.count(self.__index.c._uuid)], fltr)
-
-        else:
-            if base:
-                slct = select([func.count(self.__index.c._uuid)], base_filter)
-            else:
-                slct = select([func.count(self.__index.c._uuid)])
-
-        return self.__conn.execute(slct).fetchone()[0]
-
-    @Command(__help__=N_("Filter for indexed attributes and return the matches."))
-    def search(self, base=None, scope=SCOPE_SUB, fltr=None, attrs=None, begin=None, end=None, order_by=None, descending=False):
-        """
-        Query the database using the given filter and return the
-        result set.
-
-        ========== ==================
-        Parameter  Description
-        ========== ==================
-        base       Base to search on
-        scope      Scope to use (BASE, ONE, SUB)
-        fltr       Filter description
-        attrs      List of attributes the result set should contain
-        begin      Offset to start returning results
-        end        End offset to stop returning results
-        order_by   Attribute to sort for
-        descending Ascending or descending sort
-        ========== ==================
-
-        For more information on the filter format, consult the ref:`gosa.agent.objects.index.count`
-        documentation.
-
-        ``Return``: List of dicts
-        """
-        if GlobalLock.exists("scan_index"):
-            raise FilterException("index rebuild in progress - try again later")
-
-        base_filter = None
-
-        if not attrs:
-            ats = [self.__index]
-        else:
-            ats = []
-            for a in attrs:
-                ats.append(getattr(self.__index.c, a))
-
-        if base:
-            base = self.dn2b64(base)
-            if scope == SCOPE_BASE:
-                base_filter = self.__index.c._dn == base
-
-            if scope == SCOPE_ONE:
-                base_filter = or_(self.__index.c._dn == base, self.__index.c._parent_dn == base)
-
-            if scope == SCOPE_SUB:
-                base_filter = or_(self.__index.c._dn == base, self.__index.c._parent_dn.like("%%,%s" % base))
-
-        if fltr:
-            if base:
-                sl = select(ats, and_(base_filter, *self.__build_filter(fltr)))
-            else:
-                sl = select(ats, *self.__build_filter(fltr))
-        else:
-            if base:
-                sl = select(ats, base_filter)
-            else:
-                sl = select(ats)
-
-        # Apply ordering
-        if order_by:
-            if descending:
-                sl = sl.order_by(desc(order_by))
-            else:
-                sl = sl.order_by(asc(order_by))
-
-        # Apply range
-        if begin != None and end != None:
-            if begin >= end:
-                raise FilterException("filter range error - 'begin' is not < 'end'")
-
-            sl = sl.offset(begin).limit(end - begin + 1)
-
-        res = [dict(r.items()) for r in self.__conn.execute(sl).fetchall()]
-        return self.__convert_lists(res)
+#
+#    @Command(__help__=N_("Filter for indexed attributes and return the number of matches."))
+#    def count(self, base=None, scope=SCOPE_SUB, fltr=None):
+#        """
+#        Query the database using the given filter and return the number
+#        of matches.
+#
+#        ========== ==================
+#        Parameter  Description
+#        ========== ==================
+#        base       Base to search on
+#        scope      Scope to use (BASE, ONE, SUB)
+#        fltr       Filter description
+#        ========== ==================
+#
+#        ``Return``: Integer
+#        """
+#        raise NotImplemented("count is not available yet")
+#
+#    @Command(__help__=N_("Filter for indexed attributes and return the matches."))
+#    def search(self, base=None, scope=SCOPE_SUB, fltr=None, attrs=None, begin=None, end=None, order_by=None, descending=False):
+#        """
+#        Query the database using the given filter and return the
+#        result set.
+#
+#        ========== ==================
+#        Parameter  Description
+#        ========== ==================
+#        base       Base to search on
+#        scope      Scope to use (BASE, ONE, SUB)
+#        fltr       Filter description
+#        attrs      List of attributes the result set should contain
+#        begin      Offset to start returning results
+#        end        End offset to stop returning results
+#        order_by   Attribute to sort for
+#        descending Ascending or descending sort
+#        ========== ==================
+#
+#        For more information on the filter format, consult the ref:`gosa.agent.objects.index.count`
+#        documentation.
+#
+#        ``Return``: List of dicts
+#        """
+#        raise NotImplemented("count is not available yet")
+#
+#        if GlobalLock.exists("scan_index"):
+#            raise FilterException("index rebuild in progress - try again later")
