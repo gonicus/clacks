@@ -69,6 +69,7 @@ setup(
         [gosa_dbus.modules]
         module.unix = gosa.dbus.plugins.services.main:DBusUnixServiceHandler
         module.inventory = gosa.dbus.plugins.inventory.main:DBusInventoryHandler
+        module.service = gosa.dbus.plugins.services.main:DBusUnixServiceHandler
         module.notify = gosa.dbus.plugins.notify.main:DBusNotifyHandler
         module.wol = gosa.dbus.plugins.wakeonlan.main:DBusWakeOnLanHandler
     """,
