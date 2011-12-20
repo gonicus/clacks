@@ -20,7 +20,7 @@ class PuppetDBusHandler(dbus.service.Object, Plugin):
 
     def __init__(self):
         conn = get_system_bus()
-        dbus.service.Object.__init__(self, conn, '/com/gonicus/gosa/puppet')
+        dbus.service.Object.__init__(self, conn, '/org/clacks/puppet')
         self.env = Environment.getInstance()
         self.log = logging.getLogger(__name__)
         self.logdir = self.env.config.get("puppet.report-dir",
@@ -59,7 +59,7 @@ reports=store_gosa
 """ % self.logdir
         self.log.warning(msg)
 
-    @dbus.service.method('com.gonicus.gosa', in_signature='', out_signature='i')
+    @dbus.service.method('org.clacks', in_signature='', out_signature='i')
     def run_puppet(self):
         """ Perform a puppet run using the current configuration """
         self.log.info("executing puppet")

@@ -29,10 +29,10 @@ class Inventory(Plugin):
         """ Sent a notification to a given user """
         # Get BUS connection
         bus = dbus.SystemBus()
-        gosa_dbus = bus.get_object('com.gonicus.gosa', '/com/gonicus/gosa/inventory')
+        gosa_dbus = bus.get_object('org.clacks', '/org/clacks/inventory')
 
         # Request inventory result from dbus-client (He is running as root and can do much more than we can)
-        result = gosa_dbus.inventory(dbus_interface="com.gonicus.gosa")
+        result = gosa_dbus.inventory(dbus_interface="org.clacks")
 
         # Remove time base or frequently changing values (like processes) from the
         # result to generate a useable checksum.

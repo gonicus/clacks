@@ -10,9 +10,9 @@ class DBusShellHandler(dbus.service.Object, Plugin):
 
     def __init__(self):
         conn = get_system_bus()
-        dbus.service.Object.__init__(self, conn, '/com/gonicus/gosa/shell')
+        dbus.service.Object.__init__(self, conn, '/org/clacks/shell')
         self.env = Environment.getInstance()
 
-    @dbus.service.method('com.gonicus.gosa', in_signature='', out_signature='')
+    @dbus.service.method('org.clacks', in_signature='', out_signature='')
     def get_signatures(self):
         pass

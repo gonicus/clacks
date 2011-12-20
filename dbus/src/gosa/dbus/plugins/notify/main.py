@@ -13,10 +13,10 @@ class DBusNotifyHandler(dbus.service.Object, Plugin):
 
     def __init__(self):
         conn = get_system_bus()
-        dbus.service.Object.__init__(self, conn, '/com/gonicus/gosa/notify')
+        dbus.service.Object.__init__(self, conn, '/org/clacks/notify')
         self.env = Environment.getInstance()
 
-    @dbus.service.method('com.gonicus.gosa', in_signature='ssisssi', out_signature='i')
+    @dbus.service.method('org.clacks', in_signature='ssisssi', out_signature='i')
     def notify_all(self, title, message,
         timeout=120,
         urgency="normal",
@@ -29,7 +29,7 @@ class DBusNotifyHandler(dbus.service.Object, Plugin):
         return(self.call(message=message, title=title, broadcast=True, timeout=timeout,
             urgency=urgency, icon=icon, recurrence=recurrence, actions=actions))
 
-    @dbus.service.method('com.gonicus.gosa', in_signature='sssisssi', out_signature='i')
+    @dbus.service.method('org.clacks', in_signature='sssisssi', out_signature='i')
     def notify(self, user, title, message,
         timeout=120,
         urgency="normal",

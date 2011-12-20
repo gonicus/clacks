@@ -28,12 +28,12 @@ class Notify(Plugin):
 
         # Get BUS connection
         bus = dbus.SystemBus()
-        gosa_dbus = bus.get_object('com.gonicus.gosa',
-                                   '/com/gonicus/gosa/notify')
+        gosa_dbus = bus.get_object('org.clacks',
+                                   '/org/clacks/notify')
 
         # Send notification and keep return code
         o = gosa_dbus.notify(user, title, message, timeout, urgency,
-            icon, actions, recurrence, dbus_interface="com.gonicus.gosa")
+            icon, actions, recurrence, dbus_interface="org.clacks")
         return(int(o))
 
     @Command()
@@ -48,10 +48,10 @@ class Notify(Plugin):
 
         # Get BUS connection
         bus = dbus.SystemBus()
-        gosa_dbus = bus.get_object('com.gonicus.gosa',
-                                   '/com/gonicus/gosa/notify')
+        gosa_dbus = bus.get_object('org.clacks',
+                                   '/org/clacks/notify')
 
         # Send notification and keep return code
         o = gosa_dbus.notify_all(title, message, timeout, urgency,
-            icon, actions, recurrence, dbus_interface="com.gonicus.gosa")
+            icon, actions, recurrence, dbus_interface="org.clacks")
         return(int(o))

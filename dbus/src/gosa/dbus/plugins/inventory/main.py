@@ -22,10 +22,10 @@ class DBusInventoryHandler(dbus.service.Object, Plugin):
 
     def __init__(self):
         conn = get_system_bus()
-        dbus.service.Object.__init__(self, conn, '/com/gonicus/gosa/inventory')
+        dbus.service.Object.__init__(self, conn, '/org/clacks/inventory')
         self.env = Environment.getInstance()
 
-    @dbus.service.method('com.gonicus.gosa', in_signature='', out_signature='s')
+    @dbus.service.method('org.clacks', in_signature='', out_signature='s')
     def inventory(self):
         """
         Start inventory client and transform the results into a GOsa usable way.

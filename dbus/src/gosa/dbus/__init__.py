@@ -13,7 +13,7 @@ system and registers them into to the :class:`gosa.common.components.registry.Pl
 This happens automatically depending on what's registered on the
 ``[gosa_dbus.modules]`` setuptools entrypoint.
 
-To provide services it registers the system bus ``com.gonicus.gosa`` to the
+To provide services it registers the system bus ``org.clacks`` to the
 systems DBUS, exposing functionality to the outside world.
 
 All the DBUS plugins you provide run as *root*, so the service is meant as
@@ -34,10 +34,10 @@ Code example::
 
         def __init__(self):
             conn = get_system_bus()
-            dbus.service.Object.__init__(self, conn, '/com/gonicus/gosa/wol')
+            dbus.service.Object.__init__(self, conn, '/org/clacks/wol')
             self.env = Environment.getInstance()
 
-        @dbus.service.method('com.gonicus.gosa', in_signature='s', out_signature='')
+        @dbus.service.method('org.clacks', in_signature='s', out_signature='')
         def wakeOnLan(self, mac):
             p = subprocess.Popen([r"wakeonlan", mac])
             p.wait()

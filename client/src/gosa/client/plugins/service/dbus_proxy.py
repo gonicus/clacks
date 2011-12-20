@@ -12,8 +12,8 @@ class Service(Plugin):
 
     This plugin is a proxy for registered dbus-methods.
 
-    Each method that is registered for service 'com.gonicus.gosa'
-    with path '/com/gonicus/gosa/service' can be accessed by calling
+    Each method that is registered for service 'org.clacks'
+    with path '/org/clacks/service' can be accessed by calling
     callDBusMethod.
 
     """
@@ -31,16 +31,16 @@ class Service(Plugin):
         # Request information about registered dbus methods we can use.
         self.bus = dbus.SystemBus()
         self.log.debug('loading dbus-methods registered by clacks (introspection)')
-        self.gosa_dbus = self.bus.get_object('com.gonicus.gosa', '/com/gonicus/gosa/service')
+        self.gosa_dbus = self.bus.get_object('org.clacks', '/org/clacks/service')
         call = self.gosa_dbus._Introspect()
         call.block()
 
         # Collection methods
         self.methods = {}
         for method in self.gosa_dbus._introspect_method_map:
-            if not re.match("^com\.gonicus\.gosa\.", method):
+            if not re.match("^org\.clacks\.", method):
                 continue
-            name = re.sub("^com\.gonicus\.gosa\.(.*)$", "\\1", method)
+            name = re.sub("^org\.clacs\.(.*)$", "\\1", method)
             self.methods[name] = self.gosa_dbus._introspect_method_map[method]
         self.log.debug("found %s registered dbus methods" % (len(self.methods)))
 
@@ -62,6 +62,7 @@ class Service(Plugin):
             raise NotImplementedError(method)
 
         # Now call the dbus method with the given list of paramters
-        method = self.gosa_dbus.get_dbus_method(method, dbus_interface="com.gonicus.gosa")
+        method = self.gosa_dbus.get_dbus_method(method,
+                dbus_interface="org.clacks")
         returnval = method(*args)
         return returnval

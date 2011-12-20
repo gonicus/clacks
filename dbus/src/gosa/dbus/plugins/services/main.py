@@ -32,7 +32,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
 
     def __init__(self):
         conn = get_system_bus()
-        dbus.service.Object.__init__(self, conn, '/com/gonicus/gosa/service')
+        dbus.service.Object.__init__(self, conn, '/org/clacks/service')
         self.env = Environment.getInstance()
         self.svc_command = self.env.config.get("unix.service-command", default="/usr/sbin/service")
         self.log = logging.getLogger(__name__)
@@ -50,7 +50,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
 
         return services[name]
 
-    @dbus.service.method('com.gonicus.gosa', out_signature='i')
+    @dbus.service.method('org.clacks', out_signature='i')
     def get_runlevel(self):
         """
         Returns the current runlevel of the clacks-client.
@@ -64,7 +64,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         runlevel = re.sub("^run-level[ ]*([0-9]*).*$", "\\1", ret[0].strip())
         return int(runlevel)
 
-    @dbus.service.method('com.gonicus.gosa', in_signature='i', out_signature='i')
+    @dbus.service.method('org.clacks', in_signature='i', out_signature='i')
     def set_runlevel(self, level):
         """
         Sets a new runlevel for the clacks-client
@@ -74,7 +74,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         ret = process.communicate()
         return process.returncode
 
-    @dbus.service.method('com.gonicus.gosa', in_signature='s', out_signature='b')
+    @dbus.service.method('org.clacks', in_signature='s', out_signature='b')
     def start(self, name):
         """
         Starts the given service, if it is not running.
@@ -89,7 +89,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         self.log.debug("starting service %s" % (name))
         return subprocess.call([self.svc_command, name, 'start']) == 0
 
-    @dbus.service.method('com.gonicus.gosa', in_signature='s', out_signature='b')
+    @dbus.service.method('org.clacks', in_signature='s', out_signature='b')
     def stop(self, name):
         """
         Stop the given service, if it is running.
@@ -104,7 +104,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         self.log.debug("stopping service %s" % (name))
         return subprocess.call([self.svc_command, name, 'stop']) == 0
 
-    @dbus.service.method('com.gonicus.gosa', in_signature='s', out_signature='b')
+    @dbus.service.method('org.clacks', in_signature='s', out_signature='b')
     def restart(self, name):
         """
         Restart the given service.
@@ -113,7 +113,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         self.log.debug("restarting service %s" % (name))
         return subprocess.call([self.svc_command, name, 'restart']) == 0
 
-    @dbus.service.method('com.gonicus.gosa', in_signature='s', out_signature='b')
+    @dbus.service.method('org.clacks', in_signature='s', out_signature='b')
     def reload(self, name):
         """
         Reloads the given service.
@@ -127,7 +127,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         self.log.debug("reloading service %s" % (name))
         return subprocess.call([self.svc_command, name, 'reload']) == 0
 
-    @dbus.service.method('com.gonicus.gosa', in_signature='s', out_signature='a{sv}')
+    @dbus.service.method('org.clacks', in_signature='s', out_signature='a{sv}')
     def get_service(self, name):
         """
         Returns status information for the given service.
@@ -138,7 +138,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
 
         return services[name]
 
-    @dbus.service.method('com.gonicus.gosa', out_signature='a{sa{sas}}')
+    @dbus.service.method('org.clacks', out_signature='a{sa{sas}}')
     def get_services(self):
         """
         Returns status information for all services.

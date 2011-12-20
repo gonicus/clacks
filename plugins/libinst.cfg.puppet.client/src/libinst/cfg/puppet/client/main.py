@@ -169,7 +169,7 @@ class PuppetClient(Plugin):
             # Create post-update hook
             self.log.debug("installing post-update hook")
             with open(git_path + "/hooks/post-update", "w") as f:
-                f.write("#!/bin/sh\ngit archive --format=tar HEAD | (cd %s && tar xf -)\ndbus-send --system --type=method_call --dest=com.gonicus.gosa /com/gonicus/gosa/puppet com.gonicus.gosa.run_puppet" % self.__target_dir)
+                f.write("#!/bin/sh\ngit archive --format=tar HEAD | (cd %s && tar xf -)\ndbus-send --system --type=method_call --dest=org.clacks /org/clacks/puppet org.clacks.run_puppet" % self.__target_dir)
 
             os.chmod(git_path + "/hooks/post-update", 0755)
 
@@ -178,8 +178,8 @@ class PuppetClient(Plugin):
         """ Perform a manual puppet run """
         self.log.debug("calling dbus run_puppet method")
         bus = dbus.SystemBus()
-        gosa_dbus = bus.get_object('com.gonicus.gosa', '/com/gonicus/gosa/puppet')
-        return bool(gosa_dbus.run_puppet(dbus_interface = "com.gonicus.gosa"))
+        gosa_dbus = bus.get_object('org.clacks', '/org/clacks/puppet')
+        return bool(gosa_dbus.run_puppet(dbus_interface = "org.clacks"))
 
     @Command()
     def puppetGetReleaseInfo(self):

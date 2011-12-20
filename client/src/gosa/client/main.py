@@ -104,7 +104,7 @@ def main():
             user = env.config.get("client.user")
             group = env.config.get("client.group")
             pidfile = env.config.get("client.pidfile",
-                    default="/var/run/gosa/gosa-client.pid")
+                    default="/var/run/clacks/client.pid")
 
             # Check if pid path if writable for us
             piddir = os.path.dirname(pidfile)
@@ -164,14 +164,16 @@ def main():
                     env.log.debug("forked process with pid %s" % pid)
 
                     try:
-                        pid_file = open(env.config.get('client.pidfile', default="/var/run/gosa/gosa-client.pid"), 'w')
+                        pid_file = open(env.config.get('client.pidfile',
+                            default="/var/run/clacks/client.pid"), 'w')
                         try:
                             pid_file.write(str(pid))
                         finally:
                             pid_file.close()
                     except IOError:
                         env.log.error("cannot write pid file %s" %
-                                env.config.get('client.pidfile', default="/var/run/gosa/gosa-client.pid"))
+                                env.config.get('client.pidfile',
+                                    default="/var/run/clacks/client.pid"))
                         exit(1)
 
                     mainLoop(env)

@@ -98,7 +98,7 @@ def main():
 
     # Fix configuration file permission
     cfg = env.config.get("core.config")
-    group = env.config.get("client.group", default="gosa-ng")
+    group = env.config.get("client.group", default="clacks")
     try:
         gid = grp.getgrnam(group).gr_gid
     except KeyError as e:

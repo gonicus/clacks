@@ -70,20 +70,6 @@ class Config(object):
         # Load default user name for config parsing
         self.__registry['core']['config'] = config
         self.__noargs = noargs
-        user = 'gosa'
-        group = 'gosa'
-        userHome = '/var/lib/gosa'
-
-        if platform.system() != "Windows":
-            try:
-                userHome = pwd.getpwnam(user).pw_dir
-                group = grp.getgrgid(pwd.getpwnam(user).pw_gid).gr_name
-            except KeyError:
-                pass
-
-            self.__registry['core']['user'] = user
-            self.__registry['core']['group'] = group
-            self.__registry['core']['workdir'] = userHome
 
         # Load file configuration
         if not self.__noargs:
@@ -93,6 +79,15 @@ class Config(object):
         # Overload with command line options
         if not self.__noargs:
             self.__parseCmdOptions()
+
+        if platform.system() != "Windows":
+            user = self.get('core.user', 'clacks')
+            userHome = pwd.getpwnam(self.get('core.user', 'clacks')).pw_dir
+            group = self.get('core.group', grp.getgrgid(pwd.getpwnam(self.get('core.user', 'clacks')).pw_gid).gr_name)
+
+            self.__registry['core']['user'] = user
+            self.__registry['core']['group'] = group
+            self.__registry['core']['workdir'] = userHome
 
     def __parseCmdOptions(self):
         parser = ArgumentParser(usage="%(prog)s - the GOsa core daemon")
