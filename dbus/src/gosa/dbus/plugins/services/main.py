@@ -69,6 +69,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         """
         Sets a new runlevel for the clacks-client
         """
+        self.log.debug("client runlevel set toggled to: %s" % (str(level)))
         process = subprocess.Popen(["telinit","%s" % (str(level))], shell=False, stdout=subprocess.PIPE,  stderr=subprocess.PIPE)
         ret = process.communicate()
         return process.returncode
@@ -85,6 +86,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
             return True
 
         # Execute call
+        self.log.debug("starting service %s" % (name))
         return subprocess.call([self.svc_command, name, 'start']) == 0
 
     @dbus.service.method('com.gonicus.gosa', in_signature='s', out_signature='b')
@@ -99,6 +101,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
             return True
 
         # Execute call
+        self.log.debug("stopping service %s" % (name))
         return subprocess.call([self.svc_command, name, 'stop']) == 0
 
     @dbus.service.method('com.gonicus.gosa', in_signature='s', out_signature='b')
@@ -107,6 +110,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         Restart the given service.
         """
         service = self._validate(name, "restart")
+        self.log.debug("restarting service %s" % (name))
         return subprocess.call([self.svc_command, name, 'restart']) == 0
 
     @dbus.service.method('com.gonicus.gosa', in_signature='s', out_signature='b')
@@ -120,6 +124,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         if "True" not in service['running']:
             return False
 
+        self.log.debug("reloading service %s" % (name))
         return subprocess.call([self.svc_command, name, 'reload']) == 0
 
     @dbus.service.method('com.gonicus.gosa', in_signature='s', out_signature='a{sv}')
