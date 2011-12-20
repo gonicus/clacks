@@ -43,7 +43,7 @@ development, some of the python modules need compilation - which rises the
 number of required packages drastically. For the time being, please install
 the following packages in your system::
 
-  $ sudo apt-get install python2.6-dev python-dumbnet python-avahi python-virtualenv \
+  $ sudo apt-get install python2.7-dev python-dumbnet python-avahi python-virtualenv \
          libavahi-compat-libdnssd-dev python-openssl python-dbus libssl-dev python-gtk2 \
          python-lxml python-libxml2 python-dmidecode python-ldap python-nose \
          python-kid python-coverage python-dateutil python-smbpasswd python-netifaces \
@@ -59,7 +59,7 @@ Setup a virtual environment for playing with GOsa 3.0 alpha
 
 As a non-root user, initialize the virtual environment::
 
-  $ virtualenv --setuptools --python=python2.6  gosa-ng
+  $ virtualenv --setuptools --python=python2.7  gosa-ng
   $ cd gosa-ng
   $ source bin/activate
 

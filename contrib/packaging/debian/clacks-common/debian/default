@@ -1,0 +1,3 @@
+# Change FORCE_JOIN to 1 if you want clacks to enforce an infratructure
+# join on system start.
+FORCE_JOIN=0

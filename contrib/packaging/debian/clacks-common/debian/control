@@ -1,19 +1,19 @@
-Source: gosa.common
+Source: clacks-common
 Section: misc
 Priority: optional
 Maintainer: Cajus Pollmeier <cajus@debian.org>
-Build-Depends: debhelper (>= 5.0.37.1), cdbs (>= 0.4.41), python-all (>= 2.6),
- python-support (>= 0.6.4), python-nose, python-kid, python-coverage,
- python-nosexunit (>= 0.3.3+svn)
-Build-Depends-Indep: python-setuptools (>= 0.6a9)
-Standards-Version: 3.8.3
+Build-Depends: debhelper (>= 5.0.37.1), python (>= 2.6.6-3~), python-setuptools
+X-Python-Version: >= 2.6
+Standards-Version: 3.9.1
 Homepage: http://gosa-project.org
 
-Package: gosa.common
+Package: clacks-common
 Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, python-pkg-resources, python-avahi,
  python-openssl, python-dbus, python-gtk2, python-lxml, python-libxml2,
  python-dmidecode, python-qpid, python-cjson, python-pybabel,
  python-zope.interface
-Description: Next generation GOsa service
- This is the client package.
+Description: clacks infrastructure service - common files
+ Brief description is missing.
+ .
+ This package provides libraries common for all clacks components.

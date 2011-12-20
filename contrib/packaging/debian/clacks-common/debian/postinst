@@ -1,0 +1,30 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+    configure)
+        if ! getent passwd clacks >/dev/null; then
+            adduser --disabled-password \
+                    --quiet --system \
+                    --home /var/lib/clacks \
+                    --gecos "clacks infrastructure system account" \
+                    --group clacks
+        fi
+
+        chmod o-rwx /var/lib/clacks
+        chown clacks: /var/lib/clacks
+
+	install -d -o clacks -g clacks -m 0770 /etc/clacks
+        ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+        ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+        ;;
+esac
+
+#DEBHELPER#
