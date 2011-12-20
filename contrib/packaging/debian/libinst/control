@@ -12,7 +12,7 @@ Homepage: http://oss.gonicus.de
 
 Package:libinst
 Architecture: all
-Depends: ${python:Depends}, ${misc:Depends}, python-pkg-resources, gosa.agent,
+Depends: ${python:Depends}, ${misc:Depends}, python-pkg-resources, clacks-agent,
  python-gnupg, python-tz
 Description: Installation abstraction layer for GOsa
  TODO

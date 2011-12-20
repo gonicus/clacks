@@ -1,0 +1,18 @@
+Source: gosa.dbus
+Section: misc
+Priority: optional
+Maintainer: Cajus Pollmeier <cajus@debian.org>
+debhelper (>= 7), python (>= 2.6.6-3~), python-setuptools
+X-Python-Version: >= 2.6
+Standards-Version: 3.9.1
+Build-Depends: debhelper (>= 7), python (>= 2.6)
+Homepage: http://gosa-project.org
+
+Package: gosa.dbus
+Architecture: all
+Depends: ${python:Depends}, ${misc:Depends}, clacks-client, hal,
+ python-notify, python-daemon, python-dbus
+Description: clacks infrastructure service - DBUS service provider
+ Brief description is missing.
+ .
+ This package provides the DBUS plugin integration.

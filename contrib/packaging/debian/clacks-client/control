@@ -1,4 +1,4 @@
-Source: gosa.client
+Source: clacks-client
 Section: misc
 Priority: optional
 Maintainer: Cajus Pollmeier <cajus@debian.org>
