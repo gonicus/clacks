@@ -1,4 +1,4 @@
-Source: clacks-dbus
+Source: clacks-client
 Section: misc
 Priority: optional
 Maintainer: Cajus Pollmeier <cajus@debian.org>
@@ -7,12 +7,14 @@ X-Python-Version: >= 2.6
 Standards-Version: 3.9.1
 Homepage: http://gosa-project.org
 
-Package: clacks-dbus
+Package: clacks-client
 Architecture: all
-Depends: ${python:Depends}, ${misc:Depends}, clacks-client, hal,
- python-notify, python-daemon, python-dbus, python-dateutil
+Conflicts: clacks-agent
+Depends: ${python:Depends}, ${misc:Depends}, python-dateutil, python-netifaces,
+ python-crypto
 Pre-Depends: clacks-common
-Description: clacks infrastructure service - DBUS service provider
+Suggests: clacks-dbus
+Description: clacks infrastructure service - client
  Brief description is missing.
  .
- This package provides the DBUS plugin integration.
+ This package provides the client.

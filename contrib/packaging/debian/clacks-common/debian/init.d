@@ -89,7 +89,7 @@ case "$1" in
         # joined. This should block the boot process.
         while join_required; do
             log_daemon_msg "Joining to the clacks infrastructure"
-            gosa-join
+            clacks-join
             log_end_msg $?
         done
 
