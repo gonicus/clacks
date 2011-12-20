@@ -10,9 +10,16 @@ def print_res(res):
 
 db = XMLDBHandler.get_instance()
 
-#res = db.xquery("collection('objects')//node()[o:DN='ou=people,dc=gonicus,dc=de']/o:Attributes[last()]")
-res = db.xquery("collection('objects')")
-print_res(res)
+res = db.xquery("""
+  let $doc := collection('objects')
+  for $x in $doc//node()[o:DN='ou=Technik,dc=gonicus,dc=de']//o:DN
+  return
+    ($x/../o:UUID/string(), $x/string())
+""")
+from itertools import izip
+i = iter(res)
+for uuid, dn in izip(i, i):
+    print dn, uuid
 exit(0)
 
 res = db.xquery("collection('objects')/o:User[o:Attributes/o:uid/string()='cajus']")
