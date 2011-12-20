@@ -13,7 +13,7 @@ Conflicts: clacks-agent
 Depends: ${python:Depends}, ${misc:Depends}, python-dateutil, python-netifaces,
  python-crypto
 Pre-Depends: clacks-common
-Suggests: clacks-dbus
+Suggests: clacks-dbus, fusioninventory-agent
 Description: clacks infrastructure service - client
  Brief description is missing.
  .
