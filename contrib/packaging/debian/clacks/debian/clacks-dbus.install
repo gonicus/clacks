@@ -1,0 +1,4 @@
+../org.clacks.conf etc/dbus-1/system.d
+usr/lib/python*/dist-packages/gosa/dbus
+usr/bin/clacks-dbus usr/sbin
+usr/bin/notify-user usr/sbin

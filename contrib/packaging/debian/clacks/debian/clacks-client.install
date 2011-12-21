@@ -1,0 +1,3 @@
+usr/bin/clacks-join usr/sbin
+usr/bin/clacks-client usr/sbin
+usr/lib/python*/dist-packages/gosa/client
