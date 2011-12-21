@@ -24,29 +24,23 @@ FORCE_JOIN=0
 
 
 join_required() {
-    test $FORCE_JOIN = 0 && return 1
-    test -e /usr/sbin/clacks-client || return 1
+    test $FORCE_JOIN -eq 0 && return 0
+    test -e /usr/sbin/clacks-client || return 0
 
     if [ -e /etc/clacks/config ]; then
-        grep -q '^\s*key\s*=\s*..*$' /etc/clacks/config && return 1
+        grep -q '^\s*key\s*=\s*..*$' /etc/clacks/config && return 0
     fi
 
-    return 0
+    return 1
 }
 
 
 start_services() {
         STATUS=0
         for SERVICE in $SERVICES; do
-            [ -x /usr/sbin/clacks-$SERVICE ] || continue
             PIDFILE=/var/run/clacks/$SERVICE.pid
-            if [ $SERVICE = 'dbus' ]; then
-                start-stop-daemon --background --start --quiet -m --pidfile $PIDFILE \
-                    --exec /usr/sbin/clacks-$SERVICE
-            else
-                start-stop-daemon --start --quiet --pidfile $PIDFILE \
-                    --exec /usr/sbin/clacks-$SERVICE
-            fi
+            start-stop-daemon --start --quiet --pidfile $PIDFILE \
+                --exec /usr/sbin/clacks-$SERVICE -- --pid-file $PIDFILE
             test $? -ne 0 && STATUS=1
 
             log_progress_msg "$SERVICE"
@@ -59,12 +53,11 @@ start_services() {
 stop_services() {
         STATUS=0
         for SERVICE in `echo -n "$SERVICES " | tac -s \ `; do
-            [ -x /usr/sbin/clacks-$SERVICE ] || continue
             PIDFILE=/var/run/clacks/$SERVICE.pid
-            start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE
+            start-stop-daemon --stop --quiet --pidfile $PIDFILE
             test $? -ne 0 && STATUS=1
 
-            test $1 = 1 && log_progress_msg "$SERVICE"
+            test $1 -eq 1 && log_progress_msg "$SERVICE"
         done
 
         return $STATUS
@@ -75,7 +68,7 @@ stop_services() {
 for SERVICE in $SERVICES; do
 	test -x /usr/sbin/clacks-$SERVICE && FOUND=1
 done
-test $FOUND = 0 && exit 0
+test $FOUND -eq 0 && exit 0
 
 . /lib/lsb/init-functions
 
@@ -87,7 +80,8 @@ if [ ! -d /var/run/clacks ]; then
 fi
 
 # Don't start if we're not configured to start
-test $FORCE_JOIN = 0 -a ! -e /etc/clacks/config && exit 0
+test $START_AGENT -eq 0 -a $START_CLIENT -eq 0 && exit 0
+test $FORCE_JOIN -eq 0 -a ! -e /etc/clacks/config && exit 0
 
 case "$1" in
     start)

@@ -1,3 +1,5 @@
 usr/bin/clacks-join usr/sbin
 usr/bin/clacks-agent usr/sbin
 usr/lib/python*/dist-packages/gosa/agent
+usr/lib/python*/dist-packages/gosa.agent-*.egg-info
+usr/lib/python*/dist-packages/gosa.agent-*-nspkg.pth

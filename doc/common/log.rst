@@ -44,8 +44,9 @@ Here's an example:
 	args=('/var/log/gosa/agent.log', 'w0', 1, 4)
 	
 	[formatter_syslog]
-	format=%(levelname)s: %(module)s - %(message)s
-	datefmt=
+	class=logging.Formatter
+	format=%(asctime)s %(name)s: %(levelname)s %(message)s
+	datefmt=%b %e %H:%M:%S
 	class=logging.Formatter
 	
 	[formatter_console]
