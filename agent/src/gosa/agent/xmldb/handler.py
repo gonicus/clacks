@@ -77,8 +77,8 @@ class XMLDBHandler(Plugin):
         return self.__driver.setSchema(collection, filename, content)
 
     @Command(__help__=N_("Validate a schema of a collection"))
-    def matchSchema(self, collection, name, md5sum=None, schemaString=None):
-        return self.__driver.matchSchema(collection, name, md5sum, schemaString)
+    def validateSchema(self, collection, name, md5sum=None, schemaString=None):
+        return self.__driver.validateSchema(collection, name, md5sum, schemaString)
 
     @Command(__help__=N_("Remove a collection"))
     def dropCollection(self, name):

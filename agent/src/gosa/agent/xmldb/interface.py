@@ -120,7 +120,7 @@ class XMLDBInterface(object):
     def setSchema(self, collection, filename, content):
         raise NotImplementedErrorError("setSchema")
 
-    def matchSchema (self, collection, name, md5sum=None, schemaString=None):
+    def validateSchema (self, collection, name, md5sum=None, schemaString=None):
         """
         This method can be used to check whether a schema has changed or not.
 
@@ -136,7 +136,7 @@ class XMLDBInterface(object):
         schemaString   Can be used to match against a given schema string.
         ============== ======================
         """
-        raise NotImplementedErrorError("matchSchema")
+        raise NotImplementedErrorError("validateSchema")
 
     def setNamespace(self, collection, alias, namespace):
 

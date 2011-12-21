@@ -188,7 +188,7 @@ class DBXml(XMLDBInterface):
         f.write(json.dumps(data, indent=2))
         f.close()
 
-    def matchSchema (self, collection, name, md5sum=None, schemaString=None):
+    def validateSchema (self, collection, name, md5sum=None, schemaString=None):
 
         # Validate parameters
         if md5sum and schemaString:
@@ -203,11 +203,14 @@ class DBXml(XMLDBInterface):
         if name not in data['md5_schema']:
             XMLDBException("no such schema definition '%s' found for collection %s!" % (name, collection))
 
+        # Create a checksum when matching against schema-file
+        if schemaString:
+            md5s = md5.new()
+            md5s.update(schemaString)
+            md5sum = md5s.hexdigest()
+
         # Perform matching
-        if md5sum:
-            return(md5sum == data['md5_schema'][name])
-        elif schemaString:
-            return(schemaString == data['schema'][name])
+        return(md5sum == data['md5_schema'][name])
 
     def setSchema(self, collection, filename, schema):
 
