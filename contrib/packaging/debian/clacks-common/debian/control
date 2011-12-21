@@ -11,7 +11,7 @@ Package: clacks-common
 Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, python-pkg-resources, python-avahi,
  python-openssl, python-dbus, python-gtk2, python-lxml, python-libxml2,
- python-dmidecode, python-qpid, python-cjson, python-pybabel,
+ python-dmidecode, python-qpid, python-cjson, python-babel,
  python-zope.interface, avahi-daemon
 Description: clacks infrastructure service - common files
  Brief description is missing.

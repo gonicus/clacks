@@ -51,6 +51,6 @@ setup(
 
     entry_points = """
         [console_scripts]
-        clacks-shell = gosa.shell.main:main
+        clacksh = gosa.shell.main:main
     """,
 )
