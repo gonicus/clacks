@@ -222,7 +222,7 @@ class DBXml(XMLDBInterface):
         try:
 
             # Create a new collection config object
-            data = {'collection': name, 'namespaces': namespaces, 'schema': schema}
+            data = {'collection': name, 'namespaces': namespaces, 'schema': {}}
             f = open(os.path.join(path, 'config'), 'w')
             f.write(json.dumps(data, indent=2))
             f.close()
@@ -249,10 +249,9 @@ class DBXml(XMLDBInterface):
                     self.namespaces[alias] = namespace
                     self.queryContext.setNamespace(alias, namespace)
 
-            # Populate known schema files
-            self.log.debug("adding %s schema definition(s) for collection '%s'" % (len(data['schema'].items()), name))
-            for name, schema in data['schema'].items():
-                self.schemaResolver.addSchema(str(name), str(schema))
+            # Add schema information to the database
+            for entry in schema:
+                self.setSchema(name, entry, schema[entry])
 
         # Try some cleanup in case of an error
         except Exception as e:
