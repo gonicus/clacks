@@ -13,8 +13,5 @@ override_dh_auto_clean:
 	dh_auto_clean
 	find -name '*egg-info' | xargs rm -rf
 
-override_dh_installinit:
-	dh_installinit -pclacks-common --init-script=clacks
-
 %:
 	dh  $@ --with python2
