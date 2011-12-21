@@ -1,10 +1,10 @@
 #!/bin/sh
 ### BEGIN INIT INFO
 # Provides:          clacks-dbus
-# X-Start-Before:    x-display-manager
+# X-Start-Before:    x-display-manager clacks-client
 # X-Interactive:     true
-# Required-Start:    $local_fs $network $remote_fs
-# Required-Stop:     $local_fs $network $remote_fs
+# Required-Start:    $local_fs $network avahi
+# Required-Stop:     $local_fs $network avahi
 # Should-Start:	     $syslog
 # Should-Stop:       $syslog
 # Default-Start:     2 3 4 5
@@ -27,12 +27,15 @@ start_service() {
         PIDFILE=/var/run/clacks/$SERVICE.pid
         PID=$(pgrep clacks-$SERVICE)
 
-        if [ "x$PID" = "x$(cat $PIDFILE)" ]; then
-            log_progress_msg "already running"
-	else
-            start-stop-daemon --background --start --quiet -m --pidfile $PIDFILE \
-                --exec /usr/sbin/clacks-$SERVICE
+        if [ -e $PIDFILE ]; then
+	    if [ "x$PID" = "x$(cat $PIDFILE)" ]; then
+                log_progress_msg "already running"
+                return
+            fi
 	fi
+
+        start-stop-daemon --background --start --quiet -m --pidfile $PIDFILE \
+            --exec /usr/sbin/clacks-$SERVICE
 }
 
 
@@ -48,12 +51,14 @@ test -x /usr/sbin/clacks-$SERVICE || exit 0
 
 . /lib/lsb/init-functions
 
+if [ ! -d /var/run/clacks ]; then
+    mkdir -p /var/run/clacks
+    chown root:clacks /var/run/clacks
+    chmod 770 /var/run/clacks
+fi
+
 # Include clacks defaults if available.
 test -f /etc/default/$SERVICE && . /etc/default/$SERVICE
-
-if [ ! -d /var/run/clacks ]; then
-    install -d -o root -g clacks -m 0770 /var/run/clacks
-fi
 
 # Don't start if we're not configured to start
 test $FORCE_JOIN = 0 -a ! -e /etc/clacks/config && exit 0
