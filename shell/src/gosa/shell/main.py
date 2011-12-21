@@ -13,24 +13,25 @@
  1) Interactive: Let's you execute code interactively.
 
      Usage:
-       gosa-shell [-u/--user username] [-p/--password passwort]
+       clacksh [-u/--user username] [-p/--password passwort]
            [service-uri]
 
  2) One-Shot: Executes code1...code2 and returns.
 
      Usage:
-        gosa-shell [-u/--user username] [-p/--password passwort]
+        clacksh [-u/--user username] [-p/--password passwort]
             [-c/--command 'cmd;cmd;...'] [service-uri]
 
  3) Script: Write a script and execute it.
 
      Usage:
-        cat YourScript | gosa-shell [-u/--user username]
+        cat YourScript | clacksh [-u/--user username]
             [-p/--password passwort] [service-uri]
 
  The code you can execute is basically Python code. There is a special object
- named "gosa" that gives you access to all supported GOSA services. Try
- gosa.help() for a list of methods.
+ named "proxy" that gives you access to all supported Clacks services - which are
+ mapped to the global namespace, additionally. Try
+ proxy.help() for a list of methods.
 """
 from __future__ import print_function
 import sys
@@ -131,13 +132,13 @@ class MyConsole(code.InteractiveConsole):
                 print()
 
 
-class GOsaService():
-    """ The GOsaService class encapsulates all GOSA functionality that is
+class ClacksService():
+    """ The ClacksService class encapsulates all Clacks functionality that is
         accessible via the interactive console. """
     proxy = None
 
     def __init__(self):
-        self.name = 'GOsaService'
+        self.name = 'ClacksService'
         self.domain = socket.getfqdn().split('.', 1)[1]
 
     def connect(self, service_uri='', username='', password=''):
@@ -306,7 +307,7 @@ def main(argv=sys.argv):
             command = arg
 
     # Create service object
-    service = GOsaService()
+    service = ClacksService()
 
     # Check if connection could be established
     try:
@@ -316,10 +317,10 @@ def main(argv=sys.argv):
         sys.exit(1)
 
     # Prepare to enter the interactive console.
-    # Make the the GOsaService instance available to the console via the
-    # "gosa" object.
+    # Make the the ClacksService instance available to the console via the
+    # "proxy" object.
     service.proxy.help = service.help
-    context = {'gosa': service.proxy, '__name__': '__console__', '__doc__': None}
+    context = {'proxy': service.proxy, '__name__': '__console__', '__doc__': None}
 
     # This python wrap string catches any exception, prints it and exists the
     # program with a failure that can be processed by the caller (e.g. on a
@@ -350,6 +351,9 @@ except IOError:
     pass
 atexit.register(readline.write_history_file, histfile)
 del os, histfile, readline, rlcompleter
+
+for i in proxy.getMethods().keys():
+	globals()[i] = getattr(proxy, i)
 """
 
     # Use script mode:
@@ -381,7 +385,7 @@ del os, histfile, readline, rlcompleter
                 if not pyconsole:
                     pyconsole = MyConsole(context)
                     pyconsole.runcode(startup)
-                    pyconsole.interact(_("GOsa service shell. Use Ctrl+D to exit."))
+                    pyconsole.interact(_("Clacks infrastructure shell. Use Ctrl+D to exit."))
                 else:
                     mycode = pyconsole.getLastCode()
                     pyconsole = MyConsole(context)
@@ -394,7 +398,7 @@ del os, histfile, readline, rlcompleter
             except HTTPError as e:
                 if e.code == 401:
                     service.reconnectJson(service_uri, username, password)
-                    context = {'gosa': service, 'service': service.proxy,
+                    context = {'proxy': service, 'service': service.proxy,
                         '__name__': '__console__', '__doc__': None}
                 else:
                     print(e)
