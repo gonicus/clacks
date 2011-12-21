@@ -22,7 +22,6 @@ Package: clacks-dbus
 Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, clacks-client, hal,
  python-notify, python-daemon, python-dbus, python-dateutil
-Pre-Depends: clacks-common
 Description: clacks infrastructure service - DBUS service provider
  Brief description is missing.
  .
@@ -33,7 +32,6 @@ Architecture: all
 Conflicts: clacks-agent
 Depends: ${python:Depends}, ${misc:Depends}, python-dateutil, python-netifaces,
  python-crypto
-Pre-Depends: clacks-common
 Suggests: clacks-dbus, fusioninventory-agent
 Description: clacks infrastructure service - client
  Brief description is missing.
@@ -53,7 +51,6 @@ Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, clacks-common,
  python-dumbnet, python-ldap, python-smbpasswd, python-unidecode,
  python-dbxml, python-sqlalchemy, python-mysqldb, python-sqlalchemy-ext
-Pre-Depends: clacks-common
 Conflicts: clacks-client
 Suggests: qpidd
 Description: clacks infrastructure service - agent
