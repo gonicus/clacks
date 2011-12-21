@@ -40,7 +40,7 @@ class Service(Plugin):
         for method in self.gosa_dbus._introspect_method_map:
             if not re.match("^org\.clacks\.", method):
                 continue
-            name = re.sub("^org\.clacs\.(.*)$", "\\1", method)
+            name = re.sub("^org\.clacks\.(.*)$", "\\1", method)
             self.methods[name] = self.gosa_dbus._introspect_method_map[method]
         self.log.debug("found %s registered dbus methods" % (len(self.methods)))
 
