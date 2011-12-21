@@ -33,12 +33,10 @@
 
             <!-- Add Extensions -->
     		<Extensions>
-    			<xsl:for-each select="/g:merge/g:extensions">
-    				<Extension>
-    					<xsl:value-of select="g:extension" />
-    				</Extension>
+                <xsl:for-each select="/g:merge/g:extensions/g:extension">
+    				<Extension><xsl:value-of select="." /></Extension>
     			</xsl:for-each>
-    		</Extensions>
+            </Extensions>
 
     		<!--
     		<AvailableExtensions>
