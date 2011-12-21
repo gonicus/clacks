@@ -9,6 +9,11 @@ if [ ! -x package.sh -o ! -d debian ]; then
 	exit 1
 fi
 
+if [ ! -z "$VIRTUAL_ENV" ]; then
+	echo "Please do not run this script inside of a virtual environment. Use 'deactivate' first."
+	exit 1
+fi
+
 echo -n "Processing... "
 
 DIR="$NAME-$VERSION"

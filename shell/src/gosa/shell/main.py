@@ -115,7 +115,7 @@ class MyConsole(code.InteractiveConsole):
             # Check for error member
             try:
                 err = e.error["error"]
-            except KeyError:
+            except TypeError:
                 err = str(e)
             if isinstance(err, ListType):
                 print(err[0] % tuple(err[1:]))
