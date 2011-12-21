@@ -50,7 +50,7 @@
                         <xsd:element type="xsd:string" name="UUID" minOccurs="1" maxOccurs="1"></xsd:element>
                         <xsd:element type="xsd:string" name="Type" minOccurs="1" maxOccurs="1"></xsd:element>
                         <xsd:element type="xsd:string" name="DN" minOccurs="1" maxOccurs="1"></xsd:element>
-                        <xsd:element type="xsd:string" name="LastChanged" minOccurs="1" maxOccurs="1"></xsd:element>
+                        <xsd:element type="xsd:dateTime" name="LastChanged" minOccurs="1" maxOccurs="1"></xsd:element>
                         <xsd:element type="Extensions" name="Extensions" minOccurs="0" maxOccurs="1"></xsd:element>
                         <xsd:element type="Container" name="Container" minOccurs="0" maxOccurs="1"></xsd:element>
 
