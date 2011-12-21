@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- codin utf-8 -*-
 
 
 class XMLDBException(Exception):
@@ -119,6 +119,24 @@ class XMLDBInterface(object):
 
     def setSchema(self, collection, filename, content):
         raise NotImplementedErrorError("setSchema")
+
+    def matchSchema (self, collection, name, md5sum=None, schemaString=None):
+        """
+        This method can be used to check whether a schema has changed or not.
+
+        You can either check if the md5 sum has changed or you can check against
+        a given schema definition by using the schemaString parameter.
+
+        ============== ======================
+        Key            Value
+        ============== ======================
+        collection     The collection the schema belongs to
+        name           The schema filename you want to match for.
+        md5sum         Can be used to match md5 sums directly
+        schemaString   Can be used to match against a given schema string.
+        ============== ======================
+        """
+        raise NotImplementedErrorError("matchSchema")
 
     def setNamespace(self, collection, alias, namespace):
 

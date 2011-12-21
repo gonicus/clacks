@@ -1,5 +1,6 @@
 import os
 import re
+import md5
 import json
 import shutil
 import logging
@@ -187,10 +188,41 @@ class DBXml(XMLDBInterface):
         f.write(json.dumps(data, indent=2))
         f.close()
 
+    def matchSchema (self, collection, name, md5sum=None, schemaString=None):
+
+        # Validate parameters
+        if md5sum and schemaString:
+            raise XMLDBException("the parameters md5sum and schemaString can not be used together")
+        if not md5sum and not schemaString:
+            raise XMLDBException("at least one of the parameter md5sum/schemaString has to be given")
+
+        # Get the current database config
+        data = self.__readConfig(collection)
+
+        # Check if such a schema exists
+        if name not in data['md5_schema']:
+            XMLDBException("no such schema definition '%s' found for collection %s!" % (name, collection))
+
+        # Perform matching
+        if md5sum:
+            return(md5sum == data['md5_schema'][name])
+        elif schemaString:
+            return(schemaString == data['schema'][name])
+
     def setSchema(self, collection, filename, schema):
+
+        # Create checksum for the schema
+        md5sum = md5.new()
+        md5sum.update(schema)
+
         # Read the config file
         data = self.__readConfig(collection)
+        if not 'md5_schema' in data:
+            data['md5_schema'] = {}
+
+        # Update the schema information
         data['schema'][filename] = schema
+        data['md5_schema'][filename] = md5sum.hexdigest()
         self.__saveConfig(collection, data)
 
         self.log.debug("added/updated schema for collection %s %s (%s bytes)" % (collection, str(filename), len(schema)))
@@ -222,7 +254,7 @@ class DBXml(XMLDBInterface):
         try:
 
             # Create a new collection config object
-            data = {'collection': name, 'namespaces': namespaces, 'schema': schema}
+            data = {'collection': name, 'namespaces': namespaces, 'schema': {}, 'md5_schema': {}}
             f = open(os.path.join(path, 'config'), 'w')
             f.write(json.dumps(data, indent=2))
             f.close()
@@ -249,10 +281,9 @@ class DBXml(XMLDBInterface):
                     self.namespaces[alias] = namespace
                     self.queryContext.setNamespace(alias, namespace)
 
-            # Populate known schema files
-            self.log.debug("adding %s schema definition(s) for collection '%s'" % (len(data['schema'].items()), name))
-            for name, schema in data['schema'].items():
-                self.schemaResolver.addSchema(str(name), str(schema))
+            # Add schema information to the database
+            for entry in schema:
+                self.setSchema(name, entry, schema[entry])
 
         # Try some cleanup in case of an error
         except Exception as e:
