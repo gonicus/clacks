@@ -39,6 +39,11 @@ start_services() {
         STATUS=0
         for SERVICE in $SERVICES; do
             PIDFILE=/var/run/clacks/$SERVICE.pid
+            PID=$(pgrep clacks-$SERVICE)
+            if [ "x$PID" = "x$(cat $PIDFILE)" ]; then
+                log_progress_msg "$SERVICE(already running)"
+                continue
+            fi
             start-stop-daemon --start --quiet --pidfile $PIDFILE \
                 --exec /usr/sbin/clacks-$SERVICE -- --pid-file $PIDFILE
             test $? -ne 0 && STATUS=1

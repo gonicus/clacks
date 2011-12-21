@@ -305,7 +305,7 @@ class ClientService(Plugin):
             else:
                 conn.modify(res[0][0], [(ldap.MOD_REPLACE, "deviceStatus", [devstat])])
 
-    @Command(needsUser=True,__help__=N_("Join a client to the GOsa system."))
+    @Command(needsUser=True, __help__=N_("Join a client to the GOsa system."))
     def joinClient(self, user, device_uuid, mac, info=None):
         """
         TODO
