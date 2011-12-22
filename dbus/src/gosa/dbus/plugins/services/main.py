@@ -82,7 +82,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         service = self._validate(name, "start")
 
         # Skip if running
-        if service['running']:
+        if "True" in service['running']:
             return True
 
         # Execute call
