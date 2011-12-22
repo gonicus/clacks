@@ -344,7 +344,7 @@ import os
 readline.parse_and_bind('tab: complete')
 
 # history file
-histfile = os.path.join(os.environ['HOME'], '.gosa.history')
+histfile = os.path.join(os.environ['HOME'], '.clacks.history')
 try:
     readline.read_history_file(histfile)
 except IOError:
