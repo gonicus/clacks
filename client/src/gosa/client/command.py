@@ -87,7 +87,7 @@ class ClientCommandRegistry(object):
         if func in self.commands:
             (clazz, method) = self.path2method(self.commands[func]['path'])
             if 'args' in self.commands[func] and self.commands[func]['args']:
-                arg = self.commands[func]['args'] + arg
+                arg = self.commands[func]['args'] + list(arg)
 
             return PluginRegistry.modules[clazz].\
                     __getattribute__(method)(*arg, **larg)

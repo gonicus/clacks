@@ -51,7 +51,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         return services[name]
 
     @dbus.service.method('org.clacks', out_signature='i')
-    def get_runlevel(self):
+    def service_get_runlevel(self):
         """
         Returns the current runlevel of the clacks-client.
         """
@@ -65,7 +65,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         return int(runlevel)
 
     @dbus.service.method('org.clacks', in_signature='i', out_signature='i')
-    def set_runlevel(self, level):
+    def service_set_runlevel(self, level):
         """
         Sets a new runlevel for the clacks-client
         """
@@ -75,7 +75,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         return process.returncode
 
     @dbus.service.method('org.clacks', in_signature='s', out_signature='b')
-    def start(self, name):
+    def service_start(self, name):
         """
         Starts the given service, if it is not running.
         """
@@ -90,7 +90,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         return subprocess.call([self.svc_command, name, 'start']) == 0
 
     @dbus.service.method('org.clacks', in_signature='s', out_signature='b')
-    def stop(self, name):
+    def service_stop(self, name):
         """
         Stop the given service, if it is running.
         """
@@ -105,7 +105,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         return subprocess.call([self.svc_command, name, 'stop']) == 0
 
     @dbus.service.method('org.clacks', in_signature='s', out_signature='b')
-    def restart(self, name):
+    def service_restart(self, name):
         """
         Restart the given service.
         """
@@ -114,7 +114,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         return subprocess.call([self.svc_command, name, 'restart']) == 0
 
     @dbus.service.method('org.clacks', in_signature='s', out_signature='b')
-    def reload(self, name):
+    def service_reload(self, name):
         """
         Reloads the given service.
         """
