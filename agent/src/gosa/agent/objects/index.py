@@ -138,7 +138,7 @@ class ObjectIndex(Plugin):
                 continue
 
             # Check for index entry
-            changed = self.db.xquery("collection('objects')/*[UUID/string() = '%s']/LastChanged/string()" % obj.uuid)
+            changed = self.db.xquery("collection('objects')//node()[o:UUID/string() = '%s']/o:LastChanged/string()" % obj.uuid)
 
             # Entry is not in the database
             if not changed:
@@ -147,7 +147,7 @@ class ObjectIndex(Plugin):
             # Entry is in the database
             else:
                 # OK: already there
-                if obj.modifyTimestamp == datetime.datetime.strptime(changed[0], "%Y-%m-%d %H:%M:%S"):
+                if obj.modifyTimestamp == datetime.datetime.strptime(changed[0], "%Y-%m-%dT%H:%M:%S"):
                     self.log.debug("found up-to-date object index for %s" % obj.uuid)
 
                 else:

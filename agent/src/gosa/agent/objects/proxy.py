@@ -161,13 +161,18 @@ class GOsaObjectProxy(object):
         for extension in [e for x, e in self.__extensions.iteritems() if e]:
             extension.commit()
 
-    def __repr__(self):
-        return "<wopper>"
-
     def __getattr__(self, name):
         # Valid method?
         if name in self.__method_map:
             return self.__method_map[name]
+
+        if name == 'modifyTimestamp':
+            timestamp = self.__base.modifyTimestamp
+            for obj in self.__extensions.values():
+                if obj and obj.modifyTimestamp and timestamp < obj.modifyTimestamp:
+                    timestamp = obj.modifyTimestamp
+
+            return timestamp
 
         # Valid attribute?
         if not name in self.__attribute_map:
