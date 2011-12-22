@@ -2,8 +2,8 @@
 """
 The configuration module is the central place where the GOsa configuration
 can be queried. Using the configuration module requires the presence of the
-GOsa configuration file - commonly ``/etc/gosa/config`` and the subdirectory
-``/etc/gosa/config.d``. All these configurations will be merged into one
+GOsa configuration file - commonly ``/etc/clacks/config`` and the subdirectory
+``/etc/clacks/config.d``. All these configurations will be merged into one
 'virtual' configuration so that certain packages can provide their own config
 file without knowing how to read it.
 
@@ -66,7 +66,7 @@ class Config(object):
             }
     __configKeys = None
 
-    def __init__(self,  config="/etc/gosa/config",  noargs=False):
+    def __init__(self,  config="/etc/clacks/config",  noargs=False):
         # Load default user name for config parsing
         self.__registry['core']['config'] = config
         self.__noargs = noargs
@@ -94,7 +94,7 @@ class Config(object):
         parser.add_argument("--version", action='version', version=VERSION)
 
         parser.add_argument("-c", "--config", dest="config",
-                          default="/etc/gosa/config",
+                          default="/etc/clacks/config",
                           help="read configuration from FILE [%(default)s]",
                           metavar="FILE")
         parser.add_argument("--url", dest="url",

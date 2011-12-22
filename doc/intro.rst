@@ -458,7 +458,7 @@ In a productive environment, everything should be defined in the configuration
 file, so copy the configuration file to the place where gosa expects it::
 
   $ mkdir -p /etc/gosa
-  $ cp ./src/gosa.agent/src/gosa/agent/data/agent.conf /etc/gosa/config
+  $ cp ./src/gosa.agent/src/gosa/agent/data/agent.conf /etc/clacks/config
 
 Now take a look at the config file and adapt it to your needs.
 
@@ -641,7 +641,7 @@ interface.
 
 To use the dbus-component, you've to allow the gosa system user (or whatever user
 the gosa-client is running later on) to use certain dbus services. Copy and eventually
-adapt the file src/contrib/dbus/com.gonicus.gosa.conf to /etc/dbus-1/system.d/ and
+adapt the file src/contrib/dbus/org.clacks.conf to /etc/dbus-1/system.d/ and
 reload your dbus service. ::
 
   $ sudo service dbus reload
@@ -685,7 +685,7 @@ PHP GOsa and the agent - which acts as a replacement for *gosa-si*.
 
 To connection the web-based GOsa with the GOsa-agent you have to adjust the configuration slightly.
 There are two ways to do so, the first is to update the GOsa 2.7 configuration file directly 
-``/etc/gosa/gosa.conf`` to include the following lines:
+``/etc/clacks/config`` to include the following lines:
 
 .. code-block:: xml
 

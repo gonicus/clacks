@@ -1,10 +1,9 @@
 #!/bin/sh
 ### BEGIN INIT INFO
 # Provides:          clacks-dbus
-# X-Start-Before:    x-display-manager clacks-client
-# X-Interactive:     true
-# Required-Start:    $local_fs $network avahi
-# Required-Stop:     $local_fs $network avahi
+# X-Start-Before:    clacks-client
+# Required-Start:    $local_fs $remote_fs $network avahi
+# Required-Stop:     $local_fs $remote_fs $network avahi
 # Should-Start:	     $syslog
 # Should-Stop:       $syslog
 # Default-Start:     2 3 4 5
@@ -81,8 +80,8 @@ case "$1" in
     restart|force-reload)
         log_daemon_msg "Restarting $DESC"
         log_progress_msg "$SERVICE"
-        stop_services
-        start_services
+        stop_service
+        start_service
         log_end_msg $?
         ;;
 

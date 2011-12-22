@@ -842,7 +842,7 @@ def main():
         sys.exit(0)
 
     # Predefine some values
-    cfgFile = "/etc/gosa/config"
+    cfgFile = "/etc/clacks/config"
 
     # Parse out config parameter
     my_args = sys.argv

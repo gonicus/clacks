@@ -48,7 +48,7 @@ def main():
     try:
         env = Environment.getInstance()
     except ConfigNoFile:
-        config_file = "/etc/gosa/config"
+        config_file = "/etc/clacks/config"
         service = None
 
         # Try to find config file without optparser
