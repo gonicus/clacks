@@ -137,11 +137,15 @@ class GOsaObjectFactory(object):
         return self.__xml_objects_combined
 
     def getIndexedAttributes(self):
+        """
+        Returns a list of attributes that have to be indexed.
+        """
         res = []
         for element in self.__xml_defs.values():
 
-            # Get all <Attributes> tag and iterate through their children
-            find = objectify.ObjectPath("Objects.Object.Attributes.Attribute")
+            # Get all <Attribute> tags and check if the property NotIndexed exists
+            # and isn't set to 'true'
+            find = objectify.ObjectPath("Object.Attributes.Attribute")
             if find.hasattr(element):
                 for attr in find(element):
                     if bool(load(attr, "NotIndexed", True)):
@@ -149,12 +153,16 @@ class GOsaObjectFactory(object):
         return res
 
     def getReferences(self, s_obj=None, s_attr=None):
+        """
+        Returns a dictionary containing all attribute references.
+        e.g. A groups memberlist may have references to users.
+            {'PosixGroup': {'memberUid': [('PosixUser', 'uid')]}}
+        """
         res = {}
-
         for element in self.__xml_defs.values():
 
             # Get all <Attributes> tag and iterate through their children
-            find = objectify.ObjectPath("Objects.Object.Attributes")
+            find = objectify.ObjectPath("Object.Attributes")
             if find.hasattr(element):
                 for attr in find(element).iterchildren():
 
@@ -177,10 +185,13 @@ class GOsaObjectFactory(object):
         return res
 
     def getAttributes(self):
+        """
+        Returns a list of all object-attributes
+        Including information about primary/foreign attributes.
+        """
         res = {}
-
         for element in self.__xml_defs.values():
-            find = objectify.ObjectPath("Objects.Object.Attributes")
+            find = objectify.ObjectPath("Object.Attributes")
             if find.hasattr(element):
                 for attr in find(element).iterchildren():
                     obj = attr.getparent().getparent().Name.text
@@ -200,7 +211,6 @@ class GOsaObjectFactory(object):
                         res[attr.Name.text]['objects'].append(obj)
                     else:
                         res[attr.Name.text]['primary'].append(obj)
-
         return res
 
     def load_object_types(self):
@@ -210,7 +220,7 @@ class GOsaObjectFactory(object):
         # First, find all base objects
         # -> for every base object -> ask the primary backend to identify [true/false]
         for name, obj in self.__xml_defs.items():
-            t_obj = obj.Object
+            t_obj = obj
             is_base = bool(t_obj.BaseObject)
             backend = str(t_obj.Backend)
             backend_attrs = self.__get_backend_parameters(t_obj)
@@ -256,7 +266,7 @@ class GOsaObjectFactory(object):
         # First, find all base objects
         for name, info in self.__object_types.items():
             be = ObjectBackendRegistry.getBackend(info['backend'])
-            classr = self.__xml_defs[name].Object
+            classr = self.__xml_defs[name]
             fixed_rdn = classr.FixedRDN.text if 'FixedRDN' in classr.__dict__ else None
 
             if be.identify(dn, info['backend_attrs'], fixed_rdn):
@@ -286,13 +296,13 @@ class GOsaObjectFactory(object):
         ido = self.identifyObject(dn)
         if ido[0]:
             o_type = ido[0]
-            o = self.__xml_defs[o_type].Object
+            o = self.__xml_defs[o_type]
 
             if 'Container' in o.__dict__:
 
                 # Ask base backends for a one level query
                 for c_type in o.Container.iterchildren():
-                    c = self.__xml_defs[c_type.text].Object
+                    c = self.__xml_defs[c_type.text]
 
                     be = ObjectBackendRegistry.getBackend(c.Backend.text)
                     fixed_rdn = c.FixedRDN.text if 'FixedRDN' in c.__dict__ else None
@@ -323,12 +333,14 @@ class GOsaObjectFactory(object):
 
     def load_schema(self):
         """
-        This method reads all gosa-object defintion files and then calls
-        :meth:`gosa.agent.objects.factory.GOsaObjectFactory.getObject`
-        to initiate the parsing into meta-classes for each file.
+        This method reads all gosa-object defintion files (xml) and combines
+        into one single xml-dump.
 
-        These meta-classes are used for object instantiation later.
+        This combined-xml-dump will then be forwarded to
+        :meth:`gosa.agent.objects.factory.GOsaObjectFactory.__parse_schema`
+        to generate meta-classes for each object.
 
+        This meta-classes can then be used to instantiate those objects.
         """
         #pylint: disable=E1101
         path = pkg_resources.resource_filename('gosa.agent', 'data/objects')
@@ -337,16 +349,14 @@ class GOsaObjectFactory(object):
         schema_paths = []
         for f in [n for n in os.listdir(path) if n.endswith(os.extsep + 'xml')]:
             schema_paths.append(os.path.join(path, f))
-            self.__parse_schema(os.path.join(path, f))
 
         # Include additional schema configuration
         path = os.path.join(self.env.config.getBaseDir(), 'schema')
         if os.path.isdir(path):
             for f in [n for n in os.listdir(path) if n.endswith(os.extsep + 'xml')]:
-                self.__parse_schema(os.path.join(path, f))
+                schema_paths.append(os.path.join(path, f))
 
         # Combine all object definition file into one single doc
-        import pprint
         xstr = "<Paths xmlns=\"http://www.gonicus.de/Objects\">";
         for path in schema_paths:
             xstr += "<Path>%s</Path>" % path
@@ -357,17 +367,21 @@ class GOsaObjectFactory(object):
         xslt_doc = etree.parse(pkg_resources.resource_filename('gosa.agent', 'data/combine_objects.xsl'))
         transform = etree.XSLT(xslt_doc)
         self.__xml_objects_combined = transform(xml_doc)
+        self.__parse_schema(etree.tostring(self.__xml_objects_combined))
 
-    def __parse_schema(self, path):
+    def __parse_schema(self, schema):
         """
-        Parses a schema file using the
+        Parses a schema definition
         :meth:`gosa.agent.objects.factory.GOsaObjectFactory.__parser`
         method.
         """
         try:
-            xml = objectify.fromstring(open(path).read(), self.__parser)
-            self.__xml_defs[str(xml.Object['Name'][0])] = xml
-            self.log.info("loaded schema file for '%s' (%s)" % (str(xml.Object['Name'][0]),path))
+            xml = objectify.fromstring(schema, self.__parser)
+            find = objectify.ObjectPath("Objects.Object")
+            if find.hasattr(xml):
+                for attr in find(xml):
+                    self.__xml_defs[str(attr['Name'])] = attr
+                    self.log.info("loaded schema for '%s'" % (str(attr['Name'])))
 
         except etree.XMLSyntaxError as e:
             raise FactoryException("Error loading object-schema file: %s, %s" % (path, e))
@@ -407,7 +421,7 @@ class GOsaObjectFactory(object):
 
         # Collect Backend attributes per Backend
         back_attrs = {}
-        classr = self.__xml_defs[name].Object
+        classr = self.__xml_defs[name]
         if "BackendParameters" in classr.__dict__:
             for entry in classr["BackendParameters"]:
                 back_attrs[str(entry.Backend)] = entry.Backend.attrib
