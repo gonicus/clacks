@@ -1,6 +1,6 @@
 usr/bin/clacks-join usr/sbin
 usr/bin/clacks-agent usr/sbin
-usr/lib/python*/dist-packages/gosa/agent
+usr/lib/python*/dist-packages/clacks/agent
 usr/lib/python*/dist-packages/clacks.agent-*.egg-info
 usr/lib/python*/dist-packages/clacks.agent-*-nspkg.pth
 ../rsyslog/clacks-agent.conf /etc/rsyslog.d

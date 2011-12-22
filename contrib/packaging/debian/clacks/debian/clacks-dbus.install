@@ -1,6 +1,6 @@
 ../org.clacks.conf etc/dbus-1/system.d
 ../rsyslog/clacks-dbus.conf /etc/rsyslog.d
-usr/lib/python*/dist-packages/gosa/dbus
+usr/lib/python*/dist-packages/clacks/dbus
 usr/bin/clacks-dbus usr/sbin
 usr/bin/notify-user usr/sbin
 usr/lib/python*/dist-packages/clacks.dbus-*.egg-info

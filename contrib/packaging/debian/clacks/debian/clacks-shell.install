@@ -1,4 +1,4 @@
 usr/bin/clacksh
-usr/lib/python*/dist-packages/gosa/shell
+usr/lib/python*/dist-packages/clacks/shell
 usr/lib/python*/dist-packages/clacks.shell-*.egg-info
 usr/lib/python*/dist-packages/clacks.shell-*-nspkg.pth
