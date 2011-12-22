@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
-from gosa.agent.objects import GOsaObjectProxy
-from gosa.agent.objects.index import ObjectIndex, SCOPE_SUB
+from clacks.agent.objects import GOsaObjectProxy
+from clacks.agent.objects.index import ObjectIndex, SCOPE_SUB
 
 # Do some searching
 ie = ObjectIndex()

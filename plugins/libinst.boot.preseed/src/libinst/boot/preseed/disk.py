@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from gosa.common.components import PluginRegistry
+from clacks.common.components import PluginRegistry
 from libinst.interface import DiskDefinition
 
 

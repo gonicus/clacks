@@ -4,7 +4,7 @@ import MySQLdb
 import pkg_resources
 import gettext
 from amires.render import BaseRenderer
-from gosa.common import Environment
+from clacks.common import Environment
 
 # Set locale domain
 t = gettext.translation('messages', pkg_resources.resource_filename("amires", "locale"), fallback=False)

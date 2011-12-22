@@ -6,9 +6,9 @@ import StringIO
 import logging
 from dbxml import *
 from lxml import etree, objectify
-from gosa.common import Environment
-from gosa.common.components import AMQPEventConsumer
-from gosa.agent.plugins.inventory.consumer import *
+from clacks.common import Environment
+from clacks.common.components import AMQPEventConsumer
+from clacks.agent.plugins.inventory.consumer import *
 
 
 # Create event consumer

@@ -1,6 +1,6 @@
 AMQP service
 ============
 
-.. automodule:: gosa.agent.amqp_service
+.. automodule:: clacks.agent.amqp_service
    :members:
 

@@ -5,10 +5,10 @@ import ConfigParser
 import logging
 from datetime import datetime
 from subprocess import Popen, PIPE
-from gosa.common import Environment
-from gosa.common.utils import get_timezone_delta
-from gosa.common.components import Plugin
-from gosa.dbus.utils import get_system_bus
+from clacks.common import Environment
+from clacks.common.utils import get_timezone_delta
+from clacks.common.components import Plugin
+from clacks.dbus.utils import get_system_bus
 
 
 class OptionMissing(Exception):

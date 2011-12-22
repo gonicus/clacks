@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from gosa.common import Environment
+from clacks.common import Environment
 
 from time import time
 

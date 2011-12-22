@@ -56,18 +56,18 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-gosa.client.amqp_service">
-<span id="amqp-service"></span><h1>AMQP service<a class="headerlink" href="#module-gosa.client.amqp_service" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-clacks.client.amqp_service">
+<span id="amqp-service"></span><h1>AMQP service<a class="headerlink" href="#module-clacks.client.amqp_service" title="Permalink to this headline">¶</a></h1>
 <p>The <em>AMQPClientService</em> is responsible for connecting the <em>client</em> to the AMQP
 bus, registers the required queues, listens for commands on that queues
-and dispatches incoming commands to the <tt class="xref py py-class docutils literal"><span class="pre">gosa.client.command.CommandRegistry</span></tt>.</p>
+and dispatches incoming commands to the <tt class="xref py py-class docutils literal"><span class="pre">clacks.client.command.CommandRegistry</span></tt>.</p>
 <p><strong>Queues</strong></p>
 <p>In contrast to the GOsa agent, every client only has a single queue. It is
 constructed of these components:</p>
 <div class="highlight-python"><pre>{domain}.client.{uuid}</pre>
 </div>
 <p>For external calls it makes use of the
-<a class="reference internal" href="../common/components.html#gosa.common.components.amqp_proxy.AMQPServiceProxy" title="gosa.common.components.amqp_proxy.AMQPServiceProxy"><tt class="xref py py-class docutils literal"><span class="pre">gosa.common.components.amqp_proxy.AMQPServiceProxy</span></tt></a>, so it will
+<a class="reference internal" href="../common/components.html#clacks.common.components.amqp_proxy.AMQPServiceProxy" title="clacks.common.components.amqp_proxy.AMQPServiceProxy"><tt class="xref py py-class docutils literal"><span class="pre">clacks.common.components.amqp_proxy.AMQPServiceProxy</span></tt></a>, so it will
 construct additional temporary reply queues as needed.</p>
 <p><strong>Events</strong></p>
 <p>The GOsa client produces a <strong>ClientAnnounce</strong> event on startup which tells
@@ -79,13 +79,13 @@ from other agent nodes (i.e. if it&#8217;s the only one).</p>
 <p>On client shutdown, a <strong>ClientLeave</strong> is emitted to tell the agents that
 the client has passed away.</p>
 <dl class="class">
-<dt id="gosa.client.amqp_service.AMQPClientService">
-<em class="property">class </em><tt class="descclassname">gosa.client.amqp_service.</tt><tt class="descname">AMQPClientService</tt><a class="headerlink" href="#gosa.client.amqp_service.AMQPClientService" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.client.amqp_service.AMQPClientService">
+<em class="property">class </em><tt class="descclassname">clacks.client.amqp_service.</tt><tt class="descname">AMQPClientService</tt><a class="headerlink" href="#clacks.client.amqp_service.AMQPClientService" title="Permalink to this definition">¶</a></dt>
 <dd><p>Internal class to serve all available queues and commands to
 the AMQP broker.</p>
 <dl class="method">
-<dt id="gosa.client.amqp_service.AMQPClientService.commandReceived">
-<tt class="descname">commandReceived</tt><big>(</big><em>ssn</em>, <em>message</em><big>)</big><a class="headerlink" href="#gosa.client.amqp_service.AMQPClientService.commandReceived" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.client.amqp_service.AMQPClientService.commandReceived">
+<tt class="descname">commandReceived</tt><big>(</big><em>ssn</em>, <em>message</em><big>)</big><a class="headerlink" href="#clacks.client.amqp_service.AMQPClientService.commandReceived" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process incoming commands, coming in with session and message
 information.</p>
 <table border="1" class="docutils">
@@ -108,14 +108,14 @@ information.</p>
 </tbody>
 </table>
 <p>Incoming messages are coming from an
-<a class="reference internal" href="../common/components.html#gosa.common.components.amqp_proxy.AMQPServiceProxy" title="gosa.common.components.amqp_proxy.AMQPServiceProxy"><tt class="xref py py-class docutils literal"><span class="pre">gosa.common.components.amqp_proxy.AMQPServiceProxy</span></tt></a> which
+<a class="reference internal" href="../common/components.html#clacks.common.components.amqp_proxy.AMQPServiceProxy" title="clacks.common.components.amqp_proxy.AMQPServiceProxy"><tt class="xref py py-class docutils literal"><span class="pre">clacks.common.components.amqp_proxy.AMQPServiceProxy</span></tt></a> which
 is providing a <em>reply to</em> queue as a return channel. The command
 result is written to that queue.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.client.amqp_service.AMQPClientService.serve">
-<tt class="descname">serve</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.client.amqp_service.AMQPClientService.serve" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.client.amqp_service.AMQPClientService.serve">
+<tt class="descname">serve</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.client.amqp_service.AMQPClientService.serve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start AMQP service for this GOsa service provider.</p>
 </dd></dl>
 

@@ -3,8 +3,8 @@
 import re
 import logging
 from lxml import etree, objectify
-from gosa.agent.xmldb import XMLDBHandler
-from gosa.agent.objects import GOsaObjectProxy, GOsaObjectFactory
+from clacks.agent.xmldb import XMLDBHandler
+from clacks.agent.objects import GOsaObjectProxy, GOsaObjectFactory
 
 # ----
 

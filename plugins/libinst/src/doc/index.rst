@@ -26,13 +26,13 @@ system deployment and config management:
    base installation: install remaining packages, setup the configuration, etc.
 
    How the config management takes place varies and should be initiated by some
-   process in the base installation - normally the installation of the *gosa.client*
+   process in the base installation - normally the installation of the *clacks.client*
    which can take care of doing the right thing.
 
    Methods could be puppet, FAI, opsi, etc. which get some level of abstraction
    thru an item concept.
 
-In combination with the *gosa.client*, libinst is going to cover the complete client
+In combination with the *clacks.client*, libinst is going to cover the complete client
 lifecycle.
 
 *libinst* replaces the old FAI/opsi processes used withing gosa-si.

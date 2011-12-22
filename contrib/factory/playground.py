@@ -5,7 +5,7 @@ import datetime
 import sys
 import os
 import zope.event
-from gosa.agent.objects import GOsaObjectFactory
+from clacks.agent.objects import GOsaObjectFactory
 
 
 # Register pseudo event handler

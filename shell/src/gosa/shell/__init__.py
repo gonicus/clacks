@@ -4,7 +4,7 @@ The GOsa shell can be called in different ways.
 
  * Interactive mode::
 
-     $ gosa-shell
+     $ clacksh
      Searching service provider...
      Connected to amqps://amqp.example.net:5671/org.gosa
      Username [cajus]:
@@ -17,15 +17,15 @@ The GOsa shell can be called in different ways.
    may need to connect a special system or even provide your
    credentials in the URI like ::
 
-     $ gosa-shell amqps://user:password@amqp.example.net/org.gosa
+     $ clacksh amqps://user:password@amqp.example.net/org.gosa
 
    but keep in mind that this will expose your credentials in the
    history, and maybe in the history or the process list.
 
    Nevertheless you're presented a python prompt which can be used
-   to get the list of commands using the *gosa* object::
+   to get the list of commands using the *proxy* object::
 
-     >>> gosa.help()
+     >>> proxy.help()
      createDistribution()
          Create a new distribution based on type, mirror and installation
          method
@@ -34,10 +34,10 @@ The GOsa shell can be called in different ways.
          Get supported time zones
      ...
 
-   The *gosa* object acts as a proxy for the commands, so you can i.e. start
+   The *proxy* object acts as a proxy for the commands, so you can i.e. start
    asking for the registered GOsa clients ::
 
-     >>> gosa.getClients()
+     >>> proxy.getClients()
      {u'2daf7cbf-75c2-4ea3-bfec-606fe9f07051': {
          u'received': 1313159425.0,
          u'name': u'dyn-10'},
@@ -50,7 +50,7 @@ The GOsa shell can be called in different ways.
 
    or just do simple multi-liners::
 
-     >>> for client, info in gosa.getClients().items():
+     >>> for client, info in proxy.getClients().items():
      ...   print info['name']
      ...
      dyn-10
@@ -74,4 +74,4 @@ The GOsa shell can be called in different ways.
       Fix shell here document mode and provide docs
 """
 __import__('pkg_resources').declare_namespace(__name__)
-__version__ = __import__('pkg_resources').get_distribution('gosa.shell').version
+__version__ = __import__('pkg_resources').get_distribution('clacks.shell').version

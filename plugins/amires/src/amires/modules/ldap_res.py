@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import ldap
-from gosa.agent.ldap_utils import LDAPHandler
+from clacks.agent.ldap_utils import LDAPHandler
 from amires.resolver import PhoneNumberResolver
-from gosa.common.components.cache import cache
+from clacks.common.components.cache import cache
 
 
 class LDAPNumberResolver(PhoneNumberResolver):

@@ -1,5 +1,5 @@
 Environment access
 ==================
 
-.. automodule:: gosa.common.env
+.. automodule:: clacks.common.env
    :members:

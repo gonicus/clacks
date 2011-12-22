@@ -40,7 +40,7 @@ that::
 	#!/usr/bin/env python
 	# -*- coding: utf-8 -*-
 	
-	from gosa.common.components import AMQPEventConsumer
+	from clacks.common.components import AMQPEventConsumer
 	from lxml import etree
 	
 	# Event callback
@@ -67,10 +67,10 @@ that::
 
 This one will connect to the AMQP service and call the ``process`` callback
 if there's something interesting. Just start that one on one shell and
-open another one to send a signal using :meth:`gosa.agent.command.CommandRegistry.sendEvent`::
+open another one to send a signal using :meth:`clacks.agent.command.CommandRegistry.sendEvent`::
 
-	from gosa.common.components import AMQPServiceProxy
-	from gosa.common.event import EventMaker
+	from clacks.common.components import AMQPServiceProxy
+	from clacks.common.event import EventMaker
 	from lxml import etree
 	
 	# Connect to AMQP bus

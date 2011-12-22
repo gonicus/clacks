@@ -7,8 +7,8 @@ import logging
 from copy import copy
 from inspect import stack
 from types import StringTypes
-from gosa.common import Environment
-from gosa.agent.ldap_utils import LDAPHandler, unicode2utf8, normalize_ldap
+from clacks.common import Environment
+from clacks.agent.ldap_utils import LDAPHandler, unicode2utf8, normalize_ldap
 from libinst.entities.config_item import ConfigItem
 from libinst.utils import load_system
 from sqlalchemy import func

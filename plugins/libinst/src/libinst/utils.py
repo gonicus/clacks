@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import ldap
-from gosa.agent.ldap_utils import LDAPHandler
+from clacks.agent.ldap_utils import LDAPHandler
 
 
 def load_system(device_uuid, mac=None, inherit=True):

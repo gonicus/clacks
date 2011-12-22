@@ -39,8 +39,8 @@ else:
 
 
 setup(
-    name = "gosa.common",
-    version = "3.0",
+    name = "clacks.common",
+    version = "1.0",
     author = "Cajus Pollmeier",
     author_email = "pollmeier@gonicus.de",
     description = "Identity-, system- and configmanagement middleware",
@@ -49,7 +49,7 @@ setup(
     license = "LGPL",
     url = "http://www.gosa-project.org",
     classifiers = [
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Console',
         'Intended Audience :: System Administrators',
         'License :: OSI Approved :: GNU General Public License (GPL)',
@@ -64,11 +64,11 @@ setup(
     download_url = "http://oss.gonicus.de/pub/gosa",
     packages = find_packages('src'),
     package_dir={'': 'src'},
-    namespace_packages = ['gosa'],
+    namespace_packages = ['clacks'],
 
     include_package_data = True,
     package_data = {
-        'gosa.common': ['data/stylesheets/*', 'data/events/*'],
+        'clacks.common': ['data/stylesheets/*', 'data/events/*'],
     },
 
     test_suite = "nose.collector",
@@ -88,9 +88,9 @@ setup(
 
     entry_points = """
         [gosa.modules]
-        gosa-agent.amqp = gosa.common.components.amqp:AMQPHandler
+        gosa-agent.amqp = clacks.common.components.amqp:AMQPHandler
 
         [json.datahandlers]
-        datetime = gosa.common.gjson:DateTimeHandler
+        datetime = clacks.common.gjson:DateTimeHandler
     """,
 )

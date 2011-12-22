@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from gosa.common import Environment
-from gosa.common.components import AMQPServiceProxy
+from clacks.common import Environment
+from clacks.common.components import AMQPServiceProxy
 
 class GosaHandler(object):
     def __init__(self):

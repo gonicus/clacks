@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import unittest
-from gosa.common import Environment
+from clacks.common import Environment
 from sample.module import SampleModule
 
 class TestSampleModule(unittest.TestCase):

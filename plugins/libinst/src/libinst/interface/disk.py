@@ -2,7 +2,7 @@
 import re
 import itertools
 from lxml import etree, objectify
-from gosa.common.components.registry import PluginRegistry
+from clacks.common.components.registry import PluginRegistry
 
 LINUX = 2 ** 0
 ALL = 2 ** 1

@@ -14,7 +14,7 @@ CHANGES = open(os.path.join(here, 'CHANGES')).read()
 
 
 client_install_requires = [
-    'gosa.common',
+    'clacks.common',
     'netaddr',
     'netifaces',
     'python_dateutil',
@@ -29,7 +29,7 @@ if platform.system() == "Windows":
 
     modules = ""
     joiner = """
-        join.cli = gosa.client.plugins.join.cli:Cli
+        join.cli = clacks.client.plugins.join.cli:Cli
     """
 else:
     client_install_requires[0].append([
@@ -38,21 +38,21 @@ else:
     ])
 
     modules = """
-        module.wakeonlan = gosa.client.plugins.wakeonlan.utils:WakeOnLan
-        module.notify = gosa.client.plugins.notify.utils:Notify
-        module.inventory = gosa.client.plugins.inventory.utils:Inventory
-        module.service = gosa.client.plugins.dbus.proxy:DBUSProxy
-        module.powermanagement = gosa.client.plugins.powermanagement.utils:PowerManagement
-        module.session = gosa.client.plugins.sessions.main:SessionKeeper
+        module.wakeonlan = clacks.client.plugins.wakeonlan.utils:WakeOnLan
+        module.notify = clacks.client.plugins.notify.utils:Notify
+        module.inventory = clacks.client.plugins.inventory.utils:Inventory
+        module.service = clacks.client.plugins.dbus.proxy:DBUSProxy
+        module.powermanagement = clacks.client.plugins.powermanagement.utils:PowerManagement
+        module.session = clacks.client.plugins.sessions.main:SessionKeeper
     """
     joiner = """
-        join.curses = gosa.client.plugins.join.curses_gui:CursesGUI
-        join.cli = gosa.client.plugins.join.cli:Cli
+        join.curses = clacks.client.plugins.join.curses_gui:CursesGUI
+        join.cli = clacks.client.plugins.join.cli:Cli
     """
 
 setup(
-    name = "gosa.client",
-    version = "3.0",
+    name = "clacks.client",
+    version = "1.0",
     author = "Cajus Pollmeier",
     author_email = "pollmeier@gonicus.de",
     description = "Identity-, system- and configmanagement middleware",
@@ -61,7 +61,7 @@ setup(
     license = "LGPL",
     url = "http://www.gosa-project.org",
     classifiers = [
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Console',
         'Intended Audience :: System Administrators',
         'License :: OSI Approved :: GNU General Public License (GPL)',
@@ -76,12 +76,12 @@ setup(
     download_url = "http://oss.gonicus.de/pub/gosa",
     packages = find_packages('src', exclude=['examples', 'tests']),
     package_dir={'': 'src'},
-    namespace_packages = ['gosa'],
+    namespace_packages = ['clacks'],
 
     include_package_data = True,
     package_data = {
-        'gosa.client': ['data/client.conf'],
-        'gosa.client.plugins.inventory': ['data/xmlToChecksumXml.xsl'],
+        'clacks.client': ['data/client.conf'],
+        'clacks.client.plugins.inventory': ['data/xmlToChecksumXml.xsl'],
     },
 
     test_suite = "nose.collector",
@@ -100,16 +100,16 @@ setup(
 
     entry_points = """
         [console_scripts]
-        clacks-client = gosa.client.main:main
-        clacks-join = gosa.client.join:main
+        clacks-client = clacks.client.main:main
+        clacks-join = clacks.client.join:main
 
         [gosa_join.modules]
         %(joiner)s
 
         [gosa_client.modules]
-        module.command = gosa.client.command:ClientCommandRegistry
-        module.amqp = gosa.client.amqp:AMQPClientHandler
-        module.amqp_service = gosa.client.amqp_service:AMQPClientService
+        module.command = clacks.client.command:ClientCommandRegistry
+        module.amqp = clacks.client.amqp:AMQPClientHandler
+        module.amqp_service = clacks.client.amqp_service:AMQPClientService
         %(modules)s
     """ % {'modules': modules, 'joiner': joiner},
 

@@ -64,15 +64,15 @@ have <em>serve</em>/<em>stop</em> methods and a <em>priority</em>: they&#8217;re
 service startup.</p>
 <div class="section" id="plain-plugins">
 <h2>Plain plugins<a class="headerlink" href="#plain-plugins" title="Permalink to this headline">¶</a></h2>
-<p>Plain plugins just need to inherit from <a class="reference internal" href="../../common/components.html#gosa.common.components.plugin.Plugin" title="gosa.common.components.plugin.Plugin"><tt class="xref py py-class docutils literal"><span class="pre">gosa.common.components.plugin.Plugin</span></tt></a>
-and make use of <a class="reference internal" href="../../common/components.html#gosa.common.components.command.Command" title="gosa.common.components.command.Command"><tt class="xref py py-meth docutils literal"><span class="pre">gosa.common.components.command.Command()</span></tt></a>. Additionally, they&#8217;ve
+<p>Plain plugins just need to inherit from <a class="reference internal" href="../../common/components.html#clacks.common.components.plugin.Plugin" title="clacks.common.components.plugin.Plugin"><tt class="xref py py-class docutils literal"><span class="pre">clacks.common.components.plugin.Plugin</span></tt></a>
+and make use of <a class="reference internal" href="../../common/components.html#clacks.common.components.command.Command" title="clacks.common.components.command.Command"><tt class="xref py py-meth docutils literal"><span class="pre">clacks.common.components.command.Command()</span></tt></a>. Additionally, they&#8217;ve
 to specify their target queue - <a class="reference internal" href="../../agent/amqp.html#agent-queues"><em>see agent queues</em></a>.</p>
 <p>Use the <strong>tools/gosa-plugin-skell</strong> command to get a GOsa agent plugin skeleton and
 take a look at the <em>main.py</em> file:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># -*- coding: utf-8 -*-</span>
 <span class="kn">import</span> <span class="nn">gettext</span>
-<span class="kn">from</span> <span class="nn">gosa.common</span> <span class="kn">import</span> <span class="n">Environment</span>
-<span class="kn">from</span> <span class="nn">gosa.common.components</span> <span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">Plugin</span>
+<span class="kn">from</span> <span class="nn">clacks.common</span> <span class="kn">import</span> <span class="n">Environment</span>
+<span class="kn">from</span> <span class="nn">clacks.common.components</span> <span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">Plugin</span>
 
 <span class="c"># Load gettext</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">gettext</span><span class="o">.</span><span class="n">translation</span><span class="p">(</span><span class="s">&#39;messages&#39;</span><span class="p">,</span> <span class="n">resource_filename</span><span class="p">(</span><span class="s">&quot;sample&quot;</span><span class="p">,</span> <span class="s">&quot;locale&quot;</span><span class="p">),</span> <span class="n">fallback</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -96,7 +96,7 @@ the GOsa agents <em>CommandRegistry</em> - which is callable for users later on.
 can see a couple of things that are common to all plugins:</p>
 <blockquote>
 <div><ul class="simple">
-<li>they import <em>Command</em> and <em>Plugin</em> from the <a class="reference internal" href="../../common/components.html#module-gosa.common.components" title="gosa.common.components"><tt class="xref py py-mod docutils literal"><span class="pre">gosa.common.components</span></tt></a></li>
+<li>they import <em>Command</em> and <em>Plugin</em> from the <a class="reference internal" href="../../common/components.html#module-clacks.common.components" title="clacks.common.components"><tt class="xref py py-mod docutils literal"><span class="pre">clacks.common.components</span></tt></a></li>
 <li>they optionally import the <em>Environment</em> if there&#8217;s a need for it (i.e.
 logging or config management)</li>
 <li>they optionally initialize the gettext module for i18n support</li>
@@ -126,9 +126,9 @@ earlier. You can maintain service dependencies this way if you need to.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># -*- coding: utf-8 -*-</span>
 <span class="kn">import</span> <span class="nn">gettext</span>
 <span class="kn">from</span> <span class="nn">zope.interface</span> <span class="kn">import</span> <span class="n">implements</span>
-<span class="kn">from</span> <span class="nn">gosa.common</span> <span class="kn">import</span> <span class="n">Environment</span>
-<span class="kn">from</span> <span class="nn">gosa.common.handler</span> <span class="kn">import</span> <span class="n">IInterfaceHandler</span>
-<span class="kn">from</span> <span class="nn">gosa.common.components</span> <span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">Plugin</span>
+<span class="kn">from</span> <span class="nn">clacks.common</span> <span class="kn">import</span> <span class="n">Environment</span>
+<span class="kn">from</span> <span class="nn">clacks.common.handler</span> <span class="kn">import</span> <span class="n">IInterfaceHandler</span>
+<span class="kn">from</span> <span class="nn">clacks.common.components</span> <span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">Plugin</span>
 
 <span class="c"># Load gettext</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">gettext</span><span class="o">.</span><span class="n">translation</span><span class="p">(</span><span class="s">&#39;messages&#39;</span><span class="p">,</span> <span class="n">resource_filename</span><span class="p">(</span><span class="s">&quot;sample&quot;</span><span class="p">,</span> <span class="s">&quot;locale&quot;</span><span class="p">),</span> <span class="n">fallback</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>

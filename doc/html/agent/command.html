@@ -56,16 +56,16 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-gosa.agent.command">
-<span id="command-registry"></span><h1>Command registry<a class="headerlink" href="#module-gosa.agent.command" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-clacks.agent.command">
+<span id="command-registry"></span><h1>Command registry<a class="headerlink" href="#module-clacks.agent.command" title="Permalink to this headline">¶</a></h1>
 <p>The <em>CommandRegistry</em> is responsible for knowing what kind of commands
 are available for users. It works together with the
-<a class="reference internal" href="../common/components.html#gosa.common.components.registry.PluginRegistry" title="gosa.common.components.registry.PluginRegistry"><tt class="xref py py-class docutils literal"><span class="pre">gosa.common.components.registry.PluginRegistry</span></tt></a> and inspects
+<a class="reference internal" href="../common/components.html#clacks.common.components.registry.PluginRegistry" title="clacks.common.components.registry.PluginRegistry"><tt class="xref py py-class docutils literal"><span class="pre">clacks.common.components.registry.PluginRegistry</span></tt></a> and inspects
 all loaded plugins for methods marked with the
-<a class="reference internal" href="../common/components.html#gosa.common.components.command.Command" title="gosa.common.components.command.Command"><tt class="xref py py-meth docutils literal"><span class="pre">gosa.common.components.command.Command()</span></tt></a> decorator. All available
+<a class="reference internal" href="../common/components.html#clacks.common.components.command.Command" title="clacks.common.components.command.Command"><tt class="xref py py-meth docutils literal"><span class="pre">clacks.common.components.command.Command()</span></tt></a> decorator. All available
 information like <em>method path</em>, <em>command name</em>, <em>target queue</em>,
 <em>documentation</em> and <em>signature</em> are recorded and are available for users
-via the <a class="reference internal" href="#gosa.agent.command.CommandRegistry.dispatch" title="gosa.agent.command.CommandRegistry.dispatch"><tt class="xref py py-meth docutils literal"><span class="pre">gosa.agent.command.CommandRegistry.dispatch()</span></tt></a> method
+via the <a class="reference internal" href="#clacks.agent.command.CommandRegistry.dispatch" title="clacks.agent.command.CommandRegistry.dispatch"><tt class="xref py py-meth docutils literal"><span class="pre">clacks.agent.command.CommandRegistry.dispatch()</span></tt></a> method
 (or better with the several proxies) and the CLI.</p>
 <p>Next to registering commands, the <em>CommandRegistry</em> is also responsible
 for sending and receiving a couple of important bus events:</p>
@@ -106,25 +106,25 @@ of valid commands.</p>
 </div>
 <hr class="docutils" />
 <dl class="exception">
-<dt id="gosa.agent.command.CommandInvalid">
-<em class="property">exception </em><tt class="descclassname">gosa.agent.command.</tt><tt class="descname">CommandInvalid</tt><a class="headerlink" href="#gosa.agent.command.CommandInvalid" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.command.CommandInvalid">
+<em class="property">exception </em><tt class="descclassname">clacks.agent.command.</tt><tt class="descname">CommandInvalid</tt><a class="headerlink" href="#clacks.agent.command.CommandInvalid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exception which is raised when the command is not valid.</p>
 </dd></dl>
 
 <dl class="exception">
-<dt id="gosa.agent.command.CommandNotAuthorized">
-<em class="property">exception </em><tt class="descclassname">gosa.agent.command.</tt><tt class="descname">CommandNotAuthorized</tt><a class="headerlink" href="#gosa.agent.command.CommandNotAuthorized" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.command.CommandNotAuthorized">
+<em class="property">exception </em><tt class="descclassname">clacks.agent.command.</tt><tt class="descname">CommandNotAuthorized</tt><a class="headerlink" href="#clacks.agent.command.CommandNotAuthorized" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exception which is raised when the call was not authorized.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="gosa.agent.command.CommandRegistry">
-<em class="property">class </em><tt class="descclassname">gosa.agent.command.</tt><tt class="descname">CommandRegistry</tt><a class="headerlink" href="#gosa.agent.command.CommandRegistry" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.command.CommandRegistry">
+<em class="property">class </em><tt class="descclassname">clacks.agent.command.</tt><tt class="descname">CommandRegistry</tt><a class="headerlink" href="#clacks.agent.command.CommandRegistry" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class covers the registration and invocation of methods
 imported thru plugins.</p>
 <dl class="method">
-<dt id="gosa.agent.command.CommandRegistry.call">
-<tt class="descname">call</tt><big>(</big><em>func</em>, <em>*arg</em>, <em>**larg</em><big>)</big><a class="headerlink" href="#gosa.agent.command.CommandRegistry.call" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.command.CommandRegistry.call">
+<tt class="descname">call</tt><big>(</big><em>func</em>, <em>*arg</em>, <em>**larg</em><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.call" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>call</em> can be used to internally call a registered method
 directly. There&#8217;s no access control happening with this
 method.</p>
@@ -151,8 +151,8 @@ method.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.command.CommandRegistry.callNeedsQueue">
-<tt class="descname">callNeedsQueue</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#gosa.agent.command.CommandRegistry.callNeedsQueue" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.command.CommandRegistry.callNeedsQueue">
+<tt class="descname">callNeedsQueue</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.callNeedsQueue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if the provided method requires a queue parameter.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -174,8 +174,8 @@ method.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.command.CommandRegistry.callNeedsUser">
-<tt class="descname">callNeedsUser</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#gosa.agent.command.CommandRegistry.callNeedsUser" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.command.CommandRegistry.callNeedsUser">
+<tt class="descname">callNeedsUser</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.callNeedsUser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if the provided method requires a user parameter.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -197,8 +197,8 @@ method.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.command.CommandRegistry.checkQueue">
-<tt class="descname">checkQueue</tt><big>(</big><em>func</em>, <em>queue</em><big>)</big><a class="headerlink" href="#gosa.agent.command.CommandRegistry.checkQueue" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.command.CommandRegistry.checkQueue">
+<tt class="descname">checkQueue</tt><big>(</big><em>func</em>, <em>queue</em><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.checkQueue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if the provided method was sent to the correct queue.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -223,8 +223,8 @@ method.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.command.CommandRegistry.dispatch">
-<tt class="descname">dispatch</tt><big>(</big><em>user</em>, <em>queue</em>, <em>func</em>, <em>*arg</em>, <em>**larg</em><big>)</big><a class="headerlink" href="#gosa.agent.command.CommandRegistry.dispatch" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.command.CommandRegistry.dispatch">
+<tt class="descname">dispatch</tt><big>(</big><em>user</em>, <em>queue</em>, <em>func</em>, <em>*arg</em>, <em>**larg</em><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.dispatch" title="Permalink to this definition">¶</a></dt>
 <dd><p>The dispatch method will try to call the specified function and
 checks for user and queue. Additionally, it carries the call to
 it&#8217;s really destination (function types, cumulative results) and
@@ -269,8 +269,8 @@ are capable of processing them - ordered by load.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.command.CommandRegistry.getMethods">
-<tt class="descname">getMethods</tt><big>(</big><em>queue=None</em>, <em>locale=None</em><big>)</big><a class="headerlink" href="#gosa.agent.command.CommandRegistry.getMethods" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.command.CommandRegistry.getMethods">
+<tt class="descname">getMethods</tt><big>(</big><em>queue=None</em>, <em>locale=None</em><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.getMethods" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-0">
 </div>
 <div class="admonition note">
@@ -301,8 +301,8 @@ are capable of processing them - ordered by load.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.command.CommandRegistry.getNodes">
-<tt class="descname">getNodes</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.agent.command.CommandRegistry.getNodes" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.command.CommandRegistry.getNodes">
+<tt class="descname">getNodes</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.getNodes" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-1">
 </div>
 <div class="admonition note">
@@ -314,15 +314,15 @@ are capable of processing them - ordered by load.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.command.CommandRegistry.get_load_sorted_nodes">
-<tt class="descname">get_load_sorted_nodes</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.agent.command.CommandRegistry.get_load_sorted_nodes" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.command.CommandRegistry.get_load_sorted_nodes">
+<tt class="descname">get_load_sorted_nodes</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.get_load_sorted_nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a node list sorted by node <em>load</em>.</p>
 <p><tt class="docutils literal"><span class="pre">Return:</span></tt> list</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.command.CommandRegistry.hasMethod">
-<tt class="descname">hasMethod</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#gosa.agent.command.CommandRegistry.hasMethod" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.command.CommandRegistry.hasMethod">
+<tt class="descname">hasMethod</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.hasMethod" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the desired method is available.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -344,8 +344,8 @@ are capable of processing them - ordered by load.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.command.CommandRegistry.isAvailable">
-<tt class="descname">isAvailable</tt><big>(</big><em>providers</em><big>)</big><a class="headerlink" href="#gosa.agent.command.CommandRegistry.isAvailable" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.command.CommandRegistry.isAvailable">
+<tt class="descname">isAvailable</tt><big>(</big><em>providers</em><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.isAvailable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the list of providers contain at least one
 node which is available.</p>
 <table border="1" class="docutils">
@@ -368,8 +368,8 @@ node which is available.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.command.CommandRegistry.path2method">
-<tt class="descname">path2method</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#gosa.agent.command.CommandRegistry.path2method" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.command.CommandRegistry.path2method">
+<tt class="descname">path2method</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.path2method" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts the call path (class.method) to the method itself</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -391,8 +391,8 @@ node which is available.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.command.CommandRegistry.sendEvent">
-<tt class="descname">sendEvent</tt><big>(</big><em>user</em>, <em>data</em><big>)</big><a class="headerlink" href="#gosa.agent.command.CommandRegistry.sendEvent" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.command.CommandRegistry.sendEvent">
+<tt class="descname">sendEvent</tt><big>(</big><em>user</em>, <em>data</em><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.sendEvent" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-2">
 </div>
 <div class="admonition note">
@@ -421,15 +421,15 @@ see <a class="reference internal" href="../common/event.html#events"><em>Events 
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.command.CommandRegistry.serve">
-<tt class="descname">serve</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.agent.command.CommandRegistry.serve" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.command.CommandRegistry.serve">
+<tt class="descname">serve</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.serve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start serving the command registry to the outside world. Send
 hello and register event callbacks.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.command.CommandRegistry.shutdown">
-<tt class="descname">shutdown</tt><big>(</big><em>queue</em>, <em>force=False</em><big>)</big><a class="headerlink" href="#gosa.agent.command.CommandRegistry.shutdown" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.command.CommandRegistry.shutdown">
+<tt class="descname">shutdown</tt><big>(</big><em>queue</em>, <em>force=False</em><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.shutdown" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-3">
 </div>
 <div class="admonition note">
@@ -459,8 +459,8 @@ logged in.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.command.CommandRegistry.updateNodes">
-<tt class="descname">updateNodes</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.agent.command.CommandRegistry.updateNodes" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.command.CommandRegistry.updateNodes">
+<tt class="descname">updateNodes</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.updateNodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Maintain node list. Remove entries that haven&#8217;t shown up
 in the configured interval.</p>
 </dd></dl>

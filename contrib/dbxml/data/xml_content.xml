@@ -20746,7 +20746,7 @@
       <PID>4687</PID>
     </Process>
     <Process>
-      <Command>vi ./gosa.client/src/gosa/client/plugins/inventory/utils.py</Command>
+      <Command>vi ./clacks.client/src/gosa/client/plugins/inventory/utils.py</Command>
       <CpuUsage>0.0</CpuUsage>
       <MemoryUsagePercent>0.0</MemoryUsagePercent>
       <StartDate>2011-10-10T10:48:00Z</StartDate>

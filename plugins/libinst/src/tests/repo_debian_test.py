@@ -6,7 +6,7 @@ import unittest
 from sqlalchemy.orm import sessionmaker
 from libinst import LibinstManager
 from libinst.entities.type import Type
-from gosa.common import Environment
+from clacks.common import Environment
 
 class TestDebianRepository(unittest.TestCase):
 

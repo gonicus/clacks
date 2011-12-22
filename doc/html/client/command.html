@@ -56,26 +56,26 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-gosa.client.command">
-<span id="command-registry"></span><h1>Command registry<a class="headerlink" href="#module-gosa.client.command" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-clacks.client.command">
+<span id="command-registry"></span><h1>Command registry<a class="headerlink" href="#module-clacks.client.command" title="Permalink to this headline">¶</a></h1>
 <p>The <em>ClientCommandRegistry</em> is responsible for knowing what kind of commands
 are available for the client. It works together with the
-<a class="reference internal" href="../common/components.html#gosa.common.components.registry.PluginRegistry" title="gosa.common.components.registry.PluginRegistry"><tt class="xref py py-class docutils literal"><span class="pre">gosa.common.components.registry.PluginRegistry</span></tt></a> and inspects
+<a class="reference internal" href="../common/components.html#clacks.common.components.registry.PluginRegistry" title="clacks.common.components.registry.PluginRegistry"><tt class="xref py py-class docutils literal"><span class="pre">clacks.common.components.registry.PluginRegistry</span></tt></a> and inspects
 all loaded plugins for methods marked with the
-<a class="reference internal" href="../common/components.html#gosa.common.components.command.Command" title="gosa.common.components.command.Command"><tt class="xref py py-meth docutils literal"><span class="pre">gosa.common.components.command.Command()</span></tt></a> decorator. All available
+<a class="reference internal" href="../common/components.html#clacks.common.components.command.Command" title="clacks.common.components.command.Command"><tt class="xref py py-meth docutils literal"><span class="pre">clacks.common.components.command.Command()</span></tt></a> decorator. All available
 information like <em>method path</em>, <em>command name</em>, <em>documentation</em> and
 <em>signature</em> are recorded and are available for users
-via the <a class="reference internal" href="../plugins/agent/goto.html#gosa.agent.plugins.goto.client_service.ClientService.clientDispatch" title="gosa.agent.plugins.goto.client_service.ClientService.clientDispatch"><tt class="xref py py-meth docutils literal"><span class="pre">gosa.agent.plugins.goto.client_service.ClientService.clientDispatch()</span></tt></a> method
+via the <a class="reference internal" href="../plugins/agent/goto.html#clacks.agent.plugins.goto.client_service.ClientService.clientDispatch" title="clacks.agent.plugins.goto.client_service.ClientService.clientDispatch"><tt class="xref py py-meth docutils literal"><span class="pre">clacks.agent.plugins.goto.client_service.ClientService.clientDispatch()</span></tt></a> method
 (or better with the several proxies) and the CLI.</p>
 <hr class="docutils" />
 <dl class="class">
-<dt id="gosa.client.command.ClientCommandRegistry">
-<em class="property">class </em><tt class="descclassname">gosa.client.command.</tt><tt class="descname">ClientCommandRegistry</tt><a class="headerlink" href="#gosa.client.command.ClientCommandRegistry" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.client.command.ClientCommandRegistry">
+<em class="property">class </em><tt class="descclassname">clacks.client.command.</tt><tt class="descname">ClientCommandRegistry</tt><a class="headerlink" href="#clacks.client.command.ClientCommandRegistry" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class covers the registration and invocation of methods
 imported thru plugins.</p>
 <dl class="method">
-<dt id="gosa.client.command.ClientCommandRegistry.dispatch">
-<tt class="descname">dispatch</tt><big>(</big><em>func</em>, <em>*arg</em>, <em>**larg</em><big>)</big><a class="headerlink" href="#gosa.client.command.ClientCommandRegistry.dispatch" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.client.command.ClientCommandRegistry.dispatch">
+<tt class="descname">dispatch</tt><big>(</big><em>func</em>, <em>*arg</em>, <em>**larg</em><big>)</big><a class="headerlink" href="#clacks.client.command.ClientCommandRegistry.dispatch" title="Permalink to this definition">¶</a></dt>
 <dd><p>The dispatch method will try to call the specified function and
 checks for user and queue. Additionally, it carries the call to
 it&#8217;s really destination (function types, cumulative results) and
@@ -105,8 +105,8 @@ dispatch the real calls.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.client.command.ClientCommandRegistry.getMethods">
-<tt class="descname">getMethods</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.client.command.ClientCommandRegistry.getMethods" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.client.command.ClientCommandRegistry.getMethods">
+<tt class="descname">getMethods</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.client.command.ClientCommandRegistry.getMethods" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-0">
 </div>
 <div class="admonition note">
@@ -117,8 +117,8 @@ dispatch the real calls.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.client.command.ClientCommandRegistry.path2method">
-<tt class="descname">path2method</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#gosa.client.command.ClientCommandRegistry.path2method" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.client.command.ClientCommandRegistry.path2method">
+<tt class="descname">path2method</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#clacks.client.command.ClientCommandRegistry.path2method" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts the call path (class.method) to the method itself</p>
 <table border="1" class="docutils">
 <colgroup>

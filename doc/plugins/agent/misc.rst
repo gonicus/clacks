@@ -1,5 +1,5 @@
 Misc plugins
 ============
 
-.. autoclass:: gosa.agent.plugins.misc.utils.MiscUtils
+.. autoclass:: clacks.agent.plugins.misc.utils.MiscUtils
    :members:

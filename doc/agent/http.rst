@@ -1,6 +1,6 @@
 HTTP service
 ============
 
-.. automodule:: gosa.agent.httpd
+.. automodule:: clacks.agent.httpd
    :members:
 

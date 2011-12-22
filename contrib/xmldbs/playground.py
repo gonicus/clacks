@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from gosa.agent.xmldb import XMLDBHandler
+from clacks.agent.xmldb import XMLDBHandler
 
 
 obj_schema = open("objects.xsd").read()

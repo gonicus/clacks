@@ -1,61 +1,61 @@
 Components
 ==========
 
-.. automodule:: gosa.common.components
+.. automodule:: clacks.common.components
    :members:
 
 
 -------
 
-.. automodule:: gosa.common.components.amqp_proxy
+.. automodule:: clacks.common.components.amqp_proxy
    :members:
 
 -------
 
-.. automodule:: gosa.common.components.amqp
+.. automodule:: clacks.common.components.amqp
    :members:
 
 -------
 
-.. automodule:: gosa.common.components.cache
+.. automodule:: clacks.common.components.cache
    :members:
 
 -------
 
-.. automodule:: gosa.common.components.command
+.. automodule:: clacks.common.components.command
    :members:
 
 -------
 
-.. automodule:: gosa.common.components.dbus_runner
+.. automodule:: clacks.common.components.dbus_runner
    :members:
 
 -------
 
-.. automodule:: gosa.common.components.jsonrpc_proxy
+.. automodule:: clacks.common.components.jsonrpc_proxy
    :members:
 
 -------
 
-.. automodule:: gosa.common.components.plugin
+.. automodule:: clacks.common.components.plugin
    :members:
 
 -------
 
-.. automodule:: gosa.common.components.registry
+.. automodule:: clacks.common.components.registry
    :members:
 
 -------
 
-.. automodule:: gosa.common.components.objects
+.. automodule:: clacks.common.components.objects
    :members:
 
 -------
 
-.. automodule:: gosa.common.components.zeroconf_client
+.. automodule:: clacks.common.components.zeroconf_client
    :members:
 
 -------
 
-.. automodule:: gosa.common.components.zeroconf
+.. automodule:: clacks.common.components.zeroconf
    :members:

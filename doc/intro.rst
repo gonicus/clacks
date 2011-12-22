@@ -202,15 +202,15 @@ to fit the gosa-agent needs a `/etc/qpid/qpidd.acl` containing::
 	
 	# Let clients create their own queue to listen on
 	acl allow all access  queue    name=org.gosa
-	acl allow all access  queue    name=org.gosa.client.* owner=self
-	acl allow all consume queue    name=org.gosa.client.* owner=self
-	acl allow all create  queue    name=org.gosa.client.* exclusive=true autodelete=true durable=false
+	acl allow all access  queue    name=org.clacks.client.* owner=self
+	acl allow all consume queue    name=org.clacks.client.* owner=self
+	acl allow all create  queue    name=org.clacks.client.* exclusive=true autodelete=true durable=false
 	acl allow all access  exchange name=org.gosa
-	acl allow all access  exchange name=org.gosa.client.* owner=self
-	acl allow all bind    exchange name=amq.direct queuename=org.gosa.client.*
+	acl allow all access  exchange name=org.clacks.client.* owner=self
+	acl allow all bind    exchange name=amq.direct queuename=org.clacks.client.*
 	
 	# Let agents send to the client queues
-	acl allow agents publish  exchange  routingkey=org.gosa.client.*
+	acl allow agents publish  exchange  routingkey=org.clacks.client.*
 	
 	# By default, drop everything else
 	acl deny all all
@@ -243,7 +243,7 @@ these schema files like this::
 	# ldapadd -Y EXTERNAL -H ldapi:/// -f configured-device.ldif
 
 If you use the PHP GUI, you also need to install the "old" schema files, because
-the GOsa GUI and gosa.agent service are meant to coexist until everything is cleanly
+the GOsa GUI and clacks.agent service are meant to coexist until everything is cleanly
 migrated.
 
 After you've optionally done that, find out which base is configured for your system::
@@ -434,8 +434,8 @@ Deploy a development agent
 To deploy the agent, please run these commands inside the activated
 virtual environment::
 
-  $ pushd .; cd gosa.common && ./setup.py develop; popd
-  $ pushd .; cd gosa.agent && ./setup.py develop; popd
+  $ pushd .; cd clacks.common && ./setup.py develop; popd
+  $ pushd .; cd clacks.agent && ./setup.py develop; popd
 
 
   Alternatively you can build the complete package using::
@@ -458,7 +458,7 @@ In a productive environment, everything should be defined in the configuration
 file, so copy the configuration file to the place where gosa expects it::
 
   $ mkdir -p /etc/gosa
-  $ cp ./src/gosa.agent/src/gosa/agent/data/agent.conf /etc/clacks/config
+  $ cp ./src/clacks.agent/src/gosa/agent/data/agent.conf /etc/clacks/config
 
 Now take a look at the config file and adapt it to your needs.
 
@@ -558,8 +558,8 @@ Installing
 
 To deploy the shell, use::
 
-  $ pushd .; cd gosa.common && ./setup.py develop; popd
-  $ pushd .; cd gosa.shell && ./setup.py develop; popd
+  $ pushd .; cd clacks.common && ./setup.py develop; popd
+  $ pushd .; cd clacks.shell && ./setup.py develop; popd
 
 inside your activated virtual env. You can skip this if you ran ./setup.py for
 a complete deployment.
@@ -606,9 +606,9 @@ Installing
 
 To deploy the client components, use::
 
-  $ pushd .; cd gosa.common && ./setup.py develop; popd
-  $ pushd .; cd gosa.client && ./setup.py develop; popd
-  $ pushd .; cd gosa.dbus && ./setup.py develop; popd
+  $ pushd .; cd clacks.common && ./setup.py develop; popd
+  $ pushd .; cd clacks.client && ./setup.py develop; popd
+  $ pushd .; cd clacks.dbus && ./setup.py develop; popd
 
 inside your activated virtual env. You can skip this if you ran ./setup.py for
 a complete deployment.

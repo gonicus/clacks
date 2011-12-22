@@ -55,16 +55,16 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-gosa.dbus">
-<span id="dbus-integration"></span><h1>DBUS integration<a class="headerlink" href="#module-gosa.dbus" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-clacks.dbus">
+<span id="dbus-integration"></span><h1>DBUS integration<a class="headerlink" href="#module-clacks.dbus" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>The <em>DBUS</em> module bundles the GOsa DBUS daemon and a couple code modules
 needed to run it. The DBUS itself is meant to be extended by implementing
 <tt class="xref py py-class docutils literal"><span class="pre">dbus.service.Object</span></tt> and additionally inherit from
-<a class="reference internal" href="../common/components.html#gosa.common.components.plugin.Plugin" title="gosa.common.components.plugin.Plugin"><tt class="xref py py-class docutils literal"><span class="pre">gosa.common.components.plugin.Plugin</span></tt></a>.
+<a class="reference internal" href="../common/components.html#clacks.common.components.plugin.Plugin" title="clacks.common.components.plugin.Plugin"><tt class="xref py py-class docutils literal"><span class="pre">clacks.common.components.plugin.Plugin</span></tt></a>.
 When starting up the system, the DBUS components looks for plugins in the setuptools
-system and registers them into to the <a class="reference internal" href="../common/components.html#gosa.common.components.registry.PluginRegistry" title="gosa.common.components.registry.PluginRegistry"><tt class="xref py py-class docutils literal"><span class="pre">gosa.common.components.registry.PluginRegistry</span></tt></a>.</p>
+system and registers them into to the <a class="reference internal" href="../common/components.html#clacks.common.components.registry.PluginRegistry" title="clacks.common.components.registry.PluginRegistry"><tt class="xref py py-class docutils literal"><span class="pre">clacks.common.components.registry.PluginRegistry</span></tt></a>.</p>
 <p>This happens automatically depending on what&#8217;s registered on the
 <tt class="docutils literal"><span class="pre">[gosa_dbus.modules]</span></tt> setuptools entrypoint.</p>
 <p>To provide services it registers the system bus <tt class="docutils literal"><span class="pre">com.gonicus.gosa</span></tt> to the
@@ -75,9 +75,9 @@ the GOsa client user has.</p>
 <p>Code example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">dbus.service</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">from</span> <span class="nn">gosa.common</span> <span class="kn">import</span> <span class="n">Environment</span>
-<span class="kn">from</span> <span class="nn">gosa.common.components</span> <span class="kn">import</span> <span class="n">Plugin</span>
-<span class="kn">from</span> <span class="nn">gosa.dbus</span> <span class="kn">import</span> <span class="n">get_system_bus</span>
+<span class="kn">from</span> <span class="nn">clacks.common</span> <span class="kn">import</span> <span class="n">Environment</span>
+<span class="kn">from</span> <span class="nn">clacks.common.components</span> <span class="kn">import</span> <span class="n">Plugin</span>
+<span class="kn">from</span> <span class="nn">clacks.dbus</span> <span class="kn">import</span> <span class="n">get_system_bus</span>
 
 
 <span class="k">class</span> <span class="nc">DBusWakeOnLanHandler</span><span class="p">(</span><span class="n">dbus</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">Object</span><span class="p">,</span> <span class="n">Plugin</span><span class="p">):</span>
@@ -102,9 +102,9 @@ the GOsa client user has.</p>
 at the <a class="reference internal" href="../plugins/index.html#plugins"><em>Plugin section</em></a>.</p>
 </div>
 <hr class="docutils" />
-<span class="target" id="module-gosa.dbus.utils"></span><dl class="function">
-<dt id="gosa.dbus.utils.get_system_bus">
-<tt class="descclassname">gosa.dbus.utils.</tt><tt class="descname">get_system_bus</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.dbus.utils.get_system_bus" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="module-clacks.dbus.utils"></span><dl class="function">
+<dt id="clacks.dbus.utils.get_system_bus">
+<tt class="descclassname">clacks.dbus.utils.</tt><tt class="descname">get_system_bus</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.dbus.utils.get_system_bus" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>get_system_bus</em> acts as a singleton and returns the
 system bus for &#8216;com.gonicus.gosa&#8217;.</p>
 <p><tt class="docutils literal"><span class="pre">Return:</span></tt> system bus</p>

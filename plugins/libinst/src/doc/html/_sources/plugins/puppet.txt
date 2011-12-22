@@ -10,11 +10,11 @@ a simple GIT mechanism to push configuration data to its clients.
 The limitations of the original puppetmasterd can be pointed out with two basic statements:
 
 - puppetmasterd doesn't scale well
-- we don't want another daemon running on gosa.client
+- we don't want another daemon running on clacks.client
 
-Regarding the first statement there can be found a wealth of reports and considerations around scalability within puppet environments. There are different possiblities which all deal with the aim to integrate other web server in order to serve puppet's infrastructure. A direct consequence of this setup will be that a gosa.agent would have to deal with another service (other than gosa.agent) and another technology/programming language (other than python/AMQP). 
+Regarding the first statement there can be found a wealth of reports and considerations around scalability within puppet environments. There are different possiblities which all deal with the aim to integrate other web server in order to serve puppet's infrastructure. A direct consequence of this setup will be that a clacks.agent would have to deal with another service (other than clacks.agent) and another technology/programming language (other than python/AMQP). 
 
-The second statement is especially important regarding low performance and thin clients, but also deals with aspects of security and efficiency. Considering the abilities of the gosa.client regarding communication and the possibilities of acquiring information about the client it is running on, there is simply no legitimation to start other daemons for achieving the same goal.
+The second statement is especially important regarding low performance and thin clients, but also deals with aspects of security and efficiency. Considering the abilities of the clacks.client regarding communication and the possibilities of acquiring information about the client it is running on, there is simply no legitimation to start other daemons for achieving the same goal.
 
 After all, the conclusion is that GOsa will be integrated with puppet by running the so-called 'standalone' mode which is fully supported by the authors respectively puppetlabs.com .
 
@@ -26,7 +26,7 @@ The default puppet setup deploys a classical client-server (2-tier) architecture
 Considering the aforementioned limitations of this implementation, a different approach was built that will fulfill the requirements in terms of scalability, flexibility and stability.
 
 The server part of the puppet integration is represented by a simple GIT repository that will centrally hold and control all 
-recipes of a gosa.agent Instance. Administration of this repository can be done with git CLI or other git-tools which are 
+recipes of a clacks.agent Instance. Administration of this repository can be done with git CLI or other git-tools which are 
 widely available. Additionally, the GOsa Web Interface and Shell will be able to handle basic tasks such as committing 
 new versions of recipes.
 
@@ -62,16 +62,16 @@ In case of manual interference within the repository, for example by editing and
 Puppet Client
 -------------
 
-A registered client will receive a "bare" GIT-repository using the gosa.client communication. This bare repository is the basis for the push process originating from the puppet server.
+A registered client will receive a "bare" GIT-repository using the clacks.client communication. This bare repository is the basis for the push process originating from the puppet server.
 
-By using a post-update hook inside the GIT repository, changes will be directly deployed to the default puppet directory /etc/puppet. The value of the directory is configurable within the gosa.client.
+By using a post-update hook inside the GIT repository, changes will be directly deployed to the default puppet directory /etc/puppet. The value of the directory is configurable within the clacks.client.
 
 After copying the recipes to the puppet directory, the standalone binary will be called and therefore a puppet run will be executed.
 
-For information and control purposes, puppet creates detailed logfiles in the YAML format. These are collected in a directory which is monitored by the gosa.client. Using the UNIX-inotify mechanism, 
-the client is able to collect and evaluate the log information and sends a corresponding event "puppet run successful/failed" to the gosa.agent.
+For information and control purposes, puppet creates detailed logfiles in the YAML format. These are collected in a directory which is monitored by the clacks.client. Using the UNIX-inotify mechanism, 
+the client is able to collect and evaluate the log information and sends a corresponding event "puppet run successful/failed" to the clacks.agent.
 
-The following list collects the system requirements for a gosa.client which can use configuration management with puppet:
+The following list collects the system requirements for a clacks.client which can use configuration management with puppet:
 
 * sshd running
 * puppet installed

@@ -18,7 +18,7 @@ from types import StringTypes
 
 from sqlalchemy.orm.exc import NoResultFound
 
-from gosa.common.utils import downloadFile
+from clacks.common.utils import downloadFile
 
 try:
     # pylint: disable-msg=F0401
@@ -28,8 +28,8 @@ except:
     from debian_bundle import debfile, deb822
 
 
-from gosa.common import Environment
-from gosa.common.utils import N_
+from clacks.common import Environment
+from clacks.common.utils import N_
 
 from libinst.interface import DistributionHandler
 

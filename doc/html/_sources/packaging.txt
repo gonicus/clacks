@@ -9,11 +9,11 @@ Ubuntu / Debian
 In the moment, there's contributed packaging stuff inside of the ``contrib/packaging/debian``
 directory. The following package stubs are available:
 
- * gosa.agent
- * gosa.common
- * gosa.shell
- * gosa.client
- * gosa.dbus
+ * clacks.agent
+ * clacks.common
+ * clacks.shell
+ * clacks.client
+ * clacks.dbus
  * libinst
  * libinst.boot.preseed
  * libinst.cfg.puppet

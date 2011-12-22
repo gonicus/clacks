@@ -1,6 +1,6 @@
 Command registry
 ================
 
-.. automodule:: gosa.client.command
+.. automodule:: clacks.client.command
    :members:
 

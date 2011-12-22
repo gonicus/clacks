@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from urlparse import urlparse
-from gosa.common import Environment
-from gosa.common.components.registry import PluginRegistry
+from clacks.common import Environment
+from clacks.common.components.registry import PluginRegistry
 from libinst.utils import load_system
 from libinst.interface import BaseInstallMethod
 from webob import exc, Request, Response

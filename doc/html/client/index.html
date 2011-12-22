@@ -55,15 +55,15 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-gosa.client">
-<span id="client"></span><h1>Client<a class="headerlink" href="#module-gosa.client" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-clacks.client">
+<span id="client"></span><h1>Client<a class="headerlink" href="#module-clacks.client" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>The <em>client</em> module bundles the client daemon and a couple code modules
 needed to run it. The client itself is meant to be extended by plugins
-using the <a class="reference internal" href="../common/components.html#gosa.common.components.plugin.Plugin" title="gosa.common.components.plugin.Plugin"><tt class="xref py py-class docutils literal"><span class="pre">gosa.common.components.plugin.Plugin</span></tt></a> interface.
+using the <a class="reference internal" href="../common/components.html#clacks.common.components.plugin.Plugin" title="clacks.common.components.plugin.Plugin"><tt class="xref py py-class docutils literal"><span class="pre">clacks.common.components.plugin.Plugin</span></tt></a> interface.
 When starting up the system, the client looks for plugins in the setuptools
-system and registers them into to the <a class="reference internal" href="../common/components.html#gosa.common.components.registry.PluginRegistry" title="gosa.common.components.registry.PluginRegistry"><tt class="xref py py-class docutils literal"><span class="pre">gosa.common.components.registry.PluginRegistry</span></tt></a>.</p>
+system and registers them into to the <a class="reference internal" href="../common/components.html#clacks.common.components.registry.PluginRegistry" title="clacks.common.components.registry.PluginRegistry"><tt class="xref py py-class docutils literal"><span class="pre">clacks.common.components.registry.PluginRegistry</span></tt></a>.</p>
 <p>After the <em>PluginRegistry</em> is ready with loading the modules, it orders
 them by priority and loads them in sorted order.</p>
 <p>The client is now in a state where it enters the main loop by sending
@@ -72,11 +72,11 @@ an AMQP <tt class="docutils literal"><span class="pre">ClientAnnounce</span></tt
 exposing functionality to the outside world. Here are some of them:</p>
 <blockquote>
 <div><ul class="simple">
-<li><tt class="xref py py-class docutils literal"><span class="pre">gosa.client.command.CommandRegistry</span></tt> inspects all loaded modules
-for the <a class="reference internal" href="../common/components.html#gosa.common.components.command.Command" title="gosa.common.components.command.Command"><tt class="xref py py-meth docutils literal"><span class="pre">gosa.common.components.command.Command()</span></tt></a> decorator
+<li><tt class="xref py py-class docutils literal"><span class="pre">clacks.client.command.CommandRegistry</span></tt> inspects all loaded modules
+for the <a class="reference internal" href="../common/components.html#clacks.common.components.command.Command" title="clacks.common.components.command.Command"><tt class="xref py py-meth docutils literal"><span class="pre">clacks.common.components.command.Command()</span></tt></a> decorator
 and registers all decorated methods to be available thru the CommandRegistry
 dispatcher.</li>
-<li><tt class="xref py py-class docutils literal"><span class="pre">gosa.client.amqp_service.AMQPService</span></tt> joins to the qpid broker
+<li><tt class="xref py py-class docutils literal"><span class="pre">clacks.client.amqp_service.AMQPService</span></tt> joins to the qpid broker
 federation and provides methods to <em>speak</em> with the bus.</li>
 </ul>
 </div></blockquote>
@@ -96,7 +96,7 @@ with adequate permission to do that.</p>
 it to use i.e. a graphical join dialog. At present, we provide a ncurses
 and a readline based join mechanism. More can be added using the setuptools
 <tt class="docutils literal"><span class="pre">gosa_join.modules</span></tt> entrypoint. For more information, take a look at the
-<tt class="xref py py-mod docutils literal"><span class="pre">gosa.client.join</span></tt> and <tt class="xref py py-class docutils literal"><span class="pre">gosa.client.plugins.join.join_method</span></tt> documentation.</p>
+<tt class="xref py py-mod docutils literal"><span class="pre">clacks.client.join</span></tt> and <tt class="xref py py-class docutils literal"><span class="pre">clacks.client.plugins.join.join_method</span></tt> documentation.</p>
 </div>
 <div class="section" id="using-the-binaries">
 <h2>Using the binaries<a class="headerlink" href="#using-the-binaries" title="Permalink to this headline">¶</a></h2>

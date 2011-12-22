@@ -56,20 +56,20 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-gosa.agent.jsonrpc_service">
-<span id="json-rpc-service"></span><h1>JSON RPC service<a class="headerlink" href="#module-gosa.agent.jsonrpc_service" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-clacks.agent.jsonrpc_service">
+<span id="json-rpc-service"></span><h1>JSON RPC service<a class="headerlink" href="#module-clacks.agent.jsonrpc_service" title="Permalink to this headline">¶</a></h1>
 <p>The JSONRPC implementation consists of a GOsa agent plugin (<em>JSONRPCService</em>)
 and a WSGI application (<em>JsonRpcApp</em>). The first is implemented as a handler
 plugin, so it is going to be invoked on agent startup. It takes care of
 registering the WSGI application to the
-<a class="reference internal" href="http.html#gosa.agent.httpd.HTTPService" title="gosa.agent.httpd.HTTPService"><tt class="xref py py-class docutils literal"><span class="pre">gosa.agent.httpd.HTTPService</span></tt></a>.</p>
+<a class="reference internal" href="http.html#clacks.agent.httpd.HTTPService" title="clacks.agent.httpd.HTTPService"><tt class="xref py py-class docutils literal"><span class="pre">clacks.agent.httpd.HTTPService</span></tt></a>.</p>
 <hr class="docutils" />
 <dl class="class">
-<dt id="gosa.agent.jsonrpc_service.JSONRPCService">
-<em class="property">class </em><tt class="descclassname">gosa.agent.jsonrpc_service.</tt><tt class="descname">JSONRPCService</tt><a class="headerlink" href="#gosa.agent.jsonrpc_service.JSONRPCService" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.jsonrpc_service.JSONRPCService">
+<em class="property">class </em><tt class="descclassname">clacks.agent.jsonrpc_service.</tt><tt class="descname">JSONRPCService</tt><a class="headerlink" href="#clacks.agent.jsonrpc_service.JSONRPCService" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is the JSONRPC GOsa agent plugin which is registering an
-instance of <a class="reference internal" href="#gosa.agent.jsonrpc_service.JsonRpcApp" title="gosa.agent.jsonrpc_service.JsonRpcApp"><tt class="xref py py-class docutils literal"><span class="pre">gosa.agent.jsonrpc_service.JsonRpcApp</span></tt></a> into the
-<a class="reference internal" href="http.html#gosa.agent.httpd.HTTPService" title="gosa.agent.httpd.HTTPService"><tt class="xref py py-class docutils literal"><span class="pre">gosa.agent.httpd.HTTPService</span></tt></a>.</p>
+instance of <a class="reference internal" href="#clacks.agent.jsonrpc_service.JsonRpcApp" title="clacks.agent.jsonrpc_service.JsonRpcApp"><tt class="xref py py-class docutils literal"><span class="pre">clacks.agent.jsonrpc_service.JsonRpcApp</span></tt></a> into the
+<a class="reference internal" href="http.html#clacks.agent.httpd.HTTPService" title="clacks.agent.httpd.HTTPService"><tt class="xref py py-class docutils literal"><span class="pre">clacks.agent.httpd.HTTPService</span></tt></a>.</p>
 <p>It is configured thru the <tt class="docutils literal"><span class="pre">[jsonrpc]</span></tt> section of your GOsa
 configuration:</p>
 <table border="1" class="docutils">
@@ -97,27 +97,27 @@ path = /rpc
 cookie-lifetime = 3600</pre>
 </div>
 <dl class="method">
-<dt id="gosa.agent.jsonrpc_service.JSONRPCService.serve">
-<tt class="descname">serve</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.agent.jsonrpc_service.JSONRPCService.serve" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.jsonrpc_service.JSONRPCService.serve">
+<tt class="descname">serve</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.jsonrpc_service.JSONRPCService.serve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start JSONRPC service for this GOsa service provider.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.jsonrpc_service.JSONRPCService.stop">
-<tt class="descname">stop</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.agent.jsonrpc_service.JSONRPCService.stop" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.jsonrpc_service.JSONRPCService.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.jsonrpc_service.JSONRPCService.stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stop serving the JSONRPC service for this GOsa service provider.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
-<dt id="gosa.agent.jsonrpc_service.JsonRpcApp">
-<em class="property">class </em><tt class="descclassname">gosa.agent.jsonrpc_service.</tt><tt class="descname">JsonRpcApp</tt><big>(</big><em>dispatcher</em><big>)</big><a class="headerlink" href="#gosa.agent.jsonrpc_service.JsonRpcApp" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.jsonrpc_service.JsonRpcApp">
+<em class="property">class </em><tt class="descclassname">clacks.agent.jsonrpc_service.</tt><tt class="descname">JsonRpcApp</tt><big>(</big><em>dispatcher</em><big>)</big><a class="headerlink" href="#clacks.agent.jsonrpc_service.JsonRpcApp" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is the WSGI application wich is responsible for serving the
-<a class="reference internal" href="command.html#gosa.agent.command.CommandRegistry" title="gosa.agent.command.CommandRegistry"><tt class="xref py py-class docutils literal"><span class="pre">gosa.agent.command.CommandRegistry</span></tt></a> via HTTP/JSONRPC.</p>
+<a class="reference internal" href="command.html#clacks.agent.command.CommandRegistry" title="clacks.agent.command.CommandRegistry"><tt class="xref py py-class docutils literal"><span class="pre">clacks.agent.command.CommandRegistry</span></tt></a> via HTTP/JSONRPC.</p>
 <dl class="method">
-<dt id="gosa.agent.jsonrpc_service.JsonRpcApp.authenticate">
-<tt class="descname">authenticate</tt><big>(</big><em>user=None</em>, <em>password=None</em><big>)</big><a class="headerlink" href="#gosa.agent.jsonrpc_service.JsonRpcApp.authenticate" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.jsonrpc_service.JsonRpcApp.authenticate">
+<tt class="descname">authenticate</tt><big>(</big><em>user=None</em>, <em>password=None</em><big>)</big><a class="headerlink" href="#clacks.agent.jsonrpc_service.JsonRpcApp.authenticate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Use the AMQP connection to authenticate the incoming HTTP request.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -142,8 +142,8 @@ cookie-lifetime = 3600</pre>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.jsonrpc_service.JsonRpcApp.process">
-<tt class="descname">process</tt><big>(</big><em>req</em>, <em>environ</em><big>)</big><a class="headerlink" href="#gosa.agent.jsonrpc_service.JsonRpcApp.process" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.jsonrpc_service.JsonRpcApp.process">
+<tt class="descname">process</tt><big>(</big><em>req</em>, <em>environ</em><big>)</big><a class="headerlink" href="#clacks.agent.jsonrpc_service.JsonRpcApp.process" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process an incoming JSONRPC request and dispatch it thru the
 <em>CommandRegistry</em>.</p>
 <table border="1" class="docutils">
@@ -171,18 +171,18 @@ cookie-lifetime = 3600</pre>
 </dd></dl>
 
 </div>
-<div class="section" id="module-gosa.agent.jsonrpc_objects">
-<span id="json-rpc-objects"></span><h1>JSON RPC objects<a class="headerlink" href="#module-gosa.agent.jsonrpc_objects" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-clacks.agent.jsonrpc_objects">
+<span id="json-rpc-objects"></span><h1>JSON RPC objects<a class="headerlink" href="#module-clacks.agent.jsonrpc_objects" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="gosa.agent.jsonrpc_objects.JSONRPCObjectMapper">
-<em class="property">class </em><tt class="descclassname">gosa.agent.jsonrpc_objects.</tt><tt class="descname">JSONRPCObjectMapper</tt><a class="headerlink" href="#gosa.agent.jsonrpc_objects.JSONRPCObjectMapper" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.jsonrpc_objects.JSONRPCObjectMapper">
+<em class="property">class </em><tt class="descclassname">clacks.agent.jsonrpc_objects.</tt><tt class="descname">JSONRPCObjectMapper</tt><a class="headerlink" href="#clacks.agent.jsonrpc_objects.JSONRPCObjectMapper" title="Permalink to this definition">¶</a></dt>
 <dd><p>The <em>JSONRPCObjectMapper</em> is a GOsa agent plugin that implements a stack
 which can handle object instances. These can be passed via JSONRPC using
 the <em>__jsonclass__</em> helper attribute and allows remote proxies to emulate
 the object on the stack. The stack can hold objects that have been
-retrieved by their <em>OID</em> using the <a class="reference internal" href="../common/components.html#gosa.common.components.objects.ObjectRegistry" title="gosa.common.components.objects.ObjectRegistry"><tt class="xref py py-class docutils literal"><span class="pre">gosa.common.components.objects.ObjectRegistry</span></tt></a>.</p>
+retrieved by their <em>OID</em> using the <a class="reference internal" href="../common/components.html#clacks.common.components.objects.ObjectRegistry" title="clacks.common.components.objects.ObjectRegistry"><tt class="xref py py-class docutils literal"><span class="pre">clacks.common.components.objects.ObjectRegistry</span></tt></a>.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">gosa.common.components</span> <span class="kn">import</span> <span class="n">AMQPServiceProxy</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">clacks.common.components</span> <span class="kn">import</span> <span class="n">AMQPServiceProxy</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c"># Create connection to service</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">proxy</span> <span class="o">=</span> <span class="n">AMQPServiceProxy</span><span class="p">(</span><span class="s">&#39;amqps://admin:secret@amqp.example.net/org.gosa&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pm</span> <span class="o">=</span> <span class="n">proxy</span><span class="o">.</span><span class="n">openObject</span><span class="p">(</span><span class="s">&#39;libinst.diskdefinition&#39;</span><span class="p">)</span>
@@ -194,8 +194,8 @@ retrieved by their <em>OID</em> using the <a class="reference internal" href="..
 </div>
 <p>This will indirectly use the object mapper on the agent side.</p>
 <dl class="method">
-<dt id="gosa.agent.jsonrpc_objects.JSONRPCObjectMapper.closeObject">
-<tt class="descname">closeObject</tt><big>(</big><em>ref</em><big>)</big><a class="headerlink" href="#gosa.agent.jsonrpc_objects.JSONRPCObjectMapper.closeObject" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.jsonrpc_objects.JSONRPCObjectMapper.closeObject">
+<tt class="descname">closeObject</tt><big>(</big><em>ref</em><big>)</big><a class="headerlink" href="#clacks.agent.jsonrpc_objects.JSONRPCObjectMapper.closeObject" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-0">
 </div>
 <div class="admonition note">
@@ -223,8 +223,8 @@ the agent side.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.jsonrpc_objects.JSONRPCObjectMapper.dispatchObjectMethod">
-<tt class="descname">dispatchObjectMethod</tt><big>(</big><em>ref</em>, <em>method</em>, <em>*args</em><big>)</big><a class="headerlink" href="#gosa.agent.jsonrpc_objects.JSONRPCObjectMapper.dispatchObjectMethod" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.jsonrpc_objects.JSONRPCObjectMapper.dispatchObjectMethod">
+<tt class="descname">dispatchObjectMethod</tt><big>(</big><em>ref</em>, <em>method</em>, <em>*args</em><big>)</big><a class="headerlink" href="#clacks.agent.jsonrpc_objects.JSONRPCObjectMapper.dispatchObjectMethod" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-1">
 </div>
 <div class="admonition note">
@@ -258,8 +258,8 @@ the agent side.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.jsonrpc_objects.JSONRPCObjectMapper.getObjectProperty">
-<tt class="descname">getObjectProperty</tt><big>(</big><em>ref</em>, <em>name</em><big>)</big><a class="headerlink" href="#gosa.agent.jsonrpc_objects.JSONRPCObjectMapper.getObjectProperty" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.jsonrpc_objects.JSONRPCObjectMapper.getObjectProperty">
+<tt class="descname">getObjectProperty</tt><big>(</big><em>ref</em>, <em>name</em><big>)</big><a class="headerlink" href="#clacks.agent.jsonrpc_objects.JSONRPCObjectMapper.getObjectProperty" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-2">
 </div>
 <div class="admonition note">
@@ -290,8 +290,8 @@ the agent side.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.jsonrpc_objects.JSONRPCObjectMapper.listObjectOIDs">
-<tt class="descname">listObjectOIDs</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.agent.jsonrpc_objects.JSONRPCObjectMapper.listObjectOIDs" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.jsonrpc_objects.JSONRPCObjectMapper.listObjectOIDs">
+<tt class="descname">listObjectOIDs</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.jsonrpc_objects.JSONRPCObjectMapper.listObjectOIDs" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-3">
 </div>
 <div class="admonition note">
@@ -303,8 +303,8 @@ the agent side.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.jsonrpc_objects.JSONRPCObjectMapper.openObject">
-<tt class="descname">openObject</tt><big>(</big><em>oid</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gosa.agent.jsonrpc_objects.JSONRPCObjectMapper.openObject" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.jsonrpc_objects.JSONRPCObjectMapper.openObject">
+<tt class="descname">openObject</tt><big>(</big><em>oid</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#clacks.agent.jsonrpc_objects.JSONRPCObjectMapper.openObject" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-4">
 </div>
 <div class="admonition note">
@@ -337,8 +337,8 @@ values.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.jsonrpc_objects.JSONRPCObjectMapper.setObjectProperty">
-<tt class="descname">setObjectProperty</tt><big>(</big><em>ref</em>, <em>name</em>, <em>value</em><big>)</big><a class="headerlink" href="#gosa.agent.jsonrpc_objects.JSONRPCObjectMapper.setObjectProperty" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.jsonrpc_objects.JSONRPCObjectMapper.setObjectProperty">
+<tt class="descname">setObjectProperty</tt><big>(</big><em>ref</em>, <em>name</em>, <em>value</em><big>)</big><a class="headerlink" href="#clacks.agent.jsonrpc_objects.JSONRPCObjectMapper.setObjectProperty" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-5">
 </div>
 <div class="admonition note">
@@ -383,7 +383,7 @@ values.</p>
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">JSON RPC service</a></li>
-<li><a class="reference internal" href="#module-gosa.agent.jsonrpc_objects">JSON RPC objects</a></li>
+<li><a class="reference internal" href="#module-clacks.agent.jsonrpc_objects">JSON RPC objects</a></li>
 </ul>
 
   <h4>Previous topic</h4>

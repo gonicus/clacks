@@ -25,7 +25,7 @@
 #
 
 import gettext
-from gosa.common.utils import N_
+from clacks.common.utils import N_
 from pkg_resources import resource_filename
 
 # Include locales

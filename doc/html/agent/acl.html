@@ -56,8 +56,8 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-gosa.agent.acl">
-<span id="acl-handling"></span><h1>ACL handling<a class="headerlink" href="#module-gosa.agent.acl" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-clacks.agent.acl">
+<span id="acl-handling"></span><h1>ACL handling<a class="headerlink" href="#module-clacks.agent.acl" title="Permalink to this headline">¶</a></h1>
 <p>This chapter details the way access control is handled within the GOsa core
 engine.</p>
 <div class="section" id="how-an-acl-assigment-could-look-like">
@@ -74,8 +74,8 @@ ACLSet
 </div>
 <hr class="docutils" />
 <dl class="class">
-<dt id="gosa.agent.acl.ACL">
-<em class="property">class </em><tt class="descclassname">gosa.agent.acl.</tt><tt class="descname">ACL</tt><big>(</big><em>scope=2</em>, <em>role=None</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACL" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACL">
+<em class="property">class </em><tt class="descclassname">clacks.agent.acl.</tt><tt class="descname">ACL</tt><big>(</big><em>scope=2</em>, <em>role=None</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACL" title="Permalink to this definition">¶</a></dt>
 <dd><p>The <tt class="docutils literal"><span class="pre">ACL</span></tt> object describes a set of actions that can be accessed in a given scope.
 <tt class="docutils literal"><span class="pre">ACL</span></tt> classes can then be bundled in <tt class="docutils literal"><span class="pre">ACLSet</span></tt> objects and attached to base.</p>
 <table border="1" class="docutils">
@@ -180,8 +180,8 @@ the <tt class="docutils literal"><span class="pre">ACLSet</span></tt> class.</p>
 <p><tt class="docutils literal"><span class="pre">com.#.factory</span></tt> would match with <tt class="docutils literal"><span class="pre">com.test.factory</span></tt> or <tt class="docutils literal"><span class="pre">com.something.factory</span></tt></p>
 <p><tt class="docutils literal"><span class="pre">com.*.factory</span></tt> would match with <tt class="docutils literal"><span class="pre">com.test.factory</span></tt>, <tt class="docutils literal"><span class="pre">com.something.factory</span></tt> or <tt class="docutils literal"><span class="pre">com.level1.level2.level3.factory</span></tt></p>
 <dl class="method">
-<dt id="gosa.agent.acl.ACL.add_action">
-<tt class="descname">add_action</tt><big>(</big><em>topic</em>, <em>acls</em>, <em>options=None</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACL.add_action" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACL.add_action">
+<tt class="descname">add_action</tt><big>(</big><em>topic</em>, <em>acls</em>, <em>options=None</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACL.add_action" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a new action to this ACL object.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -270,27 +270,27 @@ If not all options match, the ACL will not match.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACL.clear_actions">
-<tt class="descname">clear_actions</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACL.clear_actions" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACL.clear_actions">
+<tt class="descname">clear_actions</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACL.clear_actions" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method removes all defined actions from this acl.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACL.get_members">
-<tt class="descname">get_members</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACL.get_members" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACL.get_members">
+<tt class="descname">get_members</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACL.get_members" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the list of members this ACL is valid for.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACL.get_scope">
-<tt class="descname">get_scope</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACL.get_scope" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACL.get_scope">
+<tt class="descname">get_scope</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACL.get_scope" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the scope of an ACL.
 SUB, PSUB, RESET, ...</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACL.match">
-<tt class="descname">match</tt><big>(</big><em>user</em>, <em>topic</em>, <em>acls</em>, <em>options=None</em>, <em>skip_user_check=False</em>, <em>used_roles=None</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACL.match" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACL.match">
+<tt class="descname">match</tt><big>(</big><em>user</em>, <em>topic</em>, <em>acls</em>, <em>options=None</em>, <em>skip_user_check=False</em>, <em>used_roles=None</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACL.match" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if this <tt class="docutils literal"><span class="pre">ACL</span></tt> object matches the given criteria.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -330,14 +330,14 @@ SUB, PSUB, RESET, ...</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACL.repr_self">
-<tt class="descname">repr_self</tt><big>(</big><em>indent=0</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACL.repr_self" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACL.repr_self">
+<tt class="descname">repr_self</tt><big>(</big><em>indent=0</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACL.repr_self" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a human readable representation of the ACL-object.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACL.set_members">
-<tt class="descname">set_members</tt><big>(</big><em>members</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACL.set_members" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACL.set_members">
+<tt class="descname">set_members</tt><big>(</big><em>members</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACL.set_members" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the members for this acl</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -365,8 +365,8 @@ SUB, PSUB, RESET, ...</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACL.set_priority">
-<tt class="descname">set_priority</tt><big>(</big><em>priority</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACL.set_priority" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACL.set_priority">
+<tt class="descname">set_priority</tt><big>(</big><em>priority</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACL.set_priority" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the priority of this ACL object. Lower values mean higher priority.</p>
 <p>If no priority is given, a priority of 0 will be used when this ACL gets added to an ACLSet, the next will get 1, then 2 aso.</p>
 <table border="1" class="docutils">
@@ -397,10 +397,10 @@ SUB, PSUB, RESET, ...</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACL.set_scope">
-<tt class="descname">set_scope</tt><big>(</big><em>scope</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACL.set_scope" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACL.set_scope">
+<tt class="descname">set_scope</tt><big>(</big><em>scope</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACL.set_scope" title="Permalink to this definition">¶</a></dt>
 <dd><p>This methods updates the ACLs scope level.</p>
-<p>See <a class="reference internal" href="#gosa.agent.acl.ACL" title="gosa.agent.acl.ACL"><tt class="xref py py-class docutils literal"><span class="pre">gosa.agent.acl.ACL</span></tt></a> for details on the scope-levels.</p>
+<p>See <a class="reference internal" href="#clacks.agent.acl.ACL" title="clacks.agent.acl.ACL"><tt class="xref py py-class docutils literal"><span class="pre">clacks.agent.acl.ACL</span></tt></a> for details on the scope-levels.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="28%" />
@@ -420,8 +420,8 @@ SUB, PSUB, RESET, ...</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACL.use_role">
-<tt class="descname">use_role</tt><big>(</big><em>rolename</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACL.use_role" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACL.use_role">
+<tt class="descname">use_role</tt><big>(</big><em>rolename</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACL.use_role" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mark this ACL to use a role instead of direkt permission settings.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -444,8 +444,8 @@ SUB, PSUB, RESET, ...</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="gosa.agent.acl.ACLResolver">
-<em class="property">class </em><tt class="descclassname">gosa.agent.acl.</tt><tt class="descname">ACLResolver</tt><a class="headerlink" href="#gosa.agent.acl.ACLResolver" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver">
+<em class="property">class </em><tt class="descclassname">clacks.agent.acl.</tt><tt class="descname">ACLResolver</tt><a class="headerlink" href="#clacks.agent.acl.ACLResolver" title="Permalink to this definition">¶</a></dt>
 <dd><p>The ACLResolver is responsible for loading, saving and resolving
 permission:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span> <span class="o">=</span> <span class="n">ACLResolver</span><span class="p">()</span>
@@ -469,8 +469,8 @@ repesentation:</p>
 </pre></div>
 </div>
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.aclset_exists_by_base">
-<tt class="descname">aclset_exists_by_base</tt><big>(</big><em>base</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.aclset_exists_by_base" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.aclset_exists_by_base">
+<tt class="descname">aclset_exists_by_base</tt><big>(</big><em>base</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.aclset_exists_by_base" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if a ACLSet for the given base exists or not.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -491,8 +491,8 @@ repesentation:</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.addACL">
-<tt class="descname">addACL</tt><big>(</big><em>user</em>, <em>base</em>, <em>priority</em>, <em>members</em>, <em>actions=None</em>, <em>scope=None</em>, <em>rolename=None</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.addACL" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.addACL">
+<tt class="descname">addACL</tt><big>(</big><em>user</em>, <em>base</em>, <em>priority</em>, <em>members</em>, <em>actions=None</em>, <em>scope=None</em>, <em>rolename=None</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.addACL" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-0">
 </div>
 <div class="admonition note">
@@ -545,8 +545,8 @@ repesentation:</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.addACLRole">
-<tt class="descname">addACLRole</tt><big>(</big><em>user</em>, <em>rolename</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.addACLRole" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.addACLRole">
+<tt class="descname">addACLRole</tt><big>(</big><em>user</em>, <em>rolename</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.addACLRole" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-1">
 </div>
 <div class="admonition note">
@@ -578,8 +578,8 @@ repesentation:</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.addACLToRole">
-<tt class="descname">addACLToRole</tt><big>(</big><em>user</em>, <em>rolename</em>, <em>priority</em>, <em>actions=None</em>, <em>scope=None</em>, <em>use_role=None</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.addACLToRole" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.addACLToRole">
+<tt class="descname">addACLToRole</tt><big>(</big><em>user</em>, <em>rolename</em>, <em>priority</em>, <em>actions=None</em>, <em>scope=None</em>, <em>use_role=None</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.addACLToRole" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-2">
 </div>
 <div class="admonition note">
@@ -628,8 +628,8 @@ repesentation:</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.add_acl_role">
-<tt class="descname">add_acl_role</tt><big>(</big><em>role</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.add_acl_role" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.add_acl_role">
+<tt class="descname">add_acl_role</tt><big>(</big><em>role</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.add_acl_role" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a new ACLRole-object to the ACLResolver class.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -650,14 +650,14 @@ repesentation:</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.add_acl_set">
-<tt class="descname">add_acl_set</tt><big>(</big><em>acl</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.add_acl_set" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.add_acl_set">
+<tt class="descname">add_acl_set</tt><big>(</big><em>acl</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.add_acl_set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds an ACLSet object to the list of active-acl rules.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.add_acl_to_base">
-<tt class="descname">add_acl_to_base</tt><big>(</big><em>base</em>, <em>acl</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.add_acl_to_base" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.add_acl_to_base">
+<tt class="descname">add_acl_to_base</tt><big>(</big><em>base</em>, <em>acl</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.add_acl_to_base" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds an ACL object to an existing ACLSet which is identified by its base.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -681,8 +681,8 @@ repesentation:</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.add_acl_to_role">
-<tt class="descname">add_acl_to_role</tt><big>(</big><em>rolename</em>, <em>acl</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.add_acl_to_role" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.add_acl_to_role">
+<tt class="descname">add_acl_to_role</tt><big>(</big><em>rolename</em>, <em>acl</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.add_acl_to_role" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds an ACLRoleEntry-object to an existing ACLRole.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -706,8 +706,8 @@ repesentation:</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.add_acl_to_set">
-<tt class="descname">add_acl_to_set</tt><big>(</big><em>base</em>, <em>acl</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.add_acl_to_set" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.add_acl_to_set">
+<tt class="descname">add_acl_to_set</tt><big>(</big><em>base</em>, <em>acl</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.add_acl_to_set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds an ACL-object to an existing ACLSet.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -731,8 +731,8 @@ repesentation:</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.check">
-<tt class="descname">check</tt><big>(</big><em>user</em>, <em>topic</em>, <em>acls</em>, <em>options=None</em>, <em>base=None</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.check" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.check">
+<tt class="descname">check</tt><big>(</big><em>user</em>, <em>topic</em>, <em>acls</em>, <em>options=None</em>, <em>base=None</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.check" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check permission for a given user and a base.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -775,15 +775,15 @@ repesentation:</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.clear">
-<tt class="descname">clear</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.clear" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.clear">
+<tt class="descname">clear</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.clear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clears all information abouts roles and acls.
 This is called during initialization of the ACLResolver class.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.getACLRoles">
-<tt class="descname">getACLRoles</tt><big>(</big><em>user</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.getACLRoles" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.getACLRoles">
+<tt class="descname">getACLRoles</tt><big>(</big><em>user</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.getACLRoles" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-3">
 </div>
 <div class="admonition note">
@@ -798,8 +798,8 @@ This is called during initialization of the ACLResolver class.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.getACLs">
-<tt class="descname">getACLs</tt><big>(</big><em>user</em>, <em>base=None</em>, <em>topic=None</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.getACLs" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.getACLs">
+<tt class="descname">getACLs</tt><big>(</big><em>user</em>, <em>base=None</em>, <em>topic=None</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.getACLs" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-4">
 </div>
 <div class="admonition note">
@@ -838,8 +838,8 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.get_aclset_by_base">
-<tt class="descname">get_aclset_by_base</tt><big>(</big><em>base</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.get_aclset_by_base" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.get_aclset_by_base">
+<tt class="descname">get_aclset_by_base</tt><big>(</big><em>base</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.get_aclset_by_base" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an acl set by base.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -860,8 +860,8 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.is_role_used">
-<tt class="descname">is_role_used</tt><big>(</big><em>rolename</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.is_role_used" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.is_role_used">
+<tt class="descname">is_role_used</tt><big>(</big><em>rolename</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.is_role_used" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks whether the given ACLRole object is used or not.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -882,32 +882,32 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.list_acl_bases">
-<tt class="descname">list_acl_bases</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.list_acl_bases" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.list_acl_bases">
+<tt class="descname">list_acl_bases</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.list_acl_bases" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns all bases we&#8217;ve acls attached to</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.list_acls">
-<tt class="descname">list_acls</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.list_acls" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.list_acls">
+<tt class="descname">list_acls</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.list_acls" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns all ACLSets attached to the resolver</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.list_roles">
-<tt class="descname">list_roles</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.list_roles" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.list_roles">
+<tt class="descname">list_roles</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.list_roles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns all ACLRoles attached to the resolver</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.load_from_file">
-<tt class="descname">load_from_file</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.load_from_file" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.load_from_file">
+<tt class="descname">load_from_file</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.load_from_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load the acl definitions from the configured storage file.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.removeACL">
-<tt class="descname">removeACL</tt><big>(</big><em>user</em>, <em>acl_id</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.removeACL" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.removeACL">
+<tt class="descname">removeACL</tt><big>(</big><em>user</em>, <em>acl_id</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.removeACL" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-5">
 </div>
 <div class="admonition note">
@@ -938,8 +938,8 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.removeRole">
-<tt class="descname">removeRole</tt><big>(</big><em>user</em>, <em>rolename</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.removeRole" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.removeRole">
+<tt class="descname">removeRole</tt><big>(</big><em>user</em>, <em>rolename</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.removeRole" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-6">
 </div>
 <div class="admonition note">
@@ -966,8 +966,8 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.removeRoleACL">
-<tt class="descname">removeRoleACL</tt><big>(</big><em>user</em>, <em>role_id</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.removeRoleACL" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.removeRoleACL">
+<tt class="descname">removeRoleACL</tt><big>(</big><em>user</em>, <em>role_id</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.removeRoleACL" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-7">
 </div>
 <div class="admonition note">
@@ -995,8 +995,8 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.remove_acls_for_user">
-<tt class="descname">remove_acls_for_user</tt><big>(</big><em>user</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.remove_acls_for_user" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.remove_acls_for_user">
+<tt class="descname">remove_acls_for_user</tt><big>(</big><em>user</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.remove_acls_for_user" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes all permission for the given user!</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -1031,8 +1031,8 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.remove_aclset_by_base">
-<tt class="descname">remove_aclset_by_base</tt><big>(</big><em>base</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.remove_aclset_by_base" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.remove_aclset_by_base">
+<tt class="descname">remove_aclset_by_base</tt><big>(</big><em>base</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.remove_aclset_by_base" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes a given ACLSet by base.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -1053,8 +1053,8 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.remove_role">
-<tt class="descname">remove_role</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.remove_role" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.remove_role">
+<tt class="descname">remove_role</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.remove_role" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes an acl role by name.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -1075,14 +1075,14 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.save_to_file">
-<tt class="descname">save_to_file</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.save_to_file" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.save_to_file">
+<tt class="descname">save_to_file</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.save_to_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Saves the acl definitions back the configured storage file.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.updateACL">
-<tt class="descname">updateACL</tt><big>(</big><em>user</em>, <em>acl_id</em>, <em>scope=None</em>, <em>priority=None</em>, <em>members=None</em>, <em>actions=None</em>, <em>rolename=None</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.updateACL" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.updateACL">
+<tt class="descname">updateACL</tt><big>(</big><em>user</em>, <em>acl_id</em>, <em>scope=None</em>, <em>priority=None</em>, <em>members=None</em>, <em>actions=None</em>, <em>rolename=None</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.updateACL" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-8">
 </div>
 <div class="admonition note">
@@ -1134,8 +1134,8 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLResolver.updateACLRole">
-<tt class="descname">updateACLRole</tt><big>(</big><em>user</em>, <em>acl_id</em>, <em>scope=None</em>, <em>priority=None</em>, <em>actions=None</em>, <em>use_role=None</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLResolver.updateACLRole" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLResolver.updateACLRole">
+<tt class="descname">updateACLRole</tt><big>(</big><em>user</em>, <em>acl_id</em>, <em>scope=None</em>, <em>priority=None</em>, <em>actions=None</em>, <em>use_role=None</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.updateACLRole" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-9">
 </div>
 <div class="admonition note">
@@ -1186,8 +1186,8 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 </dd></dl>
 
 <dl class="class">
-<dt id="gosa.agent.acl.ACLRole">
-<em class="property">class </em><tt class="descclassname">gosa.agent.acl.</tt><tt class="descname">ACLRole</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLRole" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLRole">
+<em class="property">class </em><tt class="descclassname">clacks.agent.acl.</tt><tt class="descname">ACLRole</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLRole" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is a container for <tt class="docutils literal"><span class="pre">ACLRoleEntries</span></tt> entries that should act like a role.
 An <tt class="docutils literal"><span class="pre">ACLRole</span></tt> has a name which can be used in <tt class="docutils literal"><span class="pre">ACL</span></tt> objects to use the role.</p>
 <table border="1" class="docutils">
@@ -1254,8 +1254,8 @@ a set of acls:</p>
 </pre></div>
 </div>
 <dl class="method">
-<dt id="gosa.agent.acl.ACLRole.add">
-<tt class="descname">add</tt><big>(</big><em>item</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLRole.add" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLRole.add">
+<tt class="descname">add</tt><big>(</big><em>item</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLRole.add" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a new <tt class="docutils literal"><span class="pre">ACLRoleEntry</span></tt> object to this <tt class="docutils literal"><span class="pre">ACLRole</span></tt>.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -1285,44 +1285,44 @@ a set of acls:</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLRole.get_name">
-<tt class="descname">get_name</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLRole.get_name" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLRole.get_name">
+<tt class="descname">get_name</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLRole.get_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the name of the role.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLRole.repr_self">
-<tt class="descname">repr_self</tt><big>(</big><em>indent=0</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLRole.repr_self" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLRole.repr_self">
+<tt class="descname">repr_self</tt><big>(</big><em>indent=0</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLRole.repr_self" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a human readable reprentation of this ACLRole object.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
-<dt id="gosa.agent.acl.ACLRoleEntry">
-<em class="property">class </em><tt class="descclassname">gosa.agent.acl.</tt><tt class="descname">ACLRoleEntry</tt><big>(</big><em>scope=2</em>, <em>role=None</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLRoleEntry" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLRoleEntry">
+<em class="property">class </em><tt class="descclassname">clacks.agent.acl.</tt><tt class="descname">ACLRoleEntry</tt><big>(</big><em>scope=2</em>, <em>role=None</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLRoleEntry" title="Permalink to this definition">¶</a></dt>
 <dd><p>The <tt class="docutils literal"><span class="pre">ACLRoleEntry</span></tt> object describes a set of actions that can be accessed in a given scope.
 <tt class="docutils literal"><span class="pre">ACLRoleEntry</span></tt> classes can then be bundled in <tt class="docutils literal"><span class="pre">ACLRole</span></tt> objects, to build up roles.</p>
-<p>This class interits most methods from <a class="reference internal" href="#gosa.agent.acl.ACL" title="gosa.agent.acl.ACL"><tt class="xref py py-class docutils literal"><span class="pre">gosa.agent.acl.ACL</span></tt></a>, except for methods that manage members,
+<p>This class interits most methods from <a class="reference internal" href="#clacks.agent.acl.ACL" title="clacks.agent.acl.ACL"><tt class="xref py py-class docutils literal"><span class="pre">clacks.agent.acl.ACL</span></tt></a>, except for methods that manage members,
 due to the fact that ACLRoleEntries do not have members!</p>
-<p>Take a look at <a class="reference internal" href="#gosa.agent.acl.ACLRole" title="gosa.agent.acl.ACLRole"><tt class="xref py py-class docutils literal"><span class="pre">gosa.agent.acl.ACLRole</span></tt></a> to get an idea aobut how roles are created.</p>
+<p>Take a look at <a class="reference internal" href="#clacks.agent.acl.ACLRole" title="clacks.agent.acl.ACLRole"><tt class="xref py py-class docutils literal"><span class="pre">clacks.agent.acl.ACLRole</span></tt></a> to get an idea aobut how roles are created.</p>
 <dl class="method">
-<dt id="gosa.agent.acl.ACLRoleEntry.add_member">
-<tt class="descname">add_member</tt><big>(</big><em>member</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLRoleEntry.add_member" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLRoleEntry.add_member">
+<tt class="descname">add_member</tt><big>(</big><em>member</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLRoleEntry.add_member" title="Permalink to this definition">¶</a></dt>
 <dd><p>An overloaded method from ACL which disallows to add users.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLRoleEntry.set_members">
-<tt class="descname">set_members</tt><big>(</big><em>member</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLRoleEntry.set_members" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLRoleEntry.set_members">
+<tt class="descname">set_members</tt><big>(</big><em>member</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLRoleEntry.set_members" title="Permalink to this definition">¶</a></dt>
 <dd><p>An overloaded method from ACL which disallows to add users.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
-<dt id="gosa.agent.acl.ACLSet">
-<em class="property">class </em><tt class="descclassname">gosa.agent.acl.</tt><tt class="descname">ACLSet</tt><big>(</big><em>base=None</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLSet" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLSet">
+<em class="property">class </em><tt class="descclassname">clacks.agent.acl.</tt><tt class="descname">ACLSet</tt><big>(</big><em>base=None</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLSet" title="Permalink to this definition">¶</a></dt>
 <dd><p>The base class of all ACL assignments is the &#8216;ACLSet&#8217; class which
 combines a list of <tt class="docutils literal"><span class="pre">ACL</span></tt> entries into a set of effective ACLs.</p>
 <p>The ACLSet has a base property which specifies the base, this set of
@@ -1351,8 +1351,8 @@ acls, is valid for. E.g. dc=example,dc=net</p>
 </pre></div>
 </div>
 <dl class="method">
-<dt id="gosa.agent.acl.ACLSet.add">
-<tt class="descname">add</tt><big>(</big><em>item</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLSet.add" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLSet.add">
+<tt class="descname">add</tt><big>(</big><em>item</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLSet.add" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a new <tt class="docutils literal"><span class="pre">ACL</span></tt> object to this <tt class="docutils literal"><span class="pre">ACLSet</span></tt>.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -1383,14 +1383,14 @@ acls, is valid for. E.g. dc=example,dc=net</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLSet.get_base">
-<tt class="descname">get_base</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLSet.get_base" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLSet.get_base">
+<tt class="descname">get_base</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLSet.get_base" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the base for this ACLSet.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLSet.remove_acl">
-<tt class="descname">remove_acl</tt><big>(</big><em>acl</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLSet.remove_acl" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLSet.remove_acl">
+<tt class="descname">remove_acl</tt><big>(</big><em>acl</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLSet.remove_acl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes an acl entry fromt this ACLSet.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -1422,8 +1422,8 @@ acls, is valid for. E.g. dc=example,dc=net</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLSet.remove_acls_for_user">
-<tt class="descname">remove_acls_for_user</tt><big>(</big><em>user</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLSet.remove_acls_for_user" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLSet.remove_acls_for_user">
+<tt class="descname">remove_acls_for_user</tt><big>(</big><em>user</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLSet.remove_acls_for_user" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes all permission for the given user form this ACLSet.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -1457,8 +1457,8 @@ acls, is valid for. E.g. dc=example,dc=net</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.acl.ACLSet.repr_self">
-<tt class="descname">repr_self</tt><big>(</big><em>indent=0</em><big>)</big><a class="headerlink" href="#gosa.agent.acl.ACLSet.repr_self" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.acl.ACLSet.repr_self">
+<tt class="descname">repr_self</tt><big>(</big><em>indent=0</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLSet.repr_self" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a human readable reprentation of this ACLSet object.</p>
 </dd></dl>
 

@@ -10,7 +10,7 @@ there's the *gosa-shell* binary, which can assist you in this case.
 Using the shell
 ^^^^^^^^^^^^^^^
 
-.. automodule:: gosa.shell
+.. automodule:: clacks.shell
    :members:
 
 Using the API
@@ -19,8 +19,8 @@ Using the API
 Almost all parts of the API are accessible thru the command proxies or
 the event methods. Please take a look at
 
- * the AMQP service proxy: :class:`gosa.common.components.amqp_proxy.AMQPServiceProxy`
- * the HTTP/JSONRPC proxy: :class:`gosa.common.components.jsonrpc_proxy.JSONServiceProxy`
+ * the AMQP service proxy: :class:`clacks.common.components.amqp_proxy.AMQPServiceProxy`
+ * the HTTP/JSONRPC proxy: :class:`clacks.common.components.jsonrpc_proxy.JSONServiceProxy`
  * :ref:`using events <events>`
 
 for more information.

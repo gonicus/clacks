@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from lxml import etree, objectify
-from gosa.agent.xmldb import XMLDBHandler
+from clacks.agent.xmldb import XMLDBHandler
 
 def print_res(res):
     for r in res:

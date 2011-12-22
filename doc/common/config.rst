@@ -1,7 +1,7 @@
 Configuration handling
 ======================
 
-.. automodule:: gosa.common.config
+.. automodule:: clacks.common.config
    :members:
 
 --------

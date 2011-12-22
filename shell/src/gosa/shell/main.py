@@ -51,13 +51,13 @@ from urllib2 import HTTPError
 from pkg_resources import resource_filename
 from dbus.exceptions import DBusException
 
-from gosa.common.components import AMQPServiceProxy
-from gosa.common.components import JSONServiceProxy, JSONRPCException
-from gosa.common.components.zeroconf_client import ZeroconfClient
-from gosa.common.utils import parseURL
+from clacks.common.components import AMQPServiceProxy
+from clacks.common.components import JSONServiceProxy, JSONRPCException
+from clacks.common.components.zeroconf_client import ZeroconfClient
+from clacks.common.utils import parseURL
 
 # Set locale domain
-t = gettext.translation('messages', resource_filename("gosa.shell", "locale"), fallback=True)
+t = gettext.translation('messages', resource_filename("clacks.shell", "locale"), fallback=True)
 _ = t.ugettext
 
 

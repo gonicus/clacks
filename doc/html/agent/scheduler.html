@@ -56,8 +56,8 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-gosa.agent.scheduler">
-<span id="scheduler-service"></span><h1>Scheduler service<a class="headerlink" href="#module-gosa.agent.scheduler" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-clacks.agent.scheduler">
+<span id="scheduler-service"></span><h1>Scheduler service<a class="headerlink" href="#module-clacks.agent.scheduler" title="Permalink to this headline">¶</a></h1>
 <p>The scheduler service can be used to do time based - time-phased, periodic, single shot - tasks
 which may be scheduled by a user or by indirectly by a script or the web frontend.</p>
 <blockquote>
@@ -78,12 +78,12 @@ u&#8216;596b8f2e-dad4-11e0-bcf1-5452005f1250&#8217;</p>
 </div></blockquote>
 <hr class="docutils" />
 <dl class="class">
-<dt id="gosa.agent.scheduler.SchedulerService">
-<em class="property">class </em><tt class="descclassname">gosa.agent.scheduler.</tt><tt class="descname">SchedulerService</tt><a class="headerlink" href="#gosa.agent.scheduler.SchedulerService" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.scheduler.SchedulerService">
+<em class="property">class </em><tt class="descclassname">clacks.agent.scheduler.</tt><tt class="descname">SchedulerService</tt><a class="headerlink" href="#clacks.agent.scheduler.SchedulerService" title="Permalink to this definition">¶</a></dt>
 <dd><p>The scheduler service provider.</p>
 <dl class="method">
-<dt id="gosa.agent.scheduler.SchedulerService.schedulerAddDateJob">
-<tt class="descname">schedulerAddDateJob</tt><big>(</big><em>user</em>, <em>queue</em>, <em>func</em>, <em>args</em>, <em>kwargs</em>, <em>date</em>, <em>**options</em><big>)</big><a class="headerlink" href="#gosa.agent.scheduler.SchedulerService.schedulerAddDateJob" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.scheduler.SchedulerService.schedulerAddDateJob">
+<tt class="descname">schedulerAddDateJob</tt><big>(</big><em>user</em>, <em>queue</em>, <em>func</em>, <em>args</em>, <em>kwargs</em>, <em>date</em>, <em>**options</em><big>)</big><a class="headerlink" href="#clacks.agent.scheduler.SchedulerService.schedulerAddDateJob" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-0">
 </div>
 <div class="admonition note">
@@ -164,8 +164,8 @@ u&#8216;596b8f2e-dad4-11e0-bcf1-5452005f1250&#8217;</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.scheduler.SchedulerService.schedulerCronDateJob">
-<tt class="descname">schedulerCronDateJob</tt><big>(</big><em>user</em>, <em>queue</em>, <em>func</em>, <em>args</em>, <em>kwargs</em>, <em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>week=None</em>, <em>day_of_week=None</em>, <em>hour=None</em>, <em>minute=None</em>, <em>second=None</em>, <em>start_date=None</em>, <em>**options</em><big>)</big><a class="headerlink" href="#gosa.agent.scheduler.SchedulerService.schedulerCronDateJob" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.scheduler.SchedulerService.schedulerCronDateJob">
+<tt class="descname">schedulerCronDateJob</tt><big>(</big><em>user</em>, <em>queue</em>, <em>func</em>, <em>args</em>, <em>kwargs</em>, <em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>week=None</em>, <em>day_of_week=None</em>, <em>hour=None</em>, <em>minute=None</em>, <em>second=None</em>, <em>start_date=None</em>, <em>**options</em><big>)</big><a class="headerlink" href="#clacks.agent.scheduler.SchedulerService.schedulerCronDateJob" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-1">
 </div>
 <div class="admonition note">
@@ -219,13 +219,13 @@ u&#8216;596b8f2e-dad4-11e0-bcf1-5452005f1250&#8217;</p>
 </tr>
 </tbody>
 </table>
-<p>For an option description, see <tt class="xref py py-meth docutils literal"><span class="pre">gosa.agent.scheduler.SchedulerService.schedulerDateJob()</span></tt>.</p>
+<p>For an option description, see <tt class="xref py py-meth docutils literal"><span class="pre">clacks.agent.scheduler.SchedulerService.schedulerDateJob()</span></tt>.</p>
 <p><cite>Return:</cite> Job ID</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.scheduler.SchedulerService.schedulerGetJobs">
-<tt class="descname">schedulerGetJobs</tt><big>(</big><em>fltr=None</em><big>)</big><a class="headerlink" href="#gosa.agent.scheduler.SchedulerService.schedulerGetJobs" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.scheduler.SchedulerService.schedulerGetJobs">
+<tt class="descname">schedulerGetJobs</tt><big>(</big><em>fltr=None</em><big>)</big><a class="headerlink" href="#clacks.agent.scheduler.SchedulerService.schedulerGetJobs" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-2">
 </div>
 <div class="admonition note">
@@ -266,8 +266,8 @@ u&#8217;description&#8217;: None}}</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.scheduler.SchedulerService.schedulerIntervalJob">
-<tt class="descname">schedulerIntervalJob</tt><big>(</big><em>user</em>, <em>queue</em>, <em>func</em>, <em>args</em>, <em>kwargs</em>, <em>weeks=0</em>, <em>days=0</em>, <em>hours=0</em>, <em>minutes=0</em>, <em>seconds=0</em>, <em>start_date=None</em>, <em>**options</em><big>)</big><a class="headerlink" href="#gosa.agent.scheduler.SchedulerService.schedulerIntervalJob" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.scheduler.SchedulerService.schedulerIntervalJob">
+<tt class="descname">schedulerIntervalJob</tt><big>(</big><em>user</em>, <em>queue</em>, <em>func</em>, <em>args</em>, <em>kwargs</em>, <em>weeks=0</em>, <em>days=0</em>, <em>hours=0</em>, <em>minutes=0</em>, <em>seconds=0</em>, <em>start_date=None</em>, <em>**options</em><big>)</big><a class="headerlink" href="#clacks.agent.scheduler.SchedulerService.schedulerIntervalJob" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-3">
 </div>
 <div class="admonition note">
@@ -318,13 +318,13 @@ u&#8217;description&#8217;: None}}</p>
 </tr>
 </tbody>
 </table>
-<p>For an option description, see <tt class="xref py py-meth docutils literal"><span class="pre">gosa.agent.scheduler.SchedulerService.schedulerDateJob()</span></tt>.</p>
+<p>For an option description, see <tt class="xref py py-meth docutils literal"><span class="pre">clacks.agent.scheduler.SchedulerService.schedulerDateJob()</span></tt>.</p>
 <p><cite>Return:</cite> Job ID</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.scheduler.SchedulerService.schedulerRemoveJob">
-<tt class="descname">schedulerRemoveJob</tt><big>(</big><em>user</em>, <em>job_id</em><big>)</big><a class="headerlink" href="#gosa.agent.scheduler.SchedulerService.schedulerRemoveJob" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.scheduler.SchedulerService.schedulerRemoveJob">
+<tt class="descname">schedulerRemoveJob</tt><big>(</big><em>user</em>, <em>job_id</em><big>)</big><a class="headerlink" href="#clacks.agent.scheduler.SchedulerService.schedulerRemoveJob" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition " id="cmd-4">
 </div>
 <div class="admonition note">
@@ -352,14 +352,14 @@ u&#8217;description&#8217;: None}}</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.scheduler.SchedulerService.serve">
-<tt class="descname">serve</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.agent.scheduler.SchedulerService.serve" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.scheduler.SchedulerService.serve">
+<tt class="descname">serve</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.scheduler.SchedulerService.serve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start the scheduler service.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gosa.agent.scheduler.SchedulerService.stop">
-<tt class="descname">stop</tt><big>(</big><big>)</big><a class="headerlink" href="#gosa.agent.scheduler.SchedulerService.stop" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.agent.scheduler.SchedulerService.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.scheduler.SchedulerService.stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stop scheduler service.</p>
 </dd></dl>
 

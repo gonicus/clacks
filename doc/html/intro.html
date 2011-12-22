@@ -231,15 +231,15 @@ acl allow all access   exchange name=org.gosa.command.*
 
 # Let clients create their own queue to listen on
 acl allow all access  queue    name=org.gosa
-acl allow all access  queue    name=org.gosa.client.* owner=self
-acl allow all consume queue    name=org.gosa.client.* owner=self
-acl allow all create  queue    name=org.gosa.client.* exclusive=true autodelete=true durable=false
+acl allow all access  queue    name=org.clacks.client.* owner=self
+acl allow all consume queue    name=org.clacks.client.* owner=self
+acl allow all create  queue    name=org.clacks.client.* exclusive=true autodelete=true durable=false
 acl allow all access  exchange name=org.gosa
-acl allow all access  exchange name=org.gosa.client.* owner=self
-acl allow all bind    exchange name=amq.direct queuename=org.gosa.client.*
+acl allow all access  exchange name=org.clacks.client.* owner=self
+acl allow all bind    exchange name=amq.direct queuename=org.clacks.client.*
 
 # Let agents send to the client queues
-acl allow agents publish  exchange  routingkey=org.gosa.client.*
+acl allow agents publish  exchange  routingkey=org.clacks.client.*
 
 # By default, drop everything else
 acl deny all all</pre>
@@ -266,7 +266,7 @@ these schema files like this:</p>
 </pre></div>
 </div>
 <p>If you use the PHP GUI, you also need to install the &#8220;old&#8221; schema files, because
-the GOsa GUI and gosa.agent service are meant to coexist until everything is cleanly
+the GOsa GUI and clacks.agent service are meant to coexist until everything is cleanly
 migrated.</p>
 <p>After you&#8217;ve optionally done that, find out which base is configured for your system:</p>
 <div class="highlight-python"><pre>manager@ldap:~$ sudo ldapsearch -LLL -Y EXTERNAL -H ldapi:/// -b cn=config olcSuffix=* olcSuffix
@@ -440,8 +440,8 @@ you@amqp:~$ avahi-browse -rd example.net _amqps._tcp
 <h4>Deploy a development agent<a class="headerlink" href="#deploy-a-development-agent" title="Permalink to this headline">¶</a></h4>
 <p>To deploy the agent, please run these commands inside the activated
 virtual environment:</p>
-<div class="highlight-python"><pre>$ pushd .; cd gosa.common &amp;&amp; ./setup.py develop; popd
-$ pushd .; cd gosa.agent &amp;&amp; ./setup.py develop; popd
+<div class="highlight-python"><pre>$ pushd .; cd clacks.common &amp;&amp; ./setup.py develop; popd
+$ pushd .; cd clacks.agent &amp;&amp; ./setup.py develop; popd
 
 
 Alternatively you can build the complete package using::
@@ -461,7 +461,7 @@ recommended during the quickstart quide.</p>
 <p>In a productive environment, everything should be defined in the configuration
 file, so copy the configuration file to the place where gosa expects it:</p>
 <div class="highlight-python"><pre>$ mkdir -p /etc/gosa
-$ cp ./src/gosa.agent/src/gosa/agent/data/agent.conf /etc/gosa/config</pre>
+$ cp ./src/clacks.agent/src/gosa/agent/data/agent.conf /etc/gosa/config</pre>
 </div>
 <p>Now take a look at the config file and adapt it to your needs.</p>
 <p>You can start the daemon in foreground like this:</p>
@@ -558,8 +558,8 @@ pool_size = 10</pre>
 <div class="section" id="installing">
 <h4>Installing<a class="headerlink" href="#installing" title="Permalink to this headline">¶</a></h4>
 <p>To deploy the shell, use:</p>
-<div class="highlight-python"><pre>$ pushd .; cd gosa.common &amp;&amp; ./setup.py develop; popd
-$ pushd .; cd gosa.shell &amp;&amp; ./setup.py develop; popd</pre>
+<div class="highlight-python"><pre>$ pushd .; cd clacks.common &amp;&amp; ./setup.py develop; popd
+$ pushd .; cd clacks.shell &amp;&amp; ./setup.py develop; popd</pre>
 </div>
 <p>inside your activated virtual env. You can skip this if you ran ./setup.py for
 a complete deployment.</p>
@@ -594,9 +594,9 @@ a managed client.</p>
 <div class="section" id="id2">
 <h4>Installing<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
 <p>To deploy the client components, use:</p>
-<div class="highlight-python"><pre>$ pushd .; cd gosa.common &amp;&amp; ./setup.py develop; popd
-$ pushd .; cd gosa.client &amp;&amp; ./setup.py develop; popd
-$ pushd .; cd gosa.dbus &amp;&amp; ./setup.py develop; popd</pre>
+<div class="highlight-python"><pre>$ pushd .; cd clacks.common &amp;&amp; ./setup.py develop; popd
+$ pushd .; cd clacks.client &amp;&amp; ./setup.py develop; popd
+$ pushd .; cd clacks.dbus &amp;&amp; ./setup.py develop; popd</pre>
 </div>
 <p>inside your activated virtual env. You can skip this if you ran ./setup.py for
 a complete deployment.</p>

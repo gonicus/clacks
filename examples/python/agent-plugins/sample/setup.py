@@ -38,7 +38,7 @@ setup(
     setup_requires = ['nose', 'NoseXUnit', 'pylint'],
     install_requires = [
         'zope.interface>=3.5',
-        'gosa.agent',
+        'clacks.agent',
     ],
     extra_requires = [
     ],

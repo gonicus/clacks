@@ -9,8 +9,8 @@ service startup.
 Plain plugins
 -------------
 
-Plain plugins just need to inherit from :class:`gosa.common.components.plugin.Plugin`
-and make use of :meth:`gosa.common.components.command.Command`. Additionally, they've
+Plain plugins just need to inherit from :class:`clacks.common.components.plugin.Plugin`
+and make use of :meth:`clacks.common.components.command.Command`. Additionally, they've
 to specify their target queue - :ref:`see agent queues <agent-queues>`.
 
 Use the **tools/gosa-plugin-skell** command to get a GOsa agent plugin skeleton and
@@ -18,8 +18,8 @@ take a look at the *main.py* file::
 
     # -*- coding: utf-8 -*-
     import gettext
-    from gosa.common import Environment
-    from gosa.common.components import Command, Plugin
+    from clacks.common import Environment
+    from clacks.common.components import Command, Plugin
     
     # Load gettext
     t = gettext.translation('messages', resource_filename("sample", "locale"), fallback=True)
@@ -41,7 +41,7 @@ It shows a very minimal sample plugin which provides the command *hello* to
 the GOsa agents *CommandRegistry* - which is callable for users later on. You
 can see a couple of things that are common to all plugins:
 
- * they import *Command* and *Plugin* from the :mod:`gosa.common.components`
+ * they import *Command* and *Plugin* from the :mod:`clacks.common.components`
  * they optionally import the *Environment* if there's a need for it (i.e.
    logging or config management)
  * they optionally initialize the gettext module for i18n support
@@ -75,9 +75,9 @@ Here's the modified snipped from above to run as a handler::
     # -*- coding: utf-8 -*-
     import gettext
     from zope.interface import implements
-    from gosa.common import Environment
-    from gosa.common.handler import IInterfaceHandler
-    from gosa.common.components import Command, Plugin
+    from clacks.common import Environment
+    from clacks.common.handler import IInterfaceHandler
+    from clacks.common.components import Command, Plugin
     
     # Load gettext
     t = gettext.translation('messages', resource_filename("sample", "locale"), fallback=True)

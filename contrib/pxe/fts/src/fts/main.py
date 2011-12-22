@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from gosa.common import Environment
+from clacks.common import Environment
 
 import os
 import subprocess

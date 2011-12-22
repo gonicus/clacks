@@ -1,6 +1,6 @@
 LDAP Handler
 ============
 
-.. automodule:: gosa.agent.ldap_utils
+.. automodule:: clacks.agent.ldap_utils
    :members:
 

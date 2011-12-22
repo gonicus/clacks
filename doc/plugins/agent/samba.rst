@@ -1,5 +1,5 @@
 Samba
 =====
 
-.. autoclass:: gosa.agent.plugins.samba.utils.SambaUtils
+.. autoclass:: clacks.agent.plugins.samba.utils.SambaUtils
    :members:

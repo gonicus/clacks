@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os, shutil
-from gosa.common import Environment
+from clacks.common import Environment
 from libinst import LibinstManager
 
 def main():

@@ -139,8 +139,8 @@ for fname in [os.path.join(name, "src", "gosa"),
 with open(os.path.join(name, "src", "gosa", p_type, "plugins", name, "main.py"), "w") as f:
     f.write("""# -*- coding: utf-8 -*-
 import gettext
-from gosa.common import Environment
-from gosa.common.components import Command, Plugin
+from clacks.common import Environment
+from clacks.common.components import Command, Plugin
 
 # Load gettext
 t = gettext.translation('messages', resource_filename("{name}", "locale"), fallback=True)

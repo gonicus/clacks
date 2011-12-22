@@ -13,8 +13,8 @@ CHANGES = open(os.path.join(here, 'CHANGES')).read()
 
 
 setup(
-    name = "gosa.dbus",
-    version = "3.0",
+    name = "clacks.dbus",
+    version = "1.0",
     author = "Cajus Pollmeier",
     author_email = "pollmeier@gonicus.de",
     description = "Identity-, system- and configmanagement middleware",
@@ -23,7 +23,7 @@ setup(
     license = "LGPL",
     url = "http://www.gosa-project.org",
     classifiers = [
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Console',
         'Intended Audience :: System Administrators',
         'License :: OSI Approved :: GNU General Public License (GPL)',
@@ -38,11 +38,11 @@ setup(
     download_url = "http://oss.gonicus.de/pub/gosa",
     packages = find_packages('src', exclude=['examples', 'tests']),
     package_dir = {'': 'src'},
-    namespace_packages = ['gosa'],
+    namespace_packages = ['clacks'],
 
     include_package_data = True,
     package_data = {
-        'gosa.dbus.plugins.inventory': ['data/fusionToGosa.xsl'],
+        'clacks.dbus.plugins.inventory': ['data/fusionToGosa.xsl'],
     },
 
     test_suite = "nose.collector",
@@ -51,7 +51,7 @@ setup(
         'python_dateutil',
         ],
     install_requires = [
-        'gosa.common',
+        'clacks.common',
         ],
     dependency_links = [
         'http://oss.gonicus.de/pub/gosa/eggs',
@@ -59,14 +59,14 @@ setup(
 
     entry_points = """
         [console_scripts]
-        clacks-dbus = gosa.dbus.main:main
-        notify-user = gosa.dbus.notify:main
+        clacks-dbus = clacks.dbus.main:main
+        notify-user = clacks.dbus.notify:main
 
         [gosa_dbus.modules]
-        module.unix = gosa.dbus.plugins.services.main:DBusUnixServiceHandler
-        module.inventory = gosa.dbus.plugins.inventory.main:DBusInventoryHandler
-        module.service = gosa.dbus.plugins.services.main:DBusUnixServiceHandler
-        module.notify = gosa.dbus.plugins.notify.main:DBusNotifyHandler
-        module.wol = gosa.dbus.plugins.wakeonlan.main:DBusWakeOnLanHandler
+        module.unix = clacks.dbus.plugins.services.main:DBusUnixServiceHandler
+        module.inventory = clacks.dbus.plugins.inventory.main:DBusInventoryHandler
+        module.service = clacks.dbus.plugins.services.main:DBusUnixServiceHandler
+        module.notify = clacks.dbus.plugins.notify.main:DBusNotifyHandler
+        module.wol = clacks.dbus.plugins.wakeonlan.main:DBusWakeOnLanHandler
     """,
 )

@@ -1,5 +1,5 @@
 Utilities
 =========
 
-.. automodule:: gosa.common.utils
+.. automodule:: clacks.common.utils
    :members:

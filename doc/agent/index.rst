@@ -1,7 +1,7 @@
 Agent
 =====
 
-.. automodule:: gosa.agent
+.. automodule:: clacks.agent
    :members:
 
 -------------------------

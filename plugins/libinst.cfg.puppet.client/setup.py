@@ -39,8 +39,8 @@ for various systems in your setup.
 
     setup_requires = ['nose==0.11.1', 'NoseXUnit', 'pylint'],
     install_requires = [
-        'gosa.client',
-        'gosa.dbus',
+        'clacks.client',
+        'clacks.dbus',
         'pyinotify',
         'GitPython',
         'PyYAML',

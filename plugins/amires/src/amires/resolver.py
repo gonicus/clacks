@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
-from gosa.common import Environment
+from clacks.common import Environment
 
 
 class PhoneNumberResolver(object):

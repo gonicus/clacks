@@ -1,7 +1,7 @@
 Client
 ======
 
-.. automodule:: gosa.client
+.. automodule:: clacks.client
    :members:
 
 -------------------------

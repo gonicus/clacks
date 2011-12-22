@@ -25,5 +25,5 @@ GOsa client itself.
 
 ----
 
-.. autoclass:: gosa.client.plugins.join.methods.join_method
+.. autoclass:: clacks.client.plugins.join.methods.join_method
    :members:

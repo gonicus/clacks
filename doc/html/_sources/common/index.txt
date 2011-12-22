@@ -1,7 +1,7 @@
 The GOsa *common* library
 =========================
 
-.. automodule:: gosa.common
+.. automodule:: clacks.common
    :members:
 
 ------------

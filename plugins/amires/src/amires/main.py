@@ -6,12 +6,12 @@ import re
 import logging
 from lxml import etree
 from zope.interface import implements
-from gosa.common.handler import IInterfaceHandler
-from gosa.common import Environment
-from gosa.common.utils import parseURL, makeAuthURL
-from gosa.common.components.registry import PluginRegistry
-from gosa.common.components.amqp import EventConsumer
-from gosa.common.components import AMQPServiceProxy
+from clacks.common.handler import IInterfaceHandler
+from clacks.common import Environment
+from clacks.common.utils import parseURL, makeAuthURL
+from clacks.common.components.registry import PluginRegistry
+from clacks.common.components.amqp import EventConsumer
+from clacks.common.components import AMQPServiceProxy
 
 # Set locale domain
 t = gettext.translation('messages', pkg_resources.resource_filename("amires", "locale"),

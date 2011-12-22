@@ -185,21 +185,21 @@ to be. AMQP queues are based on the domain, so if you use the default, all
 created queues start with <em>org.gosa.</em> and shape the namespace to use in AMQP.</p>
 </div>
 <div class="section" id="gosa-common">
-<h3>gosa.common<a class="headerlink" href="#gosa-common" title="Permalink to this headline">¶</a></h3>
-<p>The <em>gosa.common</em> component is the base library which is providing common
+<h3>clacks.common<a class="headerlink" href="#gosa-common" title="Permalink to this headline">¶</a></h3>
+<p>The <em>clacks.common</em> component is the base library which is providing common
 functionality to agents and clients.</p>
 </div>
 <div class="section" id="gosa-agent">
-<h3>gosa.agent<a class="headerlink" href="#gosa-agent" title="Permalink to this headline">¶</a></h3>
+<h3>clacks.agent<a class="headerlink" href="#gosa-agent" title="Permalink to this headline">¶</a></h3>
 <p>For every domain, you need at least on broker (or a broker federation) and
-at least one <em>gosa.agent</em> instance. The agent defines the domain queues and
+at least one <em>clacks.agent</em> instance. The agent defines the domain queues and
 puts life to queues by answering to command requests and processing basic
 events.</p>
 <p>If you have more than one agent, they share the command queues using a round
 robin method of the AMQP broker - so you&#8217;ve automatic load balancing. Agents
 notify each other on a regular base in order to know each others status (load,
 number of workers, etc.). They also notify each other if they&#8217;re joining or
-leaving the domain - maybe due to a service restart. Because <em>gosa.agent</em>
+leaving the domain - maybe due to a service restart. Because <em>clacks.agent</em>
 instances can have different plugins loaded, they also inform each others
 about their capabilities - so that in case it&#8217;s needed - commands can be
 forwarded to a capable agent.</p>
@@ -229,8 +229,8 @@ from there.</p>
 </li>
 <li><a class="reference internal" href="#gosa-overview">GOsa overview</a><ul>
 <li><a class="reference internal" href="#domains">Domains</a></li>
-<li><a class="reference internal" href="#gosa-common">gosa.common</a></li>
-<li><a class="reference internal" href="#gosa-agent">gosa.agent</a></li>
+<li><a class="reference internal" href="#gosa-common">clacks.common</a></li>
+<li><a class="reference internal" href="#gosa-agent">clacks.agent</a></li>
 </ul>
 </li>
 </ul>

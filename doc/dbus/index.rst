@@ -1,10 +1,10 @@
 DBUS integration
 ================
 
-.. automodule:: gosa.dbus
+.. automodule:: clacks.dbus
    :members:
 
 -----
 
-.. automodule:: gosa.dbus.utils
+.. automodule:: clacks.dbus.utils
    :members:

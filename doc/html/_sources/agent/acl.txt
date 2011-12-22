@@ -1,6 +1,6 @@
 ACL handling
 ============
 
-.. automodule:: gosa.agent.acl
+.. automodule:: clacks.agent.acl
    :members:
 

@@ -39,7 +39,7 @@ for various systems in your setup.
 
     setup_requires = ['pylint'],
     install_requires = [
-        'gosa.agent',
+        'clacks.agent',
         'python-gnupg',
         'pytz',
     ],

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from gosa.common import Environment
-from gosa.agent.ldap_utils import LDAPHandler
+from clacks.common import Environment
+from clacks.agent.ldap_utils import LDAPHandler
 
 import ldap
 import ldap.filter

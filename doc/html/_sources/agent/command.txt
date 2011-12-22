@@ -1,6 +1,6 @@
 Command registry
 ================
 
-.. automodule:: gosa.agent.command
+.. automodule:: clacks.agent.command
    :members:
 

@@ -55,16 +55,16 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-gosa.agent">
-<span id="agent"></span><h1>Agent<a class="headerlink" href="#module-gosa.agent" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-clacks.agent">
+<span id="agent"></span><h1>Agent<a class="headerlink" href="#module-clacks.agent" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>The <em>agent</em> module bundles the agent daemon and a couple code modules
 needed to run it. The agent itself is meant to be extended by plugins
-using the <a class="reference internal" href="../common/components.html#gosa.common.components.plugin.Plugin" title="gosa.common.components.plugin.Plugin"><tt class="xref py py-class docutils literal"><span class="pre">gosa.common.components.plugin.Plugin</span></tt></a> interface.
+using the <a class="reference internal" href="../common/components.html#clacks.common.components.plugin.Plugin" title="clacks.common.components.plugin.Plugin"><tt class="xref py py-class docutils literal"><span class="pre">clacks.common.components.plugin.Plugin</span></tt></a> interface.
 When starting up the system, the agent looks for plugins in the setuptools
-system and registers them into to the <a class="reference internal" href="../common/components.html#gosa.common.components.registry.PluginRegistry" title="gosa.common.components.registry.PluginRegistry"><tt class="xref py py-class docutils literal"><span class="pre">gosa.common.components.registry.PluginRegistry</span></tt></a>.
-The same happens for objects in <a class="reference internal" href="../common/components.html#gosa.common.components.objects.ObjectRegistry" title="gosa.common.components.objects.ObjectRegistry"><tt class="xref py py-class docutils literal"><span class="pre">gosa.common.components.objects.ObjectRegistry</span></tt></a>.</p>
+system and registers them into to the <a class="reference internal" href="../common/components.html#clacks.common.components.registry.PluginRegistry" title="clacks.common.components.registry.PluginRegistry"><tt class="xref py py-class docutils literal"><span class="pre">clacks.common.components.registry.PluginRegistry</span></tt></a>.
+The same happens for objects in <a class="reference internal" href="../common/components.html#clacks.common.components.objects.ObjectRegistry" title="clacks.common.components.objects.ObjectRegistry"><tt class="xref py py-class docutils literal"><span class="pre">clacks.common.components.objects.ObjectRegistry</span></tt></a>.</p>
 <p>After the <em>PluginRegistry</em> is ready with loading the modules, it orders
 them by priority and tries to determine whether it is</p>
 <blockquote>
@@ -86,16 +86,16 @@ to be stopped.</p>
 exposing functionality to the outside world. Here are some of them:</p>
 <blockquote>
 <div><ul class="simple">
-<li><a class="reference internal" href="command.html#gosa.agent.command.CommandRegistry" title="gosa.agent.command.CommandRegistry"><tt class="xref py py-class docutils literal"><span class="pre">gosa.agent.command.CommandRegistry</span></tt></a> inspects all loaded modules
-for the <a class="reference internal" href="../common/components.html#gosa.common.components.command.Command" title="gosa.common.components.command.Command"><tt class="xref py py-meth docutils literal"><span class="pre">gosa.common.components.command.Command()</span></tt></a> decorator
+<li><a class="reference internal" href="command.html#clacks.agent.command.CommandRegistry" title="clacks.agent.command.CommandRegistry"><tt class="xref py py-class docutils literal"><span class="pre">clacks.agent.command.CommandRegistry</span></tt></a> inspects all loaded modules
+for the <a class="reference internal" href="../common/components.html#clacks.common.components.command.Command" title="clacks.common.components.command.Command"><tt class="xref py py-meth docutils literal"><span class="pre">clacks.common.components.command.Command()</span></tt></a> decorator
 and registers all decorated methods to be available thru the CommandRegistry
 dispatcher.</li>
-<li><a class="reference internal" href="amqp.html#gosa.agent.amqp_service.AMQPService" title="gosa.agent.amqp_service.AMQPService"><tt class="xref py py-class docutils literal"><span class="pre">gosa.agent.amqp_service.AMQPService</span></tt></a> joins to the qpid broker
+<li><a class="reference internal" href="amqp.html#clacks.agent.amqp_service.AMQPService" title="clacks.agent.amqp_service.AMQPService"><tt class="xref py py-class docutils literal"><span class="pre">clacks.agent.amqp_service.AMQPService</span></tt></a> joins to the qpid broker
 federation and provides methods to <em>speak</em> with the bus.</li>
-<li><a class="reference internal" href="http.html#gosa.agent.httpd.HTTPService" title="gosa.agent.httpd.HTTPService"><tt class="xref py py-class docutils literal"><span class="pre">gosa.agent.httpd.HTTPService</span></tt></a> provides a WSGI based HTTP service,
-which is extended by <a class="reference internal" href="http.html#gosa.agent.httpd.HTTPDispatcher" title="gosa.agent.httpd.HTTPDispatcher"><tt class="xref py py-class docutils literal"><span class="pre">gosa.agent.httpd.HTTPDispatcher</span></tt></a> to let
+<li><a class="reference internal" href="http.html#clacks.agent.httpd.HTTPService" title="clacks.agent.httpd.HTTPService"><tt class="xref py py-class docutils literal"><span class="pre">clacks.agent.httpd.HTTPService</span></tt></a> provides a WSGI based HTTP service,
+which is extended by <a class="reference internal" href="http.html#clacks.agent.httpd.HTTPDispatcher" title="clacks.agent.httpd.HTTPDispatcher"><tt class="xref py py-class docutils literal"><span class="pre">clacks.agent.httpd.HTTPDispatcher</span></tt></a> to let
 interested modules hook into a HTTP path if desired.</li>
-<li><a class="reference internal" href="jsonrpc.html#gosa.agent.jsonrpc_service.JSONRPCService" title="gosa.agent.jsonrpc_service.JSONRPCService"><tt class="xref py py-class docutils literal"><span class="pre">gosa.agent.jsonrpc_service.JSONRPCService</span></tt></a> uses the HTTPDispatcher
+<li><a class="reference internal" href="jsonrpc.html#clacks.agent.jsonrpc_service.JSONRPCService" title="clacks.agent.jsonrpc_service.JSONRPCService"><tt class="xref py py-class docutils literal"><span class="pre">clacks.agent.jsonrpc_service.JSONRPCService</span></tt></a> uses the HTTPDispatcher
 to provide the <em>/rpc</em> URL with JSONRPC capabilities. It exposes all
 methods decorated by &#64;Command.</li>
 </ul>
@@ -158,7 +158,7 @@ controlled.</p>
 <li class="toctree-l1"><a class="reference internal" href="http.html">HTTP service</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ldap.html">LDAP Handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="jsonrpc.html">JSON RPC service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="jsonrpc.html#module-gosa.agent.jsonrpc_objects">JSON RPC objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jsonrpc.html#module-clacks.agent.jsonrpc_objects">JSON RPC objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="objects.html">Object abstraction</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="objects.html#basic-usage">Basic usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="objects.html#how-does-it-work-xml-definition-for-gosa-objects">How does it work - XML definition for GOsa objects</a></li>

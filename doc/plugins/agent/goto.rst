@@ -1,10 +1,10 @@
 GOto
 ====
 
-.. autoclass:: gosa.agent.plugins.goto.client_service.ClientService
+.. autoclass:: clacks.agent.plugins.goto.client_service.ClientService
    :members:
 
 -------
 
-.. autoclass:: gosa.agent.plugins.goto.network.NetworkUtils
+.. autoclass:: clacks.agent.plugins.goto.network.NetworkUtils
    :members:

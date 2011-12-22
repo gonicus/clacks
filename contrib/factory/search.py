@@ -3,8 +3,8 @@
 import json
 import sys
 import argparse
-from gosa.agent.objects import GOsaObjectFactory
-from gosa.agent.objects.index import ObjectIndex, SCOPE_ONE, SCOPE_BASE, SCOPE_SUB
+from clacks.agent.objects import GOsaObjectFactory
+from clacks.agent.objects.index import ObjectIndex, SCOPE_ONE, SCOPE_BASE, SCOPE_SUB
 
 # Define cla parser
 parser = argparse.ArgumentParser(description='Search test')

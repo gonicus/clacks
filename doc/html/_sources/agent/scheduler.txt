@@ -1,6 +1,6 @@
 Scheduler service
 =================
 
-.. automodule:: gosa.agent.scheduler
+.. automodule:: clacks.agent.scheduler
    :members:
 

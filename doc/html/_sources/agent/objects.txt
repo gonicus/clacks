@@ -1,19 +1,19 @@
 .. _objects:
 
-.. automodule:: gosa.agent.objects
+.. automodule:: clacks.agent.objects
    :members:
 
 ------
 
-.. automodule:: gosa.agent.objects.factory
+.. automodule:: clacks.agent.objects.factory
    :members:
 
 ------
 
-.. automodule:: gosa.agent.objects.proxy
+.. automodule:: clacks.agent.objects.proxy
    :members:
 
 ------
 
-.. automodule:: gosa.agent.objects.index
+.. automodule:: clacks.agent.objects.index
    :members:

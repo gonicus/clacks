@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from lxml import etree
-from gosa.common.components.cache import cache
+from clacks.common.components.cache import cache
 from amires.resolver import PhoneNumberResolver
 
 

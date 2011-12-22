@@ -163,18 +163,18 @@ to be. AMQP queues are based on the domain, so if you use the default, all
 created queues start with *org.gosa.* and shape the namespace to use in AMQP.
 
 
-gosa.common
+clacks.common
 -----------
 
-The *gosa.common* component is the base library which is providing common
+The *clacks.common* component is the base library which is providing common
 functionality to agents and clients.
 
 
-gosa.agent
+clacks.agent
 ----------
 
 For every domain, you need at least on broker (or a broker federation) and
-at least one *gosa.agent* instance. The agent defines the domain queues and
+at least one *clacks.agent* instance. The agent defines the domain queues and
 puts life to queues by answering to command requests and processing basic
 events.
 
@@ -182,7 +182,7 @@ If you have more than one agent, they share the command queues using a round
 robin method of the AMQP broker - so you've automatic load balancing. Agents
 notify each other on a regular base in order to know each others status (load,
 number of workers, etc.). They also notify each other if they're joining or
-leaving the domain - maybe due to a service restart. Because *gosa.agent*
+leaving the domain - maybe due to a service restart. Because *clacks.agent*
 instances can have different plugins loaded, they also inform each others
 about their capabilities - so that in case it's needed - commands can be
 forwarded to a capable agent.

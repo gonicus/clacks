@@ -14,8 +14,8 @@ CHANGES = open(os.path.join(here, 'CHANGES')).read()
 
 
 setup(
-    name = "gosa.shell",
-    version = "3.0",
+    name = "clacks.shell",
+    version = "1.0",
     author = "Cajus Pollmeier",
     author_email = "pollmeier@gonicus.de",
     description = "Identity-, system- and configmanagement middleware",
@@ -24,7 +24,7 @@ setup(
     license = "LGPL",
     url = "http://www.gosa-project.org",
     classifiers = [
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Console',
         'Intended Audience :: System Administrators',
         'License :: OSI Approved :: GNU General Public License (GPL)',
@@ -39,7 +39,7 @@ setup(
     download_url = "http://oss.gonicus.de/pub/gosa",
     packages = find_packages('src', exclude=['examples', 'tests']),
     package_dir = {'': 'src'},
-    namespace_packages = ['gosa'],
+    namespace_packages = ['clacks'],
 
     include_package_data = False,
 
@@ -47,10 +47,10 @@ setup(
     zip_safe = False,
 
     setup_requires = ['pylint', 'babel' ],
-    install_requires = ['gosa.common'],
+    install_requires = ['clacks.common'],
 
     entry_points = """
         [console_scripts]
-        clacksh = gosa.shell.main:main
+        clacksh = clacks.shell.main:main
     """,
 )

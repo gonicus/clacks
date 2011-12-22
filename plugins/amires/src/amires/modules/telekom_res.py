@@ -4,7 +4,7 @@ import urllib
 import urllib2
 from urlparse import urlparse, parse_qs
 from amires.resolver import PhoneNumberResolver
-from gosa.common.components.cache import cache
+from clacks.common.components.cache import cache
 
 
 class TelekomNumberResolver(PhoneNumberResolver):

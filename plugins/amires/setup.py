@@ -40,7 +40,7 @@ setup(
     },
 
     install_requires = [
-        'gosa.agent',
+        'clacks.agent',
         ],
 
     entry_points = """

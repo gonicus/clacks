@@ -45,11 +45,11 @@ from libinst.system_locale import locale_map
 from libinst.keyboard_models import KeyboardModels
 from libinst.utils import load_system
 
-from gosa.common import Environment
-from gosa.common.components.command import Command
-from gosa.agent.ldap_utils import LDAPHandler
-from gosa.common.components import Plugin
-from gosa.common.utils import N_, parseURL
+from clacks.common import Environment
+from clacks.common.components.command import Command
+from clacks.agent.ldap_utils import LDAPHandler
+from clacks.common.components import Plugin
+from clacks.common.utils import N_, parseURL
 
 # Include locales
 t = gettext.translation('messages', resource_filename("libinst", "locale"), fallback=True)

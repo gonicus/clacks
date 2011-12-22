@@ -1,12 +1,12 @@
 JSON RPC service
 ================
 
-.. automodule:: gosa.agent.jsonrpc_service
+.. automodule:: clacks.agent.jsonrpc_service
    :members:
 
 JSON RPC objects
 ================
 
-.. automodule:: gosa.agent.jsonrpc_objects
+.. automodule:: clacks.agent.jsonrpc_objects
    :members:
 

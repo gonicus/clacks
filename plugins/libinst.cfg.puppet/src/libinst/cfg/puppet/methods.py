@@ -15,8 +15,8 @@ from git.cmd import Git, GitCommandError
 from subprocess import Popen, PIPE
 from threading import RLock
 from types import StringTypes
-from gosa.common.components.registry import PluginRegistry
-from gosa.agent.ldap_utils import LDAPHandler
+from clacks.common.components.registry import PluginRegistry
+from clacks.agent.ldap_utils import LDAPHandler
 from nodes import PuppetNodeManager
 
 # Global puppet lock

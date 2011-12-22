@@ -1,5 +1,5 @@
 Gravatar
 ========
 
-.. autoclass:: gosa.agent.plugins.gravatar.utils.GravatarUtils
+.. autoclass:: clacks.agent.plugins.gravatar.utils.GravatarUtils
    :members:

@@ -13,11 +13,11 @@ from git import Repo
 from pwd import getpwnam
 from time import mktime, sleep
 
-from gosa.common.event import EventMaker
-from gosa.common.components import Plugin
-from gosa.common.components import Command
-from gosa.common import Environment
-from gosa.common.components.registry import PluginRegistry
+from clacks.common.event import EventMaker
+from clacks.common.components import Plugin
+from clacks.common.components import Command
+from clacks.common import Environment
+from clacks.common.components.registry import PluginRegistry
 
 # Add constructor to parse ruby data type
 def rubysym(loader, node):

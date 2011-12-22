@@ -4,7 +4,7 @@ import re
 import shutil
 import logging
 from libinst.interface import InstallItem
-from gosa.common import Environment
+from clacks.common import Environment
 
 
 class PuppetModule(InstallItem):

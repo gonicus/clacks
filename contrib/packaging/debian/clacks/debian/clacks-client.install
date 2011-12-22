@@ -1,6 +1,6 @@
 usr/bin/clacks-join usr/sbin
 usr/bin/clacks-client usr/sbin
 usr/lib/python*/dist-packages/gosa/client
-usr/lib/python*/dist-packages/gosa.client-*.egg-info
-usr/lib/python*/dist-packages/gosa.client-*-nspkg.pth
+usr/lib/python*/dist-packages/clacks.client-*.egg-info
+usr/lib/python*/dist-packages/clacks.client-*-nspkg.pth
 ../rsyslog/clacks-client.conf /etc/rsyslog.d

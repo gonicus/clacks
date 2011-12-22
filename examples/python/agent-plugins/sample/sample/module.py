@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import gettext
 
-from gosa.common import Environment
-from gosa.common.components import Command, Plugin
-from gosa.common.utils import N_
+from clacks.common import Environment
+from clacks.common.components import Command, Plugin
+from clacks.common.utils import N_
 # pylint: disable-msg=E0611
 from pkg_resources import resource_filename
 

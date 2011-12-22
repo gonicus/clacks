@@ -39,7 +39,7 @@ setup(
 
     setup_requires = ['nose', 'NoseXUnit', 'pylint'],
     install_requires = [
-        'gosa.agent',
+        'clacks.agent',
         'fuse-python',
     ],
 )

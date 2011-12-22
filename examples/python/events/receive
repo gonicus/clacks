@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from gosa.common.components import AMQPEventConsumer
+from clacks.common.components import AMQPEventConsumer
 from lxml import etree
 
 # Event callback

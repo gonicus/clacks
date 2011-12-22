@@ -1,14 +1,14 @@
-GOsa NG Development
-===================
+Clacks Development
+==================
 
 This document contains information on "how to get started" with
-the current gosa-ng snapshot. It does not care about SSL or other
+the current clacks snapshot. It does not care about SSL or other
 security related issues around qpid.
 
 It works starting with squeeze or later. Lenny does not work, so
 you just don't have to try...
 
-Depending on which parts of gosa-ng you want to deploy, there are
+Depending on which parts of clacks you want to deploy, there are
 different prequisites to fulfill. Please read the relevant sections.
 
 
@@ -19,10 +19,10 @@ different prequisites to fulfill. Please read the relevant sections.
 To run the services in the designed way later on, you need a special user
 and a couple of directories.
 
-$ sudo adduser --system --group gosa --home=/var/lib/gosa
+$ sudo adduser --system --group clacks --home=/var/lib/clacks
 
 If you're going to run the service in daemon mode, please take care that
-there's a /var/run/gosa for placing the PID files.
+there's a /var/run/clacks for placing the PID files.
 
 
 0.2 Python prequisites
@@ -41,12 +41,12 @@ On MS Windows systems, only the client is supposed to work. Please install the
 ywin32 package: http://sourceforge.net/projects/pywin32/
 
 
-0.3 Setup a virtual environment for playing with gosa-ng
+0.3 Setup a virtual environment for playing with clacks
 
 As a non-root user, initialize the virtual environment:
 
-$ virtualenv --setuptools --python=python2.6  gosa-ng
-$ cd gosa-ng
+$ virtualenv --setuptools --python=python2.6  clacks
+$ cd clacks
 $ source bin/activate
 
 (!) The "source bin/activate" has to be done every time you work in or with the
@@ -58,13 +58,13 @@ $ source bin/activate
 
 For now, please use the tar or git:
 
-$ cd 'the place where you created the gosa-ng virtualenv'
+$ cd 'the place where you created the clacks virtualenv'
 $ git clone git://labs.intranet.gonicus.de/gosa-ng/gosa-ng.git src
 
 This will place all relevant files inside the 'src' directory.
 
 
-1 The gosa-ng agent
+1 The clacks agent
 
 To run the agent, you most likely need a working AMQP broker and
 a working LDAP setup.
@@ -219,7 +219,7 @@ b._dns-sd._udp  IN PTR @   ;  b = browse domain
 lb._dns-sd._udp IN PTR @   ;  lb = legacy browse domain
 r._dns-sd._udp  IN PTR @   ;  r = registration domain
 
-; Zeroconf gosa-ng records
+; Zeroconf clacks records
 _gosa._tcp  PTR GOsa\ NG\ Service._gosa._tcp
 GOsa\ NG\ Service._gosa._tcp     SRV 0 0 5671 amqp.example.org.
                                  TXT amqps://amqp.example.org:5671/org.gosa
@@ -249,19 +249,19 @@ $ ./setup.py develop
 1.8 Starting the service
 
 (!) Make sure, you've entered the virtual environment using "source bin/activate"
-    from inside the gosa-ng directory.
+    from inside the clacks directory.
 
-Take a look at the agent.conf present in the src/gosa/agent/data directory and adapt it
+Take a look at the agent.conf present in the src/clacks/agent/data directory and adapt it
 to your needs. Fire up the daemon in foreground mode:
 
-$ gosa-agent -f --config=src/gosa/agent/data/agent.conf
+$ clacks-agent -f --config=src/clacks/agent/data/agent.conf
 
 If you want to run the agent in a more productive manner, you can use the
 daemon mode and start it as root. It will then fork to the configured user
 and run as a daemon.
 
 
-2 The gosa-ng shell
+2 The clacks shell
 
 2.1 Installing
 
@@ -276,34 +276,34 @@ a complete deployment.
 
 2.2 First contact
 
-The gosa-shell will use zeroconf/DNS to find relevant connection methods. Alternatively
+The clacksh will use zeroconf/DNS to find relevant connection methods. Alternatively
 you can specify the connection URL to skip zeroconf/DNS.
 
 Start the shell and send a command:
 
-$ gosa-shell
+$ clacksh
 (authenticate as the admin user you've created in qpid's SASL DB)
->>> gosa.help()
->>> gosa.mksmbhash("secret")
+>>> proxy.help()
+>>> mksmbhash("secret")
 >>> <Strg+D>
 
-The shell did not get priorized work in the moment, so the gosa.help() output is
+The shell did not get priorized work in the moment, so the proxy.help() output is
 neither sorted, nor grouped by plugins. Much space for improvements.
 
 If you tend to use a connection URL directly, use
 
-$ gosa-shell http[s]://amqp.example.com:8080/rpc
+$ clacks http[s]://amqp.example.com:8080/rpc
 
 for HTTP based sessions or
 
-$ gosa-shell amqp[s]://amqp.example.com/org.gosa
+$ clacks amqp[s]://amqp.example.com/org.gosa
 
 for AMQP based sessions.
 
 
-3 The gosa-ng client
+3 The clacks client
 
-A gosa-ng client is a device instance that has been joined into the gosa network.
+A clacks client is a device instance that has been joined into the clacks network.
 Every client can incorporate functionality into the network - or can just be
 a managed client.
 
@@ -322,15 +322,15 @@ a complete deployment.
 
 3.2 Joining the party
 
-A client needs to authenticate to the gosa-ng bus. In order to create the required
+A client needs to authenticate to the clacks bus. In order to create the required
 credentials for that, you've to "announce" or "join" the client to the system.
 
 To do that, run 
 
 $ sudo -s
-# cd 'wherever your gosa-ng virtual environment is'
+# cd 'wherever your clacks virtual environment is'
 # source/bin activate
-# gosa-join
+# clacks-join
 
 on the client you're going to join. In the development case, this may be the
 same machine which runs the agent.
@@ -339,35 +339,35 @@ same machine which runs the agent.
 3.3 Running the root component
 
 Some functionality may need root permission, while we don't want to run the complete
-client as root. The gosa-dbus component is used to run dedicated tasks as root. It
+client as root. The clacks-dbus component is used to run dedicated tasks as root. It
 can be extended by simple plugins and registers the resulting methods in the dbus
 interface.
 
-To use the dbus-component, you've to allow the gosa system user (or whatever user
-the gosa-client is running later on) to use certain dbus services. Copy and eventually
-adapt the file src/contrib/dbus/com.gonicus.gosa.conf to /etc/dbus/service.d and
+To use the dbus-component, you've to allow the clacks system user (or whatever user
+the clacks-client is running later on) to use certain dbus services. Copy and eventually
+adapt the file src/contrib/dbus/org.clacks.conf to /etc/dbus/service.d and
 reload your dbus service.
 
 $ sudo service dbus reload
 
 To start the dbus component, activate the python virtual environment as root and run
-the gosa-dbus component in daemon or foreground mode:
+the clacks-dbus component in daemon or foreground mode:
 
 $ sudo -s
-# cd 'wherever your gosa-ng virtual environment is'
+# cd 'wherever your clacks virtual environment is'
 # source/bin activate
-# gosa-dbus -f
+# clacks-dbus -f
 
 
 3.4 Running the client
 
-To run the client, you should put your development user into the gosa group - to
+To run the client, you should put your development user into the clacks group - to
 be able to use the dbus features:
 
-$ sudo adduser $USER gosa
+$ sudo adduser $USER clacks
 
-You might need to re-login to make the changes happen. After that, start the gosa-ng
+You might need to re-login to make the changes happen. After that, start the clacks
 client inside the activated virtual environment:
 
-$ gosa-client -f
+$ clacks-client -f
 

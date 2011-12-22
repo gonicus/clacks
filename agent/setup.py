@@ -14,8 +14,8 @@ CHANGES = open(os.path.join(here, 'CHANGES')).read()
 
 
 setup(
-    name = "gosa.agent",
-    version = "3.0",
+    name = "clacks.agent",
+    version = "1.0",
     author = "Cajus Pollmeier",
     author_email = "pollmeier@gonicus.de",
     description = "Identity-, system- and configmanagement middleware",
@@ -24,7 +24,7 @@ setup(
     license = "LGPL",
     url = "http://www.gosa-project.org",
     classifiers = [
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Console',
         'Intended Audience :: System Administrators',
         'License :: OSI Approved :: GNU General Public License (GPL)',
@@ -39,12 +39,12 @@ setup(
     download_url = "http://oss.gonicus.de/pub/gosa",
     packages = find_packages('src', exclude=['examples', 'tests']),
     package_dir={'': 'src'},
-    namespace_packages = ['gosa'],
+    namespace_packages = ['clacks'],
 
     include_package_data = True,
     package_data = {
-        'gosa.agent': ['data/agent.conf', 'data/*xsl', 'data/events/*', 'data/objects/*'],
-        'gosa.agent.plugins.goto': ['data/events/*'],
+        'clacks.agent': ['data/agent.conf', 'data/*xsl', 'data/events/*', 'data/objects/*'],
+        'clacks.agent.plugins.goto': ['data/events/*'],
     },
 
     test_suite = "nose.collector",
@@ -56,7 +56,7 @@ setup(
         'pylint',
         ],
     install_requires = [
-        'gosa.common',
+        'clacks.common',
         'webob',
         'paste',
         'netaddr',
@@ -77,81 +77,81 @@ setup(
 
     entry_points = """
         [console_scripts]
-        clacks-agent = gosa.agent.main:main
+        clacks-agent = clacks.agent.main:main
 
         [gosa.modules]
-        module.command = gosa.agent.command:CommandRegistry
-        module.amqp_service = gosa.agent.amqp_service:AMQPService
-        module.httpd = gosa.agent.httpd:HTTPService
-        module.scheduler = gosa.agent.scheduler:SchedulerService
-        module.acl = gosa.agent.acl:ACLResolver
-        module.objects = gosa.agent.objects.index:ObjectIndex
-        module.xmldb = gosa.agent.xmldb.handler:XMLDBHandler
-        module.jsonrpc_service = gosa.agent.jsonrpc_service:JSONRPCService
-        module.jsonrpc_om = gosa.agent.jsonrpc_objects:JSONRPCObjectMapper
-        module.samba.utils = gosa.agent.plugins.samba.utils:SambaUtils
-        module.misc.utils = gosa.agent.plugins.misc.utils:MiscUtils
-        module.gravatar.utils = gosa.agent.plugins.gravatar.utils:GravatarUtils
-        module.goto.network = gosa.agent.plugins.goto.network:NetworkUtils
-        module.goto.client_service = gosa.agent.plugins.goto.client_service:ClientService
-        module.inventory = gosa.agent.plugins.inventory.consumer:InventoryConsumer
+        module.command = clacks.agent.command:CommandRegistry
+        module.amqp_service = clacks.agent.amqp_service:AMQPService
+        module.httpd = clacks.agent.httpd:HTTPService
+        module.scheduler = clacks.agent.scheduler:SchedulerService
+        module.acl = clacks.agent.acl:ACLResolver
+        module.objects = clacks.agent.objects.index:ObjectIndex
+        module.xmldb = clacks.agent.xmldb.handler:XMLDBHandler
+        module.jsonrpc_service = clacks.agent.jsonrpc_service:JSONRPCService
+        module.jsonrpc_om = clacks.agent.jsonrpc_objects:JSONRPCObjectMapper
+        module.samba.utils = clacks.agent.plugins.samba.utils:SambaUtils
+        module.misc.utils = clacks.agent.plugins.misc.utils:MiscUtils
+        module.gravatar.utils = clacks.agent.plugins.gravatar.utils:GravatarUtils
+        module.goto.network = clacks.agent.plugins.goto.network:NetworkUtils
+        module.goto.client_service = clacks.agent.plugins.goto.client_service:ClientService
+        module.inventory = clacks.agent.plugins.inventory.consumer:InventoryConsumer
 
         [gosa.object.type]
-        type.string = gosa.agent.objects.types.base:StringAttribute
-        type.integer = gosa.agent.objects.types.base:IntegerAttribute
-        type.boolean = gosa.agent.objects.types.base:BooleanAttribute
-        type.binary = gosa.agent.objects.types.base:BinaryAttribute
-        type.unicodestring = gosa.agent.objects.types.base:UnicodeStringAttribute
-        type.date = gosa.agent.objects.types.base:DateAttribute
-        type.timestamp = gosa.agent.objects.types.base:TimestampAttribute
-        type.sambalogonhours = gosa.agent.plugins.samba.utils:SambaLogonHoursAttribute
+        type.string = clacks.agent.objects.types.base:StringAttribute
+        type.integer = clacks.agent.objects.types.base:IntegerAttribute
+        type.boolean = clacks.agent.objects.types.base:BooleanAttribute
+        type.binary = clacks.agent.objects.types.base:BinaryAttribute
+        type.unicodestring = clacks.agent.objects.types.base:UnicodeStringAttribute
+        type.date = clacks.agent.objects.types.base:DateAttribute
+        type.timestamp = clacks.agent.objects.types.base:TimestampAttribute
+        type.sambalogonhours = clacks.agent.plugins.samba.utils:SambaLogonHoursAttribute
 
         [gosa.object.backend]
-        backend.ldap = gosa.agent.objects.backend.back_ldap:LDAP
-        backend.null = gosa.agent.objects.backend.back_null:NULL
+        backend.ldap = clacks.agent.objects.backend.back_ldap:LDAP
+        backend.null = clacks.agent.objects.backend.back_null:NULL
 
         [gosa.object.comparator]
-        comparator.like = gosa.agent.objects.comparator.strings:Like
-        comparator.regex = gosa.agent.objects.comparator.strings:RegEx
-        comparator.stringlength = gosa.agent.objects.comparator.strings:stringLength
-        comparator.equals = gosa.agent.objects.comparator.basic:Equals
-        comparator.greater = gosa.agent.objects.comparator.basic:Greater
-        comparator.smaller = gosa.agent.objects.comparator.basic:Smaller
-        filter.isvalidsambadomainname = gosa.agent.plugins.samba.utils:IsValidSambaDomainName
+        comparator.like = clacks.agent.objects.comparator.strings:Like
+        comparator.regex = clacks.agent.objects.comparator.strings:RegEx
+        comparator.stringlength = clacks.agent.objects.comparator.strings:stringLength
+        comparator.equals = clacks.agent.objects.comparator.basic:Equals
+        comparator.greater = clacks.agent.objects.comparator.basic:Greater
+        comparator.smaller = clacks.agent.objects.comparator.basic:Smaller
+        filter.isvalidsambadomainname = clacks.agent.plugins.samba.utils:IsValidSambaDomainName
 
         [gosa.object.filter]
-        filter.concatstring = gosa.agent.objects.filter.strings:ConcatString
-        filter.replace = gosa.agent.objects.filter.strings:Replace
-        filter.stringToTime = gosa.agent.objects.filter.strings:StringToTime
-        filter.stringToDate = gosa.agent.objects.filter.strings:StringToDate
-        filter.dateToString = gosa.agent.objects.filter.strings:DateToString
-        filter.timeToString = gosa.agent.objects.filter.strings:TimeToString
-        filter.sambahash = gosa.agent.plugins.samba.utils:SambaHash
-        filter.target = gosa.agent.objects.filter.basic:Target
-        filter.setbackends = gosa.agent.objects.filter.basic:SetBackends
-        filter.setvalue = gosa.agent.objects.filter.basic:SetValue
-        filter.clear = gosa.agent.objects.filter.basic:Clear
-        filter.integertodatetime = gosa.agent.objects.filter.basic:IntegerToDatetime
-        filter.datetimetointeger = gosa.agent.objects.filter.basic:DatetimeToInteger
-        filter.sambaacctflagsin = gosa.agent.plugins.samba.utils:SambaAcctFlagsIn
-        filter.sambaacctflagsout = gosa.agent.plugins.samba.utils:SambaAcctFlagsOut
-        filter.sambamungedialin = gosa.agent.plugins.samba.utils:SambaMungedDialIn
-        filter.sambamungedialout = gosa.agent.plugins.samba.utils:SambaMungedDialOut
-        filter.generatesambasid = gosa.agent.plugins.samba.utils:GenerateSambaSid
-        filter.posixgetnextid = gosa.agent.plugins.posix.utils:GetNextID
-        filter.datetoshadowdays = gosa.agent.plugins.posix.utils:DateToShadowDays
-        filter.shadowdaystodate = gosa.agent.plugins.posix.utils:ShadowDaysToDate
-        filter.detectpasswordmethod = gosa.agent.plugins.password.utils:DetectPasswordMethod
-        filter.detectaccountlockstatus = gosa.agent.plugins.password.utils:DetectAccountLockStatus
-        filter.generatepasswordhash = gosa.agent.plugins.password.utils:GeneratePasswordHash
-        filter.addbackend = gosa.agent.objects.filter.basic:AddBackend
+        filter.concatstring = clacks.agent.objects.filter.strings:ConcatString
+        filter.replace = clacks.agent.objects.filter.strings:Replace
+        filter.stringToTime = clacks.agent.objects.filter.strings:StringToTime
+        filter.stringToDate = clacks.agent.objects.filter.strings:StringToDate
+        filter.dateToString = clacks.agent.objects.filter.strings:DateToString
+        filter.timeToString = clacks.agent.objects.filter.strings:TimeToString
+        filter.sambahash = clacks.agent.plugins.samba.utils:SambaHash
+        filter.target = clacks.agent.objects.filter.basic:Target
+        filter.setbackends = clacks.agent.objects.filter.basic:SetBackends
+        filter.setvalue = clacks.agent.objects.filter.basic:SetValue
+        filter.clear = clacks.agent.objects.filter.basic:Clear
+        filter.integertodatetime = clacks.agent.objects.filter.basic:IntegerToDatetime
+        filter.datetimetointeger = clacks.agent.objects.filter.basic:DatetimeToInteger
+        filter.sambaacctflagsin = clacks.agent.plugins.samba.utils:SambaAcctFlagsIn
+        filter.sambaacctflagsout = clacks.agent.plugins.samba.utils:SambaAcctFlagsOut
+        filter.sambamungedialin = clacks.agent.plugins.samba.utils:SambaMungedDialIn
+        filter.sambamungedialout = clacks.agent.plugins.samba.utils:SambaMungedDialOut
+        filter.generatesambasid = clacks.agent.plugins.samba.utils:GenerateSambaSid
+        filter.posixgetnextid = clacks.agent.plugins.posix.utils:GetNextID
+        filter.datetoshadowdays = clacks.agent.plugins.posix.utils:DateToShadowDays
+        filter.shadowdaystodate = clacks.agent.plugins.posix.utils:ShadowDaysToDate
+        filter.detectpasswordmethod = clacks.agent.plugins.password.utils:DetectPasswordMethod
+        filter.detectaccountlockstatus = clacks.agent.plugins.password.utils:DetectAccountLockStatus
+        filter.generatepasswordhash = clacks.agent.plugins.password.utils:GeneratePasswordHash
+        filter.addbackend = clacks.agent.objects.filter.basic:AddBackend
 
         [gosa.object.operator]
-        operator.and = gosa.agent.objects.operator.bool:And
-        operator.or = gosa.agent.objects.operator.bool:Or
-        operator.not = gosa.agent.objects.operator.bool:Not
+        operator.and = clacks.agent.objects.operator.bool:And
+        operator.or = clacks.agent.objects.operator.bool:Or
+        operator.not = clacks.agent.objects.operator.bool:Not
 
         [xmldb]
-        berkley.driver = gosa.agent.xmldb.driver.dbxml_driver:DBXml
+        berkley.driver = clacks.agent.xmldb.driver.dbxml_driver:DBXml
     """,
 )

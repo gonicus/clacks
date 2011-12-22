@@ -6,8 +6,8 @@ import time
 import sys
 import copy
 import gettext
-from gosa.agent.acl import ACL, ACLResolver, ACLException
-from gosa.common import Environment
+from clacks.agent.acl import ACL, ACLResolver, ACLException
+from clacks.common import Environment
 
 _ = gettext.gettext
 
