@@ -3,6 +3,7 @@ import dbus
 import StringIO
 import hashlib
 import re
+import logging
 from threading import Thread
 from lxml import etree
 from gosa.common.event import EventMaker
@@ -23,16 +24,23 @@ class Inventory(Plugin):
     def __init__(self):
         env = Environment.getInstance()
         self.env = env
+        self.log = logging.getLogger(__name__)
 
     @Command()
     def request_inventory(self, old_checksum=None):
         """ Sent a notification to a given user """
-        # Get BUS connection
-        bus = dbus.SystemBus()
-        gosa_dbus = bus.get_object('org.clacks', '/org/clacks/inventory')
 
-        # Request inventory result from dbus-client (He is running as root and can do much more than we can)
-        result = gosa_dbus.inventory(dbus_interface="org.clacks")
+        # Get BUS connection
+        try:
+            bus = dbus.SystemBus()
+            gosa_dbus = bus.get_object('org.clacks', '/org/clacks/inventory')
+
+            # Request inventory result from dbus-client (He is running as root and can do much more than we can)
+            result = gosa_dbus.inventory(dbus_interface="org.clacks")
+
+        except dbus.DBusException as e:
+            self.log.debug("failed to call dbus method 'inventory': %s" % (str(e)))
+            return False
 
         # Remove time base or frequently changing values (like processes) from the
         # result to generate a useable checksum.
@@ -63,3 +71,4 @@ class Inventory(Plugin):
 
         self.__thread = Thread(target=runner)
         self.__thread.start()
+        return True
