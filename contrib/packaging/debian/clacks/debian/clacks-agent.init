@@ -1,8 +1,8 @@
 #!/bin/sh
 ### BEGIN INIT INFO
 # Provides:          clacks-agent
-# Required-Start:    $local_fs $network avahi
-# Required-Stop:     $local_fs $network avahi
+# Required-Start:    $local_fs $remote_fs $network avahi
+# Required-Stop:     $local_fs $remote_fs $network avahi
 # Should-Start:	     $syslog
 # Should-Stop:       $syslog
 # Default-Start:     2 3 4 5
