@@ -2,6 +2,8 @@
 import re
 import dbus
 import logging
+from zope.interface import implements
+from gosa.common.handler import IInterfaceHandler
 from gosa.common.components import Plugin, PluginRegistry
 from gosa.common.components import Command
 
@@ -17,7 +19,9 @@ class DBUSProxy(Plugin):
     callDBusMethod.
 
     """
+    implements(IInterfaceHandler)
     _target_ = 'service'
+    _priority_ = 5
 
     log = None
     bus = None
@@ -25,7 +29,6 @@ class DBUSProxy(Plugin):
     methods = None
 
     def __init__(self):
-        cr = PluginRegistry.getInstance('CommandRegistry')
         self.log = logging.getLogger(__name__)
 
         # Request information about registered dbus methods we can use.
@@ -45,12 +48,16 @@ class DBUSProxy(Plugin):
 
                 name = re.sub("^org\.clacks\.(.*)$", "\\1", method)
                 self.methods[name] = self.gosa_dbus._introspect_method_map[method]
-                cr.register(name, 'DBUSProxy.callDBusMethod', [name], '(signatur)', 'docstring')
 
             self.log.debug("found %s registered dbus methods" % (len(self.methods)))
 
         except dbus.DBusException as e:
             self.log.debug("failed to load registered dbus methods: %s" % (str(e)))
+
+    def serve(self):
+        cr = PluginRegistry.getInstance('ClientCommandRegistry')
+        for name in self.methods.keys():
+            cr.register('system_' + name, 'DBUSProxy.callDBusMethod', [name], ['(signatur)'], 'docstring')
 
     @Command()
     def callDBusMethod(self, method, *args):

@@ -50,7 +50,7 @@ class AMQPClientService(object):
     the AMQP broker.
     """
     implements(IInterfaceHandler)
-    _priority_ = 1
+    _priority_ = 10
 
     def __init__(self):
         env = Environment.getInstance()

@@ -58,10 +58,10 @@ class ClientCommandRegistry(object):
                     self.commands[func] = info
 
     def register(self, func, path, args, sig, doc):
-        self.command[func] = {'path': path, 'sig': sig, 'doc': doc, 'args': args}
+        self.commands[func] = {'path': path, 'sig': sig, 'doc': doc, 'args': args}
 
     def unregister(self, func):
-        del self.command[func]
+        del self.commands[func]
 
     def dispatch(self, func, *arg, **larg):
         """
@@ -86,7 +86,7 @@ class ClientCommandRegistry(object):
         # Do we have this method?
         if func in self.commands:
             (clazz, method) = self.path2method(self.commands[func]['path'])
-            if args in self.commands[func] and self.commands[func]['args']:
+            if 'args' in self.commands[func] and self.commands[func]['args']:
                 arg = self.commands[func]['args'] + arg
 
             return PluginRegistry.modules[clazz].\
