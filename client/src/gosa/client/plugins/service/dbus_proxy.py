@@ -29,20 +29,25 @@ class Service(Plugin):
         self.log = logging.getLogger(__name__)
 
         # Request information about registered dbus methods we can use.
-        self.bus = dbus.SystemBus()
-        self.log.debug('loading dbus-methods registered by clacks (introspection)')
-        self.gosa_dbus = self.bus.get_object('org.clacks', '/org/clacks/service')
-        call = self.gosa_dbus._Introspect()
-        call.block()
-
-        # Collection methods
         self.methods = {}
-        for method in self.gosa_dbus._introspect_method_map:
-            if not re.match("^org\.clacks\.", method):
-                continue
-            name = re.sub("^org\.clacks\.(.*)$", "\\1", method)
-            self.methods[name] = self.gosa_dbus._introspect_method_map[method]
-        self.log.debug("found %s registered dbus methods" % (len(self.methods)))
+
+        try:
+            self.bus = dbus.SystemBus()
+            self.log.debug('loading dbus-methods registered by clacks (introspection)')
+            self.gosa_dbus = self.bus.get_object('org.clacks', '/org/clacks/service')
+            call = self.gosa_dbus._Introspect()
+            call.block()
+
+            # Collection methods
+            for method in self.gosa_dbus._introspect_method_map:
+                if not re.match("^org\.clacks\.", method):
+                    continue
+                name = re.sub("^org\.clacks\.(.*)$", "\\1", method)
+                self.methods[name] = self.gosa_dbus._introspect_method_map[method]
+
+            self.log.debug("found %s registered dbus methods" % (len(self.methods)))
+        except dbus.DBusException as e:
+            self.log.debug("failed to load registered dbus methods: %s" % (str(e)))
 
     @Command()
     def callDBusMethod(self, method, *args):
