@@ -125,7 +125,7 @@
             <xsd:complexType name="Extensions">
                 <xsd:sequence>
                     <xsd:element type="xsd:string" name="Extension" 
-                        minOccurs="1" maxOccurs="unbounded"></xsd:element>
+                        minOccurs="0" maxOccurs="unbounded"></xsd:element>
                 </xsd:sequence>
             </xsd:complexType>
         </xsd:schema>
