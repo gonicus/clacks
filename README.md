@@ -1,4 +1,4 @@
-# GOsa README #
+# Clacks README #
 
 For more information please consult:
 

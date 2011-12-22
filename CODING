@@ -1,5 +1,5 @@
-GOsa coding guidelines
-======================
+Clacks coding guidelines
+========================
 
 The coding guidelines are provided by pep8. To make sure your code
 matches the guidelines, install python's pep8 utility and run it
