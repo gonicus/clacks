@@ -1,15 +1,13 @@
 #!/bin/sh
 ### BEGIN INIT INFO
-# Provides:          clacks-client
-# X-Start-Before:    x-display-manager
-# X-Interactive:     true
+# Provides:          clacks-agent
 # Required-Start:    $local_fs $network avahi
 # Required-Stop:     $local_fs $network avahi
 # Should-Start:	     $syslog
 # Should-Stop:       $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: clacks-client service
+# Short-Description: clacks-agent service
 # Description:       TODO
 ### END INIT INFO
 
@@ -17,21 +15,8 @@ set -e
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 DESC="clacks infrastructure"
-SERVICE=client
+SERVICE=agent
 SCRIPTNAME=/etc/init.d/clacks-$SERVICE
-FORCE_JOIN=0
-
-
-join_required() {
-    test $FORCE_JOIN = 0 && return 1
-    test -e /usr/sbin/clacks-client || return 1
-
-    if [ -e /etc/clacks/config ]; then
-        grep -q '^\s*key\s*=\s*..*$' /etc/clacks/config && return 1
-    fi
-
-    return 0
-}
 
 
 start_service() {
@@ -71,23 +56,12 @@ if [ ! -d /var/run/clacks ]; then
     chmod 770 /var/run/clacks
 fi
 
-# Don't start if we're not configured to start
-test $FORCE_JOIN = 0 -a ! -e /etc/clacks/config && exit 0
-
 case "$1" in
     start)
-        # If a join is obligatory, stay in this loop until we're
-        # joined. This should block the boot process.
-        while join_required; do
-            log_daemon_msg "Joining to the clacks infrastructure"
-            clacks-join
-            log_end_msg $?
-        done
-
         # If we've no configuration now, stop more or less silently
         if [ ! -e /etc/clacks/config ]; then
             echo ""
-            echo "clacks-client is not joined, please create /etc/clacks/config to enable"
+            echo "clacks-agent is not configured, please create /etc/clacks/config to enable"
             exit 0
         fi
 
