@@ -14,7 +14,7 @@ This loads the GOsa environment information using the Environment singleton.
 .. note::
 
     Using the environment requires the presence of the GOsa configuration
-    file - commonly ``~/.gosa/config`` or ``/etc/gosa/config`` in this
+    file - commonly ``~/.clacks/config`` or ``/etc/clacks/config`` in this
     order
 """
 
