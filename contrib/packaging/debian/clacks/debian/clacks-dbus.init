@@ -81,8 +81,8 @@ case "$1" in
     restart|force-reload)
         log_daemon_msg "Restarting $DESC"
         log_progress_msg "$SERVICE"
-        stop_services
-        start_services
+        stop_service
+        start_service
         log_end_msg $?
         ;;
 

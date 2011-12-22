@@ -3,3 +3,4 @@ usr/bin/clacks-client usr/sbin
 usr/lib/python*/dist-packages/gosa/client
 usr/lib/python*/dist-packages/gosa.client-*.egg-info
 usr/lib/python*/dist-packages/gosa.client-*-nspkg.pth
+../rsyslog/clacks-agent.conf /etc/rsyslog.d
