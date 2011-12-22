@@ -32,11 +32,13 @@
     		<LastChanged><xsl:value-of select="$props[g:name='modify-date']/g:value/text()" /></LastChanged>
 
             <!-- Add Extensions -->
-    		<Extensions>
-                <xsl:for-each select="/g:merge/g:extensions/g:extension">
-    				<Extension><xsl:value-of select="." /></Extension>
-    			</xsl:for-each>
-            </Extensions>
+            <xsl:if test="/g:merge/g:extensions/g:extension">
+                <Extensions>
+                    <xsl:for-each select="/g:merge/g:extensions/g:extension">
+                        <Extension><xsl:value-of select="." /></Extension>
+                    </xsl:for-each>
+                </Extensions>
+            </xsl:if>
 
     		<!--
     		<AvailableExtensions>
