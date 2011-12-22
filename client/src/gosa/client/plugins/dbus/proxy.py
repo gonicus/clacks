@@ -2,11 +2,11 @@
 import re
 import dbus
 import logging
-from gosa.common.components import Plugin
+from gosa.common.components import Plugin, PluginRegistry
 from gosa.common.components import Command
 
 
-class Service(Plugin):
+class DBUSProxy(Plugin):
     """
     DBus service plugin.
 
@@ -25,7 +25,7 @@ class Service(Plugin):
     methods = None
 
     def __init__(self):
-
+        cr = PluginRegistry.getInstance('CommandRegistry')
         self.log = logging.getLogger(__name__)
 
         # Request information about registered dbus methods we can use.
@@ -42,10 +42,13 @@ class Service(Plugin):
             for method in self.gosa_dbus._introspect_method_map:
                 if not re.match("^org\.clacks\.", method):
                     continue
+
                 name = re.sub("^org\.clacks\.(.*)$", "\\1", method)
                 self.methods[name] = self.gosa_dbus._introspect_method_map[method]
+                cr.register(name, 'DBUSProxy.callDBusMethod', [name], '(signatur)', 'docstring')
 
             self.log.debug("found %s registered dbus methods" % (len(self.methods)))
+
         except dbus.DBusException as e:
             self.log.debug("failed to load registered dbus methods: %s" % (str(e)))
 

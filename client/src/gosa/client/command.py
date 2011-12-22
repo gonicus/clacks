@@ -57,6 +57,12 @@ class ClientCommandRegistry(object):
                         }
                     self.commands[func] = info
 
+    def register(self, func, path, args, sig, doc):
+        self.command[func] = {'path': path, 'sig': sig, 'doc': doc, 'args': args}
+
+    def unregister(self, func):
+        del self.command[func]
+
     def dispatch(self, func, *arg, **larg):
         """
         The dispatch method will try to call the specified function and
@@ -80,6 +86,8 @@ class ClientCommandRegistry(object):
         # Do we have this method?
         if func in self.commands:
             (clazz, method) = self.path2method(self.commands[func]['path'])
+            if args in self.commands[func] and self.commands[func]['args']:
+                arg = self.commands[func]['args'] + arg
 
             return PluginRegistry.modules[clazz].\
                     __getattribute__(method)(*arg, **larg)
