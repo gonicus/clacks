@@ -13,7 +13,7 @@ class Plugin(object):
     register on something else than *core*.
 
     In this example, we create a sample plugin which is listening on
-    ``<domain>.sample`` (domain is *org.gosa* if you didn't change the
+    ``<domain>.sample`` (domain is *org.clacks* if you didn't change the
     configuration), which makes it possible that only agents having this
     module installed get related messages::
 

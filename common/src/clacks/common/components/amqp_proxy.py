@@ -20,7 +20,7 @@ class AMQPServiceProxy(object):
     it actually gets executed::
 
         >>> from clacks.common.components import AMQPServiceProxy
-        >>> proxy = AMQPServiceProxy('amqp://admin:secret@localhost/org.gosa')
+        >>> proxy = AMQPServiceProxy('amqp://admin:secret@localhost/org.clacks')
         >>> proxy.getMethods()
 
     This will return a dictionary describing the available methods.
@@ -237,7 +237,7 @@ class AMQPEventConsumer(object):
         ...     print(etree.tostring(data, pretty_print=True))
         >>>
         >>> # Create event consumer
-        >>> consumer = AMQPEventConsumer("amqps://admin:secret@localhost/org.gosa",
+        >>> consumer = AMQPEventConsumer("amqps://admin:secret@localhost/org.clacks",
         ...             xquery=\"\"\"
         ...                 declare namespace f='http://www.gonicus.de/Events';
         ...                 let $e := ./f:Event
@@ -262,7 +262,7 @@ class AMQPEventConsumer(object):
          (amqp|amqps)://user:password@host:port/domain
     """
 
-    def __init__(self, url, domain="org.gosa", xquery=".", callback=None):
+    def __init__(self, url, domain="org.clacks", xquery=".", callback=None):
 
         # Build connection
         url = parseURL(url)

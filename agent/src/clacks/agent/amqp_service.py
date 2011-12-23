@@ -14,16 +14,16 @@ to agents that are capable of handling them, the AMQPService creates a
 queue structure that addresses these facts.
 
 Queues are named after the configured *domain* - i.e. if you use the
-configured default domain, you'll get ``org.gosa`` as the base dot
+configured default domain, you'll get ``org.clacks`` as the base dot
 separated string for the queues. The agent registers two **core** queues:
 
- * **{domain}.command.core** *(i.e. org.gosa.command.core)*
+ * **{domain}.command.core** *(i.e. org.clacks.command.core)*
 
    This is a round robin queue that is shared by all agents joining
    the domain. The core queue must only handle commands that are provided
    by all agents.
 
- * **{domain}.command.core.{nodename}** *(i.e. org.gosa.command.core.node1 if your node is named node1)*
+ * **{domain}.command.core.{nodename}** *(i.e. org.clacks.command.core.node1 if your node is named node1)*
 
    This queue is a private queue that is only used by a specific
    agent. It is possible to direct a command to exactly the agent identified
@@ -34,13 +34,13 @@ for queues registered by certain plugins. This ensures that commands are only
 delivered to nodes which provide that functionality by listening to these
 queues:
 
- * **{domain}.command.{plugin}** *(i.e. org.gosa.command.goto)*
+ * **{domain}.command.{plugin}** *(i.e. org.clacks.command.goto)*
 
    This is a round robin queue that is shared by all agents joining
    the domain. In the example above, all agents providing the *goto* plugin
    will share this queue.
 
- * **{domain}.command.{plugin}.nodename** *(i.e. org.gosa.command.goto.node1 if your node is named node1)*
+ * **{domain}.command.{plugin}.nodename** *(i.e. org.clacks.command.goto.node1 if your node is named node1)*
 
    Like for the *command.core* queues, this queue is private for the current
    agent and makes it possible to direct a command to exactly the agent identified

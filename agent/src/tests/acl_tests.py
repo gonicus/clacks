@@ -27,7 +27,7 @@ class TestACLResolver(unittest.TestCase):
         # Ensure that we've got the right permissions to perform this tests.
         acls = ACLSet()
         acl = ACL(scope=ACL.SUB)
-        acl.add_action('org.gosa.acl', 'rw')
+        acl.add_action('%s.acl' % self.env.domain, 'rw')
         acl.set_members(['acl_tester'])
         acls.add(acl)
         self.resolver.add_acl_set(acls)

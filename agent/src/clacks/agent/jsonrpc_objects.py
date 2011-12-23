@@ -18,7 +18,7 @@ class JSONRPCObjectMapper(Plugin):
 
         >>> from clacks.common.components import AMQPServiceProxy
         >>> # Create connection to service
-        >>> proxy = AMQPServiceProxy('amqps://admin:secret@amqp.example.net/org.gosa')
+        >>> proxy = >>> AMQPServiceProxy('amqps://admin:secret@amqp.example.net/org.clacks')
         >>> pm = proxy.openObject('libinst.diskdefinition')
         >>> pm.getDisks()
         []

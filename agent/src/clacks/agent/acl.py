@@ -376,14 +376,14 @@ class ACL(object):
         >>> resolver.add_acl_set(aclset)
 
         >>> # You can now check for acls, both should return True now.
-        >>> resolver.check('user1', 'org.gosa.event.ClientLeave', 'r')
-        >>> resolver.check('user1', 'org.gosa.event.ClientLeave', 'rwx')
+        >>> resolver.check('user1', 'org.clacks.event.ClientLeave', 'r')
+        >>> resolver.check('user1', 'org.clacks.event.ClientLeave', 'rwx')
 
     ACL members can also contain regular expressions, like this:
 
         >>> acl.set_members([u"user1", u"^user[0-9]*$"])
         >>> ...
-        >>> resolver.check('user45', 'org.gosa.event.ClientLeave', 'r')
+        >>> resolver.check('user45', 'org.clacks.event.ClientLeave', 'r')
 
     """
     priority = None
@@ -746,8 +746,8 @@ class ACLResolver(Plugin):
     permission::
 
         >>> resolver = ACLResolver()
-        >>> self.resolver.check('user1','org.gosa.factory','r')
-        >>> self.resolver.check('user1','org.gosa.factory','rwx', 'dc=example,dc=net')
+        >>> self.resolver.check('user1','org.clacks.factory','r')
+        >>> self.resolver.check('user1','org.clacks.factory','rwx', 'dc=example,dc=net')
 
     If no base is given (last parameter of check), the default base will be used. (The default base is the configured LDAP base).
 
@@ -1057,8 +1057,8 @@ class ACLResolver(Plugin):
 
         Example::
             >>> resolver = ACLResolver()
-            >>> self.resolver.check('user1','org.gosa.factory','r')
-            >>> self.resolver.check('user1','org.gosa.factory','rwx', 'dc=example,dc=net')
+            >>> self.resolver.check('user1','org.clacks.factory','r')
+            >>> self.resolver.check('user1','org.clacks.factory','rwx', 'dc=example,dc=net')
 
         """
 
@@ -1344,7 +1344,7 @@ class ACLResolver(Plugin):
             if base == aclset.base or base == None:
 
                 # Check permissions
-                if not self.check(user, 'org.gosa.acl', 'r', aclset.base):
+                if not self.check(user, '%s.acl' % self.env.domain, 'r', aclset.base):
                     continue
 
                 for acl in aclset:
@@ -1379,7 +1379,7 @@ class ACLResolver(Plugin):
 
         # Append configured admin accounts
         admins = self.list_admin_accounts()
-        if len(admins) and self.check(user, 'org.gosa.acl', 'r'):
+        if len(admins) and self.check(user, '%s.acl' % self.env.domain, 'r'):
             if topic == None or re.match(topic, '*'):
                 result.append(
                    {'base': self.base,
@@ -1415,7 +1415,7 @@ class ACLResolver(Plugin):
                 if acl.id == acl_id:
 
                     # Check permissions
-                    if not self.check(user, 'org.gosa.acl', 'w', aclset.base):
+                    if not self.check(user, '%s.acl' % self.env.domain, 'w', aclset.base):
                         raise ACLException("The requested operation is not allowed!")
 
                     # Remove the acl from the set.
@@ -1462,7 +1462,7 @@ class ACLResolver(Plugin):
         """
 
         # Check permissions
-        if not self.check(user, 'org.gosa.acl', 'w', base):
+        if not self.check(user, '%s.acl' % self.env.domain, 'w', base):
             raise ACLException("The requested operation is not allowed!")
 
         # Validate the given scope
@@ -1601,7 +1601,7 @@ class ACLResolver(Plugin):
                 if _acl.id == acl_id:
 
                     # Check permissions
-                    if not self.check(user, 'org.gosa.acl', 'w', _aclset.base):
+                    if not self.check(user, '%s.acl' % self.env.domain, 'w', _aclset.base):
                         raise ACLException("The requested operation is not allowed!")
 
                     acl = _acl
@@ -1645,7 +1645,7 @@ class ACLResolver(Plugin):
         """
 
         # Check permissions
-        if not self.check(user, 'org.gosa.acl', 'r', self.base):
+        if not self.check(user, '%s.acl' % self.env.domain, 'r', self.base):
             raise ACLException("The requested operation is not allowed!")
 
         acl_scope_map = {}
@@ -1691,7 +1691,7 @@ class ACLResolver(Plugin):
         """
 
         # Check permissions
-        if not self.check(user, 'org.gosa.acl', 'w', self.base):
+        if not self.check(user, '%s.acl' % self.env.domain, 'w', self.base):
             raise ACLException("The requested operation is not allowed!")
 
         # Validate the rolename
@@ -1735,7 +1735,7 @@ class ACLResolver(Plugin):
         """
 
         # Check permissions
-        if not self.check(user, 'org.gosa.acl', 'w', self.base):
+        if not self.check(user, '%s.acl' % self.env.domain, 'w', self.base):
             raise ACLException("The requested operation is not allowed!")
 
         # Check if the given rolename exists
@@ -1829,7 +1829,7 @@ class ACLResolver(Plugin):
         """
 
         # Check permissions
-        if not self.check(user, 'org.gosa.acl', 'w', self.base):
+        if not self.check(user, '%s.acl' % self.env.domain, 'w', self.base):
             raise ACLException("The requested operation is not allowed!")
 
         # Validate the priority
@@ -1930,7 +1930,7 @@ class ACLResolver(Plugin):
         """
 
         # Check permissions
-        if not self.check(user, 'org.gosa.acl', 'w', self.base):
+        if not self.check(user, '%s.acl' % self.env.domain, 'w', self.base):
             raise ACLException("The requested operation is not allowed!")
 
         # Try to find role-acl with the given ID.
@@ -1955,7 +1955,7 @@ class ACLResolver(Plugin):
         """
 
         # Check permissions
-        if not self.check(user, 'org.gosa.acl', 'w', self.base):
+        if not self.check(user, '%s.acl' % self.env.domain, 'w', self.base):
             raise ACLException("The requested operation is not allowed!")
 
         # Try to find role-acl with the given ID.

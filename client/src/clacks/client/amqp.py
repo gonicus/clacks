@@ -44,7 +44,7 @@ class AMQPClientHandler(AMQPHandler):
 
         # Load configuration
         self.url = parseURL(self.env.config.get('amqp.url', None))
-        self.domain = self.env.config.get('ampq.domain', default="org.gosa")
+        self.domain = self.env.config.get('ampq.domain', default="org.clacks")
         self.dns_domain = socket.getfqdn().split('.', 1)[1]
 
         # Use zeroconf if there's no URL

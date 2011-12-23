@@ -60,7 +60,7 @@ class Environment:
             self.log.debug("end of configuration dump")
 
         # Initialized
-        self.domain = self.config.get("core.domain", default="org.gosa")
+        self.domain = self.config.get("core.domain", default="org.clacks")
         self.uuid = self.config.get("core.id", default=None)
         if not self.uuid:
             self.log.warning("system has no id - falling back to configured hardware uuid")
