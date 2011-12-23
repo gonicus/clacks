@@ -10,7 +10,7 @@
 		</xsl:copy>
 	</xsl:template>
 	<xsl:template match="/e:Event/e:Inventory/e:DeviceID"></xsl:template>
-	<xsl:template match="/e:Event/e:Inventory/e:GOsaChecksum"></xsl:template>
+	<xsl:template match="/e:Event/e:Inventory/e:Checksum"></xsl:template>
 	<xsl:template match="/e:Event/e:Inventory/e:HardwareUUID"></xsl:template>
 	<xsl:template match="/e:Event/e:Inventory/e:AccessLog"></xsl:template>
 	<xsl:template match="/e:Event/e:Inventory/e:USBDevice"></xsl:template>

@@ -3,7 +3,7 @@
 from clacks.common.components import AMQPServiceProxy
 
 # Create connection to service
-proxy = AMQPServiceProxy('amqps://admin:tester@amqp.intranet.gonicus.de/org.gosa')
+proxy = AMQPServiceProxy('amqps://admin:tester@amqp.intranet.gonicus.de/org.clacks')
 
 # List methods
 print proxy.getMethods()
