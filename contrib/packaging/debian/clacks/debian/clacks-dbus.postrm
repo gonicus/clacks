@@ -9,4 +9,3 @@ if [ "$1" = "purge" ] ; then
                 invoke-rc.d dbus force-reload || true
         fi
 fi
-~               
