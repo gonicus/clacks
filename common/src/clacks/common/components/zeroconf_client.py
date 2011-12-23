@@ -173,7 +173,7 @@ class ZeroconfClient(object):
         else:
             port = ':%i' % port
 
-        if self.__get_service(txt) == "gosa":
+        if self.__get_service(txt) == "clacks":
             path = self.__get_path(txt)
             url = "%s://%s%s%s" % (stype[1:].split(".")[0], host, port, path)
             self.__services[(interface, protocol, name, stype, domain)] = url.encode('ascii')
@@ -228,7 +228,7 @@ class ZeroconfClient(object):
             else:
                 port = ':%i' % port
 
-            if self.__get_service(txt) == "gosa":
+            if self.__get_service(txt) == "clacks":
                 path = self.__get_path(txt)
                 url = "%s://%s%s%s" % (fullname.split(".")[-4:-3][0][1:], host, port, path)
                 self.__callback([url.encode('ascii')])

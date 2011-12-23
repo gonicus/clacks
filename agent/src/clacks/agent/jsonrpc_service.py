@@ -76,10 +76,10 @@ class JSONRPCService(object):
                 default="TecloigJink4")))
 
         # Announce service
-        self.__zeroconf = ZeroconfService(name="GOsa JSON-RPC service",
+        self.__zeroconf = ZeroconfService(name="Clacks RPC service",
             port=self.__http.port,
             stype="_%s._tcp" % self.__http.scheme,
-            text="path=%s\001service=gosa" % self.path)
+            text="path=%s\001service=clacks" % self.path)
         self.__zeroconf.publish()
 
         self.log.info("ready to process incoming requests")

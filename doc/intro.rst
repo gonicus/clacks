@@ -402,17 +402,17 @@ Zeroconf setup::
   _services._dns-sd._udp          PTR _amqps._tcp
                                   PTR _https._tcp
   
-  ; Zeroconf gosa-ng records
-  _amqps._tcp                     PTR GOsa\ RPC\ Service._amqps._tcp
-  GOsa\ RPC\ Service._amqps._tcp  SRV 0 0 5671 amqp.example.net.
-                                  TXT path=/org.gosa service=gosa
+  ; Zeroconf clacks records
+  _amqps._tcp                     PTR Clacks\ RPC\ Service._amqps._tcp
+  Clacks\ RPC\ Service._amqps._tcp  SRV 0 0 5671 amqp.intranet.gonicus.de.
+                                  TXT path=/org.clacks service=clacks
   
   _https._tcp                     PTR GOsa\ Web\ Service._https._tcp
-                                  PTR GOsa\ RPC\ Service._https._tcp
-  GOsa\ RPC\ Service._https._tcp  SRV 0 0 8080 gosa.example.net.
-                                  TXT path=/rpc service=gosa
-  GOsa\ Web\ Service._https._tcp  SRV 0 0 443 amqp.example.net.
-                                  TXT path=/gosa 
+                                  PTR Clacks\ RPC\ Service._https._tcp
+  GOsa\ Web\ Service._https._tcp  SRV 0 0 443 gosa.intranet.gonicus.de.
+                                  TXT path=/gosa
+  Clacks\ RPC\ Service._https._tcp SRV 0 0 8080 amqp.intranet.gonicus.de.
+                                  TXT path=/rpc service=clacks
 
 You can test your setup with::
 
@@ -420,12 +420,12 @@ You can test your setup with::
   +  n/a  n/a example.net
 
   you@amqp:~$ avahi-browse -rd example.net _amqps._tcp
-  +   k.A. k.A. GOsa RPC Service                              _amqps._tcp          example.net
-  =   k.A. k.A. GOsa RPC Service                              _amqps._tcp          example.net
+  +   k.A. k.A. Clacks RPC Service                              _amqps._tcp          example.net
+  =   k.A. k.A. Clacks RPC Service                              _amqps._tcp          example.net
      hostname = [amqp.example.net]
      address = [10.3.64.59]
      port = [5671]
-     txt = ["service=gosa" "path=/org.gosa"]
+     txt = ["service=clacks" "path=/org.clacks"]
 
 
 Deploy a development agent

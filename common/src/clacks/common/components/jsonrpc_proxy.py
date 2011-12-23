@@ -63,7 +63,7 @@ class ObjectFactory(object):
 
 class JSONServiceProxy(object):
     """
-    The JSONServiceProxy provides a simple way to use GOsa RPC
+    The JSONServiceProxy provides a simple way to use clacks RPC
     services from various clients. Using the proxy object, you
     can directly call methods without the need to know where
     it actually gets executed.

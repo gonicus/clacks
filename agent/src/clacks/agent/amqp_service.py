@@ -134,10 +134,10 @@ class AMQPService(object):
 
         # Announce service
         url = parseURL(self.env.config.get("amqp.url"))
-        self.__zeroconf = ZeroconfService(name="GOsa AMQP command service",
+        self.__zeroconf = ZeroconfService(name="Clacks RPC service",
                 port=url['port'],
                 stype="_%s._tcp" % url['scheme'],
-                text="path=%s\001service=gosa" % url['path'])
+                text="path=%s\001service=clacks" % url['path'])
         self.__zeroconf.publish()
 
         self.log.info("ready to process incoming requests")
