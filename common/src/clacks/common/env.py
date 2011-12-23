@@ -14,6 +14,7 @@ You can import it to your own code like this::
 import logging
 import platform
 from clacks.common.config import Config
+from clacks.common.utils import parseURL
 try:
     from sqlalchemy.orm import sessionmaker, scoped_session
     from sqlalchemy import create_engine
@@ -59,8 +60,16 @@ class Environment:
 
             self.log.debug("end of configuration dump")
 
+        # Eventually etract the domain from the amqp url
+        domain = 'org.clacks'
+        tmp = self.config.get("amqp.url", default=None)
+        if tmp:
+            path = parseURL(tmp)['path']
+            if path:
+                domain = path
+
         # Initialized
-        self.domain = self.config.get("core.domain", default="org.clacks")
+        self.domain = self.config.get("core.domain", default=domain)
         self.uuid = self.config.get("core.id", default=None)
         if not self.uuid:
             self.log.warning("system has no id - falling back to configured hardware uuid")
