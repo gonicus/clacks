@@ -80,7 +80,7 @@ class InventoryConsumer(Plugin):
 
         # Get the Inventory part of the event only
         inv_only =  etree.tostring(data.xpath('/e:Event/e:Inventory', \
-                namespaces={'i': 'http://www.gonicus.de/Events'})[0], pretty_print=True)
+                namespaces={'e': 'http://www.gonicus.de/Events'})[0], pretty_print=True)
 
         # The given hardware-uuid is already part of our inventory database
         if self.hardwareUUIDExists(huuid):
