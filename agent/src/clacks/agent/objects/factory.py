@@ -99,7 +99,7 @@ class GOsaObjectFactory(object):
         ObjectBackendRegistry.getInstance()
 
         # Loade attribute type mapping
-        for entry in pkg_resources.iter_entry_points("gosa.object.type"):
+        for entry in pkg_resources.iter_entry_points("object.type"):
             module = entry.load()
             self.log.info("attribute type %s included" % module.__alias__)
             self.__attribute_type[module.__alias__] = module()

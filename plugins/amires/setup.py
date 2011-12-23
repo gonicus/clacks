@@ -44,8 +44,8 @@ setup(
         ],
 
     entry_points = """
-        [gosa.modules]
-        ami.resolver = amires.main:AsteriskNotificationReceiver
+        [agent.module]
+        ami-resolver = amires.main:AsteriskNotificationReceiver
 
         [phone.resolver]
         res.ldap = amires.modules.ldap_res:LDAPNumberResolver

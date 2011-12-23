@@ -41,7 +41,7 @@ def mainLoop(env):
         log = logging.getLogger(__name__)
 
         # Load plugins
-        PluginRegistry(component='gosa_client.modules')
+        PluginRegistry(component='client.module')
 
         # Sleep and slice
         wait = 2

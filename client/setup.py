@@ -38,12 +38,12 @@ else:
     ])
 
     modules = """
-        module.wakeonlan = clacks.client.plugins.wakeonlan.utils:WakeOnLan
-        module.notify = clacks.client.plugins.notify.utils:Notify
-        module.inventory = clacks.client.plugins.inventory.utils:Inventory
-        module.service = clacks.client.plugins.dbus.proxy:DBUSProxy
-        module.powermanagement = clacks.client.plugins.powermanagement.utils:PowerManagement
-        module.session = clacks.client.plugins.sessions.main:SessionKeeper
+        wakeonlan = clacks.client.plugins.wakeonlan.utils:WakeOnLan
+        notify = clacks.client.plugins.notify.utils:Notify
+        inventory = clacks.client.plugins.inventory.utils:Inventory
+        service = clacks.client.plugins.dbus.proxy:DBUSProxy
+        powermanagement = clacks.client.plugins.powermanagement.utils:PowerManagement
+        session = clacks.client.plugins.sessions.main:SessionKeeper
     """
     joiner = """
         join.curses = clacks.client.plugins.join.curses_gui:CursesGUI
@@ -103,13 +103,13 @@ setup(
         clacks-client = clacks.client.main:main
         clacks-join = clacks.client.join:main
 
-        [gosa_join.modules]
+        [join.module]
         %(joiner)s
 
-        [gosa_client.modules]
-        module.command = clacks.client.command:ClientCommandRegistry
-        module.amqp = clacks.client.amqp:AMQPClientHandler
-        module.amqp_service = clacks.client.amqp_service:AMQPClientService
+        [client.module]
+        command = clacks.client.command:ClientCommandRegistry
+        amqp = clacks.client.amqp:AMQPClientHandler
+        amqp_service = clacks.client.amqp_service:AMQPClientService
         %(modules)s
     """ % {'modules': modules, 'joiner': joiner},
 

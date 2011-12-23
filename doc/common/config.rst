@@ -31,8 +31,8 @@ Here is an example::
    [core]
    loglevel = DEBUG
    log = file
-   logfile = /var/log/gosa/agent.log
+   logfile = /var/log/clacks/agent.log
    profile = False
    id = amqp
-   user = gosa
-   group = gosa
+   user = clacks
+   group = clacks

@@ -62,11 +62,11 @@ setup(
         clacks-dbus = clacks.dbus.main:main
         notify-user = clacks.dbus.notify:main
 
-        [gosa_dbus.modules]
-        module.unix = clacks.dbus.plugins.services.main:DBusUnixServiceHandler
-        module.inventory = clacks.dbus.plugins.inventory.main:DBusInventoryHandler
-        module.service = clacks.dbus.plugins.services.main:DBusUnixServiceHandler
-        module.notify = clacks.dbus.plugins.notify.main:DBusNotifyHandler
-        module.wol = clacks.dbus.plugins.wakeonlan.main:DBusWakeOnLanHandler
+        [dbus.modules]
+        unix = clacks.dbus.plugins.services.main:DBusUnixServiceHandler
+        inventory = clacks.dbus.plugins.inventory.main:DBusInventoryHandler
+        service = clacks.dbus.plugins.services.main:DBusUnixServiceHandler
+        notify = clacks.dbus.plugins.notify.main:DBusNotifyHandler
+        wol = clacks.dbus.plugins.wakeonlan.main:DBusWakeOnLanHandler
     """,
 )

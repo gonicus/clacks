@@ -11,7 +11,7 @@ When starting up the system, the DBUS components looks for plugins in the setupt
 system and registers them into to the :class:`clacks.common.components.registry.PluginRegistry`.
 
 This happens automatically depending on what's registered on the
-``[gosa_dbus.modules]`` setuptools entrypoint.
+``[dbus.module]`` setuptools entrypoint.
 
 To provide services it registers the system bus ``org.clacks`` to the
 systems DBUS, exposing functionality to the outside world.

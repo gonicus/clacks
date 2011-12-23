@@ -43,7 +43,7 @@ def mainLoop(env):
         system_bus = get_system_bus()
 
         # Instanciate dbus objects
-        pr = PluginRegistry(component='gosa_dbus.modules')
+        pr = PluginRegistry(component='dbus.module')
 
         # Enter main loop
         loop = gobject.MainLoop()

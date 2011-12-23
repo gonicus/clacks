@@ -19,16 +19,16 @@ if not re.match(r"^(agent|client|dbus)$", p_type):
 if not re.match(r"^[a-z][a-z0-9]+$", name):
     raise ValueError("Invalid name supplied.")
 
-base_path = os.path.join(name, "src", "gosa", p_type, "plugins", name)
+base_path = os.path.join(name, "src", "clacks", p_type, "plugins", name)
 os.makedirs(os.path.join(base_path, "locale"))
 os.makedirs(os.path.join(base_path, "tests"))
 
-mod = "gosa.modules" if p_type == "agent" else "gosa_%s.modules" % p_type
-req = "gosa.%s" % p_type
+mod = "%s.module" % p_type
+req = "clacks.%s" % p_type
 p_clazz = "%sPlugin" % name.lower().capitalize()
 
 #TODO: dbus plugins are different
-#TODO: gosa agent handler plugins are different
+#TODO: clacks agent handler plugins are different
 
 # Write setup.py
 with open(os.path.join(name, "setup.py"), "w") as f:
@@ -67,7 +67,7 @@ setup(
 
     packages = find_packages('src', exclude=['examples', 'tests']),
     package_dir={{'': 'src'}},
-    namespace_packages = ['gosa'],
+    namespace_packages = ['clacks'],
 
     install_requires = [
         '{req}',
@@ -75,7 +75,7 @@ setup(
 
     entry_points = \"\"\"
         [{mod}]
-        plugin.{name} = gosa.{p_type}.plugins.{name}.main:{p_clazz}
+        plugin.{name} = clacks.{p_type}.plugins.{name}.main:{p_clazz}
     \"\"\",
 )
 """.format(name=name, p_type=p_type, mod=mod, req=req, a_email=a_email,
@@ -94,7 +94,7 @@ detailed-errors = 1
 with-xunit = 1
 with-doctest = 1
 doctest-tests = 1
-where = gosa
+where = clacks
 with-nosexunit = 1
 source-folder = .
 core-target = reports/tests
@@ -128,15 +128,15 @@ input_file = {base_path}/locale/messages.pot
 """.format(base_path=base_path, a_name=a_name, a_email=a_email))
 
 # Write __init__ stubs
-for fname in [os.path.join(name, "src", "gosa"),
-        os.path.join(name, "src", "gosa", p_type),
-        os.path.join(name, "src", "gosa", p_type, "plugins"),
-        os.path.join(name, "src", "gosa", p_type, "plugins", name)]:
+for fname in [os.path.join(name, "src", "clacks"),
+        os.path.join(name, "src", "clacks", p_type),
+        os.path.join(name, "src", "clacks", p_type, "plugins"),
+        os.path.join(name, "src", "clacks", p_type, "plugins", name)]:
     with open(os.path.join(fname, "__init__.py"), "w") as f:
         f.write("__import__('pkg_resources').declare_namespace(__name__)\n")
 
 # Write sample module
-with open(os.path.join(name, "src", "gosa", p_type, "plugins", name, "main.py"), "w") as f:
+with open(os.path.join(name, "src", "clacks", p_type, "plugins", name, "main.py"), "w") as f:
     f.write("""# -*- coding: utf-8 -*-
 import gettext
 from clacks.common import Environment

@@ -28,7 +28,7 @@ exposing functionality to the outside world. Here are some of them:
 
 
 This happens automatically depending on what's registered on the
-``[gosa_client.modules]`` setuptools entrypoint.
+``[client.module]`` setuptools entrypoint.
 
 The client will send a **ClientLeave** event when shutting down.
 
@@ -46,7 +46,7 @@ with adequate permission to do that.
 While the *gosa-join* binary will do this for you, it is possible to extend
 it to use i.e. a graphical join dialog. At present, we provide a ncurses
 and a readline based join mechanism. More can be added using the setuptools
-``gosa_join.modules`` entrypoint. For more information, take a look at the
+``join.module`` entrypoint. For more information, take a look at the
 :mod:`clacks.client.join` and :class:`clacks.client.plugins.join.join_method` documentation.
 
 Using the binaries

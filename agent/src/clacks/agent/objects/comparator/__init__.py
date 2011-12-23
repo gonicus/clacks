@@ -4,7 +4,7 @@ import pkg_resources
 
 
 def get_comparator(name):
-    for entry in pkg_resources.iter_entry_points("gosa.object.comparator"):
+    for entry in pkg_resources.iter_entry_points("object.comparator"):
 
         module = entry.load()
         if module.__name__ == name:

@@ -20,7 +20,7 @@ class XMLDBHandler(Plugin):
         driver = env.config.get("core.xml-driver", default="DBXml")
 
         # Find driver module from setuptools advertisement
-        for entry in pkg_resources.iter_entry_points("xmldb"):
+        for entry in pkg_resources.iter_entry_points("xmldb.driver"):
             mod = entry.load()
             if mod.__name__ == driver:
                 self.__driver = mod()

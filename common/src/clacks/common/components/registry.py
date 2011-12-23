@@ -24,7 +24,7 @@ class PluginRegistry(object):
     handlers = {}
     evreg = {}
 
-    def __init__(self, component="gosa.modules"):
+    def __init__(self, component="agent.module"):
         env = Environment.getInstance()
         self.env = env
         self.log = logging.getLogger(__name__)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-The GOsa shell can be called in different ways.
+The Clacks shell can be called in different ways.
 
  * Interactive mode::
 
@@ -9,7 +9,7 @@ The GOsa shell can be called in different ways.
      Connected to amqps://amqp.example.net:5671/org.gosa
      Username [cajus]:
      Password:
-     GOsa service shell. Use Ctrl+D to exit.
+     Clacks service shell. Use Ctrl+D to exit.
      >>>
 
    The shell will automatically try to find the service by DNS
@@ -25,7 +25,7 @@ The GOsa shell can be called in different ways.
    Nevertheless you're presented a python prompt which can be used
    to get the list of commands using the *proxy* object::
 
-     >>> proxy.help()
+     >>> clacks.help()
      createDistribution()
          Create a new distribution based on type, mirror and installation
          method
@@ -35,9 +35,9 @@ The GOsa shell can be called in different ways.
      ...
 
    The *proxy* object acts as a proxy for the commands, so you can i.e. start
-   asking for the registered GOsa clients ::
+   asking for the registered Clacks clients ::
 
-     >>> proxy.getClients()
+     >>> getClients()
      {u'2daf7cbf-75c2-4ea3-bfec-606fe9f07051': {
          u'received': 1313159425.0,
          u'name': u'dyn-10'},
@@ -50,7 +50,7 @@ The GOsa shell can be called in different ways.
 
    or just do simple multi-liners::
 
-     >>> for client, info in proxy.getClients().items():
+     >>> for client, info in getClients().items():
      ...   print info['name']
      ...
      dyn-10

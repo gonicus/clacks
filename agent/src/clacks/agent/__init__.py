@@ -47,7 +47,7 @@ exposing functionality to the outside world. Here are some of them:
    methods decorated by @Command.
 
 This happens automatically depending on what's registered on the
-``[gosa.modules]`` setuptools entrypoint.
+``[agent.module]`` setuptools entrypoint.
 
 The agent will send a **NodeLeave** event when shutting down.
 

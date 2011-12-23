@@ -9,9 +9,9 @@ class ObjectBackendRegistry(object):
     uuidAttr = "entryUUID"
 
     def __init__(self):
-        log = logging.getLogger("gosa.object.backend")
+        log = logging.getLogger("object.backend")
         # Load available backends
-        for entry in pkg_resources.iter_entry_points("gosa.object.backend"):
+        for entry in pkg_resources.iter_entry_points("object.backend"):
             clazz = entry.load()
             ObjectBackendRegistry.backends[clazz.__name__] = clazz()
 

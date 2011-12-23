@@ -7,7 +7,7 @@ Quickstart
 ----------
 
 This document contains information on *how to get started* with
-the current gosa 3.0 alpha. It does not care about SSL or other
+the current clacks 1.0 alpha. It does not care about SSL or other
 security related issues around qpid.
 
 It works starting with squeeze or later.
@@ -16,7 +16,7 @@ It works starting with squeeze or later.
 
     Lenny does not work, so you just don't have to try...
 
-Depending on which parts of gosa-ng you want to deploy, there are
+Depending on which parts of clacks you want to deploy, there are
 different prerequisites to fulfill. Please read the relevant sections.
 
 
@@ -29,10 +29,10 @@ System prerequisites
 To run the services in the designed way later on, you need a special user
 and a couple of directories::
 
-    $ sudo adduser --system --group gosa --home=/var/lib/gosa
+    $ sudo adduser --system --group clacks --home=/var/lib/clacks
 
 If you're going to run the service in daemon mode, please take care that
-there's a */var/run/gosa* for placing the PID files.
+there's a */var/run/clacks* for placing the PID files.
 
 
 Python prerequisites
@@ -54,13 +54,13 @@ the following packages in your system::
       pywin32 package: http://sourceforge.net/projects/pywin32/
 
 
-Setup a virtual environment for playing with GOsa 3.0 alpha
+Setup a virtual environment for playing with clacks 1.0 alpha
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 As a non-root user, initialize the virtual environment::
 
-  $ virtualenv --setuptools --python=python2.7  gosa-ng
-  $ cd gosa-ng
+  $ virtualenv --setuptools --python=python2.7  clacks
+  $ cd clacks
   $ source bin/activate
 
 
@@ -69,7 +69,7 @@ Obtaining the source
 
 For now, please use git::
 
-   $ cd 'the place where you created the gosa-ng virtualenv'
+   $ cd 'the place where you created the clacks virtualenv'
    $ git clone git://oss.gonicus.de/git/gosa.git src
 
 Additionally, you can get some stripped of GOsa 2.7 sources from here::
@@ -87,7 +87,7 @@ This will place all relevant files inside the 'src' directory.
       sudo/root, you're doing something wrong.
 
 
-The gosa-ng agent
+The clacks agent
 ^^^^^^^^^^^^^^^^^
 
 To run the agent, you most likely need a working AMQP broker and
@@ -122,7 +122,7 @@ Install qpid broker and clients
   # apt-get install qpidd qpid-client qpid-tools
 
 After qpid has been installed, you may modify the access policy
-to fit the gosa-agent needs a `/etc/qpid/qpidd.acl` containing::
+to fit the clacks-agent needs a `/etc/qpid/qpidd.acl` containing::
 
 	# QPID policy file
 	#
@@ -171,8 +171,8 @@ to fit the gosa-agent needs a `/etc/qpid/qpidd.acl` containing::
 	acl allow all publish exchange routingkey=reply-* owner=self
 	
 	# Event producer
-	acl allow event-publisher all     queue    name=org.gosa
-	acl allow event-publisher all     exchange name=org.gosa
+	acl allow event-publisher all     queue    name=org.clacks
+	acl allow event-publisher all     exchange name=org.clacks
 	
 	# Event consumer
 	#TODO: replace "all" by "event-consumer" later on
@@ -181,31 +181,31 @@ to fit the gosa-agent needs a `/etc/qpid/qpidd.acl` containing::
 	acl allow all consume queue    name=event-listener-* owner=self
 	acl allow all access  queue    name=event-listener-* owner=self
 	acl allow all purge   queue    name=event-listener-* owner=self
-	acl allow all access  queue    name=org.gosa
-	acl allow all access  exchange name=org.gosa
+	acl allow all access  queue    name=org.clacks
+	acl allow all access  exchange name=org.clacks
 	acl allow all access  exchange name=event-listener-* owner=self
-	acl allow all bind    exchange name=org.gosa queuename=event-listener-* routingkey=event
-	acl allow all unbind  exchange name=org.gosa queuename=event-listener-* routingkey=event
-	acl allow all publish exchange name=org.gosa routingkey=event
+	acl allow all bind    exchange name=org.clacks queuename=event-listener-* routingkey=event
+	acl allow all unbind  exchange name=org.clacks queuename=event-listener-* routingkey=event
+	acl allow all publish exchange name=org.clacks routingkey=event
 	
-	# Let agents do everything with the org.gosa queues and exchanges, agents itself
+	# Let agents do everything with the org.clacks queues and exchanges, agents itself
 	# are trusted by now.
-	acl allow agents all queue name=org.gosa.*
-	acl allow agents all exchange name=org.gosa.*
-	acl allow agents all exchange name=amq.direct queuename=org.gosa.*
+	acl allow agents all queue name=org.clacks.*
+	acl allow agents all exchange name=org.clacks.*
+	acl allow agents all exchange name=amq.direct queuename=org.clacks.*
 	
 	# Let every authenticated instance publish to the command queues
-	acl allow all access   queue    name=org.gosa.command.*
-	acl allow all publish  queue    name=org.gosa.command.*
-	acl allow all publish  exchange routingkey=org.gosa.command.*
-	acl allow all access   exchange name=org.gosa.command.*
+	acl allow all access   queue    name=org.clacks.command.*
+	acl allow all publish  queue    name=org.clacks.command.*
+	acl allow all publish  exchange routingkey=org.clacks.command.*
+	acl allow all access   exchange name=org.clacks.command.*
 	
 	# Let clients create their own queue to listen on
-	acl allow all access  queue    name=org.gosa
+	acl allow all access  queue    name=org.clacks
 	acl allow all access  queue    name=org.clacks.client.* owner=self
 	acl allow all consume queue    name=org.clacks.client.* owner=self
 	acl allow all create  queue    name=org.clacks.client.* exclusive=true autodelete=true durable=false
-	acl allow all access  exchange name=org.gosa
+	acl allow all access  exchange name=org.clacks
 	acl allow all access  exchange name=org.clacks.client.* owner=self
 	acl allow all bind    exchange name=amq.direct queuename=org.clacks.client.*
 	
@@ -218,7 +218,7 @@ to fit the gosa-agent needs a `/etc/qpid/qpidd.acl` containing::
 Now the broker aka bus is up and running on the host.
 
 
-For production use, you should enable SSL for the broker and for GOsa core. Generating
+For production use, you should enable SSL for the broker and for clacks core. Generating
 the certificates is shown here:
 
 http://rajith.2rlabs.com/2010/03/01/apache-qpid-securing-connections-with-ssl/
@@ -234,10 +234,10 @@ know what to do yourself.
 
 First, install the provided schema files. These commands have to be executed
 with *root* power by default, so feel free to use sudo and find the schema
-*LDIF* files in the ``contrib/ldap`` directory of your GOsa checkout. Install
+*LDIF* files in the ``contrib/ldap`` directory of your clacks checkout. Install
 these schema files like this::
 
-	# ldapadd -Y EXTERNAL -H ldapi:/// -f gosa-core.ldif
+	# ldapadd -Y EXTERNAL -H ldapi:/// -f clacks-core.ldif
 	# ldapadd -Y EXTERNAL -H ldapi:/// -f registered-device.ldif
 	# ldapadd -Y EXTERNAL -H ldapi:/// -f installed-device.ldif
 	# ldapadd -Y EXTERNAL -H ldapi:/// -f configured-device.ldif
@@ -464,11 +464,11 @@ Now take a look at the config file and adapt it to your needs.
 
 You can start the daemon in foreground like this::
 
-  $ gosa-agent -f
+  $ clacks-agent -f
 
 .. warning::
     Make sure, you've entered the virtual environment using "source bin/activate"
-    from inside the gosa-ng directory.
+    from inside the clacks directory.
 
 
 If you want to run the agent in a more productive manner, you can use the
@@ -477,7 +477,7 @@ and run as a daemon.
 
 
 :status: todo
-	Describe how to secure the communication between the gosa-agent and used services.
+	Describe how to secure the communication between the clacks-agent and used services.
 
 
 Here is an example config file for a non-secured service. (A HowTo about securing the service will follow soon!)::
@@ -493,8 +493,8 @@ Here is an example config file for a non-secured service. (A HowTo about securin
     # Keyword logfile: full path to log to if log = file
     #logfile = /var/log/gosa/agent.log
     
-    # Keyword id: name of this gosa-agent node
-    id = gosa-agent
+    # Keyword id: name of this clacks-agent node
+    id = clacks-agent
     
     # Keyword user: username to run the daemon as
     #user = gosa
@@ -550,8 +550,8 @@ Here is an example config file for a non-secured service. (A HowTo about securin
 
 
 
-The gosa-ng shell
-^^^^^^^^^^^^^^^^^
+The clacks shell
+^^^^^^^^^^^^^^^^
 
 Installing
 """"""""""
@@ -568,12 +568,12 @@ a complete deployment.
 First contact
 ^^^^^^^^^^^^^
 
-The gosa-shell will use zeroconf/DNS to find relevant connection methods. Alternatively
+The clacks shell will use zeroconf/DNS to find relevant connection methods. Alternatively
 you can specify the connection URL to skip zeroconf/DNS.
 
 Start the shell and send a command::
 
-  $ gosa-shell
+  $ clacksh
   (authenticate as the admin user you've created in qpid's SASL DB)
   >>> gosa.help()
   >>> gosa.mksmbhash("secret")
@@ -584,19 +584,19 @@ neither sorted, nor grouped by plugins. Much space for improvements.
 
 If you tend to use a connection URL directly, use::
 
-  $ gosa-shell http[s]://amqp.example.com:8080/rpc
+  $ clacksh http[s]://amqp.example.com:8080/rpc
 
 for HTTP based sessions or ::
 
-  $ gosa-shell amqp[s]://amqp.example.com/org.gosa
+  $ clacksh amqp[s]://amqp.example.com/org.clacks
 
 for AMQP based sessions.
 
 
-The gosa-ng client
+The clacks client
 ^^^^^^^^^^^^^^^^^^
 
-A gosa-ng client is a device instance that has been joined into the gosa network.
+A clacks client is a device instance that has been joined into the gosa network.
 Every client can incorporate functionality into the network - or can just be
 a managed client.
 
@@ -617,15 +617,15 @@ a complete deployment.
 Joining the party
 """""""""""""""""
 
-A client needs to authenticate to the gosa-ng bus. In order to create the required
+A client needs to authenticate to the clacks bus. In order to create the required
 credentials for that, you've to "announce" or "join" the client to the system.
 
 To do that, run ::
 
   $ sudo -s
-  # cd 'wherever your gosa-ng virtual environment is'
+  # cd 'wherever your clacks virtual environment is'
   # source bin/activate
-  # gosa-join
+  # clacks-join
 
 on the client you're going to join. In the development case, this may be the
 same machine which runs the agent.
@@ -635,24 +635,24 @@ Running the root component
 """"""""""""""""""""""""""
 
 Some functionality may need root permission, while we don't want to run the complete
-client as root. The gosa-dbus component is used to run dedicated tasks as root. It
+client as root. The clacks-dbus component is used to run dedicated tasks as root. It
 can be extended by simple plugins and registers the resulting methods in the dbus
 interface.
 
 To use the dbus-component, you've to allow the gosa system user (or whatever user
-the gosa-client is running later on) to use certain dbus services. Copy and eventually
+the clacks-client is running later on) to use certain dbus services. Copy and eventually
 adapt the file src/contrib/dbus/org.clacks.conf to /etc/dbus-1/system.d/ and
 reload your dbus service. ::
 
   $ sudo service dbus reload
 
 To start the dbus component, activate the python virtual environment as root and run
-the gosa-dbus component in daemon or foreground mode::
+the clacks-dbus component in daemon or foreground mode::
 
   $ sudo -s
-  # cd 'wherever your gosa-ng virtual environment is'
+  # cd 'wherever your clacks virtual environment is'
   # source bin/activate
-  # gosa-dbus -f
+  # clacks-dbus -f
 
 
 Running the client
@@ -663,27 +663,27 @@ be able to use the dbus features::
 
   $ sudo adduser $USER gosa
 
-You might need to re-login to make the changes happen. After that, start the gosa-ng
+You might need to re-login to make the changes happen. After that, start the clacks
 client inside the activated virtual environment::
 
-  $ gosa-client -f
+  $ clacks-client -f
 
 Integration with PHP GOsa
 -------------------------
 
-The *GOsa agent* and *GOsa client* setup may be ok for playing around, but
+The *clacks agent* and *clacks client* setup may be ok for playing around, but
 as of GOsa 2.7 you can configure an active communication between the ordinary
 PHP GOsa and the agent - which acts as a replacement for *gosa-si*.
 
 .. warning::
 
-   While the GOsa agent series are under heavy development, it is recommended
+   While the clacks agent series are under heavy development, it is recommended
    to try with GOsa 2.7 trunk. You should be aware of not beeing able to replace
    all gosa-si functionality in the moment.
 
 -----------------
 
-To connection the web-based GOsa with the GOsa-agent you have to adjust the configuration slightly.
+To connection the web-based GOsa with the clacks agent you have to adjust the configuration slightly.
 There are two ways to do so, the first is to update the GOsa 2.7 configuration file directly 
 ``/etc/clacks/config`` to include the following lines:
 
@@ -711,7 +711,7 @@ Now adjust the values of these properties to match your setup and click ``apply`
 
 .. image:: _static/images/gosa_setup_rpc_2.png
 
-That is all, you may only need to relog into the GOsa gui.
+That is all, you may only need to relog into the GOsa GUI.
 
 Design overview
 ---------------

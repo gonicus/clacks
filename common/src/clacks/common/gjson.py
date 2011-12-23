@@ -82,6 +82,6 @@ def PObjectDecoder(dct):
 
 # Load our entrypoints
 json_handlers = {}
-for entry in pkg_resources.iter_entry_points("json.datahandlers"):
+for entry in pkg_resources.iter_entry_points("json.datahandler"):
     mod = entry.load()
     json_handlers[mod.canhandle()] = mod

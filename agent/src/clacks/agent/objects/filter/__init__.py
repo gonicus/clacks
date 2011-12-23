@@ -4,7 +4,7 @@ import pkg_resources
 
 
 def get_filter(name):
-    for entry in pkg_resources.iter_entry_points("gosa.object.filter"):
+    for entry in pkg_resources.iter_entry_points("object.filter"):
         module = entry.load()
         if module.__name__ == name:
             return module

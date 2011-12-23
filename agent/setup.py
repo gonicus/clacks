@@ -79,79 +79,79 @@ setup(
         [console_scripts]
         clacks-agent = clacks.agent.main:main
 
-        [gosa.modules]
-        module.command = clacks.agent.command:CommandRegistry
-        module.amqp_service = clacks.agent.amqp_service:AMQPService
-        module.httpd = clacks.agent.httpd:HTTPService
-        module.scheduler = clacks.agent.scheduler:SchedulerService
-        module.acl = clacks.agent.acl:ACLResolver
-        module.objects = clacks.agent.objects.index:ObjectIndex
-        module.xmldb = clacks.agent.xmldb.handler:XMLDBHandler
-        module.jsonrpc_service = clacks.agent.jsonrpc_service:JSONRPCService
-        module.jsonrpc_om = clacks.agent.jsonrpc_objects:JSONRPCObjectMapper
-        module.samba.utils = clacks.agent.plugins.samba.utils:SambaUtils
-        module.misc.utils = clacks.agent.plugins.misc.utils:MiscUtils
-        module.gravatar.utils = clacks.agent.plugins.gravatar.utils:GravatarUtils
-        module.goto.network = clacks.agent.plugins.goto.network:NetworkUtils
-        module.goto.client_service = clacks.agent.plugins.goto.client_service:ClientService
-        module.inventory = clacks.agent.plugins.inventory.consumer:InventoryConsumer
+        [agent.module]
+        command = clacks.agent.command:CommandRegistry
+        amqp_service = clacks.agent.amqp_service:AMQPService
+        httpd = clacks.agent.httpd:HTTPService
+        scheduler = clacks.agent.scheduler:SchedulerService
+        acl = clacks.agent.acl:ACLResolver
+        objects = clacks.agent.objects.index:ObjectIndex
+        xmldb = clacks.agent.xmldb.handler:XMLDBHandler
+        jsonrpc_service = clacks.agent.jsonrpc_service:JSONRPCService
+        jsonrpc_om = clacks.agent.jsonrpc_objects:JSONRPCObjectMapper
+        samba.utils = clacks.agent.plugins.samba.utils:SambaUtils
+        misc.utils = clacks.agent.plugins.misc.utils:MiscUtils
+        gravatar.utils = clacks.agent.plugins.gravatar.utils:GravatarUtils
+        goto.network = clacks.agent.plugins.goto.network:NetworkUtils
+        goto.client_service = clacks.agent.plugins.goto.client_service:ClientService
+        inventory = clacks.agent.plugins.inventory.consumer:InventoryConsumer
 
-        [gosa.object.type]
-        type.string = clacks.agent.objects.types.base:StringAttribute
-        type.integer = clacks.agent.objects.types.base:IntegerAttribute
-        type.boolean = clacks.agent.objects.types.base:BooleanAttribute
-        type.binary = clacks.agent.objects.types.base:BinaryAttribute
-        type.unicodestring = clacks.agent.objects.types.base:UnicodeStringAttribute
-        type.date = clacks.agent.objects.types.base:DateAttribute
-        type.timestamp = clacks.agent.objects.types.base:TimestampAttribute
-        type.sambalogonhours = clacks.agent.plugins.samba.utils:SambaLogonHoursAttribute
+        [object.type]
+        string = clacks.agent.objects.types.base:StringAttribute
+        integer = clacks.agent.objects.types.base:IntegerAttribute
+        boolean = clacks.agent.objects.types.base:BooleanAttribute
+        binary = clacks.agent.objects.types.base:BinaryAttribute
+        unicodestring = clacks.agent.objects.types.base:UnicodeStringAttribute
+        date = clacks.agent.objects.types.base:DateAttribute
+        timestamp = clacks.agent.objects.types.base:TimestampAttribute
+        sambalogonhours = clacks.agent.plugins.samba.utils:SambaLogonHoursAttribute
 
-        [gosa.object.backend]
-        backend.ldap = clacks.agent.objects.backend.back_ldap:LDAP
-        backend.null = clacks.agent.objects.backend.back_null:NULL
+        [object.backend]
+        ldap = clacks.agent.objects.backend.back_ldap:LDAP
+        null = clacks.agent.objects.backend.back_null:NULL
 
-        [gosa.object.comparator]
-        comparator.like = clacks.agent.objects.comparator.strings:Like
-        comparator.regex = clacks.agent.objects.comparator.strings:RegEx
-        comparator.stringlength = clacks.agent.objects.comparator.strings:stringLength
-        comparator.equals = clacks.agent.objects.comparator.basic:Equals
-        comparator.greater = clacks.agent.objects.comparator.basic:Greater
-        comparator.smaller = clacks.agent.objects.comparator.basic:Smaller
-        filter.isvalidsambadomainname = clacks.agent.plugins.samba.utils:IsValidSambaDomainName
+        [object.comparator]
+        like = clacks.agent.objects.comparator.strings:Like
+        regex = clacks.agent.objects.comparator.strings:RegEx
+        stringlength = clacks.agent.objects.comparator.strings:stringLength
+        equals = clacks.agent.objects.comparator.basic:Equals
+        greater = clacks.agent.objects.comparator.basic:Greater
+        smaller = clacks.agent.objects.comparator.basic:Smaller
+        isvalidsambadomainname = clacks.agent.plugins.samba.utils:IsValidSambaDomainName
 
-        [gosa.object.filter]
-        filter.concatstring = clacks.agent.objects.filter.strings:ConcatString
-        filter.replace = clacks.agent.objects.filter.strings:Replace
-        filter.stringToTime = clacks.agent.objects.filter.strings:StringToTime
-        filter.stringToDate = clacks.agent.objects.filter.strings:StringToDate
-        filter.dateToString = clacks.agent.objects.filter.strings:DateToString
-        filter.timeToString = clacks.agent.objects.filter.strings:TimeToString
-        filter.sambahash = clacks.agent.plugins.samba.utils:SambaHash
-        filter.target = clacks.agent.objects.filter.basic:Target
-        filter.setbackends = clacks.agent.objects.filter.basic:SetBackends
-        filter.setvalue = clacks.agent.objects.filter.basic:SetValue
-        filter.clear = clacks.agent.objects.filter.basic:Clear
-        filter.integertodatetime = clacks.agent.objects.filter.basic:IntegerToDatetime
-        filter.datetimetointeger = clacks.agent.objects.filter.basic:DatetimeToInteger
-        filter.sambaacctflagsin = clacks.agent.plugins.samba.utils:SambaAcctFlagsIn
-        filter.sambaacctflagsout = clacks.agent.plugins.samba.utils:SambaAcctFlagsOut
-        filter.sambamungedialin = clacks.agent.plugins.samba.utils:SambaMungedDialIn
-        filter.sambamungedialout = clacks.agent.plugins.samba.utils:SambaMungedDialOut
-        filter.generatesambasid = clacks.agent.plugins.samba.utils:GenerateSambaSid
-        filter.posixgetnextid = clacks.agent.plugins.posix.utils:GetNextID
-        filter.datetoshadowdays = clacks.agent.plugins.posix.utils:DateToShadowDays
-        filter.shadowdaystodate = clacks.agent.plugins.posix.utils:ShadowDaysToDate
-        filter.detectpasswordmethod = clacks.agent.plugins.password.utils:DetectPasswordMethod
-        filter.detectaccountlockstatus = clacks.agent.plugins.password.utils:DetectAccountLockStatus
-        filter.generatepasswordhash = clacks.agent.plugins.password.utils:GeneratePasswordHash
-        filter.addbackend = clacks.agent.objects.filter.basic:AddBackend
+        [object.filter]
+        concatstring = clacks.agent.objects.filter.strings:ConcatString
+        replace = clacks.agent.objects.filter.strings:Replace
+        stringToTime = clacks.agent.objects.filter.strings:StringToTime
+        stringToDate = clacks.agent.objects.filter.strings:StringToDate
+        dateToString = clacks.agent.objects.filter.strings:DateToString
+        timeToString = clacks.agent.objects.filter.strings:TimeToString
+        sambahash = clacks.agent.plugins.samba.utils:SambaHash
+        target = clacks.agent.objects.filter.basic:Target
+        setbackends = clacks.agent.objects.filter.basic:SetBackends
+        setvalue = clacks.agent.objects.filter.basic:SetValue
+        clear = clacks.agent.objects.filter.basic:Clear
+        integertodatetime = clacks.agent.objects.filter.basic:IntegerToDatetime
+        datetimetointeger = clacks.agent.objects.filter.basic:DatetimeToInteger
+        sambaacctflagsin = clacks.agent.plugins.samba.utils:SambaAcctFlagsIn
+        sambaacctflagsout = clacks.agent.plugins.samba.utils:SambaAcctFlagsOut
+        sambamungedialin = clacks.agent.plugins.samba.utils:SambaMungedDialIn
+        sambamungedialout = clacks.agent.plugins.samba.utils:SambaMungedDialOut
+        generatesambasid = clacks.agent.plugins.samba.utils:GenerateSambaSid
+        posixgetnextid = clacks.agent.plugins.posix.utils:GetNextID
+        datetoshadowdays = clacks.agent.plugins.posix.utils:DateToShadowDays
+        shadowdaystodate = clacks.agent.plugins.posix.utils:ShadowDaysToDate
+        detectpasswordmethod = clacks.agent.plugins.password.utils:DetectPasswordMethod
+        detectaccountlockstatus = clacks.agent.plugins.password.utils:DetectAccountLockStatus
+        generatepasswordhash = clacks.agent.plugins.password.utils:GeneratePasswordHash
+        addbackend = clacks.agent.objects.filter.basic:AddBackend
 
-        [gosa.object.operator]
-        operator.and = clacks.agent.objects.operator.bool:And
-        operator.or = clacks.agent.objects.operator.bool:Or
-        operator.not = clacks.agent.objects.operator.bool:Not
+        [object.operator]
+        and = clacks.agent.objects.operator.bool:And
+        or = clacks.agent.objects.operator.bool:Or
+        not = clacks.agent.objects.operator.bool:Not
 
-        [xmldb]
-        berkley.driver = clacks.agent.xmldb.driver.dbxml_driver:DBXml
+        [xmldb.driver]
+        berkleydb = clacks.agent.xmldb.driver.dbxml_driver:DBXml
     """,
 )

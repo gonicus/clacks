@@ -4,7 +4,7 @@ import pkg_resources
 
 
 def get_operator(name):
-    for entry in pkg_resources.iter_entry_points("gosa.object.operator"):
+    for entry in pkg_resources.iter_entry_points("object.operator"):
         module = entry.load()
         if module.__name__ == name:
             return module

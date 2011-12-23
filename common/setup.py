@@ -87,10 +87,10 @@ setup(
         ],
 
     entry_points = """
-        [gosa.modules]
-        gosa-agent.amqp = clacks.common.components.amqp:AMQPHandler
+        [agent.module]
+        amqp = clacks.common.components.amqp:AMQPHandler
 
-        [json.datahandlers]
+        [json.datahandler]
         datetime = clacks.common.gjson:DateTimeHandler
     """,
 )

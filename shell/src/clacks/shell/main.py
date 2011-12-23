@@ -29,9 +29,9 @@
             [-p/--password passwort] [service-uri]
 
  The code you can execute is basically Python code. There is a special object
- named "proxy" that gives you access to all supported Clacks services - which are
+ named "clacks" that gives you access to all supported Clacks services - which are
  mapped to the global namespace, additionally. Try
- proxy.help() for a list of methods.
+ clacks.help() for a list of methods.
 """
 from __future__ import print_function
 import sys
@@ -318,9 +318,9 @@ def main(argv=sys.argv):
 
     # Prepare to enter the interactive console.
     # Make the the ClacksService instance available to the console via the
-    # "proxy" object.
+    # "clacks" object.
     service.proxy.help = service.help
-    context = {'proxy': service.proxy, '__name__': '__console__', '__doc__': None}
+    context = {'clacks': service.proxy, '__name__': '__console__', '__doc__': None}
 
     # This python wrap string catches any exception, prints it and exists the
     # program with a failure that can be processed by the caller (e.g. on a
@@ -352,8 +352,8 @@ except IOError:
 atexit.register(readline.write_history_file, histfile)
 del os, histfile, readline, rlcompleter
 
-for i in proxy.getMethods().keys():
-	globals()[i] = getattr(proxy, i)
+for i in clacks.getMethods().keys():
+	globals()[i] = getattr(clacks, i)
 """
 
     # Use script mode:
@@ -394,11 +394,11 @@ for i in proxy.getMethods().keys():
                 print(_("Closing session"))
                 service.proxy.logout()
                 letRun = 0
-            # In case of a gosa-agent restart we have to double check login
+            # In case of a clacks-agent restart we have to double check login
             except HTTPError as e:
                 if e.code == 401:
                     service.reconnectJson(service_uri, username, password)
-                    context = {'proxy': service, 'service': service.proxy,
+                    context = {'clacks': service, 'service': service.proxy,
                         '__name__': '__console__', '__doc__': None}
                 else:
                     print(e)

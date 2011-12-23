@@ -33,7 +33,7 @@ def main():
     # Load modules
     modules = {}
     priority = {}
-    for entry in pkg_resources.iter_entry_points("gosa_join.modules"):
+    for entry in pkg_resources.iter_entry_points("join.module"):
         mod = entry.load()
         if mod.available():
             priority[mod.__name__] = mod.priority

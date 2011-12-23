@@ -34,7 +34,7 @@ class join_method(object):
 
     in the moment. By implementing the :class:`clacks.client.plugins.join.methods.join_method` interface,
     new ones (i.e. graphical) can simply be added. The resulting modules have to be
-    registerd in the setuptools ``[gosa_join.modules]`` section.
+    registerd in the setuptools ``[join.module]`` section.
 
     The **priority** class member is used to order the join methods.
     """

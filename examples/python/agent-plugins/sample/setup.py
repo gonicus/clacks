@@ -45,7 +45,7 @@ setup(
 
 
     entry_points = """
-        [gosa.modules]
-        sample.module = sample.module:SampleModule
+        [agent.module]
+        sample = sample.module:SampleModule
     """
 )

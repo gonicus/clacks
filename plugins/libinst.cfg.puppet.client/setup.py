@@ -48,10 +48,10 @@ for various systems in your setup.
 
 
     entry_points = """
-        [gosa_client.modules]
-        gosa-client.puppet = libinst.cfg.puppet.client.main:PuppetClient
+        [client.module]
+        puppet = libinst.cfg.puppet.client.main:PuppetClient
 
-        [gosa_dbus.modules]
-        gosa-dbus.puppet = libinst.cfg.puppet.client.dbus_main:PuppetDBusHandler
+        [dbus.module]
+        puppet = libinst.cfg.puppet.client.dbus_main:PuppetDBusHandler
     """
 )
