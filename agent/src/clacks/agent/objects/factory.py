@@ -11,7 +11,7 @@ The object factory provides access to backend-data in an object
 oriented way. You can create, read, update and delete objects easily.
 
 What object-types are avaialable is configured using XML files, these files
-are located here: ``./clacks.common/src/gosa/common/data/objects/``.
+are located here: ``./clacks.common/src/clacks/common/data/objects/``.
 
 Each XML file can contain multiple object definitions, with object related
 information, like attributes, methods, how to store and read
