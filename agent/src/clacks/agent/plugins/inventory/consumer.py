@@ -67,7 +67,7 @@ class InventoryConsumer(Plugin):
 
         # Try to extract the clients uuid and hostname out of the received data
         try:
-            binfo = data.xpath('/e:Event/e:Inventory', namespaces={'i': 'http://www.gonicus.de/Events'})[0]
+            binfo = data.xpath('/e:Event/e:Inventory', namespaces={'e': 'http://www.gonicus.de/Events'})[0]
             uuid = str(binfo['ClientUUID'])
             huuid = str(binfo['HardwareUUID'])
             checksum = str(binfo['Checksum'])
