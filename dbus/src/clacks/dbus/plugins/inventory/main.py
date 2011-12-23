@@ -70,8 +70,7 @@ class DBusInventoryHandler(dbus.service.Object, Plugin):
             # event-style xml.
             try:
                 xml_doc = etree.parse(os.path.join('/tmp/fusion_tmp',flist[0]))
-                xslt_doc =
-                etree.parse(resource_filename("clacks.dbus.plugins.inventory", "data/fusionToClacks.xsl"))
+                xslt_doc = etree.parse(resource_filename("clacks.dbus.plugins.inventory", "data/fusionToClacks.xsl"))
                 transform = etree.XSLT(xslt_doc)
                 result = etree.tostring(transform(xml_doc))
             except Exception as e:

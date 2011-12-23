@@ -14,7 +14,7 @@ res = db.xquery("collection('objects')/o:User[o:Attributes/o:uid/string()='cajus
 print "Query for objects:"
 print res, "\n"
 
-uuid = "d91fe2d7-f350-443c-b2c2-afed3ac6bbb4"
+uuid = "80d51869-58c3-4d39-9a1b-215d45c2b286"
 res = db.xquery("collection('inventory')/e:Inventory[e:ClientUUID/string()='%s']/e:Storage[e:Type/string()='disk']" % uuid)
 
 print "Query for disk inventory of", uuid
