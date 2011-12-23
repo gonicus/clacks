@@ -1,9 +1,9 @@
 #
 ################################################################################
 #
-dn: cn=gosa-core,cn=schema,cn=config
+dn: cn=clacks-core,cn=schema,cn=config
 objectClass: olcSchemaConfig
-cn: gosa-core
+cn: clacks-core
 #
 ################################################################################
 #
