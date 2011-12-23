@@ -5,7 +5,7 @@ import datetime
 import sys
 import os
 import zope.event
-from clacks.agent.objects import GOsaObjectFactory
+from clacks.agent.objects import ObjectFactory
 
 
 # Register pseudo event handler
@@ -21,7 +21,7 @@ else:
     mode = sys.argv[1]
     del sys.argv[1]
 
-f = GOsaObjectFactory.getInstance()
+f = ObjectFactory.getInstance()
 
 if mode == "create":
     p = f.getObject('User', u'ou=people,dc=gonicus,dc=de', mode="create")

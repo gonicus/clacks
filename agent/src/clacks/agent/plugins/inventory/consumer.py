@@ -8,7 +8,7 @@ from clacks.common.components import Plugin
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components.amqp import EventConsumer
 from clacks.common.components.registry import PluginRegistry
-from clacks.agent.objects import GOsaObjectFactory
+from clacks.agent.objects import ObjectFactory
 
 
 class InventoryException(Exception):
@@ -41,7 +41,7 @@ class InventoryConsumer(Plugin):
         self.db = PluginRegistry.getInstance("XMLDBHandler")
         if not self.db.collectionExists("inventory"):
             sf = pkg_resources.resource_filename('clacks.agent', 'plugins/goto/data/events/Inventory.xsd')
-            self.__factory = GOsaObjectFactory.getInstance()
+            self.__factory = ObjectFactory.getInstance()
             self.db.createCollection("inventory", {"gosa": "http://www.gonicus.de/Events"},{"inventory.xsd":  open(sf).read()})
 
         # Create event consumer

@@ -20,7 +20,7 @@ class ObjectException(Exception):
 
 
 
-class GOsaObject(object):
+class Object(object):
     """
     This class is the base class for all GOsa-objects.
 

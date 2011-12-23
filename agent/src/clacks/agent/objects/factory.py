@@ -26,8 +26,8 @@ which will then provide the defined attributes, methods, aso.
 
 Here are some examples on how to instatiate on new object:
 
->>> from clacks.agent.objects import GOsaObjectFactory
->>> f = GOsaObjectFactory.getInstance()
+>>> from clacks.agent.objects import ObjectFactory
+>>> f = ObjectFactory.getInstance()
 >>> person = f.getObject('Person', "410ad9f0-c4c0-11e0-962b-0800200c9a66")
 >>> print person->sn
 >>> person->sn = "Surname"
@@ -49,7 +49,7 @@ from clacks.agent.objects.filter import get_filter
 from clacks.agent.objects.backend.registry import ObjectBackendRegistry
 from clacks.agent.objects.comparator import get_comparator
 from clacks.agent.objects.operator import get_operator
-from clacks.agent.objects.object import GOsaObject, ObjectChanged
+from clacks.agent.objects.object import Object, ObjectChanged
 
 # Status
 STATUS_OK = 0
@@ -77,11 +77,11 @@ class FactoryException(Exception):
         pass
 
 
-class GOsaObjectFactory(object):
+class ObjectFactory(object):
     """
     This class reads GOsa-object defintions and generates python-meta classes
     for each object, which can then be instantiated using
-    :meth:`clacks.agent.objects.factory.GOsaObjectFactory.getObject`.
+    :meth:`clacks.agent.objects.factory.ObjectFactory.getObject`.
     """
     __instance = None
     __xml_defs = {}
@@ -337,7 +337,7 @@ class GOsaObjectFactory(object):
         into one single xml-dump.
 
         This combined-xml-dump will then be forwarded to
-        :meth:`clacks.agent.objects.factory.GOsaObjectFactory.__parse_schema`
+        :meth:`clacks.agent.objects.factory.ObjectFactory.__parse_schema`
         to generate meta-classes for each object.
 
         This meta-classes can then be used to instantiate those objects.
@@ -372,7 +372,7 @@ class GOsaObjectFactory(object):
     def __parse_schema(self, schema):
         """
         Parses a schema definition
-        :meth:`clacks.agent.objects.factory.GOsaObjectFactory.__parser`
+        :meth:`clacks.agent.objects.factory.ObjectFactory.__parser`
         method.
         """
         try:
@@ -395,16 +395,16 @@ class GOsaObjectFactory(object):
         attributes and mehtods of the object.
 
         The final meta-class will be stored and can then be requested using:
-        :meth:`clacks.agent.objects.factory.GOsaObjectFactory.getObject`
+        :meth:`clacks.agent.objects.factory.ObjectFactory.getObject`
         """
 
         self.log.debug("building meta-class for object-type '%s'" % (name,))
 
-        class klass(GOsaObject):
+        class klass(Object):
 
             #pylint: disable=E0213
             def __init__(me, *args, **kwargs):
-                GOsaObject.__init__(me, *args, **kwargs)
+                Object.__init__(me, *args, **kwargs)
 
             #pylint: disable=E0213
             def __setattr__(me, name, value):
@@ -683,7 +683,7 @@ class GOsaObjectFactory(object):
         a process lists. This list can then be easily executed line by line for
         each property, using the method:
 
-        :meth:`clacks.agent.objects.factory.GOsaObject.__processFilter`
+        :meth:`clacks.agent.objects.factory.Object.__processFilter`
 
         """
 
@@ -917,10 +917,10 @@ class GOsaObjectFactory(object):
 
     @staticmethod
     def getInstance():
-        if not GOsaObjectFactory.__instance:
-            GOsaObjectFactory.__instance = GOsaObjectFactory()
+        if not ObjectFactory.__instance:
+            ObjectFactory.__instance = ObjectFactory()
 
-        return GOsaObjectFactory.__instance
+        return ObjectFactory.__instance
 
     def __get_backend_parameters(self, obj):
         backend_attrs = None

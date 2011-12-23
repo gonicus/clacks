@@ -71,8 +71,8 @@ class SambaHash(ElementFilter):
     def process(self, obj, key, valDict):
         if len(valDict[key]['value']) and type(valDict[key]['value'][0]) in [str, unicode]:
             lm, nt = smbpasswd.hash(valDict[key]['value'][0])
-            valDict['sambaNTPassword'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'], 'String', value=[nt])
-            valDict['sambaLMPassword'] = GOsaObjectFactory.createNewProperty(valDict[key]['backend'], 'String', value=[lm])
+            valDict['sambaNTPassword'] = ObjectFactory.createNewProperty(valDict[key]['backend'], 'String', value=[nt])
+            valDict['sambaLMPassword'] = ObjectFactory.createNewProperty(valDict[key]['backend'], 'String', value=[lm])
         else:
             raise ValueError("Unknown input type for filter %s. Type is '%s'!" % (
                 self.__class__.__name__, type(valDict[key]['value'])))

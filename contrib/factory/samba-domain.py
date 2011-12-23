@@ -5,9 +5,9 @@ import datetime
 import sys
 import os
 from pprint import pprint
-from clacks.agent.objects import GOsaObjectFactory
+from clacks.agent.objects import ObjectFactory
 
-f = GOsaObjectFactory()
+f = ObjectFactory()
 p = f.getObject('SambaDomain', u'sambaDomainName=FabianSuperDomain,sambaDomainName=GONICUS,dc=gonicus,dc=de', mode='remove')
 
 for entry in p.listProperties():

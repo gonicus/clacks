@@ -4,7 +4,7 @@ import re
 import logging
 from lxml import etree, objectify
 from clacks.agent.xmldb import XMLDBHandler
-from clacks.agent.objects import GOsaObjectProxy, GOsaObjectFactory
+from clacks.agent.objects import ObjectProxy, ObjectFactory
 
 # ----
 

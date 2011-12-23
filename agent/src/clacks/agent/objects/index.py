@@ -22,7 +22,7 @@ from clacks.common import Environment
 from clacks.common.utils import N_
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import Command, Plugin, PluginRegistry
-from clacks.agent.objects import GOsaObjectFactory, GOsaObjectProxy, ObjectChanged, SCOPE_BASE, SCOPE_ONE, SCOPE_SUB, ProxyException, ObjectException
+from clacks.agent.objects import ObjectFactory, ObjectProxy, ObjectChanged, SCOPE_BASE, SCOPE_ONE, SCOPE_SUB, ProxyException, ObjectException
 from clacks.agent.lock import GlobalLock
 from clacks.agent.ldap_utils import LDAPHandler
 
@@ -53,7 +53,7 @@ class ObjectIndex(Plugin):
         self.env = Environment.getInstance()
         self.log = logging.getLogger(__name__)
         self.log.info("initializing object index handler")
-        self.factory = GOsaObjectFactory.getInstance()
+        self.factory = ObjectFactory.getInstance()
 
         # Listen for object events
         zope.event.subscribers.append(self.__handle_events)
@@ -127,7 +127,7 @@ class ObjectIndex(Plugin):
 
             # Get object
             try:
-                obj = GOsaObjectProxy(o)
+                obj = ObjectProxy(o)
 
             except ProxyException as e:
                 self.log.warning("not indexing %s: %s" % (o, str(e)))
@@ -184,12 +184,12 @@ class ObjectIndex(Plugin):
 
             if event.reason == "post move":
                 self.log.debug("updating object index for %s" % uuid)
-                obj = GOsaObjectProxy(event.dn)
+                obj = ObjectProxy(event.dn)
                 self.update(obj)
 
             if event.reason == "post create":
                 self.log.debug("creating object index for %s" % uuid)
-                obj = GOsaObjectProxy(event.dn)
+                obj = ObjectProxy(event.dn)
                 self.insert(obj)
 
             if event.reason in ["post retract", "post update", "post extend"]:
@@ -197,7 +197,7 @@ class ObjectIndex(Plugin):
                 if not event.dn:
                     event.dn = self.db.xquery("collection('objects')/*[UUID/string() = '%s']/DN/string()" % event.uuid)
 
-                obj = GOsaObjectProxy(event.dn)
+                obj = ObjectProxy(event.dn)
                 self.update(obj)
 
     def insert(self, obj):

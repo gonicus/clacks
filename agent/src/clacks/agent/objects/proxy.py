@@ -3,13 +3,13 @@
 GOsa Object Proxy
 =================
 
-The GOsa object proxy sits on top of the :ref:`clacks.agent.object.factory:GOsaObjectFactory`
+The GOsa object proxy sits on top of the :ref:`clacks.agent.object.factory:ObjectFactory`
 and is the glue between objects that are defined via XML descriptions. The proxy should
 be used to load, remove and modify objects.
 
 Here are some examples:
 
-    >>> obj = GOsaObjectProxy(u"ou=people,dc=example,dc=net", "User")
+    >>> obj = ObjectProxy(u"ou=people,dc=example,dc=net", "User")
     >>> obj.uid = "user1"
     >>> obj.sn = u"Mustermann"
     >>> obj.givenName = u"Eike"
@@ -36,14 +36,14 @@ from base64 import b64encode
 from ldap.dn import str2dn, dn2str
 from logging import getLogger
 from clacks.common import Environment
-from clacks.agent.objects import GOsaObjectFactory
+from clacks.agent.objects import ObjectFactory
 
 
 class ProxyException(Exception):
     pass
 
 
-class GOsaObjectProxy(object):
+class ObjectProxy(object):
     dn = None
     uuid = None
     __env = None
@@ -57,7 +57,7 @@ class GOsaObjectProxy(object):
     def __init__(self, dn_or_base, what=None):
         self.__env = Environment.getInstance()
         self.__log = getLogger(__name__)
-        self.__factory = GOsaObjectFactory.getInstance()
+        self.__factory = ObjectFactory.getInstance()
         self.__base = None
         self.__extensions = {}
         self.__attribute_map = {}

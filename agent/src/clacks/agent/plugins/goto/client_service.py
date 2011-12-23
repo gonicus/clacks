@@ -171,7 +171,7 @@ class ClientService(Plugin):
 
         Example::
 
-            >>> gosa.getClientNetInfo('eb5e72d4-c53f-4612-81a3-602b14a8da69')
+            >>> getClientNetInfo('eb5e72d4-c53f-4612-81a3-602b14a8da69')
             {'eth0': {'Broadcast': '10.89.1.255', 'MAC': '00:01:6c:9d:b9:fa', 'IPAddress': '10.89.1.31', 'Netmask': '255.255.255.0', 'IPv6Address': 'fe80::201:6cff:fe9d:b9fa\\/64'}}
 
         ``Return:`` dict with network information
@@ -305,7 +305,7 @@ class ClientService(Plugin):
             else:
                 conn.modify(res[0][0], [(ldap.MOD_REPLACE, "deviceStatus", [devstat])])
 
-    @Command(needsUser=True, __help__=N_("Join a client to the GOsa system."))
+    @Command(needsUser=True, __help__=N_("Join a client to the clacks infrastructure."))
     def joinClient(self, user, device_uuid, mac, info=None):
         """
         TODO

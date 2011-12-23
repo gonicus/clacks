@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from clacks.agent.objects.filter import ElementFilter, ElementFilterException
-from clacks.agent.objects import GOsaObjectFactory
+from clacks.agent.objects import ObjectFactory
 import copy
 import time
 import datetime
@@ -78,7 +78,7 @@ class SetValue(ElementFilter):
         super(SetValue, self).__init__(obj)
 
     def process(self, obj, key, valDict, value):
-        f = GOsaObjectFactory()
+        f = ObjectFactory()
         types = f.getAttributeTypes()
         valDict[key]['value'] = types['String'].convert_to(valDict[key]['type'], [value])
         return key, valDict
@@ -92,7 +92,7 @@ class Clear(ElementFilter):
         super(Clear, self).__init__(obj)
 
     def process(self, obj, key, valDict):
-        f = GOsaObjectFactory()
+        f = ObjectFactory()
         types = f.getAttributeTypes()
         valDict[key]['value'] = types['String'].convert_to(valDict[key]['type'], [''])
         return key, valDict

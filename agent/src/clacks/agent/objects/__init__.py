@@ -10,7 +10,7 @@ The object abstraction module allows to access managed-information in an object 
 
 You can get an object instance like this:
 
->>> from clacks.agent.objects import GOsaObjectFactory
+>>> from clacks.agent.objects import ObjectFactory
 >>> person = f.getObject('User', "cn=Cajus Pollmeier,ou=people,ou=Technik,dc=gonicus,dc=de")
 
 and then you can access, update and persist values like this:
@@ -695,8 +695,8 @@ parameters of the method as placeholders.
 
 """
 __import__('pkg_resources').declare_namespace(__name__)
-from clacks.agent.objects.factory import GOsaObjectFactory, ObjectChanged
-from clacks.agent.objects.proxy import GOsaObjectProxy, ProxyException
+from clacks.agent.objects.factory import ObjectFactory, ObjectChanged
+from clacks.agent.objects.proxy import ObjectProxy, ProxyException
 from clacks.agent.objects.object import ObjectException
 
 SCOPE_BASE = 0

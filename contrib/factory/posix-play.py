@@ -5,10 +5,10 @@ import datetime
 import sys
 import os
 from pprint import pprint
-from clacks.agent.objects import GOsaObjectFactory
+from clacks.agent.objects import ObjectFactory
 
 
-f = GOsaObjectFactory()
+f = ObjectFactory()
 
 ## Update
 object_type, extensions =  f.identifyObject(u'cn=Playground Tester,ou=people,dc=gonicus,dc=de')

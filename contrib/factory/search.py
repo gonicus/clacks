@@ -3,7 +3,7 @@
 import json
 import sys
 import argparse
-from clacks.agent.objects import GOsaObjectFactory
+from clacks.agent.objects import ObjectFactory
 from clacks.agent.objects.index import ObjectIndex, SCOPE_ONE, SCOPE_BASE, SCOPE_SUB
 
 # Define cla parser
