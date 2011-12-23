@@ -62,7 +62,7 @@ setup(
         clacks-dbus = clacks.dbus.main:main
         notify-user = clacks.dbus.notify:main
 
-        [dbus.modules]
+        [dbus.module]
         unix = clacks.dbus.plugins.services.main:DBusUnixServiceHandler
         inventory = clacks.dbus.plugins.inventory.main:DBusInventoryHandler
         service = clacks.dbus.plugins.services.main:DBusUnixServiceHandler
