@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-GOsa Object Proxy
-=================
+Object Proxy
+============
 
-The GOsa object proxy sits on top of the :ref:`clacks.agent.object.factory:ObjectFactory`
+The object proxy sits on top of the :ref:`clacks.agent.object.factory:ObjectFactory`
 and is the glue between objects that are defined via XML descriptions. The proxy should
 be used to load, remove and modify objects.
 

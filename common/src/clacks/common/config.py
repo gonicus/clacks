@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-The configuration module is the central place where the GOsa configuration
+The configuration module is the central place where the clacks configuration
 can be queried. Using the configuration module requires the presence of the
-GOsa configuration file - commonly ``/etc/clacks/config`` and the subdirectory
+clacks configuration file - commonly ``/etc/clacks/config`` and the subdirectory
 ``/etc/clacks/config.d``. All these configurations will be merged into one
 'virtual' configuration so that certain packages can provide their own config
 file without knowing how to read it.
@@ -59,7 +59,7 @@ class Config(object):
     """
     __registry = {'core': {
                     'foreground': False,
-                    'pidfile': '/var/run/gosa/gosa.pid',
+                    'pidfile': '/var/run/clacks/clacks.pid',
                     'profile': 0,
                     'umask': 0o002,
                 }
@@ -90,7 +90,7 @@ class Config(object):
             self.__registry['core']['workdir'] = userHome
 
     def __parseCmdOptions(self):
-        parser = ArgumentParser(usage="%(prog)s - the GOsa core daemon")
+        parser = ArgumentParser(usage="%(prog)s - the clacks core daemon")
         parser.add_argument("--version", action='version', version=VERSION)
 
         parser.add_argument("-c", "--config", dest="config",

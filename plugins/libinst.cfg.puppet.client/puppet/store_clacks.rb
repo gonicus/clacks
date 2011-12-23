@@ -1,7 +1,7 @@
-# cat /usr/lib/ruby/1.8/puppet/reports/store_gosa.rb
+# cat /usr/lib/ruby/1.8/puppet/reports/store_clacks.rb
 require 'puppet'
 
-Puppet::Reports.register_report(:store_gosa) do
+Puppet::Reports.register_report(:store_clacks) do
   desc "Store the yaml report on disk.  Each host sends its report as a YAML dump
     and this just stores the file on disk, in the `reportdir` directory.
 

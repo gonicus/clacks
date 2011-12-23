@@ -42,7 +42,7 @@ setup(
 
     include_package_data = True,
     package_data = {
-        'clacks.dbus.plugins.inventory': ['data/fusionToGosa.xsl'],
+        'clacks.dbus.plugins.inventory': ['data/fusionToClacks.xsl'],
     },
 
     test_suite = "nose.collector",

@@ -5,12 +5,12 @@
 	<xsl:output method="xml" indent="yes" encoding="UTF-8" />
 	<xsl:template match="/">
 		<Event  xmlns="http://www.gonicus.de/Events" 
-			xmlns:gosa="http://www.gonicus.de/Events"
+			xmlns:e="http://www.gonicus.de/Events"
 			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			xsi:schemaLocation="http://www.gonicus.de/Events inventory.xsd ">
 
 			<Inventory>
-				<GOsaChecksum>%%CHECKSUM%%</GOsaChecksum>
+				<Checksum>%%CHECKSUM%%</Checksum>
 				<DeviceID><xsl:value-of select="/REQUEST/DEVICEID" /></DeviceID>
 				<QueryType><xsl:value-of select="/REQUEST/QUERY" /></QueryType>
 				<ClientVersion><xsl:value-of select="/REQUEST/CONTENT/VERSIONCLIENT" /></ClientVersion>

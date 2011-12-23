@@ -6,7 +6,7 @@ from clacks.common.event import EventMaker
 from lxml import etree
 
 # Connect to AMQP bus
-proxy = AMQPServiceProxy('amqp://admin:secret@localhost/org.gosa')
+proxy = AMQPServiceProxy('amqp://admin:secret@localhost/org.clacks')
 
 # Example of building event without direct strings...
 e = EventMaker()

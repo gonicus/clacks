@@ -1,5 +1,5 @@
 <xsl:stylesheet version="1.0"
-	xmlns:gosa="http://www.gonicus.de/Events" 
+	xmlns:e="http://www.gonicus.de/Events" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<xsl:strip-space elements="*"/>
 	<xsl:output method="xml" indent="yes" encoding="UTF-8" />
@@ -9,15 +9,15 @@
 			<xsl:apply-templates select="@*|node()" />
 		</xsl:copy>
 	</xsl:template>
-	<xsl:template match="/gosa:Event/gosa:Inventory/gosa:DeviceID"></xsl:template>
-	<xsl:template match="/gosa:Event/gosa:Inventory/gosa:GOsaChecksum"></xsl:template>
-	<xsl:template match="/gosa:Event/gosa:Inventory/gosa:HardwareUUID"></xsl:template>
-	<xsl:template match="/gosa:Event/gosa:Inventory/gosa:AccessLog"></xsl:template>
-	<xsl:template match="/gosa:Event/gosa:Inventory/gosa:USBDevice"></xsl:template>
-	<xsl:template match="/gosa:Event/gosa:Inventory/gosa:Environment"></xsl:template>
-	<xsl:template match="/gosa:Event/gosa:Inventory/gosa:Hardware/gosa:ReportGenerationTime"></xsl:template>
-	<xsl:template match="/gosa:Event/gosa:Inventory/gosa:Hardware/gosa:ProcessorSpeed"></xsl:template>
-	<xsl:template match="/gosa:Event/gosa:Inventory/gosa:Cpu/gosa:Speed"></xsl:template>
-	<xsl:template match="/gosa:Event/gosa:Inventory/gosa:Hardware/gosa:Description"></xsl:template>
-	<xsl:template match="/gosa:Event/gosa:Inventory/gosa:Drive/gosa:FreeSpace"></xsl:template>
+	<xsl:template match="/e:Event/e:Inventory/e:DeviceID"></xsl:template>
+	<xsl:template match="/e:Event/e:Inventory/e:GOsaChecksum"></xsl:template>
+	<xsl:template match="/e:Event/e:Inventory/e:HardwareUUID"></xsl:template>
+	<xsl:template match="/e:Event/e:Inventory/e:AccessLog"></xsl:template>
+	<xsl:template match="/e:Event/e:Inventory/e:USBDevice"></xsl:template>
+	<xsl:template match="/e:Event/e:Inventory/e:Environment"></xsl:template>
+	<xsl:template match="/e:Event/e:Inventory/e:Hardware/e:ReportGenerationTime"></xsl:template>
+	<xsl:template match="/e:Event/e:Inventory/e:Hardware/e:ProcessorSpeed"></xsl:template>
+	<xsl:template match="/e:Event/e:Inventory/e:Cpu/e:Speed"></xsl:template>
+	<xsl:template match="/e:Event/e:Inventory/e:Hardware/e:Description"></xsl:template>
+	<xsl:template match="/e:Event/e:Inventory/e:Drive/e:FreeSpace"></xsl:template>
 </xsl:stylesheet>

@@ -8,7 +8,7 @@ class Plugin(object):
     be maintained by users: ``_target_``
 
     The ``_target_`` class member determines what queue the plugin will be
-    registered on. The target queue is assembled by the GOsa *domain* and
+    registered on. The target queue is assembled by the clacks *domain* and
     the *_target_*. Plugins that do not offer common functionality should
     register on something else than *core*.
 

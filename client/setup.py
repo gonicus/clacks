@@ -113,5 +113,5 @@ setup(
         %(modules)s
     """ % {'modules': modules, 'joiner': joiner},
 
-    console=['gosa/client/gcs.py']
+    console=['clacks/client/gcs.py']
 )

@@ -20,7 +20,7 @@ class Cli(join_method):
         key = None
 
         while not key:
-            print(_("Please enter username and password to join GOsa"))
+            print(_("Please enter username and password to join the clacks infrastructure."))
             username = raw_input(_("User name [%s]: ") % getpass.getuser())
             password = getpass.getpass(_("Password") + ": ")
             key = self.join(username, password)

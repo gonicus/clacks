@@ -59,7 +59,7 @@ class dictSchemaResolver(XmlResolver):
 
 class DBXml(XMLDBInterface):
 
-    # Logger and gosa-ng environment object
+    # Logger and clacks environment object
     log = None
     env = None
 
@@ -93,7 +93,7 @@ class DBXml(XMLDBInterface):
         self.queryContext = self.manager.createQueryContext()
 
         # Check the given storage path - it has to be writeable
-        self.db_storage_path = self.env.config.get("dbxml.path", "/var/lib/gosa/database")
+        self.db_storage_path = self.env.config.get("dbxml.path", "/var/lib/clacks/database")
         if not os.path.exists(self.db_storage_path):
             raise XMLDBException("storage path '%s' does not exists" % self.db_storage_path)
         if not os.access(self.db_storage_path, os.W_OK):

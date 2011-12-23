@@ -76,12 +76,12 @@ def mainLoop(env):
 
 
 def main():
-    """ Main programm which is called when the gosa agent process gets started.
+    """ Main programm which is called when the clacks agent process gets started.
         It does the main forking os related tasks. """
 
     # Inizialize core environment
     env = Environment.getInstance()
-    env.log.info("GOsa client is starting up")
+    env.log.info("Clacks client is starting up")
 
     # Configured in daemon mode?
     if not env.config.get('client.foreground', default=env.config.get('core.foreground')):
@@ -97,7 +97,7 @@ def main():
 
         # Running as root?
         if os.geteuid() != 0:
-            env.log.critical("GOsa client needs to be started as root in non foreground mode")
+            env.log.critical("Clacks client needs to be started as root in non foreground mode")
             exit(1)
 
         try:
@@ -125,7 +125,7 @@ def main():
 
             # Has to run as root?
             if pwe.pw_uid == 0:
-                env.log.warning("GOsa client should not be configured to run as root")
+                env.log.warning("Clacks client should not be configured to run as root")
 
             context = daemon.DaemonContext(
                 working_directory=env.config.get("client.workdir",

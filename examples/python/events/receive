@@ -9,7 +9,7 @@ def process(data):
     print(etree.tostring(data, pretty_print=True))
 
 # Create event consumer
-consumer = AMQPEventConsumer("amqps://admin:secret@localhost/org.gosa",
+consumer = AMQPEventConsumer("amqps://admin:secret@localhost/org.clacks",
             xquery="""
                 declare namespace f='http://www.gonicus.de/Events';
                 let $e := ./f:Event

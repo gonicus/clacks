@@ -57,10 +57,10 @@ at the :ref:`Plugin section<plugins>`.
 Using the binary
 ================
 
-The gosa-agent binary gets installed when you run the setup process. It
+The clacks-agent binary gets installed when you run the setup process. It
 has a couple of command line arguments:
 
-    .. program-output::  gosa-agent --help
+    .. program-output::  clacks-agent --help
        :prompt:
 
 .. note::

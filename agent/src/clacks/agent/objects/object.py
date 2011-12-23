@@ -22,7 +22,7 @@ class ObjectException(Exception):
 
 class Object(object):
     """
-    This class is the base class for all GOsa-objects.
+    This class is the base class for all objects.
 
     It contains getter and setter methods for the object
     attributes and it is able to initialize itself by reading data from
@@ -31,7 +31,7 @@ class Object(object):
     It also contains the ability to execute the in- and out-filters for the
     object properties.
 
-    All meta-classes for GOsa-objects, created by the XML defintions, will inherit this class.
+    All meta-classes for objects, created by the XML defintions, will inherit this class.
 
     """
     _reg = None
@@ -107,7 +107,7 @@ class Object(object):
 
     def _read(self, where):
         """
-        This method tries to initialize a GOsa-object instance by reading data
+        This method tries to initialize a object instance by reading data
         from the defined backend.
 
         Attributes will be grouped by their backend to ensure that only one
@@ -228,7 +228,7 @@ class Object(object):
 
     def _setattr_(self, name, value):
         """
-        This is the setter method for GOsa-object attributes.
+        This is the setter method for object attributes.
         Each given attribute value is validated with the given set of
         validators.
         """
@@ -311,9 +311,9 @@ class Object(object):
 
     def _getattr_(self, name):
         """
-        The getter method GOsa-object attributes.
+        The getter method object attributes.
 
-        (It differentiates between GOsa-object attributes and class-members)
+        (It differentiates between object attributes and class-members)
         """
         methods = getattr(self, '__methods')
 
@@ -340,7 +340,7 @@ class Object(object):
 
     def getAttrType(self, name):
         """
-        Return the type of a given GOsa-object attribute.
+        Return the type of a given object attribute.
         """
 
         if name in self.myProperties:
@@ -350,7 +350,7 @@ class Object(object):
 
     def commit(self):
         """
-        Commits changes of an GOsa-object to the corresponding backends.
+        Commits changes of an object to the corresponding backends.
         """
         # Create a copy to avoid touching the original values
         props = copy.deepcopy(self.myProperties)

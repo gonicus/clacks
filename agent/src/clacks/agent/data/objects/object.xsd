@@ -2,7 +2,7 @@
 <schema targetNamespace="http://www.gonicus.de/Objects" 
 	elementFormDefault="qualified" 
 	xmlns="http://www.w3.org/2001/XMLSchema" 
-	xmlns:gosa="http://www.gonicus.de/Objects">
+	xmlns:o="http://www.gonicus.de/Objects">
 	
     <complexType name="Object">
         <all>
@@ -16,18 +16,18 @@
         	</element>
         	<element name="DisplayName" type="string" maxOccurs="1" minOccurs="0"></element>
         	<element name="BackendParameters"
-        		type="gosa:BackendParameters" maxOccurs="1" minOccurs="0"
+        		type="o:BackendParameters" maxOccurs="1" minOccurs="0"
         	>
         	</element>
         	<element name="Backend" type="token" maxOccurs="1"
         		minOccurs="1"
         	>
         	</element>
-        	<element name="Attributes" type="gosa:Attributes"
+        	<element name="Attributes" type="o:Attributes"
         		maxOccurs="1" minOccurs="0"
         	>
         	</element>
-        	<element name="Container" type="gosa:ContainerType"
+        	<element name="Container" type="o:ContainerType"
         		maxOccurs="1" minOccurs="0"
         	>
         	</element>
@@ -45,7 +45,7 @@
         		minOccurs="0"
         	>
         	</element>
-        	<element name="Methods" type="gosa:Methods" maxOccurs="1"
+        	<element name="Methods" type="o:Methods" maxOccurs="1"
         		minOccurs="0"
         	>
         	</element>
@@ -58,7 +58,7 @@
 
     <complexType name="Attributes">
     	<sequence>
-    		<element name="Attribute" type="gosa:Attribute" maxOccurs="unbounded" minOccurs="1"></element>
+    		<element name="Attribute" type="o:Attribute" maxOccurs="unbounded" minOccurs="1"></element>
     	</sequence>
     </complexType>
 
@@ -72,7 +72,7 @@
         		minOccurs="0"
         	>
         	</element>
-        	<element name="DependsOn" type="gosa:DependsOn"
+        	<element name="DependsOn" type="o:DependsOn"
         		maxOccurs="1" minOccurs="0"
         	>
         	</element>
@@ -80,7 +80,7 @@
         		minOccurs="0"
         	>
         	</element>
-        	<element name="Type" type="gosa:AttributeTypes"
+        	<element name="Type" type="o:AttributeTypes"
         		maxOccurs="1" minOccurs="1"
         	>
         	</element>
@@ -99,19 +99,19 @@
         	>
         	</element>
         	<element name="BackendType"
-        		type="gosa:AttributeBackendTypes" maxOccurs="1"
+        		type="o:AttributeBackendTypes" maxOccurs="1"
         		minOccurs="0"
         	>
         	</element>
-        	<element name="Validators" type="gosa:Validator"
+        	<element name="Validators" type="o:Validator"
         		maxOccurs="1" minOccurs="0"
         	>
         	</element>
-        	<element name="InFilter" type="gosa:FilterElement"
+        	<element name="InFilter" type="o:FilterElement"
         		maxOccurs="1" minOccurs="0"
         	>
         	</element>
-        	<element name="OutFilter" type="gosa:FilterElement"
+        	<element name="OutFilter" type="o:FilterElement"
         		maxOccurs="1" minOccurs="0"
         	>
         	</element>
@@ -154,7 +154,7 @@
         		minOccurs="0"
         	>
         	</element>
-        	<element name="References" type="gosa:References"
+        	<element name="References" type="o:References"
         		maxOccurs="1" minOccurs="0"
         	>
         	</element>
@@ -186,17 +186,17 @@
     	</sequence>
     </complexType>
 
-    <element name="Objects" type="gosa:Objects"></element>
+    <element name="Objects" type="o:Objects"></element>
     
     <complexType name="Objects">
     	<sequence>
-    		<element name="Object" type="gosa:Object" maxOccurs="unbounded" minOccurs="1"></element>
+    		<element name="Object" type="o:Object" maxOccurs="unbounded" minOccurs="1"></element>
     	</sequence>
     </complexType>
 
     <complexType name="Methods">
     	<sequence>
-    		<element name="Method" type="gosa:Method" maxOccurs="unbounded" minOccurs="1"></element>
+    		<element name="Method" type="o:Method" maxOccurs="unbounded" minOccurs="1"></element>
     	</sequence>
     </complexType>
 
@@ -206,7 +206,7 @@
     			minOccurs="1"
     		>
     		</element>
-    		<element name="MethodParameters" type="gosa:MethodParameters"
+    		<element name="MethodParameters" type="o:MethodParameters"
     			maxOccurs="1" minOccurs="0"
     		>
     		</element>
@@ -215,7 +215,7 @@
     		>
     		</element>
     		<element name="CommandParameters"
-    			type="gosa:CommandParameter" maxOccurs="1" minOccurs="0"
+    			type="o:CommandParameter" maxOccurs="1" minOccurs="0"
     		>
     		</element>
     	</all>
@@ -225,20 +225,20 @@
     <complexType name="Parameter">
     	<all>
     		<element name="Name" type="token" maxOccurs="1" minOccurs="1"></element>
-    		<element name="Type" type="gosa:AttributeTypes" maxOccurs="1" minOccurs="1"></element>
+    		<element name="Type" type="o:AttributeTypes" maxOccurs="1" minOccurs="1"></element>
     		<element name="Required" type="boolean" maxOccurs="1" minOccurs="0"></element>
     	</all>
     </complexType>
 
     <complexType name="FilterChain">
     	<choice>
-    		<element name="FilterEntry" type="gosa:FilterEntry" maxOccurs="unbounded" minOccurs="1"></element>
+    		<element name="FilterEntry" type="o:FilterEntry" maxOccurs="unbounded" minOccurs="1"></element>
     	</choice>
     </complexType>
 
     <complexType name="Choice">
     	<sequence>
-    		<element name="When" type="gosa:When" maxOccurs="unbounded"
+    		<element name="When" type="o:When" maxOccurs="unbounded"
     			minOccurs="1"
     		>
     		</element>
@@ -247,22 +247,22 @@
 
     <complexType name="When">
     	<sequence>
-    		<element name="ConditionChain" type="gosa:ConditionChain"
+    		<element name="ConditionChain" type="o:ConditionChain"
     			maxOccurs="1" minOccurs="1"
     		>
     		</element>
-    		<element name="FilterChain" type="gosa:FilterChain"
+    		<element name="FilterChain" type="o:FilterChain"
     			maxOccurs="unbounded" minOccurs="1"
     		>
     		</element>
-    		<element name="Else" type="gosa:Else" maxOccurs="1" minOccurs="0"></element>
+    		<element name="Else" type="o:Else" maxOccurs="1" minOccurs="0"></element>
     	</sequence>
 
     </complexType>
 
     <complexType name="FilterElement">
     	<sequence>
-    		<element name="FilterChain" type="gosa:FilterChain" maxOccurs="unbounded" minOccurs="1"></element>
+    		<element name="FilterChain" type="o:FilterChain" maxOccurs="unbounded" minOccurs="1"></element>
     	</sequence>
     </complexType>
 
@@ -278,15 +278,15 @@
     
     <complexType name="Else">
     	<sequence>
-    		<element name="FilterChain" type="gosa:FilterChain" maxOccurs="unbounded" minOccurs="1"></element>
+    		<element name="FilterChain" type="o:FilterChain" maxOccurs="unbounded" minOccurs="1"></element>
     	</sequence>
     </complexType>
 
     <complexType name="ConditionChain">
     	<choice>
-    		<element name="Condition" type="gosa:Condition" maxOccurs="1" minOccurs="0"></element>
+    		<element name="Condition" type="o:Condition" maxOccurs="1" minOccurs="0"></element>
     		<element name="ConditionOperator"
-    			type="gosa:ConditionOperator"
+    			type="o:ConditionOperator"
     		maxOccurs="1" minOccurs="0">
     		</element>
     	</choice>
@@ -302,32 +302,32 @@
     <complexType name="Validator">
     	<choice>
     		<element name="ConditionOperator"
-    			type="gosa:ConditionOperator" maxOccurs="1"
+    			type="o:ConditionOperator" maxOccurs="1"
     			minOccurs="0"
     		>
     		</element>
-    		<element name="Condition" type="gosa:Condition" maxOccurs="1" minOccurs="0"></element>
+    		<element name="Condition" type="o:Condition" maxOccurs="1" minOccurs="0"></element>
     	</choice>
     </complexType>
 
     <complexType name="FilterEntry">
     	<choice>
-    		<element name="Filter" type="gosa:Filter" maxOccurs="1" minOccurs="0"></element>
-    		<element name="Choice" type="gosa:Choice" maxOccurs="1" minOccurs="0"></element>
+    		<element name="Filter" type="o:Filter" maxOccurs="1" minOccurs="0"></element>
+    		<element name="Choice" type="o:Choice" maxOccurs="1" minOccurs="0"></element>
     	</choice>
     </complexType>
 
     <complexType name="ConditionOperator">
     	<sequence>
-    		<element name="Operator" type="gosa:NewType" maxOccurs="1"
+    		<element name="Operator" type="o:NewType" maxOccurs="1"
     			minOccurs="1"
     		>
     		</element>
     		<element name="LeftConditionChain"
-    			type="gosa:ConditionChain"
+    			type="o:ConditionChain"
     		maxOccurs="1" minOccurs="1">
     		</element>
-    		<element name="RightConditionChain" type="gosa:ConditionChain" maxOccurs="1" minOccurs="1"></element>
+    		<element name="RightConditionChain" type="o:ConditionChain" maxOccurs="1" minOccurs="1"></element>
     	</sequence>
     </complexType>
 
@@ -347,7 +347,7 @@
 
     <complexType name="Parameters">
     	<sequence>
-    		<element name="Parameter" type="gosa:Parameter" maxOccurs="unbounded" minOccurs="1"></element>
+    		<element name="Parameter" type="o:Parameter" maxOccurs="unbounded" minOccurs="1"></element>
     	</sequence>
     </complexType>
 
@@ -366,7 +366,7 @@
     		>
     		</element>
     		<element name="Default" type="string" maxOccurs="1" minOccurs="0"></element>
-    		<element name="Type" type="gosa:AttributeTypes" maxOccurs="1"
+    		<element name="Type" type="o:AttributeTypes" maxOccurs="1"
     			minOccurs="1"
     		>
     		</element>
@@ -376,7 +376,7 @@
     <complexType name="MethodParameters">
     	<sequence>
     		<element name="MethodParameter"
-    			type="gosa:MethodParameter"
+    			type="o:MethodParameter"
     		maxOccurs="unbounded" minOccurs="1">
     		</element>
     	</sequence>
@@ -393,7 +393,7 @@
     <complexType name="BackendParameters">
     	<sequence>
     		<element name="Backend"
-    			type="gosa:BackendParameter"
+    			type="o:BackendParameter"
     		>
     		</element>
     	</sequence>
@@ -401,7 +401,7 @@
 
     <complexType name="References">
     	<sequence>
-    		<element name="Reference" type="gosa:Reference"
+    		<element name="Reference" type="o:Reference"
     			maxOccurs="unbounded" minOccurs="1"
     		>
     		</element>

@@ -28,7 +28,7 @@ class DBusInventoryHandler(dbus.service.Object, Plugin):
     @dbus.service.method('org.clacks', in_signature='', out_signature='s')
     def inventory(self):
         """
-        Start inventory client and transform the results into a GOsa usable way.
+        Start inventory client and transform the results into a clacks usable way.
 
         We should support other invetory clients, later.
         """
@@ -66,11 +66,12 @@ class DBusInventoryHandler(dbus.service.Object, Plugin):
             tmp = objectify.fromstring(open(os.path.join('/tmp/fusion_tmp',flist[0])).read())
             huuid = tmp.xpath('/REQUEST/CONTENT/HARDWARE/UUID/text()')[0]
 
-            # Open the first found result file and transform it into a GOsa usable
+            # Open the first found result file and transform it into a clacks usable
             # event-style xml.
             try:
                 xml_doc = etree.parse(os.path.join('/tmp/fusion_tmp',flist[0]))
-                xslt_doc = etree.parse(resource_filename("clacks.dbus.plugins.inventory", "data/fusionToGosa.xsl"))
+                xslt_doc =
+                etree.parse(resource_filename("clacks.dbus.plugins.inventory", "data/fusionToClacks.xsl"))
                 transform = etree.XSLT(xslt_doc)
                 result = etree.tostring(transform(xml_doc))
             except Exception as e:

@@ -2,6 +2,7 @@ plugins
 plugin
 url
 ssn
+Clacks
 GOsa
 thru
 func

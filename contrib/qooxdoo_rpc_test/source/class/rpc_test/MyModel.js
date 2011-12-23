@@ -7,7 +7,7 @@ qx.Class.define("rpc_test.MyModel",
 
     _loadRowCount : function()
     {
-        var rpc = new qx.io.remote.Rpc("https://amqp.intranet.gonicus.de/rpc", "GOsa JSON-RPC service");
+        var rpc = new qx.io.remote.Rpc("https://amqp.intranet.gonicus.de/rpc", "Clacks JSON-RPC service");
         rpc.setTimeout(10000);
         that = this;
         res = rpc.callAsync(function(result){
@@ -18,7 +18,7 @@ qx.Class.define("rpc_test.MyModel",
     // overloaded - called whenever the table requests new data
     _loadRowData : function(firstRow, lastRow)
     {
-        var rpc = new qx.io.remote.Rpc("https://amqp.intranet.gonicus.de/rpc", "GOsa JSON-RPC service");
+        var rpc = new qx.io.remote.Rpc("https://amqp.intranet.gonicus.de/rpc", "Clacks JSON-RPC service");
         rpc.setTimeout(10000);
         res = rpc.callAsync(function(result){
                 that._onRowDataLoaded(result);

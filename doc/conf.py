@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# GOsa documentation build configuration file, created by
+# Clacks documentation build configuration file, created by
 # sphinx-quickstart on Thu Aug  4 11:42:35 2011.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -41,7 +41,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'GOsa'
+project = u'Clacks'
 copyright = u'2011, Cajus Pollmeier'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -162,7 +162,7 @@ html_static_path = ['_static']
 #html_file_suffix = ''
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'GOsadoc'
+htmlhelp_basename = 'Clacksdoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -176,7 +176,7 @@ htmlhelp_basename = 'GOsadoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'GOsa.tex', u'GOsa Documentation',
+  ('index', 'Clacks.tex', u'Clacks Documentation',
    u'Cajus Pollmeier', 'manual'),
 ]
 
@@ -201,7 +201,7 @@ spelling_word_list_filename = 'words.txt'
 spelling_show_suggestions = True
 
 man_pages = [
-        ('index', 'GOsa', 'Test manual page for complete documentation', 'Cajus Pollmeier <pollmeier@gonicus.de>', '8')
+        ('index', 'Clacks', 'Test manual page for complete documentation', 'Cajus Pollmeier <pollmeier@gonicus.de>', '8')
         ]
 
 # Example configuration for intersphinx: refer to the Python standard library.

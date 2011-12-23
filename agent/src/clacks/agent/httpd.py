@@ -63,7 +63,7 @@ class HTTPDispatcher(object):
 class HTTPService(object):
     """
     Class to serve HTTP fragments to the interested client. It makes
-    makes use of a couple of configuration flags provided by the gosa
+    makes use of a couple of configuration flags provided by the clacks
     configuration files ``[http]`` section:
 
     ============== =============
@@ -80,9 +80,9 @@ class HTTPService(object):
         [http]
         host = node1.intranet.gonicus.de
         port = 8080
-        sslpemfile = /etc/gosa/host.pem
+        sslpemfile = /etc/clacks/host.pem
 
-    If you want to create a gosa agent module that is going to export
+    If you want to create a clacks agent module that is going to export
     functionality (i.e. static content or some RPC functionality) you
     can register such a component like this::
 

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 
-GOsa Object Factory
-===================
+Object Factory
+==============
 
 Short description
 ^^^^^^^^^^^^^^^^^
@@ -79,7 +79,7 @@ class FactoryException(Exception):
 
 class ObjectFactory(object):
     """
-    This class reads GOsa-object defintions and generates python-meta classes
+    This class reads object defintions and generates python-meta classes
     for each object, which can then be instantiated using
     :meth:`clacks.agent.objects.factory.ObjectFactory.getObject`.
     """
@@ -318,7 +318,7 @@ class ObjectFactory(object):
 
     def getObject(self, name, *args, **kwargs):
         """
-        Returns a GOsa-object instance.
+        Returns a object instance.
 
         e.g.:
 
@@ -333,7 +333,7 @@ class ObjectFactory(object):
 
     def load_schema(self):
         """
-        This method reads all gosa-object defintion files (xml) and combines
+        This method reads all object defintion files (xml) and combines
         into one single xml-dump.
 
         This combined-xml-dump will then be forwarded to
@@ -633,7 +633,7 @@ class ObjectFactory(object):
                         cnt = cnt + 1
 
                     # Build the command-parameter list.
-                    # Collect all property values of this GOsa-object to be able to fill in
+                    # Collect all property values of this object to be able to fill in
                     # placeholders in command-parameters later.
                     propList = {}
                     for key in props:
@@ -674,7 +674,7 @@ class ObjectFactory(object):
 
     def __build_filter(self, element, out=None):
         """
-        Attributes of GOsa objects can be filtered using in- and out-filters.
+        Attributes of objects can be filtered using in- and out-filters.
         These filters can manipulate the raw-values while they are read form
         the backend or they can manipulate values that have to be written to
         the backend.

@@ -48,11 +48,12 @@ can then be caught later to perform different tasks, e.g. remove the mail-accoun
 a Mail extension is removed)
 
 
-How does it work - XML definition for GOsa objects
+How does it work - XML definition for objects
 --------------------------------------------------
 
 What properties are managed and how they are managed is defined in a set of XML files.
-Each of these XML files can contain one or more object definition, you can find them here ``./clacks.common/src/gosa/common/data/objects/``.
+Each of these XML files can contain one or more object definition, you can find
+them here ``./clacks.common/src/clacks/common/data/objects/``.
 
 An object definition consist of the following information:
 
@@ -73,8 +74,8 @@ FixedRDN            A RDN. For objects that are bound to a specific name. E.g. P
 =================== ===========================
 
 
-XML definition of GOsa-objects in detail
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+XML definition of objects in detail
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. warning::
     We try to keep this documentation up to date, but at the moment the
@@ -85,17 +86,17 @@ XML definition of GOsa-objects in detail
 A minimum example
 ~~~~~~~~~~~~~~~~~
 
-All starts with an ``<Object>`` tag which introduces a new GOsa-object, this
+All starts with an ``<Object>`` tag which introduces a new object, this
 ``<Object>`` tag must contain at least a ``<Name>``, a ``<Description>``, a ``<DisplayName>`` and a
 ``<Backend>`` tag. The name and the description are self-explaining.
 The default-backend specifies which backend has to be used as default, for example
 a LDAP or a MySQL backend - There may be more depending on your setup.
 
-Backends are storage points for GOsa-objects, they take care of caching,
+Backends are storage points for objects, they take care of caching,
 loading and saving of objects and their attributes from different stores e.g. MySQL
 or LDAP.
 
-Here is a minimum configuration for a GOsa-object. It does not have any
+Here is a minimum configuration for an object. It does not have any
 methods nor attributes:
 
 .. code-block:: xml
@@ -491,11 +492,11 @@ Another example could be to convert a list of flags into different boolean value
 
 Lets say we've a given flag list which looks like this: 
 
->>>  gosaFlagList = [LVM]
+>>>  flagList = [LVM]
 
 Where L stands for Lookup ...
 
-While loading the gosaFlagList we can convert this string flag list into real
+While loading the flagList we can convert this string flag list into real
 boolean value like this:
 
 .. code-block:: xml
@@ -512,7 +513,7 @@ boolean value like this:
                             <ConditionChain>
                                 <Condition>
                                     <Name>RegEx</Name>
-                                    <Param>%(gosaFlagList)s</Param>
+                                    <Param>%(flagList)s</Param>
                                     <Param>/[L]/i</Param>
                                 </Condition>
                             </ConditionChain>
@@ -544,7 +545,7 @@ And then we could define an out filter which looks like this, to store the boole
 .. code-block:: xml
 
     <Attribute>
-        <Name>gosaFlagList</Name>
+        <Name>flagList</Name>
         ...
         <OutFilter>
             <FilterChain>
@@ -592,13 +593,13 @@ And then we could define an out filter which looks like this, to store the boole
                     </Filter>
                 </FilterEntry>
 
-When saving the gosaFlagList again, it will be created out of the flag states.
+When saving the flagList again, it will be created out of the flag states.
 
 
 Introduction of methods
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-We can also define methods for GOsa-objects within the XML definition, these methods can
+We can also define methods for objects within the XML definition, these methods can
 then be called directly on an instance of these object:
 
 >>> person->notify(u"Shutdown of your client", u"Please prepare yourselves for a system reboot!")
@@ -653,9 +654,9 @@ Methods consist of four tags:
 
     * The ``<Name>`` tag which specifies the name of the method.
     * A ``<MethodParameters>`` tag, which contains a list of parameters to this method.
-    * A ``<Command>`` tag, which represents to GOsa-agent command we want to call.
+    * A ``<Command>`` tag, which represents to clacks-agent command we want to call.
     * The ``<CommandParameters>`` tag, defines a list parameters we want to pass to the
-      GOsa-agent command call.
+      clacks-agent command call.
 
 The above definition creates a method named notify which looks like this:
 
@@ -665,12 +666,12 @@ If you call this method like this:
 
 >>> person->notifyUser("Warning", "Restart imminent!")
 
-it will invoke a GOsa-agent command named notifyUser with this parameters:
+it will invoke a clacks-agent command named notifyUser with this parameters:
 
 >>> notifyUser(u"user1", u"Der angegebene Titel war: Warning", u"Restart imminent!")
 
 As you can see, you cannot freely create whatever method you want, you can just call
-existing GOsa-agent commands and adjust their arguments.
+existing clacks-agent commands and adjust their arguments.
 
 You can use placeholders using ``%(property_name)s``, to dynamically fill in
 command parameters, like done for the first ``<CommandParameter>``.

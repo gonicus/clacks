@@ -12,10 +12,10 @@ from clacks.common.components.registry import PluginRegistry
 from clacks.common.event import EventMaker
 
 
-class GOsaClientService(win32serviceutil.ServiceFramework):
+class ClacksClientService(win32serviceutil.ServiceFramework):
     _svc_name_ = "GCS"
-    _svc_display_name_ = "GOsa client service"
-    _svc_description_ = "This service enables AMQP GOsa client communication for this host"
+    _svc_display_name_ = "Clacks client service"
+    _svc_description_ = "This service enables AMQP Clacks client communication for this host"
 
     def __init__(self, args):
         win32serviceutil.ServiceFramework.__init__(self, args)
@@ -43,7 +43,7 @@ class GOsaClientService(win32serviceutil.ServiceFramework):
         Environment.config = "C:/gosa-client.conf"
         Environment.noargs = True
         self.env = Environment.getInstance()
-        self.env.log.info("GOsa client is starting up")
+        self.env.log.info("Clacks client is starting up")
         env = self.env
 
         try:
@@ -105,4 +105,4 @@ class GOsaClientService(win32serviceutil.ServiceFramework):
 
 
 if __name__=='__main__':
-    win32serviceutil.HandleCommandLine(GOsaClientService)
+    win32serviceutil.HandleCommandLine(ClacksClientService)

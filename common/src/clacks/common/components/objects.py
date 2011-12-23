@@ -14,9 +14,9 @@ class ObjectRegistry(object):
         >>> ObjectRegistry.register("the.unique.object.oid", ObjectToRegister)
 
     The preferred way to register objects is to use the setuptools
-    section ```[gosa.objects]```::
+    section ```[object]```::
 
-        [gosa.objects]
+        [object]
         the.unique.object.oid = full.path.to.the:ObjectToRegister
 
     In this case, all objects are registered after the agent is fired
@@ -26,7 +26,7 @@ class ObjectRegistry(object):
     _instance = None
 
     def __init__(self):
-        for entry in pkg_resources.iter_entry_points('gosa.objects'):
+        for entry in pkg_resources.iter_entry_points('object'):
             ObjectRegistry.register(entry.name, entry.load())
 
     @staticmethod

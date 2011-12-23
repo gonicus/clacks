@@ -20,6 +20,6 @@ class WakeOnLan(Plugin):
     def wakeonlan(self, macaddr):
         """ Sent a WakeOnLAN paket to the given MAC address. """
         bus = dbus.SystemBus()
-        gosa_dbus = bus.get_object('org.clacks',
+        clacks_dbus = bus.get_object('org.clacks',
                                    '/org/clacks/wol')
-        return gosa_dbus.wakeOnLan(macaddr, dbus_interface="org.clacks")
+        return clacks_dbus.wakeOnLan(macaddr, dbus_interface="org.clacks")

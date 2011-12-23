@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-This chapter details the way access control is handled within the GOsa core
+This chapter details the way access control is handled within the clacks core
 engine.
 
 How an ACL assigment could look like
@@ -98,7 +98,7 @@ class ACLSet(list):
             acl.set_members([u'tester1', u'tester2'])
 
             # "[^\.]*" means everything one level
-            acl.add_action('^org\.gosa\.event\.[^\.]*$', 'rwx')
+            acl.add_action('^org\.clacks\.event\.[^\.]*$', 'rwx')
             acl.set_priority(100)
             aclset.add(acl)
 
@@ -126,7 +126,7 @@ class ACLSet(list):
             aclset = ACLSet()
             acl = ACL(scope=ACL.ONE)
             acl.set_members([u'tester1', u'tester2'])
-            acl.add_action('^org\.gosa\.event\.ClientLeave$', 'rwx')
+            acl.add_action('^org\.clacks\.event\.ClientLeave$', 'rwx')
             acl.set_priority(100)
             aclset.add(acl)
 
@@ -157,7 +157,7 @@ class ACLSet(list):
             aclset = ACLSet()
             acl = ACL(scope=ACL.ONE)
             acl.set_members([u'tester1', u'tester2'])
-            acl.add_action('^org\.gosa\.event\.ClientLeave$', 'rwx')
+            acl.add_action('^org\.clacks\.event\.ClientLeave$', 'rwx')
             acl.set_priority(100)
 
             aclset.add(acl)
@@ -277,7 +277,7 @@ class ACLRole(list):
             # Create an ACLRole
             role = ACLRole('role1')
             acl = ACLRoleEntry(scope=ACL.ONE)
-            acl.add_action('^org\.gosa\.event\.ClientLeave$', 'rwx')
+            acl.add_action('^org\.clacks\.event\.ClientLeave$', 'rwx')
 
             role.add(acl)
 
@@ -341,7 +341,7 @@ class ACL(object):
         * ``ACL.RESET`` revokes the actions described in this ``ACL`` object for all sub-levels of the tree.
         * ``ACL.PSUB`` for all sub-level, cannot be revoked using ``ACL.RESET``
 
-    Scope values - external use, e.g. when executing commands using the gosa-shell:
+    Scope values - external use, e.g. when executing commands using the clacksh:
 
         * ``"one"`` for one level.
         * ``"sub"`` for all sub-level. This can be revoked using ``ACL.RESET``
@@ -368,7 +368,7 @@ class ACL(object):
         >>> acl = ACL()
         >>> acl.set_priority(0)
         >>> acl.set_members([u"user1", u"user2"])
-        >>> acl.add_action('^org\.gosa\.event\.ClientLeave$', 'rwx')
+        >>> acl.add_action('^org\.clacks\.event\.ClientLeave$', 'rwx')
         >>> aclset.add(acl)
 
         >>> # Now add the set to the resolver
@@ -480,7 +480,7 @@ class ACL(object):
             aclset = ACLSet()
             acl = ACL(scope=ACL.ONE)
             acl.set_members([u'tester1', u'tester2'])
-            acl.add_action('^org\.gosa\.event\.ClientLeave$', 'rwx')
+            acl.add_action('^org\.clacks\.event\.ClientLeave$', 'rwx')
 
             acl.set_priority(100)
 
@@ -525,7 +525,7 @@ class ACL(object):
         ============== =============
         Key            Description
         ============== =============
-        topic          The topic action we want to create ACLs for. E.g. 'com.gosa.factory.Person'
+        topic          The topic action we want to create ACLs for. E.g. 'org.clacks.factory.Person'
         acls           The acls this action contain. E.g. 'rwcdm'.
         options        Special additional options that have to be checked.
         ============== =============
@@ -536,17 +536,17 @@ class ACL(object):
 
         Topics are defined as regular expressions, which gives a huge flexibility.
 
-        For example ``^gosa\.[^\.]*\.factory$`` would match for:
-         * gosa.test.factory
-         * gosa.hallo.factory
+        For example ``^clacks\.[^\.]*\.factory$`` would match for:
+         * clacks.test.factory
+         * clacks.hallo.factory
         but not for:
-         * gosa.factory
-         * gosa.level1.level2.factory
+         * clacks.factory
+         * clacks.level1.level2.factory
 
-        Where ``^gosa\..*\.factory$`` matches for:
-         * gosa.factory
-         * gosa.level1.factory
-         * gosa.level1.level2.factory
+        Where ``^clacks\..*\.factory$`` matches for:
+         * clacks.factory
+         * clacks.level1.factory
+         * clacks.level1.level2.factory
 
         .. _acls_description:
 
@@ -627,7 +627,7 @@ class ACL(object):
         Key             Description
         =============== =============
         user            The user we want to check for. E.g. 'hans'
-        topic           The topic action we want to check for. E.g. 'com.gosa.factory'
+        topic           The topic action we want to check for. E.g. 'org.clacks.factory'
         acls            A string containing the acls we want to check for.
         options         Special additional options that have to be checked.
         skip_user_check Skips checks for users, this is required to resolve roles.
@@ -1047,7 +1047,7 @@ class ACLResolver(Plugin):
         Key            Description
         ============== =============
         user           The user we want to check for.
-        topic          The topic string, e.g. 'com.gosa.factory'
+        topic          The topic string, e.g. 'org.clacks.factory'
         acls           The list of acls, we want to check for, e.g. 'rcwdm'
         options        A dictionary containing extra options to check for.
         base           The base we want to check acls in.

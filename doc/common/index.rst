@@ -1,4 +1,4 @@
-The GOsa *common* library
+The Clacks *common* library
 =========================
 
 .. automodule:: clacks.common

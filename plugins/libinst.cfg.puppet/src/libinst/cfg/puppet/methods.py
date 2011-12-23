@@ -86,7 +86,7 @@ class PuppetInstallMethod(InstallMethod):
             cmd.clone(self.__repo_path, "master")
 
             with open(os.path.join(tmp_path, "README"), "w") as f:
-                f.write("This is an automatically managed GOsa puppet repository. Please do not modify.")
+                f.write("This is an automatically managed clacks puppet repository. Please do not modify.")
 
             logdir = self.env.config.get("puppet.report-dir",
                 "/var/log/puppet")
@@ -99,7 +99,7 @@ rundir=/var/run/puppet
 factpath=$vardir/lib/facter
 templatedir=$confdir/templates
 report=true
-reports=store_gosa
+reports=store_clacks
 reportdir=$logdir
 """ % logdir)
 
@@ -110,7 +110,7 @@ reportdir=$logdir
 
             # Add manifests and write initial size.pp
             with open(os.path.join(tmp_path, "manifests", "nodes.pp"), "w") as f:
-                f.write('# Automatically managed by GOsa\n')
+                f.write('# Automatically managed by clacks\n')
 
             cmd = Git(tmp_path)
             cmd.add("README")
@@ -170,7 +170,7 @@ reportdir=$logdir
             # Switch branch, add information
             cmd = Git(os.path.join(self.__work_path, name))
             host = self.env.id
-            cmd.config("--global", "user.name", "GOsa management agent on %s" % host)
+            cmd.config("--global", "user.name", "Clacks management agent on %s" % host)
             self.log.debug("switching to newly created branch")
             cmd.checkout(b=name)
 

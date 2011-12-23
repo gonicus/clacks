@@ -4,7 +4,7 @@ Concepts
 ********
 
 This chapter contains a brief overview over the concepts and technologies
-used in GOsa 3.0.
+used in Clacks 3.0.
 
 Messaging with AMQP
 ===================
@@ -65,7 +65,7 @@ AMQP provides a couple of exchanges. One way would be to assign messages
 and queues be the routing key, or by using an XQuery for XML based
 messages.
 
-GOsa itself uses two kinds of exchanges: the XML exchange for events, to
+Clacks itself uses two kinds of exchanges: the XML exchange for events, to
 allow dedicated filtering and the routing key based exchange to provide
 round robin command queues.
 
@@ -75,7 +75,7 @@ Messages
 
 Sent information consists of AMQP header information and the message body.
 The contents of the message body is not specified - if you want to you can
-transport DVD images via AMQP. In case of GOsa the message body consists
+transport DVD images via AMQP. In case of Clacks the message body consists
 either of XML messages or JSON encoded RPC calls.
 
 The 'configuration' on how to transport messages is done by the header
@@ -125,7 +125,7 @@ Here's an (incomplete) excerpt of available OSS and non OSS brokers:
    This is the commercial version of QPID, maintained by RedHat.
 
 
-GOsa is using the *C* broker of QPID, because it makes life easier in several
+Clacks is using the *C* broker of QPID, because it makes life easier in several
 places.
 
 
@@ -134,33 +134,33 @@ Authentication
 
 Using QPID, we can rely on a SASL based authentication wich can be simply
 connected to the LDAP directory infrastructure. The authorization itself
-must be done by GOsa, because the QPID acl concept is not dynamic - mostly
+must be done by Clacks, because the QPID acl concept is not dynamic - mostly
 for reasons of performance.
 
 The AMQP broker can automatically store the authentication information in
-the AMQP headers, so that GOsa is able to notice who's sending messages.
+the AMQP headers, so that Clacks is able to notice who's sending messages.
 
 -----------------------
 
-GOsa overview
+Clacks overview
 =============
 
-This overview should provide a big picture of the GOsa components and describes
+This overview should provide a big picture of the Clacks components and describes
 the tasks the components are supposed to do. More detailed information can be
 found in the developer documentation.
 
 Domains
 -------
 
-Systems connected with GOsa components shape a so called domain. If you like
-the analogy, you can compare a GOsa domain to a Windows domain: it keeps some
+Systems connected with Clacks components shape a so called domain. If you like
+the analogy, you can compare a Clacks domain to a Windows domain: it keeps some
 kind of information about a delimited area of an organization (or in your
 opinion the world).
 
 A domain is basically constructed of a reverse DNS name - i.e. the default
-domain is *org.gosa*, but it could be *de.gonicus* or whatever you want it
+domain is *org.clacks*, but it could be *de.gonicus* or whatever you want it
 to be. AMQP queues are based on the domain, so if you use the default, all
-created queues start with *org.gosa.* and shape the namespace to use in AMQP.
+created queues start with *org.clacks.* and shape the namespace to use in AMQP.
 
 
 clacks.common
@@ -211,20 +211,20 @@ from there.
   Plugins
   ^^^^^^^
   
-  Plugins sind Module die die GOsa-Funktionalität um bestimmte Aspekte erweitern.
+  Plugins sind Module die die Clacks-Funktionalität um bestimmte Aspekte erweitern.
   So existiert ein Modul für den LDAP- oder Datenbank-Zugriff. Denkbar wäre z.B.
   ein Modul das sich um Ihre Zeiterfassung kümmert und die Anwesenheitszeiten
   von Benutzern in einer Datenbank pflegt.
   
   Plugins können auf Funktionen der \textit{Function Registry} zurückgreifen und
-  sind in der Lage GOsa \textit{AMQP-Queues} zu nutzen.
+  sind in der Lage Clacks \textit{AMQP-Queues} zu nutzen.
   
-  Plugins werden beim Start von GOsa eingebunden.
+  Plugins werden beim Start von Clacks eingebunden.
   
   Scheduler
   ^^^^^^^^^
   
-  Der Scheduler ist das Uhrwerk von GOsa und sorgt dafür das bestimmte Aktionen
+  Der Scheduler ist das Uhrwerk von Clacks und sorgt dafür das bestimmte Aktionen
   zu festgelegten Zeitpunkten - oder gar wiederkehrend - ausgeführt werden.
   
   Module könne sich hier registrieren und werden nach dem gewünschten Zeitplan
@@ -255,14 +255,14 @@ from there.
   dieser Komponenten ist stark an die Symtax der \textit{OpenLDAP}-ACLs angelehnt.
   
   \begin{verbatim}
-  Was:   gosa.goto.client.#.reboot{x}
-         gosa.workflow.delete{x}
-         gosa.object.user.sn{rw}
-         gosa.object.*{rwcdms}
+  Was:   clacks.goto.client.#.reboot{x}
+         clacks.workflow.delete{x}
+         clacks.object.user.sn{rw}
+         clacks.object.*{rwcdms}
   \end{verbatim}
   
   \textit{Was} besteht aus einem durch Punkte getrennten Pfad zum Zielobjekt. Im
-  Gegensatz zu OpenLDAP muss bei GOsa nicht nur den Zugriff zu Attributen und
+  Gegensatz zu OpenLDAP muss bei Clacks nicht nur den Zugriff zu Attributen und
   Objekten gewähren, sondern auch Methoden und Queues berücksichtigen. Durch
   die Pfad-Notation lassen sich Objekte, Arbeitsabläufe und Funktionsaufrufe
   addressieren.
@@ -271,10 +271,10 @@ from there.
   Element, * steht für alle tiefer im Pfad angeordneten Elemente.
   
   \begin{verbatim}
-         gosa.*{rwcdmsx}
+         clacks.*{rwcdmsx}
   \end{verbatim}
   
-  würde dementsprechend alle in GOsa möglichen Elemente abdecken und stellt
+  würde dementsprechend alle in Clacks möglichen Elemente abdecken und stellt
   eine typische Administrator-Regel dar.
   
   Die geschweiften Klammern enthalten eine Spezifizierung der zu definierenden
@@ -324,7 +324,7 @@ from there.
   \end{verbatim}
   
   \textit{Wo} und \textit{was} Komponenten können in ACL-Templates zusammengefasst
-  werden. GOsa enthält vorgefertigte ACL-Templates für Administratoren, Benutzer und
+  werden. Clacks enthält vorgefertigte ACL-Templates für Administratoren, Benutzer und
   Gäste.
   
   \begin{verbatim}
@@ -355,7 +355,7 @@ from there.
   
   Arbeitsflüsse definieren die Art und Weise wie Aktionen auf Objekten
   durchgeführt werden sollen. Arbeitsflüsse können von Benutzern gestartet
-  werden, wenn für den entsprechenden Pfad (gosa.workflow.*) eine passende
+  werden, wenn für den entsprechenden Pfad (clacks.workflow.*) eine passende
   ACL mit X-Flag gesetzt ist. Arbeitsflüsse können intern oder über RPC
   gestartet werden.
   
@@ -415,7 +415,7 @@ from there.
   Objects
   -------
   
-  GOsa verwaltet Objekte, die über eine XML-Datei beschrieben werden. Soll ein Objekt
+  Clacks verwaltet Objekte, die über eine XML-Datei beschrieben werden. Soll ein Objekt
   instanziert werden, dient der \textit{Object Manager} als Factory für das zu
   erstellende Objekt und fügt es aus den Informationen der XML-Datei und den darin
   festgelegten Beziehungen zu Plugins (etwa einem LDAP-Plugin) zusammen.
@@ -424,7 +424,7 @@ from there.
   zu lesen und zu schreiben, sowie einthaltene Funktionen aufzurufen.
   
   Objekte können um erweiternde Objekte ergänzt werden. Aus Sicht des Benutzers
-  wird in diesem Fall aber nur ein Objekt bearbeitet, wobei sich GOsa um die
+  wird in diesem Fall aber nur ein Objekt bearbeitet, wobei sich Clacks um die
   korrekte Zuordnung kümmert.
   
   Attribute sind einfache Klassenmitglieder die ein Attribut im
@@ -518,7 +518,7 @@ from there.
   einseitige Synchronisierung eines Wertes mit mehreren Backends.
   
   Beim Lesen und Schreiben von einem Backend kann ein Filter angegeben werden, welcher
-  z.B. bei Datumsangaben die GOsa intern immer als Unix-Timestamp behandelt werden
+  z.B. bei Datumsangaben die Clacks intern immer als Unix-Timestamp behandelt werden
   in das passende Backend-Format bringt - und umgekehrt.
   
   \begin{verbatim}
@@ -736,7 +736,7 @@ from there.
   \section{Mit Objekten arbeiten}
   
   Um mit Objekten zu arbeiten, müssen diverse Funktionen integriert werden, die es z.B. gestatten 
-  Objekte aufzulisten, den Typ zu ermitteln oder den Ablageort herauszufinden. Da GOsa auch in der
+  Objekte aufzulisten, den Typ zu ermitteln oder den Ablageort herauszufinden. Da Clacks auch in der
   Version NG sehr nah am LDAP entwickelt wird, wird der Ablageort in der DN-Schreibweise repräsentiert.
   
   \begin{nofloat}{table}
@@ -787,10 +787,10 @@ from there.
   
   \subsection{Wie wird der Dienst gefunden?}
   
-  Der GOsa-Kern stellt seine Dienste über über RPC zur Verfügung. Um
+  Der Clacks-Kern stellt seine Dienste über über RPC zur Verfügung. Um
   es einem Client eine Verbindung zu ermöglichen, muss er wissen wo der Dienst
   im Netzwerk verfügbar ist. Diese Informationen können redundant hinterlegt sein.
-  GOsa ist nicht auf einen einzigen Dienst beschränkt.
+  Clacks ist nicht auf einen einzigen Dienst beschränkt.
   
   Die folgenden Methoden stehen zur Verfügung:
   
@@ -832,8 +832,8 @@ from there.
   seiner ACL-Richtlinien ausführen. Er hat Zugriff auf Funktionen der
   \textit{Function-Registry} und Workflows.
   
-  Erstes Ziel ist es, die Funktionalitäten aus GOsa-SI sowie dem momentanen
-  GOsa zu entfernen und in den neuen Kern zu verlagern. Später sind
+  Erstes Ziel ist es, die Funktionalitäten aus Clacks-SI sowie dem momentanen
+  Clacks zu entfernen und in den neuen Kern zu verlagern. Später sind
   Bezahl-GUIs, etwa mit Qooxdoo, möglich.
   
   
@@ -899,7 +899,7 @@ from there.
   \section{DAK und Software-Repositories}
   
   Die Module rund um die Repository-Verwaltung sind ebenfalls als Modul verfügbar
-  und beteiligen sich am AMQP setup. Für DAK ist das die Queue \textit{gosa.repository.dak}.
+  und beteiligen sich am AMQP setup. Für DAK ist das die Queue \textit{clacks.repository.dak}.
   Der Server liefert dort die folgenden Informationen:
   
   \begin{itemize}
@@ -909,7 +909,7 @@ from there.
    \item Abhängigkeitsauflösung
   \end{itemize}
   
-  Das dazugehörige GOsa-Modul exportiert die für die Abfragen notwendigen Funktionen.
+  Das dazugehörige Clacks-Modul exportiert die für die Abfragen notwendigen Funktionen.
   
   
   
@@ -917,11 +917,11 @@ from there.
   -----------------------
   arch.tex:
   
-  \chapter{GOsa Architektur}
+  \chapter{Clacks Architektur}
   
   \section{Kommunikation von Komponenten}
   
-  Alle GOsa-Server sind über einen Nachrichtenbus (AMQP) miteinander verbunden. Kommt ein Server
+  Alle Clacks-Server sind über einen Nachrichtenbus (AMQP) miteinander verbunden. Kommt ein Server
   hinzu, oder verlässt ein Server den Verbund, wird ein Event ausgelöst.
   
   Beim Hinzukommen wird gibt ein Server seine Capabilities bekannt (=die Funktionen die er
@@ -940,30 +940,30 @@ from there.
   
   \subsection{Standard Queues}
   
-  Für jede von GOsa verwaltete Domain wird eine virtuelle AMQP-Domain bereitgestellt. Dies stellt
+  Für jede von Clacks verwaltete Domain wird eine virtuelle AMQP-Domain bereitgestellt. Dies stellt
   sicher, dass zwischen den Domains keinerlei Informationen ausgetauscht werden können.
   
-  Die virtuelle AMQP-Domain stellt das Nachrichten-Backbone von GOsa dar und definiert
+  Die virtuelle AMQP-Domain stellt das Nachrichten-Backbone von Clacks dar und definiert
   eine Hand voll Standard-Queues.
   
-  \paragraph{org.gosa.command}
+  \paragraph{org.clacks.command}
   
   Führt ein Kommando aus wenn die eigene ID angebeben ist.
   
   
-  \paragraph{org.gosa.event}
+  \paragraph{org.clacks.event}
   
   Von Komponenten ausgelöste Events werden an dieser Stelle publiziert. Andere Komponenten
   können sich für diese Nachrichten interessieren.
   
   %command
   %
-  % Die Kommando-Queue (Round Robin). Alle CommandRegistry-Objekte der GOsa-Server
+  % Die Kommando-Queue (Round Robin). Alle CommandRegistry-Objekte der Clacks-Server
   % sind an dieser Stelle angedockt. Jeweils einem davon wird die Nachricht       
   % privat zugestellt und es beantwortet sie nach der Ausführung des Kommandos.   
   %
   % Schreibberechtigung - sysop
-  % Leseberechtigung - gosa    
+  % Leseberechtigung - clacks    
   
   
   %goto.register
@@ -1026,7 +1026,7 @@ from there.
   
   \section{Funktionsaufrufe}
   
-  Ein Client kann einen beliebigen GOsa-Server über HTTP-JSONRPC kontaktieren. Dieser führt die
+  Ein Client kann einen beliebigen Clacks-Server über HTTP-JSONRPC kontaktieren. Dieser führt die
   Capability/ResponseIndex Bewertung durch und führt die Funktion entweder selbst aus oder
   schickt die Anfrage auf den AMQP-Bus und leitet die Antwort an den aufrufenden Client
   weiter.
@@ -1052,7 +1052,7 @@ from there.
   \paragraph{Env}
   
   Diese Umgebung enthält die Konfiguration. Verwaltet Threads und deren Locks sowie
-  das GOsa-übergreifende Logging.
+  das Clacks-übergreifende Logging.
   
   
   \paragraph{Plugins}

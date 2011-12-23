@@ -3,7 +3,7 @@ Event handling
 
 .. _events:
 
-GOsa utilizes the XML queue of *QPID*, which enables us to send and
+Clacks utilizes the XML queue of *QPID*, which enables us to send and
 filter XML encoded events. Using *XQuery*, we can filter for special
 properties inside of the event description.
 
@@ -12,11 +12,11 @@ and receiver for a simple phone status notification - that may be used
 for whatever you can imagine.
 
 First, you need to define an event description in XML-schema style and
-place it in ``gosa/common/data/events``::
+place it in ``clacks/common/data/events``::
 
     <?xml version="1.0" encoding="UTF-8"?>
     <schema targetNamespace="http://www.gonicus.de/Events" elementFormDefault="qualified" 
-            xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gosa="http://www.gonicus.de/Events">
+            xmlns="http://www.w3.org/2001/XMLSchema" xmlns:e="http://www.gonicus.de/Events">
       <complexType name="PhoneStatus">
         <annotation>
           <documentation>
@@ -30,10 +30,10 @@ place it in ``gosa/common/data/events``::
           <element name="Status" type="string"></element>
         </all>
       </complexType>
-      <element name="PhoneStatus" type="gosa:PhoneStatus"></element>
+      <element name="PhoneStatus" type="e:PhoneStatus"></element>
     </schema>
 
-After this has been done, the GOsa agent needs to be restarted in the
+After this has been done, the Clacks agent needs to be restarted in the
 moment to reload the XSD information. Now we'll write a receiver for
 that::
 
@@ -48,7 +48,7 @@ that::
 	    print(etree.tostring(data, pretty_print=True))
 	
 	# Create event consumer
-	consumer = AMQPEventConsumer("amqps://admin:secret@localhost/org.gosa",
+	consumer = AMQPEventConsumer("amqps://admin:secret@localhost/org.clacks",
 	            xquery="""
 	                declare namespace f='http://www.gonicus.de/Events';
 	                let $e := ./f:Event
@@ -74,7 +74,7 @@ open another one to send a signal using :meth:`clacks.agent.command.CommandRegis
 	from lxml import etree
 	
 	# Connect to AMQP bus
-	proxy = AMQPServiceProxy('amqp://admin:secret@localhost/org.gosa')
+	proxy = AMQPServiceProxy('amqp://admin:secret@localhost/org.clacks')
 	
 	# Example of building event without direct strings...
 	e = EventMaker()
@@ -104,7 +104,7 @@ receiver.
 Available events
 ================
 
-GOsa comes with a set of predefined events and modules itself can
+Clacks comes with a set of predefined events and modules itself can
 provide new events. Here's a short overview:
 
 +---------------------+-----------+------------------------------------------------------------+

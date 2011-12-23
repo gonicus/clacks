@@ -37,7 +37,7 @@ class InventoryDB(object):
         # Create query context and set namespaces
         self.queryContext = self.manager.createQueryContext()
         self.queryContext.setNamespace("", "http://www.gonicus.de/Events")
-        self.queryContext.setNamespace("gosa", "http://www.gonicus.de/Events")
+        self.queryContext.setNamespace("e", "http://www.gonicus.de/Events")
         self.queryContext.setNamespace("xsi","http://www.w3.org/2001/XMLSchema-instance")
 
     def clientDataExists(self, uuid):

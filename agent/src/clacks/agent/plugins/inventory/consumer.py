@@ -42,7 +42,9 @@ class InventoryConsumer(Plugin):
         if not self.db.collectionExists("inventory"):
             sf = pkg_resources.resource_filename('clacks.agent', 'plugins/goto/data/events/Inventory.xsd')
             self.__factory = ObjectFactory.getInstance()
-            self.db.createCollection("inventory", {"gosa": "http://www.gonicus.de/Events"},{"inventory.xsd":  open(sf).read()})
+            self.db.createCollection("inventory",
+                    {"e": "http://www.gonicus.de/Events"},
+                    {"inventory.xsd":  open(sf).read()})
 
         # Create event consumer
         amqp = PluginRegistry.getInstance('AMQPHandler')
@@ -65,10 +67,10 @@ class InventoryConsumer(Plugin):
 
         # Try to extract the clients uuid and hostname out of the received data
         try:
-            binfo = data.xpath('/gosa:Event/gosa:Inventory', namespaces={'gosa': 'http://www.gonicus.de/Events'})[0]
+            binfo = data.xpath('/e:Event/e:Inventory', namespaces={'i': 'http://www.gonicus.de/Events'})[0]
             uuid = str(binfo['ClientUUID'])
             huuid = str(binfo['HardwareUUID'])
-            checksum = str(binfo['GOsaChecksum'])
+            checksum = str(binfo['Checksum'])
             self.log.debug("inventory information received for client %s" % uuid)
 
         except Exception as e:
@@ -77,14 +79,14 @@ class InventoryConsumer(Plugin):
             raise InventoryException(msg)
 
         # Get the Inventory part of the event only
-        inv_only =  etree.tostring(data.xpath('/gosa:Event/gosa:Inventory', \
-                namespaces={'gosa': 'http://www.gonicus.de/Events'})[0], pretty_print=True)
+        inv_only =  etree.tostring(data.xpath('/e:Event/e:Inventory', \
+                namespaces={'i': 'http://www.gonicus.de/Events'})[0], pretty_print=True)
 
         # The given hardware-uuid is already part of our inventory database
         if self.hardwareUUIDExists(huuid):
 
             # Now check if the client-uuid for the given hardware-uuid has changed.
-            # This is the case, when the same hardware is joined as new gosa-client again.
+            # This is the case, when the same hardware is joined as new clacks-client again.
             # - In that case: drop the old entry and add the new one.
             if uuid != self.getClientUUIDByHardwareUUID(huuid):
                 self.log.debug("replacing inventory information for %s" % uuid)
@@ -110,8 +112,8 @@ class InventoryConsumer(Plugin):
         """
         Returns the ClientUUID used by the given HardwareUUID.
         """
-        results = self.db.xquery("collection('inventory')/gosa:Inventory"
-                "[gosa:HardwareUUID='%s']/gosa:ClientUUID/string()" % (huuid))
+        results = self.db.xquery("collection('inventory')/e:Inventory"
+                "[e:HardwareUUID='%s']/e:ClientUUID/string()" % (huuid))
 
         # Walk through results and return the ClientUUID
         if len(results) == 1:
@@ -123,8 +125,8 @@ class InventoryConsumer(Plugin):
         """
         Returns the checksum of a specific entry.
         """
-        results = self.db.xquery("collection('inventory')/gosa:Inventory"
-                "[gosa:HardwareUUID='%s']/gosa:GOsaChecksum/string()" % (huuid))
+        results = self.db.xquery("collection('inventory')/e:Inventory"
+                "[e:HardwareUUID='%s']/e:Checksum/string()" % (huuid))
 
         # Walk through results and return the found checksum
         if len(results) == 1:
@@ -137,8 +139,8 @@ class InventoryConsumer(Plugin):
         """
         Checks whether an inventory exists for the given client ID or not.
         """
-        results = self.db.xquery("collection('inventory')/gosa:Inventory"
-                "[gosa:HardwareUUID='%s']/gosa:HardwareUUID/string()" % (huuid))
+        results = self.db.xquery("collection('inventory')/e:Inventory"
+                "[e:HardwareUUID='%s']/e:HardwareUUID/string()" % (huuid))
 
         # Walk through results if there are any and return True in that case.
         return(len(results) != 0)
@@ -150,8 +152,8 @@ class InventoryConsumer(Plugin):
         self.db.addDocument('inventory', huuid, data)
 
     def deleteByHardwareUUID(self, huuid):
-        results = self.db.xquery("collection('inventory')/gosa:Inventory"
-                "[gosa:HardwareUUID='%s']" % (huuid))
+        results = self.db.xquery("collection('inventory')/e:Inventory"
+                "[e:HardwareUUID='%s']" % (huuid))
         if len(results) == 1:
             self.db.deleteDocument('inventory', huuid)
         else:

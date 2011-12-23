@@ -8,7 +8,7 @@ from clacks.common.components import Command, PluginRegistry, ObjectRegistry, AM
 
 class JSONRPCObjectMapper(Plugin):
     """
-    The *JSONRPCObjectMapper* is a GOsa agent plugin that implements a stack
+    The *JSONRPCObjectMapper* is a clacks agent plugin that implements a stack
     which can handle object instances. These can be passed via JSONRPC using
     the *__jsonclass__* helper attribute and allows remote proxies to emulate
     the object on the stack. The stack can hold objects that have been

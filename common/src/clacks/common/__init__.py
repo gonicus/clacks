@@ -9,11 +9,11 @@ Here is an example on how to use the common module::
     >>> from clacks.common import Environment
     >>> env = Environment.getInstance()
 
-This loads the GOsa environment information using the Environment singleton.
+This loads the clacks environment information using the Environment singleton.
 
 .. note::
 
-    Using the environment requires the presence of the GOsa configuration
+    Using the environment requires the presence of the clacks configuration
     file - commonly ``~/.clacks/config`` or ``/etc/clacks/config`` in this
     order
 """

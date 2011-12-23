@@ -6,7 +6,7 @@ The Clacks shell can be called in different ways.
 
      $ clacksh
      Searching service provider...
-     Connected to amqps://amqp.example.net:5671/org.gosa
+     Connected to amqps://amqp.example.net:5671/org.clacks
      Username [cajus]:
      Password:
      Clacks service shell. Use Ctrl+D to exit.
@@ -17,7 +17,7 @@ The Clacks shell can be called in different ways.
    may need to connect a special system or even provide your
    credentials in the URI like ::
 
-     $ clacksh amqps://user:password@amqp.example.net/org.gosa
+     $ clacksh amqps://user:password@amqp.example.net/org.clacks
 
    but keep in mind that this will expose your credentials in the
    history, and maybe in the history or the process list.

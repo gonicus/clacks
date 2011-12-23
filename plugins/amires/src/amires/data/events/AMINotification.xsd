@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema targetNamespace="http://www.gonicus.de/Events"
     elementFormDefault="qualified"
-    xmlns:gosa="http://www.gonicus.de/Events"
+    xmlns:e="http://www.gonicus.de/Events"
     xmlns:xs="http://www.w3.org/2001/XMLSchema">
     
     <!-- Call -->
@@ -27,17 +27,17 @@
     </xs:simpleType>
 
     <xs:simpleType name="PhoneNumberList">
-        <xs:list itemType="gosa:PhoneNumber"/>
+        <xs:list itemType="e:PhoneNumber"/>
     </xs:simpleType>
 
     <xs:complexType name="Call" mixed="true">
         <xs:sequence>
-            <xs:element name="Type" type="gosa:NotificationType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Type" type="e:NotificationType" minOccurs="1" maxOccurs="1" />
             <xs:element name="Identity" type="xs:string" minOccurs="1" maxOccurs="1" />
-            <xs:element name="From" type="gosa:PhoneNumberList" minOccurs="1" maxOccurs="1" />
-            <xs:element name="To" type="gosa:PhoneNumberList" minOccurs="1" maxOccurs="1" />
-            <xs:element name="Timestamp" type="gosa:Time" minOccurs="1" maxOccurs="1" />
-            <xs:element name="Duration" type="gosa:Time" minOccurs="0" maxOccurs="1" />
+            <xs:element name="From" type="e:PhoneNumberList" minOccurs="1" maxOccurs="1" />
+            <xs:element name="To" type="e:PhoneNumberList" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Timestamp" type="e:Time" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Duration" type="e:Time" minOccurs="0" maxOccurs="1" />
             <xs:element name="Cause" type="xs:string" minOccurs="0" maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
@@ -67,7 +67,7 @@
             <xs:element name="Penalty" type="xs:integer" minOccurs="1" maxOccurs="1" />
             <xs:element name="CallsTaken" type="xs:integer" minOccurs="1" maxOccurs="1" />
             <xs:element name="LastCall" type="xs:integer" minOccurs="1" maxOccurs="1" />
-            <xs:element name="Status" type="gosa:AstDeviceState" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Status" type="e:AstDeviceState" minOccurs="1" maxOccurs="1" />
             <xs:element name="Paused" type="xs:double" minOccurs="1" maxOccurs="1" />
             <xs:element name="Reason" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="Loginchan" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -77,10 +77,10 @@
     
     <xs:complexType name="AMINotification" mixed="true">
         <xs:choice>
-            <xs:element name="QueueMemberStatus" type="gosa:QueueMemberStatus" />
-            <xs:element name="Call" type="gosa:Call" />
+            <xs:element name="QueueMemberStatus" type="e:QueueMemberStatus" />
+            <xs:element name="Call" type="e:Call" />
         </xs:choice>
     </xs:complexType>
 
-    <xs:element name="AMINotification" type="gosa:AMINotification" />
+    <xs:element name="AMINotification" type="e:AMINotification" />
 </xs:schema>

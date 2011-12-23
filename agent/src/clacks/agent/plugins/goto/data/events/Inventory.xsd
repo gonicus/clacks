@@ -6,7 +6,7 @@
 
 	<xs:complexType name="Inventory">
 		<xs:sequence>
-			<xs:element name="GOsaChecksum" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="Checksum" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="DeviceID" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="QueryType" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
 			<xs:element name="ClientVersion" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>

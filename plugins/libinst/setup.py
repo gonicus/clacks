@@ -49,7 +49,7 @@ for various systems in your setup.
         [agent.module]
         libinst = libinst.manage:LibinstManager
 
-        [gosa.objects]
+        [object]
         libinst.diskdefinition = libinst.interface.disk:DiskDefinition
     """
 )

@@ -3,7 +3,7 @@
 Overview
 ========
 
-The *DBUS* module bundles the GOsa DBUS daemon and a couple code modules
+The *DBUS* module bundles the Clacks DBUS daemon and a couple code modules
 needed to run it. The DBUS itself is meant to be extended by implementing
 :class:`dbus.service.Object` and additionally inherit from
 :class:`clacks.common.components.plugin.Plugin`.
@@ -18,7 +18,7 @@ systems DBUS, exposing functionality to the outside world.
 
 All the DBUS plugins you provide run as *root*, so the service is meant as
 a gateway to call functionality which needs more administrative power than
-the GOsa client user has.
+the clacks client user has.
 
 Code example::
 

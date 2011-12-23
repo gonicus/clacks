@@ -94,7 +94,7 @@ class TestACLResolver(unittest.TestCase):
         # Create an ACLRole
         role = ACLRole('role1')
         acl = ACLRoleEntry(scope=ACL.ONE)
-        acl.add_action('com.gosa.factory', 'rwx')
+        acl.add_action('org.clacks.factory', 'rwx')
         role.add(acl)
         self.resolver.add_acl_role(role)
 
@@ -107,17 +107,17 @@ class TestACLResolver(unittest.TestCase):
         self.resolver.add_acl_set(aclset)
 
         # Check the permissions to be sure that they are set correctly
-        self.assertTrue(self.resolver.check('tester1', 'com.gosa.factory', 'r', base=base),
+        self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "ACLRoles are not resolved correctly! The user should be able to read, but he cannot!")
 
         self.assertRaises(ACLException, self.resolver.remove_role , 'role1')
 
-        self.assertTrue(self.resolver.check('tester1', 'com.gosa.factory', 'r', base=base),
+        self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "ACLRoles are not resolved correctly! The user should be able to read, but he cannot!")
 
         self.resolver.remove_aclset_by_base(base)
 
-        self.assertFalse(self.resolver.check('tester1', 'com.gosa.factory', 'r', base=base),
+        self.assertFalse(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "Role removal failed! The user should not be able to read, but he can!")
 
         self.assertTrue(self.resolver.remove_role('role1'),
@@ -132,7 +132,7 @@ class TestACLResolver(unittest.TestCase):
         aclset = ACLSet()
         acl = ACL(scope=ACL.SUB)
         acl.set_members([u'tester1', u'tester2'])
-        acl.add_action('com.gosa.factory', 'rwx')
+        acl.add_action('org.clacks.factory', 'rwx')
         aclset.add(acl)
         self.resolver.add_acl_set(aclset)
 
@@ -140,10 +140,10 @@ class TestACLResolver(unittest.TestCase):
         self.resolver.remove_acls_for_user('tester1')
 
         # No check the permissions 'tester1' should not be able to read anymore, where 'tester2' should.
-        self.assertFalse(self.resolver.check('tester1', 'com.gosa.factory', 'r'),
+        self.assertFalse(self.resolver.check('tester1', 'org.clacks.factory', 'r'),
                 "Removing ACLs for a specific user does not work correctly! The user should not be able to read, but he can!")
 
-        self.assertTrue(self.resolver.check('tester2', 'com.gosa.factory', 'r'),
+        self.assertTrue(self.resolver.check('tester2', 'org.clacks.factory', 'r'),
                 "Removing ACLs for a specific user does not work correctly! The user should still be able to read, but he cannot!")
 
     def test_role_endless_recursion(self):
@@ -177,36 +177,36 @@ class TestACLResolver(unittest.TestCase):
         self.resolver.add_acl_set(aclset)
 
         # Check the permissions to be sure that they are set correctly
-        self.assertRaises(Exception, self.resolver.check, 'tester1', 'com.gosa.factory', 'r',
+        self.assertRaises(Exception, self.resolver.check, 'tester1', 'org.clacks.factory', 'r',
             base=base)
 
     def test_user_wildcards(self):
         """
         checks if wildcards/regular expressions can be used for ACL member names
-        e.g. to match all users starting with 'gosa_' and ending with '_test'
-            acl.set_members([u'^gosa_.*_test$'])
+        i.e. to match all users starting with 'clacks_' and ending with '_test'
+            acl.set_members([u'^clacks_.*_test$'])
         """
 
         # Create acls with wildcard # in actions
         base = self.ldap_base
         aclset = ACLSet(base)
         acl = ACL(scope=ACL.ONE)
-        acl.set_members([u'^gosa_.*_test$'])
-        acl.add_action('com.gosa.factory', 'rwx')
+        acl.set_members([u'^clacks_.*_test$'])
+        acl.add_action('org.clacks.factory', 'rwx')
         acl.set_priority(100)
         aclset.add(acl)
         self.resolver.add_acl_set(aclset)
 
         # Check the permissions to be sure that they are set correctly
-        self.assertTrue(self.resolver.check('gosa_user_test', 'com.gosa.factory', 'r', base=base),
+        self.assertTrue(self.resolver.check('clacks_user_test', 'org.clacks.factory', 'r', base=base),
                 "Wildcards in ACL members are not resolved correctly! The user was not able to read, but he should!")
 
         # Check the permissions to be sure that they are set correctly
-        self.assertTrue(self.resolver.check('gosa__test', 'com.gosa.factory', 'r', base=base),
+        self.assertTrue(self.resolver.check('clacks__test', 'org.clacks.factory', 'r', base=base),
                 "Wildcards in ACL members are not resolved correctly! The user was not able to read, but he should!")
 
         # Check the permissions to be sure that they are set correctly
-        self.assertFalse(self.resolver.check('gosa_test_testWrong', 'com.gosa.factory', 'r', base=base),
+        self.assertFalse(self.resolver.check('clacks_test_testWrong', 'org.clacks.factory', 'r', base=base),
                 "Wildcards in ACL members are not resolved correctly! The was able to read, but he shouldn't!")
 
     def test_action_wildcards(self):
@@ -227,11 +227,11 @@ class TestACLResolver(unittest.TestCase):
         self.resolver.add_acl_set(aclset)
 
         # Check the permissions to be sure that they are set correctly
-        self.assertTrue(self.resolver.check('tester1', 'com.gosa.factory', 'r', base=base),
+        self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "Wildcards (#) in actions are not resolved correctly! The user should be able to read, but he cannot!")
         self.assertTrue(self.resolver.check('tester1', 'com.gonicus.factory', 'r', base=base),
                 "Wildcards (#) in actions are not resolved correctly! The user should be able to read, but he cannot!")
-        self.assertFalse(self.resolver.check('tester1', 'com.gonicus.gosa.factory', 'r', base=base),
+        self.assertFalse(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "Wildcards (#) in actions are not resolved correctly! The user should not be able to read, but he can!")
 
         # Clear created ACL defintions
@@ -248,11 +248,11 @@ class TestACLResolver(unittest.TestCase):
         self.resolver.add_acl_set(aclset)
 
         # Check the permissions to be sure that they are set correctly
-        self.assertTrue(self.resolver.check('tester1', 'com.gosa.factory', 'r', base=base),
+        self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "Wildcards (*) in actions are not resolved correctly! The user should be able to read, but he cannot!")
         self.assertTrue(self.resolver.check('tester1', 'com.gonicus.factory', 'r', base=base),
                 "Wildcards (*) in actions are not resolved correctly! The user should be able to read, but he cannot!")
-        self.assertTrue(self.resolver.check('tester1', 'com.gonicus.gosa.factory', 'r', base=base),
+        self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "Wildcards (*) in actions are not resolved correctly! The user should be able to read, but he cannot!")
 
     def test_roles(self):
@@ -263,7 +263,7 @@ class TestACLResolver(unittest.TestCase):
         # Create an ACLRole
         role = ACLRole('role1')
         acl = ACLRoleEntry(scope=ACL.ONE)
-        acl.add_action('com.gosa.factory', 'rwx')
+        acl.add_action('org.clacks.factory', 'rwx')
         role.add(acl)
         self.resolver.add_acl_role(role)
 
@@ -276,7 +276,7 @@ class TestACLResolver(unittest.TestCase):
         self.resolver.add_acl_set(aclset)
 
         # Check the permissions to be sure that they are set correctly
-        self.assertTrue(self.resolver.check('tester1', 'com.gosa.factory', 'r', base=base),
+        self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "ACLRoles are not resolved correctly! The user should be able to read, but he cannot!")
 
     def test_role_recursion(self):
@@ -291,7 +291,7 @@ class TestACLResolver(unittest.TestCase):
         # Create an ACLRole
         role1 = ACLRole('role1')
         acl = ACLRoleEntry(scope=ACL.ONE)
-        acl.add_action('com.gosa.factory', 'rwx')
+        acl.add_action('org.clacks.factory', 'rwx')
         role1.add(acl)
         self.resolver.add_acl_role(role1)
 
@@ -310,7 +310,7 @@ class TestACLResolver(unittest.TestCase):
         self.resolver.add_acl_set(aclset)
 
         # Check the permissions to be sure that they are set correctly
-        self.assertTrue(self.resolver.check('tester1', 'com.gosa.factory', 'r',
+        self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'r',
             base=base),
                 "Stacked ACLRoles are not resolved correctly! The user should be able to read, but he cannot!")
 
@@ -324,24 +324,24 @@ class TestACLResolver(unittest.TestCase):
         aclset = ACLSet(base)
         acl = ACL(scope=ACL.ONE)
         acl.set_members([u'tester1'])
-        acl.add_action('com.gosa.factory', 'rwx')
+        acl.add_action('org.clacks.factory', 'rwx')
         acl.set_priority(100)
         aclset.add(acl)
         self.resolver.add_acl_set(aclset)
 
         # Check the permissions to be sure that they are set correctly
-        self.assertTrue(self.resolver.check('tester1', 'com.gosa.factory', 'r', base=base),
+        self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "Acl priorities are not handled correctly! The user should be able to read, but he cannot!")
 
         # Now add the RESET acl
         acl = ACL(scope=ACL.RESET)
         acl.set_members([u'tester1'])
-        acl.add_action('com.gosa.factory', 'rwx')
+        acl.add_action('org.clacks.factory', 'rwx')
         acl.set_priority(99)
         aclset.add(acl)
 
         # Check the permissions to be sure that they are set correctly
-        self.assertFalse(self.resolver.check('tester1', 'com.gosa.factory', 'r', base=base),
+        self.assertFalse(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "Acl priorities are not handled correctly! The user should not be able to read, but he can!")
 
     def test_acls_scope_reset(self):
@@ -354,28 +354,28 @@ class TestACLResolver(unittest.TestCase):
         aclset = ACLSet(base)
         acl = ACL(scope=ACL.SUB)
         acl.set_members([u'tester1'])
-        acl.add_action('com.gosa.factory', 'rwx')
+        acl.add_action('org.clacks.factory', 'rwx')
         aclset.add(acl)
         self.resolver.add_acl_set(aclset)
 
         # Check for acls for the base, should return False
         base = self.ldap_base
-        self.assertFalse(self.resolver.check('tester1', 'com.gosa.factory', 'r', base=base),
+        self.assertFalse(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "ACL scope RESET is not resolved correclty! The user should not be able to read, but he can!")
 
         # Check for acls for the tree we've created acls for.
         base = "dc=a," + self.ldap_base
-        self.assertTrue(self.resolver.check('tester1', 'com.gosa.factory', 'r', base=base),
+        self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "ACL scope RESET is not resolved correclty! The user should be able to read, but he cannot!")
 
         # Check for acls for one level above the acl definition
         base = "dc=b,dc=a," + self.ldap_base
-        self.assertTrue(self.resolver.check('tester1', 'com.gosa.factory', 'r', base=base),
+        self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "ACL scope RESET is not resolved correclty! The user should be able to read, but he cannot!")
 
         # Check for acls for two levels above the acl definition
         base = "dc=c,dc=b,dc=a," + self.ldap_base
-        self.assertTrue(self.resolver.check('tester1', 'com.gosa.factory', 'r', base=base),
+        self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "ACL scope RESET is not resolved correclty! The user should be able to read, but he cannot!")
 
 
@@ -386,7 +386,7 @@ class TestACLResolver(unittest.TestCase):
         aclset = ACLSet(base)
         acl = ACL(scope=ACL.RESET)
         acl.set_members([u'tester1'])
-        acl.add_action('com.gosa.factory', 'rwx')
+        acl.add_action('org.clacks.factory', 'rwx')
         aclset.add(acl)
 
         self.resolver.add_acl_set(aclset)
@@ -394,20 +394,20 @@ class TestACLResolver(unittest.TestCase):
         # Check for acls for the tree we've created acls for.
         # Should return True
         base = "dc=a," + self.ldap_base
-        self.assertTrue(self.resolver.check('tester1', 'com.gosa.factory', 'r', base=base),
+        self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "ACL scope RESET is not resolved correclty! The user should be able to read, but he cannot!")
 
 
         # Check for acls for one level above the acl definition
         # Should return False
         base = "dc=b,dc=a," + self.ldap_base
-        self.assertFalse(self.resolver.check('tester1', 'com.gosa.factory', 'r', base=base),
+        self.assertFalse(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "ACL scope RESET is not resolved correclty! The user should not be able to read, but he can!")
 
         # Check for acls for two levels above the acl definition
         # Should return False
         base = "dc=c,dc=b,dc=a," + self.ldap_base
-        self.assertFalse(self.resolver.check('tester1', 'com.gosa.factory', 'r', base=base),
+        self.assertFalse(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "ACL scope RESET is not resolved correclty! The user should not be able to read, but he can!")
 
     def test_acls_scope_sub(self):
@@ -421,37 +421,37 @@ class TestACLResolver(unittest.TestCase):
         aclset = ACLSet(base)
         acl = ACL(scope=ACL.SUB)
         acl.set_members([u'tester1'])
-        acl.add_action('com.gosa.factory', 'rwx')
+        acl.add_action('org.clacks.factory', 'rwx')
         aclset.add(acl)
         self.resolver.add_acl_set(aclset)
 
         # Check for read, write, create, execute permisions
         base = "dc=a," + self.ldap_base
-        self.assertTrue(self.resolver.check('tester1', 'com.gosa.factory', 'r', base=base),
+        self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "ACL scope SUB is not resolved correclty! The user should be able to read, but he cannot!")
-        self.assertTrue(self.resolver.check('tester1', 'com.gosa.factory', 'w', base=base),
+        self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'w', base=base),
                 "ACL scope SUB is not resolved correclty! The user should be able to read, but he cannot!")
-        self.assertTrue(self.resolver.check('tester1', 'com.gosa.factory', 'x', base=base),
+        self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'x', base=base),
                 "ACL scope SUB is not resolved correclty! The user should be able to read, but he cannot!")
-        self.assertFalse(self.resolver.check('tester1', 'com.gosa.factory', 'd', base=base),
+        self.assertFalse(self.resolver.check('tester1', 'org.clacks.factory', 'd', base=base),
                 "ACL scope SUB is not resolved correclty! The user should not be able to read, but he can!")
 
         # Check for permissions one level above the base we've created acls for.
         # This should return True.
         base = "dc=b,dc=a," + self.ldap_base
-        self.assertTrue(self.resolver.check('tester1', 'com.gosa.factory', 'r', base=base),
+        self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "ACL scope SUB is not resolved correclty! The user should be able to read, but he cannot!")
 
         # Check for permissions tow levels above the base we've created acls for.
         # This should return True too.
         base = "dc=c,dc=b,dc=a," + self.ldap_base
-        self.assertTrue(self.resolver.check('tester1', 'com.gosa.factory', 'r', base=base),
+        self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "ACL scope SUB is not resolved correclty! The user should be able to read, but he cannot!")
 
         # Check for permissions one level below the base we've created acls for.
         # This should return False.
         base = self.ldap_base
-        self.assertFalse(self.resolver.check('tester1', 'com.gosa.factory', 'r', base=base),
+        self.assertFalse(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "ACL scope SUB is not resolved correclty! The user should not be able to read, but he can!")
 
     def test_acls_scope_one(self):
@@ -464,30 +464,30 @@ class TestACLResolver(unittest.TestCase):
         aclset = ACLSet(base)
         acl = ACL(scope=ACL.ONE)
         acl.set_members([u'tester1'])
-        acl.add_action('com.gosa.factory', 'rwx')
+        acl.add_action('org.clacks.factory', 'rwx')
         aclset.add(acl)
         self.resolver.add_acl_set(aclset)
 
         # Check for read, write, create, execute permisions
         base = "dc=a," + self.ldap_base
-        self.assertTrue(self.resolver.check('tester1', 'com.gosa.factory', 'r', base=base),
+        self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "ACL scope ONE is not resolved correclty! The user should be able to read, but he cannot!")
-        self.assertTrue(self.resolver.check('tester1', 'com.gosa.factory', 'w', base=base),
+        self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'w', base=base),
                 "ACL scope ONE is not resolved correclty! The user should be able to read, but he cannot!")
-        self.assertTrue(self.resolver.check('tester1', 'com.gosa.factory', 'x', base=base),
+        self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'x', base=base),
                 "ACL scope ONE is not resolved correclty! The user should be able to read, but he cannot!")
-        self.assertFalse(self.resolver.check('tester1', 'com.gosa.factory', 'd', base=base),
+        self.assertFalse(self.resolver.check('tester1', 'org.clacks.factory', 'd', base=base),
                 "ACL scope ONE is not resolved correclty! The user should not be able to read, but he can!")
 
         # Check for permissions one level above the base we've created acls for.
         base = "dc=b,dc=a," + self.ldap_base
-        self.assertFalse(self.resolver.check('tester1', 'com.gosa.factory', 'r', base=base),
+        self.assertFalse(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "ACL scope ONE is not resolved correclty! The user should not be able to read, but he can!")
 
 
         # Check for permissions one level below the base we've created acls for.
         base = self.ldap_base
-        self.assertFalse(self.resolver.check('tester1', 'com.gosa.factory', 'r', base=base),
+        self.assertFalse(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "ACL scope ONE is not resolved correclty! The user should not be able to read, but he can!")
 
 

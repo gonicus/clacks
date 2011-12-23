@@ -25,7 +25,7 @@ class DBUSProxy(Plugin):
 
     log = None
     bus = None
-    gosa_dbus = None
+    clacks_dbus = None
     methods = None
 
     def __init__(self):
@@ -37,17 +37,17 @@ class DBUSProxy(Plugin):
         try:
             self.bus = dbus.SystemBus()
             self.log.debug('loading dbus-methods registered by clacks (introspection)')
-            self.gosa_dbus = self.bus.get_object('org.clacks', '/org/clacks/service')
-            call = self.gosa_dbus._Introspect()
+            self.clacks_dbus = self.bus.get_object('org.clacks', '/org/clacks/service')
+            call = self.clacks_dbus._Introspect()
             call.block()
 
             # Collection methods
-            for method in self.gosa_dbus._introspect_method_map:
+            for method in self.clacks_dbus._introspect_method_map:
                 if not re.match("^org\.clacks\.", method):
                     continue
 
                 name = re.sub("^org\.clacks\.(.*)$", "\\1", method)
-                self.methods[name] = self.gosa_dbus._introspect_method_map[method]
+                self.methods[name] = self.clacks_dbus._introspect_method_map[method]
 
             self.log.debug("found %s registered dbus methods" % (len(self.methods)))
 
@@ -77,7 +77,7 @@ class DBUSProxy(Plugin):
             raise NotImplementedError(method)
 
         # Now call the dbus method with the given list of paramters
-        method = self.gosa_dbus.get_dbus_method(method,
+        method = self.clacks_dbus.get_dbus_method(method,
                 dbus_interface="org.clacks")
         returnval = method(*args)
         return returnval

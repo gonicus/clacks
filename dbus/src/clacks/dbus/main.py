@@ -22,7 +22,7 @@ def shutdown(a=None, b=None):
     global loop
 
     env = Environment.getInstance()
-    env.log.info("GOsa DBUS is shutting down")
+    env.log.info("Clacks DBUS is shutting down")
 
     # Shutdown plugins
     PluginRegistry.shutdown()
@@ -59,16 +59,16 @@ def mainLoop(env):
 
 
 def main():
-    """ Main programm which is called when the gosa agent process gets started.
+    """ Main programm which is called when the clacks agent process gets started.
         It does the main forking os related tasks. """
 
     # Inizialize core environment
     env = Environment.getInstance()
-    env.log.info("GOsa DBUS is starting up")
+    env.log.info("Clacks DBUS is starting up")
 
     # Are we root?
     if os.geteuid() != 0:
-        env.log.critical("GOsa DBUS must be run as root")
+        env.log.critical("Clacks DBUS must be run as root")
         exit(1)
 
     mainLoop(env)

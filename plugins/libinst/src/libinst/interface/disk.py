@@ -860,7 +860,7 @@ class DiskDefinition(object):
         # Load values from system inventory if available
         if self.uuid:
             db = PluginRegistry.getInstance("XMLDBHandler")
-            res = db.xquery("collection('inventory')/gosa:Inventory[gosa:ClientUUID/string()='%s']/gosa:Storage[gosa:Type/string()='disk']" % self.uuid)
+            res = db.xquery("collection('inventory')/e:Inventory[e:ClientUUID/string()='%s']/e:Storage[e:Type/string()='disk']" % self.uuid)
 
             for r in res:
                 o = objectify.fromstring(r)

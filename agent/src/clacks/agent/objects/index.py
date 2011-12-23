@@ -3,7 +3,7 @@
 Object Index
 ============
 
-The Object Index is the search engine in GOsa. It keeps track about
+The Object Index is the search engine in clacks. It keeps track about
 all defined object types and can find references to it inside of its
 local index database
 

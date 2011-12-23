@@ -6,7 +6,7 @@ and dispatches incoming commands to the :class:`clacks.client.command.CommandReg
 
 **Queues**
 
-In contrast to the GOsa agent, every client only has a single queue. It is
+In contrast to the clacks agent, every client only has a single queue. It is
 constructed of these components::
 
     {domain}.client.{uuid}
@@ -17,7 +17,7 @@ construct additional temporary reply queues as needed.
 
 **Events**
 
-The GOsa client produces a **ClientAnnounce** event on startup which tells
+The clacks client produces a **ClientAnnounce** event on startup which tells
 interested agents about the client capabilities (commands it provides) and
 some hardware information.
 
@@ -61,7 +61,7 @@ class AMQPClientService(object):
         self.__cmdWorker = None
 
     def serve(self):
-        """ Start AMQP service for this GOsa service provider. """
+        """ Start AMQP service for this clacks service provider. """
         # Load AMQP and Command registry instances
         amqp = PluginRegistry.getInstance('AMQPClientHandler')
         self.__cr = PluginRegistry.getInstance('ClientCommandRegistry')

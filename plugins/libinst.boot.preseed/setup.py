@@ -45,7 +45,7 @@ for various systems in your setup.
         [libinst.base_methods]
         libinst.preseed = libinst.boot.preseed.methods:DebianPreseed
 
-        [gosa.objects]
+        [object]
         libinst.preseed.diskdefinition = libinst.boot.preseed.disk:DebianDiskDefinition
     """
 )

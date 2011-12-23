@@ -49,7 +49,7 @@ class PuppetClient(Plugin):
 
         # Read config values
         self.__puppet_user = env.config.get("puppet.user",
-            default=env.config.get("client.user", default="gosa"))
+            default=env.config.get("client.user", default="clacks"))
         self.__target_dir = env.config.get("puppet.target", default="/etc/puppet")
         self.__puppet_command = env.config.get("puppet.command", default="/usr/bin/puppet")
         self.__report_dir = env.config.get("puppet.report-dir", default="/var/log/puppet")
@@ -178,8 +178,8 @@ class PuppetClient(Plugin):
         """ Perform a manual puppet run """
         self.log.debug("calling dbus run_puppet method")
         bus = dbus.SystemBus()
-        gosa_dbus = bus.get_object('org.clacks', '/org/clacks/puppet')
-        return bool(gosa_dbus.run_puppet(dbus_interface = "org.clacks"))
+        clacks_dbus = bus.get_object('org.clacks', '/org/clacks/puppet')
+        return bool(clacks_dbus.run_puppet(dbus_interface = "org.clacks"))
 
     @Command()
     def puppetGetReleaseInfo(self):
@@ -210,7 +210,7 @@ class PuppetClient(Plugin):
     @Command()
     def puppetGetPushPath(self):
         """ Get path where the configuration has to be pushed to """
-        user = self.env.config.get('client.user', default="gosa")
+        user = self.env.config.get('client.user', default="clacks")
         fqdn = socket.gethostbyaddr(self.env.id)[0]
         return "%s@%s:%s" % (user, fqdn, self.__base_dir + "/data.git")
 

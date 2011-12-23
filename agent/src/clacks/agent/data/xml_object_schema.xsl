@@ -67,7 +67,7 @@
 
                                         <xsl:if test="not(g:Foreign='true') and not(g:Name=preceding-sibling::g:Attribute/g:Name)">
 
-                                            <!-- Convert Type-Strings used by GOsa into xsd:types 
+                                            <!-- Convert Type-Strings used by clacks into xsd:types 
                                                  To allow a more detailed validation
                                             -->
                                             <xsl:variable name="type">

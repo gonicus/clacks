@@ -4,12 +4,12 @@
 	<xsl:output method="xml" indent="yes" encoding="UTF-8" />
 	<xsl:template match="/">
 		<Objects  xmlns="http://www.gonicus.de/Objects" 
-			xmlns:gosa="http://www.gonicus.de/Objects">
-			<xsl:for-each select="/gosa:Paths/gosa:Path">
+			xmlns:o="http://www.gonicus.de/Objects">
+			<xsl:for-each select="/o:Paths/o:Path">
 	                        <xsl:variable name="path">
         	                        <xsl:value-of select="." />
                 	        </xsl:variable>
-				<xsl:for-each select="document($path)/gosa:Objects/gosa:Object">
+				<xsl:for-each select="document($path)/o:Objects/o:Object">
 					<xsl:copy>
 						<xsl:apply-templates select="@*|node()" />
 					</xsl:copy>

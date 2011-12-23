@@ -37,7 +37,7 @@ but GOsa will rely on a simple git+ssh setup.
 This setup will be built upon a central (Gosa-NG) Server which hosts the GIT repo as main source of the configuration data (recipes etc.). 
 In addition to a basic GIT configuration, this central repo will be configured with the "Remote" feature of git.
 
-By adding each client into the list of remote entries, distribution of the recipes to the gosa-ng-clients can be achieved
+By adding each client into the list of remote entries, distribution of the recipes to the clacks-clients can be achieved
 automatically using a push-mechanism. Using alias-names, it is possible to define groups of hosts which will be pushed, too.
 
 An exemplary command would be
@@ -76,7 +76,7 @@ The following list collects the system requirements for a clacks.client which ca
 * sshd running
 * puppet installed
 * git installed
-* gosa user with disabled password
+* clacks user with disabled password
 * server must add ssh key auth via clientDispatch.puppetAddKey()
 
 ----

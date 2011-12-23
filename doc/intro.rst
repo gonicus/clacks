@@ -72,7 +72,7 @@ For now, please use git::
    $ cd 'the place where you created the clacks virtualenv'
    $ git clone git://oss.gonicus.de/git/gosa.git src
 
-Additionally, you can get some stripped of GOsa 2.7 sources from here::
+Additionally, you can get some stripped of Clacks 2.7 sources from here::
 
    $ git clone git://oss.gonicus.de/git/gosa-gui.git
    $ cd gosa-gui
@@ -243,7 +243,7 @@ these schema files like this::
 	# ldapadd -Y EXTERNAL -H ldapi:/// -f configured-device.ldif
 
 If you use the PHP GUI, you also need to install the "old" schema files, because
-the GOsa GUI and clacks.agent service are meant to coexist until everything is cleanly
+the Clacks GUI and clacks.agent service are meant to coexist until everything is cleanly
 migrated.
 
 After you've optionally done that, find out which base is configured for your system::
@@ -407,9 +407,9 @@ Zeroconf setup::
   Clacks\ RPC\ Service._amqps._tcp  SRV 0 0 5671 amqp.intranet.gonicus.de.
                                   TXT path=/org.clacks service=clacks
   
-  _https._tcp                     PTR GOsa\ Web\ Service._https._tcp
+  _https._tcp                     PTR Clacks\ Web\ Service._https._tcp
                                   PTR Clacks\ RPC\ Service._https._tcp
-  GOsa\ Web\ Service._https._tcp  SRV 0 0 443 gosa.intranet.gonicus.de.
+  Clacks\ Web\ Service._https._tcp  SRV 0 0 443 gosa.intranet.gonicus.de.
                                   TXT path=/gosa
   Clacks\ RPC\ Service._https._tcp SRV 0 0 8080 amqp.intranet.gonicus.de.
                                   TXT path=/rpc service=clacks
@@ -455,10 +455,10 @@ Starting the service
 """"""""""""""""""""
 
 In a productive environment, everything should be defined in the configuration
-file, so copy the configuration file to the place where gosa expects it::
+file, so copy the configuration file to the place where clacks expects it::
 
-  $ mkdir -p /etc/gosa
-  $ cp ./src/clacks.agent/src/gosa/agent/data/agent.conf /etc/clacks/config
+  $ mkdir -p /etc/clacks
+  $ cp ./src/clacks.agent/src/clacks/agent/data/agent.conf /etc/clacks/config
 
 Now take a look at the config file and adapt it to your needs.
 
@@ -491,19 +491,19 @@ Here is an example config file for a non-secured service. (A HowTo about securin
     log = stderr
     
     # Keyword logfile: full path to log to if log = file
-    #logfile = /var/log/gosa/agent.log
+    #logfile = /var/log/clacks/agent.log
     
     # Keyword id: name of this clacks-agent node
     id = clacks-agent
     
     # Keyword user: username to run the daemon as
-    #user = gosa
+    #user = clacks
     
     # Keyword group: groupname to run the daemon as
-    #group = gosa
+    #group = clacks
     
     # Keyword pidfile: where to place the pid in daemon mode
-    #pidfile = /var/run/gosa/gosa.pid
+    #pidfile = /var/run/clacks/clacks.pid
     
     # Keyword profile: for debugging, only
     profile = False
@@ -531,10 +531,10 @@ Here is an example config file for a non-secured service. (A HowTo about securin
     [http]
     host = localhost
     port = 8080
-    #sslpemfile = /etc/gosa/host.pem
+    #sslpemfile = /etc/clacks/host.pem
     
     [goto]
-    oui-db = /usr/share/gosa/oui.txt
+    oui-db = /usr/share/clacks/oui.txt
     
     [repository]
     database = mysql+mysqldb://libinst:secret@localhost/libinst?charset=utf8&use_unicode=0
@@ -575,11 +575,11 @@ Start the shell and send a command::
 
   $ clacksh
   (authenticate as the admin user you've created in qpid's SASL DB)
-  >>> gosa.help()
-  >>> gosa.mksmbhash("secret")
+  >>> clacks.help()
+  >>> mksmbhash("secret")
   >>> <Strg+D>
 
-The shell did not get priorized work in the moment, so the gosa.help() output is
+The shell did not get priorized work in the moment, so the clacks.help() output is
 neither sorted, nor grouped by plugins. Much space for improvements.
 
 If you tend to use a connection URL directly, use::
@@ -596,7 +596,7 @@ for AMQP based sessions.
 The clacks client
 ^^^^^^^^^^^^^^^^^^
 
-A clacks client is a device instance that has been joined into the gosa network.
+A clacks client is a device instance that has been joined into the clacks network.
 Every client can incorporate functionality into the network - or can just be
 a managed client.
 
@@ -639,7 +639,7 @@ client as root. The clacks-dbus component is used to run dedicated tasks as root
 can be extended by simple plugins and registers the resulting methods in the dbus
 interface.
 
-To use the dbus-component, you've to allow the gosa system user (or whatever user
+To use the dbus-component, you've to allow the clacks system user (or whatever user
 the clacks-client is running later on) to use certain dbus services. Copy and eventually
 adapt the file src/contrib/dbus/org.clacks.conf to /etc/dbus-1/system.d/ and
 reload your dbus service. ::
@@ -658,33 +658,33 @@ the clacks-dbus component in daemon or foreground mode::
 Running the client
 """"""""""""""""""
 
-To run the client, you should put your development user into the gosa group - to
+To run the client, you should put your development user into the clacks group - to
 be able to use the dbus features::
 
-  $ sudo adduser $USER gosa
+  $ sudo adduser $USER clacks
 
 You might need to re-login to make the changes happen. After that, start the clacks
 client inside the activated virtual environment::
 
   $ clacks-client -f
 
-Integration with PHP GOsa
+Integration with PHP Clacks
 -------------------------
 
 The *clacks agent* and *clacks client* setup may be ok for playing around, but
-as of GOsa 2.7 you can configure an active communication between the ordinary
-PHP GOsa and the agent - which acts as a replacement for *gosa-si*.
+as of Clacks 2.7 you can configure an active communication between the ordinary
+PHP Clacks and the agent - which acts as a replacement for *gosa-si*.
 
 .. warning::
 
    While the clacks agent series are under heavy development, it is recommended
-   to try with GOsa 2.7 trunk. You should be aware of not beeing able to replace
+   to try with Clacks 2.7 trunk. You should be aware of not beeing able to replace
    all gosa-si functionality in the moment.
 
 -----------------
 
-To connection the web-based GOsa with the clacks agent you have to adjust the configuration slightly.
-There are two ways to do so, the first is to update the GOsa 2.7 configuration file directly 
+To connection the web-based Clacks with the clacks agent you have to adjust the configuration slightly.
+There are two ways to do so, the first is to update the Clacks 2.7 configuration file directly 
 ``/etc/clacks/config`` to include the following lines:
 
 .. code-block:: xml
@@ -698,7 +698,7 @@ There are two ways to do so, the first is to update the GOsa 2.7 configuration f
     </main>
 
 
-The other way would be to configure these properties inside of GOsa using the ``preferences`` plugin.
+The other way would be to configure these properties inside of Clacks using the ``preferences`` plugin.
 
 Select the ``preferences`` plugin from the menu and then read and accept the warning message.
 
@@ -711,7 +711,7 @@ Now adjust the values of these properties to match your setup and click ``apply`
 
 .. image:: _static/images/gosa_setup_rpc_2.png
 
-That is all, you may only need to relog into the GOsa GUI.
+That is all, you may only need to relog into the Clacks GUI.
 
 Design overview
 ---------------

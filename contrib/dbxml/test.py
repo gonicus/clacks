@@ -32,7 +32,7 @@ if __name__ == "__main__":
     # Create query context and populate used namespaces
     qc = mgr.createQueryContext()
     qc.setNamespace("", "http://www.gonicus.de/Events")
-    qc.setNamespace("gosa", "http://www.gonicus.de/Events")
+    qc.setNamespace("e", "http://www.gonicus.de/Events")
     qc.setNamespace("xsi","http://www.w3.org/2001/XMLSchema-instance")
 
     # Query for the used DeviceIDs

@@ -38,12 +38,12 @@ at the :ref:`Plugin section<plugins>`.
 Joining clients
 ===============
 
-Before a GOsa client can connect to the AMQP bus, it needs to be known to
+Before a clacks client can connect to the AMQP bus, it needs to be known to
 the infrastructure - which is done by *joining* the client. The process
 of joining is like joining a windows client to a domain: you need someone
 with adequate permission to do that.
 
-While the *gosa-join* binary will do this for you, it is possible to extend
+While the *clacks-join* binary will do this for you, it is possible to extend
 it to use i.e. a graphical join dialog. At present, we provide a ncurses
 and a readline based join mechanism. More can be added using the setuptools
 ``join.module`` entrypoint. For more information, take a look at the
@@ -52,10 +52,10 @@ and a readline based join mechanism. More can be added using the setuptools
 Using the binaries
 ==================
 
-The gosa-client binary gets installed when you run the setup process. It
+The clacks-client binary gets installed when you run the setup process. It
 has a couple of command line arguments:
 
-    .. program-output::  gosa-client --help
+    .. program-output::  clacks-client --help
        :prompt:
 
 .. note::

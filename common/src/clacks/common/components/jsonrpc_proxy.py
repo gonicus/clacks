@@ -91,7 +91,7 @@ class JSONServiceProxy(object):
        (http|https)://user:password@host:port/rpc
 
     .. note::
-       The HTTP service is operated by a gosa-agent instance. This means
+       The HTTP service is operated by a clacks-agent instance. This means
        that you don't have load balancing and failover out of the box.
        If you need these features, you should use :class:`clacks.common.components.amqp_proxy.AMQPServiceProxy`
        instead.

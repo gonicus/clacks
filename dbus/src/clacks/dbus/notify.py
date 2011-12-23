@@ -33,7 +33,7 @@ class Notify(object):
     children = []
 
     def __init__(self, quiet=False, verbose=False):
-        pynotify.init('gosa-ng')
+        pynotify.init('clacks')
         self.quiet = quiet
         self.verbose = verbose
 

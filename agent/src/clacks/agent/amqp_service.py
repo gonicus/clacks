@@ -74,7 +74,7 @@ from clacks.common import Environment
 class AMQPService(object):
     """
     Class to serve all available queues and commands to the AMQP broker. It
-    makes use of a couple of configuration flags provided by the gosa
+    makes use of a couple of configuration flags provided by the clacks
     configurations file ``[amqp]`` section:
 
     ============== =============
@@ -108,7 +108,7 @@ class AMQPService(object):
         self.__cmdWorker = None
 
     def serve(self):
-        """ Start AMQP service for this GOsa service provider. """
+        """ Start AMQP service for this clacks service provider. """
         # Load AMQP and Command registry instances
         amqp = PluginRegistry.getInstance('AMQPHandler')
         self.__cr = PluginRegistry.getInstance('CommandRegistry')
@@ -143,7 +143,7 @@ class AMQPService(object):
         self.log.info("ready to process incoming requests")
 
     def stop(self):
-        """ Stop AMQP service for this GOsa service provider. """
+        """ Stop AMQP service for this clacks service provider. """
         self.__zeroconf.unpublish()
 
     def commandReceived(self, ssn, message):

@@ -1,10 +1,10 @@
 Shell and scripting
 ===================
 
-While the GOsa core is all python and you can simply script complex tasks 
+While the Clacks core is all python and you can simply script complex tasks 
 directly in python, there's sometimes the need to trigger calls from
 within the ordinary shell - maybe inside a *bash* script. For that reason,
-there's the *gosa-shell* binary, which can assist you in this case.
+there's the *clacksh* binary, which can assist you in this case.
 
 
 Using the shell

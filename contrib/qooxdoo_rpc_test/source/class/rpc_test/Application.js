@@ -69,7 +69,7 @@ qx.Class.define("rpc_test.Application",
       }
       this.debug(webSocket);
 
-      var rpc = new qx.io.remote.Rpc("https://amqp.intranet.gonicus.de/rpc", "GOsa JSON-RPC service");
+      var rpc = new qx.io.remote.Rpc("https://amqp.intranet.gonicus.de/rpc", "Clacks JSON-RPC service");
       rpc.setTimeout(10000);
       res = rpc.callSync('login','cajus','tester');
 

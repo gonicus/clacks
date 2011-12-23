@@ -115,7 +115,7 @@ def main():
 if __name__ == '__main__':
     # check for root permission
     if os.geteuid() != 0:
-        print("Error: you need to be root to join to a gosa-ng network!")
+        print("Error: you need to be root to join to the clacks infrastructure!")
         exit()
 
     main()

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema targetNamespace="http://www.gonicus.de/Events" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gosa="http://www.gonicus.de/Events">
+<schema targetNamespace="http://www.gonicus.de/Events" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:e="http://www.gonicus.de/Events">
 
     <complexType name="ClientCapabilities">
     	<sequence maxOccurs="unbounded" minOccurs="0">
-    		<element name="ClientMethod" type="gosa:ClientMethod"></element>
+    		<element name="ClientMethod" type="e:ClientMethod"></element>
     	</sequence>
     </complexType>
     
@@ -16,25 +16,25 @@
     	</all>
     </complexType>
 
-    <element name="NetworkDevice" type="gosa:NetworkDevice"></element>
+    <element name="NetworkDevice" type="e:NetworkDevice"></element>
 
-    <element name="ClientCapabilities" type="gosa:ClientCapabilities"></element>
+    <element name="ClientCapabilities" type="e:ClientCapabilities"></element>
 
-    <element name="ClientMethod" type="gosa:ClientMethod"></element>
+    <element name="ClientMethod" type="e:ClientMethod"></element>
 
     <complexType name="NetworkInformation">
     	<sequence maxOccurs="unbounded" minOccurs="1">
-    		<element name="NetworkDevice" type="gosa:NetworkDevice"></element>
+    		<element name="NetworkDevice" type="e:NetworkDevice"></element>
     	</sequence>
     </complexType>
 
-    <element name="NetworkInformation" type="gosa:NetworkInformation"></element>
+    <element name="NetworkInformation" type="e:NetworkInformation"></element>
 
     <complexType name="ClientAnnounce">
         <all>
-    		<element name="NetworkInformation" type="gosa:NetworkInformation" maxOccurs="1" minOccurs="1">
+    		<element name="NetworkInformation" type="e:NetworkInformation" maxOccurs="1" minOccurs="1">
     		</element>
-    		<element name="ClientCapabilities" type="gosa:ClientCapabilities" maxOccurs="1" minOccurs="0">
+    		<element name="ClientCapabilities" type="e:ClientCapabilities" maxOccurs="1" minOccurs="0">
     		</element>
     		<element name="Id" type="string" maxOccurs="1" minOccurs="1">
     		</element>
@@ -43,6 +43,6 @@
 
     </complexType>
 
-    <element name="ClientAnnounce" type="gosa:ClientAnnounce"></element>
+    <element name="ClientAnnounce" type="e:ClientAnnounce"></element>
 
 </schema>

@@ -2,14 +2,14 @@ Logging
 =======
 
 Logging is handled by the default python logging module. To configure
-logging for GOsa, you can add the following infomration to your main
-GOsa configuration file, or - at your choice - create a new file for
+logging for Clacks, you can add the following infomration to your main
+Clacks configuration file, or - at your choice - create a new file for
 logging inside the config.d directory.
 
 Here's an example:
 
 	[loggers]
-	keys=root,gosa
+	keys=root,clacks
 	
 	[handlers]
 	keys=syslog,console,file
@@ -22,10 +22,10 @@ Here's an example:
 	level=CRITICAL
 	handlers=console
 	
-	[logger_gosa]
+	[logger_clacks]
 	level=INFO
 	handlers=console
-	qualname=gosa
+	qualname=clacks
 	propagate=0
 	
 	[handler_console]
@@ -41,7 +41,7 @@ Here's an example:
 	[handler_file]
 	class=logging.handlers.TimedRotatingFileHandler
 	formatter=syslog
-	args=('/var/log/gosa/agent.log', 'w0', 1, 4)
+	args=('/var/log/clacks/agent.log', 'w0', 1, 4)
 	
 	[formatter_syslog]
 	class=logging.Formatter

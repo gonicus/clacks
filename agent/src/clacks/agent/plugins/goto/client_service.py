@@ -494,7 +494,7 @@ class ClientService(Plugin):
         if 'request_inventory' in self.__client[client]['caps']:
             self.log.info("requesting inventory from client %s" % client)
             db = PluginRegistry.getInstance("XMLDBHandler")
-            checksum = db.xquery("collection('inventory')/gosa:Inventory[gosa:ClientUUID/string()='%s']/gosa:GOsaChecksum/string()" % client)
+            checksum = db.xquery("collection('inventory')/e:Inventory[e:ClientUUID/string()='%s']/e:Checksum/string()" % client)
             if checksum:
                 self.clientDispatch(client, "request_inventory", str(checksum[0]))
             else:

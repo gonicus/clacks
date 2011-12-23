@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-The JSONRPC implementation consists of a GOsa agent plugin (*JSONRPCService*)
+The JSONRPC implementation consists of a clacks agent plugin (*JSONRPCService*)
 and a WSGI application (*JsonRpcApp*). The first is implemented as a handler
 plugin, so it is going to be invoked on agent startup. It takes care of
 registering the WSGI application to the
@@ -25,11 +25,11 @@ from clacks.agent import __version__ as VERSION
 
 class JSONRPCService(object):
     """
-    This is the JSONRPC GOsa agent plugin which is registering an
+    This is the JSONRPC clacks agent plugin which is registering an
     instance of :class:`clacks.agent.jsonrpc_service.JsonRpcApp` into the
     :class:`clacks.agent.httpd.HTTPService`.
 
-    It is configured thru the ``[jsonrpc]`` section of your GOsa
+    It is configured thru the ``[jsonrpc]`` section of your clacks
     configuration:
 
     =============== ============
@@ -61,7 +61,7 @@ class JSONRPCService(object):
         self.__http = None
 
     def serve(self):
-        """ Start JSONRPC service for this GOsa service provider. """
+        """ Start JSONRPC service for this clacks service provider. """
 
         # Get http service instance
         self.__http = PluginRegistry.getInstance('HTTPService')
@@ -71,7 +71,7 @@ class JSONRPCService(object):
         app = JsonRpcApp(cr)
         self.__http.app.register(self.path, AuthCookieHandler(app,
             timeout=self.env.config.get('jsonrpc.cookie-lifetime',
-            default=1800), cookie_name='GOsaRPC',
+            default=1800), cookie_name='ClacksRPC',
             secret=self.env.config.get('http.cookie_secret',
                 default="TecloigJink4")))
 
@@ -85,7 +85,7 @@ class JSONRPCService(object):
         self.log.info("ready to process incoming requests")
 
     def stop(self):
-        """ Stop serving the JSONRPC service for this GOsa service provider. """
+        """ Stop serving the JSONRPC service for this clacks service provider. """
         self.log.debug("shutting down JSON RPC service provider")
         self.__http.app.unregister(self.path)
 
@@ -103,7 +103,7 @@ class JsonRpcApp(object):
         self.dispatcher = dispatcher
         self.env = Environment.getInstance()
         self.log = logging.getLogger(__name__)
-        self.ident = "GOsa JSON-RPC service (%s)" % VERSION
+        self.ident = "Clacks JSON-RPC service (%s)" % VERSION
 
     def __call__(self, environ, start_response):
         req = Request(environ)

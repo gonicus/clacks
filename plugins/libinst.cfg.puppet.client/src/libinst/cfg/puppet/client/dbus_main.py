@@ -38,7 +38,7 @@ class PuppetDBusHandler(dbus.service.Object, Plugin):
                 raise OptionMissing("reportdir configured in " \
                         "/etc/puppet/puppet.conf and %s do not match" % self.env.config.get('core.config'))
 
-            if config.get("main", "reports", "") != "store_gosa":
+            if config.get("main", "reports", "") != "store_clacks":
                 raise OptionMissing("storage module probably not compatible")
 
         except OptionMissing:
@@ -55,7 +55,7 @@ something like this:
 
 report=true
 reportdir=%s
-reports=store_gosa
+reports=store_clacks
 """ % self.logdir
         self.log.warning(msg)
 

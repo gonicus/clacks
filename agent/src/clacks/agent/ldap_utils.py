@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-The GOsa agent includes a *LDAPHandler* class and a couple of utilities
+The clacks agent includes a *LDAPHandler* class and a couple of utilities
 make LDAP connections a little bit easier to use.
 
 ------
@@ -37,7 +37,7 @@ class LDAPHandler(object):
     after you've used it.**
 
     The *LDAPHandler* creates connections based on what's configured in the
-    ``[ldap]`` section of the GOsa configuration files. Here's a list of valid
+    ``[ldap]`` section of the clacks configuration files. Here's a list of valid
     keywords:
 
     ============== =============
