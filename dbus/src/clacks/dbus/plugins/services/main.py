@@ -74,58 +74,17 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         ret = process.communicate()
         return process.returncode
 
-    @dbus.service.method('org.clacks', in_signature='s', out_signature='b')
-    def service_start(self, name):
+    @dbus.service.method('org.clacks', in_signature='ss', out_signature='i')
+    def service_action(self, service, action):
         """
-        Starts the given service, if it is not running.
+        Executes a service action
         """
-        service = self._validate(name, "start")
+        self._validate(service, action)
+        self.log.debug("%s service %s" % (action, service))
 
-        # Skip if running
-        if "True" in service['running']:
-            return True
-
-        # Execute call
-        self.log.debug("starting service %s" % (name))
-        return subprocess.call([self.svc_command, name, 'start']) == 0
-
-    @dbus.service.method('org.clacks', in_signature='s', out_signature='b')
-    def service_stop(self, name):
-        """
-        Stop the given service, if it is running.
-        """
-        service = self._validate(name, "stop")
-
-        # Skip if running
-        if "True" not in service['running']:
-            return True
-
-        # Execute call
-        self.log.debug("stopping service %s" % (name))
-        return subprocess.call([self.svc_command, name, 'stop']) == 0
-
-    @dbus.service.method('org.clacks', in_signature='s', out_signature='b')
-    def service_restart(self, name):
-        """
-        Restart the given service.
-        """
-        service = self._validate(name, "restart")
-        self.log.debug("restarting service %s" % (name))
-        return subprocess.call([self.svc_command, name, 'restart']) == 0
-
-    @dbus.service.method('org.clacks', in_signature='s', out_signature='b')
-    def service_reload(self, name):
-        """
-        Reloads the given service.
-        """
-        service = self._validate(name, "reload")
-
-        # Skip if running
-        if "True" not in service['running']:
-            return False
-
-        self.log.debug("reloading service %s" % (name))
-        return subprocess.call([self.svc_command, name, 'reload']) == 0
+        process = subprocess.Popen([self.svc_command, service, action], shell=False, stdout=subprocess.PIPE,  stderr=subprocess.PIPE)
+        ret = process.communicate()
+        return process.returncode == 0
 
     @dbus.service.method('org.clacks', in_signature='s', out_signature='a{sv}')
     def get_service(self, name):
@@ -146,7 +105,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
 
         # Get the current runlevel and then check for registered services using
         #  run-parts --test --regex=^S* /etc/rc<level>.d
-        level = self.get_runlevel()
+        level = self.service_get_runlevel()
         process = subprocess.Popen(["run-parts", "--test", "--regex=^S*", "/etc/rc%s.d" % (str(level))],
                 shell=False, stdout=subprocess.PIPE,  stderr=subprocess.PIPE, env={'LC_ALL': 'C'})
         ret = process.communicate()
