@@ -1,0 +1,4 @@
+To create the clacks switch system run these commands:
+
+$ lb config
+# lb build

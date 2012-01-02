@@ -1,0 +1,12 @@
+#!/bin/sh
+
+lb config noauto \
+	-b net \
+	--net-root-path "/srv/clacks-switch" \
+	--net-root-server "192.168.0.1" \
+	--mode debian \
+	--apt-indices false \
+	--distribution "wheezy" \
+	--bootappend-live "locales=de_DE.UTF-8 keyboard-layouts=de" \
+	--package-lists "clacks" \
+	"${@}"
