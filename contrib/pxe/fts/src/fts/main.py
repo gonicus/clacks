@@ -82,8 +82,11 @@ class PxeFS(fuse.Fuse):
             self.env.log.error("static path '{path}' does not exist".format(path=static_path))
             exit(1)
 
-        #TODO: fixme
-        #args = args + ("-f", self.cfg_path)
+        # Inject mount point and foreground mode
+        fa = fuse.FuseArgs()
+        fa.mountpoint = self.cfg_path
+        fa.setmod('foreground')
+        kw['fuse_args'] = fa
 
         fuse.Fuse.__init__(self, *args, **kw)
         self.root = os.sep
