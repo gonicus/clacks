@@ -31,8 +31,7 @@ setup(
     package_dir={'': 'src'},
 
     include_package_data = True,
-    package_data = {
-    },
+    package_data = { 'fts': ['data/config', 'data/pxelinux.static/default'] },
 
     test_suite = "nose.collector",
     zip_safe = False,
@@ -42,4 +41,9 @@ setup(
         'clacks.agent',
         'fuse-python',
     ],
+
+    entry_points = """
+        [console_scripts]
+        fts = fts.main:main
+    """
 )
