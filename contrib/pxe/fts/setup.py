@@ -3,14 +3,14 @@ from setuptools import setup, find_packages
 
 setup(
     name = "fts",
-    version = "0.1",
+    version = "1.0",
     author = "Jan Wenzel",
     author_email = "wenzel@gonicus.de",
     description = "PXE/TFTP supplicant application",
     long_description = """
-    This application generates pxelinux configuration files for systems identified by mac addresses.
-    It needs a TFTP-Server to allow controlling network boot.
-""",
+    This application generates pxelinux configuration files for systems
+    identified by MAC addresses.
+    It needs a TFTP-Server to allow controlling network boot.""",
     license = "LGPL",
     url = "http://www.gosa-project.org",
     classifiers = [
@@ -36,9 +36,7 @@ setup(
     test_suite = "nose.collector",
     zip_safe = False,
 
-    setup_requires = ['nose', 'NoseXUnit', 'pylint'],
     install_requires = [
-        'clacks.agent',
         'fuse-python',
     ],
 
