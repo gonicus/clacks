@@ -11,6 +11,8 @@ import ConfigParser
 import pkg_resources
 from time import time
 from fts.filestat import FileStat
+from fts.plugins.interface import BootPlugin
+
 
 macaddress = re.compile("^[0-9a-f]{1,2}-[0-9a-f]{1,2}-[0-9a-f]{1,2}-[0-9a-f]{1,2}-[0-9a-f]{1,2}-[0-9a-f]{1,2}$", re.IGNORECASE)
 
@@ -60,6 +62,8 @@ addresses.""",
         self.boot_method_reg = {}
         for entry in pkg_resources.iter_entry_points("fts.plugin"):
             module = entry.load()
+            #TODO: check for parent -> BootPlugin
+            print issubclass(module, BootPlugin)
             self.boot_method_reg[module.__name__] = module()
             syslog.syslog(syslog.LOG_INFO, "boot plugin '%s' included" % module.getInfo())
 

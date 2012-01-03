@@ -6,6 +6,11 @@ import fuse
 from fts.pxefs import PXEfs
 
 
+#TODO: document
+# fts
+# fusermount -u /tftpboot/pxelinux.cfg
+
+
 def main():
     # Fuse sanity check
     if not hasattr(fuse, '__version__'):
