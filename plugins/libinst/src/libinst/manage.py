@@ -2126,7 +2126,7 @@ class LibinstManager(Plugin):
         Example:
 
         >>> proxy.systemGetBootString('2daf7cbf-75c2-4ea3-bfec-606fe9f07051')
-        u'label preseed\n    kernel debian-installer/i386/linux\n    append vga=normal initrd=debian-installer/i386/initrd.gz netcfg/choose_interface=eth0 locale=de_DE debian-installer/country=DE debian-installer/language=de debian-installer/keymap=de-latin1-nodeadkeys console-keymaps-at/keymap=de-latin1-nodeadkeys auto-install/enable=false preseed/url=https://amqp.intranet.gonicus.de:8080/preseed/de-ad-d9-57-56-d5 debian/priority=critical hostname=dyn-10 domain=please-fixme.org DEBCONF_DEBUG=5 svc_key=f1p8zRBGrUA26Nn+2qBS/JC8KOXHTEfgIEq5Le2WC4jW2xUuVzzHnO9LYiH8hYLNXHo7V9+2Aiz8\n/XU6xxcusWUiMjXgdZcDe8wJtXR5krg=\n\n'
+        u'label default\n    kernel debian-installer/i386/linux\n    append vga=normal initrd=debian-installer/i386/initrd.gz netcfg/choose_interface=eth0 locale=de_DE debian-installer/country=DE debian-installer/language=de debian-installer/keymap=de-latin1-nodeadkeys console-keymaps-at/keymap=de-latin1-nodeadkeys auto-install/enable=false preseed/url=https://amqp.intranet.gonicus.de:8080/preseed/de-ad-d9-57-56-d5 debian/priority=critical hostname=dyn-10 domain=please-fixme.org DEBCONF_DEBUG=5 svc_key=f1p8zRBGrUA26Nn+2qBS/JC8KOXHTEfgIEq5Le2WC4jW2xUuVzzHnO9LYiH8hYLNXHo7V9+2Aiz8\n/XU6xxcusWUiMjXgdZcDe8wJtXR5krg=\n\n'
 
         ``Return:`` Template as a string
         """

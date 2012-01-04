@@ -2,8 +2,8 @@
 from setuptools import setup, find_packages
 
 setup(
-    name = "fts.gosa",
-    version = "0.1",
+    name = "fts.clacks",
+    version = "1.0",
     author = "Jan Wenzel",
     author_email = "wenzel@gonicus.de",
     description = "PXE/TFTP supplicant application :: GOsaNG Plugin",
@@ -14,7 +14,7 @@ setup(
     license = "LGPL",
     url = "http://www.gosa-project.org",
     classifiers = [
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
         'Intended Audience :: System Administrators',
         'License :: OSI Approved :: GNU General Public License (GPL)',
@@ -34,17 +34,15 @@ setup(
     package_data = {
     },
 
-    test_suite = "nose.collector",
     zip_safe = False,
 
-    setup_requires = ['nose', 'NoseXUnit', 'pylint'],
     install_requires = [
-        'clacks.agent',
-        'fuse-python',
+        'clacks.common',
+        'fts',
     ],
 
     entry_points = """
-    [fts.methods]
-    gosa = fts.gosa.main:GosaHandler
+    [fts.plugin]
+    clacks = fts.clacks.main:ClacksBoot
 """,
 )

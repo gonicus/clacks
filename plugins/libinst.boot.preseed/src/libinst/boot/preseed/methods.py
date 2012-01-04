@@ -147,7 +147,7 @@ class DebianPreseed(BaseInstallMethod):
         data = load_system(device_uuid, mac)
         arch = data["installArchitecture"][0]
 
-        return "label preseed\n    kernel debian-installer/%s/linux\n    append %%s\n" % arch
+        return "label default\n    kernel debian-installer/%s/linux\n    append %%s\n" % arch
 
     def getBootParams(self, device_uuid, mac=None):
         super(DebianPreseed, self).getBootParams(device_uuid, mac)

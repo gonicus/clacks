@@ -51,4 +51,4 @@ class BootPlugin(object):
 
         ``Return``: String
         """
-        return "label fts\n\tmenu label %s\n\tkernel %s\n\tappend %s\n" % (label, kernel, append)
+        return "label default\n\tmenu label %s\n\tkernel %s\n\tappend %s\n" % (label, kernel, append)

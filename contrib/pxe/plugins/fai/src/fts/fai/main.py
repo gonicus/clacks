@@ -6,10 +6,10 @@ from fts.ldap_utils import LDAPHandler
 from fts.plugins.interface import BootPlugin
 
 
-class FAI(BootPlugin):
+class FAIBoot(BootPlugin):
 
     def __init__(self):
-        super(FAI, self).__init__()
+        super(FAIBoot, self).__init__()
 
         self.ldap = LDAPHandler.get_instance()
         self.nfs_root= self.config.get('fai.nfs-root', '/srv/nfsroot')
