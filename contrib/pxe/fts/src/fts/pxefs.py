@@ -4,11 +4,9 @@ import re
 import stat
 import fuse
 import syslog
-import argparse
-import ConfigParser
 import pkg_resources
 from time import time
-from fts.filestat import FileStat
+from fts import Config, FileStat
 from fts.plugins.interface import BootPlugin
 
 
@@ -18,21 +16,9 @@ macaddress = re.compile("^[0-9a-f]{1,2}-[0-9a-f]{1,2}-[0-9a-f]{1,2}-[0-9a-f]{1,2
 class PXEfs(fuse.Fuse):
 
     def __init__(self, *args, **kw):
-        # Load specified configuration file
-        parser = argparse.ArgumentParser(
-            description="""This services provides a user space filesystem overlay for dynamically
-generated PXE configurations. It takes a static directory and provides the
-files from that directory on a newly mounted path - which gets filtered by
-a set of plugins that can provide drop in configurations for certain MAC
-addresses.""",
-            prog='fts',
-            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-        parser.add_argument('--config', '-c',
-            metavar='FILE',
-            help='path to the configuration file', default="/etc/fts/config")
-
-        cli_opts = parser.parse_args()
-        self.load_config(cli_opts.config)
+        config = Config.get_instance()
+        self.static_path = config.get('pxe.static-path', '/tftpboot/pxelinux.static')
+        self.cfg_path = config.get('pxe.path', '/tftpboot/pxelinux.cfg')
 
         # Sanity checks
         if not os.access(self.cfg_path, os.F_OK):
@@ -60,25 +46,9 @@ addresses.""",
         self.boot_method_reg = {}
         for entry in pkg_resources.iter_entry_points("fts.plugin"):
             module = entry.load()
-            #TODO: check for parent -> BootPlugin
-            print issubclass(module, BootPlugin)
-            self.boot_method_reg[module.__name__] = module()
-            syslog.syslog(syslog.LOG_INFO, "boot plugin '%s' included" % module.getInfo())
-
-    def load_config(self, cfg):
-        config = ConfigParser.SafeConfigParser({
-            'static-path': '/tftpboot/pxelinux.static',
-            'path': '/tftpboot/pxelinux.cfg'})
-        config.read(cfg)
-
-        try:
-            config.get('pxe', 'static-path')
-
-        except ConfigParser.NoSectionError:
-            config.add_section('pxe')
-
-        self.static_path = config.get('pxe', 'static-path')
-        self.cfg_path = config.get('pxe', 'path')
+            if issubclass(module, BootPlugin):
+                self.boot_method_reg[module.__name__] = module()
+                syslog.syslog(syslog.LOG_INFO, "boot plugin '%s' included" % self.boot_method_reg[module.__name__].getInfo())
 
     def fsdestroy(self, **args):
         syslog.syslog(syslog.LOG_INFO, "fts is terminating")

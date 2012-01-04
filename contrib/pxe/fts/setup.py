@@ -14,7 +14,7 @@ setup(
     license = "LGPL",
     url = "http://www.gosa-project.org",
     classifiers = [
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
         'Intended Audience :: System Administrators',
         'License :: OSI Approved :: GNU General Public License (GPL)',

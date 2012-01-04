@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from fts.config import Config
 
 
 class BootPlugin(object):
@@ -10,7 +11,7 @@ class BootPlugin(object):
         the plugin in your setup.py's [fts.plugin] entry point section,
         so that it gets loaded on startup.
         """
-        pass
+        self.config = Config.get_instance()
 
     def getBootParams(self, address):
         """
@@ -35,3 +36,19 @@ class BootPlugin(object):
         ``Return``: String
         """
         raise NotImplemented("getInfo() is not implemented")
+
+    def make_pxe_entry(self, kernel, append, label="Automatic FTS entry"):
+        """
+        Return a valid PXE boot entry including the given parameters.
+
+        ========= ============================================================
+        Parameter Description
+        ========= ============================================================
+        kernel    PXE path to the kernel
+        append    Kernel append line
+        label     String describing the current entry
+        ========= ============================================================
+
+        ``Return``: String
+        """
+        return "label fts\n\tmenu label %s\n\tkernel %s\n\tappend %s\n" % (label, kernel, append)
