@@ -1,14 +1,16 @@
-#i!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+Usage:
+
+Call "fts" as root to mount the layer filesystem.
+Call "fusermount -u PATH" as root to unmount the layer filesystem.
+"""
 import os
 import syslog
 import fuse
+import sys
 from fts.pxefs import PXEfs
-
-
-#TODO: document
-# fts
-# fusermount -u /tftpboot/pxelinux.cfg
 
 
 def main():
@@ -44,7 +46,7 @@ information.
             os.chdir(fs.root)
 
     except OSError:
-        syslog.syslog(syslog.LOG_ERROR, "can't enter static filesystem")
+        syslog.syslog(syslog.LOG_ERR, "can't enter static filesystem")
         sys.exit(1)
 
     syslog.syslog(syslog.LOG_INFO, "fts is now mounted on %s" % fs.cfg_path)
