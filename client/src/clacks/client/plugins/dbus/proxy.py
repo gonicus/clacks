@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
-import re
 import dbus
+import os
 import logging
+from dbus.exceptions import DBusException
+from lxml import etree
 from zope.interface import implements
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import Plugin, PluginRegistry
 from clacks.common.components import Command
-
+from _dbus_bindings import INTROSPECTABLE_IFACE
 
 class DBUSProxy(Plugin):
     """
@@ -31,33 +33,122 @@ class DBUSProxy(Plugin):
     def __init__(self):
         self.log = logging.getLogger(__name__)
 
-        # Request information about registered dbus methods we can use.
-        self.methods = {}
+        # The service we are using
+        service = "org.clacks"
 
-        try:
-            self.bus = dbus.SystemBus()
-            self.log.debug('loading dbus-methods registered by clacks (introspection)')
-            self.clacks_dbus = self.bus.get_object('org.clacks', '/org/clacks/service')
-            call = self.clacks_dbus._Introspect()
-            call.block()
+        # Get a dbus proxy and check if theres a service registered called 'org.clacks'
+        # if not, then we can skip all further processing. (The clacks-dbus seems not to be running)
+        self.bus = dbus.SystemBus()
+        if not service in self.bus.list_names():
+            self.log.debug("No dbus service registered for '%s'. The clacks-dbus seems not to be running!" % (service))
+        else:
+            try:
+                self.log.debug('loading dbus-methods registered by clacks (introspection)')
+                self.methods = self._call_introspection(service, "/")
+                self.log.debug("found %s registered dbus methods" % (str(len(self.methods))))
+            except DBusException as exception:
+                self.log.debug("failed to load registered dbus methods: %s" % (str(exception)))
 
-            # Collection methods
-            for method in self.clacks_dbus._introspect_method_map:
-                if not re.match("^org\.clacks\.", method):
-                    continue
+    def _call_introspection(self, service, path, methods = None):
+        """
+        Introspects the dbus service with the given service and path.
 
-                name = re.sub("^org\.clacks\.(.*)$", "\\1", method)
-                self.methods[name] = self.clacks_dbus._introspect_method_map[method]
+        =============== ================
+        key             description
+        =============== ================
+        service         The dbus service we want to introspect. (e.g. org.clacks)
+        path            The path we want to start introspection from. (e.g. '/' or '/org/clacks')
+        methods         A dictionary used internaly to build up a result.
+        =============== ================
 
-            self.log.debug("found %s registered dbus methods" % (len(self.methods)))
+        This method returns a dictionary containing all found methods
+        with their path, service and parameters.
+        """
 
-        except dbus.DBusException as e:
-            self.log.debug("failed to load registered dbus methods: %s" % (str(e)))
+        # Start the 'Introspection' method on the dbus.
+        data = self.bus.call_blocking(service, path, INTROSPECTABLE_IFACE,
+                'Introspect', '', (), utf8_strings=True)
+
+        # Return parsed results.
+        if methods == None:
+            methods = {}
+        return self._introspection_handler(data, service, path, methods)
+
+    def _introspection_handler(self, data, service, path, methods):
+        """
+        Parses the result of the dbus method 'Introspect'.
+
+        It will recursivly load information for newly received paths and methods,
+        by calling '_call_introspection'.
+
+        =============== ================
+        key             description
+        =============== ================
+        data            The result of the dbus method call 'Introspect'
+        service         The dbus service that was introspected
+        path            The path we introspected
+        methods         A dictionary used internaly to build up a result.
+        =============== ================
+        """
+
+        # Transform received XML data into a python object.
+        res = etree.fromstring(data)
+
+        # Check for a result containing dbus-method information.
+        #
+        # It will look like this:
+        #       <node name="/org/clacks/notify">
+        #         <interface name="org.clacks">
+        #           <method name="notify_all">
+        #             <arg direction="in"  type="s" name="title" />
+        #             ...
+        #           </method>
+        #         </interface>
+        #       ...
+        #       </node>
+        if res.tag == "node" and res.get('name'):
+
+            # Get the path name this method is registered to (e.g. /org/clacks/notify)
+            path = res.get('name')
+
+            # add all found methods to the list of known ones
+            for entry in res:
+                if entry.tag == "interface" and entry.get("name") == service:
+                    for method in entry.iterchildren():
+                        m_name = method.get('name')
+                        methods[m_name] = {}
+                        methods[m_name]['path'] = path
+                        methods[m_name]['service'] = service
+                        methods[m_name]['args'] = {}
+
+                        # Extract method parameters
+                        for arg in method.iterchildren():
+                            if arg.tag == "arg" and arg.get("direction") == "in":
+                                methods[m_name]['args'][arg.get('name')] = arg.get('type')
+
+
+        # Check for a node which introdumethod_namees new paths
+        #
+        # It will look like this:
+        #       <node>
+        #         <node name="inventory"/>
+        #         <node name="notify"/>
+        #         <node name="service"/>
+        #         <node name="wol"/>
+        #       </node>
+        #
+        # Request information about registered services by calling 'Introspect' for each path again
+        else:
+            for entry in res:
+                if entry.tag == "node":
+                    sname = entry.get('name')
+                    self._call_introspection(service, os.path.join(path, sname), methods)
+        return methods
 
     def serve(self):
-        cr = PluginRegistry.getInstance('ClientCommandRegistry')
+        ccr = PluginRegistry.getInstance('ClientCommandRegistry')
         for name in self.methods.keys():
-            cr.register('system_' + name, 'DBUSProxy.callDBusMethod', [name], ['(signatur)'], 'docstring')
+            ccr.register('system_' + name, 'DBUSProxy.callDBusMethod', [name], ['(signatur)'], 'docstring')
 
     @Command()
     def callDBusMethod(self, method, *args):
