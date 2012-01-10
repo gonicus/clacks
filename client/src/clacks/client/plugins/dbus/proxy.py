@@ -10,6 +10,11 @@ from clacks.common.components import Plugin, PluginRegistry
 from clacks.common.components import Command
 from _dbus_bindings import INTROSPECTABLE_IFACE
 
+
+class DBusProxyException(Exception):
+    pass
+
+
 class DBUSProxy(Plugin):
     """
     DBus service plugin.
@@ -115,7 +120,15 @@ class DBUSProxy(Plugin):
             for entry in res:
                 if entry.tag == "interface" and entry.get("name") == service:
                     for method in entry.iterchildren():
+
                         m_name = method.get('name')
+
+                        # Check if this method name is already registered.
+                        if m_name in methods:
+                            raise DBusProxyException("Duplicate dbus method found '%s'! See (%s, %s)" % (
+                                m_name, path, methods[m_name]['path']))
+
+                        # Append the new method to the list og known once.
                         methods[m_name] = {}
                         methods[m_name]['path'] = path
                         methods[m_name]['service'] = service
@@ -146,9 +159,17 @@ class DBUSProxy(Plugin):
         return methods
 
     def serve(self):
+        """
+        This method registeres all known methods to the command registry.
+        """
         ccr = PluginRegistry.getInstance('ClientCommandRegistry')
         for name in self.methods.keys():
             ccr.register('system_' + name, 'DBUSProxy.callDBusMethod', [name], ['(signatur)'], 'docstring')
+
+    @Command()
+    def listDBusMethods(self):
+        """ This method lists all callable dbus methods """
+        return self.methods
 
     @Command()
     def callDBusMethod(self, method, *args):
@@ -168,7 +189,8 @@ class DBUSProxy(Plugin):
             raise NotImplementedError(method)
 
         # Now call the dbus method with the given list of paramters
-        method = self.clacks_dbus.get_dbus_method(method,
-                dbus_interface="org.clacks")
+        mdata = self.methods[method]
+        cdbus = self.bus.get_object(mdata['service'], mdata['path'])
+        method = cdbus.get_dbus_method(method, dbus_interface=mdata['service'])
         returnval = method(*args)
         return returnval
