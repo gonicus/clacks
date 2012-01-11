@@ -19,12 +19,12 @@ class DBUSProxy(Plugin):
     """
     DBus service plugin.
 
-    This plugin is a proxy for registered dbus-methods.
+    This plugin is a proxy for dbus-methods registered by the
+    clacks-dbus.
 
     Each method that is registered for service 'org.clacks'
-    with path '/org/clacks/service' can be accessed by calling
-    callDBusMethod.
-
+    can be accessed by calling callDBusMethod, except for
+    anonymous methods (those starting with _ or :)
     """
     implements(IInterfaceHandler)
     _target_ = 'service'
@@ -136,7 +136,14 @@ class DBUSProxy(Plugin):
                 if entry.tag == "interface" and entry.get("name") == service:
                     for method in entry.iterchildren():
 
+                        # Skip method names that start with _ or : (anonymous methods)
                         m_name = method.get('name')
+                        if m_name.startswith('_') or m_name.startswith(':'):
+                            continue
+
+                        # Mark dbus method with a 'dbus' prefix to be able to distinguish between
+                        # client methods and proxied dbus methods
+                        m_name = "dbus_" + m_name
 
                         # Check if this method name is already registered.
                         if m_name in methods:
@@ -178,7 +185,7 @@ class DBUSProxy(Plugin):
         """
         ccr = PluginRegistry.getInstance('ClientCommandRegistry')
         for name in self.methods.keys():
-            ccr.register('system_' + name, 'DBUSProxy.callDBusMethod', [name], ['(signatur)'], 'docstring')
+            ccr.register(name, 'DBUSProxy.callDBusMethod', [name], ['(signatur)'], 'docstring')
 
     @Command()
     def listDBusMethods(self):
@@ -204,6 +211,10 @@ class DBUSProxy(Plugin):
         # Now call the dbus method with the given list of paramters
         mdata = self.methods[method]
         cdbus = self.bus.get_object(mdata['service'], mdata['path'])
+
+        # Remove the method prefix again 'dbus_'
+        method = method[5::]
+
         method = cdbus.get_dbus_method(method, dbus_interface=mdata['service'])
         returnval = method(*args)
         return returnval
@@ -238,9 +249,8 @@ class DBUSProxy(Plugin):
             # Does the argument exists
             try:
                 given = args.pop(0)
-            except IndexError as e:
+            except IndexError:
                 raise TypeError("the parameter '%s' is missing" % argument)
-
 
             # Check if the given argument matches the required signature type
             found = True

@@ -59,7 +59,7 @@ Setup a virtual environment for playing with clacks 1.0 alpha
 
 As a non-root user, initialize the virtual environment::
 
-  $ virtualenv --setuptools --python=python2.7  clacks
+  $ virtualenv --setuptools --system-site-packages --python=python2.7  clacks
   $ cd clacks
   $ source bin/activate
 

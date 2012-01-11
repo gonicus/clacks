@@ -45,7 +45,7 @@ ywin32 package: http://sourceforge.net/projects/pywin32/
 
 As a non-root user, initialize the virtual environment:
 
-$ virtualenv --setuptools --python=python2.6  clacks
+$ virtualenv --setuptools --system-site-packages --python=python2.7  clacks
 $ cd clacks
 $ source bin/activate
 
