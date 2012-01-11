@@ -60,7 +60,7 @@ reports=store_clacks
         self.log.warning(msg)
 
     @dbus.service.method('org.clacks', in_signature='', out_signature='i')
-    def run_puppet(self):
+    def dbus_run_puppet(self):
         """ Perform a puppet run using the current configuration """
         self.log.info("executing puppet")
 
