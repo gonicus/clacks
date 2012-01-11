@@ -135,6 +135,12 @@ class join_method(object):
         key = self.env.config.get("amqp.key", default=None)
         return (url, sys_id, key)
 
+    def start_discover(self):
+        print _("Searching for service provider...")
+
+    def stop_discover(self):
+        pass
+
     def get_service(self):
 
         # Try to load url/key from configuration
@@ -164,7 +170,9 @@ class join_method(object):
 
         # If there's no url, try to find it using zeroconf
         if not svc_url:
+            self.start_discover()
             svc_url = ZeroconfClient.discover(['_amqps._tcp', '_amqp._tcp'], domain=self.domain)[0]
+            self.stop_discover()
 
         self.svc_id = svc_id
         self.url = svc_url
