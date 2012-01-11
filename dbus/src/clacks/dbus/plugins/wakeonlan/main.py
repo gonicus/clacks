@@ -14,7 +14,7 @@ class DBusWakeOnLanHandler(dbus.service.Object, Plugin):
         self.env = Environment.getInstance()
 
     @dbus.service.method('org.clacks', in_signature='s', out_signature='')
-    def wakeOnLan(self, mac):
+    def wake_on_lan(self, mac):
         p = subprocess.Popen([r"wakeonlan", mac])
         p.wait()
         # return exit code, unfortunately wakeonlan returns 0
