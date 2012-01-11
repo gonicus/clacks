@@ -20,7 +20,13 @@ class CursesGUI(join_method):
         self.screen = curses.initscr()
         self.height, self.width = self.screen.getmaxyx()
 
+        # Colors
         curses.start_color()
+        curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLUE)
+
+        # Refresh screen
+        self.screen.bkgd(curses.color_pair(1))
+        self.screen.refresh()
 
     def end_gui(self):
         curses.endwin()
@@ -61,12 +67,12 @@ class CursesGUI(join_method):
     def join_dialog(self):
         key = None
         self.start_gui()
+
         headline = _("Please enter the credentials of an administrative user to join this client.")
         self.start_x = (self.width - len(headline)) / 2 - 1
         self.start_y = self.height / 2 - 5
 
         while not key:
-            self.screen.border(0)
             self.screen.addstr(self.start_y, self.start_x, headline)
             self.screen.addstr(self.start_y + 1, self.start_x, "(" + _("Press Ctrl-C to cancel") + ")")
             self.screen.addstr(self.start_y + 3, self.start_x, _("User name") + ":")
