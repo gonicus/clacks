@@ -31,6 +31,7 @@ class join_method(object):
 
      * CLI
      * Curses
+     * QT
 
     in the moment. By implementing the :class:`clacks.client.plugins.join.methods.join_method` interface,
     new ones (i.e. graphical) can simply be added. The resulting modules have to be
@@ -135,11 +136,9 @@ class join_method(object):
         key = self.env.config.get("amqp.key", default=None)
         return (url, sys_id, key)
 
-    def start_discover(self):
+    def discover(self):
         print _("Searching for service provider...")
-
-    def stop_discover(self):
-        pass
+        return ZeroconfClient.discover(['_amqps._tcp', '_amqp._tcp'], domain=self.domain)[0]
 
     def get_service(self):
 
@@ -170,9 +169,7 @@ class join_method(object):
 
         # If there's no url, try to find it using zeroconf
         if not svc_url:
-            self.start_discover()
-            svc_url = ZeroconfClient.discover(['_amqps._tcp', '_amqp._tcp'], domain=self.domain)[0]
-            self.stop_discover()
+            svc_url = self.discover()
 
         self.svc_id = svc_id
         self.url = svc_url

@@ -40,7 +40,6 @@ def main():
             modules[mod.__name__] = mod
 
     # Take the one with the highest priority
-    #module = "CursesGUI" # Force module for testing
     module = sorted(priority.items(), key=itemgetter(1))[0][0]
 
     # Try to load environment. If it doesn't work, evaluate
