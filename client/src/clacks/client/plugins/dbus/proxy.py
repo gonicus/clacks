@@ -141,6 +141,10 @@ class DBUSProxy(Plugin):
                         if m_name.startswith('_') or m_name.startswith(':'):
                             continue
 
+                        # Mark dbus method with a 'dbus' prefix to be able to distinguish between
+                        # client methods and proxied dbus methods
+                        m_name = "dbus_" + m_name
+
                         # Check if this method name is already registered.
                         if m_name in methods:
                             raise DBusProxyException("Duplicate dbus method found '%s'! See (%s, %s)" % (
@@ -181,7 +185,7 @@ class DBUSProxy(Plugin):
         """
         ccr = PluginRegistry.getInstance('ClientCommandRegistry')
         for name in self.methods.keys():
-            ccr.register('system_' + name, 'DBUSProxy.callDBusMethod', [name], ['(signatur)'], 'docstring')
+            ccr.register(name, 'DBUSProxy.callDBusMethod', [name], ['(signatur)'], 'docstring')
 
     @Command()
     def listDBusMethods(self):
@@ -207,6 +211,10 @@ class DBUSProxy(Plugin):
         # Now call the dbus method with the given list of paramters
         mdata = self.methods[method]
         cdbus = self.bus.get_object(mdata['service'], mdata['path'])
+
+        # Remove the method prefix again 'dbus_'
+        method = method[5::]
+
         method = cdbus.get_dbus_method(method, dbus_interface=mdata['service'])
         returnval = method(*args)
         return returnval
