@@ -2,7 +2,9 @@
 import sys
 import time
 import gettext
+from threading import Thread
 from clacks.client.plugins.join.methods import join_method
+from clacks.common.components.zeroconf_client import ZeroconfClient
 from pkg_resources import resource_filename
 
 # Import PySide classes if available
@@ -28,16 +30,11 @@ _ = t.ugettext
 
 
 class CuteGUI(join_method):
-    priority = 100
+    priority = 10
 
     def __init__(self, parent=None):
-        super(CuteGUI, self).__init__()
         self.app = QApplication([])
-
-    def provider_dialog(self):
-        mwin = WaitForServiceProvider()
-        mwin.show()
-        self.app.exec_()
+        super(CuteGUI, self).__init__()
 
     def join_dialog(self):
         key = None
@@ -46,7 +43,7 @@ class CuteGUI(join_method):
             mwin = MainWindow()
             mwin.show()
             self.app.exec_()
-            key = self.join(mwin.username.text(), mwin.password.text())
+            key = self.join(mwin.userEdit.text(), mwin.passwordEdit.text())
 
     def show_error(self, error):
         err = QMessageBox()
@@ -60,6 +57,24 @@ class CuteGUI(join_method):
     def available():
         global supported
         return supported
+
+    def discover(self):
+        url = None
+        app = self.app
+        domain = self.domain
+        mwin = WaitForServiceProvider()
+        mwin.show()
+
+        class DiscoveryThread(QThread):
+
+            def run(self):
+                url = ZeroconfClient.discover(['_amqps._tcp', '_amqp._tcp'], domain=domain)[0]
+                app.quit()
+
+        dt = DiscoveryThread()
+        dt.start()
+
+        self.app.exec_()
 
 
 class FocusNextOnReturn(QObject):
@@ -111,7 +126,7 @@ class MainWindow(QWidget):
         header_image.setStyleSheet("QWidget { background-color: white; color: black; border: 0; margin: 0; padding: 0;}")
         header_image.setAlignment(Qt.AlignRight | Qt.AlignTop)
 
-        bg = QPixmap("secure-card.png");
+        bg = QPixmap(resource_filename("clacks.client", "data/secure-card.png"))
         header_image.setPixmap(bg)
         hbox.addWidget(header_image)
         header.setLayout(hbox)
@@ -177,13 +192,29 @@ class MainWindow(QWidget):
 
 
     def accept(self):
-        QCoreApplication.quit()
+        if self.userEdit.text() == "" or self.passwordEdit.text() == "":
+            if self.userEdit.text() == "":
+                self.userEdit.setFocus()
+            else:
+                self.passwordEdit.setFocus()
+
+            # meldung ausgeben, dass das doof ist so
+            err = QMessageBox()
+            err.setWindowTitle(_("Please provide credentials"))
+            err.setText(_("You need to enter a user name and a password!"))
+            err.setIcon(QMessageBox.Critical)
+            err.setModal(True)
+            err.exec_()
+
+        else:
+            QCoreApplication.quit()
 
 
-class WaitForServiceProvider(QWidget):
+class WaitForServiceProvider(QFrame):
 
     def __init__(self, parent=None):
         super(WaitForServiceProvider, self).__init__(parent)
+        self.setFrameStyle(QFrame.Panel | QFrame.Raised);
 
         # Global horizontal layout
         vbox = QVBoxLayout()
@@ -191,7 +222,6 @@ class WaitForServiceProvider(QWidget):
 
         self.image = QLabel()
         self.image.setAlignment(Qt.AlignCenter)
-        self.image.setStyleSheet("QWidget { background-color: white; color: black; border: 0; margin: 0; padding: 5;}")
 
         def get_res(f):
             return resource_filename("clacks.client", "data/%s" % f)
@@ -206,7 +236,7 @@ class WaitForServiceProvider(QWidget):
         vbox.addWidget(self.image)
 
         label = QLabel(_("Searching service provider..."))
-        self.setStyleSheet("QWidget { background-color: white; color: black; padding: 5;}")
+        self.setStyleSheet("QWidget { background-color: #F0F0F0; color: black; padding: 5;}")
         label.setAlignment(Qt.AlignCenter)
         vbox.addWidget(label)
 
@@ -218,9 +248,9 @@ class WaitForServiceProvider(QWidget):
         # Disable close
         self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.CustomizeWindowHint)
 
-        self.setGeometry((QApplication.desktop().width() - self.sizeHint().width()) / 2,
+        self.setGeometry((QApplication.desktop().width() - 300) / 2,
             (QApplication.desktop().height() - self.sizeHint().height()) / 2,
-            self.sizeHint().width(), self.sizeHint().height())
+            300, self.sizeHint().height())
 
         # Start animation
         timer = QTimer(self)

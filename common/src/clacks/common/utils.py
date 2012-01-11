@@ -13,6 +13,7 @@ import tempfile
 from subprocess import Popen, PIPE
 from qpid.messaging.constants import AMQP_PORT, AMQPS_PORT
 from urlparse import urlparse
+from urllib import quote
 from datetime import datetime
 
 
@@ -67,6 +68,10 @@ def parseURL(url):
     """
     if not url:
         return None
+
+    # Eventually encode URL
+    if type(url) == unicode:
+        url = url.encode('utf-8')
 
     source = url
     url = urlparse(url)
