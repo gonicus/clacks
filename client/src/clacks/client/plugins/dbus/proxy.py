@@ -154,12 +154,13 @@ class DBUSProxy(Plugin):
                         methods[m_name] = {}
                         methods[m_name]['path'] = path
                         methods[m_name]['service'] = service
-                        methods[m_name]['args'] = {}
+                        methods[m_name]['args'] = ()
 
                         # Extract method parameters
                         for arg in method.iterchildren():
                             if arg.tag == "arg" and arg.get("direction") == "in":
-                                methods[m_name]['args'][arg.get('name')] = arg.get('type')
+                                argument = (arg.get('name'), arg.get('type'))
+                                methods[m_name]['args'] += (argument,)
 
         # Check for a xml-node which introduces new paths
         #
@@ -214,7 +215,6 @@ class DBUSProxy(Plugin):
 
         # Remove the method prefix again 'dbus_'
         method = method[5::]
-
         method = cdbus.get_dbus_method(method, dbus_interface=mdata['service'])
         returnval = method(*args)
         return returnval
@@ -243,7 +243,8 @@ class DBUSProxy(Plugin):
 
         # Check each argument
         cnt = 0
-        for argument in m_args:
+
+        for argument, arg_type in m_args:
             cnt += 1
 
             # Does the argument exists
@@ -254,17 +255,16 @@ class DBUSProxy(Plugin):
 
             # Check if the given argument matches the required signature type
             found = True
-            if m_args[argument] in self._type_map:
+            if arg_type in self._type_map:
                 found = False
-                for p_type in self._type_map[m_args[argument]]:
+                for p_type in self._type_map[arg_type]:
                     if isinstance(given, p_type):
                         found = True
 
             if not found:
-                types = ", ".join(map(lambda x: x.__name__, self._type_map[m_args[argument]]))
+                types = ", ".join(map(lambda x: x.__name__, self._type_map[arg_type]))
                 raise TypeError("the parameter %s (%s) is of invalid type. Expected: %s" % (argument, str(cnt), types))
 
         # We received more arguments than required by the dbus method...
         if len(args):
             raise TypeError("%s() takes exactly %s arguments (%s given)" % (method, len(m_args), cnt+len(args)))
-
