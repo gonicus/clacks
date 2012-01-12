@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=CLacks
+Description=Simple placeholder screen for detection NFS-Root
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/clacks
+ScriptFile=/usr/share/plymouth/themes/clacks/clacks.script
