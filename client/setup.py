@@ -38,6 +38,7 @@ else:
     ])
 
     modules = """
+        notify = clacks.client.plugins.notify.utils:Notify
         inventory = clacks.client.plugins.inventory.utils:Inventory
         service = clacks.client.plugins.dbus.proxy:DBUSProxy
         powermanagement = clacks.client.plugins.powermanagement.utils:PowerManagement
