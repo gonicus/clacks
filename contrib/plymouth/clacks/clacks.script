@@ -25,7 +25,7 @@ progress = 0;
 progress_box.image = Image("throbber-0" + progress + ".png");
 progress_box.sprite = Sprite();
 progress_box.x = Window.GetWidth() / 2 - progress_box.image.GetWidth()  / 2;
-progress_box.y = Window.GetHeight() * 0.75 - progress_box.image.GetHeight() / 2;
+progress_box.y = Window.GetHeight() / 2 - progress_box.image.GetHeight() / 2;
 progress_box.sprite.SetPosition(progress_box.x, progress_box.y, 0);
 progress_box.sprite.SetImage(progress_box.image);
 
@@ -38,10 +38,10 @@ fun refresh ()
       {
         progress++;
 
-        if (progress >= 10)
+        if (progress >= 40)
           progress = 0;
 
-        new_progress_box.image = Image("throbber-0" + progress + ".png");
+        new_progress_box.image = Image("throbber-0" + progress / 4 + ".png");
         progress_box.sprite.SetImage(new_progress_box.image);
         progress_box.sprite.SetOpacity(1);
       }
