@@ -8,10 +8,12 @@ except ImportError:
     sys.exit(1)
 
 import gobject
+gobject.threads_init()
 import time
 from threading import Thread
 from dbus.mainloop.glib import DBusGMainLoop
 from dbus import glib
+glib.init_threads()
 
 
 class DBusRunner(object):
@@ -38,9 +40,8 @@ class DBusRunner(object):
         self.__active = True
 
         def runner():
-            gobject.threads_init()
-            glib.init_threads()
-            context = gobject.MainLoop().get_context()
+            loop = gobject.MainLoop()
+            context = loop.get_context()
             while self.__active:
                 context.iteration(False)
                 if not context.pending():
