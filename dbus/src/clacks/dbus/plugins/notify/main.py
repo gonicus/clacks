@@ -17,12 +17,7 @@ class DBusNotifyHandler(dbus.service.Object, Plugin):
         self.env = Environment.getInstance()
 
     @dbus.service.method('org.clacks', in_signature='ssisssi', out_signature='i')
-    def notify_all(self, title, message,
-        timeout=120,
-        urgency="normal",
-        icon="dialog-information",
-        actions="",
-        recurrence=60):
+    def _notify_all(self, title, message, timeout, urgency, icon, actions, recurrence):
         """
         Try to send a notification to all users on a machine user using the 'notify-user' script.
         """
@@ -30,12 +25,7 @@ class DBusNotifyHandler(dbus.service.Object, Plugin):
             urgency=urgency, icon=icon, recurrence=recurrence, actions=actions))
 
     @dbus.service.method('org.clacks', in_signature='sssisssi', out_signature='i')
-    def notify(self, user, title, message,
-        timeout=120,
-        urgency="normal",
-        icon="dialog-information",
-        actions="",
-        recurrence=60):
+    def _notify(self, user, title, message, timeout, urgency, icon, actions, recurrence):
         """
         Try to send a notification to a user using the 'notify-user' script.
         """

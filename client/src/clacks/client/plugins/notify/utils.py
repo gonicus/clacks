@@ -32,7 +32,7 @@ class Notify(Plugin):
                                    '/org/clacks/notify')
 
         # Send notification and keep return code
-        o = clacks_dbus.notify(user, title, message, timeout, urgency,
+        o = clacks_dbus._notify(user, title, message, timeout, urgency,
             icon, actions, recurrence, dbus_interface="org.clacks")
         return(int(o))
 
@@ -52,6 +52,6 @@ class Notify(Plugin):
                                    '/org/clacks/notify')
 
         # Send notification and keep return code
-        o = clacks_dbus.notify_all(title, message, timeout, urgency,
+        o = clacks_dbus._notify_all(title, message, timeout, urgency,
             icon, actions, recurrence, dbus_interface="org.clacks")
         return(int(o))
