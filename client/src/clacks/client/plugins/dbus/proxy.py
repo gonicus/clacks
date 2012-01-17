@@ -37,6 +37,8 @@ class DBUSProxy(Plugin):
 
     # Type map for signature checking
     _type_map = {
+                 'as': [list],
+                 'a{ss}': [dict],
                  'i': [int],
                  'n': [int],
                  'x': [int],
@@ -260,6 +262,8 @@ class DBUSProxy(Plugin):
                 for p_type in self._type_map[arg_type]:
                     if isinstance(given, p_type):
                         found = True
+            else:
+                raise TypeError("the parameter %s (%s) is of unknown type. Type is: %s" % (argument, str(cnt), arg_type))
 
             if not found:
                 types = ", ".join(map(lambda x: x.__name__, self._type_map[arg_type]))
