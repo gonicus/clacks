@@ -68,5 +68,6 @@ setup(
         service = clacks.dbus.plugins.services.main:DBusUnixServiceHandler
         notify = clacks.dbus.plugins.notify.main:DBusNotifyHandler
         wol = clacks.dbus.plugins.wakeonlan.main:DBusWakeOnLanHandler
+        shell = clacks.dbus.plugins.shell.main:DBusShellHandler
     """,
 )
