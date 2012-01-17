@@ -59,22 +59,18 @@ class CuteGUI(join_method):
         return supported
 
     def discover(self):
-        url = None
-        app = self.app
-        domain = self.domain
         mwin = WaitForServiceProvider()
         mwin.show()
 
-        class DiscoveryThread(QThread):
-
-            def run(self):
-                url = ZeroconfClient.discover(['_amqps._tcp', '_amqp._tcp'], domain=domain)[0]
-                app.quit()
-
-        dt = DiscoveryThread()
-        dt.start()
+        QTimer.singleShot(1200, self.zdiscover)
 
         self.app.exec_()
+
+        return self.url
+
+    def zdiscover(self):
+        self.url = ZeroconfClient.discover(['_amqps._tcp', '_amqp._tcp'], domain=self.domain)[0]
+
 
 
 class FocusNextOnReturn(QObject):

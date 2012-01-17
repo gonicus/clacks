@@ -80,7 +80,7 @@ setup(
 
     include_package_data = True,
     package_data = {
-        'clacks.client': ['data/client.conf'],
+        'clacks.client': ['data/client.conf', 'data/*.png'],
         'clacks.client.plugins.inventory': ['data/xmlToChecksumXml.xsl'],
     },
 
