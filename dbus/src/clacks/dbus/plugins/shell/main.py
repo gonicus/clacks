@@ -8,19 +8,36 @@ from clacks.dbus import get_system_bus
 
 
 class DBusShellException(Exception):
+    """
+    Exception thrown for generic errors
+    """
     pass
 
 
 class NoSuchScriptException(DBusShellException):
     """
-    Exception thrown for unknown services
+    Exception thrown for unknown scripts
     """
     pass
 
 
 class DBusShellHandler(dbus.service.Object, Plugin):
-    """ Shell handler, exporting shell commands to the bus """
+    """
+    The DBus shell handler exports shell scripts to the DBus.
 
+    Scripts placed in '/etc/clacks/shell.d' can then be executed using the
+    'shell_exec()' method.
+
+    Exported scripts can be listed using the 'shell_list()' method.
+
+    e.g.
+        print proxy.clientDispatch("<clientUUID>", "dbus_shell_exec", "myScript.sh", [])
+
+    (The 'dbus_' prefix in the above example was added by the clacks-client dbus-proxy
+    plugin to mark exported dbus methods - See clacks-client proxy  plugin for details)
+    """
+
+    # The path were scripts were read from.
     script_path = None
 
     def __init__(self):
@@ -44,6 +61,12 @@ class DBusShellHandler(dbus.service.Object, Plugin):
             self.scripts[data[0]] = data
 
     def _parse_shell_script(self, path):
+        """
+        This method tries to parse a script (given by path), to extract
+        parameter, author, version and date inforamtion out of the script.
+
+        It returns a tuple containing all found information.
+        """
 
         # Set defaults.
         author = date = version = "unknown"
