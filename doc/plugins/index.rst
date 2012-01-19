@@ -76,8 +76,8 @@ Client plugins
 .. toctree::
    :maxdepth: 2
 
-   agent/goto
-   agent/libinst
+   client/goto
+   client/libinst
 
 
 DBUS plugins
@@ -86,5 +86,8 @@ DBUS plugins
 .. toctree::
    :maxdepth: 2
 
-   agent/goto
-   agent/libinst
+   dbus/libinst
+   dbus/shell
+   dbus/wakeonlan
+   dbus/notify
+   dbus/services
