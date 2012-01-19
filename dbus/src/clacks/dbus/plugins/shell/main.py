@@ -66,12 +66,13 @@ class DBusShellHandler(dbus.service.Object, Plugin):
 
     def _parse_shell_script(self, path):
         """
-        This method tries to parse a script (given by path), to extract
-        parameter, author, version and date inforamtion out of the script.
+        This method executes the given script (path) with the parameter
+        '--signature' to receive the scripts signatur.
 
-        It returns a tuple containing all found information.
+        It returns a tuple containing all found agruments and their type.
         """
 
+        # Call the script with the --signature parameter
         scall = Popen([path, '--signature'], stdout=PIPE, stderr=PIPE)
         scall.wait()
 
@@ -113,7 +114,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
             raise NoSuchServiceException("unknown service %s" % cmd)
 
         # Execute the script and return the results
-        args = map(lambda x: str(x), [os.path.join(self.script_path ,cmd)] + args)
+        args = map(lambda x: str(x), [os.path.join(self.script_path,cmd)] + args)
         res = Popen(args, stdout=PIPE, stderr=PIPE)
         res.wait()
         return ({'code': res.returncode,
