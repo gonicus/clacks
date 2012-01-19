@@ -45,13 +45,14 @@ class DBusShellHandler(dbus.service.Object, Plugin):
 
     def __init__(self):
         conn = get_system_bus()
+        self.scripts = {}
         dbus.service.Object.__init__(self, conn, '/org/clacks/shell')
         self.env = Environment.getInstance()
         self.log = logging.getLogger(__name__)
         self.script_path = self.env.config.get("dbus.script_path", "/etc/clacks/shell.d").strip("'\"")
-        self._reloadSignatures()
+        self._reload_signatures()
 
-    def _reloadSignatures(self):
+    def _reload_signatures(self):
         """
         This method reads all scripts found in the 'dbus.script_path' and
         exports them as callable dbus-method.
@@ -60,8 +61,8 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         # locate files in /etc/clacks/shell.d and find those matching
         self.scripts = {}
         path = self.script_path
-        for f in [n for n in os.listdir(path) if re.match("^[a-zA-Z0-9][a-zA-Z0-9_\.]*$", n)]:
-            data = self._parse_shell_script(os.path.join(path, f))
+        for filename in [n for n in os.listdir(path) if re.match("^[a-zA-Z0-9][a-zA-Z0-9_\.]*$", n)]:
+            data = self._parse_shell_script(os.path.join(path, filename))
             self.scripts[data[0]] = data
 
     def _parse_shell_script(self, path):
@@ -99,7 +100,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
     @dbus.service.method('org.clacks', in_signature='', out_signature='a{s(ssssa(sss))}')
     def shell_list(self):
         """
-        Returns all availabe scripts and their details.
+        Returns all availabe scripts and their signatures.
         """
         return self.scripts
 
@@ -111,10 +112,10 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         """
         # Check if the given script exists
         if cmd not in self.scripts:
-            raise NoSuchServiceException("unknown service %s" % cmd)
+            raise NoSuchScriptException("unknown service %s" % cmd)
 
         # Execute the script and return the results
-        args = map(lambda x: str(x), [os.path.join(self.script_path,cmd)] + args)
+        args = map(lambda x: str(x), [os.path.join(self.script_path, cmd)] + args)
         res = Popen(args, stdout=PIPE, stderr=PIPE)
         res.wait()
         return ({'code': res.returncode,
