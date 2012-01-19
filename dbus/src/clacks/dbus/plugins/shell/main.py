@@ -1,11 +1,8 @@
 """
 
 Clacks D-Bus Shell plugin
-=========================
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
-
-Short description
-^^^^^^^^^^^^^^^^^
 
 The clacks-dbus shell plugin allows to execute shell scripts
 on the client side with root privileges.
