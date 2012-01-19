@@ -97,7 +97,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
 
         return (os.path.basename(path), sig)
 
-    @dbus.service.method('org.clacks', in_signature='', out_signature='a{s(ssssa(sss))}')
+    @dbus.service.method('org.clacks', in_signature='', out_signature='av')
     def shell_list(self):
         """
         Returns all availabe scripts and their signatures.
