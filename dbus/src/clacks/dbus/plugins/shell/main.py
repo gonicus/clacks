@@ -1,10 +1,12 @@
 import re
 import os
 import dbus.service
+import logging
 from subprocess import Popen, PIPE
 from clacks.common import Environment
 from clacks.common.components import Plugin
 from clacks.dbus import get_system_bus
+from json import loads
 
 
 class DBusShellException(Exception):
@@ -39,11 +41,13 @@ class DBusShellHandler(dbus.service.Object, Plugin):
 
     # The path were scripts were read from.
     script_path = None
+    log = None
 
     def __init__(self):
         conn = get_system_bus()
         dbus.service.Object.__init__(self, conn, '/org/clacks/shell')
         self.env = Environment.getInstance()
+        self.log = logging.getLogger(__name__)
         self.script_path = self.env.config.get("dbus.script_path", "/etc/clacks/shell.d").strip("'\"")
         self._reloadSignatures()
 
@@ -68,35 +72,28 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         It returns a tuple containing all found information.
         """
 
-        # Set defaults.
-        author = date = version = "unknown"
-        params = []
+        scall = Popen([path, '--signature'], stdout=PIPE, stderr=PIPE)
+        scall.wait()
 
-        # Walk through script lines and extract usefull information
-        contents = open(path).read()
-        lines = contents.split("\n")
-        line = ""
-        while len(lines) and re.match("^(#.*|[ \s]*)$", line):
-            line = lines.pop(1)
+        # Check returncode of the script call.
+        if scall.returncode != 0:
+            self.log.debug("failed to read signature from D-Bus shell script '%s' (%s) " % (path, scall.stderr.read()))
+            raise DBusShellException("failed to read signature from D-Bus shell script '%s' " % (path))
 
-            # Extract author, version and date from the script
-            if re.match(".*author[\s]*:.*", line, re.IGNORECASE):
-                author = re.sub(".*author[\s]*:[\s]*(.*)", "\\1", line, 0,re.IGNORECASE).strip()
-            if re.match(".*date[\s]*:.*", line, re.IGNORECASE):
-                date = re.sub(".*date[\s]*:[\s]*(.*)", "\\1", line, 0,re.IGNORECASE).strip()
-            if re.match(".*version[\s]*:.*", line, re.IGNORECASE):
-                version = re.sub(".*version[\s]*:[\s]*(.*)", "\\1", line, 0,re.IGNORECASE).strip()
+        # Check if we can read the returned signature.
+        sig = {}
+        try:
+            sig = loads(scall.stdout.read())
+        except ValueError:
+            raise DBusShellException("failed to undertand signature of D-Bus shell script '%s'" % (path))
 
-            # Extract script parameters
-            if re.match(".*param[\s]*:.*", line, re.IGNORECASE):
-                try:
-                    pname, ptype, pdesc = re.match(".*param[\s]*:[\s]*([^\(]*)\(([^\(])\)[\s]*;[\s]*(.*)[\s]*$", line, re.IGNORECASE).groups()
-                    params.append((pname, ptype, pdesc))
-                except:
-                    raise DBusShellException("Failed to parse parameter list of '%s'!" % (path))
+        # Signature was readable, now check if we got everything we need
+        if not(('in' in sig and type(sig['in']) == list) or 'in' not in sig):
+            raise DBusShellException("failed to undertand in-signature of D-Bus shell script '%s'" % (path))
+        if 'out' not in sig or type(sig['out']) not in [str, unicode]:
+            raise DBusShellException("failed to undertand out-signature of D-Bus shell script '%s'" % (path))
 
-        # Return the extracted script data.
-        return (os.path.basename(path), author, date, version, params)
+        return (os.path.basename(path), sig)
 
     @dbus.service.method('org.clacks', in_signature='', out_signature='a{s(ssssa(sss))}')
     def shell_list(self):
@@ -114,8 +111,6 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         # Check if the given script exists
         if cmd not in self.scripts:
             raise NoSuchServiceException("unknown service %s" % cmd)
-
-        #TODO: Check parameters
 
         # Execute the script and return the results
         args = map(lambda x: str(x), [os.path.join(self.script_path ,cmd)] + args)
