@@ -3,15 +3,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Scheduler service &mdash; GOsa v3.0 documentation</title>
+    <title>Scheduler service &mdash; Clacks 3.0 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="../_static/requirements.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -24,7 +27,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GOsa v3.0 documentation" href="../index.html" />
+    <link rel="top" title="Clacks 3.0 documentation" href="../index.html" />
     <link rel="up" title="Agent" href="index.html" />
     <link rel="next" title="AMQP service" href="amqp.html" />
     <link rel="prev" title="ACL handling" href="acl.html" /> 
@@ -45,7 +48,7 @@
         <li class="right" >
           <a href="acl.html" title="ACL handling"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" >Development documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Agent</a> &raquo;</li> 
       </ul>
@@ -84,7 +87,7 @@ u&#8216;596b8f2e-dad4-11e0-bcf1-5452005f1250&#8217;</p>
 <dl class="method">
 <dt id="clacks.agent.scheduler.SchedulerService.schedulerAddDateJob">
 <tt class="descname">schedulerAddDateJob</tt><big>(</big><em>user</em>, <em>queue</em>, <em>func</em>, <em>args</em>, <em>kwargs</em>, <em>date</em>, <em>**options</em><big>)</big><a class="headerlink" href="#clacks.agent.scheduler.SchedulerService.schedulerAddDateJob" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-0">
+<dd><div class="admonition" id="cmd-0">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -97,24 +100,24 @@ u&#8216;596b8f2e-dad4-11e0-bcf1-5452005f1250&#8217;</p>
 <col width="78%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>func</td>
+<tr class="row-even"><td>func</td>
 <td>Function <em>pointer</em></td>
 </tr>
-<tr><td>args</td>
+<tr class="row-odd"><td>args</td>
 <td>Function arguments</td>
 </tr>
-<tr><td>kwargs</td>
+<tr class="row-even"><td>kwargs</td>
 <td>Function keyword arguments</td>
 </tr>
-<tr><td>date</td>
+<tr class="row-odd"><td>date</td>
 <td>Execution date of the function</td>
 </tr>
-<tr><td>options</td>
+<tr class="row-even"><td>options</td>
 <td>Set of job options</td>
 </tr>
 </tbody>
@@ -126,36 +129,36 @@ u&#8216;596b8f2e-dad4-11e0-bcf1-5452005f1250&#8217;</p>
 <col width="81%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Option</th>
+<tr class="row-odd"><th class="head">Option</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>name</td>
+<tr class="row-even"><td>name</td>
 <td>Job name</td>
 </tr>
-<tr><td>description</td>
+<tr class="row-odd"><td>description</td>
 <td>Description of the job</td>
 </tr>
-<tr><td>tag</td>
+<tr class="row-even"><td>tag</td>
 <td>Free choosable text tag to make it easier to find jobs</td>
 </tr>
-<tr><td>progress</td>
+<tr class="row-odd"><td>progress</td>
 <td>Automatically maintained</td>
 </tr>
-<tr><td>misfire_grace_time</td>
+<tr class="row-even"><td>misfire_grace_time</td>
 <td>seconds after the designated run time that the job is still allowed to be run</td>
 </tr>
-<tr><td>coalesce</td>
+<tr class="row-odd"><td>coalesce</td>
 <td>Roll several pending executions of jobs into one</td>
 </tr>
-<tr><td>max_runs</td>
+<tr class="row-even"><td>max_runs</td>
 <td>Maximum number of times this job is allowed to be triggered</td>
 </tr>
-<tr><td>max_instances</td>
+<tr class="row-odd"><td>max_instances</td>
 <td>Maximum number of concurrently running instances allowed for this job</td>
 </tr>
-<tr><td>callback</td>
+<tr class="row-even"><td>callback</td>
 <td>Function to be called after the job has been done</td>
 </tr>
 </tbody>
@@ -166,7 +169,7 @@ u&#8216;596b8f2e-dad4-11e0-bcf1-5452005f1250&#8217;</p>
 <dl class="method">
 <dt id="clacks.agent.scheduler.SchedulerService.schedulerCronDateJob">
 <tt class="descname">schedulerCronDateJob</tt><big>(</big><em>user</em>, <em>queue</em>, <em>func</em>, <em>args</em>, <em>kwargs</em>, <em>year=None</em>, <em>month=None</em>, <em>day=None</em>, <em>week=None</em>, <em>day_of_week=None</em>, <em>hour=None</em>, <em>minute=None</em>, <em>second=None</em>, <em>start_date=None</em>, <em>**options</em><big>)</big><a class="headerlink" href="#clacks.agent.scheduler.SchedulerService.schedulerCronDateJob" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-1">
+<dd><div class="admonition" id="cmd-1">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -179,42 +182,42 @@ u&#8216;596b8f2e-dad4-11e0-bcf1-5452005f1250&#8217;</p>
 <col width="78%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>func</td>
+<tr class="row-even"><td>func</td>
 <td>Function <em>pointer</em></td>
 </tr>
-<tr><td>args</td>
+<tr class="row-odd"><td>args</td>
 <td>Function arguments</td>
 </tr>
-<tr><td>kwargs</td>
+<tr class="row-even"><td>kwargs</td>
 <td>Function keyword arguments</td>
 </tr>
-<tr><td>year</td>
+<tr class="row-odd"><td>year</td>
 <td>Year to run on</td>
 </tr>
-<tr><td>month</td>
+<tr class="row-even"><td>month</td>
 <td>Month to run on</td>
 </tr>
-<tr><td>day</td>
+<tr class="row-odd"><td>day</td>
 <td>Day of month to run on</td>
 </tr>
-<tr><td>week</td>
+<tr class="row-even"><td>week</td>
 <td>Week of the year to run on</td>
 </tr>
-<tr><td>day_of_week</td>
+<tr class="row-odd"><td>day_of_week</td>
 <td>Weekday to run on (0 = Monday)</td>
 </tr>
-<tr><td>hour</td>
+<tr class="row-even"><td>hour</td>
 <td>Hour to run on</td>
 </tr>
-<tr><td>second</td>
+<tr class="row-odd"><td>second</td>
 <td>Second to run on</td>
 </tr>
-<tr><td>options</td>
+<tr class="row-even"><td>options</td>
 <td>Set of job options</td>
 </tr>
 </tbody>
@@ -226,7 +229,7 @@ u&#8216;596b8f2e-dad4-11e0-bcf1-5452005f1250&#8217;</p>
 <dl class="method">
 <dt id="clacks.agent.scheduler.SchedulerService.schedulerGetJobs">
 <tt class="descname">schedulerGetJobs</tt><big>(</big><em>fltr=None</em><big>)</big><a class="headerlink" href="#clacks.agent.scheduler.SchedulerService.schedulerGetJobs" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-2">
+<dd><div class="admonition" id="cmd-2">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -252,12 +255,12 @@ u&#8217;description&#8217;: None}}</p>
 <col width="81%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>fltr</td>
+<tr class="row-even"><td>fltr</td>
 <td>Dictionary containing job options to filter for</td>
 </tr>
 </tbody>
@@ -268,7 +271,7 @@ u&#8217;description&#8217;: None}}</p>
 <dl class="method">
 <dt id="clacks.agent.scheduler.SchedulerService.schedulerIntervalJob">
 <tt class="descname">schedulerIntervalJob</tt><big>(</big><em>user</em>, <em>queue</em>, <em>func</em>, <em>args</em>, <em>kwargs</em>, <em>weeks=0</em>, <em>days=0</em>, <em>hours=0</em>, <em>minutes=0</em>, <em>seconds=0</em>, <em>start_date=None</em>, <em>**options</em><big>)</big><a class="headerlink" href="#clacks.agent.scheduler.SchedulerService.schedulerIntervalJob" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-3">
+<dd><div class="admonition" id="cmd-3">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -281,39 +284,39 @@ u&#8217;description&#8217;: None}}</p>
 <col width="78%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>func</td>
+<tr class="row-even"><td>func</td>
 <td>Function <em>pointer</em></td>
 </tr>
-<tr><td>args</td>
+<tr class="row-odd"><td>args</td>
 <td>Function arguments</td>
 </tr>
-<tr><td>kwargs</td>
+<tr class="row-even"><td>kwargs</td>
 <td>Function keyword arguments</td>
 </tr>
-<tr><td>weeks</td>
+<tr class="row-odd"><td>weeks</td>
 <td>Number of weeks to wait</td>
 </tr>
-<tr><td>days</td>
+<tr class="row-even"><td>days</td>
 <td>Number of days to wait</td>
 </tr>
-<tr><td>hours</td>
+<tr class="row-odd"><td>hours</td>
 <td>Number of hours to wait</td>
 </tr>
-<tr><td>minutes</td>
+<tr class="row-even"><td>minutes</td>
 <td>Number of minutes to wait</td>
 </tr>
-<tr><td>seconds</td>
+<tr class="row-odd"><td>seconds</td>
 <td>Number of seconds to wait</td>
 </tr>
-<tr><td>start_date</td>
+<tr class="row-even"><td>start_date</td>
 <td>When to first execute the job</td>
 </tr>
-<tr><td>options</td>
+<tr class="row-odd"><td>options</td>
 <td>Set of job options</td>
 </tr>
 </tbody>
@@ -325,7 +328,7 @@ u&#8217;description&#8217;: None}}</p>
 <dl class="method">
 <dt id="clacks.agent.scheduler.SchedulerService.schedulerRemoveJob">
 <tt class="descname">schedulerRemoveJob</tt><big>(</big><em>user</em>, <em>job_id</em><big>)</big><a class="headerlink" href="#clacks.agent.scheduler.SchedulerService.schedulerRemoveJob" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-4">
+<dd><div class="admonition" id="cmd-4">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -338,12 +341,12 @@ u&#8217;description&#8217;: None}}</p>
 <col width="78%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>job_id</td>
+<tr class="row-even"><td>job_id</td>
 <td>The job ID</td>
 </tr>
 </tbody>
@@ -387,7 +390,7 @@ u&#8217;description&#8217;: None}}</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -416,14 +419,14 @@ u&#8217;description&#8217;: None}}</p>
         <li class="right" >
           <a href="acl.html" title="ACL handling"
              >previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" >Development documentation</a> &raquo;</li>
           <li><a href="index.html" >Agent</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Cajus Pollmeier.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

@@ -3,15 +3,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>HTTP service &mdash; GOsa v3.0 documentation</title>
+    <title>HTTP service &mdash; Clacks 3.0 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="../_static/requirements.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -24,7 +27,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GOsa v3.0 documentation" href="../index.html" />
+    <link rel="top" title="Clacks 3.0 documentation" href="../index.html" />
     <link rel="up" title="Agent" href="index.html" />
     <link rel="next" title="LDAP Handler" href="ldap.html" />
     <link rel="prev" title="AMQP service" href="amqp.html" /> 
@@ -45,7 +48,7 @@
         <li class="right" >
           <a href="amqp.html" title="AMQP service"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" >Development documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Agent</a> &raquo;</li> 
       </ul>
@@ -79,7 +82,7 @@ class variable <tt class="docutils literal"><span class="pre">http_subtree</span
 <dt id="clacks.agent.httpd.HTTPService">
 <em class="property">class </em><tt class="descclassname">clacks.agent.httpd.</tt><tt class="descname">HTTPService</tt><a class="headerlink" href="#clacks.agent.httpd.HTTPService" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to serve HTTP fragments to the interested client. It makes
-makes use of a couple of configuration flags provided by the gosa
+makes use of a couple of configuration flags provided by the clacks
 configuration files <tt class="docutils literal"><span class="pre">[http]</span></tt> section:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -87,21 +90,21 @@ configuration files <tt class="docutils literal"><span class="pre">[http]</span>
 <col width="70%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>url</td>
+<tr class="row-even"><td>url</td>
 <td>AMQP URL to connect to the broker</td>
 </tr>
-<tr><td>id</td>
+<tr class="row-odd"><td>id</td>
 <td>User name to connect with</td>
 </tr>
-<tr><td>key</td>
+<tr class="row-even"><td>key</td>
 <td>Password to connect with</td>
 </tr>
-<tr><td>command-worker</td>
+<tr class="row-odd"><td>command-worker</td>
 <td>Number of worker processes</td>
 </tr>
 </tbody>
@@ -110,9 +113,9 @@ configuration files <tt class="docutils literal"><span class="pre">[http]</span>
 <div class="highlight-python"><pre>[http]
 host = node1.intranet.gonicus.de
 port = 8080
-sslpemfile = /etc/gosa/host.pem</pre>
+sslpemfile = /etc/clacks/host.pem</pre>
 </div>
-<p>If you want to create a gosa agent module that is going to export
+<p>If you want to create a clacks agent module that is going to export
 functionality (i.e. static content or some RPC functionality) you
 can register such a component like this:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">clacks.common.components</span> <span class="kn">import</span> <span class="n">PluginRegistry</span>
@@ -141,15 +144,15 @@ and will be served when the <em>HTTPService</em> starts up.</p>
 <col width="66%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>path</td>
+<tr class="row-even"><td>path</td>
 <td>Path part of an URL - i.e. &#8216;/rpc&#8217;</td>
 </tr>
-<tr><td>app</td>
+<tr class="row-odd"><td>app</td>
 <td>WSGI application</td>
 </tr>
 </tbody>
@@ -192,7 +195,7 @@ and will be served when the <em>HTTPService</em> starts up.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -221,14 +224,14 @@ and will be served when the <em>HTTPService</em> starts up.</p>
         <li class="right" >
           <a href="amqp.html" title="AMQP service"
              >previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" >Development documentation</a> &raquo;</li>
           <li><a href="index.html" >Agent</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Cajus Pollmeier.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

@@ -3,15 +3,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Object abstraction &mdash; GOsa v3.0 documentation</title>
+    <title>Object abstraction &mdash; Clacks 3.0 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="../_static/requirements.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -24,7 +27,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GOsa v3.0 documentation" href="../index.html" />
+    <link rel="top" title="Clacks 3.0 documentation" href="../index.html" />
     <link rel="up" title="Agent" href="index.html" />
     <link rel="next" title="Client" href="../client/index.html" />
     <link rel="prev" title="JSON RPC service" href="jsonrpc.html" /> 
@@ -45,7 +48,7 @@
         <li class="right" >
           <a href="jsonrpc.html" title="JSON RPC service"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" >Development documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Agent</a> &raquo;</li> 
       </ul>
@@ -62,8 +65,8 @@
 <h2>Basic usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
 <p>The object abstraction module allows to access managed-information in an object oriented way.</p>
 <p>You can get an object instance like this:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">clacks.agent.objects</span> <span class="kn">import</span> <span class="n">GOsaObjectFactory</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">person</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">getObject</span><span class="p">(</span><span class="s">&#39;GenericUser&#39;</span><span class="p">,</span> <span class="s">&quot;cn=Cajus Pollmeier,ou=people,ou=Technik,dc=gonicus,dc=de&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">clacks.agent.objects</span> <span class="kn">import</span> <span class="n">ObjectFactory</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">person</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">getObject</span><span class="p">(</span><span class="s">&#39;User&#39;</span><span class="p">,</span> <span class="s">&quot;cn=Cajus Pollmeier,ou=people,ou=Technik,dc=gonicus,dc=de&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>and then you can access, update and persist values like this:</p>
@@ -80,7 +83,7 @@
 </pre></div>
 </div>
 <p>... create new users:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">person</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">getObject</span><span class="p">(</span><span class="s">&#39;GenericUser&#39;</span><span class="p">,</span> <span class="s">u&#39;ou=people,dc=gonicus,dc=de&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&quot;create&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">person</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">getObject</span><span class="p">(</span><span class="s">&#39;User&#39;</span><span class="p">,</span> <span class="s">u&#39;ou=people,dc=gonicus,dc=de&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&quot;create&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">person</span><span class="o">.</span><span class="n">uid</span> <span class="o">=</span> <span class="s">u&quot;...&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">person</span><span class="o">.</span><span class="n">sn</span> <span class="o">=</span> <span class="s">u&quot;...&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">person</span><span class="o">.</span><span class="n">givenName</span> <span class="o">=</span> <span class="s">u&quot;...&quot;</span>
@@ -101,10 +104,11 @@
 can then be caught later to perform different tasks, e.g. remove the mail-account from the server when
 a Mail extension is removed)</p>
 </div>
-<div class="section" id="how-does-it-work-xml-definition-for-gosa-objects">
-<h2>How does it work - XML definition for GOsa objects<a class="headerlink" href="#how-does-it-work-xml-definition-for-gosa-objects" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="how-does-it-work-xml-definition-for-objects">
+<h2>How does it work - XML definition for objects<a class="headerlink" href="#how-does-it-work-xml-definition-for-objects" title="Permalink to this headline">¶</a></h2>
 <p>What properties are managed and how they are managed is defined in a set of XML files.
-Each of these XML files can contain one or more object definition, you can find them here <tt class="docutils literal"><span class="pre">./clacks.common/src/gosa/common/data/objects/</span></tt>.</p>
+Each of these XML files can contain one or more object definition, you can find
+them here <tt class="docutils literal"><span class="pre">./clacks.common/src/clacks/common/data/objects/</span></tt>.</p>
 <p>An object definition consist of the following information:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -112,48 +116,48 @@ Each of these XML files can contain one or more object definition, you can find 
 <col width="82%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Name</th>
+<tr class="row-odd"><th class="head">Name</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>Name</td>
+<tr class="row-even"><td>Name</td>
 <td>The Name of the object</td>
 </tr>
-<tr><td>Description</td>
+<tr class="row-odd"><td>Description</td>
 <td>A description</td>
 </tr>
-<tr><td>DisplayName</td>
+<tr class="row-even"><td>DisplayName</td>
 <td>A display name for the object.</td>
 </tr>
-<tr><td>Backend</td>
+<tr class="row-odd"><td>Backend</td>
 <td>A backend which defines which storage backend is used to persist the data</td>
 </tr>
-<tr><td>BackendParameters</td>
+<tr class="row-even"><td>BackendParameters</td>
 <td>A list parameters for the backend.</td>
 </tr>
-<tr><td>Attributes</td>
+<tr class="row-odd"><td>Attributes</td>
 <td>Attributes that are provided by this object</td>
 </tr>
-<tr><td>Methods</td>
+<tr class="row-even"><td>Methods</td>
 <td>Methods that can be called on object instances</td>
 </tr>
-<tr><td>Container</td>
+<tr class="row-odd"><td>Container</td>
 <td>A list of potential sub-objects this object can contain</td>
 </tr>
-<tr><td>Extends</td>
-<td>Another objects name that we can extend. E.g. PosixUser can extend a GenericUser object</td>
+<tr class="row-even"><td>Extends</td>
+<td>Another objects name that we can extend. E.g. PosixUser can extend a User object</td>
 </tr>
-<tr><td>BaseObject</td>
-<td>Defines this object as root object. E.g. GenericUser is a base object</td>
+<tr class="row-odd"><td>BaseObject</td>
+<td>Defines this object as root object. E.g. User is a base object</td>
 </tr>
-<tr><td>FixedRDN</td>
+<tr class="row-even"><td>FixedRDN</td>
 <td>A RDN. For objects that are bound to a specific name. E.g. PeopleContainer (ou=people)</td>
 </tr>
 </tbody>
 </table>
-<div class="section" id="xml-definition-of-gosa-objects-in-detail">
-<h3>XML definition of GOsa-objects in detail<a class="headerlink" href="#xml-definition-of-gosa-objects-in-detail" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="xml-definition-of-objects-in-detail">
+<h3>XML definition of objects in detail<a class="headerlink" href="#xml-definition-of-objects-in-detail" title="Permalink to this headline">¶</a></h3>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">We try to keep this documentation up to date, but at the moment the
@@ -162,15 +166,15 @@ changes frequently.</p>
 </div>
 <div class="section" id="a-minimum-example">
 <h4>A minimum example<a class="headerlink" href="#a-minimum-example" title="Permalink to this headline">¶</a></h4>
-<p>All starts with an <tt class="docutils literal"><span class="pre">&lt;Object&gt;</span></tt> tag which introduces a new GOsa-object, this
+<p>All starts with an <tt class="docutils literal"><span class="pre">&lt;Object&gt;</span></tt> tag which introduces a new object, this
 <tt class="docutils literal"><span class="pre">&lt;Object&gt;</span></tt> tag must contain at least a <tt class="docutils literal"><span class="pre">&lt;Name&gt;</span></tt>, a <tt class="docutils literal"><span class="pre">&lt;Description&gt;</span></tt>, a <tt class="docutils literal"><span class="pre">&lt;DisplayName&gt;</span></tt> and a
 <tt class="docutils literal"><span class="pre">&lt;Backend&gt;</span></tt> tag. The name and the description are self-explaining.
 The default-backend specifies which backend has to be used as default, for example
 a LDAP or a MySQL backend - There may be more depending on your setup.</p>
-<p>Backends are storage points for GOsa-objects, they take care of caching,
+<p>Backends are storage points for objects, they take care of caching,
 loading and saving of objects and their attributes from different stores e.g. MySQL
 or LDAP.</p>
-<p>Here is a minimum configuration for a GOsa-object. It does not have any
+<p>Here is a minimum configuration for an object. It does not have any
 methods nor attributes:</p>
 <div class="highlight-xml"><div class="highlight"><pre><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="nt">&lt;Objects</span> <span class="na">xmlns=</span><span class="s">&quot;http://www.gonicus.de/Objects&quot;</span><span class="nt">&gt;</span>
@@ -194,9 +198,9 @@ lacks attribute and method definitions:</p>
 <span class="nt">&lt;Objects</span> <span class="na">xmlns=</span><span class="s">&quot;http://www.gonicus.de/Objects&quot;</span><span class="nt">&gt;</span>
     ...
     <span class="nt">&lt;Object&gt;</span>
-        <span class="nt">&lt;Name&gt;</span>GenericUser<span class="nt">&lt;/Name&gt;</span>
+        <span class="nt">&lt;Name&gt;</span>User<span class="nt">&lt;/Name&gt;</span>
         <span class="nt">&lt;DisplayName&gt;</span>A dummy<span class="nt">&lt;/DisplayName&gt;</span>
-        <span class="nt">&lt;Description&gt;</span>GenericUser class<span class="nt">&lt;/Description&gt;</span>
+        <span class="nt">&lt;Description&gt;</span>User class<span class="nt">&lt;/Description&gt;</span>
         <span class="nt">&lt;Backend&gt;</span>LDAP<span class="nt">&lt;/Backend&gt;</span>
 
         <span class="nt">&lt;Container&gt;</span>
@@ -212,14 +216,14 @@ lacks attribute and method definitions:</p>
 <p>As you can see, three more tags were introduced here.</p>
 <p>A <tt class="docutils literal"><span class="pre">&lt;Container&gt;</span></tt> tag which specifies for which objects we are a container.
 For example an <tt class="docutils literal"><span class="pre">OrganizationalUnit</span></tt> is a container for <tt class="docutils literal"><span class="pre">PeopleContainer</span></tt> and <tt class="docutils literal"><span class="pre">GroupContainer</span></tt> objects.
-In this example we could place <tt class="docutils literal"><span class="pre">Something</span></tt> objects under <tt class="docutils literal"><span class="pre">GenericUser</span></tt> objects.</p>
-<p>A <tt class="docutils literal"><span class="pre">GenericUser</span></tt> object may have extensions like mail, posix, samba, ...  which can be added to or
+In this example we could place <tt class="docutils literal"><span class="pre">Something</span></tt> objects under <tt class="docutils literal"><span class="pre">User</span></tt> objects.</p>
+<p>A <tt class="docutils literal"><span class="pre">User</span></tt> object may have extensions like mail, posix, samba, ...  which can be added to or
 removed from our object dynamically.
 To be able to identify those addable extension we have the <tt class="docutils literal"><span class="pre">&lt;Extends&gt;</span></tt> tag, it specifies
 which objects could be added to our object as extension.</p>
 <p>The <tt class="docutils literal"><span class="pre">&lt;BaseObject&gt;</span></tt> tag, defines our object as root object, (if set to true) it cannot be attached
 to some other objects, like described above in the <tt class="docutils literal"><span class="pre">&lt;Extends&gt;</span></tt> tag.</p>
-<p>With the above example we can now instantiate a <tt class="docutils literal"><span class="pre">GenericUser</span></tt> object, it has no attributes
+<p>With the above example we can now instantiate a <tt class="docutils literal"><span class="pre">User</span></tt> object, it has no attributes
 nor methods, but we could add a <tt class="docutils literal"><span class="pre">PosixUser</span></tt> and a <tt class="docutils literal"><span class="pre">Mail</span></tt> extension to it.</p>
 </div>
 <div class="section" id="adding-attributes-and-their-in-and-out-filters">
@@ -238,9 +242,9 @@ nor methods, but we could add a <tt class="docutils literal"><span class="pre">P
 <span class="nt">&lt;Objects</span> <span class="na">xmlns=</span><span class="s">&quot;http://www.gonicus.de/Objects&quot;</span><span class="nt">&gt;</span>
     ...
     <span class="nt">&lt;Object&gt;</span>
-        <span class="nt">&lt;Name&gt;</span>GenericUser<span class="nt">&lt;/Name&gt;</span>
-        <span class="nt">&lt;DisplayName&gt;</span>GenericUser<span class="nt">&lt;/DisplayName&gt;</span>
-        <span class="nt">&lt;Description&gt;</span>GenericUser<span class="nt">&lt;/Description&gt;</span>
+        <span class="nt">&lt;Name&gt;</span>User<span class="nt">&lt;/Name&gt;</span>
+        <span class="nt">&lt;DisplayName&gt;</span>User<span class="nt">&lt;/DisplayName&gt;</span>
+        <span class="nt">&lt;Description&gt;</span>User<span class="nt">&lt;/Description&gt;</span>
         <span class="nt">&lt;Backend&gt;</span>LDAP<span class="nt">&lt;/Backend&gt;</span>
         ...
         <span class="nt">&lt;Attributes&gt;</span>
@@ -286,65 +290,65 @@ you can specify it explicitly like this:</p>
 <col width="71%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Name</th>
+<tr class="row-odd"><th class="head">Name</th>
 <th class="head">Optional</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>Name</td>
+<tr class="row-even"><td>Name</td>
 <td>No</td>
 <td>The attributes name.</td>
 </tr>
-<tr><td>Description</td>
+<tr class="row-odd"><td>Description</td>
 <td>No</td>
 <td>A short description for the attribute.</td>
 </tr>
-<tr><td>DependsOn</td>
+<tr class="row-even"><td>DependsOn</td>
 <td>Yes</td>
 <td>A list of attributes that depends on this attribute.</td>
 </tr>
-<tr><td>Backend</td>
+<tr class="row-odd"><td>Backend</td>
 <td>Yes</td>
 <td>The backend to store this attribute.</td>
 </tr>
-<tr><td>Type</td>
+<tr class="row-even"><td>Type</td>
 <td>No</td>
 <td>A simple string which defines the attributes syntax, e.g. String.</td>
 </tr>
-<tr><td>BackendType</td>
+<tr class="row-odd"><td>BackendType</td>
 <td>Yes</td>
 <td>Some attributes use a different type to be stored the backend.</td>
 </tr>
-<tr><td>Validators</td>
+<tr class="row-even"><td>Validators</td>
 <td>Yes</td>
 <td>A validation rule.</td>
 </tr>
-<tr><td>InFilter</td>
+<tr class="row-odd"><td>InFilter</td>
 <td>Yes</td>
 <td>A filter which is used to read the attribute from the backend.</td>
 </tr>
-<tr><td>OutFilter</td>
+<tr class="row-even"><td>OutFilter</td>
 <td>Yes</td>
 <td>A filter which is used to store the attribute in the backend.</td>
 </tr>
-<tr><td>MultiValue</td>
+<tr class="row-odd"><td>MultiValue</td>
 <td>Yes</td>
 <td>A boolean flag, which marks this value as multiple value.</td>
 </tr>
-<tr><td>Readonly</td>
+<tr class="row-even"><td>Readonly</td>
 <td>Yes</td>
 <td>Marks the attribute as read only.</td>
 </tr>
-<tr><td>Mandatory</td>
+<tr class="row-odd"><td>Mandatory</td>
 <td>Yes</td>
 <td>Marks the attribute as mandatory.</td>
 </tr>
-<tr><td>Unique</td>
+<tr class="row-even"><td>Unique</td>
 <td>Yes</td>
 <td>Marks the attribute as system-wide unique.</td>
 </tr>
-<tr><td>Foreign</td>
+<tr class="row-odd"><td>Foreign</td>
 <td>Yes</td>
 <td>This Attribute is part of another object.</td>
 </tr>
@@ -568,11 +572,11 @@ The following example does not work at the moment due to missing comperators.</p
 </div>
 <p>Another example could be to convert a list of flags into different boolean values, like this.</p>
 <p>Lets say we&#8217;ve a given flag list which looks like this:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span> <span class="n">gosaFlagList</span> <span class="o">=</span> <span class="p">[</span><span class="n">LVM</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span> <span class="n">flagList</span> <span class="o">=</span> <span class="p">[</span><span class="n">LVM</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>Where L stands for Lookup ...</p>
-<p>While loading the gosaFlagList we can convert this string flag list into real
+<p>While loading the flagList we can convert this string flag list into real
 boolean value like this:</p>
 <div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;Attribute&gt;</span>
     <span class="nt">&lt;Name&gt;</span>Flag_Lookup<span class="nt">&lt;/Name&gt;</span>
@@ -586,7 +590,7 @@ boolean value like this:</p>
                         <span class="nt">&lt;ConditionChain&gt;</span>
                             <span class="nt">&lt;Condition&gt;</span>
                                 <span class="nt">&lt;Name&gt;</span>RegEx<span class="nt">&lt;/Name&gt;</span>
-                                <span class="nt">&lt;Param&gt;</span>%(gosaFlagList)s<span class="nt">&lt;/Param&gt;</span>
+                                <span class="nt">&lt;Param&gt;</span>%(flagList)s<span class="nt">&lt;/Param&gt;</span>
                                 <span class="nt">&lt;Param&gt;</span>/[L]/i<span class="nt">&lt;/Param&gt;</span>
                             <span class="nt">&lt;/Condition&gt;</span>
                         <span class="nt">&lt;/ConditionChain&gt;</span>
@@ -616,7 +620,7 @@ boolean value like this:</p>
 </div>
 <p>And then we could define an out filter which looks like this, to store the boolean values as string again:</p>
 <div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;Attribute&gt;</span>
-    <span class="nt">&lt;Name&gt;</span>gosaFlagList<span class="nt">&lt;/Name&gt;</span>
+    <span class="nt">&lt;Name&gt;</span>flagList<span class="nt">&lt;/Name&gt;</span>
     ...
     <span class="nt">&lt;OutFilter&gt;</span>
         <span class="nt">&lt;FilterChain&gt;</span>
@@ -665,11 +669,11 @@ boolean value like this:</p>
             <span class="nt">&lt;/FilterEntry&gt;</span>
 </pre></div>
 </div>
-<p>When saving the gosaFlagList again, it will be created out of the flag states.</p>
+<p>When saving the flagList again, it will be created out of the flag states.</p>
 </div>
 <div class="section" id="introduction-of-methods">
 <h4>Introduction of methods<a class="headerlink" href="#introduction-of-methods" title="Permalink to this headline">¶</a></h4>
-<p>We can also define methods for GOsa-objects within the XML definition, these methods can
+<p>We can also define methods for objects within the XML definition, these methods can
 then be called directly on an instance of these object:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">person</span><span class="o">-&gt;</span><span class="n">notify</span><span class="p">(</span><span class="s">u&quot;Shutdown of your client&quot;</span><span class="p">,</span> <span class="s">u&quot;Please prepare yourselves for a system reboot!&quot;</span><span class="p">)</span>
 </pre></div>
@@ -679,7 +683,7 @@ then be called directly on an instance of these object:</p>
 <span class="nt">&lt;Objects</span> <span class="na">xmlns=</span><span class="s">&quot;http://www.gonicus.de/Objects&quot;</span><span class="nt">&gt;</span>
     ...
     <span class="nt">&lt;Object&gt;</span>
-        <span class="nt">&lt;Name&gt;</span>GenericUser<span class="nt">&lt;/Name&gt;</span>
+        <span class="nt">&lt;Name&gt;</span>User<span class="nt">&lt;/Name&gt;</span>
         ...
         <span class="nt">&lt;Methods&gt;</span>
             <span class="nt">&lt;Method&gt;</span>
@@ -722,9 +726,9 @@ You can have multiple methods if you want.</p>
 <div><ul class="simple">
 <li>The <tt class="docutils literal"><span class="pre">&lt;Name&gt;</span></tt> tag which specifies the name of the method.</li>
 <li>A <tt class="docutils literal"><span class="pre">&lt;MethodParameters&gt;</span></tt> tag, which contains a list of parameters to this method.</li>
-<li>A <tt class="docutils literal"><span class="pre">&lt;Command&gt;</span></tt> tag, which represents to GOsa-agent command we want to call.</li>
+<li>A <tt class="docutils literal"><span class="pre">&lt;Command&gt;</span></tt> tag, which represents to clacks-agent command we want to call.</li>
 <li>The <tt class="docutils literal"><span class="pre">&lt;CommandParameters&gt;</span></tt> tag, defines a list parameters we want to pass to the
-GOsa-agent command call.</li>
+clacks-agent command call.</li>
 </ul>
 </div></blockquote>
 <p>The above definition creates a method named notify which looks like this:</p>
@@ -735,12 +739,12 @@ GOsa-agent command call.</li>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">person</span><span class="o">-&gt;</span><span class="n">notifyUser</span><span class="p">(</span><span class="s">&quot;Warning&quot;</span><span class="p">,</span> <span class="s">&quot;Restart imminent!&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>it will invoke a GOsa-agent command named notifyUser with this parameters:</p>
+<p>it will invoke a clacks-agent command named notifyUser with this parameters:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">notifyUser</span><span class="p">(</span><span class="s">u&quot;user1&quot;</span><span class="p">,</span> <span class="s">u&quot;Der angegebene Titel war: Warning&quot;</span><span class="p">,</span> <span class="s">u&quot;Restart imminent!&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>As you can see, you cannot freely create whatever method you want, you can just call
-existing GOsa-agent commands and adjust their arguments.</p>
+existing clacks-agent commands and adjust their arguments.</p>
 <p>You can use placeholders using <tt class="docutils literal"><span class="pre">%(property_name)s</span></tt>, to dynamically fill in
 command parameters, like done for the first <tt class="docutils literal"><span class="pre">&lt;CommandParameter&gt;</span></tt>.</p>
 <div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;CommandParameter&gt;</span>
@@ -761,14 +765,14 @@ parameters of the method as placeholders.</p>
 </div>
 </div>
 <hr class="docutils" />
-<span class="target" id="module-clacks.agent.objects.factory"></span><div class="section" id="gosa-object-factory">
-<h1>GOsa Object Factory<a class="headerlink" href="#gosa-object-factory" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-clacks.agent.objects.factory"></span><div class="section" id="object-factory">
+<h1>Object Factory<a class="headerlink" href="#object-factory" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="short-description">
 <h2>Short description<a class="headerlink" href="#short-description" title="Permalink to this headline">¶</a></h2>
 <p>The object factory provides access to backend-data in an object
 oriented way. You can create, read, update and delete objects easily.</p>
 <p>What object-types are avaialable is configured using XML files, these files
-are located here: <tt class="docutils literal"><span class="pre">./clacks.common/src/gosa/common/data/objects/</span></tt>.</p>
+are located here: <tt class="docutils literal"><span class="pre">./clacks.common/src/clacks/common/data/objects/</span></tt>.</p>
 <p>Each XML file can contain multiple object definitions, with object related
 information, like attributes, methods, how to store and read
 objects.</p>
@@ -778,8 +782,8 @@ objects.</p>
 Those meta-classes will then be used to instantiate a new python object,
 which will then provide the defined attributes, methods, aso.</p>
 <p>Here are some examples on how to instatiate on new object:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">clacks.agent.objects</span> <span class="kn">import</span> <span class="n">GOsaObjectFactory</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">GOsaObjectFactory</span><span class="o">.</span><span class="n">getInstance</span><span class="p">()</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">clacks.agent.objects</span> <span class="kn">import</span> <span class="n">ObjectFactory</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">ObjectFactory</span><span class="o">.</span><span class="n">getInstance</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">person</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">getObject</span><span class="p">(</span><span class="s">&#39;Person&#39;</span><span class="p">,</span> <span class="s">&quot;410ad9f0-c4c0-11e0-962b-0800200c9a66&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">person</span><span class="o">-&gt;</span><span class="n">sn</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">person</span><span class="o">-&gt;</span><span class="n">sn</span> <span class="o">=</span> <span class="s">&quot;Surname&quot;</span>
@@ -787,15 +791,28 @@ which will then provide the defined attributes, methods, aso.</p>
 </pre></div>
 </div>
 <dl class="class">
-<dt id="clacks.agent.objects.factory.GOsaObjectFactory">
-<em class="property">class </em><tt class="descclassname">clacks.agent.objects.factory.</tt><tt class="descname">GOsaObjectFactory</tt><a class="headerlink" href="#clacks.agent.objects.factory.GOsaObjectFactory" title="Permalink to this definition">¶</a></dt>
-<dd><p>This class reads GOsa-object defintions and generates python-meta classes
+<dt id="clacks.agent.objects.factory.ObjectFactory">
+<em class="property">class </em><tt class="descclassname">clacks.agent.objects.factory.</tt><tt class="descname">ObjectFactory</tt><a class="headerlink" href="#clacks.agent.objects.factory.ObjectFactory" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class reads object defintions and generates python-meta classes
 for each object, which can then be instantiated using
-<a class="reference internal" href="#clacks.agent.objects.factory.GOsaObjectFactory.getObject" title="clacks.agent.objects.factory.GOsaObjectFactory.getObject"><tt class="xref py py-meth docutils literal"><span class="pre">clacks.agent.objects.factory.GOsaObjectFactory.getObject()</span></tt></a>.</p>
+<a class="reference internal" href="#clacks.agent.objects.factory.ObjectFactory.getObject" title="clacks.agent.objects.factory.ObjectFactory.getObject"><tt class="xref py py-meth docutils literal"><span class="pre">clacks.agent.objects.factory.ObjectFactory.getObject()</span></tt></a>.</p>
 <dl class="method">
-<dt id="clacks.agent.objects.factory.GOsaObjectFactory.getObject">
-<tt class="descname">getObject</tt><big>(</big><em>name</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#clacks.agent.objects.factory.GOsaObjectFactory.getObject" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a GOsa-object instance.</p>
+<dt id="clacks.agent.objects.factory.ObjectFactory.getAttributes">
+<tt class="descname">getAttributes</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.objects.factory.ObjectFactory.getAttributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all object-attributes
+Including information about primary/foreign attributes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="clacks.agent.objects.factory.ObjectFactory.getIndexedAttributes">
+<tt class="descname">getIndexedAttributes</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.objects.factory.ObjectFactory.getIndexedAttributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of attributes that have to be indexed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="clacks.agent.objects.factory.ObjectFactory.getObject">
+<tt class="descname">getObject</tt><big>(</big><em>name</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#clacks.agent.objects.factory.ObjectFactory.getObject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a object instance.</p>
 <p>e.g.:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">person</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">getObject</span><span class="p">(</span><span class="s">&#39;Person&#39;</span><span class="p">,</span> <span class="s">&quot;410ad9f0-c4c0-11e0-962b-0800200c9a66&quot;</span><span class="p">)</span>
 </pre></div>
@@ -803,12 +820,36 @@ for each object, which can then be instantiated using
 </dd></dl>
 
 <dl class="method">
-<dt id="clacks.agent.objects.factory.GOsaObjectFactory.load_schema">
-<tt class="descname">load_schema</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.objects.factory.GOsaObjectFactory.load_schema" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method reads all gosa-object defintion files and then calls
-<a class="reference internal" href="#clacks.agent.objects.factory.GOsaObjectFactory.getObject" title="clacks.agent.objects.factory.GOsaObjectFactory.getObject"><tt class="xref py py-meth docutils literal"><span class="pre">clacks.agent.objects.factory.GOsaObjectFactory.getObject()</span></tt></a>
-to initiate the parsing into meta-classes for each file.</p>
-<p>These meta-classes are used for object instantiation later.</p>
+<dt id="clacks.agent.objects.factory.ObjectFactory.getReferences">
+<tt class="descname">getReferences</tt><big>(</big><em>s_obj=None</em>, <em>s_attr=None</em><big>)</big><a class="headerlink" href="#clacks.agent.objects.factory.ObjectFactory.getReferences" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary containing all attribute references.
+e.g. A groups memberlist may have references to users.</p>
+<blockquote>
+<div>{&#8216;PosixGroup&#8217;: {&#8216;memberUid&#8217;: [(&#8216;PosixUser&#8217;, &#8216;uid&#8217;)]}}</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="clacks.agent.objects.factory.ObjectFactory.getXMLDefinitionsCombined">
+<tt class="descname">getXMLDefinitionsCombined</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.objects.factory.ObjectFactory.getXMLDefinitionsCombined" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a complete XML of all defined objects.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="clacks.agent.objects.factory.ObjectFactory.getXMLObjectSchema">
+<tt class="descname">getXMLObjectSchema</tt><big>(</big><em>asString=False</em><big>)</big><a class="headerlink" href="#clacks.agent.objects.factory.ObjectFactory.getXMLObjectSchema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a xml-schema definition that can be used to validate the
+xml-objects returned by &#8216;asXML()&#8217;</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="clacks.agent.objects.factory.ObjectFactory.load_schema">
+<tt class="descname">load_schema</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.objects.factory.ObjectFactory.load_schema" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method reads all object defintion files (xml) and combines
+into one single xml-dump.</p>
+<p>This combined-xml-dump will then be forwarded to
+<tt class="xref py py-meth docutils literal"><span class="pre">clacks.agent.objects.factory.ObjectFactory.__parse_schema()</span></tt>
+to generate meta-classes for each object.</p>
+<p>This meta-classes can then be used to instantiate those objects.</p>
 </dd></dl>
 
 </dd></dl>
@@ -822,13 +863,13 @@ to initiate the parsing into meta-classes for each file.</p>
 </div>
 </div>
 <hr class="docutils" />
-<span class="target" id="module-clacks.agent.objects.proxy"></span><div class="section" id="gosa-object-proxy">
-<h1>GOsa Object Proxy<a class="headerlink" href="#gosa-object-proxy" title="Permalink to this headline">¶</a></h1>
-<p>The GOsa object proxy sits on top of the <em class="xref std std-ref">clacks.agent.object.factory:GOsaObjectFactory</em>
+<span class="target" id="module-clacks.agent.objects.proxy"></span><div class="section" id="object-proxy">
+<h1>Object Proxy<a class="headerlink" href="#object-proxy" title="Permalink to this headline">¶</a></h1>
+<p>The object proxy sits on top of the <em class="xref std std-ref">clacks.agent.object.factory:ObjectFactory</em>
 and is the glue between objects that are defined via XML descriptions. The proxy should
 be used to load, remove and modify objects.</p>
 <p>Here are some examples:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">GOsaObjectProxy</span><span class="p">(</span><span class="s">u&quot;ou=people,dc=example,dc=net&quot;</span><span class="p">,</span> <span class="s">&quot;GenericUser&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">ObjectProxy</span><span class="p">(</span><span class="s">u&quot;ou=people,dc=example,dc=net&quot;</span><span class="p">,</span> <span class="s">&quot;User&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">uid</span> <span class="o">=</span> <span class="s">&quot;user1&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">sn</span> <span class="o">=</span> <span class="s">u&quot;Mustermann&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">givenName</span> <span class="o">=</span> <span class="s">u&quot;Eike&quot;</span>
@@ -853,7 +894,7 @@ be used to load, remove and modify objects.</p>
 <hr class="docutils" />
 <span class="target" id="module-clacks.agent.objects.index"></span><div class="section" id="object-index">
 <h1>Object Index<a class="headerlink" href="#object-index" title="Permalink to this headline">¶</a></h1>
-<p>The Object Index is the search engine in GOsa. It keeps track about
+<p>The Object Index is the search engine in clacks. It keeps track about
 all defined object types and can find references to it inside of its
 local index database</p>
 <hr class="docutils" />
@@ -864,96 +905,9 @@ local index database</p>
 is the search engine that allows quick querries on the data set with
 paged results and wildcards.</p>
 <dl class="method">
-<dt id="clacks.agent.objects.index.ObjectIndex.count">
-<tt class="descname">count</tt><big>(</big><em>base=None</em>, <em>scope=2</em>, <em>fltr=None</em><big>)</big><a class="headerlink" href="#clacks.agent.objects.index.ObjectIndex.count" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-0">
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last"><strong>This method will be exported by the CommandRegistry.</strong></p>
-</div>
-<p>Query the database using the given filter and return the number
-of matches.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="26%" />
-<col width="74%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Parameter</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>base</td>
-<td>Base to search on</td>
-</tr>
-<tr><td>scope</td>
-<td>Scope to use (BASE, ONE, SUB)</td>
-</tr>
-<tr><td>fltr</td>
-<td>Filter description</td>
-</tr>
-</tbody>
-</table>
-<p>Filter example:</p>
-<p>{
-&#8216;_and&#8217;: {
-&#8216;uid&#8217;: &#8216;foo&#8217;,
-&#8216;givenName&#8217;: u&#8217;Klaus&#8217;,
-&#8216;_or&#8217;: {
-&#8216;_in&#8217;: {
-&#8216;sn&#8217;: [u&#8217;Mustermann&#8217;, u&#8217;Musterfrau&#8217;]
-},
-&#8216;_lt&#8217;: [&#8216;dateOfBirth&#8217;, datetime.datetime.now()]
-}
-}
-}</p>
-<p>Available filter parameters:</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="17%" />
-<col width="83%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Parameter</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>[a-zA-Z0-9]+</td>
-<td>Ordinary match condition, maps to a single value</td>
-</tr>
-<tr><td>_and</td>
-<td>And condition, maps to more conditions</td>
-</tr>
-<tr><td>_or</td>
-<td>Or condition, maps to more conditions</td>
-</tr>
-<tr><td>_not</td>
-<td>Not condition, inverts condition</td>
-</tr>
-<tr><td>_gt</td>
-<td>Check if value is greater, maps to a 2 value list</td>
-</tr>
-<tr><td>_ge</td>
-<td>Check if value is greater or equal, maps to a 2 value list</td>
-</tr>
-<tr><td>_lt</td>
-<td>Check if value is lesser, maps to a 2 value list</td>
-</tr>
-<tr><td>_le</td>
-<td>Check if value is lesser or equal, maps to a 2 value list</td>
-</tr>
-</tbody>
-</table>
-<p><tt class="docutils literal"><span class="pre">Return</span></tt>: Integer</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="clacks.agent.objects.index.ObjectIndex.exists">
 <tt class="descname">exists</tt><big>(</big><em>uuid</em><big>)</big><a class="headerlink" href="#clacks.agent.objects.index.ObjectIndex.exists" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-1">
+<dd><div class="admonition" id="cmd-0">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -967,12 +921,12 @@ existance flag.</p>
 <col width="64%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>uuid</td>
+<tr class="row-even"><td>uuid</td>
 <td>Object identifier</td>
 </tr>
 </tbody>
@@ -981,56 +935,32 @@ existance flag.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="clacks.agent.objects.index.ObjectIndex.search">
-<tt class="descname">search</tt><big>(</big><em>base=None</em>, <em>scope=2</em>, <em>fltr=None</em>, <em>attrs=None</em>, <em>begin=None</em>, <em>end=None</em>, <em>order_by=None</em>, <em>descending=False</em><big>)</big><a class="headerlink" href="#clacks.agent.objects.index.ObjectIndex.search" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-2">
+<dt id="clacks.agent.objects.index.ObjectIndex.xquery">
+<tt class="descname">xquery</tt><big>(</big><em>query</em><big>)</big><a class="headerlink" href="#clacks.agent.objects.index.ObjectIndex.xquery" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition" id="cmd-1">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last"><strong>This method will be exported by the CommandRegistry.</strong></p>
 </div>
-<p>Query the database using the given filter and return the
-result set.</p>
+<p>Perform a raw xquery on the object database.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="17%" />
-<col width="83%" />
+<col width="24%" />
+<col width="76%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>base</td>
-<td>Base to search on</td>
-</tr>
-<tr><td>scope</td>
-<td>Scope to use (BASE, ONE, SUB)</td>
-</tr>
-<tr><td>fltr</td>
-<td>Filter description</td>
-</tr>
-<tr><td>attrs</td>
-<td>List of attributes the result set should contain</td>
-</tr>
-<tr><td>begin</td>
-<td>Offset to start returning results</td>
-</tr>
-<tr><td>end</td>
-<td>End offset to stop returning results</td>
-</tr>
-<tr><td>order_by</td>
-<td>Attribute to sort for</td>
-</tr>
-<tr><td>descending</td>
-<td>Ascending or descending sort</td>
+<tr class="row-even"><td>xquery</td>
+<td>Definition of the search/action</td>
 </tr>
 </tbody>
 </table>
-<p>For more information on the filter format, consult the ref:<cite>clacks.agent.objects.index.count</cite>
-documentation.</p>
-<p><tt class="docutils literal"><span class="pre">Return</span></tt>: List of dicts</p>
+<p><tt class="docutils literal"><span class="pre">Return</span></tt>: True/False</p>
 </dd></dl>
 
 </dd></dl>
@@ -1047,8 +977,8 @@ documentation.</p>
   <ul>
 <li><a class="reference internal" href="#">Object abstraction</a><ul>
 <li><a class="reference internal" href="#basic-usage">Basic usage</a></li>
-<li><a class="reference internal" href="#how-does-it-work-xml-definition-for-gosa-objects">How does it work - XML definition for GOsa objects</a><ul>
-<li><a class="reference internal" href="#xml-definition-of-gosa-objects-in-detail">XML definition of GOsa-objects in detail</a><ul>
+<li><a class="reference internal" href="#how-does-it-work-xml-definition-for-objects">How does it work - XML definition for objects</a><ul>
+<li><a class="reference internal" href="#xml-definition-of-objects-in-detail">XML definition of objects in detail</a><ul>
 <li><a class="reference internal" href="#a-minimum-example">A minimum example</a></li>
 <li><a class="reference internal" href="#some-optional-properties-added">Some optional properties added</a></li>
 <li><a class="reference internal" href="#adding-attributes-and-their-in-and-out-filters">Adding attributes and their in- and out-filters</a></li>
@@ -1061,11 +991,11 @@ documentation.</p>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#gosa-object-factory">GOsa Object Factory</a><ul>
+<li><a class="reference internal" href="#object-factory">Object Factory</a><ul>
 <li><a class="reference internal" href="#short-description">Short description</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#gosa-object-proxy">GOsa Object Proxy</a><ul>
+<li><a class="reference internal" href="#object-proxy">Object Proxy</a><ul>
 <li><a class="reference internal" href="#will-list-the-available-extension-types-for-that-specific-object">will list the available extension types for that specific object.</a></li>
 </ul>
 </li>
@@ -1086,7 +1016,7 @@ documentation.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -1115,14 +1045,14 @@ documentation.</p>
         <li class="right" >
           <a href="jsonrpc.html" title="JSON RPC service"
              >previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" >Development documentation</a> &raquo;</li>
           <li><a href="index.html" >Agent</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Cajus Pollmeier.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

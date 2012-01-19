@@ -3,15 +3,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Command registry &mdash; GOsa v3.0 documentation</title>
+    <title>Command registry &mdash; Clacks 3.0 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="../_static/requirements.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -24,7 +27,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GOsa v3.0 documentation" href="../index.html" />
+    <link rel="top" title="Clacks 3.0 documentation" href="../index.html" />
     <link rel="up" title="Agent" href="index.html" />
     <link rel="next" title="ACL handling" href="acl.html" />
     <link rel="prev" title="Agent" href="index.html" /> 
@@ -45,7 +48,7 @@
         <li class="right" >
           <a href="index.html" title="Agent"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" >Development documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Agent</a> &raquo;</li> 
       </ul>
@@ -75,21 +78,21 @@ for sending and receiving a couple of important bus events:</p>
 <col width="60%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Name</th>
+<tr class="row-odd"><th class="head">Name</th>
 <th class="head">Direction</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>NodeCapabilities</td>
+<tr class="row-even"><td>NodeCapabilities</td>
 <td>send/receive</td>
 </tr>
-<tr><td>NodeAnnounce</td>
+<tr class="row-odd"><td>NodeAnnounce</td>
 <td>send/receive</td>
 </tr>
-<tr><td>NodeLeave</td>
+<tr class="row-even"><td>NodeLeave</td>
 <td>receive</td>
 </tr>
-<tr><td>NodeStatus</td>
+<tr class="row-odd"><td>NodeStatus</td>
 <td>receive</td>
 </tr>
 </tbody>
@@ -134,15 +137,15 @@ method.</p>
 <col width="73%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>func</td>
+<tr class="row-even"><td>func</td>
 <td>method to call</td>
 </tr>
-<tr><td>args</td>
+<tr class="row-odd"><td>args</td>
 <td>ordinary argument list/dict</td>
 </tr>
 </tbody>
@@ -160,12 +163,12 @@ method.</p>
 <col width="55%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>func</td>
+<tr class="row-even"><td>func</td>
 <td>method name</td>
 </tr>
 </tbody>
@@ -183,12 +186,12 @@ method.</p>
 <col width="55%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>func</td>
+<tr class="row-even"><td>func</td>
 <td>method name</td>
 </tr>
 </tbody>
@@ -206,15 +209,15 @@ method.</p>
 <col width="66%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>func</td>
+<tr class="row-even"><td>func</td>
 <td>method name</td>
 </tr>
-<tr><td>queue</td>
+<tr class="row-odd"><td>queue</td>
 <td>queue to compare to</td>
 </tr>
 </tbody>
@@ -237,21 +240,21 @@ dispatch the real calls.</p>
 <col width="83%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>user</td>
+<tr class="row-even"><td>user</td>
 <td>the calling users name</td>
 </tr>
-<tr><td>queue</td>
+<tr class="row-odd"><td>queue</td>
 <td>the queue address where the call originated from</td>
 </tr>
-<tr><td>func</td>
+<tr class="row-even"><td>func</td>
 <td>method to call</td>
 </tr>
-<tr><td>args</td>
+<tr class="row-odd"><td>args</td>
 <td>ordinary argument list/dict</td>
 </tr>
 </tbody>
@@ -271,7 +274,7 @@ are capable of processing them - ordered by load.</li>
 <dl class="method">
 <dt id="clacks.agent.command.CommandRegistry.getMethods">
 <tt class="descname">getMethods</tt><big>(</big><em>queue=None</em>, <em>locale=None</em><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.getMethods" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-0">
+<dd><div class="admonition" id="cmd-0">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -284,15 +287,15 @@ are capable of processing them - ordered by load.</li>
 <col width="75%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>queue</td>
+<tr class="row-even"><td>queue</td>
 <td>Ask for methods on special queue, None for all</td>
 </tr>
-<tr><td>locale</td>
+<tr class="row-odd"><td>locale</td>
 <td>Translate __help__ strings to the desired language</td>
 </tr>
 </tbody>
@@ -303,7 +306,7 @@ are capable of processing them - ordered by load.</li>
 <dl class="method">
 <dt id="clacks.agent.command.CommandRegistry.getNodes">
 <tt class="descname">getNodes</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.getNodes" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-1">
+<dd><div class="admonition" id="cmd-1">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -330,12 +333,12 @@ are capable of processing them - ordered by load.</li>
 <col width="66%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>func</td>
+<tr class="row-even"><td>func</td>
 <td>method to check for</td>
 </tr>
 </tbody>
@@ -354,12 +357,12 @@ node which is available.</p>
 <col width="63%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>providers</td>
+<tr class="row-even"><td>providers</td>
 <td>list of providers</td>
 </tr>
 </tbody>
@@ -377,12 +380,12 @@ node which is available.</p>
 <col width="76%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>path</td>
+<tr class="row-even"><td>path</td>
 <td>method path including the class</td>
 </tr>
 </tbody>
@@ -393,7 +396,7 @@ node which is available.</p>
 <dl class="method">
 <dt id="clacks.agent.command.CommandRegistry.sendEvent">
 <tt class="descname">sendEvent</tt><big>(</big><em>user</em>, <em>data</em><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.sendEvent" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-2">
+<dd><div class="admonition" id="cmd-2">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -407,12 +410,12 @@ see <a class="reference internal" href="../common/event.html#events"><em>Events 
 <col width="55%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>data</td>
+<tr class="row-even"><td>data</td>
 <td>valid event</td>
 </tr>
 </tbody>
@@ -430,7 +433,7 @@ hello and register event callbacks.</p>
 <dl class="method">
 <dt id="clacks.agent.command.CommandRegistry.shutdown">
 <tt class="descname">shutdown</tt><big>(</big><em>queue</em>, <em>force=False</em><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.shutdown" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-3">
+<dd><div class="admonition" id="cmd-3">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -445,12 +448,12 @@ logged in.</p>
 <col width="60%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>force</td>
+<tr class="row-even"><td>force</td>
 <td>force global shut down</td>
 </tr>
 </tbody>
@@ -489,7 +492,7 @@ in the configured interval.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -518,14 +521,14 @@ in the configured interval.</p>
         <li class="right" >
           <a href="index.html" title="Agent"
              >previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" >Development documentation</a> &raquo;</li>
           <li><a href="index.html" >Agent</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Cajus Pollmeier.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

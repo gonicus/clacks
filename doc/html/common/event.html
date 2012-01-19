@@ -3,15 +3,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Event handling &mdash; GOsa v3.0 documentation</title>
+    <title>Event handling &mdash; Clacks 3.0 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="../_static/requirements.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -24,8 +27,8 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GOsa v3.0 documentation" href="../index.html" />
-    <link rel="up" title="The GOsa common library" href="index.html" />
+    <link rel="top" title="Clacks 3.0 documentation" href="../index.html" />
+    <link rel="up" title="The Clacks common library" href="index.html" />
     <link rel="next" title="Utilities" href="utils.html" />
     <link rel="prev" title="Logging" href="log.html" /> 
   </head>
@@ -45,9 +48,9 @@
         <li class="right" >
           <a href="log.html" title="Logging"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" >Development documentation</a> &raquo;</li>
-          <li><a href="index.html" accesskey="U">The GOsa <em>common</em> library</a> &raquo;</li> 
+          <li><a href="index.html" accesskey="U">The Clacks <em>common</em> library</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -58,17 +61,17 @@
             
   <div class="section" id="event-handling">
 <h1>Event handling<a class="headerlink" href="#event-handling" title="Permalink to this headline">¶</a></h1>
-<p id="events">GOsa utilizes the XML queue of <em>QPID</em>, which enables us to send and
+<p id="events">Clacks utilizes the XML queue of <em>QPID</em>, which enables us to send and
 filter XML encoded events. Using <em>XQuery</em>, we can filter for special
 properties inside of the event description.</p>
 <p>The following two examples show how to create a standalone sender
 and receiver for a simple phone status notification - that may be used
 for whatever you can imagine.</p>
 <p>First, you need to define an event description in XML-schema style and
-place it in <tt class="docutils literal"><span class="pre">gosa/common/data/events</span></tt>:</p>
+place it in <tt class="docutils literal"><span class="pre">clacks/common/data/events</span></tt>:</p>
 <div class="highlight-python"><pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;schema targetNamespace="http://www.gonicus.de/Events" elementFormDefault="qualified"
-        xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gosa="http://www.gonicus.de/Events"&gt;
+        xmlns="http://www.w3.org/2001/XMLSchema" xmlns:e="http://www.gonicus.de/Events"&gt;
   &lt;complexType name="PhoneStatus"&gt;
     &lt;annotation&gt;
       &lt;documentation&gt;
@@ -82,10 +85,10 @@ place it in <tt class="docutils literal"><span class="pre">gosa/common/data/even
       &lt;element name="Status" type="string"&gt;&lt;/element&gt;
     &lt;/all&gt;
   &lt;/complexType&gt;
-  &lt;element name="PhoneStatus" type="gosa:PhoneStatus"&gt;&lt;/element&gt;
+  &lt;element name="PhoneStatus" type="e:PhoneStatus"&gt;&lt;/element&gt;
 &lt;/schema&gt;</pre>
 </div>
-<p>After this has been done, the GOsa agent needs to be restarted in the
+<p>After this has been done, the Clacks agent needs to be restarted in the
 moment to reload the XSD information. Now we&#8217;ll write a receiver for
 that:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c">#!/usr/bin/env python</span>
@@ -99,7 +102,7 @@ that:</p>
     <span class="k">print</span><span class="p">(</span><span class="n">etree</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
 
 <span class="c"># Create event consumer</span>
-<span class="n">consumer</span> <span class="o">=</span> <span class="n">AMQPEventConsumer</span><span class="p">(</span><span class="s">&quot;amqps://admin:secret@localhost/org.gosa&quot;</span><span class="p">,</span>
+<span class="n">consumer</span> <span class="o">=</span> <span class="n">AMQPEventConsumer</span><span class="p">(</span><span class="s">&quot;amqps://admin:secret@localhost/org.clacks&quot;</span><span class="p">,</span>
             <span class="n">xquery</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
 <span class="s">                declare namespace f=&#39;http://www.gonicus.de/Events&#39;;</span>
 <span class="s">                let $e := ./f:Event</span>
@@ -125,7 +128,7 @@ open another one to send a signal using <a class="reference internal" href="../a
 <span class="kn">from</span> <span class="nn">lxml</span> <span class="kn">import</span> <span class="n">etree</span>
 
 <span class="c"># Connect to AMQP bus</span>
-<span class="n">proxy</span> <span class="o">=</span> <span class="n">AMQPServiceProxy</span><span class="p">(</span><span class="s">&#39;amqp://admin:secret@localhost/org.gosa&#39;</span><span class="p">)</span>
+<span class="n">proxy</span> <span class="o">=</span> <span class="n">AMQPServiceProxy</span><span class="p">(</span><span class="s">&#39;amqp://admin:secret@localhost/org.clacks&#39;</span><span class="p">)</span>
 
 <span class="c"># Example of building event without direct strings...</span>
 <span class="n">e</span> <span class="o">=</span> <span class="n">EventMaker</span><span class="p">()</span>
@@ -154,7 +157,7 @@ listening for that event, it&#8217;s lost.</p>
 </div>
 <div class="section" id="available-events">
 <h1>Available events<a class="headerlink" href="#available-events" title="Permalink to this headline">¶</a></h1>
-<p>GOsa comes with a set of predefined events and modules itself can
+<p>Clacks comes with a set of predefined events and modules itself can
 provide new events. Here&#8217;s a short overview:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -163,58 +166,58 @@ provide new events. Here&#8217;s a short overview:</p>
 <col width="65%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Event name</th>
+<tr class="row-odd"><th class="head">Event name</th>
 <th class="head">Module</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>AsteriskNotification</td>
+<tr class="row-even"><td>AsteriskNotification</td>
 <td>Asterisk</td>
 <td>Sends information about queue usage, allows status tracking.</td>
 </tr>
-<tr><td>ClientAnnounce</td>
+<tr class="row-odd"><td>ClientAnnounce</td>
 <td>GOto</td>
 <td>Sent when a client is coming up, contains information about
 the client and it&#8217;s methods.</td>
 </tr>
-<tr><td>ClientLeave</td>
+<tr class="row-even"><td>ClientLeave</td>
 <td>GOto</td>
 <td>Sent when a client is about to shut down.</td>
 </tr>
-<tr><td>ClientPoll</td>
+<tr class="row-odd"><td>ClientPoll</td>
 <td>Core</td>
 <td>Sent by the agent if it&#8217;s &#8220;alone&#8221; and has no way to find
 it&#8217;s assigned clients. All clients reply with a newly sent
 ClientAnnounce to this event.</td>
 </tr>
-<tr><td>CollectD</td>
+<tr class="row-even"><td>CollectD</td>
 <td>CollectD</td>
 <td>Experimental collectd event.</td>
 </tr>
-<tr><td>NodeAnnounce</td>
+<tr class="row-odd"><td>NodeAnnounce</td>
 <td>Core</td>
 <td>Sent by an agent when starting up.</td>
 </tr>
-<tr><td>NodeCapabilities</td>
+<tr class="row-even"><td>NodeCapabilities</td>
 <td>Core</td>
 <td>Sent by an agent when starting up, containing a brief
 list of information about the agent itself.</td>
 </tr>
-<tr><td>NodeLeave</td>
+<tr class="row-odd"><td>NodeLeave</td>
 <td>Core</td>
 <td>Sent by an agent when shutting down.</td>
 </tr>
-<tr><td>NodeStatus</td>
+<tr class="row-even"><td>NodeStatus</td>
 <td>Core</td>
 <td>Sent regulary by an agent in order to do pseudo load
 balancing for HTTP connections.</td>
 </tr>
-<tr><td>UserSession</td>
+<tr class="row-odd"><td>UserSession</td>
 <td>GOto</td>
 <td>Sent if a user logs onto the client.</td>
 </tr>
-<tr><td>PuppetReport</td>
+<tr class="row-even"><td>PuppetReport</td>
 <td>libinst</td>
 <td>Sent after a client puppet run.</td>
 </tr>
@@ -248,7 +251,7 @@ balancing for HTTP connections.</td>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -277,14 +280,14 @@ balancing for HTTP connections.</td>
         <li class="right" >
           <a href="log.html" title="Logging"
              >previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" >Development documentation</a> &raquo;</li>
-          <li><a href="index.html" >The GOsa <em>common</em> library</a> &raquo;</li> 
+          <li><a href="index.html" >The Clacks <em>common</em> library</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Cajus Pollmeier.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

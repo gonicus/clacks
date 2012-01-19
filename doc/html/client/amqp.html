@@ -3,15 +3,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>AMQP service &mdash; GOsa v3.0 documentation</title>
+    <title>AMQP service &mdash; Clacks 3.0 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="../_static/requirements.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -24,7 +27,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GOsa v3.0 documentation" href="../index.html" />
+    <link rel="top" title="Clacks 3.0 documentation" href="../index.html" />
     <link rel="up" title="Client" href="index.html" />
     <link rel="next" title="Domain join" href="join.html" />
     <link rel="prev" title="Command registry" href="command.html" /> 
@@ -45,7 +48,7 @@
         <li class="right" >
           <a href="command.html" title="Command registry"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" >Development documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Client</a> &raquo;</li> 
       </ul>
@@ -62,7 +65,7 @@
 bus, registers the required queues, listens for commands on that queues
 and dispatches incoming commands to the <tt class="xref py py-class docutils literal"><span class="pre">clacks.client.command.CommandRegistry</span></tt>.</p>
 <p><strong>Queues</strong></p>
-<p>In contrast to the GOsa agent, every client only has a single queue. It is
+<p>In contrast to the clacks agent, every client only has a single queue. It is
 constructed of these components:</p>
 <div class="highlight-python"><pre>{domain}.client.{uuid}</pre>
 </div>
@@ -70,7 +73,7 @@ constructed of these components:</p>
 <a class="reference internal" href="../common/components.html#clacks.common.components.amqp_proxy.AMQPServiceProxy" title="clacks.common.components.amqp_proxy.AMQPServiceProxy"><tt class="xref py py-class docutils literal"><span class="pre">clacks.common.components.amqp_proxy.AMQPServiceProxy</span></tt></a>, so it will
 construct additional temporary reply queues as needed.</p>
 <p><strong>Events</strong></p>
-<p>The GOsa client produces a <strong>ClientAnnounce</strong> event on startup which tells
+<p>The clacks client produces a <strong>ClientAnnounce</strong> event on startup which tells
 interested agents about the client capabilities (commands it provides) and
 some hardware information.</p>
 <p>This information is re-send when the client receives a <strong>ClientPoll</strong> event,
@@ -94,15 +97,15 @@ information.</p>
 <col width="60%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>ssn</td>
+<tr class="row-even"><td>ssn</td>
 <td>AMQP session object</td>
 </tr>
-<tr><td>message</td>
+<tr class="row-odd"><td>message</td>
 <td>Received AMQP message</td>
 </tr>
 </tbody>
@@ -116,7 +119,7 @@ result is written to that queue.</p>
 <dl class="method">
 <dt id="clacks.client.amqp_service.AMQPClientService.serve">
 <tt class="descname">serve</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.client.amqp_service.AMQPClientService.serve" title="Permalink to this definition">¶</a></dt>
-<dd><p>Start AMQP service for this GOsa service provider.</p>
+<dd><p>Start AMQP service for this clacks service provider.</p>
 </dd></dl>
 
 </dd></dl>
@@ -143,7 +146,7 @@ result is written to that queue.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -172,14 +175,14 @@ result is written to that queue.</p>
         <li class="right" >
           <a href="command.html" title="Command registry"
              >previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" >Development documentation</a> &raquo;</li>
           <li><a href="index.html" >Client</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Cajus Pollmeier.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

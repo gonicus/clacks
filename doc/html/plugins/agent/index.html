@@ -3,15 +3,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Agent plugins &mdash; GOsa v3.0 documentation</title>
+    <title>Agent plugins &mdash; Clacks 3.0 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/requirements.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
@@ -24,7 +27,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GOsa v3.0 documentation" href="../../index.html" />
+    <link rel="top" title="Clacks 3.0 documentation" href="../../index.html" />
     <link rel="up" title="Plugin development" href="../index.html" />
     <link rel="next" title="Client plugins" href="../client/index.html" />
     <link rel="prev" title="Plugin development" href="../index.html" /> 
@@ -45,7 +48,7 @@
         <li class="right" >
           <a href="../index.html" title="Plugin development"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../../development.html" >Development documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Plugin development</a> &raquo;</li> 
       </ul>
@@ -67,7 +70,7 @@ service startup.</p>
 <p>Plain plugins just need to inherit from <a class="reference internal" href="../../common/components.html#clacks.common.components.plugin.Plugin" title="clacks.common.components.plugin.Plugin"><tt class="xref py py-class docutils literal"><span class="pre">clacks.common.components.plugin.Plugin</span></tt></a>
 and make use of <a class="reference internal" href="../../common/components.html#clacks.common.components.command.Command" title="clacks.common.components.command.Command"><tt class="xref py py-meth docutils literal"><span class="pre">clacks.common.components.command.Command()</span></tt></a>. Additionally, they&#8217;ve
 to specify their target queue - <a class="reference internal" href="../../agent/amqp.html#agent-queues"><em>see agent queues</em></a>.</p>
-<p>Use the <strong>tools/gosa-plugin-skell</strong> command to get a GOsa agent plugin skeleton and
+<p>Use the <strong>tools/clacks-plugin-skell</strong> command to get a Clacks agent plugin skeleton and
 take a look at the <em>main.py</em> file:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># -*- coding: utf-8 -*-</span>
 <span class="kn">import</span> <span class="nn">gettext</span>
@@ -92,7 +95,7 @@ take a look at the <em>main.py</em> file:</p>
 </pre></div>
 </div>
 <p>It shows a very minimal sample plugin which provides the command <em>hello</em> to
-the GOsa agents <em>CommandRegistry</em> - which is callable for users later on. You
+the Clacks agents <em>CommandRegistry</em> - which is callable for users later on. You
 can see a couple of things that are common to all plugins:</p>
 <blockquote>
 <div><ul class="simple">
@@ -107,7 +110,7 @@ logging or config management)</li>
 using:</p>
 <div class="highlight-python"><pre>$ ./setup.py develop</pre>
 </div>
-<p>and <em>restart</em> your GOsa agent to let it notice the newly created plugin. From
+<p>and <em>restart</em> your Clacks agent to let it notice the newly created plugin. From
 now on you can use the <em>hello</em> command from the shell or one of the proxies - whatever
 makes sense for you.</p>
 </div>
@@ -186,7 +189,7 @@ earlier. You can maintain service dependencies this way if you need to.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -215,14 +218,14 @@ earlier. You can maintain service dependencies this way if you need to.</p>
         <li class="right" >
           <a href="../index.html" title="Plugin development"
              >previous</a> |</li>
-        <li><a href="../../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../../development.html" >Development documentation</a> &raquo;</li>
           <li><a href="../index.html" >Plugin development</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Cajus Pollmeier.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

@@ -3,15 +3,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Concepts &mdash; GOsa v3.0 documentation</title>
+    <title>Concepts &mdash; Clacks 3.0 documentation</title>
+    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="_static/requirements.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -24,9 +27,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="GOsa v3.0 documentation" href="index.html" />
+    <link rel="top" title="Clacks 3.0 documentation" href="index.html" />
     <link rel="up" title="Development documentation" href="development.html" />
-    <link rel="next" title="The GOsa common library" href="common/index.html" />
+    <link rel="next" title="The Clacks common library" href="common/index.html" />
     <link rel="prev" title="Development documentation" href="development.html" /> 
   </head>
   <body>
@@ -40,12 +43,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="common/index.html" title="The GOsa common library"
+          <a href="common/index.html" title="The Clacks common library"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="development.html" title="Development documentation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="development.html" accesskey="U">Development documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -58,7 +61,7 @@
   <div class="section" id="concepts">
 <span id="id1"></span><h1>Concepts<a class="headerlink" href="#concepts" title="Permalink to this headline">¶</a></h1>
 <p>This chapter contains a brief overview over the concepts and technologies
-used in GOsa 3.0.</p>
+used in Clacks 3.0.</p>
 <div class="section" id="messaging-with-amqp">
 <h2>Messaging with AMQP<a class="headerlink" href="#messaging-with-amqp" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="what-is-amqp">
@@ -106,7 +109,7 @@ messages. The process of connecting queues is called <em>binding</em>.</p>
 <p>AMQP provides a couple of exchanges. One way would be to assign messages
 and queues be the routing key, or by using an XQuery for XML based
 messages.</p>
-<p>GOsa itself uses two kinds of exchanges: the XML exchange for events, to
+<p>Clacks itself uses two kinds of exchanges: the XML exchange for events, to
 allow dedicated filtering and the routing key based exchange to provide
 round robin command queues.</p>
 </div>
@@ -114,7 +117,7 @@ round robin command queues.</p>
 <h3>Messages<a class="headerlink" href="#messages" title="Permalink to this headline">¶</a></h3>
 <p>Sent information consists of AMQP header information and the message body.
 The contents of the message body is not specified - if you want to you can
-transport DVD images via AMQP. In case of GOsa the message body consists
+transport DVD images via AMQP. In case of Clacks the message body consists
 either of XML messages or JSON encoded RPC calls.</p>
 <p>The &#8216;configuration&#8217; on how to transport messages is done by the header
 specification.</p>
@@ -154,43 +157,43 @@ up-to-date broker in concerns of AMQP specifications.</p>
 </li>
 </ul>
 </div></blockquote>
-<p>GOsa is using the <em>C</em> broker of QPID, because it makes life easier in several
+<p>Clacks is using the <em>C</em> broker of QPID, because it makes life easier in several
 places.</p>
 </div>
 <div class="section" id="authentication">
 <h3>Authentication<a class="headerlink" href="#authentication" title="Permalink to this headline">¶</a></h3>
 <p>Using QPID, we can rely on a SASL based authentication wich can be simply
 connected to the LDAP directory infrastructure. The authorization itself
-must be done by GOsa, because the QPID acl concept is not dynamic - mostly
+must be done by Clacks, because the QPID acl concept is not dynamic - mostly
 for reasons of performance.</p>
 <p>The AMQP broker can automatically store the authentication information in
-the AMQP headers, so that GOsa is able to notice who&#8217;s sending messages.</p>
+the AMQP headers, so that Clacks is able to notice who&#8217;s sending messages.</p>
 </div>
 </div>
 <hr class="docutils" />
-<div class="section" id="gosa-overview">
-<h2>GOsa overview<a class="headerlink" href="#gosa-overview" title="Permalink to this headline">¶</a></h2>
-<p>This overview should provide a big picture of the GOsa components and describes
+<div class="section" id="clacks-overview">
+<h2>Clacks overview<a class="headerlink" href="#clacks-overview" title="Permalink to this headline">¶</a></h2>
+<p>This overview should provide a big picture of the Clacks components and describes
 the tasks the components are supposed to do. More detailed information can be
 found in the developer documentation.</p>
 <div class="section" id="domains">
 <h3>Domains<a class="headerlink" href="#domains" title="Permalink to this headline">¶</a></h3>
-<p>Systems connected with GOsa components shape a so called domain. If you like
-the analogy, you can compare a GOsa domain to a Windows domain: it keeps some
+<p>Systems connected with Clacks components shape a so called domain. If you like
+the analogy, you can compare a Clacks domain to a Windows domain: it keeps some
 kind of information about a delimited area of an organization (or in your
 opinion the world).</p>
 <p>A domain is basically constructed of a reverse DNS name - i.e. the default
-domain is <em>org.gosa</em>, but it could be <em>de.gonicus</em> or whatever you want it
+domain is <em>org.clacks</em>, but it could be <em>de.gonicus</em> or whatever you want it
 to be. AMQP queues are based on the domain, so if you use the default, all
-created queues start with <em>org.gosa.</em> and shape the namespace to use in AMQP.</p>
+created queues start with <em>org.clacks.</em> and shape the namespace to use in AMQP.</p>
 </div>
-<div class="section" id="gosa-common">
-<h3>clacks.common<a class="headerlink" href="#gosa-common" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="clacks-common">
+<h3>clacks.common<a class="headerlink" href="#clacks-common" title="Permalink to this headline">¶</a></h3>
 <p>The <em>clacks.common</em> component is the base library which is providing common
 functionality to agents and clients.</p>
 </div>
-<div class="section" id="gosa-agent">
-<h3>clacks.agent<a class="headerlink" href="#gosa-agent" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="clacks-agent">
+<h3>clacks.agent<a class="headerlink" href="#clacks-agent" title="Permalink to this headline">¶</a></h3>
 <p>For every domain, you need at least on broker (or a broker federation) and
 at least one <em>clacks.agent</em> instance. The agent defines the domain queues and
 puts life to queues by answering to command requests and processing basic
@@ -227,10 +230,10 @@ from there.</p>
 <li><a class="reference internal" href="#authentication">Authentication</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#gosa-overview">GOsa overview</a><ul>
+<li><a class="reference internal" href="#clacks-overview">Clacks overview</a><ul>
 <li><a class="reference internal" href="#domains">Domains</a></li>
-<li><a class="reference internal" href="#gosa-common">clacks.common</a></li>
-<li><a class="reference internal" href="#gosa-agent">clacks.agent</a></li>
+<li><a class="reference internal" href="#clacks-common">clacks.common</a></li>
+<li><a class="reference internal" href="#clacks-agent">clacks.agent</a></li>
 </ul>
 </li>
 </ul>
@@ -242,7 +245,7 @@ from there.</p>
                         title="previous chapter">Development documentation</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="common/index.html"
-                        title="next chapter">The GOsa <em>common</em> library</a></p>
+                        title="next chapter">The Clacks <em>common</em> library</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/concepts.txt"
@@ -251,7 +254,7 @@ from there.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -275,18 +278,18 @@ from there.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="common/index.html" title="The GOsa common library"
+          <a href="common/index.html" title="The Clacks common library"
              >next</a> |</li>
         <li class="right" >
           <a href="development.html" title="Development documentation"
              >previous</a> |</li>
-        <li><a href="index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="development.html" >Development documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Cajus Pollmeier.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

@@ -9,12 +9,12 @@ History and License
 History of the software
 =======================
 
-GOsa was created ein the early 2001s by Cajus Pollmeier at GONICUS
+Clacks was created ein the early 2001s by Cajus Pollmeier at GONICUS
 GmbH (see http://www.gonicus.de/) in Germany. Besides the work done
 by GONICUS it includes many contributions from others.
 
-All GOsa releases are Open Source (see http://www.opensource.org/ for the Open
-Source Definition). All GOsa versions have been release under the terms of
+All Clacks releases are Open Source (see http://www.opensource.org/ for the Open
+Source Definition). All Clacks versions have been release under the terms of
 the GPL v2; the table below summarizes the various releases.
 
 +-----------------+--------------+-----------+------------+
@@ -34,7 +34,7 @@ the GPL v2; the table below summarizes the various releases.
 License
 =======
 
-GOsa Core
+Clacks Core
 ---------
  ::
 

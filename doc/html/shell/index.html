@@ -3,15 +3,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Shell and scripting &mdash; GOsa v3.0 documentation</title>
+    <title>Shell and scripting &mdash; Clacks 3.0 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="../_static/requirements.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -24,7 +27,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GOsa v3.0 documentation" href="../index.html" />
+    <link rel="top" title="Clacks 3.0 documentation" href="../index.html" />
     <link rel="up" title="Development documentation" href="../development.html" />
     <link rel="next" title="Plugin development" href="../plugins/index.html" />
     <link rel="prev" title="DBUS integration" href="../dbus/index.html" /> 
@@ -45,7 +48,7 @@
         <li class="right" >
           <a href="../dbus/index.html" title="DBUS integration"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" accesskey="U">Development documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -57,35 +60,35 @@
             
   <div class="section" id="shell-and-scripting">
 <h1>Shell and scripting<a class="headerlink" href="#shell-and-scripting" title="Permalink to this headline">¶</a></h1>
-<p>While the GOsa core is all python and you can simply script complex tasks
+<p>While the Clacks core is all python and you can simply script complex tasks
 directly in python, there&#8217;s sometimes the need to trigger calls from
 within the ordinary shell - maybe inside a <em>bash</em> script. For that reason,
-there&#8217;s the <em>gosa-shell</em> binary, which can assist you in this case.</p>
+there&#8217;s the <em>clacksh</em> binary, which can assist you in this case.</p>
 <div class="section" id="module-clacks.shell">
 <span id="using-the-shell"></span><h2>Using the shell<a class="headerlink" href="#module-clacks.shell" title="Permalink to this headline">¶</a></h2>
-<p>The GOsa shell can be called in different ways.</p>
+<p>The Clacks shell can be called in different ways.</p>
 <blockquote>
 <div><ul>
 <li><p class="first">Interactive mode:</p>
-<div class="highlight-python"><pre>$ gosa-shell
+<div class="highlight-python"><pre>$ clacksh
 Searching service provider...
-Connected to amqps://amqp.example.net:5671/org.gosa
+Connected to amqps://amqp.example.net:5671/org.clacks
 Username [cajus]:
 Password:
-GOsa service shell. Use Ctrl+D to exit.
+Clacks service shell. Use Ctrl+D to exit.
 &gt;&gt;&gt;</pre>
 </div>
 <p>The shell will automatically try to find the service by DNS
 or zeroconf and will ask for your credentials. Sometimes, you
 may need to connect a special system or even provide your
 credentials in the URI like</p>
-<div class="highlight-python"><pre>$ gosa-shell amqps://user:password@amqp.example.net/org.gosa</pre>
+<div class="highlight-python"><pre>$ clacksh amqps://user:password@amqp.example.net/org.clacks</pre>
 </div>
 <p>but keep in mind that this will expose your credentials in the
 history, and maybe in the history or the process list.</p>
 <p>Nevertheless you&#8217;re presented a python prompt which can be used
-to get the list of commands using the <em>gosa</em> object:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">gosa</span><span class="o">.</span><span class="n">help</span><span class="p">()</span>
+to get the list of commands using the <em>proxy</em> object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">clacks</span><span class="o">.</span><span class="n">help</span><span class="p">()</span>
 <span class="go">createDistribution()</span>
 <span class="go">    Create a new distribution based on type, mirror and installation</span>
 <span class="go">    method</span>
@@ -95,9 +98,9 @@ to get the list of commands using the <em>gosa</em> object:</p>
 <span class="gp">...</span>
 </pre></div>
 </div>
-<p>The <em>gosa</em> object acts as a proxy for the commands, so you can i.e. start
-asking for the registered GOsa clients</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">gosa</span><span class="o">.</span><span class="n">getClients</span><span class="p">()</span>
+<p>The <em>proxy</em> object acts as a proxy for the commands, so you can i.e. start
+asking for the registered Clacks clients</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">getClients</span><span class="p">()</span>
 <span class="go">{u&#39;2daf7cbf-75c2-4ea3-bfec-606fe9f07051&#39;: {</span>
 <span class="go">    u&#39;received&#39;: 1313159425.0,</span>
 <span class="go">    u&#39;name&#39;: u&#39;dyn-10&#39;},</span>
@@ -110,7 +113,7 @@ asking for the registered GOsa clients</p>
 </pre></div>
 </div>
 <p>or just do simple multi-liners:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">client</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">gosa</span><span class="o">.</span><span class="n">getClients</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">client</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">getClients</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
 <span class="gp">... </span>  <span class="k">print</span> <span class="n">info</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
 <span class="gp">...</span>
 <span class="go">dyn-10</span>
@@ -121,13 +124,13 @@ asking for the registered GOsa clients</p>
 <p>You can leave the interactive mode by pressing &#8220;Ctrl+D&#8221;.</p>
 </li>
 <li><p class="first">CLI mode</p>
-<div class="admonition-requirement admonition " id="req-0">
+<div class="admonition-requirement admonition" id="req-0">
 <p class="first admonition-title">Requirement</p>
 <p class="last"><em class="status todo">todo</em> Fix shell CLI mode and provide docs</p>
 </div>
 </li>
 <li><p class="first">Here document mode</p>
-<div class="admonition-requirement admonition " id="req-1">
+<div class="admonition-requirement admonition" id="req-1">
 <p class="first admonition-title">Requirement</p>
 <p class="last"><em class="status todo">todo</em> Fix shell here document mode and provide docs</p>
 </div>
@@ -179,7 +182,7 @@ the event methods. Please take a look at</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -208,13 +211,13 @@ the event methods. Please take a look at</p>
         <li class="right" >
           <a href="../dbus/index.html" title="DBUS integration"
              >previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" >Development documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Cajus Pollmeier.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

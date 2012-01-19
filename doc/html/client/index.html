@@ -3,15 +3,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Client &mdash; GOsa v3.0 documentation</title>
+    <title>Client &mdash; Clacks 3.0 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="../_static/requirements.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -24,7 +27,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GOsa v3.0 documentation" href="../index.html" />
+    <link rel="top" title="Clacks 3.0 documentation" href="../index.html" />
     <link rel="up" title="Development documentation" href="../development.html" />
     <link rel="next" title="Command registry" href="command.html" />
     <link rel="prev" title="Object abstraction" href="../agent/objects.html" /> 
@@ -45,7 +48,7 @@
         <li class="right" >
           <a href="../agent/objects.html" title="Object abstraction"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" accesskey="U">Development documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -81,36 +84,37 @@ federation and provides methods to <em>speak</em> with the bus.</li>
 </ul>
 </div></blockquote>
 <p>This happens automatically depending on what&#8217;s registered on the
-<tt class="docutils literal"><span class="pre">[gosa_client.modules]</span></tt> setuptools entrypoint.</p>
+<tt class="docutils literal"><span class="pre">[client.module]</span></tt> setuptools entrypoint.</p>
 <p>The client will send a <strong>ClientLeave</strong> event when shutting down.</p>
 <p>If you&#8217;re looking for documentation on how to write plugins, please take a look
 at the <a class="reference internal" href="../plugins/index.html#plugins"><em>Plugin section</em></a>.</p>
 </div>
 <div class="section" id="joining-clients">
 <h2>Joining clients<a class="headerlink" href="#joining-clients" title="Permalink to this headline">¶</a></h2>
-<p>Before a GOsa client can connect to the AMQP bus, it needs to be known to
+<p>Before a clacks client can connect to the AMQP bus, it needs to be known to
 the infrastructure - which is done by <em>joining</em> the client. The process
 of joining is like joining a windows client to a domain: you need someone
 with adequate permission to do that.</p>
-<p>While the <em>gosa-join</em> binary will do this for you, it is possible to extend
+<p>While the <em>clacks-join</em> binary will do this for you, it is possible to extend
 it to use i.e. a graphical join dialog. At present, we provide a ncurses
 and a readline based join mechanism. More can be added using the setuptools
-<tt class="docutils literal"><span class="pre">gosa_join.modules</span></tt> entrypoint. For more information, take a look at the
+<tt class="docutils literal"><span class="pre">join.module</span></tt> entrypoint. For more information, take a look at the
 <tt class="xref py py-mod docutils literal"><span class="pre">clacks.client.join</span></tt> and <tt class="xref py py-class docutils literal"><span class="pre">clacks.client.plugins.join.join_method</span></tt> documentation.</p>
 </div>
 <div class="section" id="using-the-binaries">
 <h2>Using the binaries<a class="headerlink" href="#using-the-binaries" title="Permalink to this headline">¶</a></h2>
-<p>The gosa-client binary gets installed when you run the setup process. It
+<p>The clacks-client binary gets installed when you run the setup process. It
 has a couple of command line arguments:</p>
 <blockquote>
-<div><div class="highlight-text"><div class="highlight"><pre>$ gosa-client --help
-usage: gosa-client - the GOsa core daemon
+<div><div class="highlight-text"><div class="highlight"><pre>$ clacks-client --help
+usage: clacks-client - the clacks core daemon
 
 optional arguments:
   -h, --help            show this help message and exit
-  --version
+  --version             show program&#39;s version number and exit
   -c FILE, --config FILE
-                        read configuration from FILE [/etc/gosa/config]
+                        read configuration from FILE [/etc/clacks/config]
+  --url URL             AMQP broker URL
   -f                    run daemon in foreground [False]
   -u USER, --user USER  run daemon as USER [None]
   -g GROUP, --group GROUP
@@ -131,7 +135,7 @@ Advanced options:
 <p class="last">Take a look at the <a class="reference internal" href="../intro.html#quickstart"><em>quickstart</em></a> to see how the client is
 controlled.</p>
 </div>
-<div class="admonition-requirement admonition " id="req-0">
+<div class="admonition-requirement admonition" id="req-0">
 <p class="first admonition-title">Requirement</p>
 <p class="last"><em class="status todo">todo</em> Describe the init script / default usage</p>
 </div>
@@ -181,7 +185,7 @@ controlled.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -210,13 +214,13 @@ controlled.</p>
         <li class="right" >
           <a href="../agent/objects.html" title="Object abstraction"
              >previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" >Development documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Cajus Pollmeier.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

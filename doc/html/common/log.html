@@ -3,15 +3,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Logging &mdash; GOsa v3.0 documentation</title>
+    <title>Logging &mdash; Clacks 3.0 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="../_static/requirements.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -24,8 +27,8 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GOsa v3.0 documentation" href="../index.html" />
-    <link rel="up" title="The GOsa common library" href="index.html" />
+    <link rel="top" title="Clacks 3.0 documentation" href="../index.html" />
+    <link rel="up" title="The Clacks common library" href="index.html" />
     <link rel="next" title="Event handling" href="event.html" />
     <link rel="prev" title="Configuration handling" href="config.html" /> 
   </head>
@@ -45,9 +48,9 @@
         <li class="right" >
           <a href="config.html" title="Configuration handling"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" >Development documentation</a> &raquo;</li>
-          <li><a href="index.html" accesskey="U">The GOsa <em>common</em> library</a> &raquo;</li> 
+          <li><a href="index.html" accesskey="U">The Clacks <em>common</em> library</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -59,13 +62,13 @@
   <div class="section" id="logging">
 <h1>Logging<a class="headerlink" href="#logging" title="Permalink to this headline">¶</a></h1>
 <p>Logging is handled by the default python logging module. To configure
-logging for GOsa, you can add the following infomration to your main
-GOsa configuration file, or - at your choice - create a new file for
+logging for Clacks, you can add the following infomration to your main
+Clacks configuration file, or - at your choice - create a new file for
 logging inside the config.d directory.</p>
 <p>Here&#8217;s an example:</p>
 <blockquote>
 <div><p>[loggers]
-keys=root,gosa</p>
+keys=root,clacks</p>
 <p>[handlers]
 keys=syslog,console,file</p>
 <p>[formatters]
@@ -73,10 +76,10 @@ keys=syslog,console</p>
 <p>[logger_root]
 level=CRITICAL
 handlers=console</p>
-<p>[logger_gosa]
+<p>[logger_clacks]
 level=INFO
 handlers=console
-qualname=gosa
+qualname=clacks
 propagate=0</p>
 <p>[handler_console]
 class=StreamHandler
@@ -89,10 +92,11 @@ args=(&#8216;/dev/log&#8217;,)</p>
 <p>[handler_file]
 class=logging.handlers.TimedRotatingFileHandler
 formatter=syslog
-args=(&#8216;/var/log/gosa/agent.log&#8217;, &#8216;w0&#8217;, 1, 4)</p>
+args=(&#8216;/var/log/clacks/agent.log&#8217;, &#8216;w0&#8217;, 1, 4)</p>
 <p>[formatter_syslog]
-format=%(levelname)s: %(module)s - %(message)s
-datefmt=
+class=logging.Formatter
+format=%(asctime)s %(name)s: %(levelname)s %(message)s
+datefmt=%b %e %H:%M:%S
 class=logging.Formatter</p>
 <p>[formatter_console]
 format=%(asctime)s %(levelname)s: %(module)s - %(message)s
@@ -121,7 +125,7 @@ class=logging.Formatter</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -150,14 +154,14 @@ class=logging.Formatter</p>
         <li class="right" >
           <a href="config.html" title="Configuration handling"
              >previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" >Development documentation</a> &raquo;</li>
-          <li><a href="index.html" >The GOsa <em>common</em> library</a> &raquo;</li> 
+          <li><a href="index.html" >The Clacks <em>common</em> library</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Cajus Pollmeier.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

@@ -3,15 +3,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>ACL handling &mdash; GOsa v3.0 documentation</title>
+    <title>ACL handling &mdash; Clacks 3.0 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="../_static/requirements.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -24,7 +27,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GOsa v3.0 documentation" href="../index.html" />
+    <link rel="top" title="Clacks 3.0 documentation" href="../index.html" />
     <link rel="up" title="Agent" href="index.html" />
     <link rel="next" title="Scheduler service" href="scheduler.html" />
     <link rel="prev" title="Command registry" href="command.html" /> 
@@ -45,7 +48,7 @@
         <li class="right" >
           <a href="command.html" title="Command registry"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" >Development documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Agent</a> &raquo;</li> 
       </ul>
@@ -58,7 +61,7 @@
             
   <div class="section" id="module-clacks.agent.acl">
 <span id="acl-handling"></span><h1>ACL handling<a class="headerlink" href="#module-clacks.agent.acl" title="Permalink to this headline">¶</a></h1>
-<p>This chapter details the way access control is handled within the GOsa core
+<p>This chapter details the way access control is handled within the clacks core
 engine.</p>
 <div class="section" id="how-an-acl-assigment-could-look-like">
 <h2>How an ACL assigment could look like<a class="headerlink" href="#how-an-acl-assigment-could-look-like" title="Permalink to this headline">¶</a></h2>
@@ -84,15 +87,15 @@ ACLSet
 <col width="86%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>scope</td>
+<tr class="row-even"><td>scope</td>
 <td>The scope this acl is valid for.</td>
 </tr>
-<tr><td>role</td>
+<tr class="row-odd"><td>role</td>
 <td>You can either define permission actions directly or you can use an <tt class="docutils literal"><span class="pre">ACLRole</span></tt> instead</td>
 </tr>
 </tbody>
@@ -106,7 +109,7 @@ ACLSet
 <li><tt class="docutils literal"><span class="pre">ACL.PSUB</span></tt> for all sub-level, cannot be revoked using <tt class="docutils literal"><span class="pre">ACL.RESET</span></tt></li>
 </ul>
 </div></blockquote>
-<p>Scope values - external use, e.g. when executing commands using the gosa-shell:</p>
+<p>Scope values - external use, e.g. when executing commands using the clacksh:</p>
 <blockquote>
 <div><ul class="simple">
 <li><tt class="docutils literal"><span class="pre">&quot;one&quot;</span></tt> for one level.</li>
@@ -124,21 +127,21 @@ the <tt class="docutils literal"><span class="pre">ACLSet</span></tt> class.</p>
 <col width="96%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Type</th>
+<tr class="row-odd"><th class="head">Type</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>Scope</td>
+<tr class="row-even"><td>Scope</td>
 <td>The scope specifies where the ACL is valid for, e.g. ONE-level, all SUB-levels or RESET previous ACLs</td>
 </tr>
-<tr><td>Members</td>
+<tr class="row-odd"><td>Members</td>
 <td>A list of users this acl is valid for.</td>
 </tr>
-<tr><td>Role</td>
+<tr class="row-even"><td>Role</td>
 <td>Instead of actions you can also refer to a ACLRole object.</td>
 </tr>
-<tr><td>Actions</td>
+<tr class="row-odd"><td>Actions</td>
 <td>You can have multiple actions, where one action is described by <tt class="docutils literal"><span class="pre">a</span> <span class="pre">topic</span></tt>, a <tt class="docutils literal"><span class="pre">set</span> <span class="pre">of</span> <span class="pre">acls</span></tt> and additional <tt class="docutils literal"><span class="pre">options</span></tt> that have to be checked while ACLs are resolved.</td>
 </tr>
 </tbody>
@@ -151,7 +154,7 @@ the <tt class="docutils literal"><span class="pre">ACLSet</span></tt> class.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">acl</span> <span class="o">=</span> <span class="n">ACL</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">acl</span><span class="o">.</span><span class="n">set_priority</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">acl</span><span class="o">.</span><span class="n">set_members</span><span class="p">([</span><span class="s">u&quot;user1&quot;</span><span class="p">,</span> <span class="s">u&quot;user2&quot;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">acl</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="s">&#39;org.gosa.factory.Person.cn&#39;</span><span class="p">,</span><span class="s">&#39;rwx&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">acl</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="s">&#39;^org\.clacks\.event\.ClientLeave$&#39;</span><span class="p">,</span> <span class="s">&#39;rwx&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">aclset</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">acl</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -161,71 +164,62 @@ the <tt class="docutils literal"><span class="pre">ACLSet</span></tt> class.</p>
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># You can now check for acls, both should return True now.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="s">&#39;user1&#39;</span><span class="p">,</span> <span class="s">&#39;org.gosa.factory.Person.cn&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="s">&#39;user1&#39;</span><span class="p">,</span> <span class="s">&#39;org.gosa.factory.Person.cn&#39;</span><span class="p">,</span> <span class="s">&#39;rwx&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="s">&#39;user1&#39;</span><span class="p">,</span> <span class="s">&#39;org.clacks.event.ClientLeave&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="s">&#39;user1&#39;</span><span class="p">,</span> <span class="s">&#39;org.clacks.event.ClientLeave&#39;</span><span class="p">,</span> <span class="s">&#39;rwx&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>ACL members can also contain regular expressions, like this:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">acl</span><span class="o">.</span><span class="n">set_members</span><span class="p">([</span><span class="s">u&quot;user1&quot;</span><span class="p">,</span> <span class="s">u&quot;^user[0-9]*$&quot;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="o">...</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="s">&#39;user45&#39;</span><span class="p">,</span> <span class="s">&#39;org.gosa.factory.Person.cn&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="s">&#39;user45&#39;</span><span class="p">,</span> <span class="s">&#39;org.clacks.event.ClientLeave&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Also action can have wildcards, but only two right now:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">acl</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="s">&#39;org.gosa.#.Person.cn&#39;</span><span class="p">,</span><span class="s">&#39;rwx&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">acl</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="s">&#39;org.gosa.*.Person.cn&#39;</span><span class="p">,</span><span class="s">&#39;rwx&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Where <tt class="docutils literal"><span class="pre">#</span></tt> allow to ignore one level on the topic action and <tt class="docutils literal"><span class="pre">*</span></tt> allows to ignore one or more levels:</p>
-<p><tt class="docutils literal"><span class="pre">com.#.factory</span></tt> would match with <tt class="docutils literal"><span class="pre">com.test.factory</span></tt> or <tt class="docutils literal"><span class="pre">com.something.factory</span></tt></p>
-<p><tt class="docutils literal"><span class="pre">com.*.factory</span></tt> would match with <tt class="docutils literal"><span class="pre">com.test.factory</span></tt>, <tt class="docutils literal"><span class="pre">com.something.factory</span></tt> or <tt class="docutils literal"><span class="pre">com.level1.level2.level3.factory</span></tt></p>
 <dl class="method">
 <dt id="clacks.agent.acl.ACL.add_action">
 <tt class="descname">add_action</tt><big>(</big><em>topic</em>, <em>acls</em>, <em>options=None</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACL.add_action" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a new action to this ACL object.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="16%" />
-<col width="84%" />
+<col width="15%" />
+<col width="85%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>topic</td>
-<td>The topic action we want to create ACLs for. E.g. &#8216;com.gosa.factory.Person&#8217;</td>
+<tr class="row-even"><td>topic</td>
+<td>The topic action we want to create ACLs for. E.g. &#8216;org.clacks.factory.Person&#8217;</td>
 </tr>
-<tr><td>acls</td>
+<tr class="row-odd"><td>acls</td>
 <td>The acls this action contain. E.g. &#8216;rwcdm&#8217;.</td>
 </tr>
-<tr><td>options</td>
+<tr class="row-even"><td>options</td>
 <td>Special additional options that have to be checked.</td>
 </tr>
 </tbody>
 </table>
 <p id="topic-description"><strong>Topic</strong></p>
-<p>Topics can contain placeholder to be more flexible when it come to resolving acls.
-You can use <tt class="docutils literal"><span class="pre">#</span></tt> and <tt class="docutils literal"><span class="pre">*</span></tt> where <tt class="docutils literal"><span class="pre">#</span></tt> matches for one level and <tt class="docutils literal"><span class="pre">*</span></tt> for multiple topic levels.</p>
+<p>Topics are defined as regular expressions, which gives a huge flexibility.</p>
 <dl class="docutils">
-<dt>For example <tt class="docutils literal"><span class="pre">gosa.#.factory</span></tt> would match for:</dt>
+<dt>For example <tt class="docutils literal"><span class="pre">^clacks\.[^\.]*\.factory$</span></tt> would match for:</dt>
 <dd><ul class="first last simple">
-<li>gosa.test.factory</li>
-<li>gosa.hallo.factory</li>
+<li>clacks.test.factory</li>
+<li>clacks.hallo.factory</li>
 </ul>
 </dd>
 <dt>but not for:</dt>
 <dd><ul class="first last simple">
-<li>gosa.factory</li>
-<li>gosa.level1.level2.factory</li>
+<li>clacks.factory</li>
+<li>clacks.level1.level2.factory</li>
 </ul>
 </dd>
-<dt>Where <tt class="docutils literal"><span class="pre">gosa.*.factory</span></tt> matches for:</dt>
+<dt>Where <tt class="docutils literal"><span class="pre">^clacks\..*\.factory$</span></tt> matches for:</dt>
 <dd><ul class="first last simple">
-<li>gosa.factory</li>
-<li>gosa.level1.factory</li>
-<li>gosa.level1.level2.factory</li>
+<li>clacks.factory</li>
+<li>clacks.level1.factory</li>
+<li>clacks.level1.level2.factory</li>
 </ul>
 </dd>
 </dl>
@@ -246,7 +240,7 @@ Possible actions are:</p>
 </div></blockquote>
 <dl class="docutils">
 <dt>The actions have to passed as a string, which contains all actions at once::</dt>
-<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">add_action</span><span class="p">(</span><span class="s">&#39;topic&#39;</span><span class="p">,</span> <span class="s">&quot;rwcdm&quot;</span><span class="p">,</span> <span class="sb">``</span><span class="n">options</span><span class="sb">``</span><span class="p">)</span>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">add_action</span><span class="p">(</span><span class="sb">``</span><span class="n">topic</span><span class="sb">``</span><span class="p">,</span> <span class="s">&quot;rwcdm&quot;</span><span class="p">,</span> <span class="sb">``</span><span class="n">options</span><span class="sb">``</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
@@ -259,7 +253,7 @@ Possible actions are:</p>
 </pre></div>
 </div>
 </dd>
-<dt>If you&#8217;ve got a user object as dictionary, then you can check permissions like this::</dt>
+<dt>If you&#8217;ve got a user object (<tt class="docutils literal"><span class="pre">user1</span></tt>) as dictionary, then you can check permissions like this::</dt>
 <dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="s">&#39;some.topic&#39;</span><span class="p">,</span> <span class="s">&#39;rwcdm&#39;</span><span class="p">,</span> <span class="n">user1</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -302,27 +296,27 @@ SUB, PSUB, RESET, ...</p>
 <col width="85%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>user</td>
+<tr class="row-even"><td>user</td>
 <td>The user we want to check for. E.g. &#8216;hans&#8217;</td>
 </tr>
-<tr><td>topic</td>
-<td>The topic action we want to check for. E.g. &#8216;com.gosa.factory&#8217;</td>
+<tr class="row-odd"><td>topic</td>
+<td>The topic action we want to check for. E.g. &#8216;org.clacks.factory&#8217;</td>
 </tr>
-<tr><td>acls</td>
+<tr class="row-even"><td>acls</td>
 <td>A string containing the acls we want to check for.</td>
 </tr>
-<tr><td>options</td>
+<tr class="row-odd"><td>options</td>
 <td>Special additional options that have to be checked.</td>
 </tr>
-<tr><td>skip_user_check</td>
+<tr class="row-even"><td>skip_user_check</td>
 <td>Skips checks for users, this is required to resolve roles.</td>
 </tr>
-<tr><td>used_roles</td>
+<tr class="row-odd"><td>used_roles</td>
 <td>A list of roles used in this recursion, to be able to check for endless-recursions.</td>
 </tr>
 </tbody>
@@ -345,12 +339,12 @@ SUB, PSUB, RESET, ...</p>
 <col width="58%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>members</td>
+<tr class="row-even"><td>members</td>
 <td>A list of usernames</td>
 </tr>
 </tbody>
@@ -375,12 +369,12 @@ SUB, PSUB, RESET, ...</p>
 <col width="72%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>priority</td>
+<tr class="row-even"><td>priority</td>
 <td>The new priority value for this ACl.</td>
 </tr>
 </tbody>
@@ -389,7 +383,7 @@ SUB, PSUB, RESET, ...</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">aclset</span> <span class="o">=</span> <span class="n">ACLSet</span><span class="p">()</span>
 <span class="n">acl</span> <span class="o">=</span> <span class="n">ACL</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="n">ACL</span><span class="o">.</span><span class="n">ONE</span><span class="p">)</span>
 <span class="n">acl</span><span class="o">.</span><span class="n">set_members</span><span class="p">([</span><span class="s">u&#39;tester1&#39;</span><span class="p">,</span> <span class="s">u&#39;tester2&#39;</span><span class="p">])</span>
-<span class="n">acl</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="s">&#39;com.#.factory&#39;</span><span class="p">,</span> <span class="s">&#39;rwx&#39;</span><span class="p">)</span>
+<span class="n">acl</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="s">&#39;^org\.clacks\.event\.ClientLeave$&#39;</span><span class="p">,</span> <span class="s">&#39;rwx&#39;</span><span class="p">)</span>
 
 <span class="n">acl</span><span class="o">.</span><span class="n">set_priority</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
 </pre></div>
@@ -407,12 +401,12 @@ SUB, PSUB, RESET, ...</p>
 <col width="72%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>priority</td>
+<tr class="row-even"><td>priority</td>
 <td>The new priority value for this ACl.</td>
 </tr>
 </tbody>
@@ -429,12 +423,12 @@ SUB, PSUB, RESET, ...</p>
 <col width="67%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>rolename</td>
+<tr class="row-even"><td>rolename</td>
 <td>The name of the role to use.</td>
 </tr>
 </tbody>
@@ -449,8 +443,8 @@ SUB, PSUB, RESET, ...</p>
 <dd><p>The ACLResolver is responsible for loading, saving and resolving
 permission:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span> <span class="o">=</span> <span class="n">ACLResolver</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="s">&#39;user1&#39;</span><span class="p">,</span><span class="s">&#39;org.gosa.factory&#39;</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="s">&#39;user1&#39;</span><span class="p">,</span><span class="s">&#39;org.gosa.factory&#39;</span><span class="p">,</span><span class="s">&#39;rwx&#39;</span><span class="p">,</span> <span class="s">&#39;dc=example,dc=net&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="s">&#39;user1&#39;</span><span class="p">,</span><span class="s">&#39;org.clacks.factory&#39;</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="s">&#39;user1&#39;</span><span class="p">,</span><span class="s">&#39;org.clacks.factory&#39;</span><span class="p">,</span><span class="s">&#39;rwx&#39;</span><span class="p">,</span> <span class="s">&#39;dc=example,dc=net&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>If no base is given (last parameter of check), the default base will be used. (The default base is the configured LDAP base).</p>
@@ -478,12 +472,12 @@ repesentation:</p>
 <col width="68%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>base</td>
+<tr class="row-even"><td>base</td>
 <td>The base we want to check for.</td>
 </tr>
 </tbody>
@@ -493,7 +487,7 @@ repesentation:</p>
 <dl class="method">
 <dt id="clacks.agent.acl.ACLResolver.addACL">
 <tt class="descname">addACL</tt><big>(</big><em>user</em>, <em>base</em>, <em>priority</em>, <em>members</em>, <em>actions=None</em>, <em>scope=None</em>, <em>rolename=None</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.addACL" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-0">
+<dd><div class="admonition" id="cmd-0">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -506,27 +500,27 @@ repesentation:</p>
 <col width="89%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>base</td>
+<tr class="row-even"><td>base</td>
 <td>The base this acl works on. E.g. &#8216;dc=example,dc=de&#8217;</td>
 </tr>
-<tr><td>priority</td>
+<tr class="row-odd"><td>priority</td>
 <td>An integer value to prioritize this acl-rule. (Lower values mean higher priority)</td>
 </tr>
-<tr><td>members</td>
+<tr class="row-even"><td>members</td>
 <td>A list of members this acl affects. E.g. [u&#8217;Herbert&#8217;, u&#8217;klaus&#8217;]</td>
 </tr>
-<tr><td>actions</td>
+<tr class="row-odd"><td>actions</td>
 <td>A dictionary which includes the topic and the acls this rule includes.</td>
 </tr>
-<tr><td>scope</td>
+<tr class="row-even"><td>scope</td>
 <td>The &#8216;scope&#8217; defines how an acl is inherited by sub-bases. See <a class="reference internal" href="#scope-description"><em>Scope values</em></a> for details.</td>
 </tr>
-<tr><td>rolename</td>
+<tr class="row-odd"><td>rolename</td>
 <td>The name of the role to use.</td>
 </tr>
 </tbody>
@@ -535,11 +529,11 @@ repesentation:</p>
 <p>For details about <tt class="docutils literal"><span class="pre">scope</span></tt>, <tt class="docutils literal"><span class="pre">topic</span></tt>, <tt class="docutils literal"><span class="pre">options</span></tt> and <tt class="docutils literal"><span class="pre">acls</span></tt>, click here:
 <a class="reference internal" href="#scope-description"><em>Scope values</em></a>, <a class="reference internal" href="#topic-description"><em>Topic</em></a>, <a class="reference internal" href="#acls-description"><em>ACLs</em></a> and <a class="reference internal" href="#options-description"><em>Options</em></a></p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">addACL</span><span class="p">(</span><span class="s">&#39;dc=gonicus,dc=de&#39;</span><span class="p">,</span> <span class="s">&#39;sub&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="s">u&#39;tester1&#39;</span><span class="p">],</span> <span class="p">[{</span><span class="s">&#39;topic&#39;</span><span class="p">:</span> <span class="s">&#39;com.gosa.*&#39;</span><span class="p">,</span> <span class="s">&#39;acls&#39;</span><span class="p">:</span> <span class="s">&#39;rwcdm&#39;</span><span class="p">}])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">addACL</span><span class="p">(</span><span class="s">&#39;dc=gonicus,dc=de&#39;</span><span class="p">,</span> <span class="s">&#39;sub&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="s">u&#39;tester1&#39;</span><span class="p">],</span> <span class="p">[{</span><span class="s">&#39;topic&#39;</span><span class="p">:</span> <span class="s">r&#39;^some\.topic.*$&#39;</span><span class="p">,</span> <span class="s">&#39;acls&#39;</span><span class="p">:</span> <span class="s">&#39;rwcdm&#39;</span><span class="p">}])</span>
 </pre></div>
 </div>
 <p>or with some options:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">addACL</span><span class="p">(</span><span class="s">&#39;dc=gonicus,dc=de&#39;</span><span class="p">,</span> <span class="s">&#39;sub&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="s">u&#39;tester1&#39;</span><span class="p">],</span> <span class="p">[{</span><span class="s">&#39;topic&#39;</span><span class="p">:</span> <span class="s">&#39;com.gosa.*&#39;</span><span class="p">,</span> <span class="s">&#39;acls&#39;</span><span class="p">:</span> <span class="s">&#39;rwcdm&#39;</span><span class="p">,</span> <span class="s">&#39;options&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;uid&#39;</span><span class="p">:</span> <span class="s">&#39;^u[0-9]&#39;</span><span class="p">}}])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">addACL</span><span class="p">(</span><span class="s">&#39;dc=gonicus,dc=de&#39;</span><span class="p">,</span> <span class="s">&#39;sub&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="s">u&#39;tester1&#39;</span><span class="p">],</span> <span class="p">[{</span><span class="s">&#39;topic&#39;</span><span class="p">:</span> <span class="s">r&#39;^some\.topic.*$&#39;</span><span class="p">,</span> <span class="s">&#39;acls&#39;</span><span class="p">:</span> <span class="s">&#39;rwcdm&#39;</span><span class="p">,</span> <span class="s">&#39;options&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;uid&#39;</span><span class="p">:</span> <span class="s">&#39;^u[0-9]&#39;</span><span class="p">}}])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -547,7 +541,7 @@ repesentation:</p>
 <dl class="method">
 <dt id="clacks.agent.acl.ACLResolver.addACLRole">
 <tt class="descname">addACLRole</tt><big>(</big><em>user</em>, <em>rolename</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.addACLRole" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-1">
+<dd><div class="admonition" id="cmd-1">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -560,12 +554,12 @@ repesentation:</p>
 <col width="64%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>rolename</td>
+<tr class="row-even"><td>rolename</td>
 <td>The name of the new role.</td>
 </tr>
 </tbody>
@@ -580,7 +574,7 @@ repesentation:</p>
 <dl class="method">
 <dt id="clacks.agent.acl.ACLResolver.addACLToRole">
 <tt class="descname">addACLToRole</tt><big>(</big><em>user</em>, <em>rolename</em>, <em>priority</em>, <em>actions=None</em>, <em>scope=None</em>, <em>use_role=None</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.addACLToRole" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-2">
+<dd><div class="admonition" id="cmd-2">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -593,24 +587,24 @@ repesentation:</p>
 <col width="89%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>rolename</td>
+<tr class="row-even"><td>rolename</td>
 <td>The name of the acl-role we want to add to.</td>
 </tr>
-<tr><td>priority</td>
+<tr class="row-odd"><td>priority</td>
 <td>An integer value to prioritize this acl-rule. (Lower values mean higher priority)</td>
 </tr>
-<tr><td>actions</td>
+<tr class="row-even"><td>actions</td>
 <td>A dictionary which includes the topic and the acls this rule includes.</td>
 </tr>
-<tr><td>scope</td>
+<tr class="row-odd"><td>scope</td>
 <td>The &#8216;scope&#8217; defines how an acl is inherited by sub-bases. See <a class="reference internal" href="#scope-description"><em>Scope values</em></a> for details.</td>
 </tr>
-<tr><td>use_role</td>
+<tr class="row-even"><td>use_role</td>
 <td>The role-name to use if we do not assign actions directly using the actions parameter.</td>
 </tr>
 </tbody>
@@ -618,11 +612,11 @@ repesentation:</p>
 <p>For details about <tt class="docutils literal"><span class="pre">scope</span></tt>, <tt class="docutils literal"><span class="pre">topic</span></tt>, <tt class="docutils literal"><span class="pre">options</span></tt> and <tt class="docutils literal"><span class="pre">acls</span></tt>, click here:
 <a class="reference internal" href="#scope-description"><em>Scope values</em></a>, <a class="reference internal" href="#topic-description"><em>Topic</em></a>, <a class="reference internal" href="#acls-description"><em>ACLs</em></a> and <a class="reference internal" href="#options-description"><em>Options</em></a></p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">addACLtoRole</span><span class="p">(</span><span class="s">&#39;rolle1&#39;</span><span class="p">,</span> <span class="s">&#39;sub&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[{</span><span class="s">&#39;topic&#39;</span><span class="p">:</span> <span class="s">&#39;com.gosa.*&#39;</span><span class="p">,</span> <span class="s">&#39;acls&#39;</span><span class="p">:</span> <span class="s">&#39;rwcdm&#39;</span><span class="p">}])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">addACLtoRole</span><span class="p">(</span><span class="s">&#39;rolle1&#39;</span><span class="p">,</span> <span class="s">&#39;sub&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[{</span><span class="s">&#39;topic&#39;</span><span class="p">:</span> <span class="s">r&#39;^some\.topic.*$&#39;</span><span class="p">,</span> <span class="s">&#39;acls&#39;</span><span class="p">:</span> <span class="s">&#39;rwcdm&#39;</span><span class="p">}])</span>
 </pre></div>
 </div>
 <p>or with some options:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">addACLtoRole</span><span class="p">(</span><span class="s">&#39;rolle1&#39;</span><span class="p">,</span> <span class="s">&#39;sub&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[{</span><span class="s">&#39;topic&#39;</span><span class="p">:</span> <span class="s">&#39;com.gosa.*&#39;</span><span class="p">,</span> <span class="s">&#39;acls&#39;</span><span class="p">:</span> <span class="s">&#39;rwcdm&#39;</span><span class="p">,</span> <span class="s">&#39;options&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;uid&#39;</span><span class="p">:</span> <span class="s">&#39;^u[0-9]&#39;</span><span class="p">}}])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">addACLtoRole</span><span class="p">(</span><span class="s">&#39;rolle1&#39;</span><span class="p">,</span> <span class="s">&#39;sub&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[{</span><span class="s">&#39;topic&#39;</span><span class="p">:</span> <span class="s">r&#39;^some\.topic.*$&#39;</span><span class="p">,</span> <span class="s">&#39;acls&#39;</span><span class="p">:</span> <span class="s">&#39;rwcdm&#39;</span><span class="p">,</span> <span class="s">&#39;options&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;uid&#39;</span><span class="p">:</span> <span class="s">&#39;^u[0-9]&#39;</span><span class="p">}}])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -637,12 +631,12 @@ repesentation:</p>
 <col width="71%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>role</td>
+<tr class="row-even"><td>role</td>
 <td>The ACLRole object we want to add.</td>
 </tr>
 </tbody>
@@ -665,15 +659,15 @@ repesentation:</p>
 <col width="71%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>base</td>
+<tr class="row-even"><td>base</td>
 <td>The base we want to add an acl to.</td>
 </tr>
-<tr><td>acl</td>
+<tr class="row-odd"><td>acl</td>
 <td>The &#8216;ACL&#8217; object we want to add.</td>
 </tr>
 </tbody>
@@ -690,15 +684,15 @@ repesentation:</p>
 <col width="80%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>rolename</td>
+<tr class="row-even"><td>rolename</td>
 <td>The name of the role we want to add this ACLRoleEntry to.</td>
 </tr>
-<tr><td>acl</td>
+<tr class="row-odd"><td>acl</td>
 <td>The ACLRoleEntry object we want to add.</td>
 </tr>
 </tbody>
@@ -715,15 +709,15 @@ repesentation:</p>
 <col width="75%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>base</td>
+<tr class="row-even"><td>base</td>
 <td>The base we want to add an ACL object to.</td>
 </tr>
-<tr><td>acl</td>
+<tr class="row-odd"><td>acl</td>
 <td>The ACL object we want to add.</td>
 </tr>
 </tbody>
@@ -740,24 +734,24 @@ repesentation:</p>
 <col width="79%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>user</td>
+<tr class="row-even"><td>user</td>
 <td>The user we want to check for.</td>
 </tr>
-<tr><td>topic</td>
-<td>The topic string, e.g. &#8216;com.gosa.factory&#8217;</td>
+<tr class="row-odd"><td>topic</td>
+<td>The topic string, e.g. &#8216;org.clacks.factory&#8217;</td>
 </tr>
-<tr><td>acls</td>
+<tr class="row-even"><td>acls</td>
 <td>The list of acls, we want to check for, e.g. &#8216;rcwdm&#8217;</td>
 </tr>
-<tr><td>options</td>
+<tr class="row-odd"><td>options</td>
 <td>A dictionary containing extra options to check for.</td>
 </tr>
-<tr><td>base</td>
+<tr class="row-even"><td>base</td>
 <td>The base we want to check acls in.</td>
 </tr>
 </tbody>
@@ -766,8 +760,8 @@ repesentation:</p>
 <dl class="docutils">
 <dt>Example::</dt>
 <dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span> <span class="o">=</span> <span class="n">ACLResolver</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="s">&#39;user1&#39;</span><span class="p">,</span><span class="s">&#39;org.gosa.factory&#39;</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="s">&#39;user1&#39;</span><span class="p">,</span><span class="s">&#39;org.gosa.factory&#39;</span><span class="p">,</span><span class="s">&#39;rwx&#39;</span><span class="p">,</span> <span class="s">&#39;dc=example,dc=net&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="s">&#39;user1&#39;</span><span class="p">,</span><span class="s">&#39;org.clacks.factory&#39;</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="s">&#39;user1&#39;</span><span class="p">,</span><span class="s">&#39;org.clacks.factory&#39;</span><span class="p">,</span><span class="s">&#39;rwx&#39;</span><span class="p">,</span> <span class="s">&#39;dc=example,dc=net&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
@@ -784,7 +778,7 @@ This is called during initialization of the ACLResolver class.</p>
 <dl class="method">
 <dt id="clacks.agent.acl.ACLResolver.getACLRoles">
 <tt class="descname">getACLRoles</tt><big>(</big><em>user</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.getACLRoles" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-3">
+<dd><div class="admonition" id="cmd-3">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -800,7 +794,7 @@ This is called during initialization of the ACLResolver class.</p>
 <dl class="method">
 <dt id="clacks.agent.acl.ACLResolver.getACLs">
 <tt class="descname">getACLs</tt><big>(</big><em>user</em>, <em>base=None</em>, <em>topic=None</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.getACLs" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-4">
+<dd><div class="admonition" id="cmd-4">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -813,7 +807,7 @@ The <tt class="docutils literal"><span class="pre">base</span></tt> parameter wi
 where the <tt class="docutils literal"><span class="pre">topic</span></tt> parameter will list all acls that match the given topic value.</p>
 <p>Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">getACls</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="s">&#39;dc=gonicus,dc=de&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">getACls</span><span class="p">(</span><span class="n">topic</span><span class="o">=</span><span class="s">&#39;com\.gonicus\.factory\..*&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">getACls</span><span class="p">(</span><span class="n">topic</span><span class="o">=</span><span class="s">r&#39;^com\.gonicus\.factory$&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <table border="1" class="docutils">
@@ -822,15 +816,15 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 <col width="80%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>base</td>
+<tr class="row-even"><td>base</td>
 <td>(optional) The base we want to list the permissions for.</td>
 </tr>
-<tr><td>topic</td>
+<tr class="row-odd"><td>topic</td>
 <td>(optional) The topic we want to list acls for.</td>
 </tr>
 </tbody>
@@ -847,12 +841,12 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 <col width="75%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>base</td>
+<tr class="row-even"><td>base</td>
 <td>The base we want to return the ACLSets for.</td>
 </tr>
 </tbody>
@@ -869,12 +863,12 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 <col width="75%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>rolename</td>
+<tr class="row-even"><td>rolename</td>
 <td>The name of the role we want to check for.</td>
 </tr>
 </tbody>
@@ -908,7 +902,7 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 <dl class="method">
 <dt id="clacks.agent.acl.ACLResolver.removeACL">
 <tt class="descname">removeACL</tt><big>(</big><em>user</em>, <em>acl_id</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.removeACL" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-5">
+<dd><div class="admonition" id="cmd-5">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -921,12 +915,12 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 <col width="67%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>acl_id</td>
+<tr class="row-even"><td>acl_id</td>
 <td>The id of the acl to remove.</td>
 </tr>
 </tbody>
@@ -934,13 +928,13 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 <p><tt class="docutils literal"><span class="pre">Return</span></tt>: Boolean True on success else False</p>
 <p>Example:
 &gt;&gt;&gt; getACls(base=&#8217;dc=gonicus,dc=de&#8217;)
-&gt;&gt;&gt; getACls(topic=&#8217;com.gonicus.factory..*&#8217;)</p>
+&gt;&gt;&gt; getACls(topic=r&#8217;com.gonicus.factory&#8217;)</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="clacks.agent.acl.ACLResolver.removeRole">
 <tt class="descname">removeRole</tt><big>(</big><em>user</em>, <em>rolename</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.removeRole" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-6">
+<dd><div class="admonition" id="cmd-6">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -953,12 +947,12 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 <col width="60%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>rolename</td>
+<tr class="row-even"><td>rolename</td>
 <td>The name of the role.</td>
 </tr>
 </tbody>
@@ -968,7 +962,7 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 <dl class="method">
 <dt id="clacks.agent.acl.ACLResolver.removeRoleACL">
 <tt class="descname">removeRoleACL</tt><big>(</big><em>user</em>, <em>role_id</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.removeRoleACL" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-7">
+<dd><div class="admonition" id="cmd-7">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -982,12 +976,12 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 <col width="70%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>role_id</td>
+<tr class="row-even"><td>role_id</td>
 <td>The ID of the role-acl to remove.</td>
 </tr>
 </tbody>
@@ -1004,12 +998,12 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 <col width="70%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>user</td>
+<tr class="row-even"><td>user</td>
 <td>The username to remove acls for.</td>
 </tr>
 </tbody>
@@ -1018,7 +1012,7 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 <div class="highlight-python"><div class="highlight"><pre><span class="n">aclset</span> <span class="o">=</span> <span class="n">ACLSet</span><span class="p">()</span>
 <span class="n">acl</span> <span class="o">=</span> <span class="n">ACL</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="n">ACL</span><span class="o">.</span><span class="n">ONE</span><span class="p">)</span>
 <span class="n">acl</span><span class="o">.</span><span class="n">set_members</span><span class="p">([</span><span class="s">u&#39;tester1&#39;</span><span class="p">,</span> <span class="s">u&#39;tester2&#39;</span><span class="p">])</span>
-<span class="n">acl</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="s">&#39;com.#.factory&#39;</span><span class="p">,</span> <span class="s">&#39;rwx&#39;</span><span class="p">)</span>
+<span class="n">acl</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="s">&#39;...&#39;</span><span class="p">,</span> <span class="s">&#39;rwx&#39;</span><span class="p">)</span>
 <span class="n">acl</span><span class="o">.</span><span class="n">set_priority</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
 <span class="n">aclset</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">acl</span><span class="p">)</span>
 <span class="n">resolver</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">aclset</span><span class="p">)</span>
@@ -1040,12 +1034,12 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 <col width="74%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>base</td>
+<tr class="row-even"><td>base</td>
 <td>The base we want to delete ACLSets for.</td>
 </tr>
 </tbody>
@@ -1062,12 +1056,12 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 <col width="76%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>name</td>
+<tr class="row-even"><td>name</td>
 <td>The name of the role that have to be removed.</td>
 </tr>
 </tbody>
@@ -1083,7 +1077,7 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 <dl class="method">
 <dt id="clacks.agent.acl.ACLResolver.updateACL">
 <tt class="descname">updateACL</tt><big>(</big><em>user</em>, <em>acl_id</em>, <em>scope=None</em>, <em>priority=None</em>, <em>members=None</em>, <em>actions=None</em>, <em>rolename=None</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.updateACL" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-8">
+<dd><div class="admonition" id="cmd-8">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -1096,27 +1090,27 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 <col width="89%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>id</td>
+<tr class="row-even"><td>id</td>
 <td>The ID of the acl we want to update.</td>
 </tr>
-<tr><td>scope</td>
+<tr class="row-odd"><td>scope</td>
 <td>The &#8216;scope&#8217; defines how an acl is inherited by sub-bases. See <a class="reference internal" href="#scope-description"><em>Scope values</em></a> for details.</td>
 </tr>
-<tr><td>priority</td>
+<tr class="row-even"><td>priority</td>
 <td>An integer value to prioritize this acl-rule. (Lower values mean higher priority)</td>
 </tr>
-<tr><td>members</td>
+<tr class="row-odd"><td>members</td>
 <td>A new list of members.</td>
 </tr>
-<tr><td>actions</td>
+<tr class="row-even"><td>actions</td>
 <td>A dictionary which includes the topic and the acls this rule includes.</td>
 </tr>
-<tr><td>rolename</td>
+<tr class="row-odd"><td>rolename</td>
 <td>The name of the role to use.</td>
 </tr>
 </tbody>
@@ -1124,11 +1118,11 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 <p>For details about <tt class="docutils literal"><span class="pre">scope</span></tt>, <tt class="docutils literal"><span class="pre">topic</span></tt>, <tt class="docutils literal"><span class="pre">options</span></tt> and <tt class="docutils literal"><span class="pre">acls</span></tt>, click here:
 <a class="reference internal" href="#scope-description"><em>Scope values</em></a>, <a class="reference internal" href="#topic-description"><em>Topic</em></a>, <a class="reference internal" href="#acls-description"><em>ACLs</em></a> and <a class="reference internal" href="#options-description"><em>Options</em></a></p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">addACLtoRole</span><span class="p">(</span><span class="s">&#39;rolle1&#39;</span><span class="p">,</span> <span class="s">&#39;sub&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;peter&#39;</span><span class="p">],</span> <span class="p">[{</span><span class="s">&#39;topic&#39;</span><span class="p">:</span> <span class="s">&#39;com.gosa.*&#39;</span><span class="p">,</span> <span class="s">&#39;acls&#39;</span><span class="p">:</span> <span class="s">&#39;rwcdm&#39;</span><span class="p">}])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">addACLtoRole</span><span class="p">(</span><span class="s">&#39;rolle1&#39;</span><span class="p">,</span> <span class="s">&#39;sub&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;peter&#39;</span><span class="p">],</span> <span class="p">[{</span><span class="s">&#39;topic&#39;</span><span class="p">:</span> <span class="s">&#39;^some\.topic.*$&#39;</span><span class="p">,</span> <span class="s">&#39;acls&#39;</span><span class="p">:</span> <span class="s">&#39;rwcdm&#39;</span><span class="p">}])</span>
 </pre></div>
 </div>
 <p>or with some options:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">addACLtoRole</span><span class="p">(</span><span class="s">&#39;rolle1&#39;</span><span class="p">,</span> <span class="s">&#39;sub&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;peter&#39;</span><span class="p">],</span> <span class="p">[{</span><span class="s">&#39;topic&#39;</span><span class="p">:</span> <span class="s">&#39;com.gosa.*&#39;</span><span class="p">,</span> <span class="s">&#39;acls&#39;</span><span class="p">:</span> <span class="s">&#39;rwcdm&#39;</span><span class="p">,</span> <span class="s">&#39;options&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;uid&#39;</span><span class="p">:</span> <span class="s">&#39;^u[0-9]&#39;</span><span class="p">}}])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">addACLtoRole</span><span class="p">(</span><span class="s">&#39;rolle1&#39;</span><span class="p">,</span> <span class="s">&#39;sub&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;peter&#39;</span><span class="p">],</span> <span class="p">[{</span><span class="s">&#39;topic&#39;</span><span class="p">:</span> <span class="s">&#39;^some\.topic.*$&#39;</span><span class="p">,</span> <span class="s">&#39;acls&#39;</span><span class="p">:</span> <span class="s">&#39;rwcdm&#39;</span><span class="p">,</span> <span class="s">&#39;options&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;uid&#39;</span><span class="p">:</span> <span class="s">&#39;^u[0-9]&#39;</span><span class="p">}}])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1136,7 +1130,7 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 <dl class="method">
 <dt id="clacks.agent.acl.ACLResolver.updateACLRole">
 <tt class="descname">updateACLRole</tt><big>(</big><em>user</em>, <em>acl_id</em>, <em>scope=None</em>, <em>priority=None</em>, <em>actions=None</em>, <em>use_role=None</em><big>)</big><a class="headerlink" href="#clacks.agent.acl.ACLResolver.updateACLRole" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-9">
+<dd><div class="admonition" id="cmd-9">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -1149,24 +1143,24 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 <col width="89%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>id</td>
+<tr class="row-even"><td>id</td>
 <td>The ID of the role-acl we want to update.</td>
 </tr>
-<tr><td>scope</td>
+<tr class="row-odd"><td>scope</td>
 <td>The &#8216;scope&#8217; defines how an acl is inherited by sub-bases. See <a class="reference internal" href="#scope-description"><em>Scope values</em></a> for details.</td>
 </tr>
-<tr><td>priority</td>
+<tr class="row-even"><td>priority</td>
 <td>An integer value to prioritize this acl-rule. (Lower values mean higher priority)</td>
 </tr>
-<tr><td>actions</td>
+<tr class="row-odd"><td>actions</td>
 <td>A dictionary which includes the topic and the acls this rule includes.</td>
 </tr>
-<tr><td>use_role</td>
+<tr class="row-even"><td>use_role</td>
 <td>The role-name to use if we do not assign actions directly using the actions parameter.</td>
 </tr>
 </tbody>
@@ -1174,11 +1168,11 @@ where the <tt class="docutils literal"><span class="pre">topic</span></tt> param
 <p>For details about <tt class="docutils literal"><span class="pre">scope</span></tt>, <tt class="docutils literal"><span class="pre">topic</span></tt>, <tt class="docutils literal"><span class="pre">options</span></tt> and <tt class="docutils literal"><span class="pre">acls</span></tt>, click here:
 <a class="reference internal" href="#scope-description"><em>Scope values</em></a>, <a class="reference internal" href="#topic-description"><em>Topic</em></a>, <a class="reference internal" href="#acls-description"><em>ACLs</em></a> and <a class="reference internal" href="#options-description"><em>Options</em></a></p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">updateACLRole</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;sub&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;peter&#39;</span><span class="p">],</span> <span class="p">[{</span><span class="s">&#39;topic&#39;</span><span class="p">:</span> <span class="s">&#39;com.gosa.*&#39;</span><span class="p">,</span> <span class="s">&#39;acls&#39;</span><span class="p">:</span> <span class="s">&#39;rwcdm&#39;</span><span class="p">}])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">updateACLRole</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;sub&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;peter&#39;</span><span class="p">],</span> <span class="p">[{</span><span class="s">&#39;topic&#39;</span><span class="p">:</span> <span class="s">&#39;^some\.topic.*$&#39;</span><span class="p">,</span> <span class="s">&#39;acls&#39;</span><span class="p">:</span> <span class="s">&#39;rwcdm&#39;</span><span class="p">}])</span>
 </pre></div>
 </div>
 <p>or with some options:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">updateACLRole</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;sub&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;peter&#39;</span><span class="p">],</span> <span class="p">[{</span><span class="s">&#39;topic&#39;</span><span class="p">:</span> <span class="s">&#39;com.gosa.*&#39;</span><span class="p">,</span> <span class="s">&#39;acls&#39;</span><span class="p">:</span> <span class="s">&#39;rwcdm&#39;</span><span class="p">,</span> <span class="s">&#39;options&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;uid&#39;</span><span class="p">:</span> <span class="s">&#39;^u[0-9]&#39;</span><span class="p">}}])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolver</span><span class="o">.</span><span class="n">updateACLRole</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;sub&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;peter&#39;</span><span class="p">],</span> <span class="p">[{</span><span class="s">&#39;topic&#39;</span><span class="p">:</span> <span class="s">&#39;^some\.topic.*$&#39;</span><span class="p">,</span> <span class="s">&#39;acls&#39;</span><span class="p">:</span> <span class="s">&#39;rwcdm&#39;</span><span class="p">,</span> <span class="s">&#39;options&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;uid&#39;</span><span class="p">:</span> <span class="s">&#39;^u[0-9]&#39;</span><span class="p">}}])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1196,12 +1190,12 @@ An <tt class="docutils literal"><span class="pre">ACLRole</span></tt> has a name
 <col width="74%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>name</td>
+<tr class="row-even"><td>name</td>
 <td>The name of the role we want to create.</td>
 </tr>
 </tbody>
@@ -1263,12 +1257,12 @@ a set of acls:</p>
 <col width="77%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>item</td>
+<tr class="row-even"><td>item</td>
 <td>The <tt class="docutils literal"><span class="pre">ACLRoleEntry</span></tt> item to add to this role.</td>
 </tr>
 </tbody>
@@ -1277,7 +1271,7 @@ a set of acls:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># Create an ACLRole</span>
 <span class="n">role</span> <span class="o">=</span> <span class="n">ACLRole</span><span class="p">(</span><span class="s">&#39;role1&#39;</span><span class="p">)</span>
 <span class="n">acl</span> <span class="o">=</span> <span class="n">ACLRoleEntry</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="n">ACL</span><span class="o">.</span><span class="n">ONE</span><span class="p">)</span>
-<span class="n">acl</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="s">&#39;com.gosa.factory&#39;</span><span class="p">,</span> <span class="s">&#39;rwx&#39;</span><span class="p">)</span>
+<span class="n">acl</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="s">&#39;^org\.clacks\.event\.ClientLeave$&#39;</span><span class="p">,</span> <span class="s">&#39;rwx&#39;</span><span class="p">)</span>
 
 <span class="n">role</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">acl</span><span class="p">)</span>
 </pre></div>
@@ -1333,12 +1327,12 @@ acls, is valid for. E.g. dc=example,dc=net</p>
 <col width="72%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>base</td>
+<tr class="row-even"><td>base</td>
 <td>The base this ACLSet is created for.</td>
 </tr>
 </tbody>
@@ -1360,12 +1354,12 @@ acls, is valid for. E.g. dc=example,dc=net</p>
 <col width="61%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>acl</td>
+<tr class="row-even"><td>acl</td>
 <td>The ACL object to add.</td>
 </tr>
 </tbody>
@@ -1374,7 +1368,7 @@ acls, is valid for. E.g. dc=example,dc=net</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">aclset</span> <span class="o">=</span> <span class="n">ACLSet</span><span class="p">()</span>
 <span class="n">acl</span> <span class="o">=</span> <span class="n">ACL</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="n">ACL</span><span class="o">.</span><span class="n">ONE</span><span class="p">)</span>
 <span class="n">acl</span><span class="o">.</span><span class="n">set_members</span><span class="p">([</span><span class="s">u&#39;tester1&#39;</span><span class="p">,</span> <span class="s">u&#39;tester2&#39;</span><span class="p">])</span>
-<span class="n">acl</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="s">&#39;com.#.factory&#39;</span><span class="p">,</span> <span class="s">&#39;rwx&#39;</span><span class="p">)</span>
+<span class="n">acl</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="s">&#39;^org\.clacks\.event\.ClientLeave$&#39;</span><span class="p">,</span> <span class="s">&#39;rwx&#39;</span><span class="p">)</span>
 <span class="n">acl</span><span class="o">.</span><span class="n">set_priority</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
 
 <span class="n">aclset</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">acl</span><span class="p">)</span>
@@ -1398,12 +1392,12 @@ acls, is valid for. E.g. dc=example,dc=net</p>
 <col width="64%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>acl</td>
+<tr class="row-even"><td>acl</td>
 <td>The ACL object to remove.</td>
 </tr>
 </tbody>
@@ -1412,7 +1406,7 @@ acls, is valid for. E.g. dc=example,dc=net</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">aclset</span> <span class="o">=</span> <span class="n">ACLSet</span><span class="p">()</span>
 <span class="n">acl</span> <span class="o">=</span> <span class="n">ACL</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="n">ACL</span><span class="o">.</span><span class="n">ONE</span><span class="p">)</span>
 <span class="n">acl</span><span class="o">.</span><span class="n">set_members</span><span class="p">([</span><span class="s">u&#39;tester1&#39;</span><span class="p">,</span> <span class="s">u&#39;tester2&#39;</span><span class="p">])</span>
-<span class="n">acl</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="s">&#39;com.#.factory&#39;</span><span class="p">,</span> <span class="s">&#39;rwx&#39;</span><span class="p">)</span>
+<span class="n">acl</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="s">&#39;^org\.clacks\.event\.ClientLeave$&#39;</span><span class="p">,</span> <span class="s">&#39;rwx&#39;</span><span class="p">)</span>
 <span class="n">acl</span><span class="o">.</span><span class="n">set_priority</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
 <span class="n">aclset</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">acl</span><span class="p">)</span>
 
@@ -1431,12 +1425,12 @@ acls, is valid for. E.g. dc=example,dc=net</p>
 <col width="70%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>user</td>
+<tr class="row-even"><td>user</td>
 <td>The username to remove acls for.</td>
 </tr>
 </tbody>
@@ -1445,7 +1439,9 @@ acls, is valid for. E.g. dc=example,dc=net</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">aclset</span> <span class="o">=</span> <span class="n">ACLSet</span><span class="p">()</span>
 <span class="n">acl</span> <span class="o">=</span> <span class="n">ACL</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="n">ACL</span><span class="o">.</span><span class="n">ONE</span><span class="p">)</span>
 <span class="n">acl</span><span class="o">.</span><span class="n">set_members</span><span class="p">([</span><span class="s">u&#39;tester1&#39;</span><span class="p">,</span> <span class="s">u&#39;tester2&#39;</span><span class="p">])</span>
-<span class="n">acl</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="s">&#39;com.#.factory&#39;</span><span class="p">,</span> <span class="s">&#39;rwx&#39;</span><span class="p">)</span>
+
+<span class="c"># &quot;[^\.]*&quot; means everything one level</span>
+<span class="n">acl</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="s">&#39;^org\.clacks\.event\.[^\.]*$&#39;</span><span class="p">,</span> <span class="s">&#39;rwx&#39;</span><span class="p">)</span>
 <span class="n">acl</span><span class="o">.</span><span class="n">set_priority</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
 <span class="n">aclset</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">acl</span><span class="p">)</span>
 
@@ -1495,7 +1491,7 @@ acls, is valid for. E.g. dc=example,dc=net</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -1524,14 +1520,14 @@ acls, is valid for. E.g. dc=example,dc=net</p>
         <li class="right" >
           <a href="command.html" title="Command registry"
              >previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" >Development documentation</a> &raquo;</li>
           <li><a href="index.html" >Agent</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Cajus Pollmeier.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

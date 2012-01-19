@@ -3,15 +3,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Agent &mdash; GOsa v3.0 documentation</title>
+    <title>Agent &mdash; Clacks 3.0 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="../_static/requirements.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -24,7 +27,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GOsa v3.0 documentation" href="../index.html" />
+    <link rel="top" title="Clacks 3.0 documentation" href="../index.html" />
     <link rel="up" title="Development documentation" href="../development.html" />
     <link rel="next" title="Command registry" href="command.html" />
     <link rel="prev" title="Components" href="../common/components.html" /> 
@@ -45,7 +48,7 @@
         <li class="right" >
           <a href="../common/components.html" title="Components"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" accesskey="U">Development documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -101,24 +104,25 @@ methods decorated by &#64;Command.</li>
 </ul>
 </div></blockquote>
 <p>This happens automatically depending on what&#8217;s registered on the
-<tt class="docutils literal"><span class="pre">[gosa.modules]</span></tt> setuptools entrypoint.</p>
+<tt class="docutils literal"><span class="pre">[agent.module]</span></tt> setuptools entrypoint.</p>
 <p>The agent will send a <strong>NodeLeave</strong> event when shutting down.</p>
 <p>If you&#8217;re looking for documentation on how to write plugins, please take a look
 at the <a class="reference internal" href="../plugins/index.html#plugins"><em>Plugin section</em></a>.</p>
 </div>
 <div class="section" id="using-the-binary">
 <h2>Using the binary<a class="headerlink" href="#using-the-binary" title="Permalink to this headline">¶</a></h2>
-<p>The gosa-agent binary gets installed when you run the setup process. It
+<p>The clacks-agent binary gets installed when you run the setup process. It
 has a couple of command line arguments:</p>
 <blockquote>
-<div><div class="highlight-text"><div class="highlight"><pre>$ gosa-agent --help
-usage: gosa-agent - the GOsa core daemon
+<div><div class="highlight-text"><div class="highlight"><pre>$ clacks-agent --help
+usage: clacks-agent - the clacks core daemon
 
 optional arguments:
   -h, --help            show this help message and exit
-  --version
+  --version             show program&#39;s version number and exit
   -c FILE, --config FILE
-                        read configuration from FILE [/etc/gosa/config]
+                        read configuration from FILE [/etc/clacks/config]
+  --url URL             AMQP broker URL
   -f                    run daemon in foreground [False]
   -u USER, --user USER  run daemon as USER [None]
   -g GROUP, --group GROUP
@@ -139,7 +143,7 @@ Advanced options:
 <p class="last">Take a look at the <a class="reference internal" href="../intro.html#quickstart"><em>quickstart</em></a> to see how the agent is
 controlled.</p>
 </div>
-<div class="admonition-requirement admonition " id="req-0">
+<div class="admonition-requirement admonition" id="req-0">
 <p class="first admonition-title">Requirement</p>
 <p class="last"><em class="status todo">todo</em> Describe the init script / default usage</p>
 </div>
@@ -161,14 +165,14 @@ controlled.</p>
 <li class="toctree-l1"><a class="reference internal" href="jsonrpc.html#module-clacks.agent.jsonrpc_objects">JSON RPC objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="objects.html">Object abstraction</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="objects.html#basic-usage">Basic usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="objects.html#how-does-it-work-xml-definition-for-gosa-objects">How does it work - XML definition for GOsa objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objects.html#how-does-it-work-xml-definition-for-objects">How does it work - XML definition for objects</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="objects.html#gosa-object-factory">GOsa Object Factory</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="objects.html#object-factory">Object Factory</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="objects.html#short-description">Short description</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="objects.html#gosa-object-proxy">GOsa Object Proxy</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="objects.html#object-proxy">Object Proxy</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="objects.html#will-list-the-available-extension-types-for-that-specific-object">will list the available extension types for that specific object.</a></li>
 </ul>
 </li>
@@ -206,7 +210,7 @@ controlled.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -235,13 +239,13 @@ controlled.</p>
         <li class="right" >
           <a href="../common/components.html" title="Components"
              >previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" >Development documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Cajus Pollmeier.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

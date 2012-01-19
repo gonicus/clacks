@@ -13,7 +13,7 @@ Plain plugins just need to inherit from :class:`clacks.common.components.plugin.
 and make use of :meth:`clacks.common.components.command.Command`. Additionally, they've
 to specify their target queue - :ref:`see agent queues <agent-queues>`.
 
-Use the **tools/gosa-plugin-skell** command to get a GOsa agent plugin skeleton and
+Use the **tools/clacks-plugin-skell** command to get a Clacks agent plugin skeleton and
 take a look at the *main.py* file::
 
     # -*- coding: utf-8 -*-
@@ -38,7 +38,7 @@ take a look at the *main.py* file::
             return _("Hello %s!") % name
 
 It shows a very minimal sample plugin which provides the command *hello* to
-the GOsa agents *CommandRegistry* - which is callable for users later on. You
+the Clacks agents *CommandRegistry* - which is callable for users later on. You
 can see a couple of things that are common to all plugins:
 
  * they import *Command* and *Plugin* from the :mod:`clacks.common.components`
@@ -52,7 +52,7 @@ using::
 
   $ ./setup.py develop
 
-and *restart* your GOsa agent to let it notice the newly created plugin. From
+and *restart* your Clacks agent to let it notice the newly created plugin. From
 now on you can use the *hello* command from the shell or one of the proxies - whatever
 makes sense for you.
 

@@ -3,15 +3,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Welcome to GOsa’s documentation! &mdash; GOsa v3.0 documentation</title>
+    <title>Welcome to Clacks’s documentation! &mdash; Clacks 3.0 documentation</title>
+    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="_static/requirements.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -24,7 +27,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="GOsa v3.0 documentation" href="#" />
+    <link rel="top" title="Clacks 3.0 documentation" href="#" />
     <link rel="next" title="Introduction" href="intro.html" /> 
   </head>
   <body>
@@ -40,7 +43,7 @@
         <li class="right" >
           <a href="intro.html" title="Introduction"
              accesskey="N">next</a> |</li>
-        <li><a href="#">GOsa v3.0 documentation</a> &raquo;</li> 
+        <li><a href="#">Clacks 3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -49,16 +52,16 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="welcome-to-gosa-s-documentation">
-<h1>Welcome to GOsa&#8217;s documentation!<a class="headerlink" href="#welcome-to-gosa-s-documentation" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="welcome-to-clacks-s-documentation">
+<h1>Welcome to Clacks&#8217;s documentation!<a class="headerlink" href="#welcome-to-clacks-s-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="what-is-it-all-about">
 <h2>What is it all about?<a class="headerlink" href="#what-is-it-all-about" title="Permalink to this headline">¶</a></h2>
-<p>If you get here, you probably know that GOsa (currently) is a PHP based framework
+<p>If you get here, you probably know that Clacks (currently) is a PHP based framework
 for managing several aspects of your infrastructure. For more information, please
-go to the <a class="reference external" href="https://oss.gonicus.de/labs/gosa">GOsa Website</a>.</p>
-<p>While you can find information about the GOsa 2.x series on the website mentioned
+go to the <a class="reference external" href="https://oss.gonicus.de/labs/gosa">Clacks Website</a>.</p>
+<p>While you can find information about the Clacks 2.x series on the website mentioned
 above, this document is more about the future. This is why:</p>
-<p>Starting with GOsa 2.6, we had introduced a simple perl based service called
+<p>Starting with Clacks 2.6, we had introduced a simple perl based service called
 gosa-si, which was able to handle requests and actions where class PHP applications
 are not well suited for. This service had (has) many problems in design, scalability
 and so on. For that reason we started to redo the whole thing using new
@@ -67,21 +70,21 @@ implementation <a class="reference external" href="http://qpid.apache.org/">QPID
 <p>This service handles the <em>authentication</em>, the <em>message queueing</em>, the <em>clustering</em> and
 <em>load balancing</em> for us. A client can subscribe to public events using
 <a class="reference external" href="http://en.wikipedia.org/wiki/XQuery">XQuery</a>, services (or third parties) can
-emit events in a simple manner. AMQP is used by the newly introduced <em>GOsa agent</em>
-to provide load balanced, clustered services and by several kind of <em>GOsa client</em>
+emit events in a simple manner. AMQP is used by the newly introduced <em>Clacks agent</em>
+to provide load balanced, clustered services and by several kind of <em>Clacks client</em>
 applications like a shell, an ordinary client (former GOto clients) and so on.</p>
-<p>Multiple <em>GOsa agents</em> create a domain where clients can join or participate in
+<p>Multiple <em>Clacks agents</em> create a domain where clients can join or participate in
 different ways. Functionality like the new abstraction layer <em>libinst</em>, an object
 description language, scheduling, etc. are spread over several agents and can be
 transparently accessed by clients, thanks to the routing possible with QPID queue
 models. The functionality is currently exposed by AMQP and by a HTTP/JSONRPC gateway,
 more methods like ReST or SOAP may follow if there&#8217;s an urgent need for that.</p>
-<p>Starting with PHP GOsa 2.7, there is built in support for the new GOsa core. 2.7
+<p>Starting with PHP Clacks 2.7, there is built in support for the new Clacks core. 2.7
 series will be some kind of migration series where more and more functionality will
 be moved into the new core while keeping the original functionality inside. That
 allows <em>bleeding edge</em> users to try selected new functionality thru the new core and
 more <em>conservative</em> users can continue to use the current PHP core.</p>
-<p>The 3.0 release will be a PHP-GOsa with nearly no functionality residing in PHP, but
+<p>The 3.0 release will be a PHP-Clacks with nearly no functionality residing in PHP, but
 in the new core. And - finally - this documentation is growing on the way to 3.0.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -104,13 +107,13 @@ in the new core. And - finally - this documentation is growing on the way to 3.0
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#quickstart">Quickstart</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="intro.html#common-setup">Common setup</a></li>
-<li class="toctree-l3"><a class="reference internal" href="intro.html#the-gosa-ng-agent">The gosa-ng agent</a></li>
-<li class="toctree-l3"><a class="reference internal" href="intro.html#the-gosa-ng-shell">The gosa-ng shell</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#the-clacks-agent">The clacks agent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#the-clacks-shell">The clacks shell</a></li>
 <li class="toctree-l3"><a class="reference internal" href="intro.html#first-contact">First contact</a></li>
-<li class="toctree-l3"><a class="reference internal" href="intro.html#the-gosa-ng-client">The gosa-ng client</a></li>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#the-clacks-client">The clacks client</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="intro.html#integration-with-php-gosa">Integration with PHP GOsa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#integration-with-php-clacks">Integration with PHP Clacks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#design-overview">Design overview</a></li>
 </ul>
 </li>
@@ -118,10 +121,10 @@ in the new core. And - finally - this documentation is growing on the way to 3.0
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="concepts.html">Concepts</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="concepts.html#messaging-with-amqp">Messaging with AMQP</a></li>
-<li class="toctree-l3"><a class="reference internal" href="concepts.html#gosa-overview">GOsa overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="concepts.html#clacks-overview">Clacks overview</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="common/index.html">The GOsa <em>common</em> library</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="common/index.html">The Clacks <em>common</em> library</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="common/env.html">Environment access</a></li>
 <li class="toctree-l3"><a class="reference internal" href="common/config.html">Configuration handling</a></li>
 <li class="toctree-l3"><a class="reference internal" href="common/log.html">Logging</a></li>
@@ -143,8 +146,8 @@ in the new core. And - finally - this documentation is growing on the way to 3.0
 <li class="toctree-l3"><a class="reference internal" href="agent/jsonrpc.html">JSON RPC service</a></li>
 <li class="toctree-l3"><a class="reference internal" href="agent/jsonrpc.html#module-clacks.agent.jsonrpc_objects">JSON RPC objects</a></li>
 <li class="toctree-l3"><a class="reference internal" href="agent/objects.html">Object abstraction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="agent/objects.html#gosa-object-factory">GOsa Object Factory</a></li>
-<li class="toctree-l3"><a class="reference internal" href="agent/objects.html#gosa-object-proxy">GOsa Object Proxy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="agent/objects.html#object-factory">Object Factory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="agent/objects.html#object-proxy">Object Proxy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="agent/objects.html#object-index">Object Index</a></li>
 </ul>
 </li>
@@ -188,7 +191,7 @@ in the new core. And - finally - this documentation is growing on the way to 3.0
 <li class="toctree-l1"><a class="reference internal" href="license.html">History and License</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="license.html#history-of-the-software">History of the software</a></li>
 <li class="toctree-l2"><a class="reference internal" href="license.html#license">License</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="license.html#gosa-core">GOsa Core</a></li>
+<li class="toctree-l3"><a class="reference internal" href="license.html#clacks-core">Clacks Core</a></li>
 <li class="toctree-l3"><a class="reference internal" href="license.html#jsonrpc-library">JSONRPC library</a></li>
 </ul>
 </li>
@@ -216,7 +219,7 @@ in the new core. And - finally - this documentation is growing on the way to 3.0
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Welcome to GOsa&#8217;s documentation!</a><ul>
+<li><a class="reference internal" href="#">Welcome to Clacks&#8217;s documentation!</a><ul>
 <li><a class="reference internal" href="#what-is-it-all-about">What is it all about?</a><ul>
 </ul>
 </li>
@@ -236,7 +239,7 @@ in the new core. And - finally - this documentation is growing on the way to 3.0
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -262,12 +265,12 @@ in the new core. And - finally - this documentation is growing on the way to 3.0
         <li class="right" >
           <a href="intro.html" title="Introduction"
              >next</a> |</li>
-        <li><a href="#">GOsa v3.0 documentation</a> &raquo;</li> 
+        <li><a href="#">Clacks 3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Cajus Pollmeier.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

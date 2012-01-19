@@ -3,15 +3,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Configuration handling &mdash; GOsa v3.0 documentation</title>
+    <title>Configuration handling &mdash; Clacks 3.0 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="../_static/requirements.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -24,8 +27,8 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GOsa v3.0 documentation" href="../index.html" />
-    <link rel="up" title="The GOsa common library" href="index.html" />
+    <link rel="top" title="Clacks 3.0 documentation" href="../index.html" />
+    <link rel="up" title="The Clacks common library" href="index.html" />
     <link rel="next" title="Logging" href="log.html" />
     <link rel="prev" title="Environment access" href="env.html" /> 
   </head>
@@ -45,9 +48,9 @@
         <li class="right" >
           <a href="env.html" title="Environment access"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" >Development documentation</a> &raquo;</li>
-          <li><a href="index.html" accesskey="U">The GOsa <em>common</em> library</a> &raquo;</li> 
+          <li><a href="index.html" accesskey="U">The Clacks <em>common</em> library</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -58,10 +61,10 @@
             
   <div class="section" id="module-clacks.common.config">
 <span id="configuration-handling"></span><h1>Configuration handling<a class="headerlink" href="#module-clacks.common.config" title="Permalink to this headline">¶</a></h1>
-<p>The configuration module is the central place where the GOsa configuration
+<p>The configuration module is the central place where the clacks configuration
 can be queried. Using the configuration module requires the presence of the
-GOsa configuration file - commonly <tt class="docutils literal"><span class="pre">/etc/gosa/config</span></tt> and the subdirectory
-<tt class="docutils literal"><span class="pre">/etc/gosa/config.d</span></tt>. All these configurations will be merged into one
+clacks configuration file - commonly <tt class="docutils literal"><span class="pre">/etc/clacks/config</span></tt> and the subdirectory
+<tt class="docutils literal"><span class="pre">/etc/clacks/config.d</span></tt>. All these configurations will be merged into one
 &#8216;virtual&#8217; configuration so that certain packages can provide their own config
 file without knowing how to read it.</p>
 <p>Additionally to reading the configuration file, it merges that information
@@ -78,7 +81,7 @@ with potential command line parameters.</p>
 <hr class="docutils" />
 <dl class="class">
 <dt id="clacks.common.config.Config">
-<em class="property">class </em><tt class="descclassname">clacks.common.config.</tt><tt class="descname">Config</tt><big>(</big><em>config='/etc/gosa/config'</em>, <em>noargs=False</em><big>)</big><a class="headerlink" href="#clacks.common.config.Config" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">clacks.common.config.</tt><tt class="descname">Config</tt><big>(</big><em>config='/etc/clacks/config'</em>, <em>noargs=False</em><big>)</big><a class="headerlink" href="#clacks.common.config.Config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct a new Config object using the provided configuration file
 and parse the <tt class="docutils literal"><span class="pre">sys.argv</span></tt> information.</p>
 <table border="1" class="docutils">
@@ -87,15 +90,15 @@ and parse the <tt class="docutils literal"><span class="pre">sys.argv</span></tt
 <col width="80%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>config</td>
+<tr class="row-even"><td>config</td>
 <td>Path to the configuration file.</td>
 </tr>
-<tr><td>noargs</td>
+<tr class="row-odd"><td>noargs</td>
 <td>Don&#8217;t parse <tt class="docutils literal"><span class="pre">sys.argv</span></tt> information</td>
 </tr>
 </tbody>
@@ -116,15 +119,15 @@ in the section <em>[core]</em>, the path is:</p>
 <col width="84%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>path</td>
+<tr class="row-even"><td>path</td>
 <td>dot-separated path to the configuration option</td>
 </tr>
-<tr><td>default</td>
+<tr class="row-odd"><td>default</td>
 <td>default value if the desired option is not set</td>
 </tr>
 </tbody>
@@ -143,12 +146,12 @@ ini file.</p>
 <col width="76%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>str</td>
+<tr class="row-even"><td>str</td>
 <td>section name in the ini file</td>
 </tr>
 </tbody>
@@ -182,45 +185,45 @@ of the <tt class="docutils literal"><span class="pre">[core]</span></tt> section
 <col width="80%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Key</th>
+<tr class="row-odd"><th class="head">Key</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>foreground</td>
+<tr class="row-even"><td>foreground</td>
 <td>Run in daemon mode or not</td>
 </tr>
-<tr><td>pidfile</td>
+<tr class="row-odd"><td>pidfile</td>
 <td>Path to the PID file when running in daemon mode</td>
 </tr>
-<tr><td>umask</td>
+<tr class="row-even"><td>umask</td>
 <td>Umask when running in daemon mode</td>
 </tr>
-<tr><td>user</td>
+<tr class="row-odd"><td>user</td>
 <td>User to become when running in daemon mode</td>
 </tr>
-<tr><td>group</td>
+<tr class="row-even"><td>group</td>
 <td>Group to become when running in daemon mode</td>
 </tr>
-<tr><td>workdir</td>
+<tr class="row-odd"><td>workdir</td>
 <td>Change to this directory when running in daemon mode</td>
 </tr>
-<tr><td>loglevel</td>
+<tr class="row-even"><td>loglevel</td>
 <td>Level where logging starts</td>
 </tr>
-<tr><td>profile</td>
+<tr class="row-odd"><td>profile</td>
 <td>Save profiling information</td>
 </tr>
-<tr><td>log</td>
+<tr class="row-even"><td>log</td>
 <td>Log target (stderr, syslog, file)</td>
 </tr>
-<tr><td>logfile</td>
+<tr class="row-odd"><td>logfile</td>
 <td>If log=&#8221;file&#8221; this is the path to the logfile</td>
 </tr>
-<tr><td>id</td>
+<tr class="row-even"><td>id</td>
 <td>Unique ID of this node</td>
 </tr>
-<tr><td>domain</td>
+<tr class="row-odd"><td>domain</td>
 <td>Which domain this node will be part of</td>
 </tr>
 </tbody>
@@ -229,11 +232,11 @@ of the <tt class="docutils literal"><span class="pre">[core]</span></tt> section
 <div class="highlight-python"><pre>[core]
 loglevel = DEBUG
 log = file
-logfile = /var/log/gosa/agent.log
+logfile = /var/log/clacks/agent.log
 profile = False
 id = amqp
-user = gosa
-group = gosa</pre>
+user = clacks
+group = clacks</pre>
 </div>
 </div>
 
@@ -257,7 +260,7 @@ group = gosa</pre>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -286,14 +289,14 @@ group = gosa</pre>
         <li class="right" >
           <a href="env.html" title="Environment access"
              >previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" >Development documentation</a> &raquo;</li>
-          <li><a href="index.html" >The GOsa <em>common</em> library</a> &raquo;</li> 
+          <li><a href="index.html" >The Clacks <em>common</em> library</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Cajus Pollmeier.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

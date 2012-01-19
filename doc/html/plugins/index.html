@@ -3,15 +3,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Plugin development &mdash; GOsa v3.0 documentation</title>
+    <title>Plugin development &mdash; Clacks 3.0 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="../_static/requirements.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
@@ -24,7 +27,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GOsa v3.0 documentation" href="../index.html" />
+    <link rel="top" title="Clacks 3.0 documentation" href="../index.html" />
     <link rel="up" title="Development documentation" href="../development.html" />
     <link rel="next" title="Agent plugins" href="agent/index.html" />
     <link rel="prev" title="Shell and scripting" href="../shell/index.html" /> 
@@ -45,7 +48,7 @@
         <li class="right" >
           <a href="../shell/index.html" title="Shell and scripting"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" accesskey="U">Development documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -57,12 +60,12 @@
             
   <div class="section" id="plugin-development">
 <h1>Plugin development<a class="headerlink" href="#plugin-development" title="Permalink to this headline">¶</a></h1>
-<p>Basically there are four plugin types that are used inside of GOsa. Two of
+<p>Basically there are four plugin types that are used inside of Clacks. Two of
 them are <em>agent</em> plugins - namely handlers and ordinary plugins, one flavor
 of <em>client</em> plugins and one flavor of <em>dbus</em> plugins.</p>
-<p id="plugins">In order to help with quick plugin templating, there&#8217;s a helper script <strong>tools/gosa-plugin-skel</strong>
+<p id="plugins">In order to help with quick plugin templating, there&#8217;s a helper script <strong>tools/clacks-plugin-skel</strong>
 which asks a couple of questions and generates a quickstart for you:</p>
-<div class="highlight-python"><pre>$ tools/gosa-plugin-skel
+<div class="highlight-python"><pre>$ tools/clacks-plugin-skel
 Generate plugin skeleton. Please provide some information:
 
 Plugin name (must be [a-z][a-z0-9]+): sample
@@ -81,17 +84,17 @@ sample/README
 sample/setup.cfg
 sample/setup.py
 sample/src
-sample/src/gosa
-sample/src/gosa/__init__.py
-sample/src/gosa/agent
-sample/src/gosa/agent/__init__.py
-sample/src/gosa/agent/plugins
-sample/src/gosa/agent/plugins/__init__.py
-sample/src/gosa/agent/plugins/sample
-sample/src/gosa/agent/plugins/sample/locale
-sample/src/gosa/agent/plugins/sample/__init__.py
-sample/src/gosa/agent/plugins/sample/tests
-sample/src/gosa/agent/plugins/sample/main.py</pre>
+sample/src/clacks
+sample/src/clacks/__init__.py
+sample/src/clacks/agent
+sample/src/clacks/agent/__init__.py
+sample/src/clacks/agent/plugins
+sample/src/clacks/agent/plugins/__init__.py
+sample/src/clacks/agent/plugins/sample
+sample/src/clacks/agent/plugins/sample/locale
+sample/src/clacks/agent/plugins/sample/__init__.py
+sample/src/clacks/agent/plugins/sample/tests
+sample/src/clacks/agent/plugins/sample/main.py</pre>
 </div>
 <p><strong>Topics:</strong></p>
 <div class="toctree-wrapper compound">
@@ -108,8 +111,8 @@ sample/src/gosa/agent/plugins/sample/main.py</pre>
 </div>
 <div class="section" id="id1">
 <h1>Plugins<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
-<p>This section contains documentation for available GOsa plugins. These may
-come as standalone plugins or may be included in the core GOsa modules.
+<p>This section contains documentation for available Clacks plugins. These may
+come as standalone plugins or may be included in the core Clacks modules.
 If you find missing plugins, please send patches to these documentation files.</p>
 <div class="section" id="agent-plugins">
 <h2>Agent plugins<a class="headerlink" href="#agent-plugins" title="Permalink to this headline">¶</a></h2>
@@ -182,7 +185,7 @@ If you find missing plugins, please send patches to these documentation files.</
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -211,13 +214,13 @@ If you find missing plugins, please send patches to these documentation files.</
         <li class="right" >
           <a href="../shell/index.html" title="Shell and scripting"
              >previous</a> |</li>
-        <li><a href="../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../development.html" >Development documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Cajus Pollmeier.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

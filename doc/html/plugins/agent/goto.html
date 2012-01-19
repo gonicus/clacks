@@ -3,15 +3,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>GOto &mdash; GOsa v3.0 documentation</title>
+    <title>GOto &mdash; Clacks 3.0 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/requirements.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
@@ -24,7 +27,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GOsa v3.0 documentation" href="../../index.html" />
+    <link rel="top" title="Clacks 3.0 documentation" href="../../index.html" />
     <link rel="up" title="Plugin development" href="../index.html" />
     <link rel="next" title="libinst" href="libinst.html" />
     <link rel="prev" title="libinst" href="libinst.html" /> 
@@ -45,7 +48,7 @@
         <li class="right" >
           <a href="libinst.html" title="libinst"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../../development.html" >Development documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Plugin development</a> &raquo;</li> 
       </ul>
@@ -66,7 +69,7 @@ to the users.</p>
 <dl class="method">
 <dt id="clacks.agent.plugins.goto.client_service.ClientService.clientDispatch">
 <tt class="descname">clientDispatch</tt><big>(</big><em>client</em>, <em>method</em>, <em>*arg</em>, <em>**larg</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.goto.client_service.ClientService.clientDispatch" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-0">
+<dd><div class="admonition" id="cmd-0">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -79,18 +82,18 @@ to the users.</p>
 <col width="78%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Parameter</th>
+<tr class="row-odd"><th class="head">Parameter</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>client</td>
+<tr class="row-even"><td>client</td>
 <td>Device UUID of the client</td>
 </tr>
-<tr><td>method</td>
+<tr class="row-odd"><td>method</td>
 <td>Method name to call</td>
 </tr>
-<tr><td><ul class="first last simple">
+<tr class="row-even"><td><ul class="first last simple">
 <li></li>
 </ul>
 </td>
@@ -104,7 +107,7 @@ to the users.</p>
 <dl class="method">
 <dt id="clacks.agent.plugins.goto.client_service.ClientService.getClientMethods">
 <tt class="descname">getClientMethods</tt><big>(</big><em>client</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.goto.client_service.ClientService.getClientMethods" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-1">
+<dd><div class="admonition" id="cmd-1">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -117,7 +120,7 @@ to the users.</p>
 <dl class="method">
 <dt id="clacks.agent.plugins.goto.client_service.ClientService.getClientNetInfo">
 <tt class="descname">getClientNetInfo</tt><big>(</big><em>client</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.goto.client_service.ClientService.getClientNetInfo" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-2">
+<dd><div class="admonition" id="cmd-2">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -125,7 +128,7 @@ to the users.</p>
 </div>
 <p>Get brief information about the client network setup.</p>
 <p>Example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">gosa</span><span class="o">.</span><span class="n">getClientNetInfo</span><span class="p">(</span><span class="s">&#39;eb5e72d4-c53f-4612-81a3-602b14a8da69&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">getClientNetInfo</span><span class="p">(</span><span class="s">&#39;eb5e72d4-c53f-4612-81a3-602b14a8da69&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>{&#8216;eth0&#8217;: {&#8216;Broadcast&#8217;: &#8216;10.89.1.255&#8217;, &#8216;MAC&#8217;: &#8216;00:01:6c:9d:b9:fa&#8217;, &#8216;IPAddress&#8217;: &#8216;10.89.1.31&#8217;, &#8216;Netmask&#8217;: &#8216;255.255.255.0&#8217;, &#8216;IPv6Address&#8217;: &#8216;fe80::201:6cff:fe9d:b9fa/64&#8217;}}</p>
@@ -135,7 +138,7 @@ to the users.</p>
 <dl class="method">
 <dt id="clacks.agent.plugins.goto.client_service.ClientService.getClients">
 <tt class="descname">getClients</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.plugins.goto.client_service.ClientService.getClients" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-3">
+<dd><div class="admonition" id="cmd-3">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -148,7 +151,7 @@ to the users.</p>
 <dl class="method">
 <dt id="clacks.agent.plugins.goto.client_service.ClientService.getUserClients">
 <tt class="descname">getUserClients</tt><big>(</big><em>user</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.goto.client_service.ClientService.getUserClients" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-4">
+<dd><div class="admonition" id="cmd-4">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -160,7 +163,7 @@ to the users.</p>
 <dl class="method">
 <dt id="clacks.agent.plugins.goto.client_service.ClientService.getUserSessions">
 <tt class="descname">getUserSessions</tt><big>(</big><em>client=None</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.goto.client_service.ClientService.getUserSessions" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-5">
+<dd><div class="admonition" id="cmd-5">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -172,7 +175,7 @@ to the users.</p>
 <dl class="method">
 <dt id="clacks.agent.plugins.goto.client_service.ClientService.joinClient">
 <tt class="descname">joinClient</tt><big>(</big><em>user</em>, <em>device_uuid</em>, <em>mac</em>, <em>info=None</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.goto.client_service.ClientService.joinClient" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-6">
+<dd><div class="admonition" id="cmd-6">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -184,7 +187,7 @@ to the users.</p>
 <dl class="method">
 <dt id="clacks.agent.plugins.goto.client_service.ClientService.notifyUser">
 <tt class="descname">notifyUser</tt><big>(</big><em>users</em>, <em>title</em>, <em>message</em>, <em>timeout=10</em>, <em>level='normal'</em>, <em>icon='dialog-information'</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.goto.client_service.ClientService.notifyUser" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-7">
+<dd><div class="admonition" id="cmd-7">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -196,7 +199,7 @@ to the users.</p>
 <dl class="method">
 <dt id="clacks.agent.plugins.goto.client_service.ClientService.systemGetStatus">
 <tt class="descname">systemGetStatus</tt><big>(</big><em>device_uuid</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.goto.client_service.ClientService.systemGetStatus" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-8">
+<dd><div class="admonition" id="cmd-8">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -208,7 +211,7 @@ to the users.</p>
 <dl class="method">
 <dt id="clacks.agent.plugins.goto.client_service.ClientService.systemSetStatus">
 <tt class="descname">systemSetStatus</tt><big>(</big><em>device_uuid</em>, <em>status</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.goto.client_service.ClientService.systemSetStatus" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-9">
+<dd><div class="admonition" id="cmd-9">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -228,7 +231,7 @@ manufacturer resolving.</p>
 <dl class="method">
 <dt id="clacks.agent.plugins.goto.network.NetworkUtils.getMacManufacturer">
 <tt class="descname">getMacManufacturer</tt><big>(</big><em>mac</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.goto.network.NetworkUtils.getMacManufacturer" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-10">
+<dd><div class="admonition" id="cmd-10">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -242,7 +245,7 @@ manufacturer resolving.</p>
 <dl class="method">
 <dt id="clacks.agent.plugins.goto.network.NetworkUtils.networkCompletion">
 <tt class="descname">networkCompletion</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.goto.network.NetworkUtils.networkCompletion" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition " id="cmd-11">
+<dd><div class="admonition" id="cmd-11">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -275,7 +278,7 @@ manufacturer resolving.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -304,14 +307,14 @@ manufacturer resolving.</p>
         <li class="right" >
           <a href="libinst.html" title="libinst"
              >previous</a> |</li>
-        <li><a href="../../index.html">GOsa v3.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Clacks 3.0 documentation</a> &raquo;</li>
           <li><a href="../../development.html" >Development documentation</a> &raquo;</li>
           <li><a href="../index.html" >Plugin development</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Cajus Pollmeier.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

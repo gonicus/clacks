@@ -1,16 +1,16 @@
 Plugin development
 ==================
 
-Basically there are four plugin types that are used inside of GOsa. Two of
+Basically there are four plugin types that are used inside of Clacks. Two of
 them are *agent* plugins - namely handlers and ordinary plugins, one flavor
 of *client* plugins and one flavor of *dbus* plugins.
 
 .. _plugins:
 
-In order to help with quick plugin templating, there's a helper script **tools/gosa-plugin-skel**
+In order to help with quick plugin templating, there's a helper script **tools/clacks-plugin-skel**
 which asks a couple of questions and generates a quickstart for you::
 
-  $ tools/gosa-plugin-skel
+  $ tools/clacks-plugin-skel
   Generate plugin skeleton. Please provide some information:
   
   Plugin name (must be [a-z][a-z0-9]+): sample
@@ -30,17 +30,17 @@ Here's the resulting directory structure::
   sample/setup.cfg
   sample/setup.py
   sample/src
-  sample/src/gosa
-  sample/src/gosa/__init__.py
-  sample/src/gosa/agent
-  sample/src/gosa/agent/__init__.py
-  sample/src/gosa/agent/plugins
-  sample/src/gosa/agent/plugins/__init__.py
-  sample/src/gosa/agent/plugins/sample
-  sample/src/gosa/agent/plugins/sample/locale
-  sample/src/gosa/agent/plugins/sample/__init__.py
-  sample/src/gosa/agent/plugins/sample/tests
-  sample/src/gosa/agent/plugins/sample/main.py
+  sample/src/clacks
+  sample/src/clacks/__init__.py
+  sample/src/clacks/agent
+  sample/src/clacks/agent/__init__.py
+  sample/src/clacks/agent/plugins
+  sample/src/clacks/agent/plugins/__init__.py
+  sample/src/clacks/agent/plugins/sample
+  sample/src/clacks/agent/plugins/sample/locale
+  sample/src/clacks/agent/plugins/sample/__init__.py
+  sample/src/clacks/agent/plugins/sample/tests
+  sample/src/clacks/agent/plugins/sample/main.py
 
 **Topics:**
 
@@ -54,8 +54,8 @@ Here's the resulting directory structure::
 Plugins
 =======
 
-This section contains documentation for available GOsa plugins. These may
-come as standalone plugins or may be included in the core GOsa modules.
+This section contains documentation for available Clacks plugins. These may
+come as standalone plugins or may be included in the core Clacks modules.
 If you find missing plugins, please send patches to these documentation files.
 
 Agent plugins
