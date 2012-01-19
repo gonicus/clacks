@@ -1,5 +1,5 @@
 Services
 --------
 
-.. autoclass:: clacks.dbus.plugins.services.main.DBusUnixServiceHandler
+.. automodule:: clacks.dbus.plugins.services.main.DBusUnixServiceHandler
   :members:

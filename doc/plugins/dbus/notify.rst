@@ -1,5 +1,5 @@
 Notify
 ------
 
-.. autoclass:: clacks.dbus.plugins.notify.main.DBusNotifyHandler
+.. automodule:: clacks.dbus.plugins.notify.main.DBusNotifyHandler
   :members:
