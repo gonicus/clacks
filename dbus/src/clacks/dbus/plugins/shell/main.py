@@ -1,3 +1,97 @@
+"""
+
+Clacks D-Bus Shell plugin
+=========================
+
+
+Short description
+^^^^^^^^^^^^^^^^^
+
+The clacks-dbus shell plugin allows to execute shell scripts
+on the client side with root privileges.
+
+Scripts can be executed like this:
+
+>>> clacksh
+>>>  Suche Dienstanbieter...
+>>> ...
+>>> clientDispatch("49cb1287-db4b-4ddf-bc28-5f4743eac594", "dbus_shell_list")
+>>> [u'script1.sh', u'test.py']
+
+>>> clientDispatch("49cb1287-db4b-4ddf-bc28-5f4743eac594", "dbus_shell_exec", "script1.sh", ['param1', 'param2'])
+>>> {u'code': 0, u'stderr': u'', u'stdout': u'result'}
+
+
+Creating scripts
+^^^^^^^^^^^^^^^^
+
+Create a new executable file in ``/etc/clacks/shell.d`` and ensure that its name match the
+following expression ``^[a-zA-Z0-9][a-zA-Z0-9_\.]*$``.
+
+The script can contain any programming language you want, it just has to be executable
+and has to act on the parameter '-- --signature', see below.
+
+
+The parameter -- --signature
+.........................
+
+Each script has to return a signature when it is used with the parameter '-- --signature'.
+This is required to populate the method to the clacks-dbus process.
+
+A signature is a json string describing what is required and what is returned by the
+script. See `dbus-python tutorial from freedesktop.org <http://dbus.freedesktop.org/doc/dbus-python/doc/tutorial.html>`_
+for details on signatures.
+
+Usually you'll pass strings to the script and it will return a string again:
+
+>>> {"in": [{"param1": "s"},{"param2": "s"}], "out": "s"}
+
+
+Example script
+..............
+
+Here is an example script:
+
+>>>   #!/bin/bash
+>>>   detail="-1"
+>>>   dir=$HOME
+>>>
+>>>   usage() {
+>>>       echo $(basename $0) [--detail] [--directory DIR]
+>>>       exit 0
+>>>   }
+>>>
+>>>   set -- `getopt -n$0 -u -a --longoptions="signature detail directory:" "h" "$@"` || usage
+>>>   [ $# -eq 0 ] && usage
+>>>
+>>>   while [ $# -gt 0 ]
+>>>   do
+>>>       case "$1" in
+>>>          --signature)
+>>>              echo '{"in": [{"detail": "b"},{"directory": "s"}], "out": "s"}'
+>>>              exit 0
+>>>              ;;
+>>>          --detail)
+>>>              detail="-la"
+>>>              ;;
+>>>          --directory)
+>>>              dir=$2
+>>>              shift
+>>>              ;;
+>>>          -h)        usage;;
+>>>          --)        shift;break;;
+>>>          -*)        usage;;
+>>>          *)         break;;
+>>>       esac
+>>>       shift
+>>>   done
+
+
+Eception Classes
+^^^^^^^^^^^^^^^^
+
+"""
+
 import re
 import os
 import dbus.service
