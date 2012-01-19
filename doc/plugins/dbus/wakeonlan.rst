@@ -1,5 +1,5 @@
 Wake on lan
 -----------
 
-.. automodule:: clacks.dbus.plugins.wakeonlan.main.DBusWakeOnLanHandler
+.. automodule:: clacks.dbus.plugins.wakeonlan.main
   :members:
