@@ -1,3 +1,11 @@
+"""
+Clacks D-Bus Notification Plugin
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This plugin allows to notify a user on the client or all users. See class documentation :class: `clacks.dbus.plugins.notify.main.DBusNotifyHandler`.
+
+"""
+
 # -*- coding: utf-8 -*-
 import dbus.service
 from clacks.common import Environment
@@ -9,7 +17,16 @@ import subprocess
 
 
 class DBusNotifyHandler(dbus.service.Object, Plugin):
-    """ Notify handler, sends user notifications """
+    """
+    This dbus plugin is able to send notification to the user using the
+    systems D-Bus.
+
+    This plugin exports dbus methods that ``cannot`` be accessed directly through
+    the clacks-client DBus-Proxy.
+
+    For details on how to use the user notification please see: :class:`clacks.client.plugins.notify.utils.Notify`.
+
+    """
 
     def __init__(self):
         conn = get_system_bus()

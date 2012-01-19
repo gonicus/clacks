@@ -1,3 +1,13 @@
+"""
+
+Clacks D-Bus System Service Plugin
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Allows to manage client services and the runlevel.
+
+"""
+
+
 # -*- coding: utf-8 -*-
 import dbus.service
 import logging
@@ -23,7 +33,20 @@ class NoSuchServiceException(ServiceException):
 
 class DBusUnixServiceHandler(dbus.service.Object, Plugin):
     """
-    DBus plugin which allows to administrate the client and its services.
+
+    The clacks-dbus system-service-plugin allows to manage services
+    running on the client side. Services can be maintained by executing
+    actions for them, e.g. ``start``, ``restart``, ``stop`` and so on,
+    whatever action the service supports.
+
+    The status of all services can be listed and additionally the
+    runlevel can be read and set to another level.
+
+
+    >>> clientDispatch("49cb1287-db4b-4ddf-bc28-5f4743eac594", "dbus_service_get_runlevel")
+    >>> 2
+    >>> clientDispatch("49cb1287-db4b-4ddf-bc28-5f4743eac594", "dbus_service_set_runlevel", 2)
+
     """
 
     log = None
