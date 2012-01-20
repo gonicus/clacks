@@ -83,10 +83,6 @@ Here is an example script:
 >>>       shift
 >>>   done
 
-
-Eception Classes
-^^^^^^^^^^^^^^^^
-
 """
 
 import re

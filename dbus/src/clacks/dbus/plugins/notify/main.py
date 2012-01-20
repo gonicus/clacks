@@ -2,7 +2,7 @@
 Clacks D-Bus Notification Plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This plugin allows to notify a user on the client or all users. See class documentation :class: `clacks.dbus.plugins.notify.main.DBusNotifyHandler`.
+This plugin allows to notify a single or all users on the client.
 
 """
 

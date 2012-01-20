@@ -1,3 +1,47 @@
+"""
+
+D-Bus Command Proxy
+^^^^^^^^^^^^^^^^^^^
+
+The D-Bus Command proxy automatically exports all registered D-Bus methods to the
+clacks command-registry and thus allows calling them directly without having a
+client plugin created for them.
+
+
+The clacks-client receives its commands form the clacks agent, but it cannot
+execute commands that require root prvileges, so it communicates with the
+clacks-dbus plugin which runs as root on the same machine.
+
+>>> Server             Client
+>>> -----------------------------------
+>>> Agent --> Amqp --> Client
+>>>                    Client --> DBus --> Clacks-DBus
+
+Normally you would write a client-plugin for each command that has to be forwarded to
+the clacks-dbus. With the D-Bus Command Proxy you don't have to do this anymore,
+because all methods that match a given naming syntax will be exported automatically.
+
+For example the "Clacks D-Bus System Service Plugin" methods are exported without a
+client plugin.
+
+
+What methods are exported
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+All methods of the service 'org.clacks' with any path are exported, if they do not start
+with ``_`` or ``:``.
+
+Exported methods are prefixed with ``dbus_`` e.g. the ``wake_on_lan`` method is then
+accessible by calling ``dbus_wake_on_lan``. (:class:`clacks.dbus.plugins.wakeonlan.main.DBusWakeOnLanHandler`.)
+
+
+>>> proxy.clientDispatch("49cb1287-db4b-4ddf-bc28-5f4743eac594", "dbus_wake_on_lan", "<mac>")
+
+
+
+"""
+
+
 # -*- coding: utf-8 -*-
 import dbus
 import os

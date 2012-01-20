@@ -7,9 +7,19 @@ from clacks.common import Environment
 
 class Notify(Plugin):
     """
-    Utility class that contains methods needed to handle WakeOnLAN
-    notification functionality.
+    Clacks Client Notification Plugin
+    =================================
+
+    This plugin allows to send notification to a user or a list of users.
+
+    e.g.:
+
+    >>> proxy.clientDispatch("49cb1287-db4b-4ddf-bc28-5f4743eac594", "notify", "user1", "Hallo", "This is a message")
+
+    >>> proxy.clientDispatch("49cb1287-db4b-4ddf-bc28-5f4743eac594", "notify_all", "Hallo", "This is a message")
+
     """
+
     _target_ = 'notify'
 
     def __init__(self):
