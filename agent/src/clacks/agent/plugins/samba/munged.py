@@ -167,8 +167,8 @@ class SambaMungedDial(object):
         result += chr((paramLen & 0x0FF00) >> 8)
 
         # String parameters have additional trailing bytes
-        valueLen = len(value);
-        result += chr(valueLen & 0x0FF);
+        valueLen = len(value)
+        result += chr(valueLen & 0x0FF)
         result += chr((valueLen & 0x0FF00) >> 8)
 
         # Length fields have a trailing '01' appended by the UTF-16 converted name

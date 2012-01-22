@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
-from clacks.common.components import Command
-from clacks.common.components import Plugin
-from clacks.common.utils import N_
-from clacks.common import Environment
-from clacks.agent.objects.filter import ElementFilter
-from clacks.agent.objects.types import AttributeType
-from clacks.agent.objects.backend.registry import ObjectBackendRegistry
-
 import time
 import datetime
+from clacks.agent.objects.filter import ElementFilter
+from clacks.agent.objects.backend.registry import ObjectBackendRegistry
+
 
 class GetNextID(ElementFilter):
     """
-    An object filter which inserts the next free ID for the property given as parameter.
-    But only if the current value is empty.
+    An object filter which inserts the next free ID for the property
+    given as parameter. But only if the current value is empty.
 
     =============== =======================
     Name            Description
@@ -35,7 +30,7 @@ class GetNextID(ElementFilter):
             be = ObjectBackendRegistry.getBackend(valDict[key]['backend'][0])
             gid = be.get_next_id(attributeName)
             if gid > maxValue:
-                raise Exception("Gid number generation exceeded limitation of %s!" % (maxValue,))
+                raise Exception("GID number generation exceeded limitation of %s!" % (maxValue,))
             valDict[key]['value'] = [gid]
 
         return key, valDict
@@ -59,7 +54,6 @@ class ShadowDaysToDate(ElementFilter):
 
     def process(self, obj, key, valDict):
         valDict[key]['value'] = map(lambda x: datetime.date.fromtimestamp(x * 60 * 60 * 24), valDict[key]['value'])
-        #valDict[key]['backend_type'] = 'Timestamp'
         return key, valDict
 
 
@@ -81,5 +75,4 @@ class DateToShadowDays(ElementFilter):
 
     def process(self, obj, key, valDict):
         valDict[key]['value'] = map(lambda x: int(time.mktime(x.timetuple()) / (60*60*24)), valDict[key]['value'])
-        #valDict[key]['backend_type'] = 'Integer'
         return key, valDict

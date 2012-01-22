@@ -7,7 +7,7 @@ from clacks.common.utils import N_
 from clacks.common import Environment
 from clacks.agent.objects.filter import ElementFilter
 from clacks.agent.objects.types import AttributeType
-from clacks.agent.plugins.samba.SambaMungedDial import SambaMungedDial
+from clacks.agent.plugins.samba.munged import SambaMungedDial
 from clacks.agent.ldap_utils import LDAPHandler
 from clacks.agent.objects.comparator import ElementComparator
 from clacks.agent.objects.index import ObjectIndex, SCOPE_ONE, SCOPE_BASE, SCOPE_SUB

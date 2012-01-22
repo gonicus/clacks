@@ -89,9 +89,9 @@ setup(
         xmldb = clacks.agent.xmldb.handler:XMLDBHandler
         jsonrpc_service = clacks.agent.jsonrpc_service:JSONRPCService
         jsonrpc_om = clacks.agent.jsonrpc_objects:JSONRPCObjectMapper
-        samba.utils = clacks.agent.plugins.samba.utils:SambaUtils
-        misc.utils = clacks.agent.plugins.misc.utils:MiscUtils
-        gravatar.utils = clacks.agent.plugins.gravatar.utils:GravatarUtils
+        samba = clacks.agent.plugins.samba.utils:SambaUtils
+        transliterate = clacks.agent.plugins.misc.transliterate:Transliterate
+        gravatar = clacks.agent.plugins.misc.gravatar:Gravatar
         goto.network = clacks.agent.plugins.goto.network:NetworkUtils
         goto.client_service = clacks.agent.plugins.goto.client_service:ClientService
         inventory = clacks.agent.plugins.inventory.consumer:InventoryConsumer
@@ -141,9 +141,9 @@ setup(
         posixgetnextid = clacks.agent.plugins.posix.utils:GetNextID
         datetoshadowdays = clacks.agent.plugins.posix.utils:DateToShadowDays
         shadowdaystodate = clacks.agent.plugins.posix.utils:ShadowDaysToDate
-        detectpasswordmethod = clacks.agent.plugins.password.utils:DetectPasswordMethod
-        detectaccountlockstatus = clacks.agent.plugins.password.utils:DetectAccountLockStatus
-        generatepasswordhash = clacks.agent.plugins.password.utils:GeneratePasswordHash
+        password_methods = clacks.agent.plugins.password.methods:DetectPasswordMethod
+        password_lock = clacks.agent.plugins.password.locking:DetectAccountLockStatus
+        password_hash = clacks.agent.plugins.password.hash:GeneratePasswordHash
         addbackend = clacks.agent.objects.filter.basic:AddBackend
 
         [object.operator]
