@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import gettext
-from clacks.agent import PluginRegistry
+from clacks.common.components import PluginRegistry
 from clacks.agent.objects.comparator import ElementComparator
 
 # Include locales
