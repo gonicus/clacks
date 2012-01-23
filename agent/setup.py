@@ -89,7 +89,6 @@ setup(
         xmldb = clacks.agent.xmldb.handler:XMLDBHandler
         jsonrpc_service = clacks.agent.jsonrpc_service:JSONRPCService
         jsonrpc_om = clacks.agent.jsonrpc_objects:JSONRPCObjectMapper
-        samba = clacks.agent.plugins.samba.utils:SambaUtils
         transliterate = clacks.agent.plugins.misc.transliterate:Transliterate
         gravatar = clacks.agent.plugins.misc.gravatar:Gravatar
         goto.network = clacks.agent.plugins.goto.network:NetworkUtils
@@ -104,7 +103,7 @@ setup(
         unicodestring = clacks.agent.objects.types.base:UnicodeStringAttribute
         date = clacks.agent.objects.types.base:DateAttribute
         timestamp = clacks.agent.objects.types.base:TimestampAttribute
-        sambalogonhours = clacks.agent.plugins.samba.utils:SambaLogonHoursAttribute
+        sambalogonhours = clacks.agent.plugins.samba.logonhours:SambaLogonHoursAttribute
 
         [object.backend]
         ldap = clacks.agent.objects.backend.back_ldap:LDAP
@@ -117,7 +116,7 @@ setup(
         equals = clacks.agent.objects.comparator.basic:Equals
         greater = clacks.agent.objects.comparator.basic:Greater
         smaller = clacks.agent.objects.comparator.basic:Smaller
-        isvalidsambadomainname = clacks.agent.plugins.samba.utils:IsValidSambaDomainName
+        isvalidsambadomainname = clacks.agent.plugins.samba.domain:IsValidSambaDomainName
 
         [object.filter]
         concatstring = clacks.agent.objects.filter.strings:ConcatString
@@ -126,21 +125,21 @@ setup(
         stringToDate = clacks.agent.objects.filter.strings:StringToDate
         dateToString = clacks.agent.objects.filter.strings:DateToString
         timeToString = clacks.agent.objects.filter.strings:TimeToString
-        sambahash = clacks.agent.plugins.samba.utils:SambaHash
+        sambahash = clacks.agent.plugins.samba.hash:SambaHash
         target = clacks.agent.objects.filter.basic:Target
         setbackends = clacks.agent.objects.filter.basic:SetBackends
         setvalue = clacks.agent.objects.filter.basic:SetValue
         clear = clacks.agent.objects.filter.basic:Clear
         integertodatetime = clacks.agent.objects.filter.basic:IntegerToDatetime
         datetimetointeger = clacks.agent.objects.filter.basic:DatetimeToInteger
-        sambaacctflagsin = clacks.agent.plugins.samba.utils:SambaAcctFlagsIn
-        sambaacctflagsout = clacks.agent.plugins.samba.utils:SambaAcctFlagsOut
-        sambamungedialin = clacks.agent.plugins.samba.utils:SambaMungedDialIn
-        sambamungedialout = clacks.agent.plugins.samba.utils:SambaMungedDialOut
-        generatesambasid = clacks.agent.plugins.samba.utils:GenerateSambaSid
-        posixgetnextid = clacks.agent.plugins.posix.utils:GetNextID
-        datetoshadowdays = clacks.agent.plugins.posix.utils:DateToShadowDays
-        shadowdaystodate = clacks.agent.plugins.posix.utils:ShadowDaysToDate
+        sambaacctflagsin = clacks.agent.plugins.samba.flags:SambaAcctFlagsIn
+        sambaacctflagsout = clacks.agent.plugins.samba.flags:SambaAcctFlagsOut
+        sambamungedialin = clacks.agent.plugins.samba.munged:SambaMungedDialIn
+        sambamungedialout = clacks.agent.plugins.samba.munged:SambaMungedDialOut
+        generatesambasid = clacks.agent.plugins.samba.sid:GenerateSambaSid
+        posixgetnextid = clacks.agent.plugins.posix.id:GetNextID
+        datetoshadowdays = clacks.agent.plugins.posix.shadow:DateToShadowDays
+        shadowdaystodate = clacks.agent.plugins.posix.shadow:ShadowDaysToDate
         password_methods = clacks.agent.plugins.password.methods:DetectPasswordMethod
         password_lock = clacks.agent.plugins.password.locking:DetectAccountLockStatus
         password_hash = clacks.agent.plugins.password.hash:GeneratePasswordHash
