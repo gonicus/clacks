@@ -8,10 +8,10 @@ If you get here, you probably know that Clacks (currently) is a PHP based framew
 for managing several aspects of your infrastructure. For more information, please
 go to the `Clacks Website <https://oss.gonicus.de/labs/gosa>`_.
 
-While you can find information about the Clacks 2.x series on the website mentioned
+While you can find information about the GOsa 2.x series on the website mentioned
 above, this document is more about the future. This is why:
 
-Starting with Clacks 2.6, we had introduced a simple perl based service called
+Starting with GOsa 2.6, we had introduced a simple perl based service called
 gosa-si, which was able to handle requests and actions where class PHP applications
 are not well suited for. This service had (has) many problems in design, scalability
 and so on. For that reason we started to redo the whole thing using new
@@ -32,14 +32,14 @@ transparently accessed by clients, thanks to the routing possible with QPID queu
 models. The functionality is currently exposed by AMQP and by a HTTP/JSONRPC gateway,
 more methods like ReST or SOAP may follow if there's an urgent need for that.
 
-Starting with PHP Clacks 2.7, there is built in support for the new Clacks core. 2.7
+Starting with PHP GOsa 2.7, there is built in support for the new Clacks core. 2.7
 series will be some kind of migration series where more and more functionality will
 be moved into the new core while keeping the original functionality inside. That
 allows *bleeding edge* users to try selected new functionality thru the new core and
 more *conservative* users can continue to use the current PHP core.
 
-The 3.0 release will be a PHP-Clacks with nearly no functionality residing in PHP, but
-in the new core. And - finally - this documentation is growing on the way to 3.0.
+The 1.0 release will be a PHP-Clacks with nearly no functionality residing in PHP, but
+in the new core. And - finally - this documentation is growing on the way to 1.0.
 
 .. warning::
 

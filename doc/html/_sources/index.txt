@@ -38,8 +38,8 @@ be moved into the new core while keeping the original functionality inside. That
 allows *bleeding edge* users to try selected new functionality thru the new core and
 more *conservative* users can continue to use the current PHP core.
 
-The 3.0 release will be a PHP-Clacks with nearly no functionality residing in PHP, but
-in the new core. And - finally - this documentation is growing on the way to 3.0.
+The 1.0 release will be a PHP-Clacks with nearly no functionality residing in PHP, but
+in the new core. And - finally - this documentation is growing on the way to 1.0.
 
 .. warning::
 
