@@ -100,7 +100,11 @@ html_theme = 'default'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = {}
+html_theme_options = {
+    "rightsidebar": "false",
+    "relbarbgcolor": "black",
+    "sidebarbgcolor": "#405262"
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
