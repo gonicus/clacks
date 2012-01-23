@@ -8,7 +8,7 @@ from clacks.common.utils import N_
 from clacks.common import Environment
 
 
-class GravatarUtils(Plugin):
+class Gravatar(Plugin):
     """
     Utility class that contains methods needed to retrieve gravatar
     URLs.
