@@ -107,6 +107,12 @@ class ObjectProxy(object):
         self.uuid = self.__base.uuid
         self.dn = self.__base.dn
 
+    def get_attributes(self):
+        """
+        Returns a list containing all property names known for the instantiated object.
+        """
+        return(self.__attribute_map.keys())
+
     def get_parent_dn(self):
         return dn2str(str2dn(self.__base.dn.encode('utf-8'))[1:]).decode('utf-8')
 
