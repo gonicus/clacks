@@ -88,8 +88,8 @@ class Object(object):
             if not(self.myProperties[key]['value']) and self.myProperties[key]['default'] != None:
                 self.myProperties[key]['value'] = copy.deepcopy(self.myProperties[key]['default'])
 
-                # Only set status to modified for values with a valid default.
-                if len(self.myProperties[key]['default']):
+                # Only set status to modified for values with a valid default and if they are mandatory.
+                if len(self.myProperties[key]['default']) and self.myProperties[key]['mandatory']:
                     self.myProperties[key]['status'] = STATUS_CHANGED
 
     def listProperties(self):
