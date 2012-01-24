@@ -1,3 +1,27 @@
+"""
+
+Description
+^^^^^^^^^^^
+
+This plugin is used to create inventory information for the client.
+
+It uses the dbus method ``inventory`` which is exported by the
+clacks-dbus-plugin :class:`clacks.dbus.plugins.inventory.main.DBusInventoryHandler` to receive client inventory
+information for the client.
+
+With the method ``request_inventory`` you can trigger an update of the client inventory
+dataset on the server. The client will then collect all information and then send them
+to the clacks-agent.
+
+>>> proxy.clientDispatch("49cb1287-db4b-4ddf-bc28-5f4743eac594", "request_inventory")
+
+If you just want to see the inventory result without sending the result to the server, you
+can call the dbus method directly:
+
+>>> proxy.clientDispatch("49cb1287-db4b-4ddf-bc28-5f4743eac594", "dbus_inventory")
+
+"""
+
 # -*- coding: utf-8 -*-
 import dbus
 import StringIO
