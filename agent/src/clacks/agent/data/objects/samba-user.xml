@@ -391,7 +391,6 @@
                 <Description>Logon Hours</Description>
                 <Type>SambaLogonHours</Type>
                 <BackendType>UnicodeString</BackendType>
-                <Default>FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF</Default>
             </Attribute>
 
             <Attribute>

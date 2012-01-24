@@ -12,26 +12,28 @@ class SambaLogonHoursAttribute(AttributeType):
 
     __alias__ = "SambaLogonHours"
 
-    def values_match(self, value1, value2):
+    @classmethod
+    def values_match(cls, value1, value2):
         return(str(value1) == str(value2))
 
-    def is_valid_value(self, value):
-        if len(value):
-            try:
-                # Check if we've got a dict with values for all seven week days.
-                if value[0].keys() != range(0,7):
-                    return False
+    @classmethod
+    def is_valid_value(cls, value):
 
-                # Check if each week day contains 24 values.
-                for i in range(0,7):
-                    if type(value[0][i]) != str or len(value[0][i]) != 24 or len(set(value[0][i]) - set('01')):
-                        return False
-                return True
+        if value:
 
-            except:
+            # Check if we've got a dict with values for all seven week days.
+            if value[0].keys() != range(0,7):
                 return False
 
-    def _convert_to_unicodestring(self, value):
+            # Check if each week day contains 24 values.
+            for i in range(0,7):
+                if type(value[0][i]) != str or len(value[0][i]) != 24 or len(set(value[0][i]) - set('01')):
+                    return False
+
+        return True
+
+    @classmethod
+    def _convert_to_unicodestring(cls, value):
         """
         This method is a converter used when values gets read from or written to the backend.
 
@@ -57,10 +59,8 @@ class SambaLogonHoursAttribute(AttributeType):
 
         return(value)
 
-    def _convert_from_string(self, value):
-        return self._convert_from_unicodestring(value)
-
-    def _convert_from_unicodestring(self, value):
+    @classmethod
+    def _convert_from_unicodestring(cls, value):
         """
         This method is a converter used when values gets read from or written to the backend.
 
