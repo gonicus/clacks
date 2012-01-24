@@ -25,7 +25,6 @@ pdp = PDP(policy)
 # It just has a subject telling us that the user
 # is in the role 'adminstrators'
 request = Request()
-resource = Resource()
 
 # Build up the "role" attribute
 #   type:   http://www.w3.org/2001/XMLSchema#string
@@ -52,6 +51,30 @@ for result in  res.results:
 
 
 """
+
+How to add actions (I did not test it yet):
+
+
+somevalue = attributeValueFactory("http://www.w3.org/2001/XMLSchema#string")
+avalue = somevalue("https://www.gonicus.de/webdav")
+bvalue = somevalue("read")
+
+# Add a resource attribute
+resourceAttribute = Attribute()
+resourceAttribute.attributeId = Identifiers.Resource.RESOURCE_ID
+resourceAttribute.dataType = avalue.IDENTIFIER
+resourceAttribute.attributeValues.append(avalue)
+resource.attributes.append(resourceAttribute)
+request.resources.append(resource)
+
+# Create a dummy 'read' action
+actionAttribute = Attribute()
+actionAttribute.attributeId = Identifiers.Action.ACTION_ID
+actionAttribute.dataType = bvalue.IDENTIFIER
+actionAttribute.attributeValues.append(bvalue)
+request.action.attributes.append(actionAttribute)
+
+
 
 -------------------------------
 Notes
