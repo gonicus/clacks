@@ -1,5 +1,90 @@
 from base64 import b64decode, b64encode
 from binascii import hexlify, unhexlify
+from clacks.agent.objects.filter import ElementFilter
+
+
+class SambaMungedDialOut(ElementFilter):
+    """
+    Out-Filter for sambaMungedDial.
+    """
+
+    def __init__(self, obj):
+        super(SambaMungedDialOut, self).__init__(obj)
+
+    def process(self, obj, key, valDict):
+
+        # Create a dictionary with all relevant samba attributes.
+        alist = ['CtxCallback', 'CtxCallbackNumber', 'CtxCfgFlags1', 'CtxCfgPresent', \
+                'CtxInitialProgram', 'CtxKeyboardLayout', 'CtxMaxConnectionTime', \
+                'CtxMaxDisconnectionTime', 'CtxMaxIdleTime', 'Ctx_flag_connectClientDrives', \
+                'CtxMinEncryptionLevel', 'oldStorageBehavior', \
+                'CtxNWLogonServer', 'CtxShadow', 'CtxWFHomeDir', 'CtxWFHomeDirDrive', \
+                'CtxWFProfilePath', 'CtxWorkDirectory', 'Ctx_flag_brokenConn', \
+                'Ctx_flag_connectClientPrinters', 'Ctx_flag_defaultPrinter', \
+                'Ctx_flag_inheritMode', 'Ctx_flag_reConn', 'Ctx_shadow', 'Ctx_flag_tsLogin']
+
+        # Build up a list of values to encode.
+        res = {}
+        for entry in alist:
+            res[entry]=valDict[entry]['value'][0]
+
+        # Encode the sambaMungedDial attribute.
+        result = SambaMungedDial.encode(res)
+        valDict[key]['value'] = [result]
+
+        return key, valDict
+
+
+class SambaMungedDialIn(ElementFilter):
+    """
+    In-Filter for sambaMungedDial.
+    """
+
+    def __init__(self, obj):
+        super(SambaMungedDialIn, self).__init__(obj)
+
+    def process(self, obj, key, valDict):
+
+        if len(valDict[key]['value']):
+
+            # Create a dictionary with all relevant samba attributes.
+            alist = {
+                    'oldStorageBehavior': 'Boolean',
+                    'CtxCallback': 'UnicodeString',
+                    'CtxCallbackNumber': 'UnicodeString',
+                    'CtxCfgFlags1': 'UnicodeString',
+                    'CtxCfgPresent': 'UnicodeString',
+                    'CtxInitialProgram': 'UnicodeString',
+                    'CtxKeyboardLayout': 'UnicodeString',
+                    'CtxMaxConnectionTime': 'Integer',
+                    'CtxMaxDisconnectionTime': 'Integer',
+                    'CtxMaxIdleTime': 'Integer',
+                    'CtxMinEncryptionLevel': 'Integer',
+                    'CtxNWLogonServer': 'UnicodeString',
+                    'CtxShadow': 'UnicodeString',
+                    'CtxWFHomeDir': 'UnicodeString',
+                    'CtxWFHomeDirDrive': 'UnicodeString',
+                    'CtxWFProfilePath': 'UnicodeString',
+                    'CtxWorkDirectory': 'UnicodeString',
+                    'Ctx_flag_brokenConn': 'Boolean',
+                    'Ctx_flag_connectClientDrives': 'Boolean',
+                    'Ctx_flag_connectClientPrinters': 'Boolean',
+                    'Ctx_flag_defaultPrinter': 'Boolean',
+                    'Ctx_flag_inheritMode': 'Boolean',
+                    'Ctx_flag_reConn': 'Boolean',
+                    'Ctx_shadow': 'Integer',
+                    'Ctx_flag_tsLogin': 'Boolean'}
+
+            # Update the value of the read property
+            md = valDict[key]['value'][0]
+            res = SambaMungedDial.decode(md)
+
+            for entry in alist:
+                if entry in res:
+                    valDict[entry]['value'] = [res[entry]]
+                    valDict[entry]['skip_save'] = True
+
+        return key, valDict
 
 
 class SambaMungedDial(object):
@@ -167,8 +252,8 @@ class SambaMungedDial(object):
         result += chr((paramLen & 0x0FF00) >> 8)
 
         # String parameters have additional trailing bytes
-        valueLen = len(value);
-        result += chr(valueLen & 0x0FF);
+        valueLen = len(value)
+        result += chr(valueLen & 0x0FF)
         result += chr((valueLen & 0x0FF00) >> 8)
 
         # Length fields have a trailing '01' appended by the UTF-16 converted name
@@ -265,4 +350,5 @@ class SambaMungedDial(object):
             result['CtxMinEncryptionLevel'] = int(result['CtxMinEncryptionLevel'])
         except:
             result['CtxMinEncryptionLevel'] = 0
+
         return result

@@ -20,7 +20,7 @@ $ easy_install sphinxcontrib-spelling sphinxcontrib-email \
 For the command index, you need the custom **cindex** module from the
 contrib directory:
 
-$ cd contrib/cindex && ./setup.py install
+$ cd contrib/sphinx-cindex-plugin && ./setup.py install
 
 -----------------------------------------------------------------------------
 
