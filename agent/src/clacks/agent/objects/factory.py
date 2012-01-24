@@ -514,7 +514,7 @@ class ObjectFactory(object):
                 # Convert the default to the corresponding type.
                 default = None
                 if "Default" in prop.__dict__:
-                    default = self.__attribute_type[syntax].convert_from('String', [str(prop.Default)])
+                    default = self.__attribute_type['String'].convert_to(syntax, [str(prop.Default)])
 
                 # check for multivalue, mandatory and unique definition
                 multivalue = bool(load(prop, "MultiValue", False))
@@ -758,10 +758,7 @@ class ObjectFactory(object):
 
         # Attach the collected filter and parameter value to the process list.
         cnt = len(out) + 1
-        try:
-            out[cnt] = {'filter': get_filter(name)(self), 'params': params}
-        except ImportError:
-            raise Exception("unable to load filter '%s'!" % name)
+        out[cnt] = {'filter': get_filter(name)(self), 'params': params}
         return out
 
     def __handleChoice(self, element, out):
