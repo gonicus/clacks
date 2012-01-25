@@ -53,6 +53,10 @@ class IntegerAttribute(AttributeType):
     def _convert_to_unicodestring(self, value):
         return(map(lambda x: unicode(x), value))
 
+    def _convert_from_string(self, value):
+        return(map(lambda x: int(x), value))
+
+
 class BooleanAttribute(AttributeType):
     __alias__ = "Boolean"
 
@@ -70,6 +74,9 @@ class BooleanAttribute(AttributeType):
 
     def _convert_to_string(self, value):
         return(map(lambda x: str(x), value))
+
+    def _convert_from_string(self, value):
+        return(map(lambda x: not(x in ['', 'false', '0', 'False']), value))
 
     def _convert_to_unicodestring(self, value):
         return(map(lambda x: unicode(x), value))
@@ -116,6 +123,9 @@ class UnicodeStringAttribute(AttributeType):
         return(map(lambda x: str(x), value))
 
     def _convert_to_unicodestring(self, value):
+        return(map(lambda x: unicode(x), value))
+
+    def _convert_from_string(self, value):
         return(map(lambda x: unicode(x), value))
 
 class DateAttribute(AttributeType):
