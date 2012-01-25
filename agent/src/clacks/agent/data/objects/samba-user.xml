@@ -23,7 +23,6 @@
                                 <Param>user</Param>
                                 <Param>%(uidNumber)s</Param>
                                 <Param>%(sambaDomainName)s</Param>
-                                <Param>%(sambaGroupType)s</Param>
                             </Filter>
                         </FilterEntry>
                     </FilterChain>
@@ -467,6 +466,7 @@
                 <Type>Boolean</Type>
                 <Default>false</Default>
                 <ReadOnly>true</ReadOnly>
+                <Mandatory>true</Mandatory>
             </Attribute>
 
             <Attribute>
