@@ -19,7 +19,7 @@ class SambaLogonHoursAttribute(AttributeType):
     @classmethod
     def is_valid_value(cls, value):
 
-        if value:
+        if value and len(value) and type(value[0]) == dict:
 
             # Check if we've got a dict with values for all seven week days.
             if value[0].keys() != range(0,7):
