@@ -64,6 +64,7 @@ from zope.interface import implements
 from qpid.messaging import Message
 from qpid.messaging.message import Disposition
 from qpid.messaging.constants import RELEASED
+from qpid.messaging.exceptions import NotFound
 from clacks.common.gjson import loads, dumps, ServiceRequestNotTranslatable, BadServiceRequest
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import PluginRegistry, AMQPWorker, ZeroconfService
@@ -236,8 +237,12 @@ class AMQPService(object):
         response = dumps({"result": res, "id": id_, "error": err})
         ssn.acknowledge(message)
 
-        # Talk to client generated reply queue
-        sender = ssn.sender(message.reply_to)
+        try:
+            # Talk to client generated reply queue
+            sender = ssn.sender(message.reply_to)
 
-        # Get rid of it...
-        sender.send(Message(response))
+            # Get rid of it...
+            sender.send(Message(response))
+
+        except NotFound:
+            self.log.warning("RPC reply queue does not exist anymore - caller not present: dropping %s" % id_)

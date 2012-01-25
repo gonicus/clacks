@@ -89,13 +89,16 @@ class LDAPHandler(object):
         LDAPHandler.connection_handle = [None] * self.__pool
         LDAPHandler.connection_usage = [False] * self.__pool
 
-    def get_base(self):
+    def get_base(self, utf_8=True):
         """
         Return the configured base DN.
 
         ``Return``: base DN
         """
-        return self.__url.dn
+        if utf_8:
+            return self.__url.dn.decode('utf-8')
+        else:
+            return self.__url.dn
 
     def get_connection(self):
         """

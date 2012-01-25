@@ -4,9 +4,9 @@ Welcome to Clacks's documentation!
 What is it all about?
 ---------------------
 
-If you get here, you probably know that Clacks (currently) is a PHP based framework
+If you get here, you probably know that GOsa (currently) is a PHP based framework
 for managing several aspects of your infrastructure. For more information, please
-go to the `Clacks Website <https://oss.gonicus.de/labs/gosa>`_.
+go to the `GOsa Website <https://oss.gonicus.de/labs/gosa>`_.
 
 While you can find information about the GOsa 2.x series on the website mentioned
 above, this document is more about the future. This is why:
