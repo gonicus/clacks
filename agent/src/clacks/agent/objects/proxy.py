@@ -182,7 +182,7 @@ class ObjectProxy(object):
 
         # Valid attribute?
         if not name in self.__attribute_map:
-            raise AttributeError("no such primary attribute '%s'" % name)
+            raise AttributeError("no such attribute '%s'" % name)
 
         # Load from primary object
         objs = self.__attribute_map[name]['primary']
@@ -190,10 +190,10 @@ class ObjectProxy(object):
             if self.__base.__class__.__name__ == obj:
                 return getattr(self.__base, name)
 
-            if obj in self.__extensions:
+            if obj in self.__extensions and self.__extensions[obj]:
                 return getattr(self.__extensions[obj], name)
 
-        raise AttributeError("no such primary attribute '%s'" % name)
+        raise AttributeError("no such attribute '%s'" % name)
 
     def __setattr__(self, name, value):
         # Store non property values
