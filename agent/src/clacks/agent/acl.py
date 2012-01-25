@@ -69,6 +69,10 @@ class ACLSet(list):
         super(ACLSet, self).__init__()
         self.log = logging.getLogger(__name__)
 
+        # Ensure that the base is unicode and not encoded as utf-8
+        if type(base) != unicode:
+            base = base.decode('utf-8')
+
         # If no base is given use the default one.
         if not base:
             base = LDAPHandler.get_instance().get_base()
@@ -107,6 +111,11 @@ class ACLSet(list):
             ...
 
         """
+
+        # Ensure that we get strings as unicode and not encoded as utf-8
+        if type(user) != unicode:
+            user = user.decode('utf-8')
+
         for acl in self:
             if user in acl.members:
                 acl.members.remove(user)
@@ -133,6 +142,9 @@ class ACLSet(list):
             aclset.remove_acl(acl)
 
         """
+        if type(item) != ACL:
+            raise TypeError('item is not of type %s' % ACL)
+
         for cur_acl in self:
             if cur_acl == acl:
                 self.remove(acl)
@@ -257,7 +269,6 @@ class ACLRole(list):
     priority = None
 
     def __init__(self, name):
-        name = unicode(name)
         super(ACLRole, self).__init__()
         self.log = logging.getLogger(__name__)
         self.name = name
@@ -432,8 +443,9 @@ class ACL(object):
         ============== =============
 
         """
-        if type(rolename) not in [str, unicode]:
-            raise ACLException("Expected type str or unicode for rolename!")
+        # Ensure that we get strings as unicode and not encoded as utf-8
+        if type(rolename) != unicode:
+            rolename = rolename.decode('utf-8')
 
         r = ACLResolver.instance
         if rolename in r.acl_roles:
@@ -507,6 +519,11 @@ class ACL(object):
         """
         if type(members) != list:
             raise(ACLException("Requires a list of members!"))
+
+        # Ensure that we get strings as unicode and not encoded as utf-8
+        for name in members:
+            if type(name) != unicode:
+                    name.decode('utf-8')
 
         self.members = members
 
@@ -587,6 +604,18 @@ class ACL(object):
             raise ACLException("ACL classes that use a role cannot define"
                    " additional costum acls!")
 
+        # Ensure that we get strings as unicode and not encoded as utf-8
+        if type(topic) != unicode:
+            topic = topic.decode('utf-8')
+        if type(acls) != unicode:
+            acls = acls.decode('utf-8')
+        if type(options) != dict:
+            raise ACLException("paramters options is of invalid type exptected '%s' but got '%s'!" % (dict, type(options)))
+
+        # Check given acls allowed are 'rwcdmsex'
+        if not all(map(lambda x: x in 'rwcdmsex', acls)):
+            raise ACLException("got invalid acls string, allows is a combination of '%s' but got '%s'!" % ('rwcdmsex', acls))
+
         acl = {
                 'topic': topic,
                 'acls': acls,
@@ -634,6 +663,13 @@ class ACL(object):
         used_roles      A list of roles used in this recursion, to be able to check for endless-recursions.
         =============== =============
         """
+        # Ensure that we get strings as unicode and not encoded as utf-8
+        if type(user) != unicode:
+            user = user.decode('utf-8')
+        if type(topic) != unicode:
+            topic = topic.decode('utf-8')
+        if type(acls) != unicode:
+            acls = acls.decode('utf-8')
 
         # Initialize list of already used roles, to avoid recursions
         if not used_roles:
@@ -726,12 +762,6 @@ class ACLRoleEntry(ACL):
     def __init__(self, scope=ACL.SUB, role=None):
         super(ACLRoleEntry, self).__init__(scope=scope, role=role)
         self.log = logging.getLogger(__name__)
-
-    def add_member(self, member):
-        """
-        An overloaded method from ACL which disallows to add users.
-        """
-        raise ACLException("Role ACLs do not support direct members")
 
     def set_members(self, member):
         """
@@ -833,11 +863,15 @@ class ACLResolver(Plugin):
         """
         Adds an ACLSet object to the list of active-acl rules.
         """
+
+        if type(acl) != ACLSet:
+            raise ACLException("exptected parameter to be of type '%s'!" % (ACLSet,))
+
         if not self.aclset_exists_by_base(acl.base):
             self.acl_sets.append(acl)
 
         else:
-            raise ACLException("An acl definition for base '%s' already exists!", acl.base)
+            raise ACLException("An acl definition for base '%s' already exists!" % (acl.base,))
 
     def add_acl_to_set(self, base, acl):
         """
@@ -850,6 +884,11 @@ class ACLResolver(Plugin):
         acl            The ACL object we want to add.
         ============== =============
         """
+
+        # Ensure that the base is unicode and not encoded as utf-8
+        if type(base) != unicode:
+            base = base.decode('utf-8')
+
         if not self.aclset_exists_by_base(base):
             raise ACLException("No acl definition found for base '%s' cannot add acl!", base)
         else:
@@ -869,8 +908,15 @@ class ACLResolver(Plugin):
         acl            The ACLRoleEntry object we want to add.
         ============== =============
         """
+        # Ensure that we get strings as unicode and not encoded as utf-8
+        if type(rolename) != unicode:
+            rolename = rolename.decode('utf-8')
+
+        if type(acl) != ACLRoleEntry:
+            raise ACLException("expected parameter '%s' to be of type '%s' but got '%s'!" % ("acl", ACLRoleEntry, type(acl)))
+
         if rolename not in self.acl_roles:
-            raise ACLException("A role with the given name already exists! (%s)" % (rolename,))
+            raise ACLException("A role with the given name does not exists! (%s)" % (rolename,))
         else:
             self.acl_roles[rolename].add(acl)
 
@@ -1071,6 +1117,16 @@ class ACLResolver(Plugin):
         if not base:
             base = self.base
 
+        # Ensure that the base is unicode and not encoded as utf-8
+        if type(base) != unicode:
+            base = base.decode('utf-8')
+        if type(topic) != unicode:
+            topic = topic.decode('utf-8')
+        if type(topic) != unicode:
+            acls = acls.decode('utf-8')
+        if type(user) != unicode:
+            user = user.decode('utf-8')
+
         # Collect all acls matching the where statement
         allowed = False
         reset = False
@@ -1155,8 +1211,9 @@ class ACLResolver(Plugin):
         ============== =============
         """
 
+        # Ensure that the base is unicode and not encoded as utf-8
         if type(rolename) != unicode:
-            raise ACLException("Expected parameter to be of type 'str'!")
+            rolename = rolename.decode('utf-8')
 
         for aclset in self.acl_sets:
             if self.__is_role_used(aclset, rolename):
@@ -1164,9 +1221,14 @@ class ACLResolver(Plugin):
         return(False)
 
     def __is_role_used(self, aclset, rolename):
+
+        # Ensure that the base is unicode and not encoded as utf-8
+        if type(rolename) != unicode:
+            rolename = rolename.decode('utf-8')
+
         for acl in aclset:
             if acl.uses_role:
-                if str(acl.role) == str(rolename):
+                if acl.role == rolename:
                     return(True)
                 else:
                     role_acl_sets = self.acl_roles[acl.role]
@@ -1185,6 +1247,11 @@ class ACLResolver(Plugin):
         base           The base we want to return the ACLSets for.
         ============== =============
         """
+
+        # Ensure that the base is unicode and not encoded as utf-8
+        if type(base) != unicode:
+            base = base.decode('utf-8')
+
         if self.aclset_exists_by_base(base):
             for aclset in self.acl_sets:
                 if aclset.base == base:
@@ -1202,6 +1269,11 @@ class ACLResolver(Plugin):
         base           The base we want to check for.
         ============== =============
         """
+
+        # Ensure that the base is unicode and not encoded as utf-8
+        if type(base) != unicode:
+            base = base.decode('utf-8')
+
         for aclset in self.acl_sets:
             if aclset.base == base:
                 return True
@@ -1217,8 +1289,10 @@ class ACLResolver(Plugin):
         base           The base we want to delete ACLSets for.
         ============== =============
         """
-        if type(base) not in [str, unicode]:
-            raise ACLException("ACLSets can only be removed by base name, '%s' is an invalid parameter" % base)
+
+        # Ensure that the base is unicode and not encoded as utf-8
+        if type(base) != unicode:
+            base = base.decode('utf-8')
 
         # Remove all aclsets for the given base
         found = 0
@@ -1246,12 +1320,9 @@ class ACLResolver(Plugin):
         if type(name) == ACLRole:
             name = name.name
 
-        # Ensure we've got a unicode value
-        name = unicode(name)
-
-        # Check if we've got a valid name type.
-        if type(name) not in [str, unicode]:
-            raise ACLException("Roles can only be removed by name, '%s' is an invalid parameter" % name)
+        # Ensure that the base is unicode and not encoded as utf-8
+        if type(name) != unicode:
+            name = name.decode('utf-8')
 
         # Check if such a role-name exists and then try to remove it.
         if name in self.acl_roles:
@@ -1274,6 +1345,11 @@ class ACLResolver(Plugin):
         acl            The 'ACL' object we want to add.
         ============== =============
         """
+
+        # Ensure that the base is unicode and not encoded as utf-8
+        if type(base) != unicode:
+            base = base.decode('utf-8')
+
         if type(acl) != ACL:
             raise ACLException("Expected parameter to be of type ACL!")
 
@@ -1306,6 +1382,11 @@ class ACLResolver(Plugin):
             ...
 
         """
+
+        # Ensure that the base is unicode and not encoded as utf-8
+        if type(user) != unicode:
+            user = user.decode('utf-8')
+
         for aclset in self.acl_sets:
             aclset.remove_acls_for_user(user)
 
@@ -1332,11 +1413,20 @@ class ACLResolver(Plugin):
         ============== =============
 
         """
+
         acl_scope_map = {}
         acl_scope_map[ACL.ONE] = 'one'
         acl_scope_map[ACL.SUB] = 'sub'
         acl_scope_map[ACL.PSUB] = 'psub'
         acl_scope_map[ACL.RESET] = 'reset'
+
+        # Ensure that the base is unicode and not encoded as utf-8
+        if base and type(base) != unicode:
+            base = base.decode('utf-8')
+        if type(user) != unicode:
+            user = user.decode('utf-8')
+        if topic and type(topic) != unicode:
+            topic = topic.decode('utf-8')
 
         # Collect all acls
         result = []
@@ -1403,11 +1493,11 @@ class ACLResolver(Plugin):
 
         ``Return``: Boolean True on success else False
 
-        Example:
-            >>> getACls(base='dc=gonicus,dc=de')
-            >>> getACls(topic=r'com\.gonicus\.factory')
-
         """
+
+        # Ensure that the base is unicode and not encoded as utf-8
+        if type(user) != unicode:
+            user = user.decode('utf-8')
 
         # Now walk through aclsets and remove the acl with the given ID.
         for aclset in self.acl_sets:
@@ -1460,6 +1550,11 @@ class ACLResolver(Plugin):
             >>> resolver.addACL('dc=gonicus,dc=de', 'sub', 0, [u'tester1'], [{'topic': r'^some\.topic.*$', 'acls': 'rwcdm', 'options': {'uid': '^u[0-9]'}}])
 
         """
+    def addACL(self, user, base, priority, members, actions=None, scope=None, rolename=None):
+
+        # Ensure that the base is unicode and not encoded as utf-8
+        if type(base) != unicode:
+            base = base.decode('utf-8')
 
         # Check permissions
         if not self.check(user, '%s.acl' % self.env.domain, 'w', base):
@@ -1545,18 +1640,12 @@ class ACLResolver(Plugin):
         rolename       The name of the role to use.
         ============== =============
 
-        For details about ``scope``, ``topic``, ``options`` and ``acls``, click here:
-            :ref:`Scope values <scope_description>`, :ref:`Topic <topic_description>`, :ref:`ACLs <acls_description>` and :ref:`Options <options_description>`
-
-        Example:
-
-            >>> resolver.addACLtoRole('rolle1', 'sub', 0, ['peter'], [{'topic': '^some\.topic.*$', 'acls': 'rwcdm'}])
-
-        or with some options:
-
-            >>> resolver.addACLtoRole('rolle1', 'sub', 0, ['peter'], [{'topic': '^some\.topic.*$', 'acls': 'rwcdm', 'options': {'uid': '^u[0-9]'}}])
-
         """
+
+        # Ensure that the base is unicode and not encoded as utf-8
+        if type(user) != unicode:
+            user = user.decode('utf-8')
+
         # Validate the given scope
         if scope:
             acl_scope_map = {}
@@ -1594,7 +1683,7 @@ class ACLResolver(Plugin):
                              'options': action['options']}
                     new_actions.append(entry)
 
-        # Check if there is a with the given and and whether we've write permissions to it or not.
+        # Check if there is a user with the given acl and whether he has write permissions to it or not.
         acl = None
         for _aclset in self.acl_sets:
             for _acl in _aclset:
@@ -1643,6 +1732,9 @@ class ACLResolver(Plugin):
             >>> getAClRoles()
 
         """
+        # Ensure that the base is unicode and not encoded as utf-8
+        if type(user) != unicode:
+            user = user.decode('utf-8')
 
         # Check permissions
         if not self.check(user, '%s.acl' % self.env.domain, 'r', self.base):
@@ -1689,14 +1781,13 @@ class ACLResolver(Plugin):
         >>> addACLtoRole('role1', 'sub', 0, {...})
 
         """
+        # Ensure that the base is unicode and not encoded as utf-8
+        if type(rolename) != unicode:
+            rolename = rolename.decode('utf-8')
 
         # Check permissions
         if not self.check(user, '%s.acl' % self.env.domain, 'w', self.base):
             raise ACLException("The requested operation is not allowed!")
-
-        # Validate the rolename
-        if type(rolename) != str or len(rolename) <= 0:
-            raise ACLException("Expected parameter to be of type str!")
 
         # Check if rolename exists
         if rolename in self.acl_roles:
@@ -1733,6 +1824,11 @@ class ACLResolver(Plugin):
             >>> resolver.addACLtoRole('rolle1', 'sub', 0, [{'topic': r'^some\.topic.*$', 'acls': 'rwcdm', 'options': {'uid': '^u[0-9]'}}])
 
         """
+        # Ensure that the base is unicode and not encoded as utf-8
+        if type(rolename) != unicode:
+            rolename = rolename.decode('utf-8')
+        if type(user) != unicode:
+            user = user.decode('utf-8')
 
         # Check permissions
         if not self.check(user, '%s.acl' % self.env.domain, 'w', self.base):
@@ -1740,7 +1836,7 @@ class ACLResolver(Plugin):
 
         # Check if the given rolename exists
         if rolename not in self.acl_roles:
-            raise ACLException("A role with the given name already exists! (%s)" % (rolename,))
+            raise ACLException("A role with the given name does not exists! (%s)" % (rolename,))
 
         # Validate the priority
         if type(priority) != int:
@@ -1827,6 +1923,9 @@ class ACLResolver(Plugin):
             >>> resolver.updateACLRole(1, 'sub', 0, ['peter'], [{'topic': '^some\.topic.*$', 'acls': 'rwcdm', 'options': {'uid': '^u[0-9]'}}])
 
         """
+        # Ensure that the base is unicode and not encoded as utf-8
+        if type(user) != unicode:
+            user = user.decode('utf-8')
 
         # Check permissions
         if not self.check(user, '%s.acl' % self.env.domain, 'w', self.base):
@@ -1929,6 +2028,10 @@ class ACLResolver(Plugin):
         ============== =============
         """
 
+        # Ensure that the base is unicode and not encoded as utf-8
+        if type(user) != unicode:
+            user = user.decode('utf-8')
+
         # Check permissions
         if not self.check(user, '%s.acl' % self.env.domain, 'w', self.base):
             raise ACLException("The requested operation is not allowed!")
@@ -1953,6 +2056,12 @@ class ACLResolver(Plugin):
         rolename       The name of the role.
         ============== =============
         """
+
+        # Ensure that the base is unicode and not encoded as utf-8
+        if type(user) != unicode:
+            user = user.decode('utf-8')
+        if type(rolename) != unicode:
+            rolename = rolename.decode('utf-8')
 
         # Check permissions
         if not self.check(user, '%s.acl' % self.env.domain, 'w', self.base):
