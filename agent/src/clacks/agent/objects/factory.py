@@ -514,7 +514,7 @@ class ObjectFactory(object):
                 # Convert the default to the corresponding type.
                 default = None
                 if "Default" in prop.__dict__:
-                    default = self.__attribute_type['String'].convert_to(syntax, [str(prop.Default)])
+                    default = self.__attribute_type[syntax].convert_from('String', [str(prop.Default)])
 
                 # check for multivalue, mandatory and unique definition
                 multivalue = bool(load(prop, "MultiValue", False))
