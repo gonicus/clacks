@@ -15,12 +15,14 @@ class GenerateSambaSid(ElementFilter):
         #TODO: Get this information from the backend/config
         ridbase = 1000
 
+        #TODO: Get this information from the domain object
+        dsid = "S-1-5-21-328194278-237061239-1145748033"
+
         # Generate a sid for groups or users.
         group_type = int(group_type)
+        number = int(number)
 
         if "group" == method:
-            #TODO: Get this information from the domain object
-            dsid = "S-1-5-21-328194278-237061239-1145748033"
             if group_type == 0:
                 sid = dsid + "-" + str(number * 2 + ridbase + 1)
             else:
