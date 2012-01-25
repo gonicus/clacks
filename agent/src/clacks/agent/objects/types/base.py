@@ -32,6 +32,7 @@ class StringAttribute(AttributeType):
     def _convert_from_datetime(self, value):
         return(map(lambda x: str(x), value))
 
+
 class IntegerAttribute(AttributeType):
     __alias__ = "Integer"
 
@@ -75,11 +76,11 @@ class BooleanAttribute(AttributeType):
     def _convert_to_string(self, value):
         return(map(lambda x: str(x), value))
 
-    def _convert_from_string(self, value):
-        return(map(lambda x: not(x in ['', 'false', '0', 'False']), value))
-
     def _convert_to_unicodestring(self, value):
         return(map(lambda x: unicode(x), value))
+
+    def _convert_from_string(self, value):
+        return(map(lambda x: not(x in ['', 'false', '0', 'False']), value))
 
 
 class BinaryAttribute(AttributeType):
