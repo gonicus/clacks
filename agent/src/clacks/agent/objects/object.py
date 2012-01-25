@@ -19,7 +19,6 @@ class ObjectException(Exception):
     pass
 
 
-
 class Object(object):
     """
     This class is the base class for all objects.
@@ -83,14 +82,15 @@ class Object(object):
             else:
                 self._read(where)
 
-        # Use default value for newly created objects.
+        # Set status to modified for attributes that do not have a value but are
+        # mandatory and have a default.
+        # This ensures that default values are passed to the out_filters and get saved
+        # afterwards.
+        # (Defaults will be passed to in-filters too, if they are not overwritten by _read())
         for key in self.myProperties:
-            if not(self.myProperties[key]['value']) and self.myProperties[key]['default'] != None:
-                self.myProperties[key]['value'] = copy.deepcopy(self.myProperties[key]['default'])
-
-                # Only set status to modified for values with a valid default and if they are mandatory.
-                if len(self.myProperties[key]['default']) and self.myProperties[key]['mandatory']:
-                    self.myProperties[key]['status'] = STATUS_CHANGED
+            if not(self.myProperties[key]['value']) and self.myProperties[key]['default'] != None and \
+                    len(self.myProperties[key]['default']) and self.myProperties[key]['mandatory']:
+                self.myProperties[key]['status'] = STATUS_CHANGED
 
     def listProperties(self):
         return(self.myProperties.keys())
@@ -276,8 +276,7 @@ class Object(object):
             s_type = self.myProperties[name]['type']
             #pylint: disable=E1101
             if not self._objectFactory.getAttributeTypes()[s_type].is_valid_value(new_value):
-                raise TypeError("Invalid value given for %s" % (name,))
-
+                raise TypeError("Invalid value given for %s (%s) expected is '%s'" % (name, new_value, s_type))
 
             # Validate value
             if self.myProperties[name]['validator']:
@@ -321,13 +320,16 @@ class Object(object):
         if name in self.myProperties:
 
             # We can have single and multivalues, return the correct type here.
+            value = None
             if self.myProperties[name]['multivalue']:
                 value = self.myProperties[name]['value']
+                if not len(value) and self.myProperties[name]['default']:
+                    value = self.myProperties[name]['default']
             else:
                 if len(self.myProperties[name]['value']):
                     value = self.myProperties[name]['value'][0]
-                else:
-                    value = None
+                elif self.myProperties[name]['default'] and len(self.myProperties[name]['default']):
+                    value = self.myProperties[name]['default'][0]
 
             return(value)
 
@@ -364,6 +366,17 @@ class Object(object):
 
         self.log.debug("saving object modifications for [%s|%s]" % (type(self).__name__, self.uuid))
 
+        # Ensure that mandatory values are set, use default if possible
+        for key in props:
+            props[key]['commit_status'] = props[key]['status']
+            if props[key]['mandatory'] and not len(props[key]['value']):
+                if props[key]['default']:
+                    props[key]['commit_status'] |= STATUS_CHANGED
+                    props[key]['value'] = props[key]['default']
+                    self.log.debug("used default for: %s <%s>" % (key, props[key]['value']))
+                else:
+                    raise ObjectException("The required property '%s' is not set!" % (key,))
+
         # Collect values by store and process the property filters
         toStore = {}
         collectedAttrs = {}
@@ -386,7 +399,6 @@ class Object(object):
                 raise ObjectException("The required property '%s' is not set!" % (key,))
 
             # Adapt status from dependent properties.
-            props[key]['commit_status'] = props[key]['status']
             for propname in props[key]['depends_on']:
                 props[key]['commit_status'] |= props[propname]['status'] & STATUS_CHANGED
 
@@ -827,9 +839,16 @@ class Object(object):
             #      let all backends remove the refs.
 
             #pylint: disable=E1101
-            be.retract(self.uuid, [a for a in remove_attrs if getattr(obj, a)], self._backendAttrs[backend] if backend in self._backendAttrs else None)
+            be.retract(self.uuid, [a for a in remove_attrs if self.is_attr_set(a)], self._backendAttrs[backend] \
+                    if backend in self._backendAttrs else None)
 
         zope.event.notify(ObjectChanged("post retract", obj))
+
+    def is_attr_set(self, name):
+        return len(self.myProperties[name]['value'])
+
+    def is_attr_using_default(self, name):
+        return not self.is_attr_set(name) and self.myProperties[name]['default']
 
 
 class IObjectChanged(Interface):
