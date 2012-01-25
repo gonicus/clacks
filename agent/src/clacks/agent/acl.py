@@ -609,7 +609,7 @@ class ACL(object):
             topic = topic.decode('utf-8')
         if type(acls) != unicode:
             acls = acls.decode('utf-8')
-        if type(options) != dict:
+        if options and type(options) != dict:
             raise ACLException("paramters options is of invalid type exptected '%s' but got '%s'!" % (dict, type(options)))
 
         # Check given acls allowed are 'rwcdmsex'
