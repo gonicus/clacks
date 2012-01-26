@@ -89,6 +89,7 @@ import re
 import os
 import dbus.service
 import logging
+from clacks.dbus.plugins.shell.shelldnotifier import ShellDNotifier
 from subprocess import Popen, PIPE
 from clacks.common import Environment
 from clacks.common.components import Plugin
@@ -129,25 +130,23 @@ class DBusShellHandler(dbus.service.Object, Plugin):
     # The path were scripts were read from.
     script_path = None
     log = None
+    file_regex = "^[a-zA-Z0-9][a-zA-Z0-9_\.]*$"
 
     def __init__(self):
-        conn = get_system_bus()
         self.scripts = {}
+        conn = get_system_bus()
         dbus.service.Object.__init__(self, conn, '/org/clacks/shell')
         self.env = Environment.getInstance()
         self.log = logging.getLogger(__name__)
         self.script_path = self.env.config.get("dbus.script_path", "/etc/clacks/shell.d").strip("'\"")
+        ShellDNotifier(self.script_path, self.file_regex, self.__notifier_callback)
 
-        # Check if we've the required permissions to access the shell.d directory
-        if os.path.exists(self.script_path):
+    def __notifier_callback(self, filename):
+        self.signatureChanged(filename)
 
-            # Get the script path and try to load the signatures
-            self._reload_signatures()
-            self.log.info("registered '%s' D-Bus shell script(s)" % (len(self.scripts.keys())))
-            self.log.debug("registered script(s): %s " % (", ".join(self.scripts.keys())))
-        else:
-            self.log.info("the D-Bus shell script path '%s' does not exists! " % (self.script_path,))
-
+    @dbus.service.signal('org.clacks', signature='s')
+    def signatureChanged(self, filename):
+        pass
 
     def _reload_signatures(self):
         """
@@ -155,11 +154,25 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         exports them as callable dbus-method.
         """
 
+        #TODO: Reimplement me
+        print "Reimplement me"
+        return
+
+        ## Check if we've the required permissions to access the shell.d directory
+        # if os.path.exists(self.script_path):
+
+        #     # Get the script path and try to load the signatures
+        #     self._reload_signatures()
+        #     self.log.info("registered '%s' D-Bus shell script(s)" % (len(self.scripts.keys())))
+        #     self.log.debug("registered script(s): %s " % (", ".join(self.scripts.keys())))
+        # else:
+        #     self.log.info("the D-Bus shell script path '%s' does not exists! " % (self.script_path,))
+
         # locate files in /etc/clacks/shell.d and find those matching
         self.scripts = {}
         path = self.script_path
         for filename in [n for n in os.listdir(path)]:
-            if not re.match("^[a-zA-Z0-9][a-zA-Z0-9_\.]*$", filename):
+            if not re.match(self.file_regex, filename):
                 self.log.debug("skipped registering D-Bus shell script '%s', non-conform filename" % (filepath))
             else:
                 filepath = (os.path.join(path, filename))
