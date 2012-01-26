@@ -137,7 +137,17 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         self.env = Environment.getInstance()
         self.log = logging.getLogger(__name__)
         self.script_path = self.env.config.get("dbus.script_path", "/etc/clacks/shell.d").strip("'\"")
-        self._reload_signatures()
+
+        # Check if we've the required permissions to access the shell.d directory
+        if os.path.exists(self.script_path):
+
+            # Get the script path and try to load the signatures
+            self._reload_signatures()
+            self.log.info("registered '%s' D-Bus shell script(s)" % (len(self.scripts.keys())))
+            self.log.debug("registered script(s): %s " % (", ".join(self.scripts.keys())))
+        else:
+            self.log.info("the D-Bus shell script path '%s' does not exists! " % (self.script_path,))
+
 
     def _reload_signatures(self):
         """
@@ -148,9 +158,19 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         # locate files in /etc/clacks/shell.d and find those matching
         self.scripts = {}
         path = self.script_path
-        for filename in [n for n in os.listdir(path) if re.match("^[a-zA-Z0-9][a-zA-Z0-9_\.]*$", n)]:
-            data = self._parse_shell_script(os.path.join(path, filename))
-            self.scripts[data[0]] = data
+        for filename in [n for n in os.listdir(path)]:
+            if not re.match("^[a-zA-Z0-9][a-zA-Z0-9_\.]*$", filename):
+                self.log.debug("skipped registering D-Bus shell script '%s', non-conform filename" % (filepath))
+            else:
+                filepath = (os.path.join(path, filename))
+                if os.access(filepath, os.X_OK):
+
+                    data = self._parse_shell_script(filepath)
+                    self.scripts[data[0]] = data
+                    self.log.debug("registered D-Bus shell script '%s' signatures is: %s" % (data[0], data[1]))
+                else:
+                    self.log.debug("skipped registering D-Bus shell script '%s', it is not executable" % (filepath))
+
 
     def _parse_shell_script(self, path):
         """
