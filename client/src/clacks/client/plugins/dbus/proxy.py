@@ -122,6 +122,8 @@ class DBUSProxy(Plugin):
                 self.log.debug('loading dbus-methods registered by clacks (introspection)')
                 self.methods = self._call_introspection("org.clacks", "/")
                 self.log.debug("found %s registered dbus methods" % (str(len(self.methods))))
+
+                print self.methods.keys()
             except DBusException as exception:
                 self.log.debug("failed to load dbus methods (e.g. check rights in dbus config): %s" % (str(exception)))
 
