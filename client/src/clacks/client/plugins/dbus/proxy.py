@@ -44,15 +44,17 @@ accessible by calling ``dbus_wake_on_lan``. (:class:`clacks.dbus.plugins.wakeonl
 
 # -*- coding: utf-8 -*-
 import dbus
+import dbus.service
+from _dbus_bindings import INTROSPECTABLE_IFACE
+from dbus.exceptions import DBusException
+
 import os
 import logging
-from dbus.exceptions import DBusException
 from lxml import etree
 from zope.interface import implements
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import Plugin, PluginRegistry
 from clacks.common.components import Command
-from _dbus_bindings import INTROSPECTABLE_IFACE
 
 
 class DBusProxyException(Exception):
@@ -98,22 +100,31 @@ class DBUSProxy(Plugin):
     def __init__(self):
         self.log = logging.getLogger(__name__)
 
-        # The service we are using
-        service = "org.clacks"
-
         # Get a dbus proxy and check if theres a service registered called 'org.clacks'
         # if not, then we can skip all further processing. (The clacks-dbus seems not to be running)
         self.bus = dbus.SystemBus()
         self.methods = {}
-        if not service in self.bus.list_names():
-            self.log.debug("no dbus service registered for '%s'. The clacks-dbus seems not to be running!" % (service))
+
+        # Register ourselfs for the signature change event
+        bus = dbus.SystemBus()
+        clacks_dbus = bus.get_object('org.clacks', '/org/clacks/shell')
+        clacks_dbus.connect_to_signal("signatureChanged", self.__signatureChanged_received, dbus_interface="org.clacks")
+
+        #DEBUG #TODO: FAke call of signature received
+        self.__signatureChanged_received("test")
+
+
+    def __signatureChanged_received(self, filename):
+        if not "org.clacks" in self.bus.list_names():
+            self.log.debug("no dbus service registered for '%s'. The clacks-dbus seems not to be running!" % ("org.clacks"))
         else:
             try:
                 self.log.debug('loading dbus-methods registered by clacks (introspection)')
-                self.methods = self._call_introspection(service, "/")
+                self.methods = self._call_introspection("org.clacks", "/")
                 self.log.debug("found %s registered dbus methods" % (str(len(self.methods))))
             except DBusException as exception:
                 self.log.debug("failed to load dbus methods (e.g. check rights in dbus config): %s" % (str(exception)))
+
 
     def _call_introspection(self, service, path, methods = None):
         """
