@@ -10,7 +10,6 @@ import gobject
 import dbus.mainloop.glib
 import logging
 
-import threading
 from clacks.common import Environment
 from clacks.dbus import __version__ as VERSION
 from clacks.common.components.registry import PluginRegistry
@@ -39,21 +38,16 @@ def mainLoop(env):
     log = logging.getLogger(__name__)
 
     try:
-
-        # Connect to dbus and setup loop
+        # connect to dbus and setup loop
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-        gobject.threads_init()
-        dbus.mainloop.glib.threads_init()
-
-        # Instantiate dbus objects
         system_bus = get_system_bus()
+
+        # Instanciate dbus objects
         pr = PluginRegistry(component='dbus.module')
 
-        # Enter the mainloop
+        # Enter main loop
         loop = gobject.MainLoop()
-        DBUSLOOPTHREAD = threading.Thread(name='glib_mainloop', target=loop.run)
-        DBUSLOOPTHREAD.run()
-
+        loop.run()
 
     except Exception as detail:
         log.critical("unexpected error in mainLoop")

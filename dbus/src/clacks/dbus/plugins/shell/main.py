@@ -139,7 +139,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         self.env = Environment.getInstance()
         self.log = logging.getLogger(__name__)
         self.script_path = self.env.config.get("dbus.script_path", "/etc/clacks/shell.d").strip("'\"")
-        #ShellDNotifier(self.script_path, self.file_regex, self.__notifier_callback)
+        ShellDNotifier(self.script_path, self.file_regex, self.__notifier_callback)
 
     def __notifier_callback(self, filename):
         self.signatureChanged(filename)
