@@ -141,49 +141,59 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         self.script_path = self.env.config.get("dbus.script_path", "/etc/clacks/shell.d").strip("'\"")
         ShellDNotifier(self.script_path, self.file_regex, self.__notifier_callback)
 
-    def __notifier_callback(self, filename):
-        self.signatureChanged(filename)
+        # Intitially load all signatures
+        self.__notifier_callback()
 
     @dbus.service.signal('org.clacks', signature='s')
     def signatureChanged(self, filename):
         pass
 
-    def _reload_signatures(self):
+    def __notifier_callback(self, filename = None):
         """
         This method reads all scripts found in the 'dbus.script_path' and
         exports them as callable dbus-method.
         """
 
-        #TODO: Reimplement me
-        print "Reimplement me"
-        return
+        # Check if we've the required permissions to access the shell.d directory
+        if os.path.exists(self.script_path):
 
-        ## Check if we've the required permissions to access the shell.d directory
-        # if os.path.exists(self.script_path):
+            # locate files in /etc/clacks/shell.d and find those matching
+            if filename == None:
+                self.scripts = {}
+                path = self.script_path
+                for filename in [n for n in os.listdir(path)]:
+                    self._reload_signature(filename)
+            else:
 
-        #     # Get the script path and try to load the signatures
-        #     self._reload_signatures()
-        #     self.log.info("registered '%s' D-Bus shell script(s)" % (len(self.scripts.keys())))
-        #     self.log.debug("registered script(s): %s " % (", ".join(self.scripts.keys())))
-        # else:
-        #     self.log.info("the D-Bus shell script path '%s' does not exists! " % (self.script_path,))
+                 # Get the script path and try to load the signatures
+                 self._reload_signature(filename)
+
+            self.log.info("registered '%s' D-Bus shell script(s)" % (len(self.scripts.keys())))
+            self.log.debug("registered script(s): %s " % (", ".join(self.scripts.keys())))
+
+            # Now send the event
+            self.signatureChanged(filename)
+        else:
+            self.log.debug("the D-Bus shell script path '%s' does not exists! " % (self.script_path,))
+
+    def _reload_signature(self, filename = None):
+        """
+        #TODO
+        """
 
         # locate files in /etc/clacks/shell.d and find those matching
-        self.scripts = {}
         path = self.script_path
-        for filename in [n for n in os.listdir(path)]:
-            if not re.match(self.file_regex, filename):
-                self.log.debug("skipped registering D-Bus shell script '%s', non-conform filename" % (filepath))
-            else:
-                filepath = (os.path.join(path, filename))
-                if os.access(filepath, os.X_OK):
-
-                    data = self._parse_shell_script(filepath)
+        filepath = (os.path.join(path, filename))
+        if not re.match(self.file_regex, filename):
+            self.log.debug("skipped registering D-Bus shell script '%s', non-conform filename" % (filename))
+        else:
+            if os.access(filepath, os.X_OK):
+                data = self._parse_shell_script(filepath)
+                if data:
                     self.scripts[data[0]] = data
                     self.log.debug("registered D-Bus shell script '%s' signatures is: %s" % (data[0], data[1]))
-                else:
-                    self.log.debug("skipped registering D-Bus shell script '%s', it is not executable" % (filepath))
-
+            else:
+                self.log.debug("skipped registering D-Bus shell script '%s', it is not executable" % (filepath))
 
     def _parse_shell_script(self, path):
         """
@@ -199,23 +209,23 @@ class DBusShellHandler(dbus.service.Object, Plugin):
 
         # Check returncode of the script call.
         if scall.returncode != 0:
-            self.log.debug("failed to read signature from D-Bus shell script '%s' (%s) " % (path, scall.stderr.read()))
-            raise DBusShellException("failed to read signature from D-Bus shell script '%s' " % (path))
+            self.log.info("failed to read signature from D-Bus shell script '%s' (%s) " % (path, scall.stderr.read()))
 
         # Check if we can read the returned signature.
         sig = {}
         try:
             sig = loads(scall.stdout.read())
+            # Signature was readable, now check if we got everything we need
+            if not(('in' in sig and type(sig['in']) == list) or 'in' not in sig):
+                self.log.debug("failed to undertand in-signature of D-Bus shell script '%s'" % (path))
+            elif 'out' not in sig or type(sig['out']) not in [str, unicode]:
+                self.log.debug("failed to undertand out-signature of D-Bus shell script '%s'" % (path))
+            else:
+                return (os.path.basename(path), sig)
         except ValueError:
-            raise DBusShellException("failed to undertand signature of D-Bus shell script '%s'" % (path))
+            self.log.debug("failed to undertand signature of D-Bus shell script '%s'" % (path))
+        return None
 
-        # Signature was readable, now check if we got everything we need
-        if not(('in' in sig and type(sig['in']) == list) or 'in' not in sig):
-            raise DBusShellException("failed to undertand in-signature of D-Bus shell script '%s'" % (path))
-        if 'out' not in sig or type(sig['out']) not in [str, unicode]:
-            raise DBusShellException("failed to undertand out-signature of D-Bus shell script '%s'" % (path))
-
-        return (os.path.basename(path), sig)
 
     @dbus.service.method('org.clacks', in_signature='', out_signature='av')
     def shell_list(self):

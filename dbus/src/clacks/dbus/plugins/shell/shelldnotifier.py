@@ -39,13 +39,14 @@ class ShellDNotifier(pyinotify.ProcessEvent):
         self.__handle(event.pathname)
 
     def __handle(self, path):
-        if re.match(self.regex, path[len(self.path) +1:]):
+        shortname = path[len(self.path) +1:]
+        if re.match(self.regex, shortname):
             if os.access(path, os.X_OK):
 
                 # Use the callback method to announce the new change event
-                self.log.debug("received script change for script '%s'" % (path[len(self.path) +1:]))
-                self.callback(path)
+                self.log.debug("received script change for script '%s'" % (shortname,))
+                self.callback(shortname)
             else:
-                self.log.debug("received script change for '%s', but its not an executable file" % (path[len(self.path) +1:]))
+                self.log.debug("received script change for '%s', but its not an executable file" % (shortname,))
         else:
-            self.log.debug("received script change for '%s', but its name is not valid" % (path[len(self.path) +1:]))
+            self.log.debug("received script change for '%s', but its name is not valid" % (shortname,))
