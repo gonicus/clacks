@@ -23,18 +23,11 @@ class ShellDNotifier(pyinotify.ProcessEvent):
         self.__start()
 
     def __start(self):
-
-        try:
-            wm = pyinotify.WatchManager()
-            wm.add_watch(self.path, pyinotify.IN_ATTRIB | pyinotify.IN_MODIFY | pyinotify.IN_DELETE, rec=True, auto_add=True)
-            notifier = pyinotify.ThreadedNotifier(wm, self)
-            notifier.start()
-        except KeyboardInterrupt:
-
-            # On Strg+C stop our thread and re-raise the Exception so that other processes
-            # can terminate too
-            notifier.stop()
-            raise
+        wm = pyinotify.WatchManager()
+        wm.add_watch(self.path, pyinotify.IN_ATTRIB | pyinotify.IN_MODIFY | pyinotify.IN_DELETE, rec=True, auto_add=True)
+        notifier = pyinotify.ThreadedNotifier(wm, self)
+        notifier.daemon = True
+        notifier.start()
 
     def process_IN_ATTRIB(self, event):
         self.__handle(event.pathname)
