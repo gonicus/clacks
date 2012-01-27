@@ -45,16 +45,15 @@ def mainLoop(env):
         gobject.threads_init()
         dbus.mainloop.glib.threads_init()
 
-        # Enter the mainloop
-        loop = gobject.MainLoop()
-        DBUSLOOPTHREAD = threading.Thread(name='glib_mainloop', target=loop.run)
-        DBUSLOOPTHREAD.start()
-
         # Instantiate dbus objects
         system_bus = get_system_bus()
         pr = PluginRegistry(component='dbus.module')
 
-        DBUSLOOPTHREAD.join()
+        # Enter the mainloop
+        loop = gobject.MainLoop()
+        DBUSLOOPTHREAD = threading.Thread(name='glib_mainloop', target=loop.run)
+        DBUSLOOPTHREAD.run()
+
 
     except Exception as detail:
         log.critical("unexpected error in mainLoop")
