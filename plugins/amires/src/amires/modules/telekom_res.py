@@ -44,6 +44,8 @@ class TelekomNumberResolver(PhoneNumberResolver):
         number = self.replaceNumber(number)
 
         if not re.match(r"\+\d{4,}", number):
+            return None
+            #TODO
             raise ValueError("number needs to be in stripped international format: %s" % number)
 
         # Does the number match completely?
