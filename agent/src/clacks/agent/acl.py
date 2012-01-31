@@ -257,7 +257,6 @@ class ACLRole(list):
     priority = None
 
     def __init__(self, name):
-        name = unicode(name)
         super(ACLRole, self).__init__()
         self.log = logging.getLogger(__name__)
         self.name = name
@@ -432,8 +431,8 @@ class ACL(object):
         ============== =============
 
         """
-        if type(rolename) not in [str, unicode]:
-            raise ACLException("Expected type str or unicode for rolename!")
+        if type(rolename) != str:
+            raise ACLException("Expected type str for rolename!")
 
         r = ACLResolver.instance
         if rolename in r.acl_roles:
@@ -583,9 +582,17 @@ class ACL(object):
         If not all options match, the ACL will not match.
 
         """
+
+        if options and type(options) != dict:
+            raise ACLException("paramters options is of invalid type exptected '%s' but got '%s'!" % (dict, type(options)))
+
         if self.uses_role and self.role:
             raise ACLException("ACL classes that use a role cannot define"
                    " additional costum acls!")
+
+        # Check given acls allowed are 'rwcdmsex'
+        if not all(map(lambda x: x in 'rwcdmsex', acls)):
+            raise ACLException("got invalid acls string, allows is a combination of '%s' but got '%s'!" % ('rwcdmsex', acls))
 
         acl = {
                 'topic': topic,
@@ -727,12 +734,6 @@ class ACLRoleEntry(ACL):
         super(ACLRoleEntry, self).__init__(scope=scope, role=role)
         self.log = logging.getLogger(__name__)
 
-    def add_member(self, member):
-        """
-        An overloaded method from ACL which disallows to add users.
-        """
-        raise ACLException("Role ACLs do not support direct members")
-
     def set_members(self, member):
         """
         An overloaded method from ACL which disallows to add users.
@@ -835,9 +836,8 @@ class ACLResolver(Plugin):
         """
         if not self.aclset_exists_by_base(acl.base):
             self.acl_sets.append(acl)
-
         else:
-            raise ACLException("An acl definition for base '%s' already exists!", acl.base)
+            raise ACLException("An acl definition for base '%s' already exists!" % (acl.base,))
 
     def add_acl_to_set(self, base, acl):
         """
@@ -851,7 +851,7 @@ class ACLResolver(Plugin):
         ============== =============
         """
         if not self.aclset_exists_by_base(base):
-            raise ACLException("No acl definition found for base '%s' cannot add acl!", base)
+            raise ACLException("No acl definition found for base '%s' cannot add acl!" % (base,))
         else:
             aclset = self.get_aclset_by_base(base)
             aclset.add(acl)
@@ -869,8 +869,12 @@ class ACLResolver(Plugin):
         acl            The ACLRoleEntry object we want to add.
         ============== =============
         """
+
+        if type(acl) != ACLRoleEntry:
+            raise ACLException("expected parameter '%s' to be of type '%s' but got '%s'!" % ("acl", ACLRoleEntry, type(acl)))
+
         if rolename not in self.acl_roles:
-            raise ACLException("A role with the given name already exists! (%s)" % (rolename,))
+            raise ACLException("A role with the given name does not exists! (%s)" % (rolename,))
         else:
             self.acl_roles[rolename].add(acl)
 
@@ -1155,7 +1159,7 @@ class ACLResolver(Plugin):
         ============== =============
         """
 
-        if type(rolename) != unicode:
+        if type(rolename) != str:
             raise ACLException("Expected parameter to be of type 'str'!")
 
         for aclset in self.acl_sets:
@@ -1166,7 +1170,7 @@ class ACLResolver(Plugin):
     def __is_role_used(self, aclset, rolename):
         for acl in aclset:
             if acl.uses_role:
-                if str(acl.role) == str(rolename):
+                if acl.role == rolename:
                     return(True)
                 else:
                     role_acl_sets = self.acl_roles[acl.role]
@@ -1217,7 +1221,7 @@ class ACLResolver(Plugin):
         base           The base we want to delete ACLSets for.
         ============== =============
         """
-        if type(base) not in [str, unicode]:
+        if type(base) != str:
             raise ACLException("ACLSets can only be removed by base name, '%s' is an invalid parameter" % base)
 
         # Remove all aclsets for the given base
@@ -1246,11 +1250,8 @@ class ACLResolver(Plugin):
         if type(name) == ACLRole:
             name = name.name
 
-        # Ensure we've got a unicode value
-        name = unicode(name)
-
         # Check if we've got a valid name type.
-        if type(name) not in [str, unicode]:
+        if type(name) != str:
             raise ACLException("Roles can only be removed by name, '%s' is an invalid parameter" % name)
 
         # Check if such a role-name exists and then try to remove it.
@@ -1740,7 +1741,7 @@ class ACLResolver(Plugin):
 
         # Check if the given rolename exists
         if rolename not in self.acl_roles:
-            raise ACLException("A role with the given name already exists! (%s)" % (rolename,))
+            raise ACLException("A role with the given name does not exists! (%s)" % (rolename,))
 
         # Validate the priority
         if type(priority) != int:

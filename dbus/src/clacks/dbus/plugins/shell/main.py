@@ -89,11 +89,14 @@ import re
 import os
 import dbus.service
 import logging
+import inspect
+from clacks.dbus.plugins.shell.shelldnotifier import ShellDNotifier
 from subprocess import Popen, PIPE
 from clacks.common import Environment
 from clacks.common.components import Plugin
 from clacks.dbus import get_system_bus
 from json import loads
+from dbus import validate_interface_name
 
 
 class DBusShellException(Exception):
@@ -129,28 +132,99 @@ class DBusShellHandler(dbus.service.Object, Plugin):
     # The path were scripts were read from.
     script_path = None
     log = None
+    file_regex = "^[a-zA-Z0-9][a-zA-Z0-9_\.]*$"
+    conn = None
 
     def __init__(self):
-        conn = get_system_bus()
         self.scripts = {}
-        dbus.service.Object.__init__(self, conn, '/org/clacks/shell')
-        self.env = Environment.getInstance()
-        self.log = logging.getLogger(__name__)
-        self.script_path = self.env.config.get("dbus.script_path", "/etc/clacks/shell.d").strip("'\"")
-        self._reload_signatures()
 
-    def _reload_signatures(self):
+        # Start D-Bus service
+        conn = get_system_bus()
+        self.conn = conn
+        dbus.service.Object.__init__(self, conn, '/org/clacks/shell')
+
+        # Initialize paths and logging
+        self.log = logging.getLogger(__name__)
+        self.env = Environment.getInstance()
+        self.script_path = self.env.config.get("dbus.script_path", "/etc/clacks/shell.d").strip("'\"")
+
+        # Start notifier for file changes in /etc/clacks/shell.d
+        ShellDNotifier(self.script_path, self.file_regex, self.__notifier_callback)
+
+        # Intitially load all signatures
+        self.__notifier_callback()
+
+    @dbus.service.signal('org.clacks', signature='s')
+    def _signatureChanged(self, filename):
+        """
+        Sends a signal onm the dbus named '_signatureChanged'
+        """
+        pass
+
+    def __notifier_callback(self, filename = None):
         """
         This method reads all scripts found in the 'dbus.script_path' and
         exports them as callable dbus-method.
         """
 
-        # locate files in /etc/clacks/shell.d and find those matching
-        self.scripts = {}
+        # Check if we've the required permissions to access the shell.d directory
+        if os.path.exists(self.script_path):
+
+            # locate files in /etc/clacks/shell.d and find those matching
+            if filename == None:
+                self.scripts = {}
+                path = self.script_path
+                for filename in [n for n in os.listdir(path)]:
+                    self._reload_signature(filename)
+            else:
+
+                 # Get the script path and try to load the signatures
+                 self._reload_signature(filename)
+
+            self.log.info("registered '%s' D-Bus shell script(s)" % (len(self.scripts.keys())))
+            self.log.debug("registered script(s): %s " % (", ".join(self.scripts.keys())))
+
+            # Now send an event that indicates that the signature has changed.
+            self._signatureChanged(filename)
+        else:
+            self.log.debug("the D-Bus shell script path '%s' does not exists! " % (self.script_path,))
+
+    def _reload_signature(self, filename = None):
+        """
+        Reloads the signature for the given shell script.
+        """
+
+        # Check if the file was removed
         path = self.script_path
-        for filename in [n for n in os.listdir(path) if re.match("^[a-zA-Z0-9][a-zA-Z0-9_\.]*$", n)]:
-            data = self._parse_shell_script(os.path.join(path, filename))
-            self.scripts[data[0]] = data
+        filepath = (os.path.join(path, filename))
+
+        if not os.path.exists(filepath) and filename in self.scripts:
+            del(self.scripts[filename])
+            self.log.debug("unregistered D-Bus shell script '%s'" % (filename,))
+        else:
+
+            # Check if the received filename is valid
+            if not re.match(self.file_regex, filename):
+                self.log.debug("skipped registering D-Bus shell script '%s', non-conform filename" % (filename))
+            else:
+
+                # ..is the file executable?
+                if os.access(filepath, os.X_OK):
+
+                    # Parse the script and if this was successful then add it te the list of known once.
+                    data = self._parse_shell_script(filepath)
+                    if data:
+                        self.scripts[data[0]] = data
+                        self.log.debug("registered D-Bus shell script '%s' signatures is: %s" % (data[0], data[1]))
+
+
+                        # Dynamically regisger dbus methods here
+                        # def f(args):
+                        #     # inside this method call the real dbus method with wits arguments
+                        #    self.shell_exec('test',  *args)
+
+                else:
+                    self.log.debug("skipped registering D-Bus shell script '%s', it is not executable" % (filepath))
 
     def _parse_shell_script(self, path):
         """
@@ -166,23 +240,22 @@ class DBusShellHandler(dbus.service.Object, Plugin):
 
         # Check returncode of the script call.
         if scall.returncode != 0:
-            self.log.debug("failed to read signature from D-Bus shell script '%s' (%s) " % (path, scall.stderr.read()))
-            raise DBusShellException("failed to read signature from D-Bus shell script '%s' " % (path))
+            self.log.info("failed to read signature from D-Bus shell script '%s' (%s) " % (path, scall.stderr.read()))
 
         # Check if we can read the returned signature.
         sig = {}
         try:
+            # Signature was readable, now check if we got everything we need
             sig = loads(scall.stdout.read())
+            if not(('in' in sig and type(sig['in']) == list) or 'in' not in sig):
+                self.log.debug("failed to undertand in-signature of D-Bus shell script '%s'" % (path))
+            elif 'out' not in sig or type(sig['out']) not in [str, unicode]:
+                self.log.debug("failed to undertand out-signature of D-Bus shell script '%s'" % (path))
+            else:
+                return (os.path.basename(path), sig)
         except ValueError:
-            raise DBusShellException("failed to undertand signature of D-Bus shell script '%s'" % (path))
-
-        # Signature was readable, now check if we got everything we need
-        if not(('in' in sig and type(sig['in']) == list) or 'in' not in sig):
-            raise DBusShellException("failed to undertand in-signature of D-Bus shell script '%s'" % (path))
-        if 'out' not in sig or type(sig['out']) not in [str, unicode]:
-            raise DBusShellException("failed to undertand out-signature of D-Bus shell script '%s'" % (path))
-
-        return (os.path.basename(path), sig)
+            self.log.debug("failed to undertand signature of D-Bus shell script '%s'" % (path))
+        return None
 
     @dbus.service.method('org.clacks', in_signature='', out_signature='av')
     def shell_list(self):
@@ -208,3 +281,83 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         return ({'code': res.returncode,
                 'stdout': res.stdout.read(),
                 'stderr': res.stderr.read()})
+
+    def register_dbus_method(self, method, dbus_interface, in_signature=None, out_signature=None):
+        """
+        Marks the given method as exported to the dbus.
+
+        #TODO: Check this once we can dynamically populate exported methods tp the client.
+        self.register_dbus_method(self.shell_list, 'org.clacks', in_signature='', out_signature='av')
+        """
+
+        # Validate the given DBus interface
+        validate_interface_name(dbus_interface)
+
+        # Extract the function and its parameters
+        func = method.__func__
+        args = inspect.getargspec(func)[0]
+        args.pop(0)
+
+        # Chec the given signature
+        if in_signature:
+            in_sig = tuple(Signature(in_signature))
+
+            if len(in_sig) > len(args):
+                raise ValueError, 'input signature is longer than the number of arguments taken'
+            elif len(in_sig) < len(args):
+                raise ValueError, 'input signature is shorter than the number of arguments taken'
+
+        # Set DBus specific properties
+        func._dbus_is_method = True
+        func._dbus_async_callbacks = None
+        func._dbus_interface = dbus_interface
+        func._dbus_in_signature = in_signature
+        func._dbus_out_signature = out_signature
+        func._dbus_sender_keyword = None
+        func._dbus_path_keyword = None
+        func._dbus_rel_path_keyword = None
+        func._dbus_destination_keyword = None
+        func._dbus_message_keyword = None
+        func._dbus_connection_keyword = None
+        func._dbus_args = args
+        func._dbus_get_args_options = {'byte_arrays': False,
+                                       'utf8_strings': False}
+
+
+    def unregister_dbus_method(self, method):
+        """
+        Unmarks the given method as exported to the dbus.
+        """
+
+        # Extract the function and its parameters
+        func = method.__func__
+        func._dbus_is_method = None
+        func._dbus_async_callbacks = None
+        func._dbus_interface = None
+        func._dbus_in_signature = None
+        func._dbus_out_signature = None
+
+    def __reload_dbus_methods(self):
+        """
+        Reloads the list of exported dbus methods.
+        This should be called once we've registered or unregistered
+        a method to the dbus.
+        """
+
+        # Manually reload the list of registered methods.
+        # Reset list first
+        old_list = self._dbus_class_table[cname]['org.clacks']
+        try:
+            cname = self.__module__ + "." + self.__class__.__name__
+            old_list = self._dbus_class_table[cname]['org.clacks']
+
+            # Reload list
+            for func in inspect.getmembers(self, predicate=inspect.ismethod):
+                if getattr(func[1].__func__, '_dbus_interface', False):
+                    self._dbus_class_table[cname]['org.clacks'][func[0]] = func[1].__func__
+
+        # Restore the old method list if something goes wrong
+        except Exception as e:
+            self._dbus_class_table[cname]['org.clacks'] = old_list
+            raise Exception("failed to manually register dbus method: %s" % (str(e),))
+
