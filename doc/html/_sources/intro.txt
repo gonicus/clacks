@@ -10,7 +10,7 @@ This document contains information on *how to get started* with
 the current clacks 1.0 alpha. It does not care about SSL or other
 security related issues around qpid.
 
-It works starting with squeeze or later.
+It works starting with wheezy or later.
 
 .. warning::
 

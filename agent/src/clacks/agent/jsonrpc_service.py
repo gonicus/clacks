@@ -21,6 +21,7 @@ from clacks.common.handler import IInterfaceHandler
 from clacks.common import Environment
 from clacks.common.components import PluginRegistry, ZeroconfService, JSONRPCException
 from clacks.agent import __version__ as VERSION
+from avahi import dict_to_txt_array
 
 
 class JSONRPCService(object):
@@ -79,7 +80,7 @@ class JSONRPCService(object):
         self.__zeroconf = ZeroconfService(name="Clacks RPC service",
             port=self.__http.port,
             stype="_%s._tcp" % self.__http.scheme,
-            text="path=%s\001service=clacks" % self.path)
+            text=dict_to_txt_array({'path': self.path, 'service': 'clacks'}))
         self.__zeroconf.publish()
 
         self.log.info("ready to process incoming requests")

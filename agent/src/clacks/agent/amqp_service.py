@@ -70,6 +70,7 @@ from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import PluginRegistry, AMQPWorker, ZeroconfService
 from clacks.common.utils import parseURL, repr2json
 from clacks.common import Environment
+from avahi import dict_to_txt_array
 
 
 class AMQPService(object):
@@ -138,7 +139,7 @@ class AMQPService(object):
         self.__zeroconf = ZeroconfService(name="Clacks RPC service",
                 port=url['port'],
                 stype="_%s._tcp" % url['scheme'],
-                text="path=%s\001service=clacks" % url['path'])
+                text=dict_to_txt_array({'path': self.env.domain, 'service': 'clacks'}))
         self.__zeroconf.publish()
 
         self.log.info("ready to process incoming requests")

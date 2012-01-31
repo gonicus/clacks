@@ -2,6 +2,8 @@
 import select
 import platform
 from Queue import Queue
+from clacks.common.env import Environment
+
 
 if platform.system() != "Windows":
     from clacks.common.components.dbus_runner import DBusRunner
@@ -72,6 +74,7 @@ class ZeroconfClient(object):
         self.__thread = None
         self.__runner = None
         self.active = False
+        self.env = Environment.getInstance()
 
         if platform.system() != "Windows":
             self.start = self.startAvahi
@@ -131,9 +134,14 @@ class ZeroconfClient(object):
     def startAvahi(self):
         self.__runner = DBusRunner.get_instance()
         bus = self.__runner.get_system_bus()
+	bus.add_signal_receiver(self.__dbus_connect, "NameOwnerChanged", "org.freedesktop.DBus", arg0="org.freedesktop.Avahi")
+        self.__avahi_start()
+
+    def __avahi_start(self):
+        bus = self.__runner.get_system_bus()
         self.__server = dbus.Interface(
-                            bus.get_object(avahi.DBUS_NAME, '/'),
-                            'org.freedesktop.Avahi.Server')
+            bus.get_object(avahi.DBUS_NAME, avahi.DBUS_PATH_SERVER),
+            avahi.DBUS_INTERFACE_SERVER)
 
         # Register for all types we're interested in
         for reg_type in self.__regtypes:
@@ -144,6 +152,12 @@ class ZeroconfClient(object):
     def stopAvahi(self):
         self.__runner.stop()
 
+    def __dbus_connect(self, a, connect, disconnect):
+        if connect != "":
+            self.stopAvahi()
+        else:
+            self.__avahi_start()
+
     def __registerServiceTypeAvahi(self, reg_type):
         bus = self.__runner.get_system_bus()
         sbrowser = dbus.Interface(
@@ -151,7 +165,7 @@ class ZeroconfClient(object):
                             avahi.DBUS_NAME,
                             self.__server.ServiceBrowserNew(
                                 avahi.IF_UNSPEC,
-                                avahi.PROTO_UNSPEC,
+                                avahi.PROTO_INET,
                                 reg_type,
                                 self.__domain,
                                 dbus.UInt32(0))),
@@ -159,14 +173,18 @@ class ZeroconfClient(object):
 
         sbrowser.connect_to_signal("ItemNew", self.__newServiceAvahi)
         sbrowser.connect_to_signal("ItemRemove", self.__removeServiceAvahi)
-        sbrowser.connect_to_signal("AllForNow", self.__allForNowAvahi)
+        #sbrowser.connect_to_signal("AllForNow", self.__allForNowAvahi)
         #sbrowser.connect_to_signal("Failure", self.__errorCallbackAvahi)
 
     #pylint: disable=W0613
     def __newServiceAvahi(self, interface, protocol, name, stype, domain, flags):
         #pylint: disable=W0612
-        interface, protocol, name, stype, domain, host, aprotocol, address, port, txt, flags = self.__server.ResolveService(interface, protocol, name, stype, domain, avahi.PROTO_UNSPEC, dbus.UInt32(0))
+        self.__server.ResolveService(interface, protocol, name, stype, domain, avahi.PROTO_INET, dbus.UInt32(0), reply_handler=self.__service_resolved, error_handler=self.__print_error)
 
+    def __print_error(self, err):
+        self.env.log.error(err)
+
+    def __service_resolved(self, interface, protocol, name, stype, domain, host, aprotocol, address, port, txt, flags):
         # Conversation to URL
         if port == 80:
             port = ''
@@ -177,6 +195,8 @@ class ZeroconfClient(object):
             path = self.__get_path(txt)
             url = "%s://%s%s%s" % (stype[1:].split(".")[0], host, port, path)
             self.__services[(interface, protocol, name, stype, domain)] = url.encode('ascii')
+
+        self.__callback(self.__services.values())
 
     def __removeServiceAvahi(self, interface, protocol, name, stype, domain):
         del self.__services[(interface, protocol, name, stype, domain)]

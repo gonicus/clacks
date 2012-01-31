@@ -55,7 +55,7 @@ Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, clacks-common,
  python-dumbnet, python-ldap, python-smbpasswd, python-unidecode,
  python-dbxml, python-sqlalchemy, python-mysqldb, python-sqlalchemy-ext,
- adduser
+ adduser, python-zope.event
 Conflicts: clacks-client
 Suggests: qpidd
 Description: clacks infrastructure service - agent
