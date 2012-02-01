@@ -46,14 +46,14 @@ start_service() {
             fi
         fi
         start-stop-daemon --start --quiet --pidfile $PIDFILE \
-            --exec /usr/sbin/clacks-$SERVICE
+            --exec /usr/sbin/clacks-$SERVICE -- --pid-file $PIDFILE
 }
 
 
 stop_service() {
        [ -x /usr/sbin/clacks-$SERVICE ] || continue
        PIDFILE=/var/run/clacks/$SERVICE.pid
-       start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE
+       start-stop-daemon --stop --quiet --retry 30 --oknodo --pidfile $PIDFILE
 }
 
 

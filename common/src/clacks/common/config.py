@@ -207,7 +207,7 @@ class Config(object):
     def __parseCfgOptions(self):
         # Is there a configuration available?
         configDir = self.get('core.config')
-        configDir = self.__getCfgFiles(os.path.join(configDir), "config.d")
+        configFiles = self.__getCfgFiles(os.path.join(configDir, "config.d"))
         configFiles.insert(0, os.path.join(configDir, "config"))
 
         config = ConfigParser.RawConfigParser()
@@ -215,7 +215,7 @@ class Config(object):
 
         # Bail out if there's no configuration file
         if not filesRead:
-            raise ConfigNoFile("No usable configuration file (%s) found!" % configFile)
+            raise ConfigNoFile("No usable configuration file (%s/config) found!" % configDir)
 
         # Walk thru core configuration values and push them into the registry
         for section in config.sections():
