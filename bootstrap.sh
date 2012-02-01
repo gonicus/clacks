@@ -21,7 +21,7 @@ prepare_clacks() {
         cd $HERE/clacks
         source bin/activate
         for component in common shell agent; do
-                echo -n "Deploying component: $component"
+                echo -n "Deploying component '$component': "
                 cd $HERE/clacks/src/$component
                 ./setup.py develop &> /dev/null && echo ok
                 if [ $? -ne 0 ]; then
@@ -54,6 +54,8 @@ set laststatus=2
 set encoding=utf-8 " Necessary to show unicode glyphs
 set t_Co=256 " Explicitly tell vim that the terminal supports 256 colors
 
+syntax on
+set nofoldenable 
 
 " let Vundle manage Vundle
 " required! 
