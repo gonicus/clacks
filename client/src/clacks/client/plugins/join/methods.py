@@ -2,6 +2,7 @@
 import sys
 import time
 import re
+import os
 import gettext
 import netifaces
 import ConfigParser
@@ -100,7 +101,7 @@ class join_method(object):
         # If key is present, write info back to file
         if key:
             self.log.debug("client '%s' joined with key '%s'" % (self.uuid, key))
-            config = self.env.config.get("core.config")
+            config = os.path.join(self.env.config.get("core.config"), "config")
             parser = ConfigParser.RawConfigParser()
             parser.read(config)
 

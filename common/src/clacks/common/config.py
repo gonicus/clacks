@@ -66,7 +66,10 @@ class Config(object):
             }
     __configKeys = None
 
-    def __init__(self,  config="/etc/clacks/config",  noargs=False):
+    def __init__(self,  config=None,  noargs=False):
+        if not config:
+            config = os.environ.get('CLACKS_CONFIG_DIR') or "/etc/clacks"
+
         # Load default user name for config parsing
         self.__registry['core']['config'] = config
         self.__noargs = noargs
@@ -94,7 +97,7 @@ class Config(object):
         parser.add_argument("--version", action='version', version=VERSION)
 
         parser.add_argument("-c", "--config", dest="config",
-                          default="/etc/clacks/config",
+                          default=os.environ.get('CLACKS_CONFIG_DIR') or "/etc/clacks",
                           help="read configuration from FILE [%(default)s]",
                           metavar="FILE")
         parser.add_argument("--url", dest="url",
@@ -131,11 +134,7 @@ class Config(object):
             del self.__registry['core']['url']
 
     def getBaseDir(self):
-        bd = os.path.dirname(self.__registry['core']['config'])
-        if bd == self.__registry['core']['config']:
-            return ""
-
-        return bd
+        return self.__registry['core']['config']
 
     def getSections(self):
         """
@@ -203,16 +202,16 @@ class Config(object):
 
     def __parseCfgOptions(self):
         # Is there a configuration available?
-        configFile = self.get('core.config')
-        configFiles = self.__getCfgFiles(configFile + ".d")
-        configFiles.insert(0, configFile)
+        configDir = self.get('core.config')
+        configFiles = self.__getCfgFiles(os.path.join(configDir, "config.d"))
+        configFiles.insert(0, os.path.join(configDir, "config"))
 
         config = ConfigParser.RawConfigParser()
         filesRead = config.read(configFiles)
 
         # Bail out if there's no configuration file
         if not filesRead:
-            raise ConfigNoFile("No usable configuration file (%s) found!" % configFile)
+            raise ConfigNoFile("No usable configuration file (%s/config) found!" % configDir)
 
         # Walk thru core configuration values and push them into the registry
         for section in config.sections():
