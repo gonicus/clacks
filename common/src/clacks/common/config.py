@@ -134,11 +134,7 @@ class Config(object):
             del self.__registry['core']['url']
 
     def getBaseDir(self):
-        bd = os.path.dirname(self.__registry['core']['config'])
-        if bd == self.__registry['core']['config']:
-            return ""
-
-        return bd
+        return self.__registry['core']['config']
 
     def getSections(self):
         """
