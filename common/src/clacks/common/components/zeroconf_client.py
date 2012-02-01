@@ -2,7 +2,6 @@
 import select
 import platform
 from Queue import Queue
-from clacks.common.env import Environment
 
 
 if platform.system() != "Windows":
@@ -74,7 +73,6 @@ class ZeroconfClient(object):
         self.__thread = None
         self.__runner = None
         self.active = False
-        self.env = Environment.getInstance()
 
         if platform.system() != "Windows":
             self.start = self.startAvahi
@@ -182,7 +180,12 @@ class ZeroconfClient(object):
         self.__server.ResolveService(interface, protocol, name, stype, domain, avahi.PROTO_INET, dbus.UInt32(0), reply_handler=self.__service_resolved, error_handler=self.__print_error)
 
     def __print_error(self, err):
-        self.env.log.error(err)
+        try:
+            from clacks.common import Environment
+            env = Environment.getInstance()
+            env.log.error(err)
+        except:
+            pass
 
     def __service_resolved(self, interface, protocol, name, stype, domain, host, aprotocol, address, port, txt, flags):
         # Conversation to URL
