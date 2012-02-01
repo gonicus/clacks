@@ -108,11 +108,10 @@ class DBUSProxy(Plugin):
         # Register ourselfs for the signature change event
         bus = dbus.SystemBus()
         clacks_dbus = bus.get_object('org.clacks', '/org/clacks/shell')
-        clacks_dbus.connect_to_signal("signatureChanged", self.__signatureChanged_received, dbus_interface="org.clacks")
+        clacks_dbus.connect_to_signal("_signatureChanged", self.__signatureChanged_received, dbus_interface="org.clacks")
 
-        #DEBUG #TODO: FAke call of signature received
+        #DEBUG #TODO: FAke call of signature received (Remove me)
         self.__signatureChanged_received("test")
-
 
     def __signatureChanged_received(self, filename):
         if not "org.clacks" in self.bus.list_names():
@@ -124,9 +123,6 @@ class DBUSProxy(Plugin):
                 self.log.debug("found %s registered dbus methods" % (str(len(self.methods))))
             except DBusException as exception:
                 self.log.debug("failed to load dbus methods (e.g. check rights in dbus config): %s" % (str(exception)))
-
-        for entry in self.methods.keys():
-            print entry
 
     def _call_introspection(self, service, path, methods = None):
         """
