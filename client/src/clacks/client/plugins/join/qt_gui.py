@@ -22,6 +22,9 @@ except:
     class QWidget():
         pass
 
+    class QFrame():
+        pass
+
 
 # Include locales
 t = gettext.translation('messages', resource_filename("clacks.client", "locale"), fallback=True)
