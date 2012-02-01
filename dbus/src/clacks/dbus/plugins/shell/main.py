@@ -358,10 +358,10 @@ class DBusShellHandler(dbus.service.Object, Plugin):
 
         # Manually reload the list of registered methods.
         # Reset list first
+
         cname = self.__module__ + "." + self.__class__.__name__
         old_list = self._dbus_class_table[cname]['org.clacks']
         try:
-            old_list = self._dbus_class_table[cname]['org.clacks']
 
             # Reload list
             for func in inspect.getmembers(self, predicate=inspect.ismethod):
