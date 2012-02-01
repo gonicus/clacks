@@ -25,7 +25,7 @@ Description: clacks infrastructure service - common files
 Package: clacks-dbus
 Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, clacks-client, hal,
- python-notify, python-daemon, python-dbus, python-dateutil
+ python-notify, python-daemon, python-dbus, python-dateutil, python-pynotify
 Description: clacks infrastructure service - DBUS service provider
  Brief description is missing.
  .
