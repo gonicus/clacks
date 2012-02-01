@@ -82,6 +82,7 @@ Here is an example script:
 >>>       esac
 >>>       shift
 >>>   done
+>>> ls $detail $dir
 
 """
 
@@ -96,7 +97,7 @@ from clacks.common import Environment
 from clacks.common.components import Plugin
 from clacks.dbus import get_system_bus
 from json import loads
-from dbus import validate_interface_name
+from dbus import validate_interface_name, Signature
 
 
 class DBusShellException(Exception):
@@ -198,9 +199,17 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         path = self.script_path
         filepath = (os.path.join(path, filename))
 
+        dbus_func_name = filename.replace(".","_")
+
         if not os.path.exists(filepath) and filename in self.scripts:
             del(self.scripts[filename])
             self.log.debug("unregistered D-Bus shell script '%s'" % (filename,))
+
+            try:
+                method = getattr(self, dbus_func_name)
+                self.unregister_dbus_method(method)
+            except:
+                raise
         else:
 
             # Check if the received filename is valid
@@ -217,14 +226,26 @@ class DBusShellHandler(dbus.service.Object, Plugin):
                         self.scripts[data[0]] = data
                         self.log.debug("registered D-Bus shell script '%s' signatures is: %s" % (data[0], data[1]))
 
-
                         # Dynamically regisger dbus methods here
-                        # def f(args):
-                        #     # inside this method call the real dbus method with wits arguments
-                        #    self.shell_exec('test',  *args)
+                        def f(self, *args):
+                            args = [filepath] + map(lambda x: str(x), args)
+
+                            # Call the script with the --signature parameter
+                            scall = Popen(args, stdout=PIPE, stderr=PIPE)
+                            scall.wait()
+                            return(scall.returncode,scall.stdout.read(),scall.stderr.read())
+
+                        # Dynamically change the functions name and then register
+                        # it as isntance method to ourselves
+                        setattr(f, '__name__', dbus_func_name)
+                        setattr(self.__class__, dbus_func_name, f)
+                        self.register_dbus_method(f, 'org.clacks', in_signature="ssss", out_signature=None)
 
                 else:
                     self.log.debug("skipped registering D-Bus shell script '%s', it is not executable" % (filepath))
+
+        # Reload the list of regsitered methods
+        self.__reload_dbus_methods()
 
     def _parse_shell_script(self, path):
         """
@@ -282,30 +303,18 @@ class DBusShellHandler(dbus.service.Object, Plugin):
                 'stdout': res.stdout.read(),
                 'stderr': res.stderr.read()})
 
-    def register_dbus_method(self, method, dbus_interface, in_signature=None, out_signature=None):
+    def register_dbus_method(self, func, dbus_interface, in_signature=None, out_signature=None):
         """
         Marks the given method as exported to the dbus.
-
-        #TODO: Check this once we can dynamically populate exported methods tp the client.
-        self.register_dbus_method(self.shell_list, 'org.clacks', in_signature='', out_signature='av')
         """
 
         # Validate the given DBus interface
         validate_interface_name(dbus_interface)
 
-        # Extract the function and its parameters
-        func = method.__func__
-        args = inspect.getargspec(func)[0]
-        args.pop(0)
-
-        # Chec the given signature
-        if in_signature:
-            in_sig = tuple(Signature(in_signature))
-
-            if len(in_sig) > len(args):
-                raise ValueError, 'input signature is longer than the number of arguments taken'
-            elif len(in_sig) < len(args):
-                raise ValueError, 'input signature is shorter than the number of arguments taken'
+        # Dynamically create argument list
+        args = []
+        for arg in tuple(Signature(in_signature)):
+            args.append("arg_"+str(arg)+"_"+str(len(args)))
 
         # Set DBus specific properties
         func._dbus_is_method = True
@@ -320,9 +329,9 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         func._dbus_message_keyword = None
         func._dbus_connection_keyword = None
         func._dbus_args = args
+
         func._dbus_get_args_options = {'byte_arrays': False,
                                        'utf8_strings': False}
-
 
     def unregister_dbus_method(self, method):
         """
@@ -346,9 +355,9 @@ class DBusShellHandler(dbus.service.Object, Plugin):
 
         # Manually reload the list of registered methods.
         # Reset list first
+        cname = self.__module__ + "." + self.__class__.__name__
         old_list = self._dbus_class_table[cname]['org.clacks']
         try:
-            cname = self.__module__ + "." + self.__class__.__name__
             old_list = self._dbus_class_table[cname]['org.clacks']
 
             # Reload list
