@@ -139,7 +139,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
     def __init__(self):
         self.scripts = {}
 
-        # Start D-Bus service
+        # Connect to D-Bus service
         conn = get_system_bus()
         self.conn = conn
         dbus.service.Object.__init__(self, conn, '/org/clacks/shell')
@@ -158,20 +158,22 @@ class DBusShellHandler(dbus.service.Object, Plugin):
     @dbus.service.signal('org.clacks', signature='s')
     def _signatureChanged(self, filename):
         """
-        Sends a signal onm the dbus named '_signatureChanged'
+        Sends a signal on the dbus named '_signatureChanged' this can then be received
+        by other processes like the clacks-client.
         """
         pass
 
     def __notifier_callback(self, filename = None):
         """
-        This method reads all scripts found in the 'dbus.script_path' and
+        This method reads scripts found in the 'dbus.script_path' and
         exports them as callable dbus-method.
         """
 
         # Check if we've the required permissions to access the shell.d directory
         if os.path.exists(self.script_path):
 
-            # locate files in /etc/clacks/shell.d and find those matching
+            # If the 'filename' was None then reload all scripts else reload the
+            # script given by 'filename'
             if filename == None:
                 self.scripts = {}
                 path = self.script_path
@@ -179,14 +181,14 @@ class DBusShellHandler(dbus.service.Object, Plugin):
                     self._reload_signature(filename)
             else:
 
-                 # Get the script path and try to load the signatures
-                 self._reload_signature(filename)
+                # Get the script path and try to load the signatures
+                self._reload_signature(filename)
 
             self.log.info("registered '%s' D-Bus shell script(s)" % (len(self.scripts.keys())))
             self.log.debug("registered script(s): %s " % (", ".join(self.scripts.keys())))
 
             # Now send an event that indicates that the signature has changed.
-            self._signatureChanged(filename)
+            self._signatureChanged("")
         else:
             self.log.debug("the D-Bus shell script path '%s' does not exists! " % (self.script_path,))
 
@@ -195,12 +197,14 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         Reloads the signature for the given shell script.
         """
 
-        # Check if the file was removed
+        # Prepare path values
         path = self.script_path
         filepath = (os.path.join(path, filename))
 
+        # We cannot register dbus methods containing '.' so replace them.
         dbus_func_name = filename.replace(".","_")
 
+        # Check if the file was removed or changed. 
         if not os.path.exists(filepath) and filename in self.scripts:
             del(self.scripts[filename])
             self.log.debug("unregistered D-Bus shell script '%s'" % (filename,))
@@ -226,7 +230,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
                         self.scripts[data[0]] = data
                         self.log.debug("registered D-Bus shell script '%s' signatures is: %s" % (data[0], data[1]))
 
-                        # Dynamically regisger dbus methods here
+                        # Dynamically register dbus methods here
                         def f(self, *args):
                             args = [filepath] + map(lambda x: str(x), args)
 
@@ -236,7 +240,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
                             return(scall.returncode,scall.stdout.read(),scall.stderr.read())
 
                         # Dynamically change the functions name and then register
-                        # it as isntance method to ourselves
+                        # it as instance method to ourselves
                         setattr(f, '__name__', dbus_func_name)
                         setattr(self.__class__, dbus_func_name, f)
                         self.register_dbus_method(f, 'org.clacks', in_signature="ssss", out_signature=None)
@@ -329,7 +333,6 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         func._dbus_message_keyword = None
         func._dbus_connection_keyword = None
         func._dbus_args = args
-
         func._dbus_get_args_options = {'byte_arrays': False,
                                        'utf8_strings': False}
 
