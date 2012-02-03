@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 import gettext
+import logging
 from clacks.common.components.zeroconf_client import ZeroconfClient
 from clacks.client import __version__ as VERSION
 from clacks.client.plugins.join.methods import join_method
@@ -19,16 +20,15 @@ _ = t.ugettext
 
 class NewtGUI(join_method):
     priority = 40
+    screen = None
 
     def __init__(self, parent=None):
+        self.screen = SnackScreen()
+        self.screen.pushHelpLine(" ")
         super(NewtGUI, self).__init__()
 
     def start_gui(self):
-        self.screen = SnackScreen()
-        self.screen.pushHelpLine(" ")
-
-    def end_gui(self):
-        self.screen.finish()
+	pass
 
     @staticmethod
     def available():
@@ -83,21 +83,25 @@ class NewtGUI(join_method):
         return (bb.buttonPressed(result), tuple(entryValues))
 
     def discover(self):
-        aw = PopupWindow(screen, _("Clacks Infrastructure") + "v%s" % VERSION, _("Searching service provider..."))
+        aw = self.PopupWindow(_("Clacks Infrastructure") + " v%s" % VERSION, _("Searching service provider..."))
         self.url = ZeroconfClient.discover(['_amqps._tcp', '_amqp._tcp'], domain=self.domain)[0]
         self.screen.popWindow()
         return self.url
 
     def join_dialog(self):
+	logging.disable(logging.ERROR)
         key = None
 
         while not key:
-            username, password = JoinWindow(screen, _("Clacks Infrastructure") + "v%s" % VERSION, _("Please enter the credentials of an administrative user to join this client."))
+            jw = self.JoinWindow(_("Clacks Infrastructure") + " v%s" % VERSION, _("Please enter the credentials of an administrative user to join this client."))
+            username, password = jw[1]
             if not username or not password:
                 self.show_error("Please enter a user name and a password!")
                 continue
 
             key = self.join(username, password)
 
+        self.screen.finish()
+
     def show_error(self, error):
-        aw = PopupWindow(screen, _("Error") % VERSION, error, sleep=3)
+        aw = self.PopupWindow(_("Error"), error, sleep=3)
