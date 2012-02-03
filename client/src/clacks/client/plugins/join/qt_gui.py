@@ -3,6 +3,7 @@ import sys
 import time
 import gettext
 from threading import Thread
+from clacks.client import __version__ as VERSION
 from clacks.client.plugins.join.methods import join_method
 from clacks.common.components.zeroconf_client import ZeroconfClient
 from pkg_resources import resource_filename
@@ -116,7 +117,7 @@ class MainWindow(QWidget):
         header.setFrameStyle(QFrame.Panel | QFrame.Sunken);
         header.setStyleSheet("QWidget { background-color: white; color: black;}")
 
-        header_text = QLabel("<b>" + _("Clacks Infrastructure") + "</b><br>" + "v1.0")
+        header_text = QLabel("<b>" + _("Clacks Infrastructure") + "</b><br>" + "v%s" % VERSION)
         header_text.setStyleSheet("QWidget { background-color: white; color: black; border: 0; margin: 0; padding: 3;}")
         header_text.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         hbox.addWidget(header_text, 1)
