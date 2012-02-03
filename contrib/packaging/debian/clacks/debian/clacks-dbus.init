@@ -57,7 +57,7 @@ if [ ! -d /var/run/clacks ]; then
 fi
 
 # Include clacks defaults if available.
-test -f /etc/default/$SERVICE && . /etc/default/$SERVICE
+test -f /etc/default/clacks-$SERVICE && . /etc/default/clacks-$SERVICE
 
 # Don't start if we're not configured to start
 test $FORCE_JOIN = 0 -a ! -e /etc/clacks/config && exit 0
