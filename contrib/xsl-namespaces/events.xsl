@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xsl:stylesheet version="1.0"
-	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:gosa="http://www.gonicus.de/Events">
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:e="http://www.gonicus.de/Events">
 
 	<xsl:output method="xml" indent="yes" encoding="UTF-8" />
 
@@ -23,7 +23,7 @@
 
 			<complexType name="Event">
 				<choice maxOccurs="1" minOccurs="1">
-					<group ref="gosa:Events"></group>
+					<group ref="e:Events"></group>
 				</choice>
 			</complexType>
 
@@ -44,7 +44,7 @@
 					</xsl:for-each>
 				</choice>
 			</group>
-			<element name="Event" type="gosa:Event"></element>
+			<element name="Event" type="e:Event"></element>
 		</schema>
 	</xsl:template>
 </xsl:stylesheet>

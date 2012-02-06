@@ -16,6 +16,17 @@
     	</all>
     </complexType>
 
+    <complexType name="NetworkDevice">
+        <all>
+                <element name="Name" type="string"></element>
+                <element name="IPAddress" type="string"></element>
+                <element name="IPv6Address" type="string"></element>
+                <element name="MAC" type="string"></element>
+                <element name="Netmask" type="string"></element>
+                <element name="Broadcast" type="string"></element>
+        </all>
+    </complexType>
+
     <element name="NetworkDevice" type="e:NetworkDevice"></element>
 
     <element name="ClientCapabilities" type="e:ClientCapabilities"></element>
