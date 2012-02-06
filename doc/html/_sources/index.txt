@@ -8,6 +8,7 @@ reliable communication.
 Clacks was designed as a backend for the GOsa GUI, but does not depend on it. It has
 not been named *GOsa-whatever* to avoid naming confusion.
 
+-----------------------------------------------------------------------------------
 
 Project links
 -------------
@@ -15,6 +16,9 @@ Project links
 :doc:`doc_index`
 
 :doc:`downloads`
+
+
+-----------------------------------------------------------------------------------
 
 
 Key features
