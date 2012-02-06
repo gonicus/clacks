@@ -47,10 +47,16 @@ class ShellDNotifier(pyinotify.ProcessEvent):
         Starts the survailance. This is automatically called in the constructor.
         """
         wm = pyinotify.WatchManager()
-        wm.add_watch(self.path, pyinotify.IN_ATTRIB | pyinotify.IN_MODIFY | pyinotify.IN_DELETE, rec=True, auto_add=True)
+        wm.add_watch(self.path, pyinotify.IN_ATTRIB | pyinotify.IN_MODIFY | pyinotify.IN_DELETE | pyinotify.IN_MOVED_TO, rec=True, auto_add=True)
         notifier = pyinotify.ThreadedNotifier(wm, self)
         notifier.daemon = True
         notifier.start()
+
+    def process_IN_MOVED_TO(self, event):
+        """
+        Method to process moved files
+        """
+        self.__handle(event.pathname)
 
     def process_IN_ATTRIB(self, event):
         """

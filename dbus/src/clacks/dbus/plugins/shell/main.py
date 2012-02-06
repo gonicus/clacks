@@ -204,7 +204,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         # We cannot register dbus methods containing '.' so replace them.
         dbus_func_name = filename.replace(".","_")
 
-        # Check if the file was removed or changed. 
+        # Check if the file was removed or changed.
         if not os.path.exists(filepath) and filename in self.scripts:
             del(self.scripts[filename])
             self.log.debug("unregistered D-Bus shell script '%s'" % (filename,))
@@ -260,8 +260,12 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         """
 
         # Call the script with the --signature parameter
-        scall = Popen([path, '--signature'], stdout=PIPE, stderr=PIPE)
-        scall.wait()
+        try:
+            scall = Popen([path, '--signature'], stdout=PIPE, stderr=PIPE)
+            scall.wait()
+        except OSError as e:
+            self.log.info("failed to read signature from D-Bus shell script '%s' (%s) " % (path, str(e)))
+            return
 
         # Check returncode of the script call.
         if scall.returncode != 0:
