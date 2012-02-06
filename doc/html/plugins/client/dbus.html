@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,9 +7,9 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>D-Bus Proxy &mdash; Clacks 1.0 documentation</title>
+    <title>D-Bus Proxy &mdash; Clacks Project</title>
     
-    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/clacks.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/requirements.css" type="text/css" />
@@ -27,9 +26,24 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="Clacks 1.0 documentation" href="../../index.html" /> 
+    <link rel="top" title="Clacks Project" href="../../index.html" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="../../_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
   </head>
   <body>
+<!--<a href="http://github.com/clacks"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>-->
+<div class="header">
+  <div class="logo">
+    <a href="../../index.html">
+      <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+    </a>
+  </div>
+</div>
+
     <div class="related">
       <h3>Navigation</h3>
       <ul>
@@ -39,7 +53,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">Clacks 1.0 documentation</a> &raquo;</li> 
+        <li><a href="../../index.html">Clacks Project</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -75,7 +89,7 @@ client plugin.</p>
 <p>All methods of the service &#8216;org.clacks&#8217; with any path are exported, if they do not start
 with <tt class="docutils literal"><span class="pre">_</span></tt> or <tt class="docutils literal"><span class="pre">:</span></tt>.</p>
 <p>Exported methods are prefixed with <tt class="docutils literal"><span class="pre">dbus_</span></tt> e.g. the <tt class="docutils literal"><span class="pre">wake_on_lan</span></tt> method is then
-accessible by calling <tt class="docutils literal"><span class="pre">dbus_wake_on_lan</span></tt>. (<tt class="xref py py-class docutils literal"><span class="pre">clacks.dbus.plugins.wakeonlan.main.DBusWakeOnLanHandler</span></tt>.)</p>
+accessible by calling <tt class="docutils literal"><span class="pre">dbus_wake_on_lan</span></tt>. (<a class="reference internal" href="../dbus/wakeonlan.html#clacks.dbus.plugins.wakeonlan.main.DBusWakeOnLanHandler" title="clacks.dbus.plugins.wakeonlan.main.DBusWakeOnLanHandler"><tt class="xref py py-class docutils literal"><span class="pre">clacks.dbus.plugins.wakeonlan.main.DBusWakeOnLanHandler</span></tt></a>.)</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">proxy</span><span class="o">.</span><span class="n">clientDispatch</span><span class="p">(</span><span class="s">&quot;49cb1287-db4b-4ddf-bc28-5f4743eac594&quot;</span><span class="p">,</span> <span class="s">&quot;dbus_wake_on_lan&quot;</span><span class="p">,</span> <span class="s">&quot;&lt;mac&gt;&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -113,6 +127,12 @@ anonymous methods (those starting with _ or :)</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="clacks.client.plugins.dbus.proxy.DBUSProxy.reload_signatures">
+<tt class="descname">reload_signatures</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.client.plugins.dbus.proxy.DBUSProxy.reload_signatures" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reloads the dbus signatures.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="clacks.client.plugins.dbus.proxy.DBUSProxy.serve">
 <tt class="descname">serve</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.client.plugins.dbus.proxy.DBUSProxy.serve" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method registeres all known methods to the command registry.</p>
@@ -138,11 +158,6 @@ anonymous methods (those starting with _ or :)</p>
 </li>
 </ul>
 
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/plugins/client/dbus.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
@@ -169,7 +184,7 @@ anonymous methods (those starting with _ or :)</p>
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">Clacks 1.0 documentation</a> &raquo;</li> 
+        <li><a href="../../index.html">Clacks Project</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

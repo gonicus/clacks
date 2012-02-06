@@ -156,6 +156,7 @@ class ObjectFactory(object):
         """
         Returns a dictionary containing all attribute references.
         e.g. A groups memberlist may have references to users.
+
             {'PosixGroup': {'memberUid': [('PosixUser', 'uid')]}}
         """
         res = {}

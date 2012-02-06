@@ -143,7 +143,7 @@ the AMQP headers, so that Clacks is able to notice who's sending messages.
 -----------------------
 
 Clacks overview
-=============
+===============
 
 This overview should provide a big picture of the Clacks components and describes
 the tasks the components are supposed to do. More detailed information can be
@@ -164,14 +164,14 @@ created queues start with *org.clacks.* and shape the namespace to use in AMQP.
 
 
 clacks.common
------------
+-------------
 
 The *clacks.common* component is the base library which is providing common
 functionality to agents and clients.
 
 
 clacks.agent
-----------
+------------
 
 For every domain, you need at least on broker (or a broker federation) and
 at least one *clacks.agent* instance. The agent defines the domain queues and

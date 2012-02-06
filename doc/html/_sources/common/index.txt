@@ -1,5 +1,5 @@
 The Clacks *common* library
-=========================
+===========================
 
 .. automodule:: clacks.common
    :members:

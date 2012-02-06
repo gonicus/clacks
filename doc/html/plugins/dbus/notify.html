@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,9 +7,9 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Notify &mdash; Clacks 1.0 documentation</title>
+    <title>Notify &mdash; Clacks Project</title>
     
-    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/clacks.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/requirements.css" type="text/css" />
@@ -27,12 +26,24 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="Clacks 1.0 documentation" href="../../index.html" />
-    <link rel="up" title="Plugin development" href="../index.html" />
-    <link rel="next" title="Services" href="services.html" />
-    <link rel="prev" title="Wake on lan" href="wakeonlan.html" /> 
+    <link rel="top" title="Clacks Project" href="../../index.html" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="../../_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
   </head>
   <body>
+<!--<a href="http://github.com/clacks"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>-->
+<div class="header">
+  <div class="logo">
+    <a href="../../index.html">
+      <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+    </a>
+  </div>
+</div>
+
     <div class="related">
       <h3>Navigation</h3>
       <ul>
@@ -42,15 +53,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="services.html" title="Services"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="wakeonlan.html" title="Wake on lan"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">Clacks 1.0 documentation</a> &raquo;</li>
-          <li><a href="../../development.html" >Development documentation</a> &raquo;</li>
-          <li><a href="../index.html" accesskey="U">Plugin development</a> &raquo;</li> 
+        <li><a href="../../index.html">Clacks Project</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -59,8 +62,22 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="notify">
-<h1>Notify<a class="headerlink" href="#notify" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-clacks.dbus.plugins.notify.main">
+<span id="notify"></span><h1>Notify<a class="headerlink" href="#module-clacks.dbus.plugins.notify.main" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="clacks-d-bus-notification-plugin">
+<h2>Clacks D-Bus Notification Plugin<a class="headerlink" href="#clacks-d-bus-notification-plugin" title="Permalink to this headline">¶</a></h2>
+<p>This plugin allows to notify a single or all users on the client.</p>
+<dl class="class">
+<dt id="clacks.dbus.plugins.notify.main.DBusNotifyHandler">
+<em class="property">class </em><tt class="descclassname">clacks.dbus.plugins.notify.main.</tt><tt class="descname">DBusNotifyHandler</tt><a class="headerlink" href="#clacks.dbus.plugins.notify.main.DBusNotifyHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>This dbus plugin is able to send notification to the user using the
+systems D-Bus.</p>
+<p>This plugin exports dbus methods that <tt class="docutils literal"><span class="pre">cannot</span></tt> be accessed directly through
+the clacks-client DBus-Proxy.</p>
+<p>For details on how to use the user notification please see: <a class="reference internal" href="../client/notify.html#clacks.client.plugins.notify.utils.Notify" title="clacks.client.plugins.notify.utils.Notify"><tt class="xref py py-class docutils literal"><span class="pre">clacks.client.plugins.notify.utils.Notify</span></tt></a>.</p>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -69,17 +86,14 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="wakeonlan.html"
-                        title="previous chapter">Wake on lan</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="services.html"
-                        title="next chapter">Services</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/plugins/dbus/notify.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Notify</a><ul>
+<li><a class="reference internal" href="#clacks-d-bus-notification-plugin">Clacks D-Bus Notification Plugin</a></li>
+</ul>
+</li>
+</ul>
+
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
@@ -106,15 +120,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="services.html" title="Services"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="wakeonlan.html" title="Wake on lan"
-             >previous</a> |</li>
-        <li><a href="../../index.html">Clacks 1.0 documentation</a> &raquo;</li>
-          <li><a href="../../development.html" >Development documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Plugin development</a> &raquo;</li> 
+        <li><a href="../../index.html">Clacks Project</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

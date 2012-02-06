@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,9 +7,9 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>DBUS integration &mdash; Clacks 1.0 documentation</title>
+    <title>DBUS integration &mdash; Clacks Project</title>
     
-    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/clacks.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="../_static/requirements.css" type="text/css" />
@@ -27,12 +26,24 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Clacks 1.0 documentation" href="../index.html" />
-    <link rel="up" title="Development documentation" href="../development.html" />
-    <link rel="next" title="Shell and scripting" href="../shell/index.html" />
-    <link rel="prev" title="Domain join" href="../client/join.html" /> 
+    <link rel="top" title="Clacks Project" href="../index.html" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="../_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
   </head>
   <body>
+<!--<a href="http://github.com/clacks"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>-->
+<div class="header">
+  <div class="logo">
+    <a href="../index.html">
+      <img class="logo" src="../_static/logo.png" alt="Logo"/>
+    </a>
+  </div>
+</div>
+
     <div class="related">
       <h3>Navigation</h3>
       <ul>
@@ -42,14 +53,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="../shell/index.html" title="Shell and scripting"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="../client/join.html" title="Domain join"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">Clacks 1.0 documentation</a> &raquo;</li>
-          <li><a href="../development.html" accesskey="U">Development documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Clacks Project</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -58,9 +62,61 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="dbus-integration">
-<h1>DBUS integration<a class="headerlink" href="#dbus-integration" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-clacks.dbus">
+<span id="dbus-integration"></span><h1>DBUS integration<a class="headerlink" href="#module-clacks.dbus" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>The <em>DBUS</em> module bundles the Clacks DBUS daemon and a couple code modules
+needed to run it. The DBUS itself is meant to be extended by implementing
+<tt class="xref py py-class docutils literal"><span class="pre">dbus.service.Object</span></tt> and additionally inherit from
+<a class="reference internal" href="../common/components.html#clacks.common.components.plugin.Plugin" title="clacks.common.components.plugin.Plugin"><tt class="xref py py-class docutils literal"><span class="pre">clacks.common.components.plugin.Plugin</span></tt></a>.
+When starting up the system, the DBUS components looks for plugins in the setuptools
+system and registers them into to the <a class="reference internal" href="../common/components.html#clacks.common.components.registry.PluginRegistry" title="clacks.common.components.registry.PluginRegistry"><tt class="xref py py-class docutils literal"><span class="pre">clacks.common.components.registry.PluginRegistry</span></tt></a>.</p>
+<p>This happens automatically depending on what&#8217;s registered on the
+<tt class="docutils literal"><span class="pre">[dbus.module]</span></tt> setuptools entrypoint.</p>
+<p>To provide services it registers the system bus <tt class="docutils literal"><span class="pre">org.clacks</span></tt> to the
+systems DBUS, exposing functionality to the outside world.</p>
+<p>All the DBUS plugins you provide run as <em>root</em>, so the service is meant as
+a gateway to call functionality which needs more administrative power than
+the clacks client user has.</p>
+<p>Code example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">dbus.service</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">from</span> <span class="nn">clacks.common</span> <span class="kn">import</span> <span class="n">Environment</span>
+<span class="kn">from</span> <span class="nn">clacks.common.components</span> <span class="kn">import</span> <span class="n">Plugin</span>
+<span class="kn">from</span> <span class="nn">clacks.dbus</span> <span class="kn">import</span> <span class="n">get_system_bus</span>
+
+
+<span class="k">class</span> <span class="nc">DBusWakeOnLanHandler</span><span class="p">(</span><span class="n">dbus</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">Object</span><span class="p">,</span> <span class="n">Plugin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; WOL handler, exporting shell commands to the bus &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">get_system_bus</span><span class="p">()</span>
+        <span class="n">dbus</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">Object</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">,</span> <span class="s">&#39;/org/clacks/wol&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="o">.</span><span class="n">getInstance</span><span class="p">()</span>
+
+    <span class="nd">@dbus.service.method</span><span class="p">(</span><span class="s">&#39;org.clacks&#39;</span><span class="p">,</span> <span class="n">in_signature</span><span class="o">=</span><span class="s">&#39;s&#39;</span><span class="p">,</span> <span class="n">out_signature</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wakeOnLan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mac</span><span class="p">):</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s">r&quot;wakeonlan&quot;</span><span class="p">,</span> <span class="n">mac</span><span class="p">])</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+        <span class="c"># return exit code, unfortunately wakeonlan returns 0</span>
+        <span class="c"># even when an error occurs :(</span>
+        <span class="k">return</span> <span class="n">p</span><span class="o">.</span><span class="n">returncode</span>
+</pre></div>
+</div>
+<p>This one will provide wake-on-lan functionality over DBUS.</p>
+<p>If you&#8217;re looking for documentation on how to write plugins, please take a look
+at the <a class="reference internal" href="../plugins/index.html#plugins"><em>Plugin section</em></a>.</p>
+</div>
 <hr class="docutils" />
+<span class="target" id="module-clacks.dbus.utils"></span><dl class="function">
+<dt id="clacks.dbus.utils.get_system_bus">
+<tt class="descclassname">clacks.dbus.utils.</tt><tt class="descname">get_system_bus</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.dbus.utils.get_system_bus" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>get_system_bus</em> acts as a singleton and returns the
+system bus for &#8216;org.clacks&#8217;.</p>
+<p><tt class="docutils literal"><span class="pre">Return:</span></tt> system bus</p>
+</dd></dl>
+
 </div>
 
 
@@ -69,17 +125,14 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="../client/join.html"
-                        title="previous chapter">Domain join</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="../shell/index.html"
-                        title="next chapter">Shell and scripting</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../_sources/dbus/index.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">DBUS integration</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+</ul>
+</li>
+</ul>
+
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
@@ -106,14 +159,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="../shell/index.html" title="Shell and scripting"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="../client/join.html" title="Domain join"
-             >previous</a> |</li>
-        <li><a href="../index.html">Clacks 1.0 documentation</a> &raquo;</li>
-          <li><a href="../development.html" >Development documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Clacks Project</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

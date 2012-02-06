@@ -55,7 +55,7 @@ the following packages in your system::
 
 
 Setup a virtual environment for playing with clacks 1.0 alpha
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 As a non-root user, initialize the virtual environment::
 
@@ -88,7 +88,7 @@ This will place all relevant files inside the 'src' directory.
 
 
 The clacks agent
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
 
 To run the agent, you most likely need a working AMQP broker and
 a working LDAP setup.
@@ -669,7 +669,7 @@ client inside the activated virtual environment::
   $ clacks-client -f
 
 Integration with PHP Clacks
--------------------------
+---------------------------
 
 The *clacks agent* and *clacks client* setup may be ok for playing around, but
 as of Clacks 2.7 you can configure an active communication between the ordinary

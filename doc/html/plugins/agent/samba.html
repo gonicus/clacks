@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,9 +7,9 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Samba &mdash; Clacks 1.0 documentation</title>
+    <title>Samba &mdash; Clacks Project</title>
     
-    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/clacks.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/requirements.css" type="text/css" />
@@ -27,12 +26,24 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="Clacks 1.0 documentation" href="../../index.html" />
-    <link rel="up" title="Plugin development" href="../index.html" />
-    <link rel="next" title="GOto" href="../client/goto.html" />
-    <link rel="prev" title="Misc plugins" href="misc.html" /> 
+    <link rel="top" title="Clacks Project" href="../../index.html" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="../../_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
   </head>
   <body>
+<!--<a href="http://github.com/clacks"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>-->
+<div class="header">
+  <div class="logo">
+    <a href="../../index.html">
+      <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+    </a>
+  </div>
+</div>
+
     <div class="related">
       <h3>Navigation</h3>
       <ul>
@@ -42,15 +53,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="../client/goto.html" title="GOto"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="misc.html" title="Misc plugins"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">Clacks 1.0 documentation</a> &raquo;</li>
-          <li><a href="../../development.html" >Development documentation</a> &raquo;</li>
-          <li><a href="../index.html" accesskey="U">Plugin development</a> &raquo;</li> 
+        <li><a href="../../index.html">Clacks Project</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -61,6 +64,141 @@
             
   <div class="section" id="samba">
 <h1>Samba<a class="headerlink" href="#samba" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="clacks.agent.plugins.samba.domain.IsValidSambaDomainName">
+<em class="property">class </em><tt class="descclassname">clacks.agent.plugins.samba.domain.</tt><tt class="descname">IsValidSambaDomainName</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.samba.domain.IsValidSambaDomainName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates a given sambaDomainName.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="clacks.agent.plugins.samba.flags.SambaAcctFlagsOut">
+<em class="property">class </em><tt class="descclassname">clacks.agent.plugins.samba.flags.</tt><tt class="descname">SambaAcctFlagsOut</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.samba.flags.SambaAcctFlagsOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-Filter for sambaAcctFlags.</p>
+<p>Combines flag-properties into sambaAcctFlags proeprty</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="clacks.agent.plugins.samba.flags.SambaAcctFlagsIn">
+<em class="property">class </em><tt class="descclassname">clacks.agent.plugins.samba.flags.</tt><tt class="descname">SambaAcctFlagsIn</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.samba.flags.SambaAcctFlagsIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-Filter for sambaAcctFlags.</p>
+<p>Each option will be transformed into a separate attribute.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="clacks.agent.plugins.samba.hash.SambaHash">
+<em class="property">class </em><tt class="descclassname">clacks.agent.plugins.samba.hash.</tt><tt class="descname">SambaHash</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.samba.hash.SambaHash" title="Permalink to this definition">¶</a></dt>
+<dd><p>An object filter which generates samba NT/LM Password hashes for the incoming value.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="clacks.agent.plugins.samba.logonhours.SambaLogonHoursAttribute">
+<em class="property">class </em><tt class="descclassname">clacks.agent.plugins.samba.logonhours.</tt><tt class="descname">SambaLogonHoursAttribute</tt><a class="headerlink" href="#clacks.agent.plugins.samba.logonhours.SambaLogonHoursAttribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a special object-attribute-type for sambaLogonHours.</p>
+<p>This call can convert sambaLogonHours to a UnicodeString and vice versa.
+It is used in the samba-object definition file.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="clacks.agent.plugins.samba.munged.SambaMungedDialOut">
+<em class="property">class </em><tt class="descclassname">clacks.agent.plugins.samba.munged.</tt><tt class="descname">SambaMungedDialOut</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.samba.munged.SambaMungedDialOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Out-Filter for sambaMungedDial.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="clacks.agent.plugins.samba.munged.SambaMungedDialIn">
+<em class="property">class </em><tt class="descclassname">clacks.agent.plugins.samba.munged.</tt><tt class="descname">SambaMungedDialIn</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.samba.munged.SambaMungedDialIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-Filter for sambaMungedDial.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="clacks.agent.plugins.samba.munged.SambaMungedDial">
+<em class="property">class </em><tt class="descclassname">clacks.agent.plugins.samba.munged.</tt><tt class="descname">SambaMungedDial</tt><a class="headerlink" href="#clacks.agent.plugins.samba.munged.SambaMungedDial" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class allows to convert the sambaMungedDial attribute into
+a human readable list of properties and vice versa.</p>
+<p>(All methods are declared static, due to the fact that this
+methods gets called from within in- and out-filters!)</p>
+<dl class="staticmethod">
+<dt id="clacks.agent.plugins.samba.munged.SambaMungedDial.decode">
+<em class="property">static </em><tt class="descname">decode</tt><big>(</big><em>mstr</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.samba.munged.SambaMungedDial.decode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decodes a given sambaMungedDial attribute into a human readable
+list of properties.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="78%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>mstr</td>
+<td>The b64encoded sambaMungedDial string.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="clacks.agent.plugins.samba.munged.SambaMungedDial.encode">
+<em class="property">static </em><tt class="descname">encode</tt><big>(</big><em>values</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.samba.munged.SambaMungedDial.encode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encodes the given value dictionary into a sambaMungedDial attribute.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>values</td>
+<td>A dictionary containing all munged dial relevant values.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="clacks.agent.plugins.samba.munged.SambaMungedDial.munge">
+<em class="property">static </em><tt class="descname">munge</tt><big>(</big><em>name</em>, <em>value</em>, <em>isString=False</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.samba.munged.SambaMungedDial.munge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encodes the given property name and value into a valid
+format for the sambaMungedDial attribute.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="83%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>name</td>
+<td>The name of the property to encode</td>
+</tr>
+<tr class="row-odd"><td>value</td>
+<td>The value of the property</td>
+</tr>
+<tr class="row-even"><td>isString</td>
+<td>Boolean, tells whether to encode a string value or not.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="clacks.agent.plugins.samba.sid.GenerateSambaSid">
+<em class="property">class </em><tt class="descclassname">clacks.agent.plugins.samba.sid.</tt><tt class="descname">GenerateSambaSid</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.samba.sid.GenerateSambaSid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Out filter to generate a new sambaSID</p>
+</dd></dl>
+
 </div>
 
 
@@ -69,17 +207,6 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="misc.html"
-                        title="previous chapter">Misc plugins</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="../client/goto.html"
-                        title="next chapter">GOto</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/plugins/agent/samba.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
@@ -106,15 +233,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="../client/goto.html" title="GOto"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="misc.html" title="Misc plugins"
-             >previous</a> |</li>
-        <li><a href="../../index.html">Clacks 1.0 documentation</a> &raquo;</li>
-          <li><a href="../../development.html" >Development documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Plugin development</a> &raquo;</li> 
+        <li><a href="../../index.html">Clacks Project</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

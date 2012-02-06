@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,9 +7,9 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Welcome to Clacks’s documentation! &mdash; Clacks 1.0 documentation</title>
+    <title>Welcome to the Clacks Project &mdash; Clacks Project</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/clacks.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="_static/requirements.css" type="text/css" />
@@ -27,10 +26,24 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Clacks 1.0 documentation" href="#" />
-    <link rel="next" title="Introduction" href="intro.html" /> 
+    <link rel="top" title="Clacks Project" href="#" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
   </head>
   <body>
+<!--<a href="http://github.com/clacks"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>-->
+<div class="header">
+  <div class="logo">
+    <a href="#">
+      <img class="logo" src="_static/logo.png" alt="Logo"/>
+    </a>
+  </div>
+</div>
+
     <div class="related">
       <h3>Navigation</h3>
       <ul>
@@ -40,10 +53,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="intro.html" title="Introduction"
-             accesskey="N">next</a> |</li>
-        <li><a href="#">Clacks 1.0 documentation</a> &raquo;</li> 
+        <li><a href="#">Clacks Project</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -52,160 +62,73 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="welcome-to-clacks-s-documentation">
-<h1>Welcome to Clacks&#8217;s documentation!<a class="headerlink" href="#welcome-to-clacks-s-documentation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="what-is-it-all-about">
-<h2>What is it all about?<a class="headerlink" href="#what-is-it-all-about" title="Permalink to this headline">¶</a></h2>
-<p>If you get here, you probably know that GOsa (currently) is a PHP based framework
-for managing several aspects of your infrastructure. For more information, please
-go to the <a class="reference external" href="https://oss.gonicus.de/labs/gosa">GOsa Website</a>.</p>
-<p>While you can find information about the GOsa 2.x series on the website mentioned
-above, this document is more about the future. This is why:</p>
-<p>Starting with GOsa 2.6, we had introduced a simple perl based service called
-gosa-si, which was able to handle requests and actions where class PHP applications
-are not well suited for. This service had (has) many problems in design, scalability
-and so on. For that reason we started to redo the whole thing using new
-technologies like <a class="reference external" href="http://www.amqp.org">AMQP</a>, concentrating on the RedHat/Apache
-implementation <a class="reference external" href="http://qpid.apache.org/">QPID</a>.</p>
-<p>This service handles the <em>authentication</em>, the <em>message queueing</em>, the <em>clustering</em> and
-<em>load balancing</em> for us. A client can subscribe to public events using
-<a class="reference external" href="http://en.wikipedia.org/wiki/XQuery">XQuery</a>, services (or third parties) can
-emit events in a simple manner. AMQP is used by the newly introduced <em>Clacks agent</em>
-to provide load balanced, clustered services and by several kind of <em>Clacks client</em>
-applications like a shell, an ordinary client (former GOto clients) and so on.</p>
-<p>Multiple <em>Clacks agents</em> create a domain where clients can join or participate in
-different ways. Functionality like the new abstraction layer <em>libinst</em>, an object
-description language, scheduling, etc. are spread over several agents and can be
-transparently accessed by clients, thanks to the routing possible with QPID queue
-models. The functionality is currently exposed by AMQP and by a HTTP/JSONRPC gateway,
-more methods like ReST or SOAP may follow if there&#8217;s an urgent need for that.</p>
-<p>Starting with PHP GOsa 2.7, there is built in support for the new Clacks core. 2.7
-series will be some kind of migration series where more and more functionality will
-be moved into the new core while keeping the original functionality inside. That
-allows <em>bleeding edge</em> users to try selected new functionality thru the new core and
-more <em>conservative</em> users can continue to use the current PHP core.</p>
-<p>The 1.0 release will be a PHP-Clacks with nearly no functionality residing in PHP, but
-in the new core. And - finally - this documentation is growing on the way to 1.0.</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">This is <strong>pre-alpha</strong> software and you&#8217;re welcome to try, code and share with us.</p>
+  <div class="section" id="welcome-to-the-clacks-project">
+<h1>Welcome to the Clacks Project<a class="headerlink" href="#welcome-to-the-clacks-project" title="Permalink to this headline">¶</a></h1>
+<p>The Clacks Project aims to provide a general infrastructure service framework which can
+be used for various tasks. It is written in Python and makes use of AMQP messaging for
+reliable communication.</p>
+<p>Clacks was designed as a backend for the GOsa GUI, but does not depend on it. It has
+not been named <em>GOsa-whatever</em> to avoid naming confusion.</p>
+<hr class="docutils" />
+<div class="section" id="project-links">
+<h2>Project links<a class="headerlink" href="#project-links" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="doc_index.html"><em>Documentation</em></a></p>
+<p><a class="reference internal" href="downloads.html"><em>Downloads</em></a></p>
 </div>
 <hr class="docutils" />
-<p><strong>Documentation TODO list:</strong></p>
-<p class="req-source"><em class="status todo">todo</em> Describe the init script / default usage<a class="reference internal" href="agent/index.html#req-0"> <em>→</em></a></p>
-<p class="req-source"><em class="status todo">todo</em> Describe the init script / default usage<a class="reference internal" href="client/index.html#req-0"> <em>→</em></a></p>
-<p class="req-source"><em class="status todo">todo</em> Describe how to build the debian packages.<a class="reference internal" href="packaging.html#req-0"> <em>→</em></a></p>
-<p class="req-source"><em class="status todo">todo</em> Find a way to build the stuff for various RPM based distributions.<a class="reference internal" href="packaging.html#req-1"> <em>→</em></a></p>
-<p class="req-source"><em class="status todo">todo</em> Document client plugins<a class="reference internal" href="plugins/client/index.html#req-0"> <em>→</em></a></p>
-<p class="req-source"><em class="status todo">todo</em> Document DBUS plugins<a class="reference internal" href="plugins/dbus/index.html#req-0"> <em>→</em></a></p>
-<p class="req-source"><em class="status todo">todo</em> Create brief documentation for installing and setup<a class="reference internal" href="production.html#req-0"> <em>→</em></a></p>
-<p class="req-source"><em class="status todo">todo</em> Fix shell CLI mode and provide docs<a class="reference internal" href="shell/index.html#req-0"> <em>→</em></a></p>
-<p class="req-source"><em class="status todo">todo</em> Fix shell here document mode and provide docs<a class="reference internal" href="shell/index.html#req-1"> <em>→</em></a></p>
-<p><strong>Contents:</strong></p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="intro.html#quickstart">Quickstart</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="intro.html#common-setup">Common setup</a></li>
-<li class="toctree-l3"><a class="reference internal" href="intro.html#the-clacks-agent">The clacks agent</a></li>
-<li class="toctree-l3"><a class="reference internal" href="intro.html#the-clacks-shell">The clacks shell</a></li>
-<li class="toctree-l3"><a class="reference internal" href="intro.html#first-contact">First contact</a></li>
-<li class="toctree-l3"><a class="reference internal" href="intro.html#the-clacks-client">The clacks client</a></li>
-</ul>
+<div class="section" id="key-features">
+<h2>Key features<a class="headerlink" href="#key-features" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>Domain based</strong></p>
+<p>The AMQP infrastructure is divided into domains. This makes it possible to separate
+different locations by administration logic and/or access control. Clients can be
+&#8220;joined&#8221; to the domain.</p>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="intro.html#integration-with-php-clacks">Integration with PHP Clacks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="intro.html#design-overview">Design overview</a></li>
-</ul>
+<li><p class="first"><strong>Agent infrastructure with varying plugin set</strong></p>
+<p>Multiple agents can connect to the AMQP infrastructure of your domain but do not
+nessesarily need to provide the same functionality. Message routing will push the
+message to the correct agent.</p>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="production.html">Installation and configuration guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="development.html">Development documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="concepts.html">Concepts</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="concepts.html#messaging-with-amqp">Messaging with AMQP</a></li>
-<li class="toctree-l3"><a class="reference internal" href="concepts.html#clacks-overview">Clacks overview</a></li>
-</ul>
+<li><p class="first"><strong>Automatic load balancing</strong></p>
+<p>Plugins provided by more than one agent automatically benefit from automatic load
+balancing.</p>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="common/index.html">The Clacks <em>common</em> library</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="common/env.html">Environment access</a></li>
-<li class="toctree-l3"><a class="reference internal" href="common/config.html">Configuration handling</a></li>
-<li class="toctree-l3"><a class="reference internal" href="common/log.html">Logging</a></li>
-<li class="toctree-l3"><a class="reference internal" href="common/event.html">Event handling</a></li>
-<li class="toctree-l3"><a class="reference internal" href="common/event.html#available-events">Available events</a></li>
-<li class="toctree-l3"><a class="reference internal" href="common/utils.html">Utilities</a></li>
-<li class="toctree-l3"><a class="reference internal" href="common/components.html">Components</a></li>
-</ul>
+<li><p class="first"><strong>Extensible client</strong></p>
+<p>Additionally to agents, clients can be registered/joined to your domain. You can
+simply provide new client functionality by a DBUS/shell proxy. Your clients get
+an automatic inventory which can be stored by an agent interrested in it.</p>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="agent/index.html">Agent</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="agent/index.html#overview">Overview</a></li>
-<li class="toctree-l3"><a class="reference internal" href="agent/index.html#using-the-binary">Using the binary</a></li>
-<li class="toctree-l3"><a class="reference internal" href="agent/command.html">Command registry</a></li>
-<li class="toctree-l3"><a class="reference internal" href="agent/acl.html">ACL handling</a></li>
-<li class="toctree-l3"><a class="reference internal" href="agent/scheduler.html">Scheduler service</a></li>
-<li class="toctree-l3"><a class="reference internal" href="agent/amqp.html">AMQP service</a></li>
-<li class="toctree-l3"><a class="reference internal" href="agent/http.html">HTTP service</a></li>
-<li class="toctree-l3"><a class="reference internal" href="agent/ldap.html">LDAP Handler</a></li>
-<li class="toctree-l3"><a class="reference internal" href="agent/jsonrpc.html">JSON RPC service</a></li>
-<li class="toctree-l3"><a class="reference internal" href="agent/jsonrpc.html#module-clacks.agent.jsonrpc_objects">JSON RPC objects</a></li>
-<li class="toctree-l3"><a class="reference internal" href="agent/objects.html">Object abstraction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="agent/objects.html#object-factory">Object Factory</a></li>
-<li class="toctree-l3"><a class="reference internal" href="agent/objects.html#object-proxy">Object Proxy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="agent/objects.html#object-index">Object Index</a></li>
-</ul>
+<li><p class="first"><strong>Easy to register RPC methods</strong></p>
+<p>From the programmers point of view, plugins just need to inherit the Plugin class
+and export their methods using the &#64;Command decorator. This is unique for clients
+and agents.</p>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="client/index.html">Client</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="client/index.html#overview">Overview</a></li>
-<li class="toctree-l3"><a class="reference internal" href="client/index.html#joining-clients">Joining clients</a></li>
-<li class="toctree-l3"><a class="reference internal" href="client/index.html#using-the-binaries">Using the binaries</a></li>
-<li class="toctree-l3"><a class="reference internal" href="client/command.html">Command registry</a></li>
-<li class="toctree-l3"><a class="reference internal" href="client/amqp.html">AMQP service</a></li>
-<li class="toctree-l3"><a class="reference internal" href="client/join.html">Domain join</a></li>
-</ul>
+<li><p class="first"><strong>Message routing</strong></p>
+<p>The RPC caller does not need to know where the called functionality is provided. It
+automatically reaches the correct location.</p>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="dbus/index.html">DBUS integration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="shell/index.html">Shell and scripting</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="shell/index.html#module-clacks.shell">Using the shell</a></li>
-<li class="toctree-l3"><a class="reference internal" href="shell/index.html#using-the-api">Using the API</a></li>
-</ul>
+<li><p class="first"><strong>XML based eventing system</strong></p>
+<p>Components can send validated XML events which can be interpreted by other components.
+I.e. an asterisk VoIP call can be signalized on that event bus, and a statistics module
+can subscribe for these events to generate its statistics.</p>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="plugins/index.html">Plugin development</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="plugins/agent/index.html">Agent plugins</a></li>
-<li class="toctree-l3"><a class="reference internal" href="plugins/client/index.html">Client plugins</a></li>
-<li class="toctree-l3"><a class="reference internal" href="plugins/dbus/index.html">DBUS plugins</a></li>
-</ul>
+<li><p class="first"><strong>Object abstraction various backends</strong></p>
+<p>The Clacks framework comes with a XML Xquery engine that allows to map certain information
+to various backends. If you - for example - need additional attributes for the predefined
+&#8220;User&#8221; object, you can simply add them to the object description and &#8220;wire&#8221; it to target
+attributes in your LDAP or relational database.</p>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="plugins/index.html#id1">Plugins</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="plugins/index.html#agent-plugins">Agent plugins</a></li>
-<li class="toctree-l3"><a class="reference internal" href="plugins/index.html#client-plugins">Client plugins</a></li>
-<li class="toctree-l3"><a class="reference internal" href="plugins/index.html#dbus-plugins">DBUS plugins</a></li>
-</ul>
+<li><p class="first"><strong>SASL and SSL support</strong></p>
+</li>
+<li><p class="first"><strong>Shell and scripting</strong></p>
+<p>Every exported method can be easily used inside the Clacks shell or from simple Python
+scripts. Other languages can be used, too. They just need to be able to speak JSONRPC over
+HTTP[S] or AMQP[S].</p>
 </li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="packaging.html">Packaging and deployment</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="packaging.html#ubuntu-debian">Ubuntu / Debian</a></li>
-<li class="toctree-l2"><a class="reference internal" href="packaging.html#rpm-build-service">RPM build service</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="license.html">History and License</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="license.html#history-of-the-software">History of the software</a></li>
-<li class="toctree-l2"><a class="reference internal" href="license.html#license">License</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="license.html#clacks-core">Clacks Core</a></li>
-<li class="toctree-l3"><a class="reference internal" href="license.html#jsonrpc-library">JSONRPC library</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
+</div></blockquote>
 </div>
-</div>
-</div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
-<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
-<li><a class="reference internal" href="cindex.html#cindex"><em>Command index</em></a></li>
-<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
-</ul>
 </div>
 
 
@@ -216,23 +139,13 @@ in the new core. And - finally - this documentation is growing on the way to 1.0
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Welcome to Clacks&#8217;s documentation!</a><ul>
-<li><a class="reference internal" href="#what-is-it-all-about">What is it all about?</a><ul>
+<li><a class="reference internal" href="#">Welcome to the Clacks Project</a><ul>
+<li><a class="reference internal" href="#project-links">Project links</a></li>
+<li><a class="reference internal" href="#key-features">Key features</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 
-  <h4>Next topic</h4>
-  <p class="topless"><a href="intro.html"
-                        title="next chapter">Introduction</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/index.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
@@ -259,10 +172,7 @@ in the new core. And - finally - this documentation is growing on the way to 1.0
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="intro.html" title="Introduction"
-             >next</a> |</li>
-        <li><a href="#">Clacks 1.0 documentation</a> &raquo;</li> 
+        <li><a href="#">Clacks Project</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
