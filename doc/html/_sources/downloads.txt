@@ -14,7 +14,7 @@ of your home network. Everything is more or less ready to use.
 
 * **Agent OVA (~1,2GiB)**
 
-  The agent consists of: clacks-agent, LDAP, AMQP, DBXML and some sample data to get stuff running.
+  The agent consists of: clacks-agent, LDAP, AMQP, DBXML, GOsa 2.7.x and some sample data to get stuff running.
 
   `Download agent OVA (04. February 2012) <http://clacks-project.org/downloads/ClacksInfrastructureServer-20120204.ova>`_
 
@@ -38,7 +38,7 @@ You can easily build your own packages using these commands::
    $ cd clacks-<version>
    $ dpkg-buildpackage -us -uc -rfakeroot
 
-Keep in mind that these package may not be 100% "in shape", because the packaging is not updated
+Keep in mind that these packages may not be 100% "in shape", because the packaging is not updated
 regulary until the beta is out.
 
 
