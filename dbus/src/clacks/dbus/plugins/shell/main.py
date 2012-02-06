@@ -98,6 +98,7 @@ from clacks.common.components import Plugin
 from clacks.dbus import get_system_bus
 from json import loads
 from dbus import validate_interface_name, Signature
+from threading import Timer
 
 
 class DBusShellException(Exception):
@@ -136,6 +137,10 @@ class DBusShellHandler(dbus.service.Object, Plugin):
     file_regex = "^[a-zA-Z0-9][a-zA-Z0-9_\.]*$"
     conn = None
 
+    # Time instance that helps us preventing event flooding
+    time_obj = None
+    time_int = 5
+
     def __init__(self):
         self.scripts = {}
 
@@ -163,6 +168,11 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         """
         pass
 
+    def test(self):
+        print "!*<>"
+        self.time_obj.cancel()
+        self.time_obj = None
+
     def __notifier_callback(self, filename = None):
         """
         This method reads scripts found in the 'dbus.script_path' and
@@ -188,7 +198,16 @@ class DBusShellHandler(dbus.service.Object, Plugin):
             self.log.debug("registered script(s): %s " % (", ".join(self.scripts.keys())))
 
             # Now send an event that indicates that the signature has changed.
-            self._signatureChanged("")
+            # But wait a given amount of time, to see if more events will follow
+            # to avoid flooding the dbus with events.
+
+            # Cancel running jobs
+            if self.time_obj:
+                self.time_obj.cancel()
+
+            # Inititate a new job.
+            self.time_obj = Timer(self.time_int, self._signatureChanged, [""])
+            self.time_obj.start()
         else:
             self.log.debug("the D-Bus shell script path '%s' does not exists! " % (self.script_path,))
 
