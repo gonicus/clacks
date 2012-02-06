@@ -204,7 +204,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         # We cannot register dbus methods containing '.' so replace them.
         dbus_func_name = filename.replace(".","_")
 
-        # Check if the file was removed or changed. 
+        # Check if the file was removed or changed.
         if not os.path.exists(filepath) and filename in self.scripts:
             del(self.scripts[filename])
             self.log.debug("unregistered D-Bus shell script '%s'" % (filename,))
@@ -243,7 +243,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
                         # it as instance method to ourselves
                         setattr(f, '__name__', dbus_func_name)
                         setattr(self.__class__, dbus_func_name, f)
-                        self.register_dbus_method(f, 'org.clacks', in_signature="ssss", out_signature=None)
+                        self.register_dbus_method(f, 'org.clacks', in_sig=data[1]['in'], out_sig=data[1]['out'])
 
                 else:
                     self.log.debug("skipped registering D-Bus shell script '%s', it is not executable" % (filepath))
@@ -260,8 +260,12 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         """
 
         # Call the script with the --signature parameter
-        scall = Popen([path, '--signature'], stdout=PIPE, stderr=PIPE)
-        scall.wait()
+        try:
+            scall = Popen([path, '--signature'], stdout=PIPE, stderr=PIPE)
+            scall.wait()
+        except OSError as e:
+            self.log.info("failed to read signature from D-Bus shell script '%s' (%s) " % (path, str(e)))
+            return
 
         # Check returncode of the script call.
         if scall.returncode != 0:
@@ -307,7 +311,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
                 'stdout': res.stdout.read(),
                 'stderr': res.stderr.read()})
 
-    def register_dbus_method(self, func, dbus_interface, in_signature=None, out_signature=None):
+    def register_dbus_method(self, func, dbus_interface, in_sig=[], out_sig=[]):
         """
         Marks the given method as exported to the dbus.
         """
@@ -317,8 +321,11 @@ class DBusShellHandler(dbus.service.Object, Plugin):
 
         # Dynamically create argument list
         args = []
-        for arg in tuple(Signature(in_signature)):
-            args.append("arg_"+str(arg)+"_"+str(len(args)))
+        out_signature = out_sig
+        in_signature = ""
+        for entry in in_sig:
+            args.append(entry.keys()[0])
+            in_signature += entry.values()[0]
 
         # Set DBus specific properties
         func._dbus_is_method = True
@@ -358,10 +365,10 @@ class DBusShellHandler(dbus.service.Object, Plugin):
 
         # Manually reload the list of registered methods.
         # Reset list first
+
         cname = self.__module__ + "." + self.__class__.__name__
         old_list = self._dbus_class_table[cname]['org.clacks']
         try:
-            old_list = self._dbus_class_table[cname]['org.clacks']
 
             # Reload list
             for func in inspect.getmembers(self, predicate=inspect.ismethod):
