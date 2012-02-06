@@ -81,6 +81,9 @@ class DBUSProxy(Plugin):
     clacks_dbus = None
     methods = None
 
+    # DBus proxy object
+    clacks_dbus = None
+
     # Type map for signature checking
     _type_map = {
                  'as': [list],
@@ -105,13 +108,25 @@ class DBUSProxy(Plugin):
         self.bus = dbus.SystemBus()
         self.methods = {}
 
-        # Register ourselfs for the signature change event
-        bus = dbus.SystemBus()
-        clacks_dbus = bus.get_object('org.clacks', '/org/clacks/shell')
-        clacks_dbus.connect_to_signal("_signatureChanged", self.__signatureChanged_received, dbus_interface="org.clacks")
+        # Register ourselfs for bus changes on org.clacks
+        self.bus.watch_name_owner("org.clacks", self.__dbus_proxy_monitor)
 
-        # Try to load signatures initially
-        self.reload_signatures()
+    def __dbus_proxy_monitor(self, bus_name):
+        """
+        This method monitors the DBus service 'org.clacks' and whenever there is a
+        change in the status (dbus closed/startet) we will take notice.
+        And can stop or restart singature checking.
+        """
+        if "org.clacks" in self.bus.list_names():
+            if self.clacks_dbus:
+                del(self.clacks_dbus)
+            self.clacks_dbus = self.bus.get_object('org.clacks', '/org/clacks/shell')
+            self.clacks_dbus.connect_to_signal("_signatureChanged", self.__signatureChanged_received, dbus_interface="org.clacks")
+            self.log.info("established dbus connection")
+        else:
+            if self.clacks_dbus:
+                del(self.clacks_dbus)
+            self.log.info("lost dbus connection")
 
     def __signatureChanged_received(self, filename):
         """
@@ -123,7 +138,7 @@ class DBUSProxy(Plugin):
         """
         Reloads the dbus signatures.
         """
-        if not "org.clacks" in self.bus.list_names():
+        if not self.clacks_dbus:
             self.log.debug("no dbus service registered for '%s'. The clacks-dbus seems not to be running!" % ("org.clacks"))
         else:
             try:
@@ -272,6 +287,10 @@ class DBUSProxy(Plugin):
         ...     A list of parameters for the method call.
         ======= ==============
         """
+
+        # Check if we've got a dbus proxy object right now.
+        if not self.clacks_dbus:
+            raise DBusProxyException("the clacks-dbus seems not to be running, skipped execution")
 
         # Check given method and parameters
         self._check_parameters(method, args)

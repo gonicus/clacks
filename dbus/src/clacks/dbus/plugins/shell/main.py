@@ -318,6 +318,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         Executes a shell command and returns the result with its return code
         stderr and stdout strings.
         """
+
         # Check if the given script exists
         if cmd not in self.scripts:
             raise NoSuchScriptException("unknown service %s" % cmd)
