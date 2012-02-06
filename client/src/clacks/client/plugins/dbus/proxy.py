@@ -155,7 +155,7 @@ class DBUSProxy(Plugin):
 
         # Trigger resend of capapability event
         amcs = PluginRegistry.getInstance('AMQPClientService')
-        acms.reAnnounce()
+        amcs.reAnnounce()
 
     def _call_introspection(self, service, path, methods = None):
         """
@@ -279,7 +279,7 @@ class DBUSProxy(Plugin):
 
         # Trigger resend of capapability event
         amcs = PluginRegistry.getInstance('AMQPClientService')
-        acms.reAnnounce()
+        amcs.reAnnounce()
 
     @Command()
     def listDBusMethods(self):
