@@ -148,8 +148,14 @@ class DBUSProxy(Plugin):
             except DBusException as exception:
                 self.log.debug("failed to load dbus methods (e.g. check rights in dbus config): %s" % (str(exception)))
 
-        #TODO: Puplish new signatures to the agent.
-        print "TODO: Need to publish new signatures to the agent."
+        # (Re-)register the methods we've found
+        ccr = PluginRegistry.getInstance('ClientCommandRegistry')
+        for name in self.methods.keys():
+            ccr.register(name, 'DBUSProxy.callDBusMethod', [name], ['(signatur)'], 'docstring')
+
+        # Trigger resend of capapability event
+        amcs = PluginRegistry.getInstance('AMQPClientService')
+        acms.reAnnounce()
 
     def _call_introspection(self, service, path, methods = None):
         """
@@ -260,6 +266,7 @@ class DBUSProxy(Plugin):
                 if entry.tag == "node":
                     sname = entry.get('name')
                     self._call_introspection(service, os.path.join(path, sname), methods)
+
         return methods
 
     def serve(self):
@@ -269,6 +276,10 @@ class DBUSProxy(Plugin):
         ccr = PluginRegistry.getInstance('ClientCommandRegistry')
         for name in self.methods.keys():
             ccr.register(name, 'DBUSProxy.callDBusMethod', [name], ['(signatur)'], 'docstring')
+
+        # Trigger resend of capapability event
+        amcs = PluginRegistry.getInstance('AMQPClientService')
+        acms.reAnnounce()
 
     @Command()
     def listDBusMethods(self):

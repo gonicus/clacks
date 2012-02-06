@@ -99,6 +99,9 @@ class AMQPClientService(object):
         # Gather interface information
         self.__announce(True)
 
+    def reAnnounce(self):
+        self.__announce(False)
+
     def commandReceived(self, ssn, message):
         """
         Process incoming commands, coming in with session and message
