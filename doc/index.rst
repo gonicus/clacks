@@ -9,6 +9,14 @@ Clacks was designed as a backend for the GOsa GUI, but does not depend on it. It
 not been named *GOsa-whatever* to avoid naming confusion.
 
 
+Project links
+-------------
+
+:doc:`doc_index`
+
+:doc:`downloads`
+
+
 Key features
 ------------
 
@@ -66,12 +74,3 @@ Key features
    Every exported method can be easily used inside the Clacks shell or from simple Python
    scripts. Other languages can be used, too. They just need to be able to speak JSONRPC over
    HTTP[S] or AMQP[S].
-
-
-Project links
--------------
-
-:doc:`doc_index`
-
-:doc:`downloads`
-
