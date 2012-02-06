@@ -1,7 +1,7 @@
 Downloads
 =========
 
-Clacks is currently under heavy development, so there are now final versions around right
+Clacks is currently under heavy development, so there are no final versions around right
 now. What there is, actually, are preliminary Debian packages, OVAs for playing around and
 of course the obligatory github links.
 
