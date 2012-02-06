@@ -243,7 +243,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
                         # it as instance method to ourselves
                         setattr(f, '__name__', dbus_func_name)
                         setattr(self.__class__, dbus_func_name, f)
-                        self.register_dbus_method(f, 'org.clacks', in_signature="ssss", out_signature=None)
+                        self.register_dbus_method(f, 'org.clacks', in_sig=data[1]['in'], out_sig=data[1]['out'])
 
                 else:
                     self.log.debug("skipped registering D-Bus shell script '%s', it is not executable" % (filepath))
@@ -311,7 +311,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
                 'stdout': res.stdout.read(),
                 'stderr': res.stderr.read()})
 
-    def register_dbus_method(self, func, dbus_interface, in_signature=None, out_signature=None):
+    def register_dbus_method(self, func, dbus_interface, in_sig=[], out_sig=[]):
         """
         Marks the given method as exported to the dbus.
         """
@@ -321,8 +321,11 @@ class DBusShellHandler(dbus.service.Object, Plugin):
 
         # Dynamically create argument list
         args = []
-        for arg in tuple(Signature(in_signature)):
-            args.append("arg_"+str(arg)+"_"+str(len(args)))
+        out_signature = out_sig
+        in_signature = ""
+        for entry in in_sig:
+            args.append(entry.keys()[0])
+            in_signature += entry.values()[0]
 
         # Set DBus specific properties
         func._dbus_is_method = True
