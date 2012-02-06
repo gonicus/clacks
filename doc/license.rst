@@ -35,7 +35,7 @@ License
 =======
 
 Clacks Core
----------
+-----------
  ::
 
     Copyright (c) 2001-2011 GONICUS GmbH

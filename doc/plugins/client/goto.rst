@@ -7,12 +7,6 @@ Powermanagement
 .. autoclass:: clacks.client.plugins.powermanagement.utils.PowerManagement
   :members:
 
-Wake on LAN
------------
-
-.. autoclass:: clacks.client.plugins.wakeonlan.utils.WakeOnLan
-  :members:
-
 Sessions
 --------
 

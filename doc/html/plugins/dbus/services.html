@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,9 +7,9 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Services &mdash; Clacks 1.0 documentation</title>
+    <title>Services &mdash; Clacks Project</title>
     
-    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/clacks.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/cindex.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/requirements.css" type="text/css" />
@@ -27,12 +26,24 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="Clacks 1.0 documentation" href="../../index.html" />
-    <link rel="up" title="Plugin development" href="../index.html" />
-    <link rel="next" title="Packaging and deployment" href="../../packaging.html" />
-    <link rel="prev" title="Notify" href="notify.html" /> 
+    <link rel="top" title="Clacks Project" href="../../index.html" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="../../_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
   </head>
   <body>
+<!--<a href="http://github.com/clacks"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>-->
+<div class="header">
+  <div class="logo">
+    <a href="../../index.html">
+      <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+    </a>
+  </div>
+</div>
+
     <div class="related">
       <h3>Navigation</h3>
       <ul>
@@ -42,15 +53,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="../../packaging.html" title="Packaging and deployment"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="notify.html" title="Notify"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">Clacks 1.0 documentation</a> &raquo;</li>
-          <li><a href="../../development.html" >Development documentation</a> &raquo;</li>
-          <li><a href="../index.html" accesskey="U">Plugin development</a> &raquo;</li> 
+        <li><a href="../../index.html">Clacks Project</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -59,8 +62,70 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="services">
-<h1>Services<a class="headerlink" href="#services" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-clacks.dbus.plugins.services.main">
+<span id="services"></span><h1>Services<a class="headerlink" href="#module-clacks.dbus.plugins.services.main" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="clacks-d-bus-system-service-plugin">
+<h2>Clacks D-Bus System Service Plugin<a class="headerlink" href="#clacks-d-bus-system-service-plugin" title="Permalink to this headline">¶</a></h2>
+<p>Allows to manage client services and the runlevel.</p>
+<dl class="class">
+<dt id="clacks.dbus.plugins.services.main.DBusUnixServiceHandler">
+<em class="property">class </em><tt class="descclassname">clacks.dbus.plugins.services.main.</tt><tt class="descname">DBusUnixServiceHandler</tt><a class="headerlink" href="#clacks.dbus.plugins.services.main.DBusUnixServiceHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>The clacks-dbus system-service-plugin allows to manage services
+running on the client side. Services can be maintained by executing
+actions for them, e.g. <tt class="docutils literal"><span class="pre">start</span></tt>, <tt class="docutils literal"><span class="pre">restart</span></tt>, <tt class="docutils literal"><span class="pre">stop</span></tt> and so on,
+whatever action the service supports.</p>
+<p>The status of all services can be listed and additionally the
+runlevel can be read and set to another level.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">clientDispatch</span><span class="p">(</span><span class="s">&quot;49cb1287-db4b-4ddf-bc28-5f4743eac594&quot;</span><span class="p">,</span> <span class="s">&quot;dbus_service_get_runlevel&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">clientDispatch</span><span class="p">(</span><span class="s">&quot;49cb1287-db4b-4ddf-bc28-5f4743eac594&quot;</span><span class="p">,</span> <span class="s">&quot;dbus_service_set_runlevel&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="clacks.dbus.plugins.services.main.DBusUnixServiceHandler.get_service">
+<tt class="descname">get_service</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#clacks.dbus.plugins.services.main.DBusUnixServiceHandler.get_service" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns status information for the given service.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="clacks.dbus.plugins.services.main.DBusUnixServiceHandler.get_services">
+<tt class="descname">get_services</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.dbus.plugins.services.main.DBusUnixServiceHandler.get_services" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns status information for all services.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="clacks.dbus.plugins.services.main.DBusUnixServiceHandler.service_action">
+<tt class="descname">service_action</tt><big>(</big><em>service</em>, <em>action</em><big>)</big><a class="headerlink" href="#clacks.dbus.plugins.services.main.DBusUnixServiceHandler.service_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes a service action</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="clacks.dbus.plugins.services.main.DBusUnixServiceHandler.service_get_runlevel">
+<tt class="descname">service_get_runlevel</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.dbus.plugins.services.main.DBusUnixServiceHandler.service_get_runlevel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current runlevel of the clacks-client.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="clacks.dbus.plugins.services.main.DBusUnixServiceHandler.service_set_runlevel">
+<tt class="descname">service_set_runlevel</tt><big>(</big><em>level</em><big>)</big><a class="headerlink" href="#clacks.dbus.plugins.services.main.DBusUnixServiceHandler.service_set_runlevel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a new runlevel for the clacks-client</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="clacks.dbus.plugins.services.main.NoSuchServiceException">
+<em class="property">exception </em><tt class="descclassname">clacks.dbus.plugins.services.main.</tt><tt class="descname">NoSuchServiceException</tt><a class="headerlink" href="#clacks.dbus.plugins.services.main.NoSuchServiceException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception thrown for unknown services</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="clacks.dbus.plugins.services.main.ServiceException">
+<em class="property">exception </em><tt class="descclassname">clacks.dbus.plugins.services.main.</tt><tt class="descname">ServiceException</tt><a class="headerlink" href="#clacks.dbus.plugins.services.main.ServiceException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception thrown for general service failures.</p>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -69,17 +134,14 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="notify.html"
-                        title="previous chapter">Notify</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="../../packaging.html"
-                        title="next chapter">Packaging and deployment</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/plugins/dbus/services.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Services</a><ul>
+<li><a class="reference internal" href="#clacks-d-bus-system-service-plugin">Clacks D-Bus System Service Plugin</a></li>
+</ul>
+</li>
+</ul>
+
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
@@ -106,15 +168,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="../../packaging.html" title="Packaging and deployment"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="notify.html" title="Notify"
-             >previous</a> |</li>
-        <li><a href="../../index.html">Clacks 1.0 documentation</a> &raquo;</li>
-          <li><a href="../../development.html" >Development documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Plugin development</a> &raquo;</li> 
+        <li><a href="../../index.html">Clacks Project</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
