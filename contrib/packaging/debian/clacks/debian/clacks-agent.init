@@ -48,7 +48,7 @@ test -x /usr/sbin/clacks-$SERVICE || exit 0
 . /lib/lsb/init-functions
 
 # Include clacks defaults if available.
-test -f /etc/default/$SERVICE && . /etc/default/$SERVICE
+test -f /etc/default/clacks-$SERVICE && . /etc/default/clacks-$SERVICE
 
 if [ ! -d /var/run/clacks ]; then
     mkdir -p /var/run/clacks

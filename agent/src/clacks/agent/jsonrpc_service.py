@@ -77,11 +77,12 @@ class JSONRPCService(object):
                 default="TecloigJink4")))
 
         # Announce service
-        self.__zeroconf = ZeroconfService(name="Clacks RPC service",
-            port=self.__http.port,
-            stype="_%s._tcp" % self.__http.scheme,
-            text=dict_to_txt_array({'path': self.path, 'service': 'clacks'}))
-        self.__zeroconf.publish()
+        if self.env.config.get("http.announce", default="True").lower() == "true":
+            self.__zeroconf = ZeroconfService(name="Clacks RPC service",
+                port=self.__http.port,
+                stype="_%s._tcp" % self.__http.scheme,
+                text=dict_to_txt_array({'path': self.path, 'service': 'clacks'}))
+            self.__zeroconf.publish()
 
         self.log.info("ready to process incoming requests")
 

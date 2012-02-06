@@ -1,21 +1,41 @@
 # -*- coding: utf-8 -*-
+import re
+import os
 import sys
 import time
 import gettext
 from threading import Thread
+from clacks.client import __version__ as VERSION
 from clacks.client.plugins.join.methods import join_method
 from clacks.common.components.zeroconf_client import ZeroconfClient
 from pkg_resources import resource_filename
 
-# Import PySide classes if available
+# Include locales
+t = gettext.translation('messages', resource_filename("clacks.client", "locale"), fallback=True)
+_ = t.ugettext
 supported = False
-try:
-    from PySide.QtCore import *
-    from PySide.QtGui import *
-    supported = True
 
-except:
+if os.getenv("DISPLAY"):
+    # Import PySide classes if available
+    try:
+        from PySide.QtCore import *
+        from PySide.QtGui import *
+        supported = True
+    
+    except Exception as e:
+        pass
+    
+    if not supported:
+        try:
+            from PyQt4.QtCore import *
+            from PyQt4.QtGui import *
+            supported = True
+    
+        except Exception as e:
+            pass
 
+
+if not supported:
     class QObject():
         pass
 
@@ -24,12 +44,6 @@ except:
 
     class QFrame():
         pass
-
-
-# Include locales
-t = gettext.translation('messages', resource_filename("clacks.client", "locale"), fallback=True)
-_ = t.ugettext
-
 
 
 class CuteGUI(join_method):
@@ -46,7 +60,10 @@ class CuteGUI(join_method):
             mwin = MainWindow()
             mwin.show()
             self.app.exec_()
-            key = self.join(mwin.userEdit.text(), mwin.passwordEdit.text())
+            key = self.join(str(mwin.userEdit.text()), str(mwin.passwordEdit.text()))
+
+    def end_gui(self):
+        self.app.quit()
 
     def show_error(self, error):
         err = QMessageBox()
@@ -65,15 +82,14 @@ class CuteGUI(join_method):
         mwin = WaitForServiceProvider()
         mwin.show()
 
-        QTimer.singleShot(1200, self.zdiscover)
-
+        QTimer.singleShot(1000, self.zdiscover)
         self.app.exec_()
 
         return self.url
 
     def zdiscover(self):
-        self.url = ZeroconfClient.discover(['_amqps._tcp', '_amqp._tcp'], domain=self.domain)[0]
-
+        self.url = ZeroconfClient.discover(self.domain, direct=True)[0]
+        self.app.quit()
 
 
 class FocusNextOnReturn(QObject):
@@ -116,7 +132,7 @@ class MainWindow(QWidget):
         header.setFrameStyle(QFrame.Panel | QFrame.Sunken);
         header.setStyleSheet("QWidget { background-color: white; color: black;}")
 
-        header_text = QLabel("<b>" + _("Clacks Infrastructure") + "</b><br>" + "v1.0")
+        header_text = QLabel("<b>" + _("Clacks Infrastructure") + "</b><br>" + "v%s" % VERSION)
         header_text.setStyleSheet("QWidget { background-color: white; color: black; border: 0; margin: 0; padding: 3;}")
         header_text.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         hbox.addWidget(header_text, 1)

@@ -35,8 +35,8 @@ Package: clacks-client
 Architecture: all
 Conflicts: clacks-agent
 Depends: ${python:Depends}, ${misc:Depends}, python-dateutil, python-netifaces,
- python-crypto, adduser
-Suggests: clacks-dbus, fusioninventory-agent
+ python-crypto, adduser, python-newt
+Suggests: clacks-dbus, fusioninventory-agent, python-pyside | python-qt4, avahi-utils
 Description: clacks infrastructure service - client
  Brief description is missing.
  .

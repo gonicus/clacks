@@ -135,12 +135,13 @@ class AMQPService(object):
                 callback=self.commandReceived)
 
         # Announce service
-        url = parseURL(self.env.config.get("amqp.url"))
-        self.__zeroconf = ZeroconfService(name="Clacks RPC service",
-                port=url['port'],
-                stype="_%s._tcp" % url['scheme'],
-                text=dict_to_txt_array({'path': self.env.domain, 'service': 'clacks'}))
-        self.__zeroconf.publish()
+        if self.env.config.get("amqp.announce", default="True").lower() == "true":
+            url = parseURL(self.env.config.get("amqp.url"))
+            self.__zeroconf = ZeroconfService(name="Clacks RPC service",
+                    port=url['port'],
+                    stype="_%s._tcp" % url['scheme'],
+                    text=dict_to_txt_array({'path': self.env.domain, 'service': 'clacks'}))
+            self.__zeroconf.publish()
 
         self.log.info("ready to process incoming requests")
 

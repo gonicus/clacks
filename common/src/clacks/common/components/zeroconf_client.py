@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
+import re
 import select
 import platform
+import shlex
+import subprocess
+from threading import Thread
 from Queue import Queue
 
 
@@ -9,7 +13,6 @@ if platform.system() != "Windows":
     import dbus
     import avahi
 else:
-    from threading import Thread
     #pylint: disable=F0401
     import pybonjour
 
@@ -58,13 +61,15 @@ class ZeroconfClient(object):
     timeout         The timeout in seconds
     callback        Method to call when we've received something
     domain          optional DNS domain to discover
+    direct          Do not use python DBUS, but the avahi-browse binary
     =============== ============
     """
     __resolved = []
     __services = {}
     oneshot = False
 
-    def __init__(self, regtypes, timeout=2.0, callback=None, domain='local'):
+    def __init__(self, regtypes, timeout=2.0, callback=None, domain='local',
+            direct=False):
         self.__timeout = timeout
         self.__callback = callback
         self.__regtypes = regtypes
@@ -75,12 +80,15 @@ class ZeroconfClient(object):
         self.active = False
 
         if platform.system() != "Windows":
-            self.start = self.startAvahi
-            self.stop = self.stopAvahi
+            if direct:
+                self.start = self.startDirect
+                self.stop = self.stopDirect
+            else:
+                self.start = self.startAvahi
+                self.stop = self.stopAvahi
         else:
             self.start = self.startPybonjour
             self.stop = self.stopPybonjour
-
 
     def __get_path(self, txt):
         l = avahi.txt_array_to_string_array(txt)
@@ -104,17 +112,18 @@ class ZeroconfClient(object):
         return None
 
     @staticmethod
-    def discover(regs, domain=None):
+    def discover(regs, domain=None, direct=False):
         q = Queue()
 
         def done_callback(services):
             q.put(services)
 
-        mdns = ZeroconfClient(regs, callback=done_callback)
+        mdns = ZeroconfClient(regs, callback=done_callback, direct=direct)
         mdns.start()
 
         if domain:
-            sddns = ZeroconfClient(regs, callback=done_callback, domain=domain)
+            sddns = ZeroconfClient(regs, callback=done_callback, domain=domain,
+                    direct=direct)
             sddns.start()
 
         while True:
@@ -128,6 +137,49 @@ class ZeroconfClient(object):
         mdns.stop()
 
         return urls
+
+    def startDirect(self):
+        self.active = True
+
+        def runner():
+            services = None
+
+            while self.active:
+                # Find local services
+                services = self.__direct_start("avahi-browse -atkpr")
+
+                # If there are none, check global services
+                if not services:
+                    services = self.__direct_start("avahi-browse -atkpr -d %s" % self.domain)
+
+                self.__callback([] if not services else services)
+
+        self.__thread = Thread(target=runner)
+        self.__thread.start()
+
+    def __direct_start(self, cmd):
+        service = []
+        args = shlex.split(cmd)
+        output, error = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+        if error:
+            return []
+
+        for line in output.split('\n'):
+            if line.startswith("="):
+                flag, device, wproto, dsc, proto, loc, address, ip, port, txt = line.split(";")
+                txt = re.findall(r'"([^"]+)"', txt)
+                if txt:
+                    info = dict([ v.split("=")[0:2] for v in txt ])
+                    if 'service' in info and info['service'] == 'clacks':
+                        service.append("%s://%s:%s%s" % (proto.split(".")[0][1:], address, port, info['path'] if info['path'].startswith("/") else "/" + info["path"]))
+
+        return list(set(service))
+
+
+
+    def stopDirect(self):
+        self.active = False
+        self.__thread.join()
 
     def startAvahi(self):
         self.__runner = DBusRunner.get_instance()

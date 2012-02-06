@@ -46,6 +46,7 @@ else:
     """
     joiner = """
         join.qt = clacks.client.plugins.join.qt_gui:CuteGUI
+        join.newt = clacks.client.plugins.join.newt_gui:NewtGUI
         join.curses = clacks.client.plugins.join.curses_gui:CursesGUI
         join.cli = clacks.client.plugins.join.cli:Cli
     """
