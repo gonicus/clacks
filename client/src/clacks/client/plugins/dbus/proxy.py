@@ -110,10 +110,19 @@ class DBUSProxy(Plugin):
         clacks_dbus = bus.get_object('org.clacks', '/org/clacks/shell')
         clacks_dbus.connect_to_signal("_signatureChanged", self.__signatureChanged_received, dbus_interface="org.clacks")
 
-        #DEBUG #TODO: FAke call of signature received (Remove me)
-        self.__signatureChanged_received("test")
+        # Try to load signatures initially
+        self.reload_signatures()
 
     def __signatureChanged_received(self, filename):
+        """
+        This is the callback method for our DBus-Event registration for '_signatureChanged'
+        """
+        self.reload_signatures()
+
+    def reload_signatures(self):
+        """
+        Reloads the dbus signatures.
+        """
         if not "org.clacks" in self.bus.list_names():
             self.log.debug("no dbus service registered for '%s'. The clacks-dbus seems not to be running!" % ("org.clacks"))
         else:
@@ -123,6 +132,9 @@ class DBUSProxy(Plugin):
                 self.log.debug("found %s registered dbus methods" % (str(len(self.methods))))
             except DBusException as exception:
                 self.log.debug("failed to load dbus methods (e.g. check rights in dbus config): %s" % (str(exception)))
+
+        #TODO: Puplish new signatures to the agent.
+        print "TODO: Need to publish new signatures to the agent."
 
     def _call_introspection(self, service, path, methods = None):
         """
