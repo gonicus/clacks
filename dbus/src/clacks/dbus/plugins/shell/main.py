@@ -394,7 +394,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
                     self._dbus_class_table[cname]['org.clacks'][func[0]] = func[1].__func__
 
         # Restore the old method list if something goes wrong
-        except Exception as e:
+        except Exception as error:
             self._dbus_class_table[cname]['org.clacks'] = old_list
-            raise Exception("failed to manually register dbus method: %s" % (str(e),))
+            raise DBusShellException("failed to manually register dbus method: %s" % (str(error),))
 
