@@ -134,7 +134,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
     # The path were scripts were read from.
     script_path = None
     log = None
-    file_regex = "^[a-zA-Z0-9][a-zA-Z0-9_\.]*$"
+    file_regex = "^[a-zA-Z][a-zA-Z0-9]*$"
     conn = None
 
     # Time instance that helps us preventing event flooding
@@ -156,7 +156,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
 
         # Start notifier for file changes in /etc/clacks/shell.d
         try:
-            ShellDNotifier(self.script_path, self.file_regex, self.__notifier_callback)
+            ShellDNotifier(self.script_path, self.__notifier_callback)
 
             # Intitially load all signatures
             self.__notifier_callback()
@@ -171,27 +171,31 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         """
         pass
 
-    def __notifier_callback(self, filename = None):
+    def __notifier_callback(self, fullpath = None):
         """
         This method reads scripts found in the 'dbus.script_path' and
         exports them as callable dbus-method.
         """
-
         # Check if we've the required permissions to access the shell.d directory
-        if os.path.exists(self.script_path):
+        if not os.path.exists(self.script_path):
+            self.log.debug("the D-Bus shell script path '%s' does not exists! " % (self.script_path,))
+        else:
 
-            # If the 'filename' was None then reload all scripts else reload the
-            # script given by 'filename'
-            if filename == None:
-                self.scripts = {}
-                path = self.script_path
-                for filename in [n for n in os.listdir(path)]:
-                    self._reload_signature(filename)
+            # If no path or file is given reload all signatures
+            if fullpath == None:
+                fullpath = self.script_path
+
+            # Collect files to look for recursivly
+            if os.path.isdir(fullpath):
+                files = map(lambda x: os.path.join(self.script_path, x), os.listdir(fullpath))
             else:
+                files = [fullpath]
 
-                # Get the script path and try to load the signatures
+            # Check each file if it matches the naming rules
+            for filename in files:
                 self._reload_signature(filename)
 
+            # Send some logging
             self.log.info("registered '%s' D-Bus shell script(s)" % (len(self.scripts.keys())))
             self.log.debug("registered script(s): %s " % (", ".join(self.scripts.keys())))
 
@@ -206,67 +210,64 @@ class DBusShellHandler(dbus.service.Object, Plugin):
             # Inititate a new job.
             self.time_obj = Timer(self.time_int, self._signatureChanged, [""])
             self.time_obj.start()
-        else:
-            self.log.debug("the D-Bus shell script path '%s' does not exists! " % (self.script_path,))
 
-    def _reload_signature(self, filename = None):
+        # Reload the list of regsitered methods
+        self.__reload_dbus_methods()
+
+    def _reload_signature(self, filepath=None):
         """
         Reloads the signature for the given shell script.
         """
 
-        # Prepare path values
-        path = self.script_path
-        filepath = (os.path.join(path, filename))
-
         # We cannot register dbus methods containing '.' so replace them.
-        dbus_func_name = filename.replace(".","_")
+        filename = os.path.basename(filepath)
+        dbus_func_name = os.path.splitext(filename)[0]
+
+        # Perform some checks
+        if not re.match(self.file_regex, dbus_func_name):
+            self.log.debug("skipped event for '%s' it does not match the required naming conditions" % (filename,))
 
         # Check if the file was removed or changed.
-        if not os.path.exists(filepath) and filename in self.scripts:
-            del(self.scripts[filename])
-            self.log.debug("unregistered D-Bus shell script '%s'" % (filename,))
+        elif not os.path.exists(filepath) and filename in self.scripts:
 
+            ## UNREGISTER Shell Script
+
+            del(self.scripts[dbus_func_name])
+            self.log.debug("unregistered D-Bus shell script '%s'" % (filename,))
             try:
                 method = getattr(self, dbus_func_name)
+                setattr(self, dbus_func_name, None)
                 self.unregister_dbus_method(method)
             except:
                 raise
+        elif not os.path.isfile(filepath):
+            self.log.debug("skipped event for '%s' its not a file" % (filename,))
+        elif not os.access(filepath, os.X_OK):
+            self.log.debug("skipped event for '%s' its not an executable file" % (filename,))
         else:
 
-            # Check if the received filename is valid
-            if not re.match(self.file_regex, filename):
-                self.log.debug("skipped registering D-Bus shell script '%s', non-conform filename" % (filename))
-            else:
+            ## REGISTER Shell Script
 
-                # ..is the file executable?
-                if os.access(filepath, os.X_OK):
+            # Parse the script and if this was successful then add it te the list of known once.
+            data = self._parse_shell_script(filepath)
+            if data:
+                self.scripts[dbus_func_name] = data
+                self.log.debug("registered D-Bus shell script '%s' signatures is: %s" % (data[0], data[1]))
 
-                    # Parse the script and if this was successful then add it te the list of known once.
-                    data = self._parse_shell_script(filepath)
-                    if data:
-                        self.scripts[data[0]] = data
-                        self.log.debug("registered D-Bus shell script '%s' signatures is: %s" % (data[0], data[1]))
+                # Dynamically register dbus methods here
+                def f(self, *args):
+                    args = [data[2]] + map(lambda x: str(x), args)
 
-                        # Dynamically register dbus methods here
-                        def f(self, *args):
-                            args = [filepath] + map(lambda x: str(x), args)
+                    # Call the script with the --signature parameter
+                    scall = Popen(args, stdout=PIPE, stderr=PIPE)
+                    scall.wait()
+                    return (scall.returncode, scall.stdout.read(), scall.stderr.read())
 
-                            # Call the script with the --signature parameter
-                            scall = Popen(args, stdout=PIPE, stderr=PIPE)
-                            scall.wait()
-                            return(scall.returncode, scall.stdout.read(), scall.stderr.read())
-
-                        # Dynamically change the functions name and then register
-                        # it as instance method to ourselves
-                        setattr(f, '__name__', dbus_func_name)
-                        setattr(self.__class__, dbus_func_name, f)
-                        self.register_dbus_method(f, 'org.clacks', in_sig=data[1]['in'], out_sig=data[1]['out'])
-
-                else:
-                    self.log.debug("skipped registering D-Bus shell script '%s', it is not executable" % (filepath))
-
-        # Reload the list of regsitered methods
-        self.__reload_dbus_methods()
+                # Dynamically change the functions name and then register
+                # it as instance method to ourselves
+                setattr(f, '__name__', dbus_func_name)
+                setattr(self.__class__, dbus_func_name, f)
+                self.register_dbus_method(f, 'org.clacks', in_sig=data[1]['in'], out_sig='vvv')
 
     def _parse_shell_script(self, path):
         """
@@ -298,7 +299,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
             elif 'out' not in sig or type(sig['out']) not in [str, unicode]:
                 self.log.debug("failed to undertand out-signature of D-Bus shell script '%s'" % (path))
             else:
-                return (os.path.basename(path), sig)
+                return (os.path.basename(path), sig, path)
         except ValueError:
             self.log.debug("failed to undertand signature of D-Bus shell script '%s'" % (path))
         return None
@@ -311,15 +312,16 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         return self.scripts
 
     @dbus.service.method('org.clacks', in_signature='sas', out_signature='a{sv}')
-    def shell_exec(self, cmd, args):
+    def shell_exec(self, action, args):
         """
         Executes a shell command and returns the result with its return code
         stderr and stdout strings.
         """
 
         # Check if the given script exists
-        if cmd not in self.scripts:
-            raise NoSuchScriptException("unknown service %s" % cmd)
+        if action not in self.scripts:
+            raise NoSuchScriptException("unknown service %s" % action)
+        cmd = self.scripts[action][2]
 
         # Execute the script and return the results
         args = map(lambda x: str(x), [os.path.join(self.script_path, cmd)] + args)
