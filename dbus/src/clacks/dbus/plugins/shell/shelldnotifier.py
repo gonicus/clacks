@@ -7,6 +7,7 @@ events about changes made in the shelld directory.
 """
 
 import re
+import os
 import pyinotify
 import logging
 from clacks.common import Environment
@@ -21,20 +22,17 @@ class ShellDNotifier(pyinotify.ProcessEvent):
     Key         Desc
     =========== =====================
     path        The path to check modification for
-    regex       A regular expression of filenames that we are interested in
     callback    A function to call, once we detected a modification.
     =========== =====================
 
     """
     path = None
     callback = None
-    regex = None
 
-    def __init__(self, path, regex, callback):
+    def __init__(self, path, callback):
 
         # Initialize the plugin and set path
         self.bp = self.path = path
-        self.regex = regex
         self.callback = callback
         self.env = Environment.getInstance()
         self.log = logging.getLogger(__name__)
@@ -47,7 +45,8 @@ class ShellDNotifier(pyinotify.ProcessEvent):
         Starts the survailance. This is automatically called in the constructor.
         """
         wm = pyinotify.WatchManager()
-        res = wm.add_watch(self.path, pyinotify.IN_ATTRIB | pyinotify.IN_MODIFY | pyinotify.IN_DELETE | pyinotify.IN_MOVED_TO, rec=True, auto_add=True)
+        res = wm.add_watch(self.path, pyinotify.IN_MOVED_FROM | pyinotify.IN_ATTRIB | \
+                pyinotify.IN_MODIFY | pyinotify.IN_DELETE | pyinotify.IN_MOVED_TO, rec=True, auto_add=True)
         if self.path not in res or res[self.path] != 1:
             raise Exception("failed to add watch to '%s'" % (self.path,))
 
@@ -56,6 +55,12 @@ class ShellDNotifier(pyinotify.ProcessEvent):
         notifier.start()
 
     def process_IN_MOVED_TO(self, event):
+        """
+        Method to process moved files
+        """
+        self.__handle(event.pathname)
+
+    def process_IN_MOVED_FROM(self, event):
         """
         Method to process moved files
         """
@@ -82,10 +87,8 @@ class ShellDNotifier(pyinotify.ProcessEvent):
     def __handle(self, path):
         """
         This method call the 'callback' method once it receives a
-        filename that matches the 'regex' given in 'init'.
+        kernel event about moved ot modified files.
         """
-        shortname = path[len(self.path) +1:]
-        if re.match(self.regex, shortname):
 
-            # Use the callback method to announce the new change event
-            self.callback(shortname)
+        # Use the callback method to announce the new change event
+        self.callback(path)
