@@ -45,62 +45,78 @@ def mainLoop(env):
     try:
         log = logging.getLogger(__name__)
 
-        # Load plugins
-        oreg = ObjectRegistry.getInstance()
-        pr = PluginRegistry()
-        cr = PluginRegistry.getInstance("CommandRegistry")
-        amqp = PluginRegistry.getInstance("AMQPHandler")
-        index = PluginRegistry.getInstance("ObjectIndex")
-
-        wait = 2
-        notifyInterval = 10
-        interval = notifyInterval
-        loadAvg = SystemLoad()
-
-        # Sleep and slice
         while True:
+                # Load plugins
+                oreg = ObjectRegistry.getInstance()
+                pr = PluginRegistry()
+                cr = PluginRegistry.getInstance("CommandRegistry")
+                amqp = PluginRegistry.getInstance("AMQPHandler")
+                index = PluginRegistry.getInstance("ObjectIndex")
 
-            # Threading doesn't seem to work well with python...
-            for p in env.threads:
+                wait = 2
+                notifyInterval = 10
+                interval = notifyInterval
+                loadAvg = SystemLoad()
 
-                # Bail out if we're active in the meanwhile
-                if not env.active:
+                # Sleep and slice
+                while True:
+
+                    # Threading doesn't seem to work well with python...
+                    for p in env.threads:
+
+                        # Bail out if we're active in the meanwhile
+                        if not env.active:
+                            break
+
+                        # Check if we reached the notification interval
+                        interval += wait
+                        if interval > notifyInterval:
+                            interval = 0
+                            load = loadAvg.getLoad()
+                            latency = 0
+                            workers = len(env.threads)
+                            log.debug("load %s, latency %s, workers %s" %
+                                    (load, latency, workers))
+
+                            e = EventMaker()
+                            status = e.Event(
+                                e.NodeStatus(
+                                    e.Id(env.id),
+                                    e.Load(str(load)),
+                                    e.Latency(str(latency)),
+                                    e.Workers(str(workers)),
+                                    e.Indexed("true" if index.index_active() else
+                                        "false"),
+                                )
+                            )
+                            amqp.sendEvent(status)
+
+                        # Disable potentially dead nodes
+                        cr.updateNodes()
+
+                        p.join(wait)
+
+                    # No break, go to main loop
+                    else:
+                        continue
+
+                    # Leave the thread loop
                     break
 
-                # Check if we reached the notification interval
-                interval += wait
-                if interval > notifyInterval:
-                    interval = 0
-                    load = loadAvg.getLoad()
-                    latency = 0
-                    workers = len(env.threads)
-                    log.debug("load %s, latency %s, workers %s" %
-                            (load, latency, workers))
+                # Break, leave main loop
+                if not env.reset_requested:
+                    break
 
-                    e = EventMaker()
-                    status = e.Event(
-                        e.NodeStatus(
-                            e.Id(env.id),
-                            e.Load(str(load)),
-                            e.Latency(str(latency)),
-                            e.Workers(str(workers)),
-                            e.Indexed("true" if index.index_active() else
-                                "false"),
-                        )
-                    )
-                    amqp.sendEvent(status)
+                # Lets do an environment reset now
+                PluginRegistry.shutdown()
 
-                # Disable potentially dead nodes
-                cr.updateNodes()
+                # Wait for threads to shut down
+                for t in env.threads:
+                    t.join(wait)
 
-                p.join(wait)
-
-            # No break, go to main loop
-            else:
-                continue
-
-            # Break, leave main loop
-            break
+                # Make us active and loop from the beginning
+                env.reset_requested = False
+                env.active = True
 
     # Catchall, pylint: disable=W0703
     except Exception as detail:

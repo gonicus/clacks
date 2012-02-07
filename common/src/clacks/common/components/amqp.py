@@ -4,6 +4,7 @@ import logging
 from threading import Thread
 from qpid.messaging import Connection, ConnectionError, Message, uuid4
 from qpid.messaging.util import auto_fetch_reconnect_urls
+from qpid.messaging.exceptions import NotFound, SessionClosed, SessionError
 from qpid.util import connect, ssl
 from qpid.connection import Connection as DirectConnection
 from lxml import etree, objectify
@@ -257,15 +258,24 @@ class AMQPProcessor(Thread):
         self.setDaemon(True)
         self.__ssn = ssn
         self.__callback = callback
+        self.env = Environment.getInstance()
 
     def run(self):
         # Co-initialize COM for windows
         if platform.system() == "Windows":
             pythoncom.CoInitialize()
 
-        while True:
-            msg = self.__ssn.next_receiver().fetch()
-            self.invokeCallback(msg)
+        try:
+            while True:
+                msg = self.__ssn.next_receiver().fetch()
+                self.invokeCallback(msg)
+        except NotFound as e:
+            self.env.log.critical("AMQP main loop stopped: %s" % str(e))
+            self.env.requestRestart()
+        except SessionClosed as e:
+            self.env.log.warning("AMQP session has gone away")
+        except SessionError as e:
+            self.env.log.error("AMQP error: %s" % str(e))
 
     def invokeCallback(self, msg):
         return self.__callback(self.__ssn, msg)
@@ -290,7 +300,12 @@ class EventProvider(object):
         self.log.debug("sending event: %s" % data)
         msg = Message(data)
         msg.user_id = self.__user
-        return self.__sender.send(msg)
+        try:
+            return self.__sender.send(msg)
+        except NotFound as e:
+            self.log.critical("cannot send event: %s" % str(e))
+            self.env.requestRestart()
+            return False
 
 
 class EventConsumer(object):

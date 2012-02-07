@@ -33,6 +33,7 @@ class Environment:
     config = None
     log = None
     domain = ""
+    reset_requested = False
     config = None
     noargs = False
     __instance = None
@@ -119,6 +120,11 @@ class Environment:
         session = scoped_session(sessionmaker(autoflush=True))
         session.configure(bind=sql)
         return session()
+
+    def requestRestart(self):
+        self.log.warning("a component requested an environment reset")
+        self.reset_requested = True
+        self.active = False
 
     @staticmethod
     def getInstance():
