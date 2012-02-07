@@ -211,7 +211,18 @@ class AMQPClientService(object):
 
         more.append(e.NetworkInformation(*netinfo))
 
+        # Build event
+        if initial:
+            info = e.Event(
+                e.ClientAnnounce(
+                    e.Id(self.env.uuid),
+                    e.Name(self.env.id),
+                    *more))
+
+            amqp.sendEvent(info)
+
         # Assemble capabilities
+        more = []
         caps = []
         for command, dsc in self.__cr.commands.iteritems():
             caps.append(
@@ -222,17 +233,8 @@ class AMQPClientService(object):
                 e.Documentation(dsc['doc'])))
         more.append(e.ClientCapabilities(*caps))
 
-        # Build event
-        if initial:
-            info = e.Event(
-                e.ClientAnnounce(
-                    e.Id(self.env.uuid),
-                    e.Name(self.env.id)))
-
-            amqp.sendEvent(info)
-
         info = e.Event(
-            e.ClientSignatureChange(
+            e.ClientSignature(
                 e.Id(self.env.uuid),
                 e.Name(self.env.id),
                 *more))
