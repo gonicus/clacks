@@ -173,7 +173,7 @@ class AMQPClientService(object):
 
     def __handleClientPoll(self, data):
         self.log.debug("received client poll")
-        self.__announce()
+        self.__announce(True)
 
     def __announce(self, initial=False):
         amqp = PluginRegistry.getInstance('AMQPClientHandler')
