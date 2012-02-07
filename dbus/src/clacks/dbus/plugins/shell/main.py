@@ -178,7 +178,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         """
         # Check if we've the required permissions to access the shell.d directory
         if not os.path.exists(self.script_path):
-            self.log.debug("the D-Bus shell script path '%s' does not exists! " % (self.script_path,))
+            self.log.debug("the script path '%s' does not exists! " % (self.script_path,))
         else:
 
             # If no path or file is given reload all signatures
@@ -196,8 +196,9 @@ class DBusShellHandler(dbus.service.Object, Plugin):
                 self._reload_signature(filename)
 
             # Send some logging
-            self.log.info("registered '%s' D-Bus shell script(s)" % (len(self.scripts.keys())))
-            self.log.debug("registered script(s): %s " % (", ".join(self.scripts.keys())))
+            self.log.info("registered %s D-Bus shell scripts" % (len(self.scripts.keys())))
+            if len(self.scripts.keys()):
+                self.log.debug("registered scripts: %s" % (", ".join(self.scripts.keys())))
 
             # Now send an event that indicates that the signature has changed.
             # But wait a given amount of time, to see if more events will follow

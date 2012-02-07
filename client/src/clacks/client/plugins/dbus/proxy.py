@@ -25,8 +25,8 @@ For example the "Clacks D-Bus System Service Plugin" methods are exported withou
 client plugin.
 
 
-What methods are exported
-^^^^^^^^^^^^^^^^^^^^^^^^^
+Which methods are exported?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 All methods of the service 'org.clacks' with any path are exported, if they do not start
 with ``_`` or ``:``.
@@ -145,7 +145,7 @@ class DBUSProxy(Plugin):
         to_unregister = {}
 
         if not self.clacks_dbus:
-            self.log.debug("no dbus service registered for '%s'. The clacks-dbus seems not to be running!" % ("org.clacks"))
+            self.log.debug("no dbus service registered for '%s' - is clacks-dbus running?" % ("org.clacks"))
             to_unregister = self.methods
             self.methods = {}
         else:
@@ -165,19 +165,16 @@ class DBUSProxy(Plugin):
 
                 self.methods = new_methods
                 self.log.debug("found %s registered dbus methods" % (str(len(self.methods))))
+
             except DBusException as exception:
-                self.log.debug("failed to load dbus methods (e.g. check rights in dbus config): %s" % (str(exception)))
+                self.log.debug("failed to load dbus methods: %s" % (str(exception)))
 
         # (Re-)register the methods we've found
         ccr = PluginRegistry.getInstance('ClientCommandRegistry')
-        for name in self.methods.keys():
+        for name in to_register:
             ccr.register(name, 'DBUSProxy.callDBusMethod', [name], ['(signatur)'], 'docstring')
-
-        # TODO: Cajus here are the methods to register and to unregister from the agent.
-        for entry in to_register:
-            print "Register new method:", entry
         for entry in to_unregister:
-            print "Unregister new method:", entry
+            ccr.unregister(name)
 
         # Trigger resend of capapability event
         amcs = PluginRegistry.getInstance('AMQPClientService')
