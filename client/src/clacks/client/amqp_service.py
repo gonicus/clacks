@@ -32,6 +32,8 @@ import sys
 import netifaces
 import traceback
 import logging
+import random
+import time
 from netaddr import IPNetwork
 from zope.interface import implements
 from qpid.messaging import Message
@@ -172,7 +174,9 @@ class AMQPClientService(object):
         sender.send(Message(response))
 
     def __handleClientPoll(self, data):
-        self.log.debug("received client poll")
+        delay = random.randint(0, 30)
+        self.log.debug("received client poll - will answer in %d seconds" % delay)
+        time.sleep(delay)
         self.__announce(True)
 
     def __announce(self, initial=False):
