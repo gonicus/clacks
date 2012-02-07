@@ -86,7 +86,7 @@ class ClientService(Plugin):
         self.__cr = PluginRegistry.getInstance("CommandRegistry")
 
         # Start maintainence timer
-        timer = Timer(10.0, self.__refresh)
+        timer = Timer(5.0, self.__refresh)
         timer.start()
         self.env.threads.append(timer)
 
