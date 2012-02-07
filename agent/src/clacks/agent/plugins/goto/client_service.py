@@ -460,7 +460,20 @@ class ClientService(Plugin):
                 'sig': method.Signature.text,
                 'doc': method.Documentation.text}
 
+        try_inventory = not self.__client[data.Id.text]['caps']
         self.__client[data.Id.text]['caps'] = caps
+
+        # Send an inventory information with the current checksum -
+        # if available
+        if try_inventory and 'request_inventory' in self.__client[client]['caps']:
+            self.log.info("requesting inventory from client %s" % client)
+            db = PluginRegistry.getInstance("XMLDBHandler")
+            checksum = db.xquery("collection('inventory')/e:Inventory[e:ClientUUID/string()='%s']/e:Checksum/string()" % client)
+            if checksum:
+                self.clientDispatch(client, "request_inventory", str(checksum[0]))
+            else:
+                self.clientDispatch(client, "request_inventory")
+
 
     def _handleClientAnnounce(self, data):
         data = data.ClientAnnounce
@@ -496,17 +509,6 @@ class ClientService(Plugin):
                 rm.prepareClient(client)
             except ValueError:
                 pass
-
-        # Send an inventory information with the current checksum -
-        # if available
-        if 'request_inventory' in self.__client[client]['caps']:
-            self.log.info("requesting inventory from client %s" % client)
-            db = PluginRegistry.getInstance("XMLDBHandler")
-            checksum = db.xquery("collection('inventory')/e:Inventory[e:ClientUUID/string()='%s']/e:Checksum/string()" % client)
-            if checksum:
-                self.clientDispatch(client, "request_inventory", str(checksum[0]))
-            else:
-                self.clientDispatch(client, "request_inventory")
 
     def _handleClientLeave(self, data):
         data = data.ClientLeave
