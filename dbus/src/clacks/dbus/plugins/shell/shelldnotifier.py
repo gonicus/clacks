@@ -47,7 +47,10 @@ class ShellDNotifier(pyinotify.ProcessEvent):
         Starts the survailance. This is automatically called in the constructor.
         """
         wm = pyinotify.WatchManager()
-        wm.add_watch(self.path, pyinotify.IN_ATTRIB | pyinotify.IN_MODIFY | pyinotify.IN_DELETE | pyinotify.IN_MOVED_TO, rec=True, auto_add=True)
+        res = wm.add_watch(self.path, pyinotify.IN_ATTRIB | pyinotify.IN_MODIFY | pyinotify.IN_DELETE | pyinotify.IN_MOVED_TO, rec=True, auto_add=True)
+        if self.path not in res or res[self.path] != 1:
+            raise Exception("failed to add watch to '%s'" % (self.path,))
+
         notifier = pyinotify.ThreadedNotifier(wm, self)
         notifier.daemon = True
         notifier.start()

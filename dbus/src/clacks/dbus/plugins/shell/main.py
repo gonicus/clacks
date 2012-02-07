@@ -155,10 +155,13 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         self.script_path = self.env.config.get("dbus.script_path", "/etc/clacks/shell.d").strip("'\"")
 
         # Start notifier for file changes in /etc/clacks/shell.d
-        ShellDNotifier(self.script_path, self.file_regex, self.__notifier_callback)
+        try:
+            ShellDNotifier(self.script_path, self.file_regex, self.__notifier_callback)
 
-        # Intitially load all signatures
-        self.__notifier_callback()
+            # Intitially load all signatures
+            self.__notifier_callback()
+        except Exception as error:
+            self.log.error("failed to start monitoring of '%s'" % (self.script_path))
 
     @dbus.service.signal('org.clacks', signature='s')
     def _signatureChanged(self, filename):
