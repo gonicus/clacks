@@ -228,15 +228,14 @@ class DBusShellHandler(dbus.service.Object, Plugin):
             self.log.debug("skipped event for '%s' it does not match the required naming conditions" % (filename,))
 
         # Check if the file was removed or changed.
-        elif not os.path.exists(filepath) and filename in self.scripts:
+        elif not os.path.exists(filepath) and dbus_func_name in self.scripts:
 
             ## UNREGISTER Shell Script
 
             del(self.scripts[dbus_func_name])
-            self.log.debug("unregistered D-Bus shell script '%s'" % (filename,))
+            self.log.debug("unregistered D-Bus shell script '%s' (%s)" % (dbus_func_name, filename,))
             try:
                 method = getattr(self, dbus_func_name)
-                setattr(self, dbus_func_name, None)
                 self.unregister_dbus_method(method)
             except:
                 raise
