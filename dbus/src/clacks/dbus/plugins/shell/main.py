@@ -168,11 +168,6 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         """
         pass
 
-    def test(self):
-        print "!*<>"
-        self.time_obj.cancel()
-        self.time_obj = None
-
     def __notifier_callback(self, filename = None):
         """
         This method reads scripts found in the 'dbus.script_path' and
