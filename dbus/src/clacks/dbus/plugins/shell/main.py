@@ -139,7 +139,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
 
     # Time instance that helps us preventing event flooding
     time_obj = None
-    time_int = 5
+    time_int = 3
 
     def __init__(self):
         self.scripts = {}

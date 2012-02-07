@@ -123,10 +123,12 @@ class DBUSProxy(Plugin):
             self.clacks_dbus = self.bus.get_object('org.clacks', '/org/clacks/shell')
             self.clacks_dbus.connect_to_signal("_signatureChanged", self.__signatureChanged_received, dbus_interface="org.clacks")
             self.log.info("established dbus connection")
+            self.__signatureChanged_received(None)
         else:
             if self.clacks_dbus:
                 del(self.clacks_dbus)
             self.log.info("lost dbus connection")
+            self.__signatureChanged_received(None)
 
     def __signatureChanged_received(self, filename):
         """
@@ -138,12 +140,30 @@ class DBUSProxy(Plugin):
         """
         Reloads the dbus signatures.
         """
+
+        to_register = {}
+        to_unregister = {}
+
         if not self.clacks_dbus:
             self.log.debug("no dbus service registered for '%s'. The clacks-dbus seems not to be running!" % ("org.clacks"))
+            to_unregister = self.methods
+            self.methods = {}
         else:
             try:
                 self.log.debug('loading dbus-methods registered by clacks (introspection)')
-                self.methods = self._call_introspection("org.clacks", "/")
+                new_methods = self._call_introspection("org.clacks", "/")
+
+                # Detect new methods
+                for meth in new_methods:
+                    if meth not in self.methods or self.methods[meth]['args'] != new_methods[meth]['args']:
+                        to_register[meth] = new_methods[meth]
+
+                # Detect new methods
+                for meth in self.methods:
+                    if meth not in new_methods:
+                        to_unregister[meth] = self.methods[meth]
+
+                self.methods = new_methods
                 self.log.debug("found %s registered dbus methods" % (str(len(self.methods))))
             except DBusException as exception:
                 self.log.debug("failed to load dbus methods (e.g. check rights in dbus config): %s" % (str(exception)))
@@ -152,6 +172,12 @@ class DBUSProxy(Plugin):
         ccr = PluginRegistry.getInstance('ClientCommandRegistry')
         for name in self.methods.keys():
             ccr.register(name, 'DBUSProxy.callDBusMethod', [name], ['(signatur)'], 'docstring')
+
+        # TODO: Cajus here are the methods to register and to unregister from the agent.
+        for entry in to_register:
+            print "Register new method:", entry
+        for entry in to_unregister:
+            print "Unregister new method:", entry
 
         # Trigger resend of capapability event
         amcs = PluginRegistry.getInstance('AMQPClientService')
