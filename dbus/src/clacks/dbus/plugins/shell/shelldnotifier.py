@@ -91,4 +91,4 @@ class ShellDNotifier(pyinotify.ProcessEvent):
         """
 
         # Use the callback method to announce the new change event
-        self.callback(shortname)
+        self.callback(path)
