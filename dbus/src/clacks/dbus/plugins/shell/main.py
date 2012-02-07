@@ -97,7 +97,7 @@ from clacks.common import Environment
 from clacks.common.components import Plugin
 from clacks.dbus import get_system_bus
 from json import loads
-from dbus import validate_interface_name, Signature
+from dbus import validate_interface_name
 from threading import Timer
 
 
@@ -256,7 +256,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
                             # Call the script with the --signature parameter
                             scall = Popen(args, stdout=PIPE, stderr=PIPE)
                             scall.wait()
-                            return(scall.returncode,scall.stdout.read(),scall.stderr.read())
+                            return(scall.returncode, scall.stdout.read(), scall.stderr.read())
 
                         # Dynamically change the functions name and then register
                         # it as instance method to ourselves
@@ -282,8 +282,8 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         try:
             scall = Popen([path, '--signature'], stdout=PIPE, stderr=PIPE)
             scall.wait()
-        except OSError as e:
-            self.log.info("failed to read signature from D-Bus shell script '%s' (%s) " % (path, str(e)))
+        except OSError as error:
+            self.log.info("failed to read signature from D-Bus shell script '%s' (%s) " % (path, str(error)))
             return
 
         # Check returncode of the script call.
@@ -331,7 +331,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
                 'stdout': res.stdout.read(),
                 'stderr': res.stderr.read()})
 
-    def register_dbus_method(self, func, dbus_interface, in_sig=[], out_sig=[]):
+    def register_dbus_method(self, func, dbus_interface, in_sig, out_sig):
         """
         Marks the given method as exported to the dbus.
         """
