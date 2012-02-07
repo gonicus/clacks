@@ -223,8 +223,16 @@ class AMQPClientService(object):
         more.append(e.ClientCapabilities(*caps))
 
         # Build event
+        if initial:
+            info = e.Event(
+                e.ClientAnnounce(
+                    e.Id(self.env.uuid),
+                    e.Name(self.env.id)))
+
+            amqp.sendEvent(info)
+
         info = e.Event(
-            e.ClientAnnounce(
+            e.ClientSignatureChange(
                 e.Id(self.env.uuid),
                 e.Name(self.env.id),
                 *more))

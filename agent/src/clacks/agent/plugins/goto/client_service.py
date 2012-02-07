@@ -76,6 +76,7 @@ class ClientService(Plugin):
                 declare namespace f='http://www.gonicus.de/Events';
                 let $e := ./f:Event
                 return $e/f:ClientAnnounce
+                    or $e/f:ClientSignature
                     or $e/f:ClientLeave
                     or $e/f:UserSession
             """,
@@ -441,11 +442,10 @@ class ClientService(Plugin):
         self.log.debug("updating client '%s' user session: %s" % (data.Id,
                 ','.join(self.__user_session[str(data.Id)])))
 
-    def _handleClientAnnounce(self, data):
-        data = data.ClientAnnounce
+    def _handleClientSignature(self, data):
+        data = data.ClientSignature
         client = data.Id.text
-        self.log.info("client '%s' is joining us" % client)
-        self.systemSetStatus(client, "+O")
+        self.log.info("client '%s' has an signature update for us" % client)
 
         # Remove remaining proxy values for this client
         if client in self.__proxy:
@@ -459,6 +459,14 @@ class ClientService(Plugin):
                 'path': method.Path.text,
                 'sig': method.Signature.text,
                 'doc': method.Documentation.text}
+
+        self.__client[data.Id.text]['caps'] = caps
+
+    def _handleClientAnnounce(self, data):
+        data = data.ClientAnnounce
+        client = data.Id.text
+        self.log.info("client '%s' is joining us" % client)
+        self.systemSetStatus(client, "+O")
 
         # Assemble network information
         network = {}
@@ -475,7 +483,7 @@ class ClientService(Plugin):
         info = {
             'name': data.Name.text,
             'received': time.mktime(t.timetuple()),
-            'caps': caps,
+            'caps': None,
             'network': network
         }
 
