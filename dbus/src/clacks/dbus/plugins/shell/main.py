@@ -196,9 +196,9 @@ class DBusShellHandler(dbus.service.Object, Plugin):
                 self._reload_signature(filename)
 
             # Send some logging
-            self.log.info("registered %s D-Bus shell scripts" % (len(self.scripts.keys())))
-            if len(self.scripts.keys()):
-                self.log.debug("registered scripts: %s" % (", ".join(self.scripts.keys())))
+            self.log.info("found %s scripts to be registered" % (len(self.scripts.keys())))
+            for script in self.scripts.keys():
+                self.log.debug("registered script: %s" % script)
 
             # Now send an event that indicates that the signature has changed.
             # But wait a given amount of time, to see if more events will follow

@@ -158,9 +158,9 @@ class DBUSProxy(Plugin):
                     if meth not in self.methods or self.methods[meth]['args'] != new_methods[meth]['args']:
                         to_register[meth] = new_methods[meth]
 
-                # Detect new methods
+                # Find removed methods
                 for meth in self.methods:
-                    if meth not in new_methods:
+                    if not meth in new_methods:
                         to_unregister[meth] = self.methods[meth]
 
                 self.methods = new_methods
@@ -173,7 +173,7 @@ class DBUSProxy(Plugin):
         ccr = PluginRegistry.getInstance('ClientCommandRegistry')
         for name in to_register:
             ccr.register(name, 'DBUSProxy.callDBusMethod', [name], ['(signatur)'], 'docstring')
-        for entry in to_unregister:
+        for name in to_unregister:
             ccr.unregister(name)
 
         # Trigger resend of capapability event
