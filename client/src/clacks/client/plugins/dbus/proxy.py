@@ -277,10 +277,6 @@ class DBUSProxy(Plugin):
         for name in self.methods.keys():
             ccr.register(name, 'DBUSProxy.callDBusMethod', [name], ['(signatur)'], 'docstring')
 
-        # Trigger resend of capapability event
-        amcs = PluginRegistry.getInstance('AMQPClientService')
-        amcs.reAnnounce()
-
     @Command()
     def listDBusMethods(self):
         """ This method lists all callable dbus methods """

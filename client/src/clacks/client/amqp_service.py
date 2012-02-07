@@ -100,7 +100,8 @@ class AMQPClientService(object):
         self.__announce(True)
 
     def reAnnounce(self):
-        self.__announce(False)
+        if self.__cr:
+            self.__announce(False)
 
     def commandReceived(self, ssn, message):
         """
