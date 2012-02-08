@@ -37,7 +37,7 @@ import time
 from netaddr import IPNetwork
 from zope.interface import implements
 from qpid.messaging import Message
-
+from qpid.messaging.exceptions import NotFound
 from clacks.common.gjson import loads, dumps, ServiceRequestNotTranslatable, BadServiceRequest
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components.registry import PluginRegistry
@@ -88,18 +88,21 @@ class AMQPClientService(object):
             callback=self.commandReceived)
 
         # Add event processor
-        EventConsumer(self.env,
-            amqp.getConnection(),
-            xquery="""
-                declare namespace f='http://www.gonicus.de/Events';
-                let $e := ./f:Event
-                return $e/f:ClientPoll
-            """,
-            callback=self.__handleClientPoll)
+        try:
+            EventConsumer(self.env,
+                amqp.getConnection(),
+                xquery="""
+                    declare namespace f='http://www.gonicus.de/Events';
+                    let $e := ./f:Event
+                    return $e/f:ClientPoll
+                """,
+                callback=self.__handleClientPoll)
 
+            # Gather interface information
+            self.__announce(True)
 
-        # Gather interface information
-        self.__announce(True)
+        except NotFound as e:
+            self.env.log.critical("queue gone: %s" % str(e))
 
     def reAnnounce(self):
         if self.__cr:
