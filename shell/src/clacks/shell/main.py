@@ -40,6 +40,7 @@ import code
 import getopt
 import socket
 import getpass
+import logging
 #pylint: disable=W0611
 import readline
 import gettext
@@ -391,9 +392,11 @@ for i in clacks.getMethods().keys():
                     pyconsole = MyConsole(context)
                     pyconsole.runcode(mycode)
                     pyconsole.interact("")
+
                 print(_("Closing session"))
                 service.proxy.logout()
                 letRun = 0
+
             # In case of a clacks-agent restart we have to double check login
             except HTTPError as e:
                 if e.code == 401:
@@ -403,8 +406,8 @@ for i in clacks.getMethods().keys():
                 else:
                     print(e)
                     sys.exit(1)
-
     return 0
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s (%(levelname)s): %(message)s')
     sys.exit(main())
