@@ -127,8 +127,10 @@ class DBUSProxy(Plugin):
         else:
             if self.clacks_dbus:
                 del(self.clacks_dbus)
-            self.log.info("lost dbus connection")
-            self.__signatureChanged_received(None)
+                self.log.info("lost dbus connection")
+                self.__signatureChanged_received(None)
+            else:
+                self.log.info("no dbus connection")
 
     def __signatureChanged_received(self, filename):
         """

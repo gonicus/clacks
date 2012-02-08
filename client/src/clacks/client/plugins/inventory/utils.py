@@ -44,15 +44,47 @@ class Inventory(Plugin):
     notification functionality.
     """
     _target_ = 'inventory'
+    bus = None
+    clacks_dbus = None
 
     def __init__(self):
         env = Environment.getInstance()
         self.env = env
         self.log = logging.getLogger(__name__)
 
-    @Command()
+        # Register ourselfs for bus changes on org.clacks
+        self.bus = dbus.SystemBus()
+        self.bus.watch_name_owner("org.clacks", self.__dbus_proxy_monitor)
+
+    def __dbus_proxy_monitor(self, bus_name):
+        """
+        This method monitors the DBus service 'org.clacks' and whenever there is a
+        change in the status (dbus closed/startet) we will take notice.
+        And can register or unregister methods to the dbus
+        """
+        if "org.clacks" in self.bus.list_names():
+            if self.clacks_dbus:
+                del(self.clacks_dbus)
+            self.clacks_dbus = self.bus.get_object('org.clacks', '/org/clacks/shell')
+            ccr = PluginRegistry.getInstance('ClientCommandRegistry')
+            ccr.register("request_inventory", 'Inventory.request_inventory', [], ['old_checksum=None'], 'Request client inventory information')
+            self.log.info("established dbus connection")
+
+        else:
+            if self.clacks_dbus:
+                del(self.clacks_dbus)
+                ccr = PluginRegistry.getInstance('ClientCommandRegistry')
+                ccr.unregister("request_inventory")
+                self.log.info("lost dbus connection")
+            else:
+                self.log.info("no dbus connection")
+
+        # Trigger resend of capapability event
+        amcs = PluginRegistry.getInstance('AMQPClientService')
+        amcs.reAnnounce()
+
     def request_inventory(self, old_checksum=None):
-        """ Sent a notification to a given user """
+        """ Request client inventory information """
 
         # Get BUS connection
         try:
