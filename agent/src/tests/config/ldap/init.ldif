@@ -1,0 +1,11 @@
+dn: dc=example,dc=net
+objectClass: dcObject
+objectClass: organization
+dc: example
+o: Example Network
+
+dn: cn=ldapadmin,dc=example,dc=net
+objectClass: simpleSecurityObject
+objectClass: organizationalRole
+cn: ldapadmin
+userPassword: secret
