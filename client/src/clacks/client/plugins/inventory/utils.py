@@ -65,7 +65,7 @@ class Inventory(Plugin):
         if "org.clacks" in self.bus.list_names():
             if self.clacks_dbus:
                 del(self.clacks_dbus)
-            self.clacks_dbus = self.bus.get_object('org.clacks', '/org/clacks/shell')
+            self.clacks_dbus = self.bus.get_object('org.clacks', '/org/clacks/inventory')
             ccr = PluginRegistry.getInstance('ClientCommandRegistry')
             ccr.register("request_inventory", 'Inventory.request_inventory', [], ['old_checksum=None'], 'Request client inventory information')
             self.log.info("established dbus connection")
@@ -88,11 +88,8 @@ class Inventory(Plugin):
 
         # Get BUS connection
         try:
-            bus = dbus.SystemBus()
-            clacks_dbus = bus.get_object('org.clacks', '/org/clacks/inventory')
-
             # Request inventory result from dbus-client (He is running as root and can do much more than we can)
-            result = clacks_dbus.inventory(dbus_interface="org.clacks")
+            result = self.clacks_dbus.inventory(dbus_interface="org.clacks")
 
         except dbus.DBusException as e:
             self.log.debug("failed to call dbus method 'inventory': %s" % (str(e)))
