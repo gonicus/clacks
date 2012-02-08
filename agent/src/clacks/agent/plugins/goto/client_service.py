@@ -460,6 +460,10 @@ class ClientService(Plugin):
                 'sig': method.Signature.text,
                 'doc': method.Documentation.text}
 
+        # This may happen if we get a stuck event
+        if not data.Id.text in self.__client:
+            return
+
         try_inventory = not self.__client[data.Id.text]['caps']
         self.__client[data.Id.text]['caps'] = caps
 

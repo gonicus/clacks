@@ -107,12 +107,14 @@ def mainLoop(env):
                 if not env.reset_requested:
                     break
 
-                # Lets do an environment reset now
-                PluginRegistry.shutdown()
-
                 # Wait for threads to shut down
                 for t in env.threads:
                     t.join(wait)
+                    if hasattr(t, 'stop'):
+                         t.stop()
+
+                # Lets do an environment reset now
+                PluginRegistry.shutdown()
 
                 # Make us active and loop from the beginning
                 env.reset_requested = False
