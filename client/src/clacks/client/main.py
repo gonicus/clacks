@@ -2,10 +2,12 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import time
 import logging
 import pkg_resources
 import codecs
 import traceback
+from random import randint
 
 from clacks.common import Environment
 from clacks.client import __version__ as VERSION
@@ -40,27 +42,50 @@ def mainLoop(env):
     try:
         log = logging.getLogger(__name__)
 
-        # Load plugins
-        PluginRegistry(component='client.module')
-
-        # Sleep and slice
-        wait = 2
         while True:
-            # Threading doesn't seem to work well with python...
-            for p in env.threads:
 
-                # Bail out if we're active in the meanwhile
-                if not env.active:
-                    break
+            # Load plugins
+            PluginRegistry(component='client.module')
 
-                p.join(wait)
+            # Sleep and slice
+            wait = 2
+            while True:
+                # Threading doesn't seem to work well with python...
+                for p in env.threads:
 
-            # No break, go to main loop
-            else:
-                continue
+                    # Bail out if we're active in the meanwhile
+                    if not env.active:
+                        break
+
+                    p.join(wait)
+
+                # No break, go to main loop
+                else:
+                    continue
+
+                # Break, leave main loop
+                break
 
             # Break, leave main loop
-            break
+            if not env.reset_requested:
+                break
+
+            # Wait for threads to shut down
+            for t in env.threads:
+                t.join(wait)
+                if hasattr(t, 'stop'):
+                     t.stop()
+
+            # Lets do an environment reset now
+            PluginRegistry.shutdown()
+            
+            # Make us active and loop from the beginning
+            env.reset_requested = False
+            env.active = True
+
+            sleep = randint(30, 60)
+            env.log.info("waiting %s seconds to try an AMQP connection recovery" % sleep)
+            time.sleep(sleep)
 
     except Exception as detail:
         log.critical("unexpected error in mainLoop")

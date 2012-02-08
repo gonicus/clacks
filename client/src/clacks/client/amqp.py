@@ -6,6 +6,7 @@ from lxml import etree
 from urlparse import urlparse
 from qpid.messaging import Connection
 from qpid.messaging.util import auto_fetch_reconnect_urls
+from qpid.messaging.exceptions import NotFound
 from clacks.common.components import AMQPServiceProxy
 from clacks.common.components.amqp import AMQPHandler, EventProvider
 from clacks.common.components.zeroconf_client import ZeroconfClient
@@ -122,7 +123,11 @@ class AMQPClientHandler(AMQPHandler):
             auto_fetch_reconnect_urls(self._conn)
 
         # Create event provider
-        self._eventProvider = EventProvider(self.env, self._conn)
+        try:
+            self._eventProvider = EventProvider(self.env, self._conn)
+        except NotFound as e:
+            self.env.log.critical("queue has gone: %s" % str(e))
+            self.env.requestRestart()
 
     def __del__(self):
         self.log.debug("shutting down AMQP client handler")
