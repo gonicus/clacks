@@ -1,0 +1,138 @@
+# Include schema files
+include %(config_dir)s/ldap/schema/core.schema
+include %(config_dir)s/ldap/schema/cosine.schema
+include %(config_dir)s/ldap/schema/inetorgperson.schema
+include %(config_dir)s/ldap/schema/openldap.schema
+include %(config_dir)s/ldap/schema/nis.schema
+include %(config_dir)s/ldap/schema/misc.schema
+include %(config_dir)s/ldap/schema/ppolicy.schema
+include %(config_dir)s/ldap/schema/gosa/rfc2739.schema
+include %(config_dir)s/ldap/schema/gosa/samba3.schema
+include %(config_dir)s/ldap/schema/gosa/gosystem.schema
+include %(config_dir)s/ldap/schema/gosa/gofon.schema
+include %(config_dir)s/ldap/schema/gosa/gofax.schema
+include %(config_dir)s/ldap/schema/gosa/goto.schema
+include %(config_dir)s/ldap/schema/gosa/goserver.schema
+include %(config_dir)s/ldap/schema/gosa/gosa-samba3.schema
+include %(config_dir)s/ldap/schema/gosa/goto-mime.schema
+include %(config_dir)s/ldap/schema/gosa/dhcp.schema
+include %(config_dir)s/ldap/schema/gosa/trust.schema
+include %(config_dir)s/ldap/schema/gosa/pureftpd.schema
+include %(config_dir)s/ldap/schema/gosa/fai.schema
+include %(config_dir)s/ldap/schema/gosa/sudo.schema
+include %(config_dir)s/ldap/schema/gosa/openssh-lpk.schema
+include %(config_dir)s/ldap/schema/gosa/nagios.schema
+include %(config_dir)s/ldap/schema/gosa/kolab2.schema
+include %(config_dir)s/ldap/schema/xmpp.schema
+include %(config_dir)s/ldap/schema/dyngroup.schema
+include %(config_dir)s/ldap/schema/gosa/puppet.schema
+include %(config_dir)s/ldap/schema/gosa/gosa-core.schema
+include %(config_dir)s/ldap/schema/gosa/installed-device.schema
+include %(config_dir)s/ldap/schema/gosa/registered-device.schema
+include %(config_dir)s/ldap/schema/gosa/configured-device.schema
+
+
+defaultsearchbase "dc=example,dc=net"
+pidfile  %(config_dir)s/data/slapd.pid
+argsfile %(config_dir)s/data/slapd.args
+
+loglevel        stats
+
+modulepath      /usr/lib/ldap
+moduleload      back_hdb
+
+tool-threads            2
+conn_max_pending        1000
+conn_max_pending_auth   2500
+reverse-lookup          off
+sizelimit               50000
+
+database        hdb
+suffix          "dc=example,dc=net"
+directory       "%(config_dir)s/data"
+mode            0600
+checkpoint      1024 300
+
+dbconfig set_cachesize 1 0 1
+dbconfig set_flags DB_LOG_AUTOREMOVE
+dbconfig set_lk_max_objects 1500
+dbconfig set_lk_max_locks 1500
+dbconfig set_lk_max_lockers 1500
+dbconfig set_lg_regionmax 262144
+dbconfig set_lg_bsize 2097152
+
+rootdn  "cn=ldapadmin,dc=example,dc=net"
+
+index   default                                                sub
+index   uid,mail                                               eq,sub
+index   gosaSnapshotDN                                         eq
+index   gosaSnapshotTimestamp                                  eq,sub
+index   gosaMailAlternateAddress,gosaMailForwardingAddress     eq,sub
+index   cn,sn,givenName,ou                                     pres,eq,sub
+index   objectClass                                            pres,eq
+index   uidNumber,gidNumber,memberuid,uniqueMember             eq
+index   gosaSubtreeACL,gosaObject,gosaUser                     pres,eq
+index   macAddress,gotoMode,member                             eq
+index   FAIpackage                                             eq
+index   telephoneNumber                                        eq,sub
+index   employeeNumber                                         eq
+index   employeeType                                           eq
+index   gotoUserPrinter                                        eq
+index   gotoUserAdminPrinter                                   eq
+index   gotoLdapServer                                         eq,sub
+index   gosaProxyAcctFlags                                     eq
+index   gosaGroupObjects                                       eq,sub
+index   gotoGroupPrinter                                       eq
+index   gotoGroupAdminPrinter                                  eq
+index   sambaDomainName                                        eq
+index   sambaPrimaryGroupSID                                   eq
+index   sambaSID                                               eq,sub
+index   sambaGroupType,sambaSIDList                            eq
+index   entryUUID,entryCSN                                     eq
+index	sudoUser                                               eq
+
+lastmod on
+
+access to attrs=userPassword,sambaPwdLastSet,sambaPwdMustChange,sambaPwdCanChange,shadowMax,shadowExpire
+        by dn.regex="cn=syncrepl,dc=gonicus,dc=de" read
+	by dn.regex="cn=smbadmin,cn=internal,dc=gonicus,dc=de" write
+        by anonymous auth 
+        by self write 
+        by * none
+
+access to attrs=sambaAcctFlags,sambaNextRid,sambaNextGroupRid,sambaNextUserRid,sambaSID,displayName,sambaPasswordHistory,objectClass
+        by dn.regex="cn=syncrepl,dc=gonicus,dc=de" read
+	by dn.regex="cn=smbadmin,cn=internal,dc=gonicus,dc=de" write
+        by * read
+
+access to attrs=sambaLMPassword,sambaNTPassword
+        by dn.regex="cn=syncrepl,dc=gonicus,dc=de" read
+	by dn.regex="cn=smbadmin,cn=internal,dc=gonicus,dc=de" write
+        by anonymous auth
+        by self write
+        by * none
+
+access to attrs=goImapPassword 
+        by dn.regex="cn=syncrepl,dc=gonicus,dc=de" read
+        by * none
+
+access to attrs=goKrbPassword
+        by dn.regex="cn=syncrepl,dc=gonicus,dc=de" read
+        by * none
+
+access to attrs=goFaxPassword
+        by dn.regex="cn=syncrepl,dc=gonicus,dc=de" read
+        by * none
+
+access to attrs=gotoLastUser by * write
+
+access to dn.regex="ou=incoming,dc=gonicus,dc=de"
+        by dn.regex="cn=terminal-admin,dc=gonicus,dc=de" write
+        by dn.regex="cn=syncrepl,dc=gonicus,dc=de" read
+
+access to dn.regex=".*,ou=incoming,dc=gonicus,dc=de"
+        by dn.regex="cn=terminal-admin,dc=gonicus,dc=de" write
+        by dn.regex="cn=syncrepl,dc=gonicus,dc=de" read
+
+access to *
+	by * read
