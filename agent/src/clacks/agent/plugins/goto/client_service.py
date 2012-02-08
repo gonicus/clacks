@@ -54,6 +54,7 @@ class ClientService(Plugin):
     __client = {}
     __proxy = {}
     __user_session = {}
+    __listeners = {}
 
 
     def __init__(self):
@@ -464,20 +465,35 @@ class ClientService(Plugin):
         if not data.Id.text in self.__client:
             return
 
-        try_inventory = not self.__client[data.Id.text]['caps']
+        # Decide if we need to notify someone about new methods
+        current = self.__client[data.Id.text]['caps']
+        for method in [m for m in current.keys() if not m in caps]:
+            self.notify_listeners(data.Id.text, method, False)
+        for method in [m for m in caps if not m in current.keys()]:
+            self.notify_listeners(data.Id.text, method, True)
+
         self.__client[data.Id.text]['caps'] = caps
 
-        # Send an inventory information with the current checksum -
-        # if available
-        if try_inventory and 'request_inventory' in self.__client[client]['caps']:
-            self.log.info("requesting inventory from client %s" % client)
-            db = PluginRegistry.getInstance("XMLDBHandler")
-            checksum = db.xquery("collection('inventory')/e:Inventory[e:ClientUUID/string()='%s']/e:Checksum/string()" % client)
-            if checksum:
-                self.clientDispatch(client, "request_inventory", str(checksum[0]))
-            else:
-                self.clientDispatch(client, "request_inventory")
+    def notify_listeners(self, cid, method, status):
+        if method in self.__listeners:
+            for cb in self.__listeners[method]:
+                cb(cid, method, status)
 
+    def register_listener(self, method, callback):
+        if not method in self.__listeners:
+            self.__listeners[method] = []
+
+        if not callback in self.__listeners[method]:
+            self.__listeners[method].append(callback)
+
+    def unregister_listener(self, method, callback):
+        if not method in self.__listeners:
+            return
+
+        if not callback in self.__listeners[method]:
+            return
+
+        self.__listeners[method].pop(self.__listeners[method].index(callback))
 
     def _handleClientAnnounce(self, data):
         data = data.ClientAnnounce
@@ -500,7 +516,7 @@ class ClientService(Plugin):
         info = {
             'name': data.Name.text,
             'received': time.mktime(t.timetuple()),
-            'caps': None,
+            'caps': {},
             'network': network
         }
 
