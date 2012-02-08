@@ -65,23 +65,27 @@ class Inventory(Plugin):
         if "org.clacks" in self.bus.list_names():
             if self.clacks_dbus:
                 del(self.clacks_dbus)
+
+            # Trigger resend of capapability event
             self.clacks_dbus = self.bus.get_object('org.clacks', '/org/clacks/inventory')
             ccr = PluginRegistry.getInstance('ClientCommandRegistry')
             ccr.register("request_inventory", 'Inventory.request_inventory', [], ['old_checksum=None'], 'Request client inventory information')
+            amcs = PluginRegistry.getInstance('AMQPClientService')
+            amcs.reAnnounce()
             self.log.info("established dbus connection")
 
         else:
             if self.clacks_dbus:
                 del(self.clacks_dbus)
+
+                # Trigger resend of capapability event
                 ccr = PluginRegistry.getInstance('ClientCommandRegistry')
                 ccr.unregister("request_inventory")
+                amcs = PluginRegistry.getInstance('AMQPClientService')
+                amcs.reAnnounce()
                 self.log.info("lost dbus connection")
             else:
                 self.log.info("no dbus connection")
-
-        # Trigger resend of capapability event
-        amcs = PluginRegistry.getInstance('AMQPClientService')
-        amcs.reAnnounce()
 
     def request_inventory(self, old_checksum=None):
         """ Request client inventory information """
