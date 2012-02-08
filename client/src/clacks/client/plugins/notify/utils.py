@@ -52,21 +52,24 @@ class Notify(Plugin):
             ccr.register("notify_all", 'Notify.notify_all', [], \
                     ['title','message','timeout','urgency','icon','actions','recurrence'], \
                     'Sent a notification to a given user')
+            amcs = PluginRegistry.getInstance('AMQPClientService')
+            amcs.reAnnounce()
             self.log.info("established dbus connection")
 
         else:
             if self.clacks_dbus:
                 del(self.clacks_dbus)
+
+                # Trigger resend of capapability event
                 ccr = PluginRegistry.getInstance('ClientCommandRegistry')
                 ccr.unregister("notify")
                 ccr.unregister("notify_all")
+                amcs = PluginRegistry.getInstance('AMQPClientService')
+                amcs.reAnnounce()
                 self.log.info("lost dbus connection")
             else:
                 self.log.info("no dbus connection")
 
-        # Trigger resend of capapability event
-        amcs = PluginRegistry.getInstance('AMQPClientService')
-        amcs.reAnnounce()
 
     def notify(self, user, title, message,
         timeout=0,

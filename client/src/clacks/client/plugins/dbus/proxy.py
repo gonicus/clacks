@@ -124,11 +124,26 @@ class DBUSProxy(Plugin):
             self.clacks_dbus.connect_to_signal("_signatureChanged", self.__signatureChanged_received, dbus_interface="org.clacks")
             self.log.info("established dbus connection")
             self.__signatureChanged_received(None)
+
+            # Trigger resend of capapability event
+            ccr = PluginRegistry.getInstance('ClientCommandRegistry')
+            ccr.register("listDBusMethods", 'DBUSProxy.listDBusMethods', [], [], 'This method lists all callable dbus methods')
+            ccr.register("callDBusMethod", 'DBUSProxy.callDBusMethod', [], ['method', '*args'], \
+                    'This method allows to access registered dbus methods by forwarding methods calls')
+            amcs = PluginRegistry.getInstance('AMQPClientService')
+            amcs.reAnnounce()
         else:
             if self.clacks_dbus:
                 del(self.clacks_dbus)
-                self.log.info("lost dbus connection")
                 self.__signatureChanged_received(None)
+                self.log.info("lost dbus connection")
+
+                # Trigger resend of capapability event
+                ccr = PluginRegistry.getInstance('ClientCommandRegistry')
+                ccr.unregister("listDBusMethods")
+                ccr.unregister("callDBusMethod")
+                amcs = PluginRegistry.getInstance('AMQPClientService')
+                amcs.reAnnounce()
             else:
                 self.log.info("no dbus connection")
 
@@ -302,12 +317,10 @@ class DBUSProxy(Plugin):
         for name in self.methods.keys():
             ccr.register(name, 'DBUSProxy.callDBusMethod', [name], ['(signatur)'], 'docstring')
 
-    @Command()
     def listDBusMethods(self):
         """ This method lists all callable dbus methods """
         return self.methods
 
-    @Command()
     def callDBusMethod(self, method, *args):
         """ This method allows to access registered dbus methods by forwarding methods calls """
 

@@ -35,6 +35,8 @@ class PowerManagement(Plugin):
         if "org.freedesktop.Hal" in self.bus.list_names():
             if self.hal_dbus:
                 del(self.hal_dbus)
+
+            # Trigger resend of capapability event
             self.hal_dbus = self.bus.get_object('org.freedesktop.Hal', '/org/freedesktop/Hal/devices/computer')
             ccr = PluginRegistry.getInstance('ClientCommandRegistry')
             ccr = PluginRegistry.getInstance('ClientCommandRegistry')
@@ -43,23 +45,25 @@ class PowerManagement(Plugin):
             ccr.register("suspend", 'PowerManagement.suspend', [], [], 'Execute a suspend of the client.')
             ccr.register("hibernate", 'PowerManagement.hibernate', [], [], 'Execute a hibernation of the client.')
             ccr.register("setpowersave", 'PowerManagement.setpowersave', [], [], 'Set powersave mode of the client.')
+            amcs = PluginRegistry.getInstance('AMQPClientService')
+            amcs.reAnnounce()
             self.log.info("established dbus connection")
         else:
             if self.hal_dbus:
                 del(self.hal_dbus)
+
+                # Trigger resend of capapability event
                 ccr = PluginRegistry.getInstance('ClientCommandRegistry')
                 ccr.unregister("shutdown")
                 ccr.unregister("reboot")
                 ccr.unregister("suspend")
                 ccr.unregister("hibernate")
                 ccr.unregister("setpowersave")
+                amcs = PluginRegistry.getInstance('AMQPClientService')
+                amcs.reAnnounce()
                 self.log.info("lost dbus connection")
             else:
                 self.log.info("no dbus connection")
-
-        # Trigger resend of capapability event
-        amcs = PluginRegistry.getInstance('AMQPClientService')
-        amcs.reAnnounce()
 
     def shutdown(self):
         """ Execute a shutdown of the client. """
