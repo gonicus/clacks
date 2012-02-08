@@ -61,31 +61,26 @@ class PowerManagement(Plugin):
         amcs = PluginRegistry.getInstance('AMQPClientService')
         amcs.reAnnounce()
 
-    @Command()
     def shutdown(self):
         """ Execute a shutdown of the client. """
         self.hal_dbus.Shutdown(dbus_interface="org.freedesktop.Hal.Device.SystemPowerManagement")
         return True
 
-    @Command()
     def reboot(self):
         """ Execute a reboot of the client. """
         self.hal_dbus.Reboot(dbus_interface="org.freedesktop.Hal.Device.SystemPowerManagement")
         return True
 
-    @Command()
     def suspend(self):
         """ Execute a suspend of the client. """
         self.hal_dbus.Suspend(dbus_interface="org.freedesktop.Hal.Device.SystemPowerManagement")
         return True
 
-    @Command()
     def hibernate(self):
         """ Execute a hibernation of the client. """
         self.hal_dbus.Hibernate(dbus_interface="org.freedesktop.Hal.Device.SystemPowerManagement")
         return True
 
-    @Command()
     def setpowersave(self, enable):
         """ Set powersave mode of the client. """
         self.hal_dbus.SetPowerSave(enable, dbus_interface="org.freedesktop.Hal.Device.SystemPowerManagement")
