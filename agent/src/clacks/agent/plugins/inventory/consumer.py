@@ -59,6 +59,22 @@ class InventoryConsumer(Plugin):
 
         self.log.info("listening for incoming inventory notifications")
 
+        # Register a listener for potential client registries
+        cs = PluginRegistry.getInstance("ClientService")
+        cs.register_listener('request_inventory', self.client_listener)
+
+    def client_listener(self, client, method, mode):
+        if mode:
+            # Send an inventory information with the current checksum
+            self.log.info("requesting inventory from client %s" % client)
+            db = PluginRegistry.getInstance("XMLDBHandler")
+            cs = PluginRegistry.getInstance("ClientService")
+            checksum = db.xquery("collection('inventory')/e:Inventory[e:ClientUUID/string()='%s']/e:Checksum/string()" % client)
+            if checksum:
+                cs.clientDispatch(client, "request_inventory", str(checksum[0]))
+            else:
+                cs.clientDispatch(client, "request_inventory")
+
     def process(self, data):
         """
         Receives a new inventory-event and updates the corresponding

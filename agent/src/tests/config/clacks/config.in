@@ -1,0 +1,76 @@
+[core]
+domain = net.example
+profile = False
+id = admin
+user = clacks
+group = clacks
+admins = admin, agent
+database = sqlite://
+
+[amqp]
+url = amqp://localhost:%(qpid_port)s
+id = admin
+key = secret
+
+[dbxml]
+path = %(config_dir)s/clacks/database
+
+[http]
+host = 0.0.0.0
+port = %(http_port)s
+sslpemfile = %(config_dir)s/clacks/host.pem
+
+[ldap]
+url = ldap://localhost:%(ldap_port)s/dc=example,dc=net
+bind_dn = cn=ldapadmin,dc=example,dc=net
+bind_secret = secret
+pool_size = 10
+tls = False
+
+[loggers]
+keys=root,clacks
+
+[handlers]
+keys=syslog,console,file
+
+[formatters]
+keys=syslog,console
+
+
+[logger_root]
+level=CRITICAL
+handlers=file
+
+[logger_clacks]
+level=INFO
+handlers=file
+qualname=clacks
+propagate=0
+
+[handler_console]
+class=StreamHandler
+formatter=console
+args=(sys.stderr,)
+
+[handler_syslog]
+class=logging.handlers.SysLogHandler
+formatter=syslog
+args=('/dev/log',)
+
+[handler_file]
+class=logging.handlers.TimedRotatingFileHandler
+formatter=syslog
+args=('%(config_dir)s/clacks/agent.log', 'w0', 1, 4)
+
+[formatter_syslog]
+format=%(levelname)s: %(module)s - %(message)s
+datefmt=
+class=logging.Formatter
+
+[formatter_console]
+format=%(asctime)s %(levelname)s: %(module)s - %(message)s
+datefmt=
+class=logging.Formatter
+
+[goto]
+oui-db = /usr/share/pyshared/netaddr/eui/oui.txt

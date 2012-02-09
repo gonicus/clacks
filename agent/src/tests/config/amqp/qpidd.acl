@@ -1,0 +1,90 @@
+# QPID policy file
+#
+# User definition:
+#   user = <user-name>[@domain[/realm]]
+#
+# User/Group lists:
+#   user-list = user1 user2 user3 ...
+#   group-name-list = group1 group2 group3 ...
+#
+# Group definition:
+#   group <group-name> = [user-list] [group-name-list]
+#
+# ACL definition:
+#   permission = [allow|acl|deny|deny-log]
+#   action = [consume|publish|create|access|bind|unbind|delete|purge|update]
+#   object = [virtualhost|queue|exchange|broker|link|route|method]
+#   property = [name|durable|owner|routingkey|passive|autodelete|exclusive|type|alternate|queuename|schemapackage|schemaclass]
+#
+# acl permission {<group-name>|<user-name>|"all"} {action|"all"} [object|"all"] [property=<property-value>]
+#
+# Example:
+#
+# group client = user1@QPID user2@QPID
+# acl allow client publish routingkey=exampleQueue exchange=amq.direct
+#
+# Will allow the group "client" containing of "user1" and "user2" be able to
+# make use of the routing key "exampleQueue" on the "amq.direct" exchange.
+
+# Group definitions
+group admins admin@QPID user@QPID
+group agents admin@QPID
+#group event-publisher agents admins
+#group event-consumer agents admins
+group event-consumer admin@QPID
+group event-publisher admin@QPID
+
+# Admin is allowed to do everything
+acl allow admins all
+
+# Reply queue handling
+acl allow all access exchange name=reply-*
+acl allow all access queue name=reply-* owner=self
+acl allow all create queue name=reply-* durable=false autodelete=true
+acl allow all consume queue name=reply-* owner=self
+acl allow all publish exchange routingkey=reply-* owner=self
+
+# Event producer
+acl allow event-publisher all     queue    name=net.example
+acl allow event-publisher all     exchange name=net.example
+
+# Event consumer
+#TODO: replace "all" by "event-consumer" later on
+acl allow all create  queue    name=event-listener-*
+acl allow all delete  queue    name=event-listener-* owner=self
+acl allow all consume queue    name=event-listener-* owner=self
+acl allow all access  queue    name=event-listener-* owner=self
+acl allow all purge   queue    name=event-listener-* owner=self
+acl allow all access  queue    name=net.example
+acl allow all access  exchange name=net.example
+acl allow all access  exchange name=event-listener-* owner=self
+acl allow all bind    exchange name=net.example queuename=event-listener-* routingkey=event
+acl allow all unbind  exchange name=net.example queuename=event-listener-* routingkey=event
+acl allow all publish exchange name=net.example routingkey=event
+
+# Let agents do everything with the net.example queues and exchanges, agents itself
+# are trusted by now.
+acl allow agents all queue name=net.example.*
+acl allow agents all exchange name=net.example.*
+acl allow agents all exchange name=amq.direct queuename=net.example.*
+
+# Let every authenticated instance publish to the command queues
+acl allow all access   queue    name=net.example.command.*
+acl allow all publish  queue    name=net.example.command.*
+acl allow all publish  exchange routingkey=net.example.command.*
+acl allow all access   exchange name=net.example.command.*
+
+# Let clients create their own queue to listen on
+acl allow all access  queue    name=net.example
+acl allow all access  queue    name=net.example.client.* owner=self
+acl allow all consume queue    name=net.example.client.* owner=self
+acl allow all create  queue    name=net.example.client.* exclusive=true autodelete=true durable=false
+acl allow all access  exchange name=net.example
+acl allow all access  exchange name=net.example.client.* owner=self
+acl allow all bind    exchange name=amq.direct queuename=net.example.client.*
+
+# Let agents send to the client queues
+acl allow agents publish  exchange  routingkey=net.example.client.*
+
+# By default, drop everything else
+acl deny all all
