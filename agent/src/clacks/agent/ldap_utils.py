@@ -126,7 +126,7 @@ class LDAPHandler(object):
             conn.protocol_version = ldap.VERSION3
 
             # If no SSL scheme used, try TLS
-            if ldap.TLS_AVAIL and self.__url.urlscheme != "ldaps":
+            if get("ldap.tls", default="True").lower() == "true" and ldap.TLS_AVAIL and self.__url.urlscheme != "ldaps":
                 try:
                     conn.start_tls_s()
                 except ldap.PROTOCOL_ERROR as detail:

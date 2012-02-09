@@ -1,0 +1,4 @@
+pwcheck_method: auxprop
+auxprop_plugin: sasldb
+sasldb_path: %(config_dir)s/ampq/sasl2/qpidd.sasldb
+mech_list: ANONYMOUS
