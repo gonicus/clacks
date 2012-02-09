@@ -1,7 +1,7 @@
 [core]
 domain = net.example
 profile = False
-id = admin@QPID
+id = admin
 user = clacks
 group = clacks
 admins = admin, agent
@@ -9,7 +9,7 @@ database = sqlite://
 
 [amqp]
 url = amqp://localhost:%(qpid_port)s
-id = admin@QPID
+id = admin
 key = secret
 
 [dbxml]

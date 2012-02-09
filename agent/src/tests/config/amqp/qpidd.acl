@@ -28,11 +28,11 @@
 
 # Group definitions
 group admins admin@QPID user@QPID
-group agents agent@QPID
+group agents admin@QPID
 #group event-publisher agents admins
 #group event-consumer agents admins
-group event-consumer agent@QPID
-group event-publisher agent@QPID
+group event-consumer admin@QPID
+group event-publisher admin@QPID
 
 # Admin is allowed to do everything
 acl allow admins all

@@ -39,11 +39,11 @@
 #max-session-rate=0
 
 # Logging options
-log-to-syslog=yes
-log-to-stderr=no
+log-to-syslog=no
+log-to-stderr=yes
 log-enable=debug+
 log-time=no
-#log-to-file=/var/log/qpid/qpid.log
+log-to-file=%(config_dir)s/amqp/qpidd.log
 #trace=yes
 #log-enable=RULE (notice+)
 #log-time=yes|no (1)
@@ -58,10 +58,10 @@ log-time=no
 #syslog-facility=LOG_XXX (LOG_DAEMON)
 
 # Pid location
-pid-dir=/var/run/qpidd
+#pid-dir=/var/run/qpidd
 
 # Global options
-data-dir=/var/spool/qpidd
+#data-dir=/var/spool/qpidd
 mgmt-enable=yes
 
  Modules
@@ -70,12 +70,12 @@ load-module=/usr/lib/qpid/daemon/acl.so
 #load-module=/usr/lib/qpid/daemon/cluster.so
 #load-module=/usr/lib/qpid/daemon/replicating_listener.so
 load-module=/usr/lib/qpid/daemon/rdma.so
-load-module=/usr/lib/qpid/daemon/ssl.so
+#load-module=/usr/lib/qpid/daemon/ssl.so
 load-module=/usr/lib/qpid/daemon/xml.so
 #load-module=/usr/lib/qpid/daemon/replication_exchange.so
 
 # ACL Options
-acl-file=/etc/qpid/qpidd.acl
+acl-file=%(config_dir)s/amqp/qpidd.acl
 
 # Queue Replication Options
 #replication-exchange-name=EXCHANGE
@@ -95,10 +95,10 @@ acl-file=/etc/qpid/qpidd.acl
 
 # SSL Settings
 #ssl-use-export-policy
-ssl-cert-password-file=/etc/qpid/ssl/broker-pfile
-ssl-cert-db=/etc/qpid/ssl/server_db/
-ssl-cert-name=amqp.intranet.gonicus.de
-ssl-port=5671
+#ssl-cert-password-file=/etc/qpid/ssl/broker-pfile
+#ssl-cert-db=/etc/qpid/ssl/server_db/
+#ssl-cert-name=amqp.intranet.gonicus.de
+#ssl-port=5671
 #ssl-require-client-authentication
 
 # Store Options
