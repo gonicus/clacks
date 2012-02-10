@@ -11,36 +11,6 @@ from json import loads, dumps
 xmldb = XMLDBHandler.get_instance()
 xmldb.setNamespace('objects', 'xs', "http://www.w3.org/2001/XMLSchema")
 
-"""
-Case 1: Simple query
-
-SELECT User.dn, User.objectClass
-BASE 'dc=gonicus,dc=de' SCOPE SUB
-"""
-
-"""
-Working !!
-"""
-
-query = """
-declare function local:test ($x as node(), $attrs as item()*)
-{
-    for $attr in $x/Attributes/* where (string(node-name($attr)) = $attrs)
-        return concat(node-name($attr), ": ", $attr/text())
-};
-
-let $objs := collection('objects')//User
-for $obj in $objs
-
-    let $attrs := ('cn', 'sn')
-    let $attributes := local:test($obj, $attrs)
-
-    where $obj/Attributes/cn[contains(., 'ten')]
-    order by $obj/Attributes/cn/text()
-    return concat("{dn: ", $obj/DN/string(), ", attributes: ", "{", string-join($attributes,", "), "}", "}")
-
-"""
-
 
 query = """
 
@@ -57,11 +27,12 @@ as xs:string
             return concat(
                 local:create_json_key(string(node-name($attr))),
                 ": ",
-                local:create_json_value($attr/text())
+                local:create_json_value(string($attr/text()))
             ),
         ", "),
     "}")
 };
+
 
 declare function local:create_json_value($x as xs:string)
 as xs:string
@@ -91,10 +62,10 @@ as xs:string
 };
 
 
-let $objs := collection('objects')//User
+let $objs := collection('objects')//%(type)s
 for $obj in $objs
 
-    let $attrs := ('cn', 'sn', 'givenName', 'userPassword')
+    let $attrs := (%(attributes)s)
     let $attributes := local:get_attributes_as_json($obj, $attrs)
 
     let $json_dn := local:create_json_entry('dn', local:create_json_value($obj/DN/string()))
@@ -107,7 +78,9 @@ for $obj in $objs
     order by $obj/Attributes/cn/text()
     return $json_result
 
-"""
+""" % { 'type': 'User',
+        'attributes': ", ".join(["'sn'", "'givenName'", "'uid'", "'userPassword'"])
+      }
 
 res = xmldb.xquery(query)
 pprint(res)
