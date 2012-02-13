@@ -5,19 +5,11 @@ from urllib import quote
 from urlparse import urlparse
 from types import DictType
 from clacks.common.gjson import dumps, loads
+from clacks.common.components.json_exception import JSONRPCException
 
 
-class JSONRPCException(Exception):
-    """
-    Exception raises if there's an error when processing JSONRPC related
-    tasks.
-    """
-    def __init__(self, rpcError):
-        super(JSONRPCException, self).__init__(rpcError)
-        self.error = rpcError
 
-
-class ObjectFactory(object):
+class JSONObjectFactory(object):
 
     def __init__(self, proxy, ref, oid, methods, properties, data):
         object.__setattr__(self, "proxy", proxy)
@@ -59,8 +51,8 @@ class ObjectFactory(object):
     @staticmethod
     def get_instance(proxy, obj_type, ref, oid, methods, properties, data=None):
         return type(str(obj_type),
-                (ObjectFactory, object),
-                ObjectFactory.__dict__.copy())(proxy, ref, oid, methods, properties, data)
+                (JSONObjectFactory, object),
+                JSONObjectFactory.__dict__.copy())(proxy, ref, oid, methods, properties, data)
 
 
 class JSONServiceProxy(object):
@@ -104,6 +96,8 @@ class JSONServiceProxy(object):
         self.__serviceURL = serviceURL
         self.__serviceName = serviceName
         self.__mode = mode
+        username = None
+        password = None
 
         if not opener:
             http_handler = urllib2.HTTPHandler()
@@ -128,13 +122,21 @@ class JSONServiceProxy(object):
 
         self.__opener = opener
 
+        # Eventually log in
+        if username and password:
+            self.login(username, password)
+
     def __getattr__(self, name):
         if self.__serviceName != None:
             name = "%s.%s" % (self.__serviceName, name)
 
         return JSONServiceProxy(self.__serviceURL, name, self.__opener, self.__mode)
 
+    def getProxy(self):
+        return JSONServiceProxy(self.__serviceURL, None, self.__opener, self.__mode)
+
     def __call__(self, *args, **kwargs):
+        url = self.__serviceURL
         if len(kwargs) > 0 and len(args) > 0:
             raise JSONRPCException("JSON-RPC does not support positional and keyword arguments at the same time")
 
@@ -148,28 +150,8 @@ class JSONServiceProxy(object):
         else:
             respdata = self.__opener.open(self.__serviceURL + "?" + quote(postdata)).read()
 
-        respdata = self.__opener.open(self.__serviceURL, postdata).read()
         resp = loads(respdata)
         if resp['error'] != None:
             raise JSONRPCException(resp['error'])
-        else:
-            # Look for json class hint
-            if "result" in resp and \
-                isinstance(resp["result"], DictType) and \
-                "__jsonclass__" in resp["result"] and \
-                resp["result"]["__jsonclass__"][0] == "json.ObjectFactory":
 
-                resp = resp["result"]
-                jc = resp["__jsonclass__"][1]
-                del resp["__jsonclass__"]
-
-                # Extract property presets
-                data = {}
-                for prop in resp:
-                    data[prop] = resp[prop]
-
-                jc.insert(0, JSONServiceProxy(self.__serviceURL, None, self.__opener, self.__mode))
-                jc.append(data)
-                return ObjectFactory.get_instance(*jc)
-
-            return resp['result']
+        return resp['result']

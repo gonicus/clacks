@@ -38,7 +38,8 @@ from netaddr import IPNetwork
 from zope.interface import implements
 from qpid.messaging import Message
 from qpid.messaging.exceptions import NotFound
-from clacks.common.gjson import loads, dumps, ServiceRequestNotTranslatable, BadServiceRequest
+from clacks.common.gjson import loads, dumps
+from clacks.common.components.jsonrpc_utils import ServiceRequestNotTranslatable, BadServiceRequest
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components.registry import PluginRegistry
 from clacks.common.components.amqp import AMQPWorker, EventConsumer

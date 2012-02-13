@@ -181,7 +181,7 @@ class JSONRPCObjectMapper(Plugin):
             propvals = dict([(p, getattr(obj, p)) for p in properties])
 
         # Build result
-        result = {"__jsonclass__":["json.ObjectFactory", [obj_type.__name__, ref, oid, methods, properties]]}
+        result = {"__jsonclass__":["json.JSONObjectFactory", [obj_type.__name__, ref, oid, methods, properties]]}
         result.update(propvals)
 
         return result

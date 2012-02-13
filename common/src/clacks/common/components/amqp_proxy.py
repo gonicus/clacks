@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from qpid.messaging import Connection, Message, uuid4
 from types import DictType
-from clacks.common.components.jsonrpc_proxy import JSONRPCException, ObjectFactory
+from clacks.common.components.json_exception import JSONRPCException
 from clacks.common.gjson import dumps, loads
 from clacks.common.components.amqp import AMQPProcessor
 from clacks.common.utils import parseURL
@@ -137,6 +137,13 @@ class AMQPServiceProxy(object):
     def logout(self):
         return True
 
+    def getProxy(self):
+        return AMQPServiceProxy(self.__serviceURL,
+                self.__serviceAddress,
+                None,
+                self.__conn,
+                workers=self.__workers)
+
     def __getattr__(self, name):
         if self.__serviceName != None:
             name = "%s.%s" % (self.__serviceName, name)
@@ -185,40 +192,23 @@ class AMQPServiceProxy(object):
         message.reply_to = 'reply-%s' % self.__ssn.name
         self.__sender.send(message)
 
+        # SVC workaround
+        svc_url = self.__serviceURL
+        svc_addr = self.__serviceAddress
+        svc_conn = self.__conn
+        svc_workers = self.__workers
+
         # Get response
         respdata = self.__receiver.fetch()
         resp = loads(respdata.content)
         self.__ssn.acknowledge(respdata)
 
+        AMQPServiceProxy.worker[self.__serviceAddress][self.__worker]['locked'] = False
+
         if resp['error'] != None:
-            AMQPServiceProxy.worker[self.__serviceAddress][self.__worker]['locked'] = False
             raise JSONRPCException(resp['error'])
 
-        else:
-            # Look for json class hint
-            if "result" in resp and \
-                isinstance(resp["result"], DictType) and \
-                "__jsonclass__" in resp["result"] and \
-                resp["result"]["__jsonclass__"][0] == "json.ObjectFactory":
-
-                resp = resp["result"]
-                jc = resp["__jsonclass__"][1]
-                del resp["__jsonclass__"]
-
-                # Extract property presets
-                data = {}
-                for prop in resp:
-                    data[prop] = resp[prop]
-
-                jc.insert(0, AMQPServiceProxy(self.__serviceURL,
-                    self.__serviceAddress, None, self.__conn,
-                    workers=self.__workers))
-                jc.append(data)
-                AMQPServiceProxy.worker[self.__serviceAddress][self.__worker]['locked'] = False
-                return ObjectFactory.get_instance(*jc)
-
-            AMQPServiceProxy.worker[self.__serviceAddress][self.__worker]['locked'] = False
-            return resp['result']
+        return resp['result']
 
 
 class AMQPEventConsumer(object):
