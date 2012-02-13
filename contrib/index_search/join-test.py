@@ -169,9 +169,23 @@ xmldb.setNamespace('objects', 'xs', "http://www.w3.org/2001/XMLSchema")
 #### """
 
 
+
+
+
+"""
+SELECT User.dn, SambaDomain.sambaDomainName
+BASE User ONE "ou=people,ou=Technik,dc=gonicus,dc=de"
+BASE SambaDomain SUB "dc=gonicus,dc=de"
+WHERE SambaDomain.sambaDomainName = User.sambaDomainName
+ORDER BY User.cn
+LIMIT 0, 100
+
+"""
+
 query = """
 (: Collect possible join-values to minimize loops when iterating through the 'for's
 :)
+
 
 declare default element namespace "http://www.gonicus.de/Objects";
 
@@ -179,22 +193,15 @@ let $join_values := distinct-values( (collection('objects')//User/Attributes/sam
                                     collection('objects')//SambaDomain/Attributes/sambaDomainName) )
 
 (: Prepare lists of potential elements :)
-let $Users := collection('objects')//User[Attributes/sambaDomainName = $join_values]
-let $SambaDomains := collection('objects')//SambaDomain[Attributes/sambaDomainName = $join_values]
+let $Users := collection('objects')//User[Attributes/sambaDomainName = $join_values and matches(DN,"^[^,]*,ou=people,ou=Technik,dc=gonicus,dc=de$")]
+let $SambaDomains := collection('objects')//SambaDomain[Attributes/sambaDomainName = $join_values and matches(DN,"^*.dc=gonicus,dc=de$")]
 
 return subsequence(
 for $SambaDomain in $SambaDomains, $User in $Users
     where ($SambaDomain/Attributes/sambaDomainName = $User/Attributes/sambaDomainName)
     order by $User/Attributes/cn
-    return(
-        concat(
-            $User/Attributes/sn/text(),
-            $User/Attributes/uid/text(),
-            $SambaDomain/Attributes/sambaLockoutDuration/text(),
-            $SambaDomain/Attributes/sambaDomainName/text()
-             )
-          )
-, 0,100)
+    return(concat('User.dn: "', $User/DN/text(), '", SambaDomain.sambaDomainName: "', $SambaDomain/Attributes/sambaDomainName/text(), '"'))
+, 0, 100)
 
 """
 
@@ -207,4 +214,5 @@ for i in range(1,10):
 
 print "*" * 40
 print "Query time: "
+pprint(res)
 pprint(res_t)
