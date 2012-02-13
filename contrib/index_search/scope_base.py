@@ -22,7 +22,11 @@ declare default element namespace "http://www.gonicus.de/Objects";
 
 let $Base := collection('objects')/*[DN/text()='dc=gonicus,dc=de']/*[DN/text()='ou=Technik,dc=gonicus,dc=de']/*[DN/text()='ou=people,ou=Technik,dc=gonicus,dc=de']/*[DN/text()='cn=Fabian Hickert,ou=people,ou=Technik,dc=gonicus,dc=de']
 
-return($Base/DN/text())
+return(
+    for $item in $Base
+    where $item/Attributes/sn/text() = 'Hickert'
+    return($item/DN/text())
+    )
 """
 
 
