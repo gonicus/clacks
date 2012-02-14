@@ -5,6 +5,8 @@ import pkg_resources
 import inspect
 from clacks.common.components.jsonrpc_proxy import JSONObjectFactory
 
+json_handlers = {}
+
 
 class JSONRPCException(Exception):
     """
@@ -70,6 +72,7 @@ class FactoryHandler(JSONDataHandler):
 
     @staticmethod
     def encode(data):
+        # Just pass-thru, openObject generates the relevant information
         return  data
 
     @staticmethod
@@ -98,6 +101,7 @@ class FactoryHandler(JSONDataHandler):
 
     @staticmethod
     def isinstance(data):
+        # Never detect, openObject generates the relevant information
         return False
 
     @staticmethod
@@ -107,8 +111,6 @@ class FactoryHandler(JSONDataHandler):
 
 class PObjectEncoder(json.JSONEncoder):
     def default(self, obj):
-        global json_handlers
-
         for handler in json_handlers:
             if handler.isinstance(obj):
                 return handler.decode(obj)
@@ -131,7 +133,6 @@ def PObjectDecoder(dct):
 
 
 # Load our entrypoints
-json_handlers = {}
 for entry in pkg_resources.iter_entry_points("json.datahandler"):
     mod = entry.load()
     json_handlers[mod.canhandle()] = mod

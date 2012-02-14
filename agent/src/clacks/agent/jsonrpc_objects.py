@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 import uuid
+import datetime
 from types import MethodType
 from clacks.common import Environment
 from clacks.common.utils import N_
 from clacks.common.components import Command, PluginRegistry, ObjectRegistry, AMQPServiceProxy, Plugin
+from sqlalchemy.sql import select
+from sqlalchemy import Table, Column, String, PickleType, DateTime, MetaData
 
 
 class JSONRPCObjectMapper(Plugin):
@@ -29,10 +32,24 @@ class JSONRPCObjectMapper(Plugin):
     """
     _target_ = 'core'
 
-    #TODO: move store to object registry using memcache, DB or whatever
-    #      to allow shared objects accross agent instances, maybe it's
-    #      better to move all the stuff to the ObjectRegistry.
-    __store = {}
+
+    def __init__(self):
+        self.env= Environment.getInstance()
+        obj = self.env.config.get("index.pool", default="objectpool")
+        self.__engine = self.env.getDatabaseEngine('core')
+
+        metadata = MetaData()
+
+        self.__pool = Table(obj, metadata,
+            Column('uuid', String(36), primary_key=True),
+            Column('object', PickleType),
+            Column('created', DateTime))
+
+        metadata.create_all(self.__engine)
+
+        # Establish the connection
+        self.__conn = self.__engine.connect()
+
     __proxy = {}
 
     @Command(__help__=N_("List available object OIDs"))
@@ -57,10 +74,10 @@ class JSONRPCObjectMapper(Plugin):
         ref               UUID / object reference
         ================= ==========================
         """
-        if not ref in JSONRPCObjectMapper.__store:
+        if not self.__get_ref(ref):
             raise ValueError("reference %s not found" % ref)
 
-        del JSONRPCObjectMapper.__store[ref]
+        self.__conn.execute(self.__pool.delete().where(self.__pool.c.uuid == ref))
 
     @Command(__help__=N_("Set property for object on stack"))
     def setObjectProperty(self, ref, name, value):
@@ -75,16 +92,18 @@ class JSONRPCObjectMapper(Plugin):
         value             Property value
         ================= ==========================
         """
-        if not ref in JSONRPCObjectMapper.__store:
+        objdsc = self.__get_ref(ref)
+        if not objdsc:
             raise ValueError("reference %s not found" % ref)
-        if not name in JSONRPCObjectMapper.__store[ref]['properties']:
+
+        if not name in objdsc['object']['properties']:
             raise ValueError("property %s not found" % name)
 
         if not self.__can_be_handled_locally(ref):
             proxy = self.__get_proxy(ref)
             return proxy.setObjectProperty(ref, name, value)
 
-        return setattr(JSONRPCObjectMapper.__store[ref]['object'], name, value)
+        return setattr(objdsc['object']['object'], name, value)
 
     @Command(__help__=N_("Get property from object on stack"))
     def getObjectProperty(self, ref, name):
@@ -100,16 +119,18 @@ class JSONRPCObjectMapper(Plugin):
 
         ``Return``: mixed
         """
-        if not ref in JSONRPCObjectMapper.__store:
+        objdsc = self.__get_ref(ref)
+        if not objdsc:
             raise ValueError("reference %s not found" % ref)
-        if not name in JSONRPCObjectMapper.__store[ref]['properties']:
+
+        if not name in objdsc['object']['properties']:
             raise ValueError("property %s not found" % name)
 
         if not self.__can_be_handled_locally(ref):
             proxy = self.__get_proxy(ref)
             return proxy.getObjectProperty(ref, name)
 
-        return getattr(JSONRPCObjectMapper.__store[ref]['object'], name)
+        return getattr(objdsc['object']['object'], name)
 
     @Command(__help__=N_("Call method from object on stack"))
     def dispatchObjectMethod(self, ref, method, *args):
@@ -126,16 +147,18 @@ class JSONRPCObjectMapper(Plugin):
 
         ``Return``: mixed
         """
-        if not ref in JSONRPCObjectMapper.__store:
+        objdsc = self.__get_ref(ref)
+        if not objdsc:
             raise ValueError("reference %s not found" % ref)
-        if not method in JSONRPCObjectMapper.__store[ref]['methods']:
+
+        if not method in objdsc['object']['methods']:
             raise ValueError("method %s not found" % method)
 
         if not self.__can_be_handled_locally(ref):
             proxy = self.__get_proxy(ref)
             return proxy.dispatchObjectMethod(ref, method, *args)
 
-        return getattr(JSONRPCObjectMapper.__store[ref]['object'], method)(*args)
+        return getattr(objdsc['object']['object'], method)(*args)
 
     @Command(__help__=N_("Instantiate object and place it on stack"))
     def openObject(self, oid, *args, **kwargs):
@@ -168,12 +191,19 @@ class JSONRPCObjectMapper(Plugin):
 
         # Make object instance and store it
         obj = obj_type(*args, **kwargs)
-        JSONRPCObjectMapper.__store[ref] = {
-                'node': env.id,
+
+        objdsc = {'node': env.id,
                 'oid': oid,
                 'object': obj,
                 'methods': methods,
                 'properties': properties}
+
+        self.__conn.execute(self.__pool.insert(), {
+            'uuid': ref,
+            'object': objdsc,
+            'created': datetime.datetime.now(),
+            })
+
 
         # Build property dict
         propvals = {}
@@ -208,8 +238,8 @@ class JSONRPCObjectMapper(Plugin):
         return methods, properties
 
     def __can_be_handled_locally(self, ref):
-        return self.__can_oid_be_handled_locally(
-                JSONRPCObjectMapper.__store[ref]['oid'])
+        res = self.__get_ref(ref)
+        return self.__can_oid_be_handled_locally(res['object']['oid'])
 
     def __can_oid_be_handled_locally(self, oid):
         if not oid in ObjectRegistry.objects:
@@ -217,8 +247,8 @@ class JSONRPCObjectMapper(Plugin):
         return oid in ObjectRegistry.objects
 
     def __get_proxy(self, ref):
-        return self.__get_proxy_by_oid(
-                JSONRPCObjectMapper.__store[ref]['oid'])
+        res = self.__get_ref(ref)
+        return self.__get_proxy_by_oid(res['object']['oid'])
 
     def __get_proxy_by_oid(self, oid):
         # Choose a possible node
@@ -238,3 +268,12 @@ class JSONRPCObjectMapper(Plugin):
             self.__proxy[provider] = AMQPServiceProxy(amqp.url['source'], queue)
 
         return self.__proxy[provider]
+
+    def __get_ref(self, ref):
+        tmp = self.__conn.execute(select([self.__pool.c.uuid, self.__pool.c.object, self.__pool.c.created], self.__pool.c.uuid == ref))
+        res = tmp.fetchone()
+        tmp.close()
+        if not res:
+            return None
+
+        return {'uuid': res[0], 'object': res[1], 'created': res[2]}
