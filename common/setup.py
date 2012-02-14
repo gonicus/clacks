@@ -90,6 +90,7 @@ setup(
         amqp = clacks.common.components.amqp:AMQPHandler
 
         [json.datahandler]
-        datetime = clacks.common.gjson:DateTimeHandler
+        datetime = clacks.common.components.jsonrpc_utils:DateTimeHandler
+        factory = clacks.common.components.jsonrpc_utils:FactoryHandler
     """,
 )

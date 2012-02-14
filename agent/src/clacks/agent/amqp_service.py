@@ -65,7 +65,8 @@ from qpid.messaging import Message
 from qpid.messaging.message import Disposition
 from qpid.messaging.constants import RELEASED
 from qpid.messaging.exceptions import NotFound
-from clacks.common.gjson import loads, dumps, ServiceRequestNotTranslatable, BadServiceRequest
+from clacks.common.gjson import loads, dumps
+from clacks.common.components.jsonrpc_utils import ServiceRequestNotTranslatable, BadServiceRequest
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import PluginRegistry, AMQPWorker, ZeroconfService
 from clacks.common.utils import parseURL, repr2json

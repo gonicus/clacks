@@ -17,7 +17,7 @@ from clacks.common.components.command import CommandInvalid
 from clacks.common.components.command import CommandNotAuthorized
 from clacks.common.components.dbus_runner import DBusRunner
 from clacks.common.components.jsonrpc_proxy import JSONRPCException
-from clacks.common.components.jsonrpc_proxy import ObjectFactory
+from clacks.common.components.jsonrpc_proxy import JSONObjectFactory
 from clacks.common.components.jsonrpc_proxy import JSONServiceProxy
 from clacks.common.components.plugin import Plugin
 from clacks.common.components.registry import PluginRegistry
