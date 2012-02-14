@@ -37,46 +37,47 @@ class Base(Node):
     pass
 
 class Attribute(Node):
-    pass
+
+    def compileForMatch(self):
+        return (self[0] + "." + self[1])
 
 class Attributes(Node):
     pass
 
 class Match(Node):
-    pass
 
+    Match = None
 
-class Condition(Node):
     def compile(self):
-        return("")
+        if self.Match:
+            return ("(%s)" % self.Match[0].compile())
+        else:
+            attr1 = self[0].compileForMatch()
+            comp  = self[1].compileForMatch()
+            attr2 = self[2].compileForMatch()
+
+            return ("%s %s %s" % (attr1, comp, attr2))
 
 class Collection(Node):
     def compile(self):
-       
-        l = self[0]
-        r = self[2]
-        print type(l),type(r)
-        print type(self[2])
         left = self[0].compile()
-        #con = ""#self[1]
-        #right = self[2].compile()
-        #return("(%s %s %s)" % (left, con, right))
-        return("")
-
-    pass
+        right = self[2].compile()
+        con = self[1]
+        return("(%s %s %s)" % (left, con, right))
 
 class Operator(Node):
-    pass
+    def compileForMatch(self):
+        return (self[0])
 
 class Where(Node):
     def compileWhere(self):
-        print self
-        return("")
         return ("where %s" % self[0].compile())
 
 
 class StringValue(Node):
-    pass
+    def compileForMatch(self):
+        ret = self[0].replace("(","\\(").replace(")","\\)").replace(" ","\\ ")
+        return ("\"%s\"" % (ret))
 
 # A definition for space characters including newline and tab
 sp = Star(Space() | '\n' | '\t')
