@@ -2,49 +2,92 @@ from lepl import *
 from time import time
 
 
-class Query(Node):
+class MyNode(Node):
+
+    query_base = None
+
+class Query(MyNode):
 
     __xquery = None
     Where = None
 
+    _objectTypes = None
+    _attributes = None
+
+    def __populate_self(self, obj = None):
+        """
+        This method populates ourselves (self) to the sub elements
+        passed to the constructor. This is necessary to be able to
+        access property of the Query class from all Nodes.
+        """
+        if obj == None:
+            obj = self
+        for entry in obj:
+            if isinstance(entry, Node):
+                if len(entry):
+                    self.__populate_self(entry)
+                entry.query_base = self
+
     def __init__(self, *args):
         super(Query, self).__init__(*args)
 
-        # Create let statement
-        indent = ""
+        self._objectTypes = {}
+        self._attributes = {}
+        self.__populate_self()
+        self.__xquery = ""
+
+        # Check BASE statements and prepare _base variables
+        indent = "\n"
         objectTypes = []
         for entry in self.Base:
             base_object, base_type, base = entry
-            objectTypes.append(base_object)
-            print indent + "let $%s_base := collection('objects')//%s[matches(DN/text(), '%s')]" % (base_object, base_object, base)
+            self._objectTypes[base_object] = "$%s_list" % base_object
+            self.__xquery += indent + "let $%s_base := collection('objects')//%s[matches(DN/text(), '%s')]" % (base_object, base_object, base)
 
+        # Create a list with the selected attributes
+        for attr in self.Attributes[0]:
+            objectType, name = attr
+            self._register_attribute(objectType, name)
+
+        # Create where statement
         if self.Where:
 
             # Create loop
-            print indent + "for " + ", ".join(map(lambda x: "$%s in $%s_base" %(x,x) , objectTypes))
-            indent = "  "
-            print indent + self.Where[0].compileWhere()
+            self.__xquery += indent + "for " + ", ".join(map(lambda x: "$%s in $%s_base" %(x,x) , self._objectTypes.keys()))
+            indent = "\n  "
+            self.__xquery += indent + self.Where[0].compileWhere()
 
-            print indent + "return Attributes"
+            self.__xquery += indent + "return(concat(%s))" % ", ".join(map(lambda x: x + "/text()", self._attributes.values()))
 
         else:
-            print "return $%s_base" % (self.Base[0][0])
+            self.__xquery += "return $%s_base" % (self.Base[0][0])
 
-    def getXQuery():
+    def _register_attribute(self, objectType, attribute):
+        complete = "%s.%s" % (objectType, attribute)
+        if objectType not in self._objectTypes:
+            raise Exception("no BASE definition found for object type '%s' in '%s'" % (objectType, complete))
+        else:
+            if attribute in ['DN', 'UUID']:
+                self._attributes[complete] = "$%s/%s" % (objectType, attribute)
+            else:
+                self._attributes[complete] = "$%s/Attributes/%s" % (objectType, attribute)
+
+    def getXQuery_attribute(self, objectType, attribute):
+        complete = "%s.%s" % (objectType, attribute)
+        if complete not in self._attributes:
+            self._register_attribute(objectType, attribute)
+        return(self._attributes[complete])
+
+    def getXQuery(self):
         return self.__xquery
 
-class Base(Node):
-    pass
-
-class Attribute(Node):
+class Attribute(MyNode):
 
     def compileForMatch(self):
-        return (self[0] + "." + self[1])
+        return self.query_base.getXQuery_attribute(self[0], self[1])+"/text()"
 
-class Attributes(Node):
-    pass
 
-class Match(Node):
+class Match(MyNode):
 
     Match = None
 
@@ -58,26 +101,32 @@ class Match(Node):
 
             return ("%s %s %s" % (attr1, comp, attr2))
 
-class Collection(Node):
+class Collection(MyNode):
     def compile(self):
         left = self[0].compile()
         right = self[2].compile()
-        con = self[1]
+        con = self[1].lower()
         return("(%s %s %s)" % (left, con, right))
 
-class Operator(Node):
+class Operator(MyNode):
     def compileForMatch(self):
         return (self[0])
 
-class Where(Node):
+class Where(MyNode):
     def compileWhere(self):
         return ("where %s" % self[0].compile())
 
 
-class StringValue(Node):
+class StringValue(MyNode):
     def compileForMatch(self):
         ret = self[0].replace("(","\\(").replace(")","\\)").replace(" ","\\ ")
         return ("\"%s\"" % (ret))
+
+class Attributes(MyNode):
+    pass
+class Base(MyNode):
+    pass
+
 
 # A definition for space characters including newline and tab
 sp = Star(Space() | '\n' | '\t')
@@ -124,7 +173,7 @@ condition_tmp = statement & operator & statement
 condition = Delayed()
 condition+= condition_tmp | ~Literal('(') & condition & ~Literal(')') > Match
 
-# Allow to connect conditions (called collection below) 
+# Allow to connect conditions (called collection below)
 collection_operator = ~sp & (Literal('AND') | Literal('OR')) & ~sp
 
 # Create a collection which supports nested conditions
@@ -132,7 +181,7 @@ collection = Delayed()
 collection+= (condition & collection_operator & (condition | collection)) > Collection
 
 joined_collections  = Delayed()
-joined_collections += collection | condition |  ~Literal('(') & joined_collections  & ~Literal(')') 
+joined_collections += collection | condition |  ~Literal('(') & joined_collections  & ~Literal(')')
 
 where = ~Literal('WHERE') & ~sp & joined_collections  > Where
 
@@ -143,12 +192,13 @@ query_parser = ~sp & select & ~sp & bases & ~sp & Optional(where & ~sp) > Query
 query = """
 SELECT User.sn, User.cn
 BASE User SUB "dc=gonicus,dc=de"
+BASE SambaDomain SUB "dc=gonicus,dc=de"
 WHERE ((((User.sn = "Wurst")) AND (User.sn = User.sn)))
 """
 
 #WHERE User.sn = "Wurst" AND User.sn =User.cn
 
-query_parser.parse(query)[0]
+print query_parser.parse(query)[0].getXQuery()
 
 
 
