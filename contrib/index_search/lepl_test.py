@@ -2,17 +2,78 @@ from lepl import *
 from time import time
 
 
-class MyNode(Node):
 
+
+class MyNode(Node):
+    """
+    LEPL allows to link parser statements directly to classes which are
+    derived from the Node class.
+
+    This class is simply used to introduce the class member 'query_base'
+    to the 'Node' class of the lepl module.
+    This is required to access the 'Query' class in all derived Nodes.
+    """
     query_base = None
 
 class Query(MyNode):
+    """
+    This is the base class for our query parser.
 
-    __xquery = None
+    It validates the incoming elements created by the parser and constructs
+    an xquery statement, which can then be used to query the object-database.
+
+    """
+
+    # The class members mapped by the lepl parser.
     Where = None
+    Base = None
+    Attributes = None
 
+    # internal mapping of used object types and attributes.
     _objectTypes = None
     _attributes = None
+    __xquery = None
+
+    def __init__(self, *args):
+
+        # Ensure that this Node is initialuzed.
+        super(Query, self).__init__(*args)
+
+        # Prepare class members
+        self._objectTypes = {}
+        self._attributes = {}
+        self.__populate_self()
+        self.__xquery = ""
+
+        # Handle the incoming 'BASE' here.
+        # A mapping will be created for each used object-type
+        objectTypes = []
+        result = []
+        for entry in self.Base:
+            base_object, base_type, base = entry
+            self._objectTypes[base_object] = "$%s_list" % base_object
+            result.append("let $%s_base := collection('objects')//%s[matches(DN/text(), '%s')]" % (base_object, base_object, base))
+
+        # Create a list with the selected attributes
+        # we'll use them later create the result.
+        for attr in self.Attributes[0]:
+            objectType, name = attr
+            self._register_attribute(objectType, name)
+
+        # Create where statement, which filters the result.
+        if self.Where:
+
+            # Create loop
+            result.append("for " + ", ".join(map(lambda x: "$%s in $%s_base" %(x,x) , self._objectTypes.keys())))
+            result.append(self.Where[0].compileWhere())
+            result.append("return(concat(%s))" % ", ".join(map(lambda x: x + "/text()", self._attributes.values())))
+        else:
+            result.append("return $%s_base" % (self.Base[0][0]))
+
+        #TODO: Add LIMIT statement
+        #TODO: Add ORDER BY statement
+
+        self.__xquery = "\n".join(result)
 
     def __populate_self(self, obj = None):
         """
@@ -28,41 +89,22 @@ class Query(MyNode):
                     self.__populate_self(entry)
                 entry.query_base = self
 
-    def __init__(self, *args):
-        super(Query, self).__init__(*args)
-
-        self._objectTypes = {}
-        self._attributes = {}
-        self.__populate_self()
-        self.__xquery = ""
-
-        # Check BASE statements and prepare _base variables
-        indent = "\n"
-        objectTypes = []
-        for entry in self.Base:
-            base_object, base_type, base = entry
-            self._objectTypes[base_object] = "$%s_list" % base_object
-            self.__xquery += indent + "let $%s_base := collection('objects')//%s[matches(DN/text(), '%s')]" % (base_object, base_object, base)
-
-        # Create a list with the selected attributes
-        for attr in self.Attributes[0]:
-            objectType, name = attr
-            self._register_attribute(objectType, name)
-
-        # Create where statement
-        if self.Where:
-
-            # Create loop
-            self.__xquery += indent + "for " + ", ".join(map(lambda x: "$%s in $%s_base" %(x,x) , self._objectTypes.keys()))
-            indent = "\n  "
-            self.__xquery += indent + self.Where[0].compileWhere()
-
-            self.__xquery += indent + "return(concat(%s))" % ", ".join(map(lambda x: x + "/text()", self._attributes.values()))
-
-        else:
-            self.__xquery += "return $%s_base" % (self.Base[0][0])
 
     def _register_attribute(self, objectType, attribute):
+        """
+        Registers a new attribute the the query object, by creating
+        a mapping between attribute name and resulting xquery path.
+
+        This can then be used by other linked Nodes like 'Match'
+        to directly create xquery results.
+
+        e.g.:
+            The parameters:
+                _register_attribute('User', 'sn')
+
+            would create an like this in self._attributes
+                'User.sn' => "$User/Attributes/sn"
+        """
         complete = "%s.%s" % (objectType, attribute)
         if objectType not in self._objectTypes:
             raise Exception("no BASE definition found for object type '%s' in '%s'" % (objectType, complete))
@@ -73,25 +115,37 @@ class Query(MyNode):
                 self._attributes[complete] = "$%s/Attributes/%s" % (objectType, attribute)
 
     def getXQuery_attribute(self, objectType, attribute):
+        """
+        Returns the xquery-path to the given attribute.
+
+        e.g.:   getXQuery_attribute('User', 'sn')
+                '$User/Attributes/sn'
+        """
         complete = "%s.%s" % (objectType, attribute)
         if complete not in self._attributes:
             self._register_attribute(objectType, attribute)
         return(self._attributes[complete])
 
     def getXQuery(self):
+        """
+        Returns the compiles xquery.
+        """
         return self.__xquery
 
-class Attribute(MyNode):
-
-    def compileForMatch(self):
-        return self.query_base.getXQuery_attribute(self[0], self[1])+"/text()"
-
-
 class Match(MyNode):
+    """
+    The Match-Node represents matches of the 'Where' tag
+    e.g.:
+        User.sn = "Hickert" or (User.sn = "Hickert") or (( ... ))
+    """
 
     Match = None
 
     def compile(self):
+
+        # Each brace in the match will result in a Match-Node
+        # containing a sub Match-Node. Here we call the sub-node
+        # to keep the originally used braces.
         if self.Match:
             return ("(%s)" % self.Match[0].compile())
         else:
@@ -101,31 +155,81 @@ class Match(MyNode):
 
             return ("%s %s %s" % (attr1, comp, attr2))
 
+class Operator(MyNode):
+    """
+    This node represents an operator used in matches.
+    e.g.:
+        The operator of (User.sn="test") is '='.
+    """
+    def compileForMatch(self):
+        return (self[0])
+
+
+class Attribute(MyNode):
+    """
+    This Node represents a simple attribute of the query
+    """
+
+    def compileForMatch(self):
+        """
+        Returns the value of this attribute-node so we can use it in
+        xquery where statements.
+        """
+        return self.query_base.getXQuery_attribute(self[0], self[1])+"/text()"
+
+
 class Collection(MyNode):
+    """
+    The collection class contains combined matches.
+    e.g.:
+        (User.sn = 'Hickert') AND (User.uid = 'hickert')
+
+    """
     def compile(self):
         left = self[0].compile()
         right = self[2].compile()
         con = self[1].lower()
         return("(%s %s %s)" % (left, con, right))
 
-class Operator(MyNode):
-    def compileForMatch(self):
-        return (self[0])
-
 class Where(MyNode):
+    """
+    This node represents the WHERE statement of the query.
+    """
     def compileWhere(self):
+        """
+        Returns a compiled and ready to use xquery where statement.
+        """
         return ("where %s" % self[0].compile())
 
 
 class StringValue(MyNode):
+    """
+    String value node.
+    It simply represents strings like used here:
+        User.sn = "hickert"
+    """
     def compileForMatch(self):
         ret = self[0].replace("(","\\(").replace(")","\\)").replace(" ","\\ ")
         return ("\"%s\"" % (ret))
 
+
 class Attributes(MyNode):
+    """
+    This node is used to represent attributes
+    """
     pass
+
+
 class Base(MyNode):
+    """
+    This node is used to represent the BASE tag.
+    """
     pass
+
+
+#TODO: comment this mess
+#TODO: add limit and order by statements
+#TODO: add performance improvements 
 
 
 # A definition for space characters including newline and tab
