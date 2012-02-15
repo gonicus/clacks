@@ -111,10 +111,11 @@ class AMQPClientService(object):
         timeout = float(self.env.config.get('client.ping-interval', default=600))
         def ping():
             while self.env.active:
-                time.sleep(timeout)
+                e = EventMaker()
                 amqp = PluginRegistry.getInstance('AMQPClientHandler')
                 info = e.Event(e.ClientPing(e.Id(uuid)))
                 amqp.sendEvent(info)
+                time.sleep(timeout)
 
         pinger = Timer(10.0, ping)
         pinger.start()
