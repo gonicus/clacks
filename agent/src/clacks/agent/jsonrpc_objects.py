@@ -235,6 +235,7 @@ class JSONRPCObjectMapper(Plugin):
         # Build result
         result = {"__jsonclass__":["json.JSONObjectFactory", [obj_type.__name__, ref, oid, methods, properties]]}
         result.update(propvals)
+        print result
 
         return result
 

@@ -109,12 +109,12 @@ class FactoryHandler(JSONDataHandler):
                     del data["__jsonclass__"]
 
                     # Extract property presets
-                    data = {}
+                    dat = {}
                     for prop in data:
-                        data[prop] = data[prop]
+                        dat[prop] = data[prop]
 
                     jc.insert(0, proxy)
-                    jc.append(data)
+                    jc.append(dat)
 
                     return JSONObjectFactory.get_instance(*jc)
 
