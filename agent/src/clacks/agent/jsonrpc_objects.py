@@ -2,6 +2,8 @@
 import uuid
 import datetime
 from types import MethodType
+from zope.interface import implements
+from clacks.common.handler import IInterfaceHandler
 from clacks.common import Environment
 from clacks.common.utils import N_
 from clacks.common.components import Command, PluginRegistry, ObjectRegistry, AMQPServiceProxy, Plugin
@@ -30,7 +32,10 @@ class JSONRPCObjectMapper(Plugin):
 
     This will indirectly use the object mapper on the agent side.
     """
+    implements(IInterfaceHandler)
     _target_ = 'core'
+    _priority_ = 70
+    __proxy = {}
 
 
     def __init__(self):
@@ -50,7 +55,9 @@ class JSONRPCObjectMapper(Plugin):
         # Establish the connection
         self.__conn = self.__engine.connect()
 
-    __proxy = {}
+    def serve(self):
+        sched= PluginRegistry.getInstance("SchedulerService").getScheduler()
+        sched.add_interval_job(self.__gc, minutes=10, tag='_internal', jobstore="ram")
 
     @Command(__help__=N_("List available object OIDs"))
     def listObjectOIDs(self):
@@ -277,3 +284,8 @@ class JSONRPCObjectMapper(Plugin):
             return None
 
         return {'uuid': res[0], 'object': res[1], 'created': res[2]}
+
+    def __gc(self):
+        self.env.log.debug("running garbage collector on object store")
+        self.__conn.execute(self.__pool.delete().where(self.__pool.c.created <
+            datetime.datetime.now() - datetime.timedelta(hours=1)))
