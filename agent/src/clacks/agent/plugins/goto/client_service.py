@@ -575,12 +575,7 @@ class ClientService(Plugin):
                 self.__client[client]['online'] = False
 
     def __gc(self):
-        print "-="*40
-        print "fix interval"
-        print "-="*40
-#TODO: re-enable me
-#        interval = int(self.env.config.get("goto.timeout", default="600"))
-        interval = int(self.env.config.get("goto.timeout", default="10"))
+        interval = int(self.env.config.get("goto.timeout", default="600"))
 
         for client in self.__client.items():
             if not client[1]['online']:
