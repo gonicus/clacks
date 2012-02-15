@@ -7,7 +7,7 @@ from clacks.common.handler import IInterfaceHandler
 from clacks.common import Environment
 from clacks.common.utils import N_
 from clacks.common.components import Command, PluginRegistry, ObjectRegistry, AMQPServiceProxy, Plugin
-from sqlalchemy.sql import select
+from sqlalchemy.sql import select, and_
 from sqlalchemy import Table, Column, String, PickleType, DateTime, MetaData
 
 
@@ -36,6 +36,7 @@ class JSONRPCObjectMapper(Plugin):
     _target_ = 'core'
     _priority_ = 70
     __proxy = {}
+    __object = {}
 
 
     def __init__(self):
@@ -83,6 +84,10 @@ class JSONRPCObjectMapper(Plugin):
         """
         if not self.__get_ref(ref):
             raise ValueError("reference %s not found" % ref)
+
+        # Remove local object if needed
+        if ref in self.__object:
+            del self.__object[ref]
 
         self.__conn.execute(self.__pool.delete().where(self.__pool.c.uuid == ref))
 
@@ -199,9 +204,19 @@ class JSONRPCObjectMapper(Plugin):
         # Make object instance and store it
         obj = obj_type(*args, **kwargs)
 
+        # Add dynamic information - if available
+        if hasattr(obj, 'get_attributes'):
+            properties = properties + obj.get_attributes()
+        if hasattr(obj, 'get_nmethods'):
+            methods = properties + obj.get_methods()
+
+        pickle = not hasattr(obj, "_no_pickle_")
+        if not pickle:
+            self.__object[ref] = obj
+
         objdsc = {'node': env.id,
                 'oid': oid,
-                'object': obj,
+                'object': obj if pickle else None,
                 'methods': methods,
                 'properties': properties}
 
@@ -283,9 +298,27 @@ class JSONRPCObjectMapper(Plugin):
         if not res:
             return None
 
+        # Fill in local object if needed
+        if ref in self.__object:
+            res[1]['object'] = self.__object[ref]
+
         return {'uuid': res[0], 'object': res[1], 'created': res[2]}
 
     def __gc(self):
         self.env.log.debug("running garbage collector on object store")
-        self.__conn.execute(self.__pool.delete().where(self.__pool.c.created <
-            datetime.datetime.now() - datetime.timedelta(hours=1)))
+
+        entries = self.__conn.execute(select([self.__pool.c.uuid],
+            and_(self.__pool.c.created < datetime.datetime.now() -
+                datetime.timedelta(hours=1), self.__pool.c.node ==
+                self.env.id)))
+        for entry in entries:
+            ref = entry[0]
+            #TODO: remove prints
+            print "-----> do we have %s?" % ref
+            if ref in self.__object:
+                print "-----> YES!"
+                del self.__object[ref]
+
+        self.__conn.execute(self.__pool.delete().where(and_(self.__pool.c.created <
+            datetime.datetime.now() - datetime.timedelta(hours=1),
+            self.__pool.c.node == self.env.id)))

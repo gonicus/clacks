@@ -49,6 +49,27 @@ class JSONDataHandler(object):
         raise NotImplementedError("JSONDataHandler implementation fails to commit")
 
 
+class DateTimeDateHandler(JSONDataHandler):
+
+    @staticmethod
+    def encode(data):
+        if isinstance(data, datetime.datetime):
+            data = data.date()
+        return  {'object': str(data), '__jsonclass__': 'datetime.date'}
+
+    @staticmethod
+    def decode(data):
+        return datetime.datetime.strptime(data['object'], "%Y-%m-%d").date()
+
+    @staticmethod
+    def isinstance(data):
+        return isinstance(data, datetime.date)
+
+    @staticmethod
+    def canhandle():
+        return "datetime.date"
+
+
 class DateTimeHandler(JSONDataHandler):
 
     @staticmethod
@@ -57,7 +78,7 @@ class DateTimeHandler(JSONDataHandler):
 
     @staticmethod
     def decode(data):
-        return datetime.datetime.strptime(data['object'], "%Y-%m-%d %H:%M:%S")
+        return datetime.datetime.strptime(data, "%Y-%m-%d %H:%M:%S")
 
     @staticmethod
     def isinstance(data):
@@ -111,9 +132,11 @@ class FactoryHandler(JSONDataHandler):
 
 class PObjectEncoder(json.JSONEncoder):
     def default(self, obj):
-        for handler in json_handlers:
+        for handler in json_handlers.values():
             if handler.isinstance(obj):
-                return handler.decode(obj)
+                return handler.encode(obj)
+
+        print "no", obj, type(obj)
 
         return json.JSONEncoder.default(self, obj)
 

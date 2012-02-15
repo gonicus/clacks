@@ -44,6 +44,7 @@ class ProxyException(Exception):
 
 
 class ObjectProxy(object):
+    _no_pickle_ = True
     dn = None
     uuid = None
     __env = None
@@ -112,6 +113,12 @@ class ObjectProxy(object):
         Returns a list containing all property names known for the instantiated object.
         """
         return(self.__attribute_map.keys())
+
+    def get_methods(self):
+        """
+        Returns a list containing all method names known for the instantiated object.
+        """
+        return(self.__method_map.keys())
 
     def get_parent_dn(self):
         return dn2str(str2dn(self.__base.dn.encode('utf-8'))[1:]).decode('utf-8')
@@ -190,10 +197,12 @@ class ObjectProxy(object):
             if self.__base.__class__.__name__ == obj:
                 return getattr(self.__base, name)
 
+            # Check for extensions
             if obj in self.__extensions and self.__extensions[obj]:
                 return getattr(self.__extensions[obj], name)
 
-        raise AttributeError("no such attribute '%s'" % name)
+        # Not set
+        return None
 
     def __setattr__(self, name, value):
         # Store non property values

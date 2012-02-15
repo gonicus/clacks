@@ -91,6 +91,7 @@ setup(
 
         [json.datahandler]
         datetime = clacks.common.components.jsonrpc_utils:DateTimeHandler
+        date = clacks.common.components.jsonrpc_utils:DateTimeDateHandler
         factory = clacks.common.components.jsonrpc_utils:FactoryHandler
     """,
 )

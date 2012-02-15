@@ -152,5 +152,8 @@ setup(
 
         [xmldb.driver]
         berkleydb = clacks.agent.xmldb.driver.dbxml_driver:DBXml
+
+        [object]
+        object = clacks.agent.objects.proxy:ObjectProxy
     """,
 )
