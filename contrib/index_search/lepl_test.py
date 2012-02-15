@@ -382,7 +382,7 @@ class Limit(MyNode):
 
 
 # A definition for space characters including newline and tab
-sp = Star(Space() | '\n' | '\t')
+spaces = (~Space() | ~Literal('\n') | ~Literal('\t')) [:]
 
 attributes = {}
 
@@ -396,7 +396,7 @@ attr_type = Regexp('[a-zA-Z]+')
 attr_name = attr_type
 
 # Attribute  --  (e.g. User.cn)
-attribute = ~sp & attr_type & ~Literal('.') & attr_name & ~sp >  Attribute
+attribute = ~spaces & attr_type & ~Literal('.') & attr_name & ~spaces >  Attribute
 
 # Allow to have multiple attributes
 attribute_list = Delayed()
@@ -404,50 +404,55 @@ attribute_list += attribute & Optional(~Literal(',') & attribute_list)
 
 select = ~Literal('SELECT') & attribute_list > Attributes
 
-################
-### BASE
-################
-scope_option = Literal('SUB') | Literal('BASE') | Literal('ONE')
-base_type = attr_type
-base_value = String()
-base = ~Literal('BASE') & ~sp & base_type & ~sp & scope_option & ~sp & base_value > Base
-bases = Delayed()
-bases+= base & Optional (~sp & bases)
-
-################
-### WHERE
-################
-
-statement= ~sp & (attribute | (String() > StringValue)) & ~sp
-operator = ~sp & (Literal('=') | Literal('!=')) & ~sp > Operator
-condition_tmp = statement & operator & statement
-
-# Allow to have brakets in condition statements
-condition = Delayed()
-condition+= condition_tmp | ~Literal('(') & condition & ~Literal(')') > Match
-
-# Allow to connect conditions (called collection below)
-collection_operator = ~sp & (Literal('AND') | Literal('OR')) & ~sp
-
-# Create a collection which supports nested conditions
-collection = Delayed()
-collection+= (condition & collection_operator & (condition | collection)) > Collection
-
-joined_collections  = Delayed()
-joined_collections += collection | condition |  ~Literal('(') & joined_collections  & ~Literal(')')
-
-where = ~Literal('WHERE') & ~sp & joined_collections  > Where
-
-
-################
-### Limit
-################
-
 number = UnsignedReal()
-limit = (~Literal('LIMIT') & ~sp & number & ~sp & Optional(~Literal(',') & ~sp & number)) > Limit
+with Separator(spaces):
 
-query_parser = ~sp & select & ~sp & bases & ~sp & Optional(where & ~sp) & Optional(limit & ~sp) > Query
+    ################
+    ### BASE
+    ################
+    scope_option = Literal('SUB') | Literal('BASE') | Literal('ONE')
+    base_type = attr_type
+    base_value = String()
+    base = ~Literal('BASE') & base_type & scope_option & base_value > Base
+    bases = Delayed()
+    bases+= base & Optional (~spaces & bases)
 
+    ################
+    ### WHERE
+    ################
+
+
+    statement= (attribute | (String() > StringValue))
+    operator = (Literal('=') | Literal('!=')) > Operator
+    condition_tmp = statement & operator & statement
+
+    # Allow to have brakets in condition statements
+    condition = Delayed()
+    condition+= condition_tmp | ~Literal('(') & condition & ~Literal(')') > Match
+
+    # Allow to connect conditions (called collection below)
+    collection_operator = (Literal('AND') | Literal('OR'))
+
+    # Create a collection which supports nested conditions
+    collection = Delayed()
+    collection+= (condition & collection_operator & (condition | collection)) > Collection
+
+    joined_collections  = Delayed()
+    joined_collections += collection | condition |  ~Literal('(') & joined_collections  & ~Literal(')')
+
+    where = ~Literal('WHERE') & joined_collections  > Where
+
+    ################
+    ### Limit
+    ################
+
+    limit = (~Literal('LIMIT') & number & Optional(~Literal(',') & number)) > Limit
+
+    ################
+    ### Limit
+    ################
+
+    query_parser = ~spaces & select & bases & Optional(where) & Optional(limit) & ~spaces > Query
 
 
 query = """
@@ -455,7 +460,7 @@ SELECT User.sn, User.cn, SambaDomain.sambaDomainName
 BASE User SUB "dc=gonicus,dc=de"
 BASE SambaDomain SUB "dc=gonicus,dc=de"
 WHERE (SambaDomain.sambaDomainName = User.sambaDomainName)
-LIMIT 5
+LIMIT 5, 1
 """
 
 
