@@ -108,7 +108,7 @@ class AMQPClientService(object):
 
         # Send a ping on a regular base
         uuid = self.env.uuid
-        timeout = self.env.config.get('client.ping-interval', default=600),
+        timeout = float(self.env.config.get('client.ping-interval', default=600))
         def ping():
             while self.env.active:
                 time.sleep(timeout)
