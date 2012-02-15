@@ -32,6 +32,7 @@ class Query(MyNode):
     # The class members mapped by the lepl parser.
     Where = None
     Base = None
+    Limit = None
     Attributes = None
 
     # internal mapping of used object types and attributes.
@@ -157,19 +158,49 @@ class Query(MyNode):
         """
 
         # Create loop for each required object type
-        result.append("for " + ", ".join(map(lambda x: "$%s in $%s_base" %(x,x) , self._objectTypes.keys())))
+        where_result = []
+        where_result.append("for " + ", ".join(map(lambda x: "$%s in $%s_base" %(x,x) , self._objectTypes.keys())))
 
         # Add, optional where statement
         if self.Where:
-            result.append(self.Where[0].compileWhere())
+            where_result.append(self.Where[0].compileWhere())
 
         # Create a list of with all selected attributes.
         attrs = map(lambda x: "$%s/%s/text()" % (x[0], self.getXQuery_attribute(x[0], x[1])), self._selected_attributes)
 
         # Add the return statement for the result.
-        result.append("return(concat(%s))" % ", ".join(attrs))
+        where_result.append("return(concat(%s))" % ", ".join(attrs))
 
-        #TODO: Add LIMIT statement
+        """
+        Process the LIMIT statement here.
+
+        It can occure in two forms:
+            >>> LIMIT 5
+            >>> LIMIT 5, 10
+
+        Where the first shows only the first five entries and the second shows
+        ten entries beginning from the fifth element.
+
+        In xquery this looks like this
+
+            return subsequence(
+                for ...
+                    where...
+                    order by ...
+                    return
+                ), 5, 10)
+        """
+        if self.Limit:
+            if len(self.Limit[0]) == 2:
+                start = self.Limit[0][0]
+                stop = self.Limit[0][1]
+            else:
+                start = 1
+                stop = self.Limit[0][0]
+            where_result =  ['return subsequence('] + where_result + [",%s,%s)" % (str(start), str(stop))]
+
+        result += where_result
+
         #TODO: Add ORDER BY statement
 
         self.__xquery = "\n".join(result)
@@ -341,6 +372,9 @@ class Base(MyNode):
         base_object, base_type, base = self
         obj._objectTypes[base_object] = "$%s_list" % base_object
 
+class Limit(MyNode):
+    pass
+
 
 #TODO: comment this mess
 #TODO: add limit and order by statements
@@ -404,7 +438,15 @@ joined_collections += collection | condition |  ~Literal('(') & joined_collectio
 
 where = ~Literal('WHERE') & ~sp & joined_collections  > Where
 
-query_parser = ~sp & select & ~sp & bases & ~sp & Optional(where & ~sp) > Query
+
+################
+### Limit
+################
+
+number = UnsignedReal()
+limit = (~Literal('LIMIT') & ~sp & number & ~sp & Optional(~Literal(',') & ~sp & number)) > Limit
+
+query_parser = ~sp & select & ~sp & bases & ~sp & Optional(where & ~sp) & Optional(limit & ~sp) > Query
 
 
 
@@ -413,12 +455,9 @@ SELECT User.sn, User.cn, SambaDomain.sambaDomainName
 BASE User SUB "dc=gonicus,dc=de"
 BASE SambaDomain SUB "dc=gonicus,dc=de"
 WHERE (SambaDomain.sambaDomainName = User.sambaDomainName)
+LIMIT 5
 """
 
-query = """
-SELECT User.sn, User.cn
-BASE User SUB "dc=gonicus,dc=de"
-"""
 
 xmldb = XMLDBHandler.get_instance()
 xmldb.setNamespace('objects', 'xs', "http://www.w3.org/2001/XMLSchema")
