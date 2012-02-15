@@ -32,6 +32,7 @@ class Query(MyNode):
     # The class members mapped by the lepl parser.
     Where = None
     Base = None
+    Limit = None
     Attributes = None
 
     # internal mapping of used object types and attributes.
@@ -157,19 +158,49 @@ class Query(MyNode):
         """
 
         # Create loop for each required object type
-        result.append("for " + ", ".join(map(lambda x: "$%s in $%s_base" %(x,x) , self._objectTypes.keys())))
+        where_result = []
+        where_result.append("for " + ", ".join(map(lambda x: "$%s in $%s_base" %(x,x) , self._objectTypes.keys())))
 
         # Add, optional where statement
         if self.Where:
-            result.append(self.Where[0].compileWhere())
+            where_result.append(self.Where[0].compileWhere())
 
         # Create a list of with all selected attributes.
         attrs = map(lambda x: "$%s/%s/text()" % (x[0], self.getXQuery_attribute(x[0], x[1])), self._selected_attributes)
 
         # Add the return statement for the result.
-        result.append("return(concat(%s))" % ", ".join(attrs))
+        where_result.append("return(concat(%s))" % ", ".join(attrs))
 
-        #TODO: Add LIMIT statement
+        """
+        Process the LIMIT statement here.
+
+        It can occure in two forms:
+            >>> LIMIT 5
+            >>> LIMIT 5, 10
+
+        Where the first shows only the first five entries and the second shows
+        ten entries beginning from the fifth element.
+
+        In xquery this looks like this
+
+            return subsequence(
+                for ...
+                    where...
+                    order by ...
+                    return
+                ), 5, 10)
+        """
+        if self.Limit:
+            if len(self.Limit[0]) == 2:
+                start = self.Limit[0][0]
+                stop = self.Limit[0][1]
+            else:
+                start = 1
+                stop = self.Limit[0][0]
+            where_result =  ['return subsequence('] + where_result + [",%s,%s)" % (str(start), str(stop))]
+
+        result += where_result
+
         #TODO: Add ORDER BY statement
 
         self.__xquery = "\n".join(result)
@@ -341,6 +372,9 @@ class Base(MyNode):
         base_object, base_type, base = self
         obj._objectTypes[base_object] = "$%s_list" % base_object
 
+class Limit(MyNode):
+    pass
+
 
 #TODO: comment this mess
 #TODO: add limit and order by statements
@@ -348,7 +382,7 @@ class Base(MyNode):
 
 
 # A definition for space characters including newline and tab
-sp = Star(Space() | '\n' | '\t')
+spaces = (~Space() | ~Literal('\n') | ~Literal('\t')) [:]
 
 attributes = {}
 
@@ -362,7 +396,7 @@ attr_type = Regexp('[a-zA-Z]+')
 attr_name = attr_type
 
 # Attribute  --  (e.g. User.cn)
-attribute = ~sp & attr_type & ~Literal('.') & attr_name & ~sp >  Attribute
+attribute = ~spaces & attr_type & ~Literal('.') & attr_name & ~spaces >  Attribute
 
 # Allow to have multiple attributes
 attribute_list = Delayed()
@@ -370,42 +404,58 @@ attribute_list += attribute & Optional(~Literal(',') & attribute_list)
 
 select = ~Literal('SELECT') & attribute_list > Attributes
 
-################
-### BASE
-################
-scope_option = Literal('SUB') | Literal('BASE') | Literal('ONE')
-base_type = attr_type
-base_value = String()
-base = ~Literal('BASE') & ~sp & base_type & ~sp & scope_option & ~sp & base_value > Base
-bases = Delayed()
-bases+= base & Optional (~sp & bases)
+number = UnsignedReal()
+with Separator(spaces):
 
-################
-### WHERE
-################
+    ################
+    ### BASE
+    ################
+    scope_option = Literal('SUB') | Literal('BASE') | Literal('ONE')
+    base_type = attr_type
+    base_value = String()
+    base = ~Literal('BASE') & base_type & scope_option & base_value > Base
+    bases = Delayed()
+    bases+= base & Optional (~spaces & bases)
 
-statement= ~sp & (attribute | (String() > StringValue)) & ~sp
-operator = ~sp & (Literal('=') | Literal('!=')) & ~sp > Operator
-condition_tmp = statement & operator & statement
+    ################
+    ### WHERE
+    ################
 
-# Allow to have brakets in condition statements
-condition = Delayed()
-condition+= condition_tmp | ~Literal('(') & condition & ~Literal(')') > Match
 
-# Allow to connect conditions (called collection below)
-collection_operator = ~sp & (Literal('AND') | Literal('OR')) & ~sp
+    statement= (attribute | (String() > StringValue))
+    operator = (Literal('=') | Literal('!=')) > Operator
+    condition_tmp = statement & operator & statement
 
-# Create a collection which supports nested conditions
-collection = Delayed()
-collection+= (condition & collection_operator & (condition | collection)) > Collection
+    # Allow to have brakets in condition statements
+    condition = Delayed()
+    condition+= condition_tmp | ~Literal('(') & condition & ~Literal(')') > Match
 
-joined_collections  = Delayed()
-joined_collections += collection | condition |  ~Literal('(') & joined_collections  & ~Literal(')')
+    # Allow to connect conditions (called collection below)
+    collection_operator = (Literal('AND') | Literal('OR'))
 
-where = ~Literal('WHERE') & ~sp & joined_collections  > Where
+    # Create a collection which supports nested conditions
+    collection = Delayed()
+    collection+= (condition & collection_operator & (condition | collection)) > Collection
 
-query_parser = ~sp & select & ~sp & bases & ~sp & Optional(where & ~sp) > Query
+    joined_collections  = Delayed()
+    joined_collections += collection | condition |  ~Literal('(') & joined_collections  & ~Literal(')')
 
+    where = ~Literal('WHERE') & joined_collections  > Where
+
+    ################
+    ### Limit
+    ################
+
+    limit = (~Literal('LIMIT') & number & Optional(~Literal(',') & number)) > Limit
+
+    ################
+    ### Order By
+    ################
+
+    order_by = ~Literal('ORDER BY') & attribute_list
+
+
+    query_parser = ~spaces & select & bases & Optional(where) & Optional(order_by) & Optional(limit) & ~spaces > Query
 
 
 query = """
@@ -413,12 +463,10 @@ SELECT User.sn, User.cn, SambaDomain.sambaDomainName
 BASE User SUB "dc=gonicus,dc=de"
 BASE SambaDomain SUB "dc=gonicus,dc=de"
 WHERE (SambaDomain.sambaDomainName = User.sambaDomainName)
+ORDER BY User.sn, User.cn
+LIMIT 5, 10
 """
 
-query = """
-SELECT User.sn, User.cn
-BASE User SUB "dc=gonicus,dc=de"
-"""
 
 xmldb = XMLDBHandler.get_instance()
 xmldb.setNamespace('objects', 'xs', "http://www.w3.org/2001/XMLSchema")
