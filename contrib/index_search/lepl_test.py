@@ -449,10 +449,13 @@ with Separator(spaces):
     limit = (~Literal('LIMIT') & number & Optional(~Literal(',') & number)) > Limit
 
     ################
-    ### Limit
+    ### Order By
     ################
 
-    query_parser = ~spaces & select & bases & Optional(where) & Optional(limit) & ~spaces > Query
+    order_by = ~Literal('ORDER BY') & attribute_list
+
+
+    query_parser = ~spaces & select & bases & Optional(where) & Optional(order_by) & Optional(limit) & ~spaces > Query
 
 
 query = """
@@ -460,7 +463,8 @@ SELECT User.sn, User.cn, SambaDomain.sambaDomainName
 BASE User SUB "dc=gonicus,dc=de"
 BASE SambaDomain SUB "dc=gonicus,dc=de"
 WHERE (SambaDomain.sambaDomainName = User.sambaDomainName)
-LIMIT 5, 1
+ORDER BY User.sn, User.cn
+LIMIT 5, 10
 """
 
 
