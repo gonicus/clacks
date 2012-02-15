@@ -34,6 +34,7 @@ import traceback
 import logging
 import random
 import time
+from threading import Timer
 from netaddr import IPNetwork
 from zope.interface import implements
 from qpid.messaging import Message
@@ -104,6 +105,20 @@ class AMQPClientService(object):
 
         except NotFound as e:
             self.env.log.critical("queue gone: %s" % str(e))
+
+        # Send a ping on a regular base
+        uuid = self.env.uuid
+        timeout = self.env.config.get('client.ping-interval', default=600),
+        def ping():
+            while self.env.active:
+                time.sleep(timeout)
+                amqp = PluginRegistry.getInstance('AMQPClientHandler')
+                info = e.Event(e.ClientPing(e.Id(uuid)))
+                amqp.sendEvent(info)
+
+        pinger = Timer(10.0, ping)
+        pinger.start()
+        self.env.threads.append(pinger)
 
     def reAnnounce(self):
         if self.__cr:

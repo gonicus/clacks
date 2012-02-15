@@ -78,6 +78,7 @@ class ClientService(Plugin):
                 let $e := ./f:Event
                 return $e/f:ClientAnnounce
                     or $e/f:ClientSignature
+                    or $e/f:ClientPing
                     or $e/f:ClientLeave
                     or $e/f:UserSession
             """,
@@ -86,10 +87,14 @@ class ClientService(Plugin):
         # Get registry - we need it later on
         self.__cr = PluginRegistry.getInstance("CommandRegistry")
 
-        # Start maintainence timer
+        # Start maintainence with a delay of 5 seconds
         timer = Timer(5.0, self.__refresh)
         timer.start()
         self.env.threads.append(timer)
+
+        # Register scheduler task to remove outdated clients
+        sched = PluginRegistry.getInstance('SchedulerService').getScheduler()
+        sched.add_interval_job(self.__gc, minutes=1, tag='_internal', jobstore="ram")
 
     def __refresh(self):
         # Initially check if we need to ask for client caps or if there's someone
@@ -113,8 +118,6 @@ class ClientService(Plugin):
                 #     ... load client capabilities and store them localy
                 raise Exception("getting client information from other nodes is not implmeneted!")
 
-        #TODO: register scheduler task to remove outdated clients
-
     def stop(self):
         pass
 
@@ -127,7 +130,8 @@ class ClientService(Plugin):
         """
         res = {}
         for uuid, info in self.__client.iteritems():
-            res[uuid] = {'name':info['name'], 'received':info['received']}
+            if info['online']:
+                res[uuid] = {'name':info['name'], 'last-seen':info['last-seen']}
         return res
 
     @Command(__help__=N_("Call method exposed by client."))
@@ -149,6 +153,8 @@ class ClientService(Plugin):
         # Bail out if the client is not available
         if not client in self.__client:
             raise JSONRPCException("client '%s' not available" % client)
+        if not self.__client[client]['online']:
+            raise JSONRPCException("client '%s' is offline" % client)
 
         # Generate tage queue name
         queue = '%s.client.%s' % (self.env.domain, client)
@@ -192,6 +198,8 @@ class ClientService(Plugin):
         ``Return:`` dict of client methods
         """
         if not client in self.__client:
+            return []
+        if not self.__client[client]['online']:
             return []
 
         return self.__client[client]['caps']
@@ -443,6 +451,13 @@ class ClientService(Plugin):
         self.log.debug("updating client '%s' user session: %s" % (data.Id,
                 ','.join(self.__user_session[str(data.Id)])))
 
+    def _handleClientPing(self, data):
+        data = data.ClientPing
+        client = data.Id.text
+        self.__set_client_online(data.Id.text)
+        if client in self.__client:
+            self.__client[client]['last-seen'] = datetime.datetime.utcnow()
+
     def _handleClientSignature(self, data):
         data = data.ClientSignature
         client = data.Id.text
@@ -515,7 +530,8 @@ class ClientService(Plugin):
         t = datetime.datetime.utcnow()
         info = {
             'name': data.Name.text,
-            'received': time.mktime(t.timetuple()),
+            'last-seen': t,
+            'online': True,
             'caps': {},
             'network': network
         }
@@ -534,14 +550,42 @@ class ClientService(Plugin):
         data = data.ClientLeave
         client = data.Id.text
         self.log.info("client '%s' is leaving" % client)
+        self.__set_client_offline(client, True)
+
+    def __set_client_online(self, client):
+        self.systemSetStatus(client, "+O")
+        if client in self.__client:
+            self.__client[client]['online'] = True
+
+    def __set_client_offline(self, client, purge=False):
         self.systemSetStatus(client, "-O")
 
         if client in self.__client:
-            del self.__client[client]
+            if purge:
+                del self.__client[client]
 
-        if client in self.__proxy:
-            self.__proxy[client].close()
-            del self.__proxy[client]
+                if client in self.__proxy:
+                    self.__proxy[client].close()
+                    del self.__proxy[client]
 
-        if client in self.__user_session:
-            del self.__user_session[client]
+                if client in self.__user_session:
+                    del self.__user_session[client]
+
+            else:
+                self.__client[client]['online'] = False
+
+    def __gc(self):
+        print "-="*40
+        print "fix interval"
+        print "-="*40
+#TODO: re-enable me
+#        interval = int(self.env.config.get("goto.timeout", default="600"))
+        interval = int(self.env.config.get("goto.timeout", default="10"))
+
+        for client in self.__client.items():
+            if not client[1]['online']:
+                continue
+
+            if client[1]['last-seen'] < datetime.datetime.utcnow() - datetime.timedelta(seconds=2*interval):
+                self.log.info("client '%s' looks dead - setting to 'offline'" % client[0])
+                self.__set_client_offline(client[0])

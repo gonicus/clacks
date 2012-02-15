@@ -12,7 +12,7 @@
             ],
             "actions": [
               {
-                "topic": "^net\\.example\\.event\\.(Inventory|ClientAnnounce|ClientLeave|ClientSignature|UserSession)$",
+                "topic": "^net\\.example\\.event\\.(Inventory|ClientAnnounce|ClientLeave|ClientSignature|ClientPing|UserSession)$",
                 "acls": "x",
                 "options": {}
               }
