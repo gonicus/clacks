@@ -174,7 +174,7 @@ class Query(MyNode):
         attrs = map(lambda x: "$%s/%s/text()" % (x[0], self.getXQuery_attribute(x[0], x[1])), self._selected_attributes)
 
         # Add the return statement for the result.
-        where_result.append("return(concat(%s))" % ", ".join(attrs))
+        where_result.append("return(concat('result: ', %s))" % ", ".join(attrs))
 
         """
         Process the LIMIT statement here.
@@ -313,7 +313,6 @@ class Attribute(MyNode):
         return "$%s/%s/text()" % (self[0], self.query_base.getXQuery_attribute(self[0], self[1]))
 
 
-
 class Collection(MyNode):
     """
     The collection class contains combined matches.
@@ -326,6 +325,7 @@ class Collection(MyNode):
         right = self[2].compile()
         con = self[1].lower()
         return("(%s %s %s)" % (left, con, right))
+
 
 class Where(MyNode):
     """
@@ -356,6 +356,7 @@ class Attributes(MyNode):
     def _set_query_base_object(self, obj):
         super(Attributes, self)._set_query_base_object(obj)
 
+
 class Base(MyNode):
     """
     This node is used to represent the BASE tag.
@@ -385,9 +386,11 @@ class OrderBy(MyNode):
     def compile_xquery(self):
         return(", ".join(map(lambda x: x.compile_xquery(), self)))
 
+
 class Direction(MyNode):
     def get_direction(self):
         return "ascending" if self[0] == 'ASC' else 'descending'
+
 
 class OrderedAttribute(MyNode):
 
@@ -485,6 +488,11 @@ with Separator(spaces):
     query_parser = ~spaces & select & bases & Optional(where) & Optional(order_by) & Optional(limit) & ~spaces > Query
 
 
+# ---------------------
+
+xmldb = XMLDBHandler.get_instance()
+xmldb.setNamespace('objects', 'xs', "http://www.w3.org/2001/XMLSchema")
+
 query = """
 SELECT User.sn, User.cn, SambaDomain.sambaDomainName
 BASE User SUB "dc=gonicus,dc=de"
@@ -493,18 +501,12 @@ WHERE (SambaDomain.sambaDomainName = User.sambaDomainName)
 ORDER BY User.sn, User.givenName DESC
 """
 
+# Search all users with all attributes
+query = """
+SELECT User.*
+BASE User SUB "ou=Technik,dc=gonicus,dc=de"
+ORDER BY User.sn, User.givenName DESC
+"""
 
-xmldb = XMLDBHandler.get_instance()
-xmldb.setNamespace('objects', 'xs', "http://www.w3.org/2001/XMLSchema")
 xquery =  query_parser.parse(query)[0].getXQuery()
-print "--" * 20
-print xquery
-print "--" * 20
-
-res = xmldb.xquery(xquery)
-start = time()
-res = xmldb.xquery(xquery)
-
-pprint(res)
-
-print time() - start
+pprint(xmldb.xquery(xquery))
