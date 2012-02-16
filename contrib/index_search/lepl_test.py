@@ -420,7 +420,7 @@ attributes = {}
 
 # A definition for an attribute 'Type.Attribute'
 attr_type = Regexp('[a-zA-Z]+')
-attr_name = Regexp('[a-zA-Z\*]+')
+attr_name = Regexp('[a-zA-Z]+')
 number = UnsignedReal()
 attribute = attr_type & ~Literal('.') & attr_name >  Attribute
 
@@ -430,7 +430,7 @@ with Separator(spaces):
     ### Select
     ################
     attribute_list = Delayed()
-    attribute_list += attribute & Optional(~Literal(',') & attribute_list)
+    attribute_list += (attribute | Literal('*')) & Optional(~Literal(',') & attribute_list)
     select = ~Literal('SELECT') & attribute_list > Attributes
 
     ################
