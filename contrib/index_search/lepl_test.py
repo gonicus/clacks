@@ -129,6 +129,15 @@ as xs:string
         """
         joins = {}
         result = [self._xquery_header]
+
+        # Create a list of attributes the user was querying for.
+        sel_attrs = self.Attributes[0].get_attribute_names()
+        for key in sel_attrs:
+            attr_list = ", ".join(map(lambda x: "'%s'"%x , sel_attrs[key]))
+            result.append('let $%s_attributes := (%s)' % (key, attr_list))
+
+        result.append('')
+
         if self.uses_join:
 
             # Create a predefined list of joined values
@@ -234,7 +243,7 @@ as xs:string
         attrs = map(lambda x: "$%s/%s/text()" % (x[0], self.getXQuery_attribute(x[0], x[1])), self._selected_attributes)
 
         # Add the return statement for the result.
-        attr_get_list = ", ".join(map(lambda x: "local:get_attributes($%s, ('DN'))" % (x), self._objectTypes.keys()))
+        attr_get_list = ", ".join(map(lambda x: "local:get_attributes($%s, $%s_attributes)" % (x, x), self._objectTypes.keys()))
         where_result += [
             'return(',
             '   concat("{",',
@@ -426,6 +435,14 @@ class Attributes(MyNode):
     def _set_query_base_object(self, obj):
         super(Attributes, self)._set_query_base_object(obj)
 
+    def get_attribute_names(self):
+        ret = {}
+        for attribute in self:
+            if not attribute[0] in ret:
+                ret[attribute[0]] = []
+            ret[attribute[0]].append(attribute[1])
+        return(ret)
+
 
 class Base(MyNode):
     """
@@ -564,8 +581,8 @@ xmldb.setNamespace('objects', 'xs', "http://www.w3.org/2001/XMLSchema")
 
 query = """
 SELECT User.sn, User.cn, SambaDomain.sambaDomainName
-BASE User SUB "dc=gonicus,dc=de"
 BASE SambaDomain SUB "dc=gonicus,dc=de"
+BASE User SUB "dc=gonicus,dc=de"
 WHERE (SambaDomain.sambaDomainName = User.sambaDomainName)
 ORDER BY User.sn, User.givenName DESC
 """
