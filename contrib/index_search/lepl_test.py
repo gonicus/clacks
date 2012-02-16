@@ -34,6 +34,7 @@ class Query(MyNode):
     Base = None
     Limit = None
     Attributes = None
+    OrderBy = None
 
     # internal mapping of used object types and attributes.
     _objectTypes = None
@@ -161,9 +162,13 @@ class Query(MyNode):
         where_result = []
         where_result.append("for " + ", ".join(map(lambda x: "$%s in $%s_base" %(x,x) , self._objectTypes.keys())))
 
-        # Add, optional where statement
+        # Add optional where statement
         if self.Where:
             where_result.append(self.Where[0].compileWhere())
+
+        # Add optional order by statement
+        if self.OrderBy:
+            where_result.append("order by " + self.OrderBy[0].compile_xquery())
 
         # Create a list of with all selected attributes.
         attrs = map(lambda x: "$%s/%s/text()" % (x[0], self.getXQuery_attribute(x[0], x[1])), self._selected_attributes)
@@ -191,17 +196,9 @@ class Query(MyNode):
                 ), 5, 10)
         """
         if self.Limit:
-            if len(self.Limit[0]) == 2:
-                start = self.Limit[0][0]
-                stop = self.Limit[0][1]
-            else:
-                start = 1
-                stop = self.Limit[0][0]
-            where_result =  ['return subsequence('] + where_result + [",%s,%s)" % (str(start), str(stop))]
+            where_result =  ['return subsequence('] + where_result + [",%s,%s)" % (self.Limit[0].get_range())]
 
         result += where_result
-
-        #TODO: Add ORDER BY statement
 
         self.__xquery = "\n".join(result)
 
@@ -316,6 +313,7 @@ class Attribute(MyNode):
         return "$%s/%s/text()" % (self[0], self.query_base.getXQuery_attribute(self[0], self[1]))
 
 
+
 class Collection(MyNode):
     """
     The collection class contains combined matches.
@@ -358,8 +356,6 @@ class Attributes(MyNode):
     def _set_query_base_object(self, obj):
         super(Attributes, self)._set_query_base_object(obj)
 
-
-
 class Base(MyNode):
     """
     This node is used to represent the BASE tag.
@@ -372,13 +368,41 @@ class Base(MyNode):
         base_object, base_type, base = self
         obj._objectTypes[base_object] = "$%s_list" % base_object
 
+
 class Limit(MyNode):
-    pass
+
+    def get_range(self):
+        if len(self) == 2:
+            start = self[0]
+            stop = self[1]
+        else:
+            start = 1
+            stop = self[0]
+        return(start, stop)
+
+
+class OrderBy(MyNode):
+    def compile_xquery(self):
+        return(", ".join(map(lambda x: x.compile_xquery(), self)))
+
+class Direction(MyNode):
+    def get_direction(self):
+        return "ascending" if self[0] == 'ASC' else 'descending'
+
+class OrderedAttribute(MyNode):
+
+    Direction = None
+
+    def compile_xquery(self):
+        if self.Direction:
+            return("%s %s" % (self.Attribute[0].compileForMatch(), self.Direction[0].get_direction()))
+        else:
+            return("%s" % (self.Attribute[0].compileForMatch()))
+
 
 
 #TODO: comment this mess
-#TODO: add limit and order by statements
-#TODO: add performance improvements 
+#TODO: add performance improvements
 
 
 # A definition for space characters including newline and tab
@@ -452,8 +476,11 @@ with Separator(spaces):
     ### Order By
     ################
 
-    order_by = ~Literal('ORDER BY') & attribute_list
-
+    direction = Literal('ASC') | Literal('DESC') > Direction
+    odered_attr = attribute & Optional(direction) > OrderedAttribute
+    odered_attr_list = Delayed()
+    odered_attr_list+= odered_attr & Optional(~Literal(',') & odered_attr_list)
+    order_by = ~Literal('ORDER BY') & odered_attr_list > OrderBy
 
     query_parser = ~spaces & select & bases & Optional(where) & Optional(order_by) & Optional(limit) & ~spaces > Query
 
@@ -463,8 +490,7 @@ SELECT User.sn, User.cn, SambaDomain.sambaDomainName
 BASE User SUB "dc=gonicus,dc=de"
 BASE SambaDomain SUB "dc=gonicus,dc=de"
 WHERE (SambaDomain.sambaDomainName = User.sambaDomainName)
-ORDER BY User.sn, User.cn
-LIMIT 5, 10
+ORDER BY User.sn, User.givenName DESC
 """
 
 
@@ -475,6 +501,7 @@ print "--" * 20
 print xquery
 print "--" * 20
 
+res = xmldb.xquery(xquery)
 start = time()
 res = xmldb.xquery(xquery)
 
