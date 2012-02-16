@@ -46,6 +46,60 @@ class Query(MyNode):
     uses_join = False
     _joined_values = None
 
+    _xquery_header = """
+
+declare function local:get_attributes ($node as node(), $attrs as item()*)
+as xs:string
+{
+    let $res := (
+        for $attr in $attrs
+
+        let $attr_res := (
+            for $item in $node/*/.[name()=($attr)]
+            return local:create_json_value($item))
+
+        let $attr_res := ($attr_res , (
+            for $item in $node/Extensions/*/.[name()=($attr)]
+            return local:create_json_value($item)))
+
+        let $attr_res := ($attr_res , (
+            for $item in $node/Attributes/*/.[name()=($attr)]
+            return local:create_json_value($item)))
+
+        return concat(local:create_json_key(concat($node/name(),".",$attr)), ": [", string-join($attr_res, ","), "]"))
+
+    return string-join($res, ",")
+};
+
+
+declare function local:get_attribute_as_json ($key as xs:string, $value as xs:string)
+as xs:string
+{
+    concat(local:create_json_key($key),": ", local:create_json_value($value))
+};
+
+declare function local:create_json_value($x as xs:string)
+as xs:string
+{
+    (: Replaces all occurences of " in the given string with
+       an escaped quote \", this enables us to use this string in json.
+    :)
+    let $clean := replace($x, '"', '&#92;&#92;&#34;')
+    return concat('"', $clean, '"')
+};
+
+
+declare function local:create_json_key($x as xs:string)
+as xs:string
+{
+    (: Prepares a string to be used as json-dict key.
+    :)
+    concat('"', $x, '"')
+};
+
+
+"""
+
     def __init__(self, *args):
 
         # Prepare class members
@@ -74,7 +128,7 @@ class Query(MyNode):
             >>>     and Attributes/sambaDomainName = ($join_values_0)]
         """
         joins = {}
-        result = []
+        result = [self._xquery_header]
         if self.uses_join:
 
             # Create a predefined list of joined values
@@ -139,6 +193,12 @@ class Query(MyNode):
         # we'll use them later create the result.
         for attr in self.Attributes[0]:
             objectType, name = attr
+            if name == '*':
+                import sys
+                print "User.* not supported yet"
+                sys.exit()
+
+
             self._register_attribute(objectType, name)
             self._selected_attributes.append((objectType, name))
 
@@ -174,7 +234,17 @@ class Query(MyNode):
         attrs = map(lambda x: "$%s/%s/text()" % (x[0], self.getXQuery_attribute(x[0], x[1])), self._selected_attributes)
 
         # Add the return statement for the result.
-        where_result.append("return(concat('result: ', %s))" % ", ".join(attrs))
+        attr_get_list = ", ".join(map(lambda x: "local:get_attributes($%s, ('DN'))" % (x), self._objectTypes.keys()))
+        where_result += [
+            'return(',
+            '   concat("{",',
+            '       string-join(',
+            '           ( ',
+            '               '+ attr_get_list,
+            '           ), ", "',
+            '       ),"}"',
+            '   )',
+            ')']
 
         """
         Process the LIMIT statement here.
@@ -420,7 +490,7 @@ attributes = {}
 
 # A definition for an attribute 'Type.Attribute'
 attr_type = Regexp('[a-zA-Z]+')
-attr_name = Regexp('[a-zA-Z]+')
+attr_name = Regexp('[a-zA-Z]+') | Literal('*')
 number = UnsignedReal()
 attribute = attr_type & ~Literal('.') & attr_name >  Attribute
 
@@ -430,7 +500,7 @@ with Separator(spaces):
     ### Select
     ################
     attribute_list = Delayed()
-    attribute_list += (attribute | Literal('*')) & Optional(~Literal(',') & attribute_list)
+    attribute_list += attribute & Optional(~Literal(',') & attribute_list)
     select = ~Literal('SELECT') & attribute_list > Attributes
 
     ################
@@ -500,12 +570,6 @@ WHERE (SambaDomain.sambaDomainName = User.sambaDomainName)
 ORDER BY User.sn, User.givenName DESC
 """
 
-
-query = """
-
-SELECT User.*
-BASE User SUB "dc=gonicus,dc=de"
-"""
 
 xquery =  query_parser.parse(query)[0].getXQuery()
 print  xquery
