@@ -420,19 +420,18 @@ attributes = {}
 
 # A definition for an attribute 'Type.Attribute'
 attr_type = Regexp('[a-zA-Z]+')
-attr_name = attr_type
-
-# Attribute  --  (e.g. User.cn)
-attribute = ~spaces & attr_type & ~Literal('.') & attr_name & ~spaces >  Attribute
-
-# Allow to have multiple attributes
-attribute_list = Delayed()
-attribute_list += attribute & Optional(~Literal(',') & attribute_list)
-
-select = ~Literal('SELECT') & attribute_list > Attributes
-
+attr_name = Regexp('[a-zA-Z\*]+')
 number = UnsignedReal()
+attribute = attr_type & ~Literal('.') & attr_name >  Attribute
+
 with Separator(spaces):
+
+    ################
+    ### Select
+    ################
+    attribute_list = Delayed()
+    attribute_list += attribute & Optional(~Literal(',') & attribute_list)
+    select = ~Literal('SELECT') & attribute_list > Attributes
 
     ################
     ### BASE
@@ -501,12 +500,13 @@ WHERE (SambaDomain.sambaDomainName = User.sambaDomainName)
 ORDER BY User.sn, User.givenName DESC
 """
 
-# Search all users with all attributes
+
 query = """
+
 SELECT User.*
-BASE User SUB "ou=Technik,dc=gonicus,dc=de"
-ORDER BY User.sn, User.givenName DESC
+BASE User SUB "dc=gonicus,dc=de"
 """
 
 xquery =  query_parser.parse(query)[0].getXQuery()
+print  xquery
 pprint(xmldb.xquery(xquery))
