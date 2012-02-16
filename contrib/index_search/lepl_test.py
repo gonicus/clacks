@@ -1,3 +1,55 @@
+""""
+
+This class is a search wrapper, which hides the xquery syntax from the user but allows
+to use a SQL like query syntax.
+
+Writing this search-wrapper was necessary to avoid that users send their own xqueries to
+the object database and thus can read everything without any permissions been checked.
+So we decided to create a wrapper which allows us to take care what is queried and what is
+returned to the user.
+
+Additionally we've introduced a SQL like query syntax.
+
+E.g. a query for:
+
+>>> SELECT User.sn, User.cn, SambaDomain.sambaDomainName
+>>> BASE SambaDomain SUB "dc=gonicus,dc=de"
+>>> BASE User SUB "dc=gonicus,dc=de"
+>>> WHERE (SambaDomain.sambaDomainName = User.sambaDomainName)
+>>> ORDER BY User.sn, User.givenName DESC
+
+will internally send the following xquery to the obejct database:
+(The result may change in the future, its just here to give an idea
+about whats done here)
+
+>>> let $SambaDomain_attributes := ('sambaDomainName', 'DN')
+>>> let $User_attributes := ('sn', 'cn', 'DN')
+>>>
+>>> let $join_values_1 := distinct-values ( (collection('objects')//SambaDomain/Attributes/sambaDomainName,
+>>>       collection('objects')//User/Attributes/sambaDomainName) )
+>>>
+>>> let $SambaDomain_base := collection('objects')//SambaDomain[
+>>>     Attributes/sambaDomainName = ($join_values_1) and
+>>>     matches(DN/text(), 'dc=gonicus,dc=de')]
+>>> let $User_base := collection('objects')//User[
+>>>     Attributes/sambaDomainName = ($join_values_1) and
+>>>     matches(DN/text(), 'dc=gonicus,dc=de')]
+>>>
+>>> for $SambaDomain in $SambaDomain_base, $User in $User_base
+>>> where ($SambaDomain/Attributes/sambaDomainName/text() = $User/Attributes/sambaDomainName/text())
+>>> order by $User/Attributes/sn/text(), $User/Attributes/givenName/text() descending
+>>> return(
+>>>    concat("{",
+>>>        string-join(
+>>>            (
+>>>                local:get_attributes($SambaDomain, $SambaDomain_attributes), local:get_attributes($User, $User_attributes)
+>>>            ), ", "
+>>>        ),"}"
+>>>    )
+
+"""
+
+
 from lepl import *
 from time import time
 from clacks.agent.xmldb.handler import XMLDBHandler
@@ -114,6 +166,28 @@ as xs:string
         self.__populate_self(args)
         super(Query, self).__init__(*args)
 
+
+        # Append the query header containg usefull functions.
+        result = [self._xquery_header]
+
+        """
+        Create a list of attributes the user was querying for.
+
+        This will look like this:
+            >>> let $SambaDomain_attributes := ('sambaDomainName', 'DN')
+            >>> let $User_attributes := ('sn', 'cn', 'DN')
+
+        This allows us to easily extract attributes from an xml-node.
+        For details take a look at the function calls for 'local:get_attributes'.
+        """
+        sel_attrs = self.Attributes[0].get_attribute_names()
+        for key in sel_attrs:
+            attr_list = ", ".join(map(lambda x: "'%s'"%x , sel_attrs[key]))
+            result.append('let $%s_attributes := (%s)' % (key, attr_list))
+
+        result.append('')
+
+
         """
         Increase the speed of joined statements by preparing a sequence containing
         all potentially joined values.
@@ -128,16 +202,6 @@ as xs:string
             >>>     and Attributes/sambaDomainName = ($join_values_0)]
         """
         joins = {}
-        result = [self._xquery_header]
-
-        # Create a list of attributes the user was querying for.
-        sel_attrs = self.Attributes[0].get_attribute_names()
-        for key in sel_attrs:
-            attr_list = ", ".join(map(lambda x: "'%s'"%x , sel_attrs[key]))
-            result.append('let $%s_attributes := (%s)' % (key, attr_list))
-
-        result.append('')
-
         if self.uses_join:
 
             # Create a predefined list of joined values
