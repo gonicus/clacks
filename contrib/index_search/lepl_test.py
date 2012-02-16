@@ -100,6 +100,34 @@ class Query(MyNode):
 
     _xquery_header = """
 
+declare function local:get_all_attributes ($node as node())
+as xs:string
+{
+    let $res := (
+        for $attr in ('UUID', 'DN', 'Type')
+        let $attr_res := (
+            for $item in $node/*/.[name()=($attr)]
+            return local:create_json_value($item))
+        return concat(local:create_json_key(concat($node/name(),".",$attr)), ": [", string-join($attr_res, ","), "]"))
+
+    let $res := ($res,
+        for $attr in ('Extension')
+        let $attr_res := (
+            for $item in $node/Extensions/*/.[name()=($attr)]
+            return local:create_json_value($item))
+        return concat(local:create_json_key(concat($node/name(),".",$attr)), ": [", string-join($attr_res, ","), "]"))
+
+    let $res := ($res,
+        for $attr in (for $item in $node/Attributes/* return($item/name()))
+        let $attr_res := (
+            for $item in $node/Attributes/*/.[name()=($attr)]
+            return local:create_json_value($item))
+        return concat(local:create_json_key(concat($node/name(),".",$attr)), ": [", string-join($attr_res, ","), "]"))
+
+    return string-join($res, ",")
+};
+
+
 declare function local:get_attributes ($node as node(), $attrs as item()*)
 as xs:string
 {
@@ -181,9 +209,13 @@ as xs:string
         For details take a look at the function calls for 'local:get_attributes'.
         """
         sel_attrs = self.Attributes[0].get_attribute_names()
+        all_attrs_from_object = []
         for key in sel_attrs:
-            attr_list = ", ".join(map(lambda x: "'%s'"%x , sel_attrs[key]))
-            result.append('let $%s_attributes := (%s)' % (key, attr_list))
+            if '*' in sel_attrs[key]:
+                all_attrs_from_object.append(key)
+            else:
+                attr_list = ", ".join(map(lambda x: "'%s'"%x , sel_attrs[key]))
+                result.append('let $%s_attributes := (%s)' % (key, attr_list))
 
         result.append('')
 
@@ -266,12 +298,6 @@ as xs:string
         # we'll use them later create the result.
         for attr in self.Attributes[0]:
             objectType, name = attr
-            if name == '*':
-                import sys
-                print "User.* not supported yet"
-                sys.exit()
-
-
             self._register_attribute(objectType, name)
             self._selected_attributes.append((objectType, name))
 
@@ -307,7 +333,14 @@ as xs:string
         attrs = map(lambda x: "$%s/%s/text()" % (x[0], self.getXQuery_attribute(x[0], x[1])), self._selected_attributes)
 
         # Add the return statement for the result.
-        attr_get_list = ", ".join(map(lambda x: "local:get_attributes($%s, $%s_attributes)" % (x, x), self._objectTypes.keys()))
+        objectTypes = filter(lambda x: x not in all_attrs_from_object, self._objectTypes.keys())
+        attr_get_list = []
+        if len(objectTypes):
+            attr_get_list += [", ".join(map(lambda x: "local:get_attributes($%s, $%s_attributes)" % (x, x), objectTypes))]
+        if len(all_attrs_from_object):
+            attr_get_list += [", ".join(map(lambda x: "local:get_all_attributes($%s)" % (x), all_attrs_from_object))]
+        attr_get_list = ", ".join(attr_get_list)
+
         where_result += [
             'return(',
             '   concat("{",',
@@ -644,7 +677,7 @@ xmldb = XMLDBHandler.get_instance()
 xmldb.setNamespace('objects', 'xs', "http://www.w3.org/2001/XMLSchema")
 
 query = """
-SELECT User.sn, User.cn, SambaDomain.sambaDomainName
+SELECT User.*, SambaDomain.*
 BASE SambaDomain SUB "dc=gonicus,dc=de"
 BASE User SUB "dc=gonicus,dc=de"
 WHERE (SambaDomain.sambaDomainName = User.sambaDomainName)
@@ -654,4 +687,13 @@ ORDER BY User.sn, User.givenName DESC
 
 xquery =  query_parser.parse(query)[0].getXQuery()
 print  xquery
-pprint(xmldb.xquery(xquery))
+start = time()
+xmldb.xquery(xquery)
+
+for res in xmldb.xquery(xquery):
+    try:
+        pprint(loads(res))
+    except:
+        print "failed", len(res)
+
+print time() - start
