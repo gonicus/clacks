@@ -1,5 +1,30 @@
 """"
 
+
+#TODO: Queries are not performaning very good.
+#      Even not joined queries take up to 0.5 seconds
+
+#TODO: Do not return the complete object that matches the query.
+#      At the moment we return the complete object (e.g. User) that
+#      matches the query, due to the fact that selecting only the
+#      required attributes leads to drastically increased executioni
+#      time of the query.
+#      But returning the complete object, will return all sub-objects
+#      to... think of querying all 'OrganizationalUnit's, in that case
+#      ALL sub objects will be returned to, which may result in returning
+#      the complete database!!!
+#
+#      We've to find a solution here...
+
+#TODO: Scope operators ware not handled yet, all queries are 'SUB' queries.
+
+#TODO: Clean up code - Things have changed during query-construction refacturing.
+
+
+
+# -----------------
+
+
 This class is a search wrapper, which hides the xquery syntax from the user but allows
 to use a SQL like query syntax.
 
@@ -102,6 +127,9 @@ class Query(MyNode):
     _attributes = None
     _selected_attributes = None
     __xquery = None
+
+    # The time executing this query took
+    time = None
 
     # This indicates whether a join between different object types are used or not.
     uses_join = False
@@ -278,6 +306,7 @@ class Query(MyNode):
         """
         Executes the created xquery and return only interessting attributes.
         """
+        start = time()
         xquery =  self.getXQuery()
         result = []
         for res in xmldb.xquery(xquery):
@@ -306,6 +335,7 @@ class Query(MyNode):
                     else:
                         res[suffix][name] = (obj[suffix][0][name])
             result.append(res)
+        self.time = time() - start
         return result
 
     def recursive_dict(self, element, strip_namespaces=False):
@@ -635,6 +665,13 @@ WHERE (SambaDomain.sambaDomainName = User.sambaDomainName)
 ORDER BY User.sn, User.givenName DESC
 """
 
+query = """
+SELECT User.sn, User.givenName
+BASE User SUB "ou=Technik,dc=gonicus,dc=de"
+ORDER BY User.sn, User.givenName DESC
+"""
 
-pprint(query_parser.parse(query)[0].execute())
+q_o = query_parser.parse(query)[0]
+q_o.execute()
+print q_o.time
 
