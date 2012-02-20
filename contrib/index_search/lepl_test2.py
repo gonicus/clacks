@@ -285,13 +285,26 @@ class Query(MyNode):
             obj = (self.recursive_dict(o, True))
             res = {}
             for suffix, name in self._selected_attributes:
-                path = self._get_attribute_location(name)
+
                 if not suffix in res:
                     res[suffix] = {}
-                if path:
-                    res[suffix][name] = (obj[suffix][0][path][0][name])
+
+                # Return all attributes
+                if name == "*":
+                    res[suffix] = obj[suffix][0]['Attributes'][0]
+                    for name in ('UUID', 'Type', 'DN'):
+                        res[suffix][name] = (obj[suffix][0][name])
+                    if 'Extensions' in obj[suffix][0]:
+                        for name in ('Extension'):
+                            res[suffix][name] = (obj[suffix][0]['Extensions'][0][name])
+
                 else:
-                    res[suffix][name] = (obj[suffix][0][name])
+                    path = self._get_attribute_location(name)
+                    if path:
+                        if path in obj[suffix][0]:
+                            res[suffix][name] = (obj[suffix][0][path][0][name])
+                    else:
+                        res[suffix][name] = (obj[suffix][0][name])
             result.append(res)
         return result
 
@@ -615,7 +628,7 @@ with Separator(spaces):
 # ---------------------
 
 query = """
-SELECT User.sn, SambaDomain.sambaDomainName, User.Type
+SELECT User.sn, SambaDomain.*, User.Type
 BASE SambaDomain SUB "dc=gonicus,dc=de"
 BASE User SUB "dc=gonicus,dc=de"
 WHERE (SambaDomain.sambaDomainName = User.sambaDomainName)
