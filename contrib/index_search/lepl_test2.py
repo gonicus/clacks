@@ -50,7 +50,9 @@ about whats done here)
 """
 
 
+import re
 from lepl import *
+from lxml import etree, objectify
 from time import time
 from clacks.agent.xmldb.handler import XMLDBHandler
 from json import loads, dumps
@@ -70,6 +72,13 @@ class MyNode(Node):
 
     def _set_query_base_object(self, obj):
         self.query_base = obj
+
+
+#TODO: this has to be removed!! e.g. add a static member to class Query.
+## --------------------------------
+xmldb = XMLDBHandler.get_instance()
+xmldb.setNamespace('objects', 'xs', "http://www.w3.org/2001/XMLSchema")
+## --------------------------------
 
 
 class Query(MyNode):
@@ -98,87 +107,7 @@ class Query(MyNode):
     uses_join = False
     _joined_values = None
 
-    _xquery_header = """
-
-declare function local:get_all_attributes ($node as node())
-as xs:string
-{
-    let $res := (
-        for $attr in ('UUID', 'DN', 'Type')
-        let $attr_res := (
-            for $item in $node/*/.[name()=($attr)]
-            return local:create_json_value($item))
-        return concat(local:create_json_key(concat($node/name(),".",$attr)), ": [", string-join($attr_res, ","), "]"))
-
-    let $res := ($res,
-        for $attr in ('Extension')
-        let $attr_res := (
-            for $item in $node/Extensions/*/.[name()=($attr)]
-            return local:create_json_value($item))
-        return concat(local:create_json_key(concat($node/name(),".",$attr)), ": [", string-join($attr_res, ","), "]"))
-
-    let $res := ($res,
-        for $attr in (for $item in $node/Attributes/* return($item/name()))
-        let $attr_res := (
-            for $item in $node/Attributes/*/.[name()=($attr)]
-            return local:create_json_value($item))
-        return concat(local:create_json_key(concat($node/name(),".",$attr)), ": [", string-join($attr_res, ","), "]"))
-
-    return string-join($res, ",")
-};
-
-
-declare function local:get_attributes ($node as node(), $attrs as item()*)
-as xs:string
-{
-    let $res := (
-        for $attr in $attrs
-
-        let $attr_res := (
-            for $item in $node/*/.[name()=($attr)]
-            return local:create_json_value($item))
-
-        let $attr_res := ($attr_res , (
-            for $item in $node/Extensions/*/.[name()=($attr)]
-            return local:create_json_value($item)))
-
-        let $attr_res := ($attr_res , (
-            for $item in $node/Attributes/*/.[name()=($attr)]
-            return local:create_json_value($item)))
-
-        return concat(local:create_json_key(concat($node/name(),".",$attr)), ": [", string-join($attr_res, ","), "]"))
-
-    return string-join($res, ",")
-};
-
-
-declare function local:get_attribute_as_json ($key as xs:string, $value as xs:string)
-as xs:string
-{
-    concat(local:create_json_key($key),": ", local:create_json_value($value))
-};
-
-declare function local:create_json_value($x as xs:string)
-as xs:string
-{
-    (: Replaces all occurences of " in the given string with
-       an escaped quote \", this enables us to use this string in json.
-    :)
-    let $clean := replace($x, '"', '&#92;&#92;&#34;')
-    return concat('"', $clean, '"')
-};
-
-
-declare function local:create_json_key($x as xs:string)
-as xs:string
-{
-    (: Prepares a string to be used as json-dict key.
-    :)
-    concat('"', $x, '"')
-};
-
-
-"""
+    _xquery_header = ""
 
     def __init__(self, *args):
 
@@ -197,28 +126,6 @@ as xs:string
 
         # Append the query header containg usefull functions.
         result = [self._xquery_header]
-
-        """
-        Create a list of attributes the user was querying for.
-
-        This will look like this:
-            >>> let $SambaDomain_attributes := ('sambaDomainName', 'DN')
-            >>> let $User_attributes := ('sn', 'cn', 'DN')
-
-        This allows us to easily extract attributes from an xml-node.
-        For details take a look at the function calls for 'local:get_attributes'.
-        """
-        sel_attrs = self.Attributes[0].get_attribute_names()
-        all_attrs_from_object = []
-        for key in sel_attrs:
-            if '*' in sel_attrs[key]:
-                all_attrs_from_object.append(key)
-            else:
-                attr_list = ", ".join(map(lambda x: "'%s'"%x , sel_attrs[key]))
-                result.append('let $%s_attributes := (%s)' % (key, attr_list))
-
-        result.append('')
-
 
         """
         Increase the speed of joined statements by preparing a sequence containing
@@ -333,24 +240,10 @@ as xs:string
         attrs = map(lambda x: "$%s/%s/text()" % (x[0], self.getXQuery_attribute(x[0], x[1])), self._selected_attributes)
 
         # Add the return statement for the result.
-        objectTypes = filter(lambda x: x not in all_attrs_from_object, self._objectTypes.keys())
-        attr_get_list = []
-        if len(objectTypes):
-            attr_get_list += [", ".join(map(lambda x: "local:get_attributes($%s, $%s_attributes)" % (x, x), objectTypes))]
-        if len(all_attrs_from_object):
-            attr_get_list += [", ".join(map(lambda x: "local:get_all_attributes($%s)" % (x), all_attrs_from_object))]
+        attr_get_list = [", ".join(map(lambda x: "$%s" % (x), self._objectTypes.keys()))]
         attr_get_list = ", ".join(attr_get_list)
 
-        where_result += [
-            'return(',
-            '   concat("{",',
-            '       string-join(',
-            '           ( ',
-            '               '+ attr_get_list,
-            '           ), ", "',
-            '       ),"}"',
-            '   )',
-            ')']
+        where_result += ['return( <res> {' + attr_get_list + ' } </res>)']
 
         """
         Process the LIMIT statement here.
@@ -374,9 +267,48 @@ as xs:string
         if self.Limit:
             where_result =  ['return subsequence('] + where_result + [",%s,%s)" % (self.Limit[0].get_range())]
 
+        where_result =  ["let $res := ( "] + where_result + [")"]
+        where_result +=  ["return $res"]
+
         result += where_result
 
         self.__xquery = "\n".join(result)
+
+    def execute(self):
+        """
+        Executes the created xquery and return only interessting attributes.
+        """
+        xquery =  self.getXQuery()
+        result = []
+        for res in xmldb.xquery(xquery):
+            o = etree.XML(res)
+            obj = (self.recursive_dict(o, True))
+            res = {}
+            for suffix, name in self._selected_attributes:
+                path = self._get_attribute_location(name)
+                if not suffix in res:
+                    res[suffix] = {}
+                if path:
+                    res[suffix][name] = (obj[suffix][0][path][0][name])
+                else:
+                    res[suffix][name] = (obj[suffix][0][name])
+            result.append(res)
+        return result
+
+    def recursive_dict(self, element, strip_namespaces=False):
+        """
+        Resursivly creates a dictionary out of the given etree.XML object.
+        """
+        res = {}
+        for item in element:
+            tag = re.sub('^\{([^\}]*)\}', '', item.tag) if strip_namespaces else item.tag
+            if not  tag in res:
+                res[tag] = []
+            if len(item):
+                res[tag].append(self.recursive_dict(item, strip_namespaces))
+            else:
+                res[tag].append(item.text)
+        return res
 
     def __populate_self(self, obj):
         """
@@ -409,10 +341,19 @@ as xs:string
         if objectType not in self._objectTypes:
             raise Exception("no BASE definition found for object type '%s' in '%s'" % (objectType, complete))
         else:
-            if attribute in ['DN', 'UUID']:
-                self._attributes[complete] = "%s" % (attribute)
+            path = self._get_attribute_location(attribute)
+            if path:
+                self._attributes[complete] =  "%s/%s" % (path, attribute)
             else:
-                self._attributes[complete] = "Attributes/%s" % (attribute)
+                self._attributes[complete] =  "%s" % (attribute)
+
+    def _get_attribute_location(self, attribute):
+        if attribute in ['DN', 'UUID', 'Type']:
+            return("")
+        elif attribute in ['Extension']:
+            return("Extensions")
+        else:
+            return("Attributes")
 
     def getXQuery_attribute(self, objectType, attribute):
         """
@@ -673,11 +614,8 @@ with Separator(spaces):
 
 # ---------------------
 
-xmldb = XMLDBHandler.get_instance()
-xmldb.setNamespace('objects', 'xs', "http://www.w3.org/2001/XMLSchema")
-
 query = """
-SELECT User.*, SambaDomain.*
+SELECT User.sn, SambaDomain.sambaDomainName, User.Type
 BASE SambaDomain SUB "dc=gonicus,dc=de"
 BASE User SUB "dc=gonicus,dc=de"
 WHERE (SambaDomain.sambaDomainName = User.sambaDomainName)
@@ -685,15 +623,5 @@ ORDER BY User.sn, User.givenName DESC
 """
 
 
-xquery =  query_parser.parse(query)[0].getXQuery()
-print  xquery
-start = time()
-xmldb.xquery(xquery)
+pprint(query_parser.parse(query)[0].execute())
 
-for res in xmldb.xquery(xquery):
-    try:
-        pprint(loads(res))
-    except:
-        print "failed", len(res)
-
-print time() - start
