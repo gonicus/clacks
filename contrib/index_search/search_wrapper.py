@@ -16,9 +16,6 @@
 #
 #      We've to find a solution here...
 
-#TODO: Clean up code - Things have changed during query-construction refacturing.
-
-
 
 # -----------------
 
@@ -229,7 +226,7 @@ class Query(MyNode):
             base_regex = base_regex.replace("\,", ",")
             base_regex = base_regex.replace("\ ", " ")
 
-            result.append("let $%s_base := collection('objects')//%s[%s \n\tmatches(DN/text(), '%s')]" % ( \
+            result.append("let $%s_base := collection('objects')//%s[%s\n\tmatches(DN/text(), '%s')]" % ( \
                     base_object, base_object, join_statement, base_regex))
 
         result.append('')
@@ -300,7 +297,7 @@ class Query(MyNode):
         if self.Limit:
             where_result =  ['return subsequence('] + where_result + [",%s,%s)" % (self.Limit[0].get_range())]
 
-        where_result =  ["let $res := ( "] + where_result + [")"]
+        where_result =  ["let $res := ("] + where_result + [")"]
         where_result +=  ["return $res"]
 
         result += where_result
@@ -352,7 +349,7 @@ class Query(MyNode):
         res = {}
         for item in element:
             tag = re.sub('^\{([^\}]*)\}', '', item.tag) if strip_namespaces else item.tag
-            if not  tag in res:
+            if not tag in res:
                 res[tag] = []
             if len(item):
                 res[tag].append(self.recursive_dict(item, strip_namespaces))
