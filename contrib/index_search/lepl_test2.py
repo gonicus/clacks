@@ -24,5 +24,5 @@ ORDER BY User.sn, User.givenName DESC
 """
 
 sw = SearchWrapper.get_instance()
-pprint(sw.execute(query3))
+pprint(len(sw.execute(query3)))
 

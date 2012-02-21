@@ -420,6 +420,7 @@ class Query(MyNode):
         """
         return self.__xquery
 
+
 class Match(MyNode):
     """
     The Match-Node represents matches of the 'Where' tag
@@ -446,13 +447,20 @@ class Match(MyNode):
         # Each brace in the match will result in a Match-Node
         # containing a sub Match-Node. Here we call the sub-node
         # to keep the originally used braces.
+        match = ""
         if self.Match:
-            return ("(%s)" % self.Match[0].compile())
+            match = ("(%s)" % self.Match[0].compile())
         else:
             attr1 = self[0].compileForMatch()
             comp  = self[1].compileForMatch()
             attr2 = self[2].compileForMatch()
-            return ("%s %s %s" % (attr1, comp, attr2))
+            match = ("(%s %s %s)" % (attr1, comp, attr2))
+
+        # Negate the match if a 'NOT' was placed in from of it.
+        if 'NOT' in self:
+            match = 'not%s' % match
+        return match
+
 
 class Operator(MyNode):
     """
@@ -662,7 +670,8 @@ class SearchWrapper(object):
 
             # Allow to have brakets in condition statements
             condition = Delayed()
-            condition+= condition_tmp | ~Literal('(') & condition & ~Literal(')') > Match
+            negator = Literal('NOT')
+            condition+= condition_tmp | Optional(negator) & ~Literal('(') & condition & ~Literal(')') > Match
 
             # Allow to connect conditions (called collection below)
             collection_operator = (Literal('AND') | Literal('OR'))
