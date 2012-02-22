@@ -88,7 +88,7 @@ class MyNode(Node):
     """
     query_base = None
 
-    def _set_query_base_object(self, obj):
+    def set_query_base_object(self, obj):
         self.query_base = obj
 
 
@@ -109,28 +109,28 @@ class Query(MyNode):
     OrderBy = None
 
     # internal mapping of used object types and attributes.
-    _object_types = None
+    object_types = None
     _attributes = None
     _selected_attributes = None
-    __xquery = None
+    _xquery = None
 
     # The time executing this query took
     time = None
 
     # This indicates whether a join between different object types are used or not.
     uses_join = False
-    _joined_values = None
+    joined_values = None
 
     _xquery_header = ""
 
     def __init__(self, *args):
 
         # Prepare class members
-        self._joined_values = []
-        self._object_types = {}
+        self.joined_values = []
+        self.object_types = {}
         self._attributes = {}
         self._selected_attributes = []
-        self.__xquery = ""
+        self._xquery = ""
         self.result = []
 
         # Ensure that all Nodes are initialized and have access to the base-node 'Query'.
@@ -159,7 +159,7 @@ class Query(MyNode):
 
             # Create a predefined list of joined values
             cnt = 0
-            for join in self._joined_values:
+            for join in self.joined_values:
                 cnt += 1
 
                 # Get attributes in xquery addressed style
@@ -254,7 +254,7 @@ class Query(MyNode):
 
         # Create loop for each required object type
         where_result = []
-        where_result.append("for " + ", ".join(map(lambda x: "$%s in $%s_base" %(x, x) , self._object_types.keys())))
+        where_result.append("for " + ", ".join(map(lambda x: "$%s in $%s_base" %(x, x) , self.object_types.keys())))
 
         # Add optional where statement
         if self.Where:
@@ -265,7 +265,7 @@ class Query(MyNode):
             where_result.append("order by " + self.OrderBy[0].compile_xquery())
 
         # Add the return statement for the result.
-        attr_get_list = [", ".join(map(lambda x: "$%s" % (x), self._object_types.keys()))]
+        attr_get_list = [", ".join(map(lambda x: "$%s" % (x), self.object_types.keys()))]
         attr_get_list = ", ".join(attr_get_list)
 
         where_result += ['return( <res> {' + attr_get_list + ' } </res>)']
@@ -297,7 +297,7 @@ class Query(MyNode):
 
         result += where_result
 
-        self.__xquery = "\n".join(result)
+        self._xquery = "\n".join(result)
 
     def execute(self):
         """
@@ -361,7 +361,7 @@ class Query(MyNode):
             if isinstance(entry, Node):
                 if len(entry):
                     self.__populate_self(entry)
-                entry._set_query_base_object(self)
+                entry.set_query_base_object(self)
 
     def _register_attribute(self, object_type, attribute):
         """
@@ -379,7 +379,7 @@ class Query(MyNode):
                 'User.sn' => "$User/Attributes/sn"
         """
         complete = "%s.%s" % (object_type, attribute)
-        if object_type not in self._object_types:
+        if object_type not in self.object_types:
             raise Exception("no BASE definition found for object type '%s' in '%s'" % (object_type, complete))
         else:
             path = self._get_attribute_location(attribute)
@@ -412,7 +412,7 @@ class Query(MyNode):
         """
         Returns the compiles xquery.
         """
-        return self.__xquery
+        return self._xquery
 
 
 class Match(MyNode):
@@ -424,8 +424,8 @@ class Match(MyNode):
 
     Match = None
 
-    def _set_query_base_object(self, obj):
-        super(Match, self)._set_query_base_object(obj)
+    def set_query_base_object(self, obj):
+        super(Match, self).set_query_base_object(obj)
 
         # Check if we use a join between two different object types
         if type(self[0]) == Attribute and type(self[2]) == Attribute:
@@ -434,7 +434,7 @@ class Match(MyNode):
                 raise Exception("joins between the same object-type are now allowed. (%s)" % self.compile())
 
             self.query_base.uses_join = True
-            self.query_base._joined_values.append(((self[0][0], self[0][1]), (self[2][0], self[2][1])))
+            self.query_base.joined_values.append(((self[0][0], self[0][1]), (self[2][0], self[2][1])))
 
     def compile(self):
 
@@ -519,8 +519,8 @@ class Attributes(MyNode):
     """
     This node is used to represent attributes
     """
-    def _set_query_base_object(self, obj):
-        super(Attributes, self)._set_query_base_object(obj)
+    def set_query_base_object(self, obj):
+        super(Attributes, self).set_query_base_object(obj)
 
     def get_attribute_names(self):
         ret = {}
@@ -536,12 +536,12 @@ class Base(MyNode):
     This node is used to represent the BASE tag.
     """
 
-    def _set_query_base_object(self, obj):
-        super(Base, self)._set_query_base_object(obj)
+    def set_query_base_object(self, obj):
+        super(Base, self).set_query_base_object(obj)
 
         # Handle object-types of the SELECT statement
         base_object = self[0]
-        obj._object_types[base_object] = "$%s_list" % base_object
+        obj.object_types[base_object] = "$%s_list" % base_object
 
 
 class Limit(MyNode):
