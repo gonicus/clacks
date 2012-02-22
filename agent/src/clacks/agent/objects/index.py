@@ -22,7 +22,7 @@ from clacks.common import Environment
 from clacks.common.utils import N_
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import Command, Plugin, PluginRegistry
-from clacks.agent.objects import ObjectFactory, ObjectProxy, ObjectChanged, SCOPE_BASE, SCOPE_ONE, SCOPE_SUB, ProxyException, ObjectException
+from clacks.agent.objects import ObjectFactory, ObjectProxy, ObjectChanged, SCOPE_BASE, SCOPE_ONE, SCOPE_SUB, ProxyException, ObjectException, SearchWrapper
 from clacks.agent.lock import GlobalLock
 from clacks.agent.ldap_utils import LDAPHandler
 
@@ -54,6 +54,7 @@ class ObjectIndex(Plugin):
         self.log = logging.getLogger(__name__)
         self.log.info("initializing object index handler")
         self.factory = ObjectFactory.getInstance()
+        self.__sw = SearchWrapper()
 
         # Listen for object events
         zope.event.subscribers.append(self.__handle_events)
@@ -351,6 +352,29 @@ class ObjectIndex(Plugin):
         """
         return len(self.db.xquery("collection('objects')/*[o:UUID/string() = '%s']" % uuid)) == 1
 
+    @Command(__help__=N_("Filter for indexed attributes and return the matches."))
+    def search(self, qstring):
+        """
+        Query the database using the given filter and return the
+        result set.
+
+        ========== ==================
+        Parameter  Description
+        ========== ==================
+        qstring    Query string
+        ========== ==================
+
+        For more information on the query format, consult the ref:`clacks.agent.objects.search`
+        documentation.
+
+        ``Return``: List of dicts
+        """
+
+        if GlobalLock.exists("scan_index"):
+            raise FilterException("index rebuild in progress - try again later")
+
+        return self.__sw.execute(qstring)
+
 # TODO:-to-be-revised--------------------------------------------------------------------------------------
 #
 #    @Command(__help__=N_("Filter for indexed attributes and return the number of matches."))
@@ -370,32 +394,3 @@ class ObjectIndex(Plugin):
 #        ``Return``: Integer
 #        """
 #        raise NotImplemented("count is not available yet")
-#
-#    @Command(__help__=N_("Filter for indexed attributes and return the matches."))
-#    def search(self, base=None, scope=SCOPE_SUB, fltr=None, attrs=None, begin=None, end=None, order_by=None, descending=False):
-#        """
-#        Query the database using the given filter and return the
-#        result set.
-#
-#        ========== ==================
-#        Parameter  Description
-#        ========== ==================
-#        base       Base to search on
-#        scope      Scope to use (BASE, ONE, SUB)
-#        fltr       Filter description
-#        attrs      List of attributes the result set should contain
-#        begin      Offset to start returning results
-#        end        End offset to stop returning results
-#        order_by   Attribute to sort for
-#        descending Ascending or descending sort
-#        ========== ==================
-#
-#        For more information on the filter format, consult the ref:`clacks.agent.objects.index.count`
-#        documentation.
-#
-#        ``Return``: List of dicts
-#        """
-#        raise NotImplemented("count is not available yet")
-#
-#        if GlobalLock.exists("scan_index"):
-#            raise FilterException("index rebuild in progress - try again later")

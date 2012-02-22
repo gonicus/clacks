@@ -71,6 +71,7 @@ about whats done here)
 import re
 from lxml import etree
 from time import time
+from clacks.common import Environment
 from clacks.agent.xmldb.handler import XMLDBHandler
 from lepl import Literal, Node, Regexp, UnsignedReal, Space, Separator, Delayed, Optional, String
 
@@ -600,16 +601,17 @@ class SearchWrapper(object):
     E.g. a query for:
 
     >>> SELECT User.sn, User.cn, SambaDomain.sambaDomainName
-    >>> BASE SambaDomain SUB "dc=gonicus,dc=de"
-    >>> BASE User SUB "dc=gonicus,dc=de"
-    >>> WHERE (SambaDomain.sambaDomainName = User.sambaDomainName)
-    >>> ORDER BY User.sn, User.givenName DESC
+    ... BASE SambaDomain SUB "dc=gonicus,dc=de"
+    ... BASE User SUB "dc=gonicus,dc=de"
+    ... WHERE (SambaDomain.sambaDomainName = User.sambaDomainName)
+    ... ORDER BY User.sn, User.givenName DESC
     """
     instance = None
     query_parser = None
 
     def __init__(self):
         self._construct_parser()
+        self.env = Environment.getInstance()
 
     def _construct_parser(self):
         """
@@ -696,9 +698,10 @@ class SearchWrapper(object):
         """
         Parses the given query and executes the resulting xquery statement.
         """
+        self.env.log.debug("about to execute query '%s'" % query)
         q_o = self.query_parser.parse(query)[0]
         res = q_o.execute()
-        print "Query took:", q_o.time, "seconds"
+        self.env.log.debug("query took %ds" % q_o.time)
         return res
 
     @staticmethod
