@@ -137,7 +137,6 @@ class Query(MyNode):
         self.__populate_self(args)
         super(Query, self).__init__(*args)
 
-
         # Append the query header containg usefull functions.
         result = [self._xquery_header]
 
@@ -365,7 +364,7 @@ class Query(MyNode):
 
     def _register_attribute(self, object_type, attribute):
         """
-        Registers a new attribute the the query object, by creating
+        Registers a new attribute for the query object, by creating
         a mapping between attribute name and resulting xquery path.
 
         This can then be used by other linked Nodes like 'Match'
@@ -376,7 +375,7 @@ class Query(MyNode):
                 _register_attribute('User', 'sn')
 
             would create an like this in self._attributes
-                'User.sn' => "$User/Attributes/sn"
+                'User.sn' => "Attributes/sn"
         """
         complete = "%s.%s" % (object_type, attribute)
         if object_type not in self.object_types:
@@ -389,6 +388,11 @@ class Query(MyNode):
                 self._attributes[complete] =  "%s" % (attribute)
 
     def _get_attribute_location(self, attribute):
+        """
+        Returns the location for a given attribute
+
+        e.g. the attribute 'Extension' would return 'Extensions'
+        """
         if attribute in ['DN', 'UUID', 'Type']:
             return("")
         elif attribute in ['Extension']:
@@ -437,6 +441,9 @@ class Match(MyNode):
             self.query_base.joined_values.append(((self[0][0], self[0][1]), (self[2][0], self[2][1])))
 
     def compile(self):
+        """
+        Compiles a xquery statement out of the result.
+        """
 
         # Each brace in the match will result in a Match-Node
         # containing a sub Match-Node. Here we call the sub-node
@@ -590,18 +597,10 @@ class Direction(MyNode):
         return "ascending" if self[0] == 'ASC' else 'descending'
 
 
-
 class SearchWrapper(object):
     """
     This class is a search wrapper, which hides the xquery syntax from the user but allows
     to use a SQL like query syntax.
-
-    Writing this search-wrapper was necessary to avoid that users send their own xqueries to
-    the object database and thus can read everything without any permissions been checked.
-    So we decided to create a wrapper which allows us to take care what is queried and what is
-    returned to the user.
-
-    Additionally we've introduced a SQL like query syntax.
 
     E.g. a query for:
 
