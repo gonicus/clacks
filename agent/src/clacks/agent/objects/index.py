@@ -139,7 +139,7 @@ class ObjectIndex(Plugin):
                 continue
 
             # Check for index entry
-            changed = self.db.xquery("collection('objects')//node()[o:UUID/string() = '%s']/o:LastChanged/string()" % obj.uuid)
+            changed = self.db.xquery("collection('objects')//node()[o:UUID = '%s']/o:LastChanged/string()" % obj.uuid)
 
             # Entry is not in the database
             if not changed:
@@ -159,7 +159,8 @@ class ObjectIndex(Plugin):
             del obj
 
         # Remove entries that are in XMLDB, but not in any other backends
-        for entry in self.db.xquery("collection('objects')//o:UUID/string()"):
+        for entry in self.db.xquery("collection('objects')//o:UUID"):
+            entry = str(entry)
             if entry not in backend_objects:
                 self.remove_by_uuid(entry)
 
@@ -224,12 +225,12 @@ class ObjectIndex(Plugin):
 
     def remove_by_uuid(self, entry):
         self.log.debug("removing object index for %s" % entry)
-        self.db.xquery("delete nodes collection('objects')//node()[o:UUID/string()='%s']" % entry)
+        self.db.xquery("delete nodes collection('objects')//node()[o:UUID = '%s']" % entry)
 
     def update(self, obj):
         # Gather information
         current = obj.asXML(True)
-        saved = self.db.xquery("collection('objects')/*[o:UUID/string() = '%s']" % obj.uuid)
+        saved = self.db.xquery("collection('objects')/*[o:UUID = '%s']" % obj.uuid)
         if not saved:
             raise IndexException("no such object %s" % obj.uuid)
 
@@ -270,7 +271,7 @@ class ObjectIndex(Plugin):
 
                 self.db.xquery("""
                     replace node
-                        collection('objects')/*[o:UUID/string() = '%s']/o:DN
+                        collection('objects')/*[o:UUID) = '%s']/o:DN
                     with
                         <o:DN>%s</o:DN>
                     """ % (obj.uuid, rdn + "," + pdn))
@@ -278,7 +279,7 @@ class ObjectIndex(Plugin):
         # Move extensions
         self.db.xquery("""
         replace node
-            collection('objects')/*[o:UUID/string() = '%s']/o:Extensions
+            collection('objects')/*[o:UUID = '%s']/o:Extensions
         with
             %s
         """ % (obj.uuid, etree.tostring(current.Extensions)))
@@ -286,7 +287,7 @@ class ObjectIndex(Plugin):
         # Move attributes
         self.db.xquery("""
         replace node
-            collection('objects')/*[o:UUID/string() = '%s']/o:Attributes
+            collection('objects')/*[o:UUID = '%s']/o:Attributes
         with
             %s
         """ % (obj.uuid, etree.tostring(current.Attributes)))
@@ -294,7 +295,7 @@ class ObjectIndex(Plugin):
         # Set LastChanged
         self.db.xquery("""
         replace node
-            collection('objects')/*[o:UUID/string() = '%s']/o:LastChanged
+            collection('objects')/*[o:UUID = '%s']/o:LastChanged
         with
             <o:LastChanged>%s</o:LastChanged>
         """ % (obj.uuid, current.LastChanged.text))
@@ -350,7 +351,7 @@ class ObjectIndex(Plugin):
 
         ``Return``: True/False
         """
-        return len(self.db.xquery("collection('objects')/*[o:UUID/string() = '%s']" % uuid)) == 1
+        return len(self.db.xquery("collection('objects')/*[o:UUID = '%s']" % uuid)) == 1
 
     @Command(__help__=N_("Filter for indexed attributes and return the matches."))
     def search(self, qstring):

@@ -48,6 +48,7 @@ class JSONRPCObjectMapper(Plugin):
 
         self.__pool = Table(obj, metadata,
             Column('uuid', String(36), primary_key=True),
+            Column('node', String(256)),
             Column('object', PickleType),
             Column('created', DateTime))
 
@@ -222,6 +223,7 @@ class JSONRPCObjectMapper(Plugin):
 
         self.__conn.execute(self.__pool.insert(), {
             'uuid': ref,
+            'node': self.env.id,
             'object': objdsc,
             'created': datetime.datetime.now(),
             })
@@ -292,7 +294,7 @@ class JSONRPCObjectMapper(Plugin):
         return self.__proxy[provider]
 
     def __get_ref(self, ref):
-        tmp = self.__conn.execute(select([self.__pool.c.uuid, self.__pool.c.object, self.__pool.c.created], self.__pool.c.uuid == ref))
+        tmp = self.__conn.execute(select([self.__pool.c.uuid, self.__pool.c.node, self.__pool.c.object, self.__pool.c.created], self.__pool.c.uuid == ref))
         res = tmp.fetchone()
         tmp.close()
         if not res:
@@ -302,7 +304,7 @@ class JSONRPCObjectMapper(Plugin):
         if ref in self.__object:
             res[1]['object'] = self.__object[ref]
 
-        return {'uuid': res[0], 'object': res[1], 'created': res[2]}
+        return {'uuid': res[0], 'node': res[1], 'object': res[2], 'created': res[3]}
 
     def __gc(self):
         self.env.log.debug("running garbage collector on object store")
@@ -313,10 +315,7 @@ class JSONRPCObjectMapper(Plugin):
                 self.env.id)))
         for entry in entries:
             ref = entry[0]
-            #TODO: remove prints
-            print "-----> do we have %s?" % ref
             if ref in self.__object:
-                print "-----> YES!"
                 del self.__object[ref]
 
         self.__conn.execute(self.__pool.delete().where(and_(self.__pool.c.created <
