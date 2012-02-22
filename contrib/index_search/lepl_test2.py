@@ -23,6 +23,13 @@ WHERE NOT(SambaDomain.sambaDomainName = User.sambaDomainName)
 ORDER BY User.sn, User.givenName DESC
 """
 
+query4 = """
+SELECT User.sn, User.givenName, User.DN
+BASE User SUB "dc=gonicus,dc=de"
+ORDER BY User.sn, User.givenName DESC
+"""
+
 sw = SearchWrapper.get_instance()
-pprint(len(sw.execute(query3)))
+while(True):
+    pprint(len(sw.execute(query3)))
 

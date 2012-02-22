@@ -71,12 +71,10 @@ about whats done here)
 
 
 import re
-from lepl import *
-from lxml import etree, objectify
+from lxml import etree
 from time import time
 from clacks.agent.xmldb.handler import XMLDBHandler
-from json import loads, dumps
-from pprint import pprint
+from lepl import Literal, Node, Regexp, UnsignedReal, Space, Separator, Delayed, Optional, String
 
 
 class MyNode(Node):
@@ -111,7 +109,7 @@ class Query(MyNode):
     OrderBy = None
 
     # internal mapping of used object types and attributes.
-    _objectTypes = None
+    _object_types = None
     _attributes = None
     _selected_attributes = None
     __xquery = None
@@ -129,7 +127,7 @@ class Query(MyNode):
 
         # Prepare class members
         self._joined_values = []
-        self._objectTypes = {}
+        self._object_types = {}
         self._attributes = {}
         self._selected_attributes = []
         self.__xquery = ""
@@ -166,8 +164,8 @@ class Query(MyNode):
 
                 # Get attributes in xquery addressed style
                 #  e.g.: "User/Attributes/sambaDomainName"
-                attr1 = "%s/%s" % (join[0][0], self.getXQuery_attribute(*join[0]))
-                attr2 = "%s/%s" % (join[1][0], self.getXQuery_attribute(*join[1]))
+                attr1 = "%s/%s" % (join[0][0], self.get_xquery_attribute(*join[0]))
+                attr2 = "%s/%s" % (join[1][0], self.get_xquery_attribute(*join[1]))
 
                 # Prepate a join list which will then include all joins per object-type.
                 if not join[0][0] in joins:
@@ -180,11 +178,11 @@ class Query(MyNode):
 
                 # Append the left side of the join to the join list
                 if not join_name in joins[join[0][0]]:
-                    joins[join[0][0]].append((join_name, self.getXQuery_attribute(*join[0])))
+                    joins[join[0][0]].append((join_name, self.get_xquery_attribute(*join[0])))
 
                 # Append the right side of the join to the join list
                 if not join_name in joins[join[1][0]]:
-                    joins[join[1][0]].append((join_name, self.getXQuery_attribute(*join[1])))
+                    joins[join[1][0]].append((join_name, self.get_xquery_attribute(*join[1])))
 
                 # Append a xquery variable to the result, which contains the joined values.
                 result.append("let %s := distinct-values ( (%s//%s,\n      %s//%s) )" % ( \
@@ -226,7 +224,7 @@ class Query(MyNode):
             base_regex = base_regex.replace("\,", ",")
             base_regex = base_regex.replace("\ ", " ")
 
-            result.append("let $%s_base := collection('objects')//%s[%s\n\tmatches(DN/text(), '%s')]" % ( \
+            result.append("let $%s_base := collection('objects')//%s[%s\n\tmatches(DN, '%s')]" % ( \
                     base_object, base_object, join_statement, base_regex))
 
         result.append('')
@@ -234,9 +232,9 @@ class Query(MyNode):
         # Create a list with the selected attributes
         # we'll use them later create the result.
         for attr in self.Attributes[0]:
-            objectType, name = attr
-            self._register_attribute(objectType, name)
-            self._selected_attributes.append((objectType, name))
+            object_type, name = attr
+            self._register_attribute(object_type, name)
+            self._selected_attributes.append((object_type, name))
 
         """
         Create condition statement
@@ -256,21 +254,18 @@ class Query(MyNode):
 
         # Create loop for each required object type
         where_result = []
-        where_result.append("for " + ", ".join(map(lambda x: "$%s in $%s_base" %(x,x) , self._objectTypes.keys())))
+        where_result.append("for " + ", ".join(map(lambda x: "$%s in $%s_base" %(x, x) , self._object_types.keys())))
 
         # Add optional where statement
         if self.Where:
-            where_result.append(self.Where[0].compileWhere())
+            where_result.append(self.Where[0].compile_where())
 
         # Add optional order by statement
         if self.OrderBy:
             where_result.append("order by " + self.OrderBy[0].compile_xquery())
 
-        # Create a list of with all selected attributes.
-        attrs = map(lambda x: "$%s/%s/text()" % (x[0], self.getXQuery_attribute(x[0], x[1])), self._selected_attributes)
-
         # Add the return statement for the result.
-        attr_get_list = [", ".join(map(lambda x: "$%s" % (x), self._objectTypes.keys()))]
+        attr_get_list = [", ".join(map(lambda x: "$%s" % (x), self._object_types.keys()))]
         attr_get_list = ", ".join(attr_get_list)
 
         where_result += ['return( <res> {' + attr_get_list + ' } </res>)']
@@ -311,11 +306,10 @@ class Query(MyNode):
         xmldb = XMLDBHandler.get_instance()
         xmldb.setNamespace('objects', 'xs', "http://www.w3.org/2001/XMLSchema")
         start = time()
-        xquery =  self.getXQuery()
+        xquery =  self.get_xquery()
         result = []
         for res in xmldb.xquery(xquery):
-            o = etree.XML(res)
-            obj = (self.recursive_dict(o, True))
+            obj = (self.recursive_dict(etree.XML(res), True))
             res = {}
             for suffix, name in self._selected_attributes:
 
@@ -369,7 +363,7 @@ class Query(MyNode):
                     self.__populate_self(entry)
                 entry._set_query_base_object(self)
 
-    def _register_attribute(self, objectType, attribute):
+    def _register_attribute(self, object_type, attribute):
         """
         Registers a new attribute the the query object, by creating
         a mapping between attribute name and resulting xquery path.
@@ -384,9 +378,9 @@ class Query(MyNode):
             would create an like this in self._attributes
                 'User.sn' => "$User/Attributes/sn"
         """
-        complete = "%s.%s" % (objectType, attribute)
-        if objectType not in self._objectTypes:
-            raise Exception("no BASE definition found for object type '%s' in '%s'" % (objectType, complete))
+        complete = "%s.%s" % (object_type, attribute)
+        if object_type not in self._object_types:
+            raise Exception("no BASE definition found for object type '%s' in '%s'" % (object_type, complete))
         else:
             path = self._get_attribute_location(attribute)
             if path:
@@ -402,19 +396,19 @@ class Query(MyNode):
         else:
             return("Attributes")
 
-    def getXQuery_attribute(self, objectType, attribute):
+    def get_xquery_attribute(self, object_type, attribute):
         """
         Returns the xquery-path to the given attribute.
 
-        e.g.:   getXQuery_attribute('User', 'sn')
+        e.g.:   get_xquery_attribute('User', 'sn')
                 '$User/Attributes/sn'
         """
-        complete = "%s.%s" % (objectType, attribute)
+        complete = "%s.%s" % (object_type, attribute)
         if complete not in self._attributes:
-            self._register_attribute(objectType, attribute)
+            self._register_attribute(object_type, attribute)
         return(self._attributes[complete])
 
-    def getXQuery(self):
+    def get_xquery(self):
         """
         Returns the compiles xquery.
         """
@@ -451,9 +445,9 @@ class Match(MyNode):
         if self.Match:
             match = ("(%s)" % self.Match[0].compile())
         else:
-            attr1 = self[0].compileForMatch()
-            comp  = self[1].compileForMatch()
-            attr2 = self[2].compileForMatch()
+            attr1 = self[0].compile_for_match()
+            comp  = self[1].compile_for_match()
+            attr2 = self[2].compile_for_match()
             match = ("(%s %s %s)" % (attr1, comp, attr2))
 
         # Negate the match if a 'NOT' was placed in from of it.
@@ -468,7 +462,7 @@ class Operator(MyNode):
     e.g.:
         The operator of (User.sn="test") is '='.
     """
-    def compileForMatch(self):
+    def compile_for_match(self):
         return (self[0])
 
 
@@ -477,12 +471,12 @@ class Attribute(MyNode):
     This Node represents a simple attribute of the query
     """
 
-    def compileForMatch(self):
+    def compile_for_match(self):
         """
         Returns the value of this attribute-node so we can use it in
         xquery where statements.
         """
-        return "$%s/%s/text()" % (self[0], self.query_base.getXQuery_attribute(self[0], self[1]))
+        return "$%s/%s" % (self[0], self.query_base.get_xquery_attribute(self[0], self[1]))
 
 
 class Collection(MyNode):
@@ -503,7 +497,7 @@ class Where(MyNode):
     """
     This node represents the WHERE statement of the query.
     """
-    def compileWhere(self):
+    def compile_where(self):
         """
         Returns a compiled and ready to use xquery where statement.
         """
@@ -516,8 +510,8 @@ class StringValue(MyNode):
     It simply represents strings like used here:
         User.sn = "hickert"
     """
-    def compileForMatch(self):
-        ret = self[0].replace("(","\\(").replace(")","\\)").replace(" ","\\ ")
+    def compile_for_match(self):
+        ret = self[0].replace("(", "\\(").replace(")", "\\)").replace(" ", "\\ ")
         return ("\"%s\"" % (ret))
 
 
@@ -546,8 +540,8 @@ class Base(MyNode):
         super(Base, self)._set_query_base_object(obj)
 
         # Handle object-types of the SELECT statement
-        base_object, base_type, base = self
-        obj._objectTypes[base_object] = "$%s_list" % base_object
+        base_object = self[0]
+        obj._object_types[base_object] = "$%s_list" % base_object
 
 
 class Limit(MyNode):
@@ -579,12 +573,13 @@ class OrderedAttribute(MyNode):
     """
 
     Direction = None
+    Attribute = None
 
     def compile_xquery(self):
         if self.Direction:
-            return("%s %s" % (self.Attribute[0].compileForMatch(), self.Direction[0].get_direction()))
+            return("%s %s" % (self.Attribute[0].compile_for_match(), self.Direction[0].get_direction()))
         else:
-            return("%s" % (self.Attribute[0].compileForMatch()))
+            return("%s" % (self.Attribute[0].compile_for_match()))
 
 
 class Direction(MyNode):
@@ -658,27 +653,27 @@ class SearchWrapper(object):
             base_value = String()
             base = ~Literal('BASE') & base_type & scope_option & base_value > Base
             bases = Delayed()
-            bases+= base & Optional (~spaces & bases)
+            bases += base & Optional (~spaces & bases)
 
             ################
             ### WHERE
             ################
 
-            statement= (attribute | (String() > StringValue))
+            statement = (attribute | (String() > StringValue))
             operator = (Literal('=') | Literal('!=')) > Operator
             condition_tmp = statement & operator & statement
 
             # Allow to have brakets in condition statements
             condition = Delayed()
             negator = Literal('NOT')
-            condition+= condition_tmp | Optional(negator) & ~Literal('(') & condition & ~Literal(')') > Match
+            condition += condition_tmp | Optional(negator) & ~Literal('(') & condition & ~Literal(')') > Match
 
             # Allow to connect conditions (called collection below)
             collection_operator = (Literal('AND') | Literal('OR'))
 
             # Create a collection which supports nested conditions
             collection = Delayed()
-            collection+= (condition & collection_operator & (condition | collection)) > Collection
+            collection += (condition & collection_operator & (condition | collection)) > Collection
 
             joined_collections  = Delayed()
             joined_collections += collection | condition |  ~Literal('(') & joined_collections  & ~Literal(')')
@@ -698,7 +693,7 @@ class SearchWrapper(object):
             direction = Literal('ASC') | Literal('DESC') > Direction
             odered_attr = attribute & Optional(direction) > OrderedAttribute
             odered_attr_list = Delayed()
-            odered_attr_list+= odered_attr & Optional(~Literal(',') & odered_attr_list)
+            odered_attr_list += odered_attr & Optional(~Literal(',') & odered_attr_list)
             order_by = ~Literal('ORDER BY') & odered_attr_list > OrderBy
 
             self.query_parser = ~spaces & select & bases & Optional(where) & Optional(order_by) & Optional(limit) & ~spaces > Query
@@ -708,7 +703,9 @@ class SearchWrapper(object):
         Parses the given query and executes the resulting xquery statement.
         """
         q_o = self.query_parser.parse(query)[0]
-        return q_o.execute()
+        res = q_o.execute()
+        print "Query took:", q_o.time, "seconds"
+        return res
 
     @staticmethod
     def get_instance():
