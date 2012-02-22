@@ -159,8 +159,7 @@ class ObjectIndex(Plugin):
             del obj
 
         # Remove entries that are in XMLDB, but not in any other backends
-        for entry in self.db.xquery("collection('objects')//o:UUID"):
-            entry = str(entry)
+        for entry in self.db.xquery("collection('objects')//o:UUID/string()"):
             if entry not in backend_objects:
                 self.remove_by_uuid(entry)
 

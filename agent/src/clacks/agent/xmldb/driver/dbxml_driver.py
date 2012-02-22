@@ -270,11 +270,11 @@ class DBXml(XMLDBInterface):
             cont = self.manager.createContainer(os.path.join(path, "data.bdb"), DBXML_ALLOW_VALIDATION)
 
             #TODO: Configure index
-            #idxspec = cont.getIndexSpecification();
+            idxspec = cont.getIndexSpecification();
             #idxspec.setAutoIndexing(False)
-            #idxspec.addIndex("", "o:UUID", "node-element-presence-none")
-            #idxspec.addIndex("", "o:UUID", "node-element-equality-string")
-            #cont.setIndexSpecification(idxspec, self.updateContext)
+            idxspec.addIndex("", "o:UUID", "node-element-presence-none")
+            idxspec.addIndex("", "o:UUID", "node-element-equality-string")
+            cont.setIndexSpecification(idxspec, self.updateContext)
 
             cont.addAlias(str(name))
             cont.sync()
