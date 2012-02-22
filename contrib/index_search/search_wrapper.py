@@ -291,9 +291,6 @@ class Query(MyNode):
         if self.Limit:
             where_result =  ['return subsequence('] + where_result + [",%s,%s)" % (self.Limit[0].get_range())]
 
-        where_result =  ["let $res := ("] + where_result + [")"]
-        where_result +=  ["return $res"]
-
         result += where_result
 
         self._xquery = "\n".join(result)
