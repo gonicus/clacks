@@ -1,5 +1,6 @@
 from search_wrapper import SearchWrapper
 from pprint import pprint
+import time
 
 query1 = """
 SELECT User.sn, SambaDomain.*, User.Type
@@ -26,10 +27,10 @@ ORDER BY User.sn, User.givenName DESC
 query4 = """
 SELECT User.sn, User.givenName, User.DN
 BASE User SUB "dc=gonicus,dc=de"
-ORDER BY User.sn, User.givenName DESC
 """
 
 sw = SearchWrapper.get_instance()
 while(True):
-    pprint(len(sw.execute(query3)))
+    time.sleep(1)
+    pprint(len(sw.execute(query4)))
 

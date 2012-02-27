@@ -7,7 +7,7 @@
 #TODO: Do not return the complete object that matches the query.
 #      At the moment we return the complete object (e.g. User) that
 #      matches the query, due to the fact that selecting only the
-#      required attributes leads to drastically increased executioni
+#      required attributes leads to drastically increased execution
 #      time of the query.
 #      But returning the complete object, will return all sub-objects
 #      to... think of querying all 'OrganizationalUnit's, in that case
