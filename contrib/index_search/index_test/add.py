@@ -3,6 +3,7 @@ import dbxml
 import random
 import string
 import time
+import os
 
 dummy_entry = """
     <User  xmlns="http://www.gonicus.de/Objects"
@@ -114,7 +115,7 @@ qc = mgr.createQueryContext()
 
 print "*" * 80
 print "Is Node container:", cont.getContainerType() == dbxml.XmlContainer.NodeContainer
-print "Autoindex is: Off", cont.setAutoIndexing(False, uc)
+#print "Autoindex is: Off", cont.setAutoIndexing(False, uc)
 
 
 # Create first entry
@@ -127,8 +128,15 @@ print "... done"
 print "*" * 80
 print "start adding more:"
 
+cont.setAutoIndexing(True, uc),
+
 res = ""
-mod = 50
+
+display = 50
+sync = 500
+reindex = 500
+compact = 1000
+
 cnt = []
 for i in range(10000):
 
@@ -141,20 +149,26 @@ for i in range(10000):
 
     start = time.time()
     res = mgr.query(query, qc)
-    if i % mod == 0:
-        print "%s entries" % (i), sum(cnt) / mod
-    else:
-        cnt.append(time.time() - start)
 
-start = time.time()
-res = mgr.query("collection('phone4.dbxml')//name()", qc)
-print res
-print time.time() - start
+    if i % compact == 0:
+        print "compact"
+        del(cont)
+        mgr.compactContainer('phone4.dbxml', uc)
+        cont = mgr.openContainer("phone4.dbxml")
 
+    if i % reindex == 0:
+        print "reindex"
+        del(cont)
+        mgr.reindexContainer('phone4.dbxml', uc)
+        cont = mgr.openContainer("phone4.dbxml")
 
-print "Index wieder an!"
-cont.setAutoIndexing(True, uc)
-cont.sync()
-cont.close()
+    if i % sync == 0:
+        print "sync"
+        cont.sync()
+
+    if i % display == 0:
+        print "%s entries| \t %s MB  | \t %s ms " % (i, os.path.getsize('phone4.dbxml') / int(1024*1024), (sum(cnt) / display) * 1000)
+
+    cnt.append(time.time() - start)
 
 print "done"
