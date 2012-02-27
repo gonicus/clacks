@@ -133,9 +133,9 @@ cont.setAutoIndexing(False, uc),
 res = ""
 
 display = 50
-sync = 500
-reindex = 500
-compact = 1000
+sync = 100
+reindex = 200
+compact = 200
 search = None #100
 search_count = 50
 
@@ -150,6 +150,17 @@ for i in range(10000):
                 %s
             before collection('phone4.dbxml')//node()[DN='%s']/UUID[last()]
             """ % (entry, last_dn)
+
+
+
+    start = time.time()
+    res = mgr.query(query, qc)
+    cnt.append(time.time() - start)
+
+    if i % display == 0 and i != 0:
+        print "total %s entries added | \t %s MB  | \t %s ms/each insert" % (i, \
+                os.path.getsize('phone4.dbxml') / int(1024*1024), (sum(cnt) / display) * 1000)
+        cnt = []
 
     if compact and i % compact == 0 and i != 0:
         print "compact ..."
@@ -179,14 +190,5 @@ for i in range(10000):
             children = mgr.query("collection('phone4.dbxml')//node()[DN='%s']/node()[not(name()=('DN','LastChanged','UUID','Type'))]/name()" % dn, qc)
         print "searched started %s times, it took: %s seconds" % ( search_count, (int(time.time()-start)))
 
-    if i % display == 0 and i != 0:
-        print "total %s entries added | \t %s MB  | \t %s ms/each insert" % (i, os.path.getsize('phone4.dbxml') / int(1024*1024), (sum(cnt) / display) * 1000)
-        cnt = []
-
-
-
-    start = time.time()
-    res = mgr.query(query, qc)
-    cnt.append(time.time() - start)
 
 print "done"
