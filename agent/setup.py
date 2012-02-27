@@ -67,6 +67,7 @@ setup(
         'pycrypto',
         'unidecode',
         'sqlalchemy',
+        'lepl',
         ],
     dependency_links = [
         'http://oss.gonicus.de/pub/gosa/eggs',

@@ -4,8 +4,9 @@ import md5
 import json
 import shutil
 import logging
-from lxml import etree, objectify
 import StringIO
+from time import time
+from lxml import etree, objectify
 from clacks.common import Environment
 from clacks.agent.xmldb.interface import XMLDBInterface, XMLDBException
 from dbxml import XmlManager, XmlResolver, DBXML_LAZY_DOCS, DBXML_ALLOW_VALIDATION
@@ -89,7 +90,6 @@ class DBXml(XMLDBInterface):
         self.manager = XmlManager()
         self.schemaResolver = dictSchemaResolver()
         self.manager.registerResolver(self.schemaResolver)
-        self.updateContext = self.manager.createUpdateContext()
         self.queryContext = self.manager.createQueryContext()
 
         # Check the given storage path - it has to be writeable
@@ -103,6 +103,9 @@ class DBXml(XMLDBInterface):
 
         # Open all configured collections
         self.__loadCollections()
+
+        # Get update context
+        self.updateContext = self.manager.createUpdateContext()
         self.log.info("dbxml driver successfully initialized with %s database(s)" % (len(self.collections)))
 
     def __loadCollections(self):
@@ -265,6 +268,14 @@ class DBXml(XMLDBInterface):
 
             # Create the dbxml collection
             cont = self.manager.createContainer(os.path.join(path, "data.bdb"), DBXML_ALLOW_VALIDATION)
+
+            #TODO: Configure index
+            idxspec = cont.getIndexSpecification();
+            #idxspec.setAutoIndexing(False)
+            idxspec.addIndex("", "o:UUID", "node-element-presence-none")
+            idxspec.addIndex("", "o:UUID", "node-element-equality-string")
+            cont.setIndexSpecification(idxspec, self.updateContext)
+
             cont.addAlias(str(name))
             cont.sync()
 
@@ -362,11 +373,15 @@ class DBXml(XMLDBInterface):
 
     def xquery(self, query):
         q = query.encode('utf-8') if isinstance(query, unicode) else query
+        t0 = time()
         res = self.manager.query(q, self.queryContext)
+        t1 = time()
         ret = []
         for t in res:
             ret.append(t.asString())
-        self.log.debug("performed xquery '%s' with %s results" % (query, len(ret)))
+
+        #TODO: back from info to debug
+        self.log.info("performed xquery '%s' with %s results in %0.3fs" % (query, len(ret), t1 - t0))
 
         return ret
 
