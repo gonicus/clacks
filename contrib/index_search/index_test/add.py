@@ -102,7 +102,7 @@ def get_user(name=None, givenName=None, subentries=None):
     data['name'] = name
     data['givenName'] = givenName
     data['User'] = subentries
-    return dummy_entry % data
+    return (dummy_entry % data,  "cn=%(givenName)s %(name)s,ou=people,ou=Technik,dc=gonicus,dc=de" % data)
 
 
 mgr = dbxml.XmlManager(dbxml.DBXML_ALLOW_EXTERNAL_ACCESS)
@@ -120,7 +120,7 @@ print "Is Node container:", cont.getContainerType() == dbxml.XmlContainer.NodeCo
 
 # Create first entry
 print "Add initial doc"
-entry = get_user('test','test')
+entry, dn = get_user('test','test')
 cont.putDocument("test", entry, uc)
 print "... done"
 
@@ -128,7 +128,7 @@ print "... done"
 print "*" * 80
 print "start adding more:"
 
-cont.setAutoIndexing(True, uc),
+cont.setAutoIndexing(False, uc),
 
 res = ""
 
@@ -136,39 +136,57 @@ display = 50
 sync = 500
 reindex = 500
 compact = 1000
+search = None #100
+search_count = 50
 
 cnt = []
 for i in range(10000):
 
+    last_dn = dn
+    entry, dn = get_user()
     query = """
             declare default element namespace 'http://www.gonicus.de/Objects';
             insert nodes
                 %s
-            before collection('phone4.dbxml')/User/UUID
-            """ %  get_user()
+            before collection('phone4.dbxml')//node()[DN='%s']/UUID[last()]
+            """ % (entry, last_dn)
 
-    start = time.time()
-    res = mgr.query(query, qc)
-
-    if i % compact == 0:
-        print "compact"
+    if compact and i % compact == 0 and i != 0:
+        print "compact ..."
+        start = time.time()
         del(cont)
         mgr.compactContainer('phone4.dbxml', uc)
         cont = mgr.openContainer("phone4.dbxml")
+        print "compact took %s seconds" % (int(time.time() - start))
 
-    if i % reindex == 0:
-        print "reindex"
+    if reindex and i % reindex == 0 and i != 0:
+        print "reindex ..."
+        start = time.time()
         del(cont)
         mgr.reindexContainer('phone4.dbxml', uc)
         cont = mgr.openContainer("phone4.dbxml")
+        print "reindex took %s seconds" % (int(time.time() - start))
 
-    if i % sync == 0:
-        print "sync"
+    if sync and i % sync == 0 and i != 0:
+        print "sync ... "
+        start = time.time()
         cont.sync()
+        print "sync took %s seconds" % (int(time.time() - start))
 
-    if i % display == 0:
-        print "%s entries| \t %s MB  | \t %s ms " % (i, os.path.getsize('phone4.dbxml') / int(1024*1024), (sum(cnt) / display) * 1000)
+    if search and i % search == 0 and i != 0:
+        start = time.time()
+        for x in range(0,search_count):
+            children = mgr.query("collection('phone4.dbxml')//node()[DN='%s']/node()[not(name()=('DN','LastChanged','UUID','Type'))]/name()" % dn, qc)
+        print "searched started %s times, it took: %s seconds" % ( search_count, (int(time.time()-start)))
 
+    if i % display == 0 and i != 0:
+        print "total %s entries added | \t %s MB  | \t %s ms/each insert" % (i, os.path.getsize('phone4.dbxml') / int(1024*1024), (sum(cnt) / display) * 1000)
+        cnt = []
+
+
+
+    start = time.time()
+    res = mgr.query(query, qc)
     cnt.append(time.time() - start)
 
 print "done"
