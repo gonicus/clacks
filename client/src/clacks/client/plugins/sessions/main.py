@@ -78,7 +78,7 @@ class SessionKeeper(Plugin):
         self.__loop.quit()
         self.__thread.join()
 
-    def self.__handle_events(self, event):
+    def __handle_events(self, event):
         if isinstance(event, Resume):
             self.__update_sessions()
 
