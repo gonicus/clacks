@@ -34,6 +34,7 @@ import traceback
 import logging
 import random
 import time
+import zope.event
 from threading import Timer
 from netaddr import IPNetwork
 from zope.interface import implements
@@ -46,6 +47,7 @@ from clacks.common.components.registry import PluginRegistry
 from clacks.common.components.amqp import AMQPWorker, EventConsumer
 from clacks.common.event import EventMaker
 from clacks.common import Environment
+from clacks.client.event import Resume
 
 
 class AMQPClientService(object):
@@ -198,6 +200,9 @@ class AMQPClientService(object):
         self.log.debug("received client poll - will answer in %d seconds" % delay)
         time.sleep(delay)
         self.__announce(True)
+
+        # Send a resume to all registered plugins
+        zope.event.notify(Resume())
 
     def __announce(self, initial=False):
         amqp = PluginRegistry.getInstance('AMQPClientHandler')
