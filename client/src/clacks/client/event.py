@@ -9,7 +9,7 @@ class IResume(Interface):
 
 
 class Resume(object):
-    implements(IObjectChanged)
+    implements(IResume)
 
     def __init__(self):
         pass
