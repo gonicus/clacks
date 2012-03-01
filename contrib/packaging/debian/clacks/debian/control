@@ -2,8 +2,9 @@ Source: clacks
 Section: misc
 Priority: optional
 Maintainer: Cajus Pollmeier <cajus@debian.org>
-Build-Depends: debhelper (>= 7.0.50~), python (>= 2.6.6-3~), python-setuptools, python-pybabel,
- python-nose, python-kid, python-coverage, python-logilab-astng, python-logilab-common,
+Build-Depends: debhelper (>= 7.0.50~), python (>= 2.6.6-3~), python-setuptools,
+ python-pybabel | python-pybabel, python-nose, python-kid, python-coverage,
+ python-logilab-astng, python-logilab-common,
  python-logilab-constraint, pylint
 X-Python-Version: >= 2.6
 Standards-Version: 3.9.2
@@ -35,7 +36,7 @@ Package: clacks-client
 Architecture: all
 Conflicts: clacks-agent
 Depends: ${python:Depends}, ${misc:Depends}, python-dateutil, python-netifaces,
- python-crypto, adduser, python-newt, python-lepl
+ python-crypto, adduser, python-newt
 Suggests: clacks-dbus, fusioninventory-agent, python-pyside | python-qt4, avahi-utils
 Description: clacks infrastructure service - client
  Brief description is missing.
@@ -55,7 +56,7 @@ Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, clacks-common,
  python-dumbnet, python-ldap, python-smbpasswd, python-unidecode,
  python-dbxml, python-sqlalchemy, python-mysqldb, python-sqlalchemy-ext,
- adduser, python-zope.event
+ adduser, python-zope.event, python-lepl
 Conflicts: clacks-client
 Suggests: qpidd
 Description: clacks infrastructure service - agent
