@@ -128,7 +128,7 @@ print "... done"
 print "*" * 80
 print "start adding more:"
 
-cont.setAutoIndexing(False, uc),
+cont.setAutoIndexing(True, uc)
 
 res = ""
 
@@ -137,7 +137,7 @@ sync = 1000
 reindex = 1000
 compact = 1000
 search = 1000
-search_count = 10
+search_count = 100
 
 cnt = []
 for i in range(10000):
@@ -145,18 +145,11 @@ for i in range(10000):
     last_dn = dn
     entry, dn = get_user()
 
-    if i == 0:
-        query = """
-                declare default element namespace 'http://www.gonicus.de/Objects';
-                insert nodes %s
-                before collection('phone4.dbxml')/User/UUID[last()]
-                """ % (entry)
-    else:
-        query = """
-                declare default element namespace 'http://www.gonicus.de/Objects';
-                insert nodes %s
-                before collection('phone4.dbxml')/User/User[last()]
-                """ % (entry)
+    query = """
+            declare default element namespace 'http://www.gonicus.de/Objects';
+            insert nodes %s
+            before collection('phone4.dbxml')/User/UUID
+            """ % (entry)
 
     start = time.time()
     res = mgr.query(query, qc)
@@ -195,7 +188,8 @@ for i in range(10000):
         print "search ..."
         start = time.time()
         for x in range(0,search_count):
-            children = mgr.query("collection('phone4.dbxml')//node()[DN='%s']/node()[not(name()=('DN','LastChanged','UUID','Type'))]/name()" % dn, qc)
+            children = mgr.query("declare default element namespace 'http://www.gonicus.de/Objects';\
+                    collection('phone4.dbxml')/User/User[DN='%s']/node()[not(name()=('DN','LastChanged','UUID','Type'))]/name()" % dn, qc)
         print "searched started %s times, it took: %s seconds" % ( search_count, (int(time.time()-start)))
 
 

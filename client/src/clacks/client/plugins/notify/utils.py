@@ -70,7 +70,6 @@ class Notify(Plugin):
             else:
                 self.log.info("no dbus connection")
 
-
     def notify(self, user, title, message,
         timeout=0,
         urgency="normal",
