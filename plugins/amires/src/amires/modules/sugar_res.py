@@ -51,9 +51,6 @@ class SugarNumberResolver(PhoneNumberResolver):
 
         country = res.group(2)
         rest = res.group(3)
-
-        print res.group(0)
-
         found = False
 
         # build regular expression for DB search

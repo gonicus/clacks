@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 import gobject
 import pwd
+import time
 import dbus.glib
 import dbus.mainloop.glib
+import zope.event
 from threading import Thread
 from dateutil.parser import parse
 from clacks.common.components import Plugin
@@ -12,7 +14,7 @@ from clacks.common import Environment
 from clacks.common.event import EventMaker
 from zope.interface import implements
 from clacks.common.handler import IInterfaceHandler
-import time
+from clacks.client.event import Resume
 
 
 class SessionKeeper(Plugin):
@@ -33,6 +35,9 @@ class SessionKeeper(Plugin):
         self.__bus = None
         self.__loop = None
         self.__thread = None
+
+        # Register for resume events
+        zope.event.subscribers.append(self.__handle_events)
 
     @Command()
     def getSessions(self):
@@ -65,10 +70,17 @@ class SessionKeeper(Plugin):
         self.__thread = Thread(target=runner)
         self.__thread.start()
 
+        # Trigger session update
+        self.__update_sessions()
+
     def stop(self):
         self.active = False
         self.__loop.quit()
         self.__thread.join()
+
+    def __handle_events(self, event):
+        if isinstance(event, Resume):
+            self.__update_sessions()
 
     def event_handler(self, msg_string, dbus_message):
         self.__update_sessions()

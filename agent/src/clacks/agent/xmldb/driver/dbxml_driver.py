@@ -380,8 +380,7 @@ class DBXml(XMLDBInterface):
         for t in res:
             ret.append(t.asString())
 
-        #TODO: back from info to debug
-        self.log.info("performed xquery '%s' with %s results in %0.3fs" % (query, len(ret), t1 - t0))
+        self.log.debug("performed xquery '%s' with %s results in %0.3fs" % (query, len(ret), t1 - t0))
 
         return ret
 
