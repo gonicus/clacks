@@ -4,6 +4,143 @@ import random
 import string
 import time
 import os
+from random import choice
+
+bases = """dc=xmpp,dc=gonicus,dc=de
+ou=aclroles,dc=gonicus,dc=de
+ou=Administrativa,dc=gonicus,dc=de
+ou=apps,dc=gonicus,dc=de
+ou=apps,ou=Consulting,dc=gonicus,dc=de
+ou=apps,ou=GL,dc=gonicus,dc=de
+ou=apps,ou=Technik,dc=gonicus,dc=de
+ou=apps,ou=Vertrieb,dc=gonicus,dc=de
+ou=asterisk,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=Auszubildende,dc=gonicus,dc=de
+ou=CA,dc=gonicus,dc=de
+ou=conferences,ou=asterisk,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=configs,ou=systems,dc=gonicus,dc=de
+ou=configs,ou=systems,ou=Consulting,dc=gonicus,dc=de
+ou=configs,ou=systems,ou=GL,dc=gonicus,dc=de
+ou=configs,ou=systems,ou=Technik,dc=gonicus,dc=de
+ou=configs,ou=systems,ou=Vertrieb,dc=gonicus,dc=de
+ou=Consulting,dc=gonicus,dc=de
+ou=customers,dc=gonicus,dc=de
+ou=Datenschutz,dc=gonicus,dc=de
+ou=devices,ou=systems,dc=gonicus,dc=de
+ou=disk,ou=etch,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=disk,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=disk,ou=sarge,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=Einkauf,dc=addressbook,dc=gonicus,dc=de
+ou=Entwicklung,dc=gonicus,dc=de
+ou=etch,ou=apps,dc=gonicus,dc=de
+ou=etch,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=Extern,dc=gonicus,dc=de
+ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=FusionDirectory,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=GL,dc=gonicus,dc=de
+ou=gofax,ou=systems,dc=gonicus,dc=de
+ou=gofax,ou=systems,ou=Consulting,dc=gonicus,dc=de
+ou=gofax,ou=systems,ou=GL,dc=gonicus,dc=de
+ou=gofax,ou=systems,ou=Technik,dc=gonicus,dc=de
+ou=gofax,ou=systems,ou=Vertrieb,dc=gonicus,dc=de
+ou=gosa,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=groups,dc=gonicus,dc=de
+ou=groups,ou=Administrativa,dc=gonicus,dc=de
+ou=groups,ou=Auszubildende,dc=gonicus,dc=de
+ou=groups,ou=Consulting,dc=gonicus,dc=de
+ou=groups,ou=Datenschutz,dc=gonicus,dc=de
+ou=groups,ou=Entwicklung,dc=gonicus,dc=de
+ou=groups,ou=Extern,dc=gonicus,dc=de
+ou=groups,ou=GL,dc=gonicus,dc=de
+ou=groups,ou=samba,dc=gonicus,dc=de
+ou=groups,ou=Technik,dc=gonicus,dc=de
+ou=groups,ou=Testbed,dc=gonicus,dc=de
+ou=groups,ou=Vertrieb,dc=gonicus,dc=de
+ou=groups,ou=Webspace,ou=Extern,dc=gonicus,dc=de
+ou=hooks,ou=etch,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=hooks,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=hooks,ou=sarge,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=macros,ou=asterisk,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=packages,ou=etch,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=packages,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=packages,ou=sarge,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=people,dc=gonicus,dc=de
+ou=people,dc=webdav,dc=gonicus,dc=de
+ou=people,ou=Administrativa,dc=gonicus,dc=de
+ou=people,ou=Auszubildende,dc=gonicus,dc=de
+ou=people,ou=Consulting,dc=gonicus,dc=de
+ou=people,ou=Datenschutz,dc=gonicus,dc=de
+ou=people,ou=Entwicklung,dc=gonicus,dc=de
+ou=people,ou=Extern,dc=gonicus,dc=de
+ou=people,ou=GL,dc=gonicus,dc=de
+ou=people,ou=Phones,ou=Technik,dc=gonicus,dc=de
+ou=people,ou=Technik,dc=gonicus,dc=de
+ou=people,ou=Testbed,dc=gonicus,dc=de
+ou=people,ou=Vertrieb,dc=gonicus,dc=de
+ou=people,ou=Webspace,ou=Extern,dc=gonicus,dc=de
+ou=phones,ou=systems,dc=gonicus,dc=de
+ou=phones,ou=systems,ou=Auszubildende,dc=gonicus,dc=de
+ou=phones,ou=systems,ou=Consulting,dc=gonicus,dc=de
+ou=phones,ou=systems,ou=Entwicklung,dc=gonicus,dc=de
+ou=phones,ou=systems,ou=Extern,dc=gonicus,dc=de
+ou=phones,ou=systems,ou=GL,dc=gonicus,dc=de
+ou=phones,ou=systems,ou=Phones,ou=Technik,dc=gonicus,dc=de
+ou=phones,ou=systems,ou=Technik,dc=gonicus,dc=de
+ou=phones,ou=systems,ou=Vertrieb,dc=gonicus,dc=de
+ou=Phones,ou=Technik,dc=gonicus,dc=de
+ou=policies,dc=gonicus,dc=de
+ou=printers,ou=systems,dc=gonicus,dc=de
+ou=printers,ou=systems,ou=Testbed,dc=gonicus,dc=de
+ou=printers,ou=systems,ou=Vertrieb,dc=gonicus,dc=de
+ou=profiles,ou=etch,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=profiles,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=profiles,ou=sarge,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=Repository,ou=Extern,dc=gonicus,dc=de
+ou=samba,dc=gonicus,dc=de
+ou=sarge,ou=apps,dc=gonicus,dc=de
+ou=sarge,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=scripts,ou=etch,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=scripts,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=scripts,ou=sarge,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=servers,ou=systems,dc=gonicus,dc=de
+ou=servers,ou=systems,ou=Consulting,dc=gonicus,dc=de
+ou=servers,ou=systems,ou=GL,dc=gonicus,dc=de
+ou=servers,ou=systems,ou=Technik,dc=gonicus,dc=de
+ou=servers,ou=systems,ou=Vertrieb,dc=gonicus,dc=de
+ou=sudoers,dc=gonicus,dc=de
+ou=systems,dc=gonicus,dc=de
+ou=systems,ou=Auszubildende,dc=gonicus,dc=de
+ou=systems,ou=Consulting,dc=gonicus,dc=de
+ou=systems,ou=Entwicklung,dc=gonicus,dc=de
+ou=systems,ou=Extern,dc=gonicus,dc=de
+ou=systems,ou=GL,dc=gonicus,dc=de
+ou=systems,ou=Phones,ou=Technik,dc=gonicus,dc=de
+ou=systems,ou=Technik,dc=gonicus,dc=de
+ou=systems,ou=Testbed,dc=gonicus,dc=de
+ou=systems,ou=Vertrieb,dc=gonicus,dc=de
+ou=Technik,dc=addressbook,dc=gonicus,dc=de
+ou=Technik,dc=gonicus,dc=de
+ou=templates,ou=etch,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=templates,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=templates,ou=sarge,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=terminals,ou=systems,dc=gonicus,dc=de
+ou=terminals,ou=systems,ou=Consulting,dc=gonicus,dc=de
+ou=terminals,ou=systems,ou=Entwicklung,dc=gonicus,dc=de
+ou=terminals,ou=systems,ou=GL,dc=gonicus,dc=de
+ou=terminals,ou=systems,ou=Technik,dc=gonicus,dc=de
+ou=terminals,ou=systems,ou=Vertrieb,dc=gonicus,dc=de
+ou=Testbed,dc=gonicus,dc=de
+ou=variables,ou=etch,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=variables,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=variables,ou=sarge,ou=fai,ou=configs,ou=systems,dc=gonicus,dc=de
+ou=Vertrieb,dc=addressbook,dc=gonicus,dc=de
+ou=Vertrieb,dc=gonicus,dc=de
+ou=Webspace,ou=Extern,dc=gonicus,dc=de
+ou=winstations,ou=systems,dc=gonicus,dc=de
+ou=winstations,ou=systems,ou=Technik,dc=gonicus,dc=de
+ou=workstations,ou=systems,dc=gonicus,dc=de
+ou=workstations,ou=systems,ou=GL,dc=gonicus,dc=de
+ou=workstations,ou=systems,ou=Technik,dc=gonicus,dc=de""".split("\n")
 
 dummy_entry = """
     <User  xmlns="http://www.gonicus.de/Objects"
@@ -11,7 +148,7 @@ dummy_entry = """
            xsi:schemaLocation="http://www.gonicus.de/Objects objects.xsd">%(User)s
         <UUID>096cf03c-ed95-102f-823b-812492b1b75c</UUID>
         <Type>User</Type>
-        <DN>cn=%(givenName)s %(name)s,ou=people,ou=Technik,dc=gonicus,dc=de</DN>
+        <DN>%(dn)s</DN>
         <LastChanged>2011-06-29T09:08:25</LastChanged>
         <Extensions>
             <Extension>PosixUser</Extension>
@@ -98,11 +235,14 @@ def get_user(name=None, givenName=None, subentries=None):
     if not subentries:
         subentries = ""
 
+    base = choice(bases)
     data = {}
     data['name'] = name
     data['givenName'] = givenName
     data['User'] = subentries
-    return (dummy_entry % data,  "cn=%(givenName)s %(name)s,ou=people,ou=Technik,dc=gonicus,dc=de" % data)
+    data['base'] = base
+    data['dn'] = "cn=%(givenName)s %(name)s,%(base)s" % data
+    return (dummy_entry % data,  data['dn'])
 
 
 mgr = dbxml.XmlManager(dbxml.DBXML_ALLOW_EXTERNAL_ACCESS)
@@ -114,8 +254,6 @@ qc = mgr.createQueryContext()
 
 
 print "*" * 80
-print "Is Node container:", cont.getContainerType() == dbxml.XmlContainer.NodeContainer
-#print "Autoindex is: Off", cont.setAutoIndexing(False, uc)
 
 
 # Create first entry
@@ -128,9 +266,6 @@ print "... done"
 print "*" * 80
 print "start adding more:"
 
-cont.setAutoIndexing(True, uc)
-
-res = ""
 
 display = 100
 sync = 1000
@@ -140,6 +275,7 @@ search = 1000
 search_count = 100
 
 cnt = []
+res = ""
 for i in range(10000):
 
     last_dn = dn
