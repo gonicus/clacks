@@ -56,7 +56,7 @@ def testdb(name):
 
 print "#" * 100
 print "10000 Einträge:"
-testdb('n10000.dbxml')
+testdb('phone4.dbxml')
 print
 
 print "done"
