@@ -6,23 +6,20 @@
     xmlns:exslt="http://exslt.org/common" 
     targetNamespace="http://www.gonicus.de/Objects" 
     elementFormDefault="qualified">
-  <xsd:element name="root" type="root"/>
-  <xsd:complexType name="root">
-    <xsd:sequence>
-      <xsd:element name="Country" type="Country" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="Domain" type="Domain" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="DomainComponent" type="DomainComponent" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="DomainComponentOrg" type="DomainComponentOrg" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="GroupContainer" type="GroupContainer" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="Locality" type="Locality" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="Organization" type="Organization" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="OrganizationalUnit" type="OrganizationalUnit" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="PeopleContainer" type="PeopleContainer" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="PosixGroup" type="PosixGroup" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="SambaDomain" type="SambaDomain" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="User" type="User" minOccurs="0" maxOccurs="unbounded"/>
-    </xsd:sequence>
-  </xsd:complexType>
+  
+    <xsd:element name="Country" type="Country" />
+    <xsd:element name="Domain" type="Domain" />
+    <xsd:element name="DomainComponent" type="DomainComponent" />
+    <xsd:element name="DomainComponentOrg" type="DomainComponentOrg" />
+    <xsd:element name="GroupContainer" type="GroupContainer" />
+    <xsd:element name="Locality" type="Locality" />
+    <xsd:element name="Organization" type="Organization" />
+    <xsd:element name="OrganizationalUnit" type="OrganizationalUnit" />
+    <xsd:element name="PeopleContainer" type="PeopleContainer" />
+    <xsd:element name="PosixGroup" type="PosixGroup" />
+    <xsd:element name="SambaDomain" type="SambaDomain" />
+    <xsd:element name="User" type="User" />
+    
   <xsd:complexType name="Country">
     <xsd:sequence>
       <xsd:element type="xsd:string" name="UUID" minOccurs="1" maxOccurs="1"/>

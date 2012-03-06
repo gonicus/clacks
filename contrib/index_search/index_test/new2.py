@@ -143,7 +143,9 @@ ou=workstations,ou=systems,ou=GL,dc=gonicus,dc=de
 ou=workstations,ou=systems,ou=Technik,dc=gonicus,dc=de""".split("\n")
 
 entry1 = """
-    <User>
+    <User  xmlns="http://www.gonicus.de/Objects"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://www.gonicus.de/Objects new.xsd">
         <UUID>096cf03c-ed95-102f-823b-812492b1b75c</UUID>
         <Type>User</Type>
         <DN>%(dn)s</DN>
@@ -226,7 +228,9 @@ entry1 = """
     </User>"""
 
 entry2 = """
-    <Country>
+    <Country xmlns="http://www.gonicus.de/Objects"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://www.gonicus.de/Objects new.xsd">
         <UUID>096cf03c-ed95-102f-823b-812492b1b75c</UUID>
         <Type>Country</Type>
         <DN>%(dn)s</DN>
@@ -297,11 +301,7 @@ for i in range(10000):
     entry, dn = get_user()
 
     start = time.time()
-    cont.putDocument(dn, """
-        <root   xmlns="http://www.gonicus.de/Objects"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://www.gonicus.de/Objects new.xsd" >%s</root>
-        """ % entry, uc)
+    cont.putDocument(dn, "%s" % entry, uc)
 
     cnt.append(time.time() - start)
 
@@ -337,7 +337,7 @@ for i in range(10000):
         start = time.time()
         for x in range(0,search_count):
             children = mgr.query("declare default element namespace 'http://www.gonicus.de/Objects';\
-                    collection('phone4.dbxml')/root/*/name()", qc)
+                    collection('phone4.dbxml')/*/name()", qc)
             #for entry in children:
             #    print entry.asString()
 

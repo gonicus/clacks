@@ -22,27 +22,27 @@ def testdb(name):
 
     base = """
     declare default element namespace 'http://www.gonicus.de/Objects';
-    collection('%s')/root/User[DN = 'cn=ZVxmne6 DVAGMyg,ou=gofax,ou=systems,ou=Technik,dc=gonicus,dc=de']
+    collection('%s')/*[DN = 'cn=ZVxmne6 DVAGMyg,ou=gofax,ou=systems,ou=Technik,dc=gonicus,dc=de']
     """ % name
 
     one = """
     declare default element namespace 'http://www.gonicus.de/Objects';
-    collection('%s')/root/User[ParentDN = 'dc=gonicus,dc=de']
+    collection('%s')/*[ParentDN = 'dc=gonicus,dc=de']
     """ % name
 
     one2 = """
     declare default element namespace 'http://www.gonicus.de/Objects';
-    collection('%s')/root/User[ParentDN = 'ou=Technik,dc=gonicus,dc=de']
+    collection('%s')/*[ParentDN = 'ou=Technik,dc=gonicus,dc=de']
     """ % name
 
     sub = """
     declare default element namespace 'http://www.gonicus.de/Objects';
-    collection('%s')/root/User[ends-with(DN, 'dc=gonicus,dc=de')]
+    subsequence(collection('%s')/*[ends-with(DN, 'dc=gonicus,dc=de')], 1, 100)
     """ % name
 
     sub2 = """
     declare default element namespace 'http://www.gonicus.de/Objects';
-    collection('%s')/root/User[ends-with(DN, 'ou=Technik,dc=gonicus,dc=de')]
+    subsequence(collection('%s')/*[ends-with(DN, 'ou=Technik,dc=gonicus,dc=de')], 1,100)
     """ % name
 
 
