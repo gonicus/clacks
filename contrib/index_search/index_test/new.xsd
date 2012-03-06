@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.gonicus.de/Objects" 
+    xmlns:g="http://www.gonicus.de/Objects" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+    xmlns:exslt="http://exslt.org/common" 
+    targetNamespace="http://www.gonicus.de/Objects" 
+    elementFormDefault="qualified">
+  <xsd:element name="root" type="root"/>
+  <xsd:complexType name="root">
+    <xsd:sequence>
+      <xsd:element name="Country" type="Country" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="Domain" type="Domain" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="DomainComponent" type="DomainComponent" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="DomainComponentOrg" type="DomainComponentOrg" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="GroupContainer" type="GroupContainer" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="Locality" type="Locality" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="Organization" type="Organization" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="OrganizationalUnit" type="OrganizationalUnit" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="PeopleContainer" type="PeopleContainer" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="PosixGroup" type="PosixGroup" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="SambaDomain" type="SambaDomain" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="User" type="User" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="Country">
+    <xsd:sequence>
+      <xsd:element type="xsd:string" name="UUID" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="DN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="ParentDN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:dateTime" name="LastChanged" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="Extensions" name="Extensions" minOccurs="0" maxOccurs="1"/>
+      <xsd:element type="Container" name="Container" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="Attributes">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="c" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="description" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="manager" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="ou" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="Domain">
+    <xsd:sequence>
+      <xsd:element type="xsd:string" name="UUID" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="DN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="ParentDN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:dateTime" name="LastChanged" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="Extensions" name="Extensions" minOccurs="0" maxOccurs="1"/>
+      <xsd:element type="Container" name="Container" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="Attributes">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="dc" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="description" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="manager" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="ou" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="DomainComponent">
+    <xsd:sequence>
+      <xsd:element type="xsd:string" name="UUID" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="DN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="ParentDN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:dateTime" name="LastChanged" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="Extensions" name="Extensions" minOccurs="0" maxOccurs="1"/>
+      <xsd:element type="Container" name="Container" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="Attributes">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="dc" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="description" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="manager" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="ou" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="DomainComponentOrg">
+    <xsd:sequence>
+      <xsd:element type="xsd:string" name="UUID" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="DN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="ParentDN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:dateTime" name="LastChanged" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="Extensions" name="Extensions" minOccurs="0" maxOccurs="1"/>
+      <xsd:element type="Container" name="Container" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="Attributes">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="dc" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="description" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="manager" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="ou" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="GroupContainer">
+    <xsd:sequence>
+      <xsd:element type="xsd:string" name="UUID" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="DN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="ParentDN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:dateTime" name="LastChanged" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="Extensions" name="Extensions" minOccurs="0" maxOccurs="1"/>
+      <xsd:element type="Container" name="Container" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="Attributes">
+        <xsd:complexType>
+          <xsd:sequence/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="Locality">
+    <xsd:sequence>
+      <xsd:element type="xsd:string" name="UUID" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="DN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="ParentDN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:dateTime" name="LastChanged" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="Extensions" name="Extensions" minOccurs="0" maxOccurs="1"/>
+      <xsd:element type="Container" name="Container" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="Attributes">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="description" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="l" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="manager" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="ou" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="Organization">
+    <xsd:sequence>
+      <xsd:element type="xsd:string" name="UUID" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="DN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="ParentDN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:dateTime" name="LastChanged" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="Extensions" name="Extensions" minOccurs="0" maxOccurs="1"/>
+      <xsd:element type="Container" name="Container" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="Attributes">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="businessCategory" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="description" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="destinationIndicator" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="facsimileTelephoneNumber" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="internationaliSDNNumber" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="l" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="manager" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="o" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="ou" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="physicalDeliveryOfficeName" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="postOfficeBox" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="postalAddress" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="postalCode" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="preferredDeliveryMethod" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="registeredAddress" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="searchGuide" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="seeAlso" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="st" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="street" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="telephoneNumber" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="teletexTerminalIdentifier" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="telexNumber" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="userPassword" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="x121Address" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="OrganizationalUnit">
+    <xsd:sequence>
+      <xsd:element type="xsd:string" name="UUID" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="DN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="ParentDN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:dateTime" name="LastChanged" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="Extensions" name="Extensions" minOccurs="0" maxOccurs="1"/>
+      <xsd:element type="Container" name="Container" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="Attributes">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="businessCategory" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="description" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="facsimileTelephoneNumber" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="l" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="manager" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="postalAddress" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="st" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="telephoneNumber" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="PeopleContainer">
+    <xsd:sequence>
+      <xsd:element type="xsd:string" name="UUID" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="DN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="ParentDN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:dateTime" name="LastChanged" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="Extensions" name="Extensions" minOccurs="0" maxOccurs="1"/>
+      <xsd:element type="Container" name="Container" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="Attributes">
+        <xsd:complexType>
+          <xsd:sequence/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="PosixGroup">
+    <xsd:sequence>
+      <xsd:element type="xsd:string" name="UUID" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="DN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="ParentDN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:dateTime" name="LastChanged" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="Extensions" name="Extensions" minOccurs="0" maxOccurs="1"/>
+      <xsd:element type="Container" name="Container" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="Attributes">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="cn" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="description" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="gidNumber" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="memberUid" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaDomainName" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaGroupType" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaSID" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="SambaDomain">
+    <xsd:sequence>
+      <xsd:element type="xsd:string" name="UUID" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="DN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="ParentDN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:dateTime" name="LastChanged" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="Extensions" name="Extensions" minOccurs="0" maxOccurs="1"/>
+      <xsd:element type="Container" name="Container" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="Attributes">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="sambaAlgorithmicRidBase" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaDomainName" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaForceLogoff" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaLockoutDuration" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaLockoutObservationWindow" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaLockoutThreshold" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaLogonToChgPwd" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaMaxPwdAge" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaMinPwdAge" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaMinPwdLength" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaNextRid" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaNextUserRid" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaPwdHistoryLength" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaRefuseMachinePwdChange" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaSID" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="User">
+    <xsd:sequence>
+      <xsd:element type="xsd:string" name="UUID" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="Type" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="DN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:string" name="ParentDN" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="xsd:dateTime" name="LastChanged" minOccurs="1" maxOccurs="1"/>
+      <xsd:element type="Extensions" name="Extensions" minOccurs="0" maxOccurs="1"/>
+      <xsd:element type="Container" name="Container" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="Attributes">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="CtxCallback" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="CtxCallbackNumber" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="CtxCfgFlags1" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="CtxCfgPresent" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="CtxInitialProgram" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="CtxKeyboardLayout" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="CtxMaxConnectionTime" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="CtxMaxDisconnectionTime" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="CtxMaxIdleTime" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="CtxMinEncryptionLevel" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="CtxNWLogonServer" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="CtxShadow" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="CtxWFHomeDir" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="CtxWFHomeDirDrive" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="CtxWFProfilePath" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="CtxWorkDirectory" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="Ctx_flag_brokenConn" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="Ctx_flag_connectClientDrives" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="Ctx_flag_connectClientPrinters" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="Ctx_flag_defaultPrinter" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="Ctx_flag_inheritMode" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="Ctx_flag_reConn" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="Ctx_flag_tsLogin" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="Ctx_shadow" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="acct_MNSLogonAccount" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="acct_accountDisabled" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="acct_homeDirectoryRequired" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="acct_interDomainTrust" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="acct_isAutoLocked" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="acct_normalUserAccount" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="acct_passwordDoesNotExpire" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="acct_passwordNotRequired" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="acct_serverTrustAccount" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="acct_temporaryDuplicateAccount" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="acct_worktstationTrustAccount" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="audio" minOccurs="0" maxOccurs="unbounded">
+              <xsd:complexType>
+                <xsd:simpleContent>
+                  <xsd:extension base="xsd:string">
+                    <xsd:attribute name="base64" type="xsd:boolean"/>
+                  </xsd:extension>
+                </xsd:simpleContent>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="businessCategory" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="carLicense" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="cn" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="departmentNumber" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="description" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="destinationIndicator" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="displayName" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="employeeNumber" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="employeeType" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="facsimileTelephoneNumber" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="gecos" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="gidNumber" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="givenName" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="homeDirectory" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="homePhone" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="homePostalAddress" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="initials" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="internationaliSDNNumber" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="isLocked" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="jpegPhoto" minOccurs="0" maxOccurs="unbounded">
+              <xsd:complexType>
+                <xsd:simpleContent>
+                  <xsd:extension base="xsd:string">
+                    <xsd:attribute name="base64" type="xsd:boolean"/>
+                  </xsd:extension>
+                </xsd:simpleContent>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="l" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="labeledURI" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="loginShell" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="mail" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="manager" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="mobile" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="o" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="oldStorageBehavior" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="ou" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="pager" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="passwordMethod" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="photo" minOccurs="0" maxOccurs="unbounded">
+              <xsd:complexType>
+                <xsd:simpleContent>
+                  <xsd:extension base="xsd:string">
+                    <xsd:attribute name="base64" type="xsd:boolean"/>
+                  </xsd:extension>
+                </xsd:simpleContent>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="physicalDeliveryOfficeName" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="postOfficeBox" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="postalAddress" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="postalCode" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="preferredDeliveryMethod" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="preferredLanguage" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="registeredAddress" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="roomNumber" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaAcctFlags" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaBadPasswordCount" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaBadPasswordTime" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaDomainName" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaHomeDrive" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaHomePath" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaKickoffTime" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaLMPassword" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaLogoffTime" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaLogonHours" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaLogonScript" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaLogonTime" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaMungedDial" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaNTPassword" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaPasswordHistory" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaPrimaryGroupSID" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaProfilePath" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaPwdCanChange" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaPwdLastSet" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaPwdMustChange" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaSID" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sambaUserWorkstations" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="secretary" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="seeAlso" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="shadowExpire" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="shadowFlag" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="shadowInactive" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="shadowLastChange" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="shadowMax" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="shadowMin" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="shadowWarning" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sn" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="st" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="street" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="telephoneNumber" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="teletexTerminalIdentifier" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="telexNumber" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="title" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="uid" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="uidNumber" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="userCertificate" minOccurs="0" maxOccurs="unbounded">
+              <xsd:complexType>
+                <xsd:simpleContent>
+                  <xsd:extension base="xsd:string">
+                    <xsd:attribute name="base64" type="xsd:boolean"/>
+                  </xsd:extension>
+                </xsd:simpleContent>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="userPKCS12" minOccurs="0" maxOccurs="unbounded">
+              <xsd:complexType>
+                <xsd:simpleContent>
+                  <xsd:extension base="xsd:string">
+                    <xsd:attribute name="base64" type="xsd:boolean"/>
+                  </xsd:extension>
+                </xsd:simpleContent>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="userPassword" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="userSMIMECertificate" minOccurs="0" maxOccurs="unbounded">
+              <xsd:complexType>
+                <xsd:simpleContent>
+                  <xsd:extension base="xsd:string">
+                    <xsd:attribute name="base64" type="xsd:boolean"/>
+                  </xsd:extension>
+                </xsd:simpleContent>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="x121Address" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="x500uniqueIdentifier" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="Container">
+    <xsd:sequence>
+      <xsd:element type="xsd:string" name="Type" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="Extensions">
+    <xsd:sequence>
+      <xsd:element type="xsd:string" name="Extension" minOccurs="1" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>
+
