@@ -37,12 +37,12 @@ def testdb(name):
 
     sub = """
     declare default element namespace 'http://www.gonicus.de/Objects';
-    collection('%s')/User/User[matches(DN, 'dc=gonicus,dc=de$')]
+    collection('%s')/User/User[ends-with(DN, 'dc=gonicus,dc=de')]/Type
     """ % name
 
     sub2 = """
     declare default element namespace 'http://www.gonicus.de/Objects';
-    collection('%s')/User/User[matches(DN, 'ou=Technik,dc=gonicus,dc=de$')]
+    collection('%s')/User/User[ends-with(DN, 'ou=Technik,dc=gonicus,dc=de')]/Type
     """ % name
 
     print "Base:                                ", timeit(base)
