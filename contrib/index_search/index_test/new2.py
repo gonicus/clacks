@@ -223,7 +223,6 @@ entry1 = """
             <sn>%(name)s</sn>
             <telephoneNumber>155</telephoneNumber>
             <uid>%(name)s</uid>
-            <uidNumber>1040</uidNumber>
         </Attributes>
     </User>"""
 
@@ -267,15 +266,15 @@ def get_user(name=None, givenName=None, subentries=None):
     return (entry % data,  data['dn'])
 
 
+flags = dbxml.DBXML_ALLOW_VALIDATION
+
+
 mgr = dbxml.XmlManager(dbxml.DBXML_ALLOW_EXTERNAL_ACCESS)
 if mgr.existsContainer('phone4.dbxml'):
     mgr.removeContainer("phone4.dbxml")
-cont = mgr.createContainer("phone4.dbxml", dbxml.DBXML_ALLOW_VALIDATION)
+cont = mgr.createContainer("phone4.dbxml", flags)
 uc = mgr.createUpdateContext()
 qc = mgr.createQueryContext()
-
-#config = cont.getContainerConfig()
-#config.setAllowValidation(True)
 
 print "*" * 80
 
@@ -315,16 +314,20 @@ for i in range(10000):
         start = time.time()
         del(cont)
         mgr.compactContainer('phone4.dbxml', uc)
-        cont = mgr.openContainer("phone4.dbxml")
+        cont = mgr.openContainer("phone4.dbxml", flags)
         print "compact took %s seconds" % (int(time.time() - start))
+        config = cont.getContainerConfig()
+        config.setAllowValidation(True)
 
     if reindex and i % reindex == 0:
         print "reindex ..."
         start = time.time()
         del(cont)
         mgr.reindexContainer('phone4.dbxml', uc)
-        cont = mgr.openContainer("phone4.dbxml")
+        cont = mgr.openContainer("phone4.dbxml", flags)
         print "reindex took %s seconds" % (int(time.time() - start))
+        config = cont.getContainerConfig()
+        config.setAllowValidation(True)
 
     if sync and i % sync == 0:
         print "sync ... "

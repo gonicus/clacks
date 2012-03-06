@@ -16,21 +16,12 @@
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             elementFormDefault="qualified">
 
-            <!-- Add the root element which contains all clacks-objects in a flat style. -->
-            <xsd:element name="root" type="root" />
-
-            <!-- The root object complex type definition
-                 All clacks-objects are added as allowed node elements
-            -->
-            <xsd:complexType name="root">
-                <xsd:sequence>
-                    <xsl:for-each select="/g:Objects/g:Object[g:BaseObject='true']">
-                        <xsl:sort select="g:Name"/>
-                        <xsl:variable name="classname" select="g:Name" />
-                        <xsd:element name="{$classname}" type="{$classname}" minOccurs="0" maxOccurs="unbounded"/>
-                    </xsl:for-each>
-                </xsd:sequence>
-            </xsd:complexType>
+            <!-- Add the base elements, each represents a valid object -->
+            <xsl:for-each select="/g:Objects/g:Object[g:BaseObject='true']">
+                <xsl:sort select="g:Name"/>
+                <xsl:variable name="classname" select="g:Name" />
+                <xsd:element name="{$classname}" type="{$classname}" />
+            </xsl:for-each>
 
             <!-- We only need schema definitions for BaseObjects 
                  cause extensions cannot be exported without a base 
