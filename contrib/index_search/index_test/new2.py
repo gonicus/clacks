@@ -284,10 +284,10 @@ print "*" * 80
 
 
 display = 100
-sync = 2000
-reindex = 500
-compact = 1000
-search = 1000
+sync = 5000
+reindex = 5000
+compact = 5000
+search = 5000
 search_count = 100
 
 cnt = []
@@ -310,7 +310,7 @@ for i in range(10000):
                 os.path.getsize('phone4.dbxml') / int(1024*1024), (sum(cnt) / display) * 1000)
         cnt = []
 
-    if compact and i % compact == 0 and i != 0:
+    if compact and i % compact == 0:
         print "compact ..."
         start = time.time()
         del(cont)
@@ -318,7 +318,7 @@ for i in range(10000):
         cont = mgr.openContainer("phone4.dbxml")
         print "compact took %s seconds" % (int(time.time() - start))
 
-    if reindex and i % reindex == 0 and i != 0:
+    if reindex and i % reindex == 0:
         print "reindex ..."
         start = time.time()
         del(cont)
@@ -326,7 +326,7 @@ for i in range(10000):
         cont = mgr.openContainer("phone4.dbxml")
         print "reindex took %s seconds" % (int(time.time() - start))
 
-    if sync and i % sync == 0 and i != 0:
+    if sync and i % sync == 0:
         print "sync ... "
         start = time.time()
         cont.sync()
