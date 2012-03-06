@@ -4,7 +4,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <xsl:output method="xml" indent="yes" encoding="UTF-8" />
     <xsl:template match="/">
-
+        <!-- Add an xsd:element which then points the later
+             created object-type
+        -->
         <!-- #TODO Check why we-ve to define namespaces twice -->
         <xsd:schema 
             xmlns="http://www.gonicus.de/Objects" 
@@ -13,6 +15,22 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             elementFormDefault="qualified">
+
+            <!-- Add the root element which contains all clacks-objects in a flat style. -->
+            <xsd:element name="root" type="root" />
+
+            <!-- The root object complex type definition
+                 All clacks-objects are added as allowed node elements
+            -->
+            <xsd:complexType name="root">
+                <xsd:sequence>
+                    <xsl:for-each select="/g:Objects/g:Object[g:BaseObject='true']">
+                        <xsl:sort select="g:Name"/>
+                        <xsl:variable name="classname" select="g:Name" />
+                        <xsd:element name="{$classname}" type="{$classname}" minOccurs="0" maxOccurs="unbounded"/>
+                    </xsl:for-each>
+                </xsd:sequence>
+            </xsd:complexType>
 
             <!-- We only need schema definitions for BaseObjects 
                  cause extensions cannot be exported without a base 
@@ -24,11 +42,6 @@
                 <xsl:sort select="g:Name"/>
                 
                 <xsl:variable name="classname" select="g:Name" />
-
-                <!-- Add an xsd:element which then points the later
-                     created object-type
-                -->
-                <xsd:element name="{$classname}" type="{$classname}" />
 
                 <!-- Combine all BaseObject-attributes with those of the ExtensionObjects -->
                 <xsl:variable name="all_attrs">
@@ -50,6 +63,7 @@
                         <xsd:element type="xsd:string" name="UUID" minOccurs="1" maxOccurs="1"></xsd:element>
                         <xsd:element type="xsd:string" name="Type" minOccurs="1" maxOccurs="1"></xsd:element>
                         <xsd:element type="xsd:string" name="DN" minOccurs="1" maxOccurs="1"></xsd:element>
+                        <xsd:element type="xsd:string" name="ParentDN" minOccurs="1" maxOccurs="1"></xsd:element>
                         <xsd:element type="xsd:dateTime" name="LastChanged" minOccurs="1" maxOccurs="1"></xsd:element>
                         <xsd:element type="Extensions" name="Extensions" minOccurs="0" maxOccurs="1"></xsd:element>
                         <xsd:element type="Container" name="Container" minOccurs="0" maxOccurs="1"></xsd:element>
@@ -105,10 +119,12 @@
                         <!-- Allow this object to have sub-objects
                              e.g. Organizations can container PeopleContainer and GroupContainer
                         -->
+                        <!--
                         <xsl:for-each select="g:Container">
                             <xsl:sort select="g:Type"/>
                             <xsd:element name="{g:Type}" type="{g:Type}" minOccurs="0" maxOccurs="unbounded" />
                         </xsl:for-each>
+                        -->
                     </xsd:sequence>
                 </xsd:complexType>
             </xsl:for-each>

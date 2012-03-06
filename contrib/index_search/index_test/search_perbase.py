@@ -73,10 +73,13 @@ def testdb(name):
     print "Base:                                     ", timeit(base)
     print "One      'dc=gonicus,dc=de':              ", timeit(one)
     print "One old  'dc=gonicus,dc=de':              ", timeit(old_one)
+    print "--" * 20
     print "One      'ou=Technik,dc=gonicus,dc=de':   ", timeit(one2)
-    print "One old  'dc=gonicus,dc=de':              ", timeit(old_one2)
+    print "One old  'ou=Technik,dc=gonicus,dc=de':   ", timeit(old_one2)
+    print "--" * 20
     print "Sub      'dc=gonicus,dc=de':              ", timeit(sub)
     print "Sub old  'dc=gonicus,dc=de':              ", timeit(old_sub)
+    print "--" * 20
     print "Sub      'ou=Technik,dc=gonicus,dc=de':   ", timeit(sub2)
     print "Sub old  'ou=Technik,dc=gonicus,dc=de':   ", timeit(old_sub2)
 
