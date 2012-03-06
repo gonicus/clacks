@@ -11,11 +11,10 @@ mgr = dbxml.XmlManager(dbxml.DBXML_ALLOW_EXTERNAL_ACCESS)
 uc = mgr.createUpdateContext()
 qc = mgr.createQueryContext()
 
-cont = mgr.openContainer("10000.dbxml")
 
-
+cont = mgr.openContainer("phone4.dbxml")
 start = time.time()
-res = mgr.query("collection('10000.dbxml')", qc)
+res = mgr.query("collection('phone4.dbxml')", qc)
 for entry in res:
     print etree.tostring(objectify.parse(StringIO.StringIO(entry.asString())), pretty_print=True)
 

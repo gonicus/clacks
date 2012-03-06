@@ -4,6 +4,7 @@ import random
 import string
 import time
 import os
+import re
 from random import choice
 
 bases = """dc=xmpp,dc=gonicus,dc=de
@@ -146,6 +147,8 @@ dummy_entry = """
     <User  xmlns="http://www.gonicus.de/Objects"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://www.gonicus.de/Objects perbase.xsd">%(User)s
+        <parent_dn>%(parent_dn)s</parent_dn>
+        <parent_bases>%(parent_bases)s</parent_bases>
         <UUID>096cf03c-ed95-102f-823b-812492b1b75c</UUID>
         <Type>User</Type>
         <DN>%(dn)s</DN>
@@ -241,9 +244,16 @@ def get_user(name=None, givenName=None, subentries=None):
     data['givenName'] = givenName
     data['User'] = subentries
     data['base'] = base
+    data['parent_dn'] = base
+
+    parent_bases = []
+    while len(base):
+        parent_bases.append("<base>%s</base>" % base)
+        base = re.sub("^[^,]*,?","",base)
+
+    data['parent_bases'] = "\n".join(parent_bases)
     data['dn'] = "cn=%(givenName)s %(name)s,%(base)s" % data
     return (dummy_entry % data,  data['dn'])
-
 
 mgr = dbxml.XmlManager(dbxml.DBXML_ALLOW_EXTERNAL_ACCESS)
 if mgr.existsContainer('phone4.dbxml'):
