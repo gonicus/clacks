@@ -266,21 +266,21 @@ def get_user(name=None, givenName=None, subentries=None):
     return (entry % data,  data['dn'])
 
 
-
-
-
-flags = dbxml.DBXML_ALLOW_VALIDATION
-
-
-mgr = dbxml.XmlManager(dbxml.DBXML_ALLOW_EXTERNAL_ACCESS)
-if mgr.existsContainer('phone4.dbxml'):
-    mgr.removeContainer("phone4.dbxml")
-cont = mgr.createContainer("phone4.dbxml", flags)
-uc = mgr.createUpdateContext()
-qc = mgr.createQueryContext()
-
-
 def main():
+
+
+
+
+
+    flags = dbxml.DBXML_ALLOW_VALIDATION
+
+
+    mgr = dbxml.XmlManager(dbxml.DBXML_ALLOW_EXTERNAL_ACCESS)
+    if mgr.existsContainer('phone4.dbxml'):
+        mgr.removeContainer("phone4.dbxml")
+    cont = mgr.createContainer("phone4.dbxml", flags)
+    uc = mgr.createUpdateContext()
+    qc = mgr.createQueryContext()
 
     print "*" * 80
 

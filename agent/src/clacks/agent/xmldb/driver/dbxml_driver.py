@@ -10,7 +10,7 @@ from lxml import etree, objectify
 from clacks.common import Environment
 from clacks.agent.xmldb.interface import XMLDBInterface, XMLDBException
 from dbxml import XmlManager, XmlResolver, DBXML_LAZY_DOCS, DBXML_ALLOW_VALIDATION
-from threading import Timer
+from threading import Timer, Lock
 
 
 class dictSchemaResolver(XmlResolver):
@@ -92,6 +92,9 @@ class DBXml(XMLDBInterface):
     reindex_timer = None
     compact_timer = None
 
+    # Database locks, used while reindex and compact are in progress
+    _db_locks = None
+
     # Current database statistics with last modifications etc.
     _db_stats = None
 
@@ -144,8 +147,6 @@ class DBXml(XMLDBInterface):
             self.compact_timer = Timer(self.compact_timeout, self.compactCollection, [name])
             self.compact_timer.start()
 
-
-
     def __init__(self):
         super(DBXml, self).__init__()
 
@@ -157,6 +158,7 @@ class DBXml(XMLDBInterface):
 
         # Create dbxml manager and create schema resolver.
         self._db_stats = {}
+        self._db_locks = {}
         self.manager = XmlManager()
         self.schemaResolver = dictSchemaResolver()
         self.manager.registerResolver(self.schemaResolver)
@@ -194,32 +196,9 @@ class DBXml(XMLDBInterface):
         self.namespaces['xsi'] = "http://www.w3.org/2001/XMLSchema-instance"
 
         self.log.debug("found %s potential database folder(s)" % (len(dbs)))
+
         for db in dbs:
-
-            self.log.debug("processing collection %s" % (db))
-
-            # Read the config file
-            data = self.__readConfig(db)
-            dfile = os.path.join(self.db_storage_path, db, 'data.bdb')
-
-            # Try opening the collection file
-            cont = self.manager.openContainer(str(dfile), DBXML_ALLOW_VALIDATION)
-            cont.addAlias(str(data['collection']))
-            self.collections[str(data['collection'])] = {
-                    'config': data,
-                    'container': cont,
-                    'path': os.path.join(self.db_storage_path, db),
-                    'db_path': dfile}
-
-            # Merge namespace list
-            for alias, uri in data['namespaces'].items():
-                self.namespaces[alias] = uri
-
-            # Merge list of xml-schema files
-            for alias, uri in data['schema'].items():
-                self.schemata[alias] = uri
-
-            self.log.debug("successfully read collection %s" % (db))
+            self.openContainer(db)
 
         # Forward the collected namespaces to the queryContext
         for alias, uri in self.namespaces.items():
@@ -230,6 +209,47 @@ class DBXml(XMLDBInterface):
         for name, schema in self.schemata.items():
             self.schemaResolver.addSchema(str(name), str(schema))
             self.log.debug("setting schema file %s with %s bytes" % (str(name), len(schema)))
+
+    def closeContainer(self, db):
+        self.log.debug("closing collection %s" % (db))
+        db = str(db)
+        self.collections[db]['container'].sync()
+        del(self.collections[db]['container'])
+        del(self.collections[db])
+        #del(self._db_locks[db])
+        del(self._db_stats[db])
+        self.log.debug("collection %s was closed!" % (db))
+
+    def openContainer(self, db):
+
+        self.log.debug("opening collection %s" % (db))
+
+        # Read the config file
+        data = self.__readConfig(db)
+        dfile = os.path.join(self.db_storage_path, db, 'data.bdb')
+
+        # Try opening the collection file
+        cont = self.manager.openContainer(str(dfile), DBXML_ALLOW_VALIDATION)
+        cont.addAlias(str(data['collection']))
+        self.collections[str(data['collection'])] = {
+                'config': data,
+                'container': cont,
+                'path': os.path.join(self.db_storage_path, db),
+                'db_path': dfile}
+
+        # Create a database lock, to be able to avoid db access while reindex or compact are in progress
+        self._db_locks[str(data['collection'])] = Lock()
+
+        # Merge namespace list
+        for alias, uri in data['namespaces'].items():
+            self.namespaces[alias] = uri
+
+        # Merge list of xml-schema files
+        for alias, uri in data['schema'].items():
+            self.schemata[alias] = uri
+
+        self.log.debug("successfully read collection %s" % (db))
+
 
     def __readConfig(self, collection):
         """
@@ -357,6 +377,7 @@ class DBXml(XMLDBInterface):
                     'container': cont,
                     'path': path,
                     'db_path': os.path.join(path, 'data.bdb')}
+            self._db_locks[str(name)] = Lock()
 
             # Only load namespace if not done already - duplicted definition causes errors
             self.log.debug("adding %s namespace definition(s) for collection '%s'" % (len(data['namespaces'].items()), name))
@@ -368,6 +389,7 @@ class DBXml(XMLDBInterface):
             # Add schema information to the database
             for entry in schema:
                 self.setSchema(name, entry, schema[entry])
+
 
         # Try some cleanup in case of an error
         except Exception as e:
@@ -400,6 +422,9 @@ class DBXml(XMLDBInterface):
         self.log.debug("successfully dropped collection '%s'" % (name))
 
     def addDocument(self, collection, name, contents):
+
+        self._db_locks[str(collection)].acquire()
+
         # Check for collection existence
         if not collection in self.collections:
             raise XMLDBException("collection '%s' does not exists" % collection)
@@ -410,11 +435,15 @@ class DBXml(XMLDBInterface):
             raise XMLDBException("document names cannot begin with a '/'!")
 
         self.collections[collection]['container'].putDocument(str(name), contents, self.updateContext)
+        self._db_locks[str(collection)].release()
         self._checkCollection(collection)
         self.log.debug("successfully added document '%s' to collection '%s'" % (name, collection))
 
 
     def deleteDocument(self, collection, name):
+
+        self._db_locks[str(collection)].acquire()
+
         # Check for collection existence
         if not collection in self.collections:
             raise XMLDBException("collection '%s' does not exists" % collection)
@@ -422,6 +451,7 @@ class DBXml(XMLDBInterface):
         # Remove the document
         name = os.path.normpath(name)
         self.collections[collection]['container'].deleteDocument(str(name), self.updateContext)
+        self._db_locks[str(collection)].release()
         self._checkCollection(collection)
 
         self.log.debug("successfully removed document '%s' from collection '%s'" % (name, collection))
@@ -456,24 +486,59 @@ class DBXml(XMLDBInterface):
 
     def syncCollection(self, collection):
         if collection in self.collections:
+            self._db_locks[str(collection)].acquire()
+            start = time()
             if collection in self._db_stats:
                 self._db_stats[collection]['mods_since_last_sync'] = 0
+
+            # Stop potentially timed jobs.
+            if self.sync_timer:
+                self.sync_timer.cancel(
+                        )
             self.collections[collection]['container'].sync()
-            print "synced %s" % collection
+            self._db_locks[str(collection)].release()
+            self.log.debug("container '%s' was synced in '%s' seconds" % (collection, time() - start))
 
     def reindexCollection(self, collection):
         if collection in self.collections:
+
+            self._db_locks[str(collection)].acquire()
+            start = time()
+
+            # Stop potentially timed jobs.
+            if self.reindex_timer:
+                self.reindex_timer.cancel()
+
+            path = self.collections[collection]['db_path']
+            del(self.collections[collection]['container'])
+            self.manager.reindexContainer(path, self.updateContext)
+            self.collections[collection]['container'] = self.manager.openContainer(path, DBXML_ALLOW_VALIDATION)
+            self.collections[collection]['container'].addAlias(str(collection))
+
             if collection in self._db_stats:
                 self._db_stats[collection]['mods_since_last_reindex'] = 0
-            self.collections[collection]['container'].sync()
-            print "reindex %s" % collection
+            self._db_locks[str(collection)].release()
+            self.log.debug("container '%s' was reindexed in '%s' seconds" % (collection, time() - start))
 
     def compactCollection(self, collection):
         if collection in self.collections:
+            self._db_locks[str(collection)].acquire()
+
+            start = time()
+            # Stop potentially timed jobs.
+            if self.compact_timer:
+                self.compact_timer.cancel()
+
+            path = self.collections[collection]['db_path']
+            del(self.collections[collection]['container'])
+            self.manager.compactContainer(path, self.updateContext)
+            self.collections[collection]['container'] = self.manager.openContainer(path, DBXML_ALLOW_VALIDATION)
+            self.collections[collection]['container'].addAlias(str(collection))
+
             if collection in self._db_stats:
                 self._db_stats[collection]['mods_since_last_compact'] = 0
-            self.collections[collection]['container'].sync()
-            print "compact %s" % collection
+            self._db_locks[str(collection)].release()
+            self.log.debug("container '%s' was compacted in '%s' seconds" % (collection, time() - start))
 
     def xquery_dict(self, query, strip_namespaces=False):
         rs = self.xquery(query)
