@@ -80,15 +80,15 @@ class DBXml(XMLDBInterface):
 
     ##TODO: Cajus these are the parameters that should be read from the config.
     # Sync, reindex and compact every n modifications
-    sync_amount = 5
-    reindex_amount = 20
-    compact_amount = 50
+    sync_amount = 500
+    reindex_amount = 2000
+    compact_amount = 5000
 
     ##TODO: Cajus  ... and those too.
     # Sync, reindex and compact after n seconds of no modifications
-    sync_timeout = 1 # 30
-    reindex_timeout = 2# 30 * 60 # 30 minutes since last modification
-    compact_timeout = 2#60 * 60 # 60 minutes since last modification
+    sync_timeout = 30
+    reindex_timeout = 30 * 60 # 30 minutes since last modification
+    compact_timeout = 60 * 60 # 60 minutes since last modification
 
     sync_timer = None
     reindex_timer = None
