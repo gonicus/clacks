@@ -61,12 +61,12 @@ class XMLDBHandler(Plugin):
         return self.__driver.getDocuments(collection)
 
     @Command(__help__=N_("Perform XQuery and return a list of dicts"))
-    def xquery_dict(self, query, strip_namespaces=False):
-        return self.__driver.xquery_dict(query, strip_namespaces)
+    def xquery_dict(self, query, collection, strip_namespaces=False):
+        return self.__driver.xquery_dict(query, collection, strip_namespaces)
 
     @Command(__help__=N_("Perform XQuery"))
-    def xquery(self, query):
-        return self.__driver.xquery(query)
+    def xquery(self, query, collection):
+        return self.__driver.xquery(query, collection)
 
     @Command(__help__=N_("Set the namespace for a collection"))
     def setNamespace(self, collection, alias, namespace):
