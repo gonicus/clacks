@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns="http://www.gonicus.de/Objects" xmlns:g="http://www.gonicus.de/Objects" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:exslt="http://exslt.org/common" targetNamespace="http://www.gonicus.de/Objects" elementFormDefault="qualified">
-  
+
   <xsd:element name="Country" type="Country"/>
   <xsd:element name="Domain" type="Domain"/>
   <xsd:element name="DomainComponent" type="DomainComponent"/>

@@ -10,6 +10,7 @@ from lxml import etree, objectify
 from clacks.common import Environment
 from clacks.agent.xmldb.interface import XMLDBInterface, XMLDBException
 from dbxml import XmlManager, XmlResolver, DBXML_LAZY_DOCS, DBXML_ALLOW_VALIDATION
+from threading import Timer
 
 
 class dictSchemaResolver(XmlResolver):
@@ -77,6 +78,74 @@ class DBXml(XMLDBInterface):
     namespaces = None
     schemata = None
 
+    # Sync, reindex and compact every n modifications
+    sync_amount = 500
+    reindex_amount = 2000
+    compact_amount = 5000
+
+    # Sync, reindex and compact after n seconds of no modifications
+    sync_timeout = 30
+    reindex_timeout = 30 * 60 # 30 minutes since last modification
+    compact_timeout = 60 * 60 # 60 minutes since last modification
+
+    sync_timer = None
+    reindex_timer = None
+    compact_timer = None
+
+    # Current database statistics with last modifications etc.
+    _db_stats = None
+
+    def _checkCollection(self, name):
+
+        # Add collection statistics if not done already
+        name = str(name)
+        if not name in self._db_stats:
+            self._db_stats[name] = {}
+            self._db_stats[name]['mods_since_last_sync'] = 0
+            self._db_stats[name]['mods_since_last_reindex'] = 0
+            self._db_stats[name]['mods_since_last_compact'] = 0
+            self._db_stats[name]['last_mod'] = 0
+
+        # Increase counters
+        self._db_stats[name]['mods_since_last_sync'] += 1
+        self._db_stats[name]['mods_since_last_reindex'] += 1
+        self._db_stats[name]['mods_since_last_compact'] += 1
+        self._db_stats[name]['last_mod'] = time()
+
+        # Stop potentially timed sync jobs.
+        if self.sync_timer:
+            self.sync_timer.cancel()
+        if self.reindex_timer:
+            self.reindex_timer.cancel()
+        if self.compact_timer:
+            self.compact_timer.cancel()
+
+        # Check if we've to perform a SYNC immediately or if we've to start a
+        # timed sync job.
+        if self._db_stats[name]['mods_since_last_sync'] > self.sync_amount:
+            self.syncCollection(name)
+        else:
+            self.sync_timer = Timer(self.sync_timeout, self.syncCollection, [name])
+            self.sync_timer.start()
+
+        # Check if we've to perform a REINDEX immediately or if we've to start a
+        # timed sync job.
+        if self._db_stats[name]['mods_since_last_reindex'] > self.reindex_amount:
+            self.reindexCollection(name)
+        else:
+            self.reindex_timer = Timer(self.reindex_timeout, self.reindexCollection, [name])
+            self.reindex_timer.start()
+
+        # Check if we've to perform a COMPACT immediately or if we've to start a
+        # timed sync job.
+        if self._db_stats[name]['mods_since_last_compact'] > self.compact_amount:
+            self.compactCollection(name)
+        else:
+            self.compact_timer = Timer(self.compact_timeout, self.compactCollection, [name])
+            self.compact_timer.start()
+
+
+
     def __init__(self):
         super(DBXml, self).__init__()
 
@@ -87,6 +156,7 @@ class DBXml(XMLDBInterface):
         self.log.debug("initializing database driver")
 
         # Create dbxml manager and create schema resolver.
+        self._db_stats = {}
         self.manager = XmlManager()
         self.schemaResolver = dictSchemaResolver()
         self.manager.registerResolver(self.schemaResolver)
@@ -340,9 +410,9 @@ class DBXml(XMLDBInterface):
             raise XMLDBException("document names cannot begin with a '/'!")
 
         self.collections[collection]['container'].putDocument(str(name), contents, self.updateContext)
-        self.collections[collection]['container'].sync()
-
+        self._checkCollection(collection)
         self.log.debug("successfully added document '%s' to collection '%s'" % (name, collection))
+
 
     def deleteDocument(self, collection, name):
         # Check for collection existence
@@ -352,7 +422,7 @@ class DBXml(XMLDBInterface):
         # Remove the document
         name = os.path.normpath(name)
         self.collections[collection]['container'].deleteDocument(str(name), self.updateContext)
-        self.collections[collection]['container'].sync()
+        self._checkCollection(collection)
 
         self.log.debug("successfully removed document '%s' from collection '%s'" % (name, collection))
 
@@ -386,7 +456,24 @@ class DBXml(XMLDBInterface):
 
     def syncCollection(self, collection):
         if collection in self.collections:
+            if collection in self._db_stats:
+                self._db_stats[collection]['mods_since_last_sync'] = 0
             self.collections[collection]['container'].sync()
+            print "synced %s" % collection
+
+    def reindexCollection(self, collection):
+        if collection in self.collections:
+            if collection in self._db_stats:
+                self._db_stats[collection]['mods_since_last_reindex'] = 0
+            self.collections[collection]['container'].sync()
+            print "reindex %s" % collection
+
+    def compactCollection(self, collection):
+        if collection in self.collections:
+            if collection in self._db_stats:
+                self._db_stats[collection]['mods_since_last_compact'] = 0
+            self.collections[collection]['container'].sync()
+            print "compact %s" % collection
 
     def xquery_dict(self, query, strip_namespaces=False):
         rs = self.xquery(query)

@@ -266,6 +266,9 @@ def get_user(name=None, givenName=None, subentries=None):
     return (entry % data,  data['dn'])
 
 
+
+
+
 flags = dbxml.DBXML_ALLOW_VALIDATION
 
 
@@ -276,75 +279,81 @@ cont = mgr.createContainer("phone4.dbxml", flags)
 uc = mgr.createUpdateContext()
 qc = mgr.createQueryContext()
 
-print "*" * 80
+
+def main():
+
+    print "*" * 80
 
 
-# Create first entry
+
+    # Create first entry
 
 
-print "Is Node container:", cont.getContainerType() == dbxml.XmlContainer.NodeContainer
-print "*" * 80
+    print "Is Node container:", cont.getContainerType() == dbxml.XmlContainer.NodeContainer
+    print "*" * 80
 
 
-display = 100
-sync = 5000
-reindex = 5000
-compact = 5000
-search = 5000
-search_count = 100
+    display = 100
+    sync = 5000
+    reindex = 5000
+    compact = 5000
+    search = 5000
+    search_count = 100
 
-cnt = []
-res = ""
-first = True
-for i in range(10000):
-    entry, dn = get_user()
+    cnt = []
+    res = ""
+    first = True
+    for i in range(10000):
+        entry, dn = get_user()
 
-    start = time.time()
-    cont.putDocument(dn, "%s" % entry, uc)
-
-    cnt.append(time.time() - start)
-
-    if i % display == 0 and i != 0:
-        print "total %s entries added | \t %s MB  | \t %s ms/each insert" % (i, \
-                os.path.getsize('phone4.dbxml') / int(1024*1024), (sum(cnt) / display) * 1000)
-        cnt = []
-
-    if compact and i % compact == 0:
-        print "compact ..."
         start = time.time()
-        del(cont)
-        mgr.compactContainer('phone4.dbxml', uc)
-        cont = mgr.openContainer("phone4.dbxml", flags)
-        print "compact took %s seconds" % (int(time.time() - start))
-        config = cont.getContainerConfig()
-        config.setAllowValidation(True)
+        cont.putDocument(dn, "%s" % entry, uc)
 
-    if reindex and i % reindex == 0:
-        print "reindex ..."
-        start = time.time()
-        del(cont)
-        mgr.reindexContainer('phone4.dbxml', uc)
-        cont = mgr.openContainer("phone4.dbxml", flags)
-        print "reindex took %s seconds" % (int(time.time() - start))
-        config = cont.getContainerConfig()
-        config.setAllowValidation(True)
+        cnt.append(time.time() - start)
 
-    if sync and i % sync == 0:
-        print "sync ... "
-        start = time.time()
-        cont.sync()
-        print "sync took %s seconds" % (int(time.time() - start))
+        if i % display == 0 and i != 0:
+            print "total %s entries added | \t %s MB  | \t %s ms/each insert" % (i, \
+                    os.path.getsize('phone4.dbxml') / int(1024*1024), (sum(cnt) / display) * 1000)
+            cnt = []
 
-    if search and i % search == 0 and i != 0:
-        print "search ..."
-        start = time.time()
-        for x in range(0,search_count):
-            children = mgr.query("declare default element namespace 'http://www.gonicus.de/Objects';\
-                    collection('phone4.dbxml')/*/name()", qc)
-            #for entry in children:
-            #    print entry.asString()
+        if compact and i % compact == 0:
+            print "compact ..."
+            start = time.time()
+            del(cont)
+            mgr.compactContainer('phone4.dbxml', uc)
+            cont = mgr.openContainer("phone4.dbxml", flags)
+            print "compact took %s seconds" % (int(time.time() - start))
+            config = cont.getContainerConfig()
+            config.setAllowValidation(True)
 
-        print "searched started %s times, it took: %s seconds" % ( search_count, (int(time.time()-start)))
+        if reindex and i % reindex == 0:
+            print "reindex ..."
+            start = time.time()
+            del(cont)
+            mgr.reindexContainer('phone4.dbxml', uc)
+            cont = mgr.openContainer("phone4.dbxml", flags)
+            print "reindex took %s seconds" % (int(time.time() - start))
+            config = cont.getContainerConfig()
+            config.setAllowValidation(True)
+
+        if sync and i % sync == 0:
+            print "sync ... "
+            start = time.time()
+            cont.sync()
+            print "sync took %s seconds" % (int(time.time() - start))
+
+        if search and i % search == 0 and i != 0:
+            print "search ..."
+            start = time.time()
+            for x in range(0,search_count):
+                children = mgr.query("declare default element namespace 'http://www.gonicus.de/Objects';\
+                        collection('phone4.dbxml')/*/name()", qc)
+                #for entry in children:
+                #    print entry.asString()
+
+            print "searched started %s times, it took: %s seconds" % ( search_count, (int(time.time()-start)))
 
 
-print "done"
+
+if __name__ == "__main__":
+        main()
