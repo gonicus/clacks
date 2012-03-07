@@ -4,9 +4,8 @@ import md5
 import json
 import shutil
 import logging
-import StringIO
 from time import time
-from lxml import etree, objectify
+from lxml import etree
 from clacks.common import Environment
 from clacks.agent.xmldb.interface import XMLDBInterface, XMLDBException
 from dbxml import XmlManager, XmlResolver, DBXML_LAZY_DOCS, DBXML_ALLOW_VALIDATION
