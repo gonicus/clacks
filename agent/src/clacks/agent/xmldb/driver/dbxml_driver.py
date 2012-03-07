@@ -491,6 +491,7 @@ class DBXml(XMLDBInterface):
             # Stop potentially timed jobs.
             if self.compact_timer:
                 self.compact_timer.cancel()
+                del(self.compact_timer)
 
             # Reset modification counter for the compact action
             if collection in self._db_stats:
