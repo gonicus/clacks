@@ -395,10 +395,15 @@ class DBXml(XMLDBInterface):
         name = os.path.normpath(name)
         return (name in self.getDocuments(str(collection)))
 
-    def xquery(self, query):
+    def xquery(self, query, collection):
+
+        if collection not in self.collections:
+            raise XMLDBException("Invalid collection name given '%s'!" % collection)
+
+        qc = self.collections[collection]['queryContext']
         q = query.encode('utf-8') if isinstance(query, unicode) else query
         t0 = time()
-        res = self.manager.query(q, self.queryContext)
+        res = self.manager.query(q, qc)
         t1 = time()
         ret = []
         for t in res:
@@ -408,7 +413,7 @@ class DBXml(XMLDBInterface):
 
         return ret
 
-    def _syncCollection(self, collection):
+    def syncCollection(self, collection):
         """
         Synchronizes changes to the database file.
         """
@@ -436,7 +441,7 @@ class DBXml(XMLDBInterface):
             # Release locka again
             self._db_locks[str(collection)].release()
 
-    def _reindexCollection(self, collection):
+    def reindexCollection(self, collection):
         """
         Reindex the container.
         """
@@ -468,7 +473,7 @@ class DBXml(XMLDBInterface):
             self.log.debug("container '%s' was reindexed in '%s' seconds" % (collection, time() - start))
             self._db_locks[str(collection)].release()
 
-    def _compactCollection(self, collection):
+    def compactCollection(self, collection):
         """
         Compacts the container size.
         """
@@ -499,8 +504,8 @@ class DBXml(XMLDBInterface):
             self.log.debug("container '%s' was compacted in '%s' seconds" % (collection, time() - start))
             self._db_locks[str(collection)].release()
 
-    def xquery_dict(self, query, strip_namespaces=False):
-        rs = self.xquery(query)
+    def xquery_dict(self, query, collection, strip_namespaces=False):
+        rs = self.xquery(query, collection)
         ret = []
         for entry in rs:
             res = etree.XML(entry)
@@ -554,27 +559,27 @@ class DBXml(XMLDBInterface):
         # Check if we've to perform a SYNC immediately or if we've to start a
         # timed sync job.
         if self._db_stats[name]['mods_since_last_sync'] > self.sync_amount:
-            self._syncCollection(name)
+            self.syncCollection(name)
         else:
             ##TODO: Cajus start sync job here
-            self.sync_timer[name] = Timer(self.sync_timeout, self._syncCollection, [name])
+            self.sync_timer[name] = Timer(self.sync_timeout, self.syncCollection, [name])
             self.sync_timer[name].start()
 
         # Check if we've to perform a REINDEX immediately or if we've to start a
         # timed reindex job.
         if self._db_stats[name]['mods_since_last_reindex'] > self.reindex_amount:
-            self._reindexCollection(name)
+            self.reindexCollection(name)
         else:
             ##TODO: Cajus start reindex job here
-            self.reindex_timer[name] = Timer(self.reindex_timeout, self._reindexCollection, [name])
+            self.reindex_timer[name] = Timer(self.reindex_timeout, self.reindexCollection, [name])
             self.reindex_timer[name].start()
 
         # Check if we've to perform a COMPACT immediately or if we've to start a
         # timed compact job.
         if self._db_stats[name]['mods_since_last_compact'] > self.compact_amount:
-            self._compactCollection(name)
+            self.compactCollection(name)
         else:
             ##TODO: Cajus start reindex job here
-            self.compact_timer[name] = Timer(self.compact_timeout, self._compactCollection, [name])
+            self.compact_timer[name] = Timer(self.compact_timeout, self.compactCollection, [name])
             self.compact_timer[name].start()
 
