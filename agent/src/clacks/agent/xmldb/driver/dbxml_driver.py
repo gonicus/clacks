@@ -78,15 +78,17 @@ class DBXml(XMLDBInterface):
     namespaces = None
     schemata = None
 
+    ##TODO: Cajus these are the parameters that should be read from the config.
     # Sync, reindex and compact every n modifications
-    sync_amount = 500
-    reindex_amount = 2000
-    compact_amount = 5000
+    sync_amount = 5
+    reindex_amount = 20
+    compact_amount = 50
 
+    ##TODO: Cajus  ... and those too.
     # Sync, reindex and compact after n seconds of no modifications
-    sync_timeout = 30
-    reindex_timeout = 30 * 60 # 30 minutes since last modification
-    compact_timeout = 60 * 60 # 60 minutes since last modification
+    sync_timeout = 1 # 30
+    reindex_timeout = 2# 30 * 60 # 30 minutes since last modification
+    compact_timeout = 2#60 * 60 # 60 minutes since last modification
 
     sync_timer = None
     reindex_timer = None
@@ -110,6 +112,9 @@ class DBXml(XMLDBInterface):
         # Create dbxml manager and create schema resolver.
         self._db_stats = {}
         self._db_locks = {}
+        self.sync_timer = {}
+        self.reindex_timer = {}
+        self.compact_timer = {}
         self.manager = XmlManager()
         self.schemaResolver = dictSchemaResolver()
         self.manager.registerResolver(self.schemaResolver)
@@ -167,6 +172,15 @@ class DBXml(XMLDBInterface):
 
             # Create a database lock, to be able to avoid db access while reindex or compact are in progress
             self._db_locks[str(data['collection'])] = Lock()
+
+            self._db_stats[str(data['collection'])] = {}
+            self._db_stats[str(data['collection'])]['mods_since_last_sync'] = 0
+            self._db_stats[str(data['collection'])]['mods_since_last_reindex'] = 0
+            self._db_stats[str(data['collection'])]['mods_since_last_compact'] = 0
+            self._db_stats[str(data['collection'])]['last_mod'] = 0
+            self.sync_timer[str(data['collection'])] = None
+            self.reindex_timer[str(data['collection'])] = None
+            self.compact_timer[str(data['collection'])] = None
 
             # Merge namespace list
             for alias, uri in data['namespaces'].items():
@@ -314,7 +328,17 @@ class DBXml(XMLDBInterface):
                     'container': cont,
                     'path': path,
                     'db_path': os.path.join(path, 'data.bdb')}
+
+            # Prepare some status information
             self._db_locks[str(name)] = Lock()
+            self._db_stats[str(name)] = {}
+            self._db_stats[str(name)]['mods_since_last_sync'] = 0
+            self._db_stats[str(name)]['mods_since_last_reindex'] = 0
+            self._db_stats[str(name)]['mods_since_last_compact'] = 0
+            self._db_stats[str(name)]['last_mod'] = 0
+            self.sync_timer[str(name)] = None
+            self.reindex_timer[str(name)] = None
+            self.compact_timer[str(name)] = None
 
             # Only load namespace if not done already - duplicted definition causes errors
             self.log.debug("adding %s namespace definition(s) for collection '%s'" % (len(data['namespaces'].items()), name))
@@ -326,7 +350,6 @@ class DBXml(XMLDBInterface):
             # Add schema information to the database
             for entry in schema:
                 self.setSchema(name, entry, schema[entry])
-
 
         # Try some cleanup in case of an error
         except Exception as e:
@@ -438,8 +461,9 @@ class DBXml(XMLDBInterface):
                 self._db_stats[collection]['mods_since_last_sync'] = 0
 
             # Stop potentially timed jobs.
-            if self.sync_timer:
-                self.sync_timer.cancel()
+            ##TODO: Cajus stop sync job here
+            if self.sync_timer[collection]:
+                self.sync_timer[collection].cancel()
 
             # Start synchronization
             self.collections[collection]['container'].sync()
@@ -459,8 +483,9 @@ class DBXml(XMLDBInterface):
             start = time()
 
             # Stop potentially timed jobs.
-            if self.reindex_timer:
-                self.reindex_timer.cancel()
+            ##TODO: Cajus stop reindex job here
+            if self.reindex_timer[collection]:
+                self.reindex_timer[collection].cancel()
 
             # Reset modification counter for the reindex action
             if collection in self._db_stats:
@@ -489,9 +514,9 @@ class DBXml(XMLDBInterface):
             start = time()
 
             # Stop potentially timed jobs.
-            if self.compact_timer:
-                self.compact_timer.cancel()
-                del(self.compact_timer)
+            ##TODO: Cajus stop compact job here
+            if self.compact_timer[collection]:
+                self.compact_timer[collection].cancel()
 
             # Reset modification counter for the compact action
             if collection in self._db_stats:
@@ -541,6 +566,9 @@ class DBXml(XMLDBInterface):
             self._db_stats[name]['mods_since_last_reindex'] = 0
             self._db_stats[name]['mods_since_last_compact'] = 0
             self._db_stats[name]['last_mod'] = 0
+            self.sync_timer[name] = None
+            self.reindex_timer[name] = None
+            self.compact_timer[name] = None
 
         # Increase counters
         self._db_stats[name]['mods_since_last_sync'] += 1
@@ -549,34 +577,38 @@ class DBXml(XMLDBInterface):
         self._db_stats[name]['last_mod'] = time()
 
         # Stop potentially timed sync jobs.
-        if self.sync_timer:
-            self.sync_timer.cancel()
-        if self.reindex_timer:
-            self.reindex_timer.cancel()
-        if self.compact_timer:
-            self.compact_timer.cancel()
+        #TODO: Cajus stop scheduled jobs here.
+        if self.sync_timer[name]:
+            self.sync_timer[name].cancel()
+        if self.reindex_timer[name]:
+            self.reindex_timer[name].cancel()
+        if self.compact_timer[name]:
+            self.compact_timer[name].cancel()
 
         # Check if we've to perform a SYNC immediately or if we've to start a
         # timed sync job.
         if self._db_stats[name]['mods_since_last_sync'] > self.sync_amount:
             self._syncCollection(name)
         else:
-            self.sync_timer = Timer(self.sync_timeout, self._syncCollection, [name])
-            self.sync_timer.start()
+            ##TODO: Cajus start sync job here
+            self.sync_timer[name] = Timer(self.sync_timeout, self._syncCollection, [name])
+            self.sync_timer[name].start()
 
         # Check if we've to perform a REINDEX immediately or if we've to start a
         # timed reindex job.
         if self._db_stats[name]['mods_since_last_reindex'] > self.reindex_amount:
             self._reindexCollection(name)
         else:
-            self.reindex_timer = Timer(self.reindex_timeout, self._reindexCollection, [name])
-            self.reindex_timer.start()
+            ##TODO: Cajus start reindex job here
+            self.reindex_timer[name] = Timer(self.reindex_timeout, self._reindexCollection, [name])
+            self.reindex_timer[name].start()
 
         # Check if we've to perform a COMPACT immediately or if we've to start a
         # timed compact job.
         if self._db_stats[name]['mods_since_last_compact'] > self.compact_amount:
             self._compactCollection(name)
         else:
-            self.compact_timer = Timer(self.compact_timeout, self._compactCollection, [name])
-            self.compact_timer.start()
+            ##TODO: Cajus start reindex job here
+            self.compact_timer[name] = Timer(self.compact_timeout, self._compactCollection, [name])
+            self.compact_timer[name].start()
 
