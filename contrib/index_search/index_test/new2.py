@@ -267,14 +267,7 @@ def get_user(name=None, givenName=None, subentries=None):
 
 
 def main():
-
-
-
-
-
     flags = dbxml.DBXML_ALLOW_VALIDATION
-
-
     mgr = dbxml.XmlManager(dbxml.DBXML_ALLOW_EXTERNAL_ACCESS)
     if mgr.existsContainer('phone4.dbxml'):
         mgr.removeContainer("phone4.dbxml")
@@ -283,15 +276,10 @@ def main():
     qc = mgr.createQueryContext()
 
     print "*" * 80
-
-
-
     # Create first entry
-
 
     print "Is Node container:", cont.getContainerType() == dbxml.XmlContainer.NodeContainer
     print "*" * 80
-
 
     display = 100
     sync = 5000

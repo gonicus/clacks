@@ -98,55 +98,6 @@ class DBXml(XMLDBInterface):
     # Current database statistics with last modifications etc.
     _db_stats = None
 
-    def _checkCollection(self, name):
-
-        # Add collection statistics if not done already
-        name = str(name)
-        if not name in self._db_stats:
-            self._db_stats[name] = {}
-            self._db_stats[name]['mods_since_last_sync'] = 0
-            self._db_stats[name]['mods_since_last_reindex'] = 0
-            self._db_stats[name]['mods_since_last_compact'] = 0
-            self._db_stats[name]['last_mod'] = 0
-
-        # Increase counters
-        self._db_stats[name]['mods_since_last_sync'] += 1
-        self._db_stats[name]['mods_since_last_reindex'] += 1
-        self._db_stats[name]['mods_since_last_compact'] += 1
-        self._db_stats[name]['last_mod'] = time()
-
-        # Stop potentially timed sync jobs.
-        if self.sync_timer:
-            self.sync_timer.cancel()
-        if self.reindex_timer:
-            self.reindex_timer.cancel()
-        if self.compact_timer:
-            self.compact_timer.cancel()
-
-        # Check if we've to perform a SYNC immediately or if we've to start a
-        # timed sync job.
-        if self._db_stats[name]['mods_since_last_sync'] > self.sync_amount:
-            self.syncCollection(name)
-        else:
-            self.sync_timer = Timer(self.sync_timeout, self.syncCollection, [name])
-            self.sync_timer.start()
-
-        # Check if we've to perform a REINDEX immediately or if we've to start a
-        # timed sync job.
-        if self._db_stats[name]['mods_since_last_reindex'] > self.reindex_amount:
-            self.reindexCollection(name)
-        else:
-            self.reindex_timer = Timer(self.reindex_timeout, self.reindexCollection, [name])
-            self.reindex_timer.start()
-
-        # Check if we've to perform a COMPACT immediately or if we've to start a
-        # timed sync job.
-        if self._db_stats[name]['mods_since_last_compact'] > self.compact_amount:
-            self.compactCollection(name)
-        else:
-            self.compact_timer = Timer(self.compact_timeout, self.compactCollection, [name])
-            self.compact_timer.start()
-
     def __init__(self):
         super(DBXml, self).__init__()
 
@@ -197,8 +148,35 @@ class DBXml(XMLDBInterface):
 
         self.log.debug("found %s potential database folder(s)" % (len(dbs)))
 
+        # Open each container
         for db in dbs:
-            self.openContainer(db)
+            self.log.debug("opening collection %s" % (db))
+
+            # Read the config file
+            data = self.__readConfig(db)
+            dfile = os.path.join(self.db_storage_path, db, 'data.bdb')
+
+            # Try opening the collection file
+            cont = self.manager.openContainer(str(dfile), DBXML_ALLOW_VALIDATION)
+            cont.addAlias(str(data['collection']))
+            self.collections[str(data['collection'])] = {
+                    'config': data,
+                    'container': cont,
+                    'path': os.path.join(self.db_storage_path, db),
+                    'db_path': dfile}
+
+            # Create a database lock, to be able to avoid db access while reindex or compact are in progress
+            self._db_locks[str(data['collection'])] = Lock()
+
+            # Merge namespace list
+            for alias, uri in data['namespaces'].items():
+                self.namespaces[alias] = uri
+
+            # Merge list of xml-schema files
+            for alias, uri in data['schema'].items():
+                self.schemata[alias] = uri
+
+            self.log.debug("successfully read collection %s" % (db))
 
         # Forward the collected namespaces to the queryContext
         for alias, uri in self.namespaces.items():
@@ -209,47 +187,6 @@ class DBXml(XMLDBInterface):
         for name, schema in self.schemata.items():
             self.schemaResolver.addSchema(str(name), str(schema))
             self.log.debug("setting schema file %s with %s bytes" % (str(name), len(schema)))
-
-    def closeContainer(self, db):
-        self.log.debug("closing collection %s" % (db))
-        db = str(db)
-        self.collections[db]['container'].sync()
-        del(self.collections[db]['container'])
-        del(self.collections[db])
-        #del(self._db_locks[db])
-        del(self._db_stats[db])
-        self.log.debug("collection %s was closed!" % (db))
-
-    def openContainer(self, db):
-
-        self.log.debug("opening collection %s" % (db))
-
-        # Read the config file
-        data = self.__readConfig(db)
-        dfile = os.path.join(self.db_storage_path, db, 'data.bdb')
-
-        # Try opening the collection file
-        cont = self.manager.openContainer(str(dfile), DBXML_ALLOW_VALIDATION)
-        cont.addAlias(str(data['collection']))
-        self.collections[str(data['collection'])] = {
-                'config': data,
-                'container': cont,
-                'path': os.path.join(self.db_storage_path, db),
-                'db_path': dfile}
-
-        # Create a database lock, to be able to avoid db access while reindex or compact are in progress
-        self._db_locks[str(data['collection'])] = Lock()
-
-        # Merge namespace list
-        for alias, uri in data['namespaces'].items():
-            self.namespaces[alias] = uri
-
-        # Merge list of xml-schema files
-        for alias, uri in data['schema'].items():
-            self.schemata[alias] = uri
-
-        self.log.debug("successfully read collection %s" % (db))
-
 
     def __readConfig(self, collection):
         """
@@ -484,24 +421,40 @@ class DBXml(XMLDBInterface):
 
         return ret
 
-    def syncCollection(self, collection):
+    def _syncCollection(self, collection):
+        """
+        Synchronizes changes to the database file.
+        """
         if collection in self.collections:
+
+            # Acquire lock, to avoid actions during sync
             self._db_locks[str(collection)].acquire()
+
+            # Time measurement
             start = time()
+
+            # Reset action counters for this collection
             if collection in self._db_stats:
                 self._db_stats[collection]['mods_since_last_sync'] = 0
 
             # Stop potentially timed jobs.
             if self.sync_timer:
-                self.sync_timer.cancel(
-                        )
+                self.sync_timer.cancel()
+
+            # Start synchronization
             self.collections[collection]['container'].sync()
-            self._db_locks[str(collection)].release()
             self.log.debug("container '%s' was synced in '%s' seconds" % (collection, time() - start))
 
-    def reindexCollection(self, collection):
+            # Release locka again
+            self._db_locks[str(collection)].release()
+
+    def _reindexCollection(self, collection):
+        """
+        Reindex the container.
+        """
         if collection in self.collections:
 
+            # Acquire lock, to avoid actions during reindex
             self._db_locks[str(collection)].acquire()
             start = time()
 
@@ -509,36 +462,50 @@ class DBXml(XMLDBInterface):
             if self.reindex_timer:
                 self.reindex_timer.cancel()
 
+            # Reset modification counter for the reindex action
+            if collection in self._db_stats:
+                self._db_stats[collection]['mods_since_last_reindex'] = 0
+
+            # Close the DB (this is necessary) and reindex the container.
+            # Afterwards reopen it.
             path = self.collections[collection]['db_path']
             del(self.collections[collection]['container'])
             self.manager.reindexContainer(path, self.updateContext)
             self.collections[collection]['container'] = self.manager.openContainer(path, DBXML_ALLOW_VALIDATION)
             self.collections[collection]['container'].addAlias(str(collection))
 
-            if collection in self._db_stats:
-                self._db_stats[collection]['mods_since_last_reindex'] = 0
-            self._db_locks[str(collection)].release()
+            # Release the lock again
             self.log.debug("container '%s' was reindexed in '%s' seconds" % (collection, time() - start))
+            self._db_locks[str(collection)].release()
 
-    def compactCollection(self, collection):
+    def _compactCollection(self, collection):
+        """
+        Compacts the container size.
+        """
         if collection in self.collections:
-            self._db_locks[str(collection)].acquire()
 
+            # Acquire lock, to avoid actions during reindex
+            self._db_locks[str(collection)].acquire()
             start = time()
+
             # Stop potentially timed jobs.
             if self.compact_timer:
                 self.compact_timer.cancel()
 
+            # Reset modification counter for the compact action
+            if collection in self._db_stats:
+                self._db_stats[collection]['mods_since_last_compact'] = 0
+
+            # Close the container and compact it, afterwards reopen it.
             path = self.collections[collection]['db_path']
             del(self.collections[collection]['container'])
             self.manager.compactContainer(path, self.updateContext)
             self.collections[collection]['container'] = self.manager.openContainer(path, DBXML_ALLOW_VALIDATION)
             self.collections[collection]['container'].addAlias(str(collection))
 
-            if collection in self._db_stats:
-                self._db_stats[collection]['mods_since_last_compact'] = 0
-            self._db_locks[str(collection)].release()
+            # Release the lock again
             self.log.debug("container '%s' was compacted in '%s' seconds" % (collection, time() - start))
+            self._db_locks[str(collection)].release()
 
     def xquery_dict(self, query, strip_namespaces=False):
         rs = self.xquery(query)
@@ -562,3 +529,53 @@ class DBXml(XMLDBInterface):
             else:
                 res[tag].append(item.text)
         return res
+
+    def _checkCollection(self, name):
+
+        # Add collection statistics if not done already
+        name = str(name)
+        if not name in self._db_stats:
+            self._db_stats[name] = {}
+            self._db_stats[name]['mods_since_last_sync'] = 0
+            self._db_stats[name]['mods_since_last_reindex'] = 0
+            self._db_stats[name]['mods_since_last_compact'] = 0
+            self._db_stats[name]['last_mod'] = 0
+
+        # Increase counters
+        self._db_stats[name]['mods_since_last_sync'] += 1
+        self._db_stats[name]['mods_since_last_reindex'] += 1
+        self._db_stats[name]['mods_since_last_compact'] += 1
+        self._db_stats[name]['last_mod'] = time()
+
+        # Stop potentially timed sync jobs.
+        if self.sync_timer:
+            self.sync_timer.cancel()
+        if self.reindex_timer:
+            self.reindex_timer.cancel()
+        if self.compact_timer:
+            self.compact_timer.cancel()
+
+        # Check if we've to perform a SYNC immediately or if we've to start a
+        # timed sync job.
+        if self._db_stats[name]['mods_since_last_sync'] > self.sync_amount:
+            self._syncCollection(name)
+        else:
+            self.sync_timer = Timer(self.sync_timeout, self._syncCollection, [name])
+            self.sync_timer.start()
+
+        # Check if we've to perform a REINDEX immediately or if we've to start a
+        # timed reindex job.
+        if self._db_stats[name]['mods_since_last_reindex'] > self.reindex_amount:
+            self._reindexCollection(name)
+        else:
+            self.reindex_timer = Timer(self.reindex_timeout, self._reindexCollection, [name])
+            self.reindex_timer.start()
+
+        # Check if we've to perform a COMPACT immediately or if we've to start a
+        # timed compact job.
+        if self._db_stats[name]['mods_since_last_compact'] > self.compact_amount:
+            self._compactCollection(name)
+        else:
+            self.compact_timer = Timer(self.compact_timeout, self._compactCollection, [name])
+            self.compact_timer.start()
+

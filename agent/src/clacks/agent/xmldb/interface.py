@@ -165,19 +165,6 @@ class XMLDBInterface(object):
         """
         raise NotImplementedError("dropCollection")
 
-    def syncCollection(self, name):
-        """
-        Forces a sync for the given collection. This may be needed
-        if there's document handling like add/remove nodes().
-
-        =========== ======================
-        Key         Value
-        =========== ======================
-        name        The name of the collection to sync
-        =========== ======================
-        """
-        raise NotImplementedError("dropCollection")
-
     def deleteDocument(self, collection, name):
         """
         Removes the given document from the currently openened collection
