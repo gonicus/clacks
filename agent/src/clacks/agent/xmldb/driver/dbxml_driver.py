@@ -67,16 +67,12 @@ class DBXml(XMLDBInterface):
 
     # dbxml reslated object
     manager = None
-    updateContext = None
-    queryContext = None
 
     # Storage path for dbxml databases
     db_storage_path = None
 
     # A list of all known collections, namespaces and schemata
     collections = None
-    namespaces = None
-    schemata = None
 
     ##TODO: Cajus these are the parameters that should be read from the config.
     # Sync, reindex and compact every n modifications
@@ -85,7 +81,7 @@ class DBXml(XMLDBInterface):
     compact_amount = 5000
 
     ##TODO: Cajus  ... and those too.
-    # Sync, reindex and compact after n seconds of no modifications
+    # Sync, reindex and compact after n seconds after the last modification
     sync_timeout = 30
     reindex_timeout = 30 * 60 # 30 minutes since last modification
     compact_timeout = 60 * 60 # 60 minutes since last modification
@@ -118,7 +114,6 @@ class DBXml(XMLDBInterface):
         self.manager = XmlManager()
         self.schemaResolver = dictSchemaResolver()
         self.manager.registerResolver(self.schemaResolver)
-        self.queryContext = self.manager.createQueryContext()
 
         # Check the given storage path - it has to be writeable
         self.db_storage_path = self.env.config.get("dbxml.path", "/var/lib/clacks/database")
@@ -133,7 +128,6 @@ class DBXml(XMLDBInterface):
         self.__loadCollections()
 
         # Get update context
-        self.updateContext = self.manager.createUpdateContext()
         self.log.info("dbxml driver successfully initialized with %s database(s)" % (len(self.collections)))
 
     def __loadCollections(self):
@@ -147,60 +141,62 @@ class DBXml(XMLDBInterface):
         dbs = [n for n in os.listdir(self.db_storage_path) \
                 if os.path.exists(os.path.join(self.db_storage_path, n, "config"))]
         self.collections = {}
-        self.namespaces = {}
-        self.schemata = {}
-        self.namespaces['xsi'] = "http://www.w3.org/2001/XMLSchema-instance"
-
         self.log.debug("found %s potential database folder(s)" % (len(dbs)))
 
         # Open each container
         for db in dbs:
-            self.log.debug("opening collection %s" % (db))
+            self._loadCollection(db)
 
-            # Read the config file
-            data = self.__readConfig(db)
-            dfile = os.path.join(self.db_storage_path, db, 'data.bdb')
+    def _loadCollection(self, db):
+        """
+        Loads and initializes a collection.
+        """
 
-            # Try opening the collection file
-            cont = self.manager.openContainer(str(dfile), DBXML_ALLOW_VALIDATION)
-            cont.addAlias(str(data['collection']))
-            self.collections[str(data['collection'])] = {
-                    'config': data,
-                    'container': cont,
-                    'path': os.path.join(self.db_storage_path, db),
-                    'db_path': dfile}
+        self.log.debug("opening collection %s" % (db))
 
-            # Create a database lock, to be able to avoid db access while reindex or compact are in progress
-            self._db_locks[str(data['collection'])] = Lock()
+        # Read the config file
+        data = self.__readConfig(db)
+        dbname = str(data['collection'])
+        dfile = os.path.join(self.db_storage_path, db, 'data.bdb')
 
-            self._db_stats[str(data['collection'])] = {}
-            self._db_stats[str(data['collection'])]['mods_since_last_sync'] = 0
-            self._db_stats[str(data['collection'])]['mods_since_last_reindex'] = 0
-            self._db_stats[str(data['collection'])]['mods_since_last_compact'] = 0
-            self._db_stats[str(data['collection'])]['last_mod'] = 0
-            self.sync_timer[str(data['collection'])] = None
-            self.reindex_timer[str(data['collection'])] = None
-            self.compact_timer[str(data['collection'])] = None
+        # Try opening the collection file
+        cont = self.manager.openContainer(str(dfile), DBXML_ALLOW_VALIDATION)
+        cont.addAlias(dbname)
+        self.collections[str(data['collection'])] = {
+                'config': data,
+                'container': cont,
+                'namespaces': {},
+                'schema': {},
+                'queryContext': self.manager.createQueryContext(),
+                'updateContext': self.manager.createUpdateContext(),
+                'path': os.path.join(self.db_storage_path, db),
+                'db_path': dfile}
 
-            # Merge namespace list
-            for alias, uri in data['namespaces'].items():
-                self.namespaces[alias] = uri
+        # Create a database lock, to be able to avoid db access while reindex or compact are in progress
+        self._db_locks[dbname] = Lock()
 
-            # Merge list of xml-schema files
-            for alias, uri in data['schema'].items():
-                self.schemata[alias] = uri
+        self._db_stats[dbname] = {}
+        self._db_stats[dbname]['mods_since_last_sync'] = 0
+        self._db_stats[dbname]['mods_since_last_reindex'] = 0
+        self._db_stats[dbname]['mods_since_last_compact'] = 0
+        self._db_stats[dbname]['last_mod'] = 0
+        self.sync_timer[dbname] = None
+        self.reindex_timer[dbname] = None
+        self.compact_timer[dbname] = None
 
-            self.log.debug("successfully read collection %s" % (db))
+        # Merge namespace list
+        contData = self.collections[dbname]
+        for alias, uri in data['namespaces'].items():
+            contData['queryContext'].setNamespace(str(alias), str(uri))
+            contData['namespaces'][str(alias)] = str(uri)
+            self.log.debug("setting namespace prefix %s=%s for %s" % (str(alias), str(uri), dbname))
 
-        # Forward the collected namespaces to the queryContext
-        for alias, uri in self.namespaces.items():
-            self.queryContext.setNamespace(str(alias), str(uri))
-            self.log.debug("setting namespace prefix %s=%s" % (str(alias), str(uri)))
-
-        # Populate known schema files
-        for name, schema in self.schemata.items():
+        # Merge list of xml-schema files
+        for name, schema in data['schema'].items():
             self.schemaResolver.addSchema(str(name), str(schema))
-            self.log.debug("setting schema file %s with %s bytes" % (str(name), len(schema)))
+            self.log.debug("setting schema file %s for %s" % (str(name), dbname))
+
+        self.log.debug("successfully read collection %s" % (dbname))
 
     def __readConfig(self, collection):
         """
@@ -280,13 +276,8 @@ class DBXml(XMLDBInterface):
         data = self.__readConfig(collection)
         data['namespaces'][alias] = namespace
         self.__saveConfig(collection, data)
-
+        self.collections[collection]['queryContext'].setNamespace(alias, namespace)
         self.log.debug("added namespace prefix for collection %s %s=%s" % (collection, str(alias), str(namespace)))
-
-        # Only load namespace if not done already - duplicted definition causes errors
-        if alias not in self.namespaces:
-            self.namespaces[alias] = namespace
-            self.queryContext.setNamespace(alias, namespace)
 
     def createCollection(self, name, namespaces, schema):
         # Assemble db target path
@@ -301,55 +292,27 @@ class DBXml(XMLDBInterface):
         try:
 
             # Create a new collection config object
-            data = {'collection': name, 'namespaces': namespaces, 'schema': {}, 'md5_schema': {}}
+            data = {'collection': name, 'namespaces': {}, 'schema': {}, 'md5_schema': {}}
             f = open(os.path.join(path, 'config'), 'w')
             f.write(json.dumps(data, indent=2))
             f.close()
             self.log.debug("config for collection '%s' written" % (name))
 
-            # Create the dbxml collection
+            # Create the dbxml collection and then load it
             cont = self.manager.createContainer(os.path.join(path, "data.bdb"), DBXML_ALLOW_VALIDATION)
-
-            #TODO: Configure index
-            idxspec = cont.getIndexSpecification();
-            #idxspec.setAutoIndexing(False)
-            idxspec.addIndex("", "o:UUID", "node-element-presence-none")
-            idxspec.addIndex("", "o:UUID", "node-element-equality-string")
-            cont.setIndexSpecification(idxspec, self.updateContext)
-
-            cont.addAlias(str(name))
             cont.sync()
+            del(cont)
+            self._loadCollection(name)
+
+            # Add schema information
+            for ids, schema in schema.items():
+                self.setSchema(name, ids, schema)
+
+            # Add namespaces
+            for ids, url in namespaces.items():
+                self.setNamespace(name, ids, url)
 
             self.log.debug("database created for collection '%s'" % (name))
-
-            # Add the new collection to the already-known-list.
-            self.collections[str(name)] = {
-                    'config': data,
-                    'container': cont,
-                    'path': path,
-                    'db_path': os.path.join(path, 'data.bdb')}
-
-            # Prepare some status information
-            self._db_locks[str(name)] = Lock()
-            self._db_stats[str(name)] = {}
-            self._db_stats[str(name)]['mods_since_last_sync'] = 0
-            self._db_stats[str(name)]['mods_since_last_reindex'] = 0
-            self._db_stats[str(name)]['mods_since_last_compact'] = 0
-            self._db_stats[str(name)]['last_mod'] = 0
-            self.sync_timer[str(name)] = None
-            self.reindex_timer[str(name)] = None
-            self.compact_timer[str(name)] = None
-
-            # Only load namespace if not done already - duplicted definition causes errors
-            self.log.debug("adding %s namespace definition(s) for collection '%s'" % (len(data['namespaces'].items()), name))
-            for alias, namespace in data['namespaces'].items():
-                if alias not in self.namespaces:
-                    self.namespaces[alias] = namespace
-                    self.queryContext.setNamespace(alias, namespace)
-
-            # Add schema information to the database
-            for entry in schema:
-                self.setSchema(name, entry, schema[entry])
 
         # Try some cleanup in case of an error
         except Exception as e:
@@ -394,11 +357,11 @@ class DBXml(XMLDBInterface):
         if re.match("^\/", name):
             raise XMLDBException("document names cannot begin with a '/'!")
 
-        self.collections[collection]['container'].putDocument(str(name), contents, self.updateContext)
+        uc = self.collections[collection]['updateContext']
+        self.collections[collection]['container'].putDocument(str(name), contents, uc)
         self._db_locks[str(collection)].release()
         self._checkCollection(collection)
         self.log.debug("successfully added document '%s' to collection '%s'" % (name, collection))
-
 
     def deleteDocument(self, collection, name):
 
@@ -410,7 +373,8 @@ class DBXml(XMLDBInterface):
 
         # Remove the document
         name = os.path.normpath(name)
-        self.collections[collection]['container'].deleteDocument(str(name), self.updateContext)
+        uc = self.collections[collection]['updateContext']
+        self.collections[collection]['container'].deleteDocument(str(name), uc)
         self._db_locks[str(collection)].release()
         self._checkCollection(collection)
 
@@ -495,7 +459,8 @@ class DBXml(XMLDBInterface):
             # Afterwards reopen it.
             path = self.collections[collection]['db_path']
             del(self.collections[collection]['container'])
-            self.manager.reindexContainer(path, self.updateContext)
+            uc = self.collections[collection]['updateContext']
+            self.manager.reindexContainer(path, uc)
             self.collections[collection]['container'] = self.manager.openContainer(path, DBXML_ALLOW_VALIDATION)
             self.collections[collection]['container'].addAlias(str(collection))
 
@@ -525,7 +490,8 @@ class DBXml(XMLDBInterface):
             # Close the container and compact it, afterwards reopen it.
             path = self.collections[collection]['db_path']
             del(self.collections[collection]['container'])
-            self.manager.compactContainer(path, self.updateContext)
+            uc = self.collections[collection]['updateContext']
+            self.manager.compactContainer(path, uc)
             self.collections[collection]['container'] = self.manager.openContainer(path, DBXML_ALLOW_VALIDATION)
             self.collections[collection]['container'].addAlias(str(collection))
 
