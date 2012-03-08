@@ -228,6 +228,9 @@ class DBXml(XMLDBInterface):
         f.close()
 
     def validateSchema (self, collection, name, md5sum=None, schemaString=None):
+        """
+        See :class:`clacks.agent.xmldb.interface.XMLDBInterface` for details.
+        """
 
         # Validate parameters
         if md5sum and schemaString:
@@ -252,6 +255,9 @@ class DBXml(XMLDBInterface):
         return(md5sum == data['md5_schema'][name])
 
     def setSchema(self, collection, filename, schema):
+        """
+        See :class:`clacks.agent.xmldb.interface.XMLDBInterface` for details.
+        """
 
         # Create checksum for the schema
         md5sum = md5.new()
@@ -271,6 +277,9 @@ class DBXml(XMLDBInterface):
         self.schemaResolver.addSchema(filename, schema)
 
     def setNamespace(self, collection, alias, namespace):
+        """
+        See :class:`clacks.agent.xmldb.interface.XMLDBInterface` for details.
+        """
         # Read the config file
         data = self.__readConfig(collection)
         data['namespaces'][alias] = namespace
@@ -279,6 +288,9 @@ class DBXml(XMLDBInterface):
         self.log.debug("added namespace prefix for collection %s %s=%s" % (collection, str(alias), str(namespace)))
 
     def createCollection(self, name, namespaces, schema):
+        """
+        See :class:`clacks.agent.xmldb.interface.XMLDBInterface` for details.
+        """
         # Assemble db target path
         path = os.path.join(self.db_storage_path, name)
         self.log.debug("going to create collection '%s'" % (name))
@@ -323,17 +335,26 @@ class DBXml(XMLDBInterface):
         self.log.debug("successfully created collection '%s'" % (name))
 
     def getCollections(self):
+        """
+        See :class:`clacks.agent.xmldb.interface.XMLDBInterface` for details.
+        """
         return self.collections.keys()
 
     def collectionExists(self, name):
+        """
+        See :class:`clacks.agent.xmldb.interface.XMLDBInterface` for details.
+        """
         return name in self.collections
 
     def dropCollection(self, name):
+        """
+        See :class:`clacks.agent.xmldb.interface.XMLDBInterface` for details.
+        """
         if not name in self.collections:
             raise XMLDBException("collection '%s' does not exists!" % name)
 
         # Close the collection container
-        self.collections[name]['container'].sync()
+        self.collections[name]['container'].close()
         del(self.collections[name]['container'])
         self.manager.removeContainer(str(self.collections[name]['db_path']))
 
@@ -344,6 +365,9 @@ class DBXml(XMLDBInterface):
         self.log.debug("successfully dropped collection '%s'" % (name))
 
     def addDocument(self, collection, name, contents):
+        """
+        See :class:`clacks.agent.xmldb.interface.XMLDBInterface` for details.
+        """
 
         self._db_locks[str(collection)].acquire()
 
@@ -363,6 +387,9 @@ class DBXml(XMLDBInterface):
         self.log.debug("successfully added document '%s' to collection '%s'" % (name, collection))
 
     def deleteDocument(self, collection, name):
+        """
+        See :class:`clacks.agent.xmldb.interface.XMLDBInterface` for details.
+        """
 
         self._db_locks[str(collection)].acquire()
 
@@ -380,6 +407,9 @@ class DBXml(XMLDBInterface):
         self.log.debug("successfully removed document '%s' from collection '%s'" % (name, collection))
 
     def getDocuments(self, collection):
+        """
+        See :class:`clacks.agent.xmldb.interface.XMLDBInterface` for details.
+        """
         # Check for collection existence
         if not collection in self.collections:
             raise XMLDBException("collection '%s' does not exists" % collection)
@@ -391,24 +421,32 @@ class DBXml(XMLDBInterface):
         return(value)
 
     def documentExists(self, collection, name):
+        """
+        See :class:`clacks.agent.xmldb.interface.XMLDBInterface` for details.
+        """
         name = os.path.normpath(name)
         return (name in self.getDocuments(str(collection)))
 
     def xquery(self, query, collection):
+        """
+        See :class:`clacks.agent.xmldb.interface.XMLDBInterface` for details.
+        """
 
         if collection not in self.collections:
             raise XMLDBException("Invalid collection name given '%s'!" % collection)
 
-        qc = self.collections[collection]['queryContext']
-        q = query.encode('utf-8') if isinstance(query, unicode) else query
-        t0 = time()
-        res = self.manager.query(q, qc)
-        t1 = time()
+        self._db_locks[collection].acquire()
+        qcontext = self.collections[collection]['queryContext']
+        query_str = query.encode('utf-8') if isinstance(query, unicode) else query
+        start = time()
+        res = self.manager.query(query_str, qcontext)
+        end = time()
         ret = []
         for t in res:
             ret.append(t.asString())
 
-        self.log.debug("performed xquery '%s' with %s results in %0.3fs" % (query, len(ret), t1 - t0))
+        self.log.debug("performed xquery '%s' with %s results in %0.3fs" % (query, len(ret), end - start))
+        self._db_locks[collection].release()
 
         return ret
 
@@ -504,6 +542,9 @@ class DBXml(XMLDBInterface):
             self._db_locks[str(collection)].release()
 
     def xquery_dict(self, query, collection, strip_namespaces=False):
+        """
+        See :class:`clacks.agent.xmldb.interface.XMLDBInterface` for details.
+        """
         rs = self.xquery(query, collection)
         ret = []
         for entry in rs:
@@ -527,6 +568,11 @@ class DBXml(XMLDBInterface):
         return res
 
     def _checkCollection(self, name):
+        """
+        This method checks if sync, reindex or compact actions should be startet
+        for the given collection.
+        It is called whenever a collection is modified.
+        """
 
         # Add collection statistics if not done already
         name = str(name)
