@@ -297,32 +297,50 @@ class Query(MyNode):
         """
         Executes the created xquery and return only interessting attributes.
         """
+        start = time()
+
+        # Start the given query
         xmldb = XMLDBHandler.get_instance()
         xmldb.setNamespace('objects', 'xs', "http://www.w3.org/2001/XMLSchema")
-        start = time()
         xquery =  self.get_xquery()
-        result = []
         q_res = xmldb.xquery(xquery, self._collection)
 
+        # The list we return later
+        result = []
+
+        # We will receive a list of results, each entry represents an object
+        # that was returned by the query.
+        # e.g. ['<User>', '<User>', '<User>'] for a simple search
+        # or ['<User>', '<SambaDomain>', '<User>', '<SambaDomain>'] for a search
+        # over the two object types User and SambaDomain
         objs_cnt = len(self.object_types)
 
         while(len(q_res)):
+
+            # Get the amount of result-items that represents one query-result.
+            # If we've startet a query that returns values of two objects
+            # then 'obj_cnt' is 2.
             items_data = q_res[0:objs_cnt]
             q_res = q_res[objs_cnt::]
 
             tmp = {}
             res = {}
+
+            # Convert the resulting string into XML and then into a dict
             for item_data in items_data:
                 item = self.recursive_dict(etree.XML(item_data), True)
                 tmp[item['Type'][0]] = item
 
+            # Check if all required objects were returned
             for otype in self.object_types.keys():
                 if not otype in tmp:
                     raise Exception("Missing object in result")
                 else:
                     res[otype] = {}
 
+            # Extract the requested attributes out of the result.
             for suffix, name in self._selected_attributes:
+
                 # Return all attributes
                 if name == "*":
                     res[suffix] = tmp[suffix]['Attributes'][0]
@@ -339,6 +357,8 @@ class Query(MyNode):
                             res[suffix][name] = (tmp[suffix][path][0][name])
                     else:
                         res[suffix][name] = (tmp[suffix][name])
+
+            # Append the created item to the result.
             result.append(res)
         self.time = time() - start
         return result
