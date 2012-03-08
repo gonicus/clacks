@@ -354,7 +354,7 @@ class DBXml(XMLDBInterface):
             raise XMLDBException("collection '%s' does not exists!" % name)
 
         # Close the collection container
-        self.collections[name]['container'].close()
+        self.collections[name]['container'].sync()
         del(self.collections[name]['container'])
         self.manager.removeContainer(str(self.collections[name]['db_path']))
 
