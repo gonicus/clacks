@@ -19,7 +19,7 @@ class IsValidSambaDomainName(ElementComparator):
 
     def process(self, key, value, errors=None):
         index = PluginRegistry.getInstance("ObjectIndex")
-        domains = index.xquery("collection('objects')//o:sambaDomain/o:sambaDomainname/string()")
+        domains = index.xquery("collection('objects')/o:SambaDomain//o:sambaDomainName/string()")
 
         if value[0] in domains:
             return True
