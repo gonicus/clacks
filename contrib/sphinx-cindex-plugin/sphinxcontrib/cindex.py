@@ -141,10 +141,8 @@ def process_cmd_nodes(app, doctree, fromdocname):
                     nodes.colspec(colwidth=5),
                     nodes.thead('',
                         nodes.row('',
-                            nodes.entry('',
-                                nodes.paragraph('',_('Method'))),
-                            nodes.entry('',
-                                nodes.paragraph('',_('Description'))))),
+                            nodes.entry('', nodes.paragraph('',_('Method'))),
+                            nodes.entry('', nodes.paragraph('',_('Description'))))),
                     tbody));
             content.append(t)
         else:

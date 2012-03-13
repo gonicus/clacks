@@ -29,6 +29,7 @@
     		<UUID><xsl:value-of select="$props[g:name='entry-uuid']/g:value/text()" /></UUID>
     		<Type><xsl:value-of select="$class" /></Type>
     		<DN><xsl:value-of select="$props[g:name='dn']/g:value/text()" /></DN>
+    		<ParentDN><xsl:value-of select="$props[g:name='parent-dn']/g:value/text()" /></ParentDN>
     		<LastChanged><xsl:value-of select="$props[g:name='modify-date']/g:value/text()" /></LastChanged>
 
             <!-- Add Extensions -->

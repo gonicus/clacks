@@ -43,29 +43,20 @@ will internally send the following xquery to the obejct database:
 about whats done here)
 
 >>> let $SambaDomain_attributes := ('sambaDomainName', 'DN')
-... let $User_attributes := ('sn', 'cn', 'DN')
-...
 ... let $join_values_1 := distinct-values ( (collection('objects')/SambaDomain/Attributes/sambaDomainName,
 ...       collection('objects')/User/Attributes/sambaDomainName) )
 ...
 ... let $SambaDomain_base := collection('objects')/SambaDomain[
 ...     Attributes/sambaDomainName = ($join_values_1) and
-...     matches(DN/text(), 'dc=gonicus,dc=de')]
+...     ends-with(DN, 'dc=gonicus,dc=de')]
 ... let $User_base := collection('objects')/User[
 ...     Attributes/sambaDomainName = ($join_values_1) and
-...     matches(DN/text(), 'dc=gonicus,dc=de')]
+...     ends-with(DN, 'dc=gonicus,dc=de')]
 ...
 ... for $SambaDomain in $SambaDomain_base, $User in $User_base
 ... where ($SambaDomain/Attributes/sambaDomainName/text() = $User/Attributes/sambaDomainName/text())
 ... order by $User/Attributes/sn/text(), $User/Attributes/givenName/text() descending
-... return(
-...    concat("{",
-...        string-join(
-...            (
-...                local:get_attributes($SambaDomain, $SambaDomain_attributes), local:get_attributes($User, $User_attributes)
-...            ), ", "
-...        ),"}"
-...    )
+... return( $SambaDomain, $User )
 
 """
 import re
@@ -81,7 +72,7 @@ class MyNode(Node):
     LEPL allows to link parser statements directly to classes which are
     derived from the Node class.
 
-    This class is simply used to introduce the class member 'query_base'
+    This class is simply used to introduce the class member attribute 'query_base'
     to the 'Node' class of the lepl module.
     This is required to access the 'Query' class in all derived Nodes.
     """

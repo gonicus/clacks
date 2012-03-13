@@ -18,8 +18,8 @@ BASE Country ONE "ou=Technik,dc=gonicus,dc=de"
 
 query1 = """
 SELECT Country.*
-BASE Country SUB "ou=Technik,dc=gonicus,dc=de"
-LIMIT 5
+BASE Country SUB "dc=gonicus,dc=de"
+LIMIT 50
 """
 
 sw = SearchWrapper.get_instance()

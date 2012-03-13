@@ -31,6 +31,7 @@ will list the available extension types for that specific object.
 """
 import StringIO
 import pkg_resources
+import re
 from lxml import etree
 from base64 import b64encode
 from ldap.dn import str2dn, dn2str
@@ -250,6 +251,7 @@ class ObjectProxy(object):
         propertiestag = etree.Element("properties")
         attrs = {}
         attrs['dn'] = [self.__base.dn]
+        attrs['parent_dn'] = [re.sub("^[^,]*,","",self.__base.dn)]
         attrs['entry-uuid'] = [self.__base.uuid]
         attrs['modify-date'] = atypes['Timestamp'].convert_to("UnicodeString", [self.__base.modifyTimestamp])
 
