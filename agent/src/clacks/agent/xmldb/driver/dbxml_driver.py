@@ -73,22 +73,6 @@ class DBXml(XMLDBInterface):
     # A list of all known collections, namespaces and schemata
     collections = None
 
-    ##TODO: Cajus these are the parameters that should be read from the config.
-    # Sync, reindex and compact every n modifications
-    sync_amount = 500
-    reindex_amount = 2000
-    compact_amount = 5000
-
-    ##TODO: Cajus  ... and those too.
-    # Sync, reindex and compact after n seconds after the last modification
-    sync_timeout = 30
-    reindex_timeout = 30 * 60 # 30 minutes since last modification
-    compact_timeout = 60 * 60 # 60 minutes since last modification
-
-    sync_timer = None
-    reindex_timer = None
-    compact_timer = None
-
     # Database locks, used while reindex and compact are in progress
     _db_locks = None
 
@@ -101,6 +85,17 @@ class DBXml(XMLDBInterface):
         # Enable logging
         self.log = logging.getLogger(__name__)
         self.env = Environment.getInstance()
+        cfg = self.env.config
+
+        # Sync, reindex and compact every n modifications
+        self.sync_amount = cfg.get("index.sync_threshold", default=500)
+        self.reindex_amount = cfg.get("index.reindex_threshold", default=2000)
+        self.compact_amount = cfg.get("index.compact_threshold", default=5000)
+
+        # Sync, reindex and compact after n seconds after the last modification
+        self.sync_timeout = cfg.get("index.sync_timeout", default=30)
+        self.reindex_timeout = cfg.get("index.reindex_timeout", default=300)
+        self.compact_timeout = cfg.get("index.compact_timeout", default=600)
 
         self.log.debug("initializing database driver")
 
@@ -113,6 +108,10 @@ class DBXml(XMLDBInterface):
         self.manager = XmlManager()
         self.schemaResolver = dictSchemaResolver()
         self.manager.registerResolver(self.schemaResolver)
+
+        # Pre-Compile regex
+        self.find_collections = re.compile(r"collection\(['\"]([^'\"]+)['\"]\)")
+        self.ns_strip = re.compile(r"^\{([^\}]*)\}")
 
         # Check the given storage path - it has to be writeable
         self.db_storage_path = self.env.config.get("dbxml.path", "/var/lib/clacks/database")
@@ -128,6 +127,19 @@ class DBXml(XMLDBInterface):
 
         # Get update context
         self.log.info("dbxml driver successfully initialized with %s database(s)" % (len(self.collections)))
+
+    def shutdown(self):
+        for name in self.sync_timer.keys():
+            self.sync_timer[name].cancel()
+
+        for name in self.reindex_timer.keys():
+            self.reindex_timer[name].cancel()
+
+        for name in self.compact_timer.keys():
+            self.compact_timer[name].cancel()
+
+        for name in self.collections.keys():
+            self.syncCollection(name)
 
     def __loadCollections(self):
         """
@@ -377,7 +389,7 @@ class DBXml(XMLDBInterface):
 
         # Normalize the document path and then add it.
         name = os.path.normpath(name)
-        if re.match("^\/", name):
+        if re.match(r"^\/", name):
             raise XMLDBException("document names cannot begin with a '/'!")
 
         uc = self.collections[collection]['updateContext']
@@ -427,10 +439,17 @@ class DBXml(XMLDBInterface):
         name = os.path.normpath(name)
         return (name in self.getDocuments(str(collection)))
 
-    def xquery(self, query, collection):
+    def xquery(self, query, collection=None):
         """
         See :class:`clacks.agent.xmldb.interface.XMLDBInterface` for details.
         """
+        if not collection:
+            matches = self.find_collections.findall(query)
+
+            if len(matches) != 1:
+                raise RuntimeError("Cannot find a unique query context")
+
+            collection = matches[0]
 
         if collection not in self.collections:
             raise XMLDBException("Invalid collection name given '%s'!" % collection)
@@ -467,7 +486,6 @@ class DBXml(XMLDBInterface):
                 self._db_stats[collection]['mods_since_last_sync'] = 0
 
             # Stop potentially timed jobs.
-            ##TODO: Cajus stop sync job here
             if self.sync_timer[collection]:
                 self.sync_timer[collection].cancel()
 
@@ -489,7 +507,6 @@ class DBXml(XMLDBInterface):
             start = time()
 
             # Stop potentially timed jobs.
-            ##TODO: Cajus stop reindex job here
             if self.reindex_timer[collection]:
                 self.reindex_timer[collection].cancel()
 
@@ -521,7 +538,6 @@ class DBXml(XMLDBInterface):
             start = time()
 
             # Stop potentially timed jobs.
-            ##TODO: Cajus stop compact job here
             if self.compact_timer[collection]:
                 self.compact_timer[collection].cancel()
 
@@ -558,7 +574,7 @@ class DBXml(XMLDBInterface):
         """
         res = {}
         for item in element:
-            tag = re.sub('^\{([^\}]*)\}', '', item.tag) if strip_namespaces else item.tag
+            tag = self.ns_strip.sub(item.tag) if strip_namespaces else item.tag
             if not  tag in res:
                 res[tag] = []
             if len(item):
@@ -593,7 +609,6 @@ class DBXml(XMLDBInterface):
         self._db_stats[name]['last_mod'] = time()
 
         # Stop potentially timed sync jobs.
-        #TODO: Cajus stop scheduled jobs here.
         if self.sync_timer[name]:
             self.sync_timer[name].cancel()
         if self.reindex_timer[name]:
@@ -606,7 +621,6 @@ class DBXml(XMLDBInterface):
         if self._db_stats[name]['mods_since_last_sync'] > self.sync_amount:
             self.syncCollection(name)
         else:
-            ##TODO: Cajus start sync job here
             self.sync_timer[name] = Timer(self.sync_timeout, self.syncCollection, [name])
             self.sync_timer[name].start()
 
@@ -615,7 +629,6 @@ class DBXml(XMLDBInterface):
         if self._db_stats[name]['mods_since_last_reindex'] > self.reindex_amount:
             self.reindexCollection(name)
         else:
-            ##TODO: Cajus start reindex job here
             self.reindex_timer[name] = Timer(self.reindex_timeout, self.reindexCollection, [name])
             self.reindex_timer[name].start()
 
@@ -624,7 +637,6 @@ class DBXml(XMLDBInterface):
         if self._db_stats[name]['mods_since_last_compact'] > self.compact_amount:
             self.compactCollection(name)
         else:
-            ##TODO: Cajus start reindex job here
             self.compact_timer[name] = Timer(self.compact_timeout, self.compactCollection, [name])
             self.compact_timer[name].start()
 

@@ -61,11 +61,11 @@ class XMLDBHandler(Plugin):
         return self.__driver.getDocuments(collection)
 
     @Command(__help__=N_("Perform XQuery and return a list of dicts"))
-    def xquery_dict(self, query, collection, strip_namespaces=False):
+    def xquery_dict(self, query, collection=None, strip_namespaces=False):
         return self.__driver.xquery_dict(query, collection, strip_namespaces)
 
     @Command(__help__=N_("Perform XQuery"))
-    def xquery(self, query, collection):
+    def xquery(self, query, collection=None):
         return self.__driver.xquery(query, collection)
 
     @Command(__help__=N_("Set the namespace for a collection"))
@@ -87,3 +87,10 @@ class XMLDBHandler(Plugin):
     @Command(__help__=N_("Remove a document from a collection"))
     def deleteDocument(self, collection, name):
         return self.__driver.deleteDocument(collection, name)
+
+    @Command(__help__=N_("Synchronize collection"))
+    def syncCollection(self, collection):
+        return self.__driver.syncCollection(collection)
+
+    def shutdown(self):
+        self.__driver.shutdown()

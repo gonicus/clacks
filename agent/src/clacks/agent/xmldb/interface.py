@@ -86,12 +86,13 @@ class XMLDBInterface(object):
         """
         raise NotImplementedErrorError("getDocuments")
 
-    def xquery_dict(self, query, strip_namespaces=False):
+    def xquery_dict(self, query, collection=None, strip_namespaces=False):
         """
         =================== ======================
         Key                 Value
         =================== ======================
         query               The query to execute.
+        collection          The collection to take the context from
         strip_namespaces    Strips namespace prefixed from the result.
         =================== ======================
 
@@ -102,12 +103,13 @@ class XMLDBInterface(object):
         """
         raise NotImplementedErrorError("xquery_dict")
 
-    def xquery(self, query):
+    def xquery(self, query, collection=None):
         """
         =========== ======================
         Key         Value
         =========== ======================
-        query       The query to execute.
+        query       The query to execute
+        collection  The collection to take the context from
         =========== ======================
 
         Executes an xquery statement
@@ -177,3 +179,6 @@ class XMLDBInterface(object):
         =========== ======================
         """
         raise NotImplementedErrorError("deleteDocument")
+
+    def shutdown(self):
+        pass
