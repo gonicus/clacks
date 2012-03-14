@@ -1,6 +1,3 @@
-# -*- codin utf-8 -*-
-
-
 class XMLDBException(Exception):
     """
     Exception used for DBXml errors

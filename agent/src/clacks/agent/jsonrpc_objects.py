@@ -301,10 +301,11 @@ class JSONRPCObjectMapper(Plugin):
             return None
 
         # Fill in local object if needed
+        ores = dict(res[2])
         if ref in self.__object:
-            res[2]['object'] = self.__object[ref]
+            ores['object'] = self.__object[ref]
 
-        return {'uuid': res[0], 'node': res[1], 'object': res[2], 'created': res[3]}
+        return {'uuid': res[0], 'node': res[1], 'object': ores, 'created': res[3]}
 
     def __gc(self):
         self.env.log.debug("running garbage collector on object store")

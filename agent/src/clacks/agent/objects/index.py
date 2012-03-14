@@ -267,7 +267,7 @@ class ObjectIndex(Plugin):
             collection('objects')/*/.[o:UUID = '%s']/o:Extensions
         with
             %s
-        """ % (obj.uuid, etree.tostring(current.Extensions)))
+        """ % (obj.uuid, self.escape(etree.tostring(current.Extensions))))
 
         # Move attributes
         self.db.xquery("""
@@ -275,7 +275,7 @@ class ObjectIndex(Plugin):
             collection('objects')/*/.[o:UUID = '%s']/o:Attributes
         with
             %s
-        """ % (obj.uuid, etree.tostring(current.Attributes)))
+        """ % (obj.uuid, self.escape(etree.tostring(current.Attributes))))
 
         # Set LastChanged
         self.db.xquery("""
