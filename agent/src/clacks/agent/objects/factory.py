@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 
 Object Factory
@@ -171,7 +170,7 @@ class ObjectFactory(object):
                     obj = attr.getparent().getparent().Name.text
 
                     # Extract reference information
-                    if bool(load(attr, "References", False)):
+                    if load(attr, "References", None) is not None:
 
                         # Ensure that values are initialized
                         if obj not in res:
