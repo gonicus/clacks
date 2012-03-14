@@ -1,25 +1,5 @@
 """"
 
-
-#TODO: Queries are not performaning very good.
-#      Even not joined queries take up to 0.5 seconds
-
-#TODO: Do not return the complete object that matches the query.
-#      At the moment we return the complete object (e.g. User) that
-#      matches the query, due to the fact that selecting only the
-#      required attributes leads to drastically increased execution
-#      time of the query.
-#      But returning the complete object, will return all sub-objects
-#      to... think of querying all 'OrganizationalUnit's, in that case
-#      ALL sub objects will be returned to, which may result in returning
-#      the complete database!!!
-#
-#      We've to find a solution here...
-
-
-# -----------------
-
-
 This class is a search wrapper, which hides the xquery syntax from the user but allows
 to use a SQL like query syntax.
 
@@ -113,7 +93,7 @@ class Query(MyNode):
 
     _xquery_header = ""
 
-    _collection = 'new3.dbxml'
+    _collection = 'objects'
 
     def __init__(self, *args):
 
