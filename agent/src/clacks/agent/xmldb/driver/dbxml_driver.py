@@ -130,13 +130,16 @@ class DBXml(XMLDBInterface):
 
     def shutdown(self):
         for name in self.sync_timer.keys():
-            self.sync_timer[name].cancel()
+            if self.sync_timer[name]:
+                self.sync_timer[name].cancel()
 
         for name in self.reindex_timer.keys():
-            self.reindex_timer[name].cancel()
+            if self.reindex_timer[name]:
+                self.reindex_timer[name].cancel()
 
         for name in self.compact_timer.keys():
-            self.compact_timer[name].cancel()
+            if self.compact_timer[name]:
+                self.compact_timer[name].cancel()
 
         for name in self.collections.keys():
             self.syncCollection(name)

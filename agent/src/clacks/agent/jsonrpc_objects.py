@@ -302,7 +302,7 @@ class JSONRPCObjectMapper(Plugin):
 
         # Fill in local object if needed
         if ref in self.__object:
-            res[1]['object'] = self.__object[ref]
+            res[2]['object'] = self.__object[ref]
 
         return {'uuid': res[0], 'node': res[1], 'object': res[2], 'created': res[3]}
 
