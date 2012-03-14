@@ -1,25 +1,5 @@
 """"
 
-
-#TODO: Queries are not performaning very good.
-#      Even not joined queries take up to 0.5 seconds
-
-#TODO: Do not return the complete object that matches the query.
-#      At the moment we return the complete object (e.g. User) that
-#      matches the query, due to the fact that selecting only the
-#      required attributes leads to drastically increased execution
-#      time of the query.
-#      But returning the complete object, will return all sub-objects
-#      to... think of querying all 'OrganizationalUnit's, in that case
-#      ALL sub objects will be returned to, which may result in returning
-#      the complete database!!!
-#
-#      We've to find a solution here...
-
-
-# -----------------
-
-
 This class is a search wrapper, which hides the xquery syntax from the user but allows
 to use a SQL like query syntax.
 
@@ -113,7 +93,7 @@ class Query(MyNode):
 
     _xquery_header = ""
 
-    _collection = 'new3.dbxml'
+    _collection = 'objects'
 
     def __init__(self, *args):
 
@@ -133,85 +113,25 @@ class Query(MyNode):
         result = [self._xquery_header]
 
         """
-        Increase the speed of joined statements by preparing a sequence containing
-        all potentially joined values.
-
-        This will then look like this:
-
-            >>> let $join_values_0 := distinct-values ( (collection('objects')/SambaDomain/Attributes/sambaDomainName,
-            >>>         collection('objects')/User/Attributes/sambaDomainName) )
-
-        And then be used when object list are created:
-            >>> let $User_base := collection('objects')/User[matches(DN/text(), 'dc=gonicus,dc=de')
-            >>>     and Attributes/sambaDomainName = ($join_values_0)]
-        """
-        joins = {}
-        if self.uses_join:
-
-            # Create a predefined list of joined values
-            cnt = 0
-            for join in self.joined_values:
-                cnt += 1
-
-                # Get attributes in xquery addressed style
-                #  e.g.: "User/Attributes/sambaDomainName"
-                attr1 = "%s/%s" % (join[0][0], self.get_xquery_attribute(*join[0]))
-                attr2 = "%s/%s" % (join[1][0], self.get_xquery_attribute(*join[1]))
-
-                # Prepate a join list which will then include all joins per object-type.
-                if not join[0][0] in joins:
-                    joins[join[0][0]]  = []
-                if not join[1][0] in joins:
-                    joins[join[1][0]]  = []
-
-                # The name of the join variable used in the resulting xquery
-                join_name = "$join_values_%s" % cnt
-
-                # Append the left side of the join to the join list
-                if not join_name in joins[join[0][0]]:
-                    joins[join[0][0]].append((join_name, self.get_xquery_attribute(*join[0])))
-
-                # Append the right side of the join to the join list
-                if not join_name in joins[join[1][0]]:
-                    joins[join[1][0]].append((join_name, self.get_xquery_attribute(*join[1])))
-
-                # Append a xquery variable to the result, which contains the joined values.
-                #result.append("let %s := distinct-values ( (%s/%s,\n      %s/%s) )" % ( \
-                #        join_name, "collection('%s')" % self._collection, attr1, \
-                #        "collection('%s')" % self._collection, attr2))
-
-        result.append('')
-
-        """
         Prepare lists of objects we've to iterate through in the xquery.
 
         This block will create entries like this:
-            >>> let $User_base := collection('objects')/User[matches(DN/text(), 'dc=gonicus,dc=de')
-            >>>     and Attributes/sambaDomainName = ($join_values_0)]
-
-        If joins between objects were not used then entry will look like this:
-            >>> let $User_base := collection('objects')/User[matches(DN/text(), 'dc=gonicus,dc=de')]
+            >>> let $User_base := collection('objects')/User[ParentDN =  'dc=gonicus,dc=de')]
         """
         for entry in self.Base:
             base_object, base_type, base = entry
 
-            # If joins were used for this object-type then extend the match condition in the let statement
-            join_statement = ""
-            if base_object in joins:
-                for join in joins[base_object]:
-                    join_statement += "\n\t%s = (%s) and" % (join[1], join[0])
-
             # Append the let statement
             if base_type == "SUB":
-                match = "ends-with(ParentDN , '%s')" % (base)
+                match = "ends-with(o:ParentDN , '%s')" % (base)
             elif base_type == "ONE":
-                match = "ParentDN = '%s'" % base
+                match = "o:ParentDN = '%s'" % base
             elif base_type == "BASE":
-                match = "DN = '%s'" % base
+                match = "o:DN = '%s'" % base
             else:
                 raise Exception("Unknown scope value '%s'" % (base_type))
 
-            result.append("let $%s_base := collection('%s')/%s[%s]" % (base_object, self._collection, base_object, match))
+            result.append("let $%s_base := collection('%s')/o:%s[%s]" % (base_object, self._collection, base_object, match))
 
         result.append('')
 
@@ -229,7 +149,7 @@ class Query(MyNode):
         (Note the 'for' statement which is required to iterate through all potential entries)
 
             >>> for $User in $User_base, $SambaDomain in $SambaDomain_base
-            >>>     where ($SambaDomain/Attributes/sambaDomainName/text() = $User/Attributes/sambaDomainName/text())
+            >>>     where ($SambaDomain/Attributes/sambaDomainName = $User/Attributes/sambaDomainName)
             >>>     oder by User.sn
             >>>     return(...)
 
@@ -281,12 +201,11 @@ class Query(MyNode):
             where_result =  ['return subsequence('] + where_result + [",%s,%s)" % (self.Limit[0].get_range())]
 
         result += where_result
-
         self._xquery = "\n".join(result)
 
     def execute(self):
         """
-        Executes the created xquery and return only interessting attributes.
+        Execute the created xquery and return only selected and accessible attributes.
         """
         start = time()
 
@@ -334,15 +253,22 @@ class Query(MyNode):
 
                 # Return all attributes
                 if name == "*":
-                    res[suffix] = tmp[suffix]['Attributes'][0]
-                    for name in ('UUID', 'Type', 'DN', 'ParentDN'):
-                        res[suffix][name] = (tmp[suffix][name])
-                    if 'Extensions' in tmp[suffix]:
-                        for name in ('Extension'):
-                            res[suffix][name] = (tmp[suffix]['Extensions'][0][name])
 
+                    # Append all attributes of the object
+                    res[suffix] = tmp[suffix]['Attributes'][0]
+
+                    # Append special attributes like the DN etc.
+                    for name in ('UUID', 'Type', 'DN', 'ParentDN'):
+                        if name in tmp[suffix]:
+                            res[suffix][name] = (tmp[suffix][name])
+
+                    # Append extension if they exists
+                    if 'Extensions' in tmp[suffix]:
+                        res[suffix]['Extension'] = map(lambda x: x, tmp[suffix]['Extensions'][0]['Extension'])
                 else:
-                    path = self._get_attribute_location(name)
+
+                    # Only append a selected list of attributes
+                    path = self._get_attribute_location(name, False)
                     if path:
                         if path in tmp[suffix]:
                             res[suffix][name] = (tmp[suffix][path][0][name])
@@ -402,11 +328,11 @@ class Query(MyNode):
         else:
             path = self._get_attribute_location(attribute)
             if path:
-                self._attributes[complete] =  "%s/%s" % (path, attribute)
+                self._attributes[complete] =  "%s/o:%s" % (path, attribute)
             else:
-                self._attributes[complete] =  "%s" % (attribute)
+                self._attributes[complete] =  "o:%s" % (attribute)
 
-    def _get_attribute_location(self, attribute):
+    def _get_attribute_location(self, attribute, use_ns_prefix=True):
         """
         Returns the location for a given attribute
 
@@ -415,9 +341,9 @@ class Query(MyNode):
         if attribute in ['DN', 'UUID', 'Type', 'ParentDN']:
             return("")
         elif attribute in ['Extension']:
-            return("Extensions")
+            return("o:Extensions" if use_ns_prefix else "Extensions")
         else:
-            return("Attributes")
+            return("o:Attributes" if use_ns_prefix else "Attributes")
 
     def get_xquery_attribute(self, object_type, attribute):
         """
@@ -433,7 +359,7 @@ class Query(MyNode):
 
     def get_xquery(self):
         """
-        Returns the compiles xquery.
+        Returns the compiled xquery.
         """
         return self._xquery
 
