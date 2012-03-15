@@ -753,6 +753,21 @@ class Object(object):
 
         return res
 
+    def remove_refs(self):
+        for ref_attr, self_attr, value, refs in self.get_references():
+            for ref in refs:
+                c_obj = ObjectProxy(ref)
+                c_value = getattr(c_obj, ref_attr)
+                if type(c_value) == list:
+                    c_value = filter(lambda x: x != value, c_value)
+                    setattr(c_obj, ref_attr, c_value)
+
+                else:
+                    setattr(c_obj, ref_attr, None)
+
+                c_obj.commit()
+
+
     def remove(self):
         """
         Removes this object - and eventually it's containements.
@@ -760,6 +775,9 @@ class Object(object):
         #pylint: disable=E1101
         if not self._base_object:
             raise ObjectException("cannot remove non base object - use retract")
+
+        # Remove all references to ourselves
+        self.remove_refs()
 
         # Collect backends
         backends = [getattr(self, '_backend')]
@@ -816,6 +834,9 @@ class Object(object):
         #pylint: disable=E1101
         if self._base_object:
             raise ObjectException("base objects cannot be retracted")
+
+        # Remove all references to ourselves
+        self.remove_refs()
 
         # Collect backends
         backends = [getattr(self, '_backend')]
@@ -891,3 +912,4 @@ class AttributeChanged(object):
         self.target = target
         self.uuid = obj.uuid
 
+from clacks.agent.objects.proxy import ObjectProxy
