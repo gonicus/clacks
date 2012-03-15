@@ -98,16 +98,18 @@
                             <xsl:variable name="propname" select="g:Name" />
                             <xsl:variable name="proptype" select="g:Type" />
                             <xsl:if test="$props[g:name=$propname]/g:value">
-                                <xsl:for-each select="$props[g:name=$propname]">
+                               <xsl:for-each select="$props[g:name=$propname]">
+                                           <xsl:for-each select="g:value">
                                     <xsl:if test="$proptype='Binary'">
                                         <xsl:element name="{$propname}">
                                             <xsl:attribute name="base64">true</xsl:attribute>
-                                            <xsl:value-of select="g:value" />
+                                            <xsl:value-of select="." />
                                         </xsl:element>
                                     </xsl:if>
                                     <xsl:if test="not($proptype='Binary')">
-                                        <xsl:element name="{$propname}"><xsl:value-of select="g:value" /></xsl:element>
+                                        <xsl:element name="{$propname}"><xsl:value-of select="." /></xsl:element>
                                     </xsl:if>
+                                </xsl:for-each>
                                 </xsl:for-each>
                             </xsl:if>
                         </xsl:if>
