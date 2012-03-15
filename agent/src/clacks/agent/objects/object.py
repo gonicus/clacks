@@ -6,7 +6,9 @@ import ldap
 import ldap.dn
 from logging import getLogger
 from zope.interface import Interface, implements
+from clacks.common.components import PluginRegistry
 from clacks.agent.objects.backend.registry import ObjectBackendRegistry
+
 
 # Status
 STATUS_OK = 0
@@ -736,6 +738,26 @@ class Object(object):
                         fltr[line]['params'])
         return fltr
 
+    def foobar(self):
+        index = PluginRegistry.getInstance("ObjectIndex")
+
+        #TODO: remove me silly function
+        for ref, info in self._objectFactory.getReferences(self.__class__.__name__).items():
+            print "Possible references to", ref
+
+            for ref_attribute, dsc in info.items():
+                print "* looking for '%s' that contains our '%s' with value '%s'" % (ref_attribute, dsc[0][1], getattr(self, dsc[0][1]))
+                dns = index.xquery("collection('objects')/*/.[o:Type = '%s' and ./*/o:%s = '%s']/o:DN/string()" % (ref, ref_attribute, getattr(self, dsc[0][1])))
+
+
+#> foobar -~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.
+#cn=Cajus Pollmeier,ou=people,ou=Technik,dc=gonicus,dc=de
+#{'PosixGroup': {'memberUid': [('PosixUser', 'uid')]}}
+#Hey - that's me!
+#< foobar -~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.
+
+        #HIER
+
     def remove(self):
         """
         Removes this object - and eventually it's containements.
@@ -758,8 +780,7 @@ class Object(object):
         obj = self
         zope.event.notify(ObjectChanged("pre remove", obj))
 
-        #TODO: update - check for remove_attrs, if they affect something,
-        #      let all backends remove the refs.
+        #TODO: complete remove: clear all object refs
 
         for backend in backends:
             be = ObjectBackendRegistry.getBackend(backend)
@@ -793,8 +814,7 @@ class Object(object):
             be = ObjectBackendRegistry.getBackend(backend)
             be.move(self.uuid, new_base)
 
-        # Check if the move interacts with other objects
-        #TODO
+        #TODO: move: update object refs if needed
 
         zope.event.notify(ObjectChanged("post move", obj))
 
@@ -834,9 +854,8 @@ class Object(object):
                 if attr in r_attrs:
                     remove_attrs.append(attr)
 
-            # Check if the move interacts with other objects
-            #TODO: update - check for remove_attrs, if they affect something,
-            #      let all backends remove the refs.
+            #TODO: retract: update refs if they're affected by
+            #               remove_attrs
 
             #pylint: disable=E1101
             be.retract(self.uuid, [a for a in remove_attrs if self.is_attr_set(a)], self._backendAttrs[backend] \
