@@ -738,25 +738,20 @@ class Object(object):
                         fltr[line]['params'])
         return fltr
 
-    def foobar(self):
+    def get_references(self):
+        res = []
         index = PluginRegistry.getInstance("ObjectIndex")
 
-        #TODO: remove me silly function
         for ref, info in self._objectFactory.getReferences(self.__class__.__name__).items():
-            print "Possible references to", ref
 
             for ref_attribute, dsc in info.items():
-                print "* looking for '%s' that contains our '%s' with value '%s'" % (ref_attribute, dsc[0][1], getattr(self, dsc[0][1]))
-                dns = index.xquery("collection('objects')/*/.[o:Type = '%s' and ./*/o:%s = '%s']/o:DN/string()" % (ref, ref_attribute, getattr(self, dsc[0][1])))
+                res.append((
+                    ref_attribute,
+                    dsc[0][1],
+                    getattr(self, dsc[0][1]),
+                    map(lambda s: s.decode('utf-8'), index.xquery("collection('objects')/*/.[o:Type = '%s' and ./*/o:%s = '%s']/o:DN/string()" % (ref, ref_attribute, getattr(self, dsc[0][1]))))))
 
-
-#> foobar -~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.
-#cn=Cajus Pollmeier,ou=people,ou=Technik,dc=gonicus,dc=de
-#{'PosixGroup': {'memberUid': [('PosixUser', 'uid')]}}
-#Hey - that's me!
-#< foobar -~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.
-
-        #HIER
+        return res
 
     def remove(self):
         """
@@ -779,8 +774,6 @@ class Object(object):
         backends.reverse()
         obj = self
         zope.event.notify(ObjectChanged("pre remove", obj))
-
-        #TODO: complete remove: clear all object refs
 
         for backend in backends:
             be = ObjectBackendRegistry.getBackend(backend)
@@ -813,8 +806,6 @@ class Object(object):
         for backend in backends:
             be = ObjectBackendRegistry.getBackend(backend)
             be.move(self.uuid, new_base)
-
-        #TODO: move: update object refs if needed
 
         zope.event.notify(ObjectChanged("post move", obj))
 
@@ -899,3 +890,4 @@ class AttributeChanged(object):
         self.reason = reason
         self.target = target
         self.uuid = obj.uuid
+

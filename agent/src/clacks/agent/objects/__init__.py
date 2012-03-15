@@ -696,8 +696,8 @@ parameters of the method as placeholders.
 
 """
 __import__('pkg_resources').declare_namespace(__name__)
-from clacks.agent.objects.factory import ObjectFactory, ObjectChanged
 from clacks.agent.objects.proxy import ObjectProxy, ProxyException
+from clacks.agent.objects.factory import ObjectFactory, ObjectChanged
 from clacks.agent.objects.object import ObjectException
 from clacks.agent.objects.search import SearchWrapper
 

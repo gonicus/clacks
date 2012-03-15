@@ -37,7 +37,7 @@ from ldap.dn import str2dn, dn2str
 from logging import getLogger
 from clacks.common import Environment
 from clacks.common.components import PluginRegistry
-from clacks.agent.objects import ObjectFactory
+from .factory import ObjectFactory
 
 
 class ProxyException(Exception):
@@ -148,11 +148,15 @@ class ObjectProxy(object):
         if self.__extensions[extension] == None:
             raise ProxyException("extension '%s' already retracted" % extension)
 
+        #TODO: check refs
+
         # Immediately remove extension
         self.__extensions[extension].retract()
         self.__extensions[extension] = None
 
     def move(self, new_base, recursive=False):
+        #TODO: see if refs are affected
+
         if recursive:
             #TODO: implement me
             raise NotImplemented("recursive move is not implemented")
@@ -165,12 +169,19 @@ class ObjectProxy(object):
         #TODO: implement me
         raise NotImplemented()
 
-    def foobar(self):
-        #TODO: remove me silly function
-        print "> foobar " + "-~-." * 20
-        print self.__base.dn
-        self.__base.foobar()
-        print "< foobar " + "-~-." * 20
+    def remove_refs(self, obj):
+        for ref_attr, self_attr, value, refs in obj.get_references():
+            for ref in refs:
+                c_obj = ObjectProxy(ref)
+                c_value = getattr(c_obj, ref_attr)
+                if type(c_value) == list:
+                    c_value = filter(lambda x: x != value, c_value)
+                    setattr(c_obj, ref_attr, c_value)
+
+                else:
+                    setattr(c_obj, ref_attr, None)
+
+                c_obj.commit()
 
     def remove(self, recursive=False):
         if recursive:
@@ -192,8 +203,10 @@ class ObjectProxy(object):
                 raise ProxyException("specified object has children - use the recursive flag to remove them")
 
         for extension in [e for x, e in self.__extensions.iteritems() if e]:
+            self.remove_refs(extension)
             extension.retract()
 
+        self.remove_refs(self.__base)
         self.__base.remove()
 
     def commit(self):
