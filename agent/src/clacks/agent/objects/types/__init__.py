@@ -25,6 +25,9 @@ class AttributeType(object):
         cnv = getattr(self, "_convert_to_%s" % target_type.lower())
         return cnv(value)
 
+    def fixup(self, value):
+        return value
+
     def convert_from(self, source_type, value):
         cnv = getattr(self, "_convert_from_%s" % source_type.lower())
         return cnv(value)

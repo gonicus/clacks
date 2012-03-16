@@ -52,7 +52,7 @@
                         <Attribute>
                                 <Name>memberUid</Name>
                                 <Description>A list of member-uids</Description>
-                                <Type>UnicodeString</Type>
+                                <Type>String</Type>
                                 <MultiValue>true</MultiValue>
 				<Mandatory>false</Mandatory>
 				<References>

@@ -13,7 +13,7 @@
             <Attribute>
                     <Name>uid</Name>
                     <Description>User ID</Description>
-                    <Type>UnicodeString</Type>
+                    <Type>String</Type>
                     <Foreign>true</Foreign>
             </Attribute>
 

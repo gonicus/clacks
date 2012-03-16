@@ -2,11 +2,9 @@
 from clacks.agent.objects.types import AttributeType
 import datetime
 
+
 class StringAttribute(AttributeType):
     __alias__ = "String"
-
-    def _convert_to_string(self, value):
-        return(value)
 
     def _convert_from_string(self, value):
         return(value)
@@ -31,6 +29,9 @@ class StringAttribute(AttributeType):
 
     def _convert_from_datetime(self, value):
         return(map(lambda x: str(x), value))
+
+    def fixup(self, value):
+        return self._convert_to_string(value)
 
 
 class IntegerAttribute(AttributeType):
@@ -129,6 +130,7 @@ class UnicodeStringAttribute(AttributeType):
     def _convert_from_string(self, value):
         return(map(lambda x: unicode(x), value))
 
+
 class DateAttribute(AttributeType):
     __alias__ = "Date"
 
@@ -149,6 +151,7 @@ class DateAttribute(AttributeType):
 
     def _convert_to_unicodestring(self, value):
         return(map(lambda x: unicode(x.strftime("%Y-%m-%d")), value))
+
 
 class TimestampAttribute(AttributeType):
     __alias__ = "Timestamp"
