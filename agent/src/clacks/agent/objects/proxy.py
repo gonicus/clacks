@@ -37,7 +37,6 @@ from ldap.dn import str2dn, dn2str
 from logging import getLogger
 from clacks.common import Environment
 from clacks.common.components import PluginRegistry
-from clacks.agent.objects import ObjectFactory
 
 
 class ProxyException(Exception):
@@ -153,6 +152,8 @@ class ObjectProxy(object):
         self.__extensions[extension] = None
 
     def move(self, new_base, recursive=False):
+        #TODO: see if refs are affected
+
         if recursive:
             #TODO: implement me
             raise NotImplemented("recursive move is not implemented")
@@ -164,13 +165,6 @@ class ObjectProxy(object):
 
         #TODO: implement me
         raise NotImplemented()
-
-    def foobar(self):
-        #TODO: remove me silly function
-        print "> foobar " + "-~-." * 20
-        print self.__base.dn
-        self.__base.foobar()
-        print "< foobar " + "-~-." * 20
 
     def remove(self, recursive=False):
         if recursive:
@@ -192,8 +186,10 @@ class ObjectProxy(object):
                 raise ProxyException("specified object has children - use the recursive flag to remove them")
 
         for extension in [e for x, e in self.__extensions.iteritems() if e]:
+            extension.remove_refs()
             extension.retract()
 
+        self.__base.remove_refs()
         self.__base.remove()
 
     def commit(self):
@@ -356,3 +352,6 @@ class ObjectProxy(object):
         transform = etree.XSLT(xslt_doc)
         res = transform(xml_doc)
         return etree.tostring(res)
+
+
+from .factory import ObjectFactory

@@ -274,8 +274,14 @@ class Object(object):
             else:
                 new_value = [value]
 
-            # Check if the new value is valid
+            # Eventually fixup value from incoming JSON string
             s_type = self.myProperties[name]['type']
+            try:
+                new_value = self._objectFactory.getAttributeTypes()[s_type].fixup(new_value)
+            except Exception:
+                raise TypeError("Invalid value given for %s (%s) expected is '%s'" % (name, new_value, s_type))
+
+            # Check if the new value is valid
             #pylint: disable=E1101
             if not self._objectFactory.getAttributeTypes()[s_type].is_valid_value(new_value):
                 raise TypeError("Invalid value given for %s (%s) expected is '%s'" % (name, new_value, s_type))
@@ -455,6 +461,12 @@ class Object(object):
         if not toStore:
             return
 
+        # Update references using the toStore information
+        changes = {}
+        for be in toStore:
+            changes.update(toStore[be])
+        self.update_refs(changes)
+
         # Handle by backend
         p_backend = getattr(self, '_backend')
         obj = self
@@ -473,10 +485,6 @@ class Object(object):
                         self.getForeignProperties())
 
             else:
-
-                #TODO: update - check for changed attrs, if they affect something,
-                #      let all backends remove the refs.
-
                 be.update(self.uuid, toStore[p_backend])
 
             # Eventually the DN has changed
@@ -501,8 +509,6 @@ class Object(object):
             elif self._mode == "extend":
                 be.extend(self.uuid, data, beAttrs, self.getForeignProperties())
             else:
-                #TODO: update - check for changed attrs, if they affect something,
-                #      let all backends remove the refs.
                 be.update(self.uuid, data)
 
         zope.event.notify(ObjectChanged("post %s" % self._mode, obj))
@@ -738,25 +744,78 @@ class Object(object):
                         fltr[line]['params'])
         return fltr
 
-    def foobar(self):
+    def get_references(self):
+        res = []
         index = PluginRegistry.getInstance("ObjectIndex")
 
-        #TODO: remove me silly function
         for ref, info in self._objectFactory.getReferences(self.__class__.__name__).items():
-            print "Possible references to", ref
 
             for ref_attribute, dsc in info.items():
-                print "* looking for '%s' that contains our '%s' with value '%s'" % (ref_attribute, dsc[0][1], getattr(self, dsc[0][1]))
-                dns = index.xquery("collection('objects')/*/.[o:Type = '%s' and ./*/o:%s = '%s']/o:DN/string()" % (ref, ref_attribute, getattr(self, dsc[0][1])))
+                for idsc in dsc:
+                    oval = self.myProperties[idsc[1]]['orig_value'][0]
+                    res.append((
+                        ref_attribute,
+                        idsc[1],
+                        getattr(self, idsc[1]),
+                        map(lambda s: s.decode('utf-8'),
+                            index.xquery("collection('objects')/*/.[o:Type = '%s' and ./*/o:%s = '%s']/o:DN/string()" % (ref, ref_attribute, oval))),
+                        self.myProperties[idsc[1]]['multivalue']
+                            ))
 
+        return res
 
-#> foobar -~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.
-#cn=Cajus Pollmeier,ou=people,ou=Technik,dc=gonicus,dc=de
-#{'PosixGroup': {'memberUid': [('PosixUser', 'uid')]}}
-#Hey - that's me!
-#< foobar -~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.-~-.
+    def update_refs(self, data):
+        for ref_attr, self_attr, value, refs, multivalue in self.get_references():
 
-        #HIER
+            for ref in refs:
+
+                # Next iterration if there's no change for the relevant
+                # attribute
+                if not self_attr in data:
+                    continue
+
+                # Load object and change value to the new one
+                c_obj = ObjectProxy(ref)
+                c_value = getattr(c_obj, ref_attr)
+
+                if type(c_value) == list:
+                    if type(value) == list:
+                        c_value = filter(lambda x: x not in value, c_value)
+                    else:
+                        c_value = filter(lambda x: x != value, c_value)
+
+                    if multivalue:
+                        c_value.append(data[self_attr]['value'])
+                    else:
+                        c_value.append(data[self_attr]['value'][0])
+
+                    setattr(c_obj, ref_attr, list(set(c_value)))
+
+                else:
+                    setattr(c_obj, ref_attr, data[self_attr]['value'][0])
+
+                c_obj.commit()
+
+    def remove_refs(self):
+        for ref_attr, self_attr, value, refs, multivalue in self.get_references():
+
+            for ref in refs:
+                c_obj = ObjectProxy(ref)
+                c_value = getattr(c_obj, ref_attr)
+
+                if type(c_value) == list:
+                    if type(value) == list:
+                        c_value = filter(lambda x: x not in value, c_value)
+                    else:
+                        c_value = filter(lambda x: x != value, c_value)
+
+                    setattr(c_obj, ref_attr, c_value)
+
+                else:
+                    setattr(c_obj, ref_attr, None)
+
+                c_obj.commit()
+
 
     def remove(self):
         """
@@ -765,6 +824,9 @@ class Object(object):
         #pylint: disable=E1101
         if not self._base_object:
             raise ObjectException("cannot remove non base object - use retract")
+
+        # Remove all references to ourselves
+        self.remove_refs()
 
         # Collect backends
         backends = [getattr(self, '_backend')]
@@ -779,8 +841,6 @@ class Object(object):
         backends.reverse()
         obj = self
         zope.event.notify(ObjectChanged("pre remove", obj))
-
-        #TODO: complete remove: clear all object refs
 
         for backend in backends:
             be = ObjectBackendRegistry.getBackend(backend)
@@ -814,8 +874,6 @@ class Object(object):
             be = ObjectBackendRegistry.getBackend(backend)
             be.move(self.uuid, new_base)
 
-        #TODO: move: update object refs if needed
-
         zope.event.notify(ObjectChanged("post move", obj))
 
     def retract(self):
@@ -825,6 +883,9 @@ class Object(object):
         #pylint: disable=E1101
         if self._base_object:
             raise ObjectException("base objects cannot be retracted")
+
+        # Remove all references to ourselves
+        self.remove_refs()
 
         # Collect backends
         backends = [getattr(self, '_backend')]
@@ -854,8 +915,7 @@ class Object(object):
                 if attr in r_attrs:
                     remove_attrs.append(attr)
 
-            #TODO: retract: update refs if they're affected by
-            #               remove_attrs
+            self.remove_refs()
 
             #pylint: disable=E1101
             be.retract(self.uuid, [a for a in remove_attrs if self.is_attr_set(a)], self._backendAttrs[backend] \
@@ -899,3 +959,5 @@ class AttributeChanged(object):
         self.reason = reason
         self.target = target
         self.uuid = obj.uuid
+
+from clacks.agent.objects.proxy import ObjectProxy

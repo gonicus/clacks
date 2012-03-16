@@ -11,6 +11,13 @@
 
         <Attributes>
             <Attribute>
+                    <Name>uid</Name>
+                    <Description>User ID</Description>
+                    <Type>String</Type>
+                    <Foreign>true</Foreign>
+            </Attribute>
+
+            <Attribute>
                 <Name>sambaSID</Name>
                 <Description>Security ID</Description>
                 <Type>String</Type>

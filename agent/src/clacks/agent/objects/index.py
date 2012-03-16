@@ -196,7 +196,7 @@ class ObjectIndex(Plugin):
             if event.reason in ["post retract", "post update", "post extend"]:
                 self.log.debug("updating object index for %s" % uuid)
                 if not event.dn:
-                    event.dn = self.db.xquery("collection('objects')/*/.[o:UUID/string() = '%s']/o:DN/string()" % event.uuid)
+                    event.dn = self.db.xquery("collection('objects')/*/.[o:UUID/string() = '%s']/o:DN/string()" % event.uuid)[0]
 
                 obj = ObjectProxy(event.dn)
                 self.update(obj)
@@ -262,20 +262,22 @@ class ObjectIndex(Plugin):
                     """ % (o_uuid, n_parent))
 
         # Move extensions
-        self.db.xquery("""
-        replace node
-            collection('objects')/*/.[o:UUID = '%s']/o:Extensions
-        with
-            %s
-        """ % (obj.uuid, self.escape(etree.tostring(current.Extensions))))
+        if len(self.db.xquery("collection('objects')/*/.[o:UUID = '%s']/o:Extensions")) != 0:
+            self.db.xquery("""
+            replace node
+                collection('objects')/*/.[o:UUID = '%s']/o:Extensions
+            with
+                %s
+            """ % (obj.uuid, self.escape(etree.tostring(current.Extensions))))
 
         # Move attributes
-        self.db.xquery("""
-        replace node
-            collection('objects')/*/.[o:UUID = '%s']/o:Attributes
-        with
-            %s
-        """ % (obj.uuid, self.escape(etree.tostring(current.Attributes))))
+        if len(self.db.xquery("collection('objects')/*/.[o:UUID = '%s']/o:Attributes")) != 0:
+            self.db.xquery("""
+            replace node
+                collection('objects')/*/.[o:UUID = '%s']/o:Attributes
+            with
+                %s
+            """ % (obj.uuid, self.escape(etree.tostring(current.Attributes))))
 
         # Set LastChanged
         self.db.xquery("""
