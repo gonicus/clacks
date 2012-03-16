@@ -898,8 +898,7 @@ class Object(object):
                 if attr in r_attrs:
                     remove_attrs.append(attr)
 
-            #TODO: retract: update refs if they're affected by
-            #               remove_attrs
+            self.remove_refs()
 
             #pylint: disable=E1101
             be.retract(self.uuid, [a for a in remove_attrs if self.is_attr_set(a)], self._backendAttrs[backend] \
