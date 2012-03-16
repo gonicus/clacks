@@ -159,7 +159,6 @@ class ObjectFactory(object):
             {'PosixGroup': {'memberUid': [('PosixUser', 'uid')]}}
         """
         res = {}
-        have_some = False
         for element in self.__xml_defs.values():
 
             # Get all <Attributes> tag and iterate through their children
@@ -173,18 +172,19 @@ class ObjectFactory(object):
                     # Extract reference information
                     if load(attr, "References", None) is not None:
 
-                        # Ensure that values are initialized
-                        if obj not in res:
-                            res[obj] = {}
-
                         # Append the result if it matches the given parameters.
-                        res[obj][attr.Name.text] = []
                         for ref in attr.References.iterchildren():
                             if (s_obj == None or s_obj == ref.Object.text) and (s_attr == None or s_attr == ref.Attribute.text):
-                                have_some = True
+
+                                # Ensure that values are initialized
+                                if obj not in res:
+                                    res[obj] = {}
+                                if not attr.Name.text in res[obj]:
+                                    res[obj][attr.Name.text] = []
+
                                 res[obj][attr.Name.text].append((ref.Object.text, ref.Attribute.text))
 
-        return res if have_some else {}
+        return res
 
     def getAttributes(self):
         """
