@@ -751,18 +751,21 @@ class Object(object):
         for ref, info in self._objectFactory.getReferences(self.__class__.__name__).items():
 
             for ref_attribute, dsc in info.items():
-                oval = self.myProperties[dsc[0][1]]['orig_value'][0]
-                res.append((
-                    ref_attribute,
-                    dsc[0][1],
-                    getattr(self, dsc[0][1]),
-                    map(lambda s: s.decode('utf-8'),
-                        index.xquery("collection('objects')/*/.[o:Type = '%s' and ./*/o:%s = '%s']/o:DN/string()" % (ref, ref_attribute, oval)))))
+                for idsc in dsc:
+                    oval = self.myProperties[idsc[1]]['orig_value'][0]
+                    res.append((
+                        ref_attribute,
+                        idsc[1],
+                        getattr(self, idsc[1]),
+                        map(lambda s: s.decode('utf-8'),
+                            index.xquery("collection('objects')/*/.[o:Type = '%s' and ./*/o:%s = '%s']/o:DN/string()" % (ref, ref_attribute, oval))),
+                        self.myProperties[idsc[1]]['multivalue']
+                            ))
 
         return res
 
     def update_refs(self, data):
-        for ref_attr, self_attr, value, refs in self.get_references():
+        for ref_attr, self_attr, value, refs, multivalue in self.get_references():
 
             for ref in refs:
 
@@ -776,8 +779,16 @@ class Object(object):
                 c_value = getattr(c_obj, ref_attr)
 
                 if type(c_value) == list:
-                    c_value = filter(lambda x: x != value, c_value)
-                    c_value.append(data[self_attr]['value'][0])
+                    if type(value) == list:
+                        c_value = filter(lambda x: x not in value, c_value)
+                    else:
+                        c_value = filter(lambda x: x != value, c_value)
+
+                    if multivalue:
+                        c_value.append(data[self_attr]['value'])
+                    else:
+                        c_value.append(data[self_attr]['value'][0])
+
                     setattr(c_obj, ref_attr, list(set(c_value)))
 
                 else:
@@ -786,12 +797,18 @@ class Object(object):
                 c_obj.commit()
 
     def remove_refs(self):
-        for ref_attr, self_attr, value, refs in self.get_references():
+        for ref_attr, self_attr, value, refs, multivalue in self.get_references():
+
             for ref in refs:
                 c_obj = ObjectProxy(ref)
                 c_value = getattr(c_obj, ref_attr)
+
                 if type(c_value) == list:
-                    c_value = filter(lambda x: x != value, c_value)
+                    if type(value) == list:
+                        c_value = filter(lambda x: x not in value, c_value)
+                    else:
+                        c_value = filter(lambda x: x != value, c_value)
+
                     setattr(c_obj, ref_attr, c_value)
 
                 else:
