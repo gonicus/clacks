@@ -52,6 +52,7 @@ class ACLAdmin(object):
         Environment.noargs = True
         Environment.config = cfgFile
         self.env = Environment.getInstance()
+
         acl_file = os.path.join(self.env.config.getBaseDir(), "agent.acl")
         self.acl_file = acl_file
 
@@ -842,7 +843,7 @@ def main():
         sys.exit(0)
 
     # Predefine some values
-    cfgFile = "/etc/clacks/config"
+    cfgFile = os.environ.get("CLACKS_CONFIG_DIR")
 
     # Parse out config parameter
     my_args = sys.argv
