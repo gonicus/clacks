@@ -13,6 +13,7 @@
 		<FixedRDN>ou=groups</FixedRDN>
 		<Container>
 			<Type>PosixGroup</Type>
+			<Type>GroupOfNames</Type>
 		</Container>
 	</Object>
 </Objects>

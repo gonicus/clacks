@@ -465,6 +465,7 @@ class Object(object):
         changes = {}
         for be in toStore:
             changes.update(toStore[be])
+
         self.update_refs(changes)
 
         # Handle by backend
@@ -490,9 +491,13 @@ class Object(object):
             # Eventually the DN has changed
             dn = be.uuid2dn(self.uuid)
             if dn != obj.dn:
+
+                self.update_dn_refs(dn)
+
                 obj.dn = dn
                 if self._base_object:
-                    zope.event.notify(ObjectChanged("relocated", obj))
+                    zope.event.notify(ObjectChanged("post move", obj))
+
                 obj.orig_dn = dn
 
         # ... then walk thru the remaining ones
@@ -744,11 +749,11 @@ class Object(object):
                         fltr[line]['params'])
         return fltr
 
-    def get_references(self):
+    def get_references(self, override=None):
         res = []
         index = PluginRegistry.getInstance("ObjectIndex")
 
-        for ref, info in self._objectFactory.getReferences(self.__class__.__name__).items():
+        for ref, info in self._objectFactory.getReferences(override or self.__class__.__name__).items():
 
             for ref_attribute, dsc in info.items():
                 for idsc in dsc:
@@ -816,6 +821,50 @@ class Object(object):
 
                 c_obj.commit()
 
+    def get_dn_references(self):
+        res = []
+        index = PluginRegistry.getInstance("ObjectIndex")
+
+        for ref, info in self._objectFactory.getReferences("*", "dn").items():
+            for ref_attribute, dsc in info.items():
+                res.append((
+                    ref_attribute,
+                    map(lambda s: s.decode('utf-8'),
+                        index.xquery("collection('objects')/*/.[./*/o:%s = '%s']/o:DN/string()" % (ref_attribute, self.dn)))
+                ))
+
+        return res
+
+    def update_dn_refs(self, new_dn):
+        for ref_attr, refs in self.get_dn_references():
+            for ref in refs:
+                c_obj = ObjectProxy(ref)
+                c_value = getattr(c_obj, ref_attr)
+
+                if type(c_value) == list:
+                    c_value = filter(lambda x: x != self.dn, c_value)
+                    c_value.append(new_dn)
+                    setattr(c_obj, ref_attr, list(set(c_value)))
+
+                else:
+                    setattr(c_obj, ref_attr, new_dn)
+
+                c_obj.commit()
+
+    def remove_dn_refs(self):
+        for ref_attr, refs in self.get_dn_references():
+            for ref in refs:
+                c_obj = ObjectProxy(ref)
+                c_value = getattr(c_obj, ref_attr)
+
+                if type(c_value) == list:
+                    c_value = filter(lambda x: x != self.dn, c_value)
+                    setattr(c_obj, ref_attr, list(set(c_value)))
+
+                else:
+                    setattr(c_obj, ref_attr, None)
+
+                c_obj.commit()
 
     def remove(self):
         """
@@ -916,6 +965,7 @@ class Object(object):
                     remove_attrs.append(attr)
 
             self.remove_refs()
+            self.remove_dn_refs(obj.dn)
 
             #pylint: disable=E1101
             be.retract(self.uuid, [a for a in remove_attrs if self.is_attr_set(a)], self._backendAttrs[backend] \
