@@ -173,8 +173,8 @@ class JSONRPCObjectMapper(Plugin):
 
         return getattr(objdsc['object']['object'], method)(*args)
 
-    @Command(__help__=N_("Instantiate object and place it on stack"))
-    def openObject(self, oid, *args, **kwargs):
+    @Command(needsUser=True, __help__=N_("Instantiate object and place it on stack"))
+    def openObject(self, user, oid, *args, **kwargs):
         """
         Open object on the agent side. This creates an instance on the
         stack and returns an a JSON description of the object and it's
@@ -203,6 +203,7 @@ class JSONRPCObjectMapper(Plugin):
         ref = str(uuid.uuid1())
 
         # Make object instance and store it
+        kwargs['user'] = user
         obj = obj_type(*args, **kwargs)
 
         # Add dynamic information - if available

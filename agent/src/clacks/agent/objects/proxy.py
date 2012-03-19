@@ -51,12 +51,15 @@ class ObjectProxy(object):
     __env = None
     __log = None
     __base = None
+    __base_type = None
     __extensions = None
     __factory = None
     __attribute_map = None
     __method_map = None
+    __acl_resolver = None
+    __current_user = None
 
-    def __init__(self, dn_or_base, what=None):
+    def __init__(self, dn_or_base, what=None, user=None):
         self.__env = Environment.getInstance()
         self.__log = getLogger(__name__)
         self.__factory = ObjectFactory.getInstance()
@@ -64,6 +67,8 @@ class ObjectProxy(object):
         self.__extensions = {}
         self.__attribute_map = {}
         self.__method_map = {}
+        self.__current_user = user
+        self.__acl_resolver = ACLResolver.get_instance()
 
         # Load available object types
         object_types = self.__factory.getObjectTypes()
