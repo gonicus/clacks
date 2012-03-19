@@ -130,7 +130,12 @@ class ObjectProxy(object):
         """
         Returns a list containing all method names known for the instantiated object.
         """
-        return(self.__method_map.keys())
+        # Do we have read permissions for the requested method
+        def check_acl(attribute):
+            topic = "org.clacks.objects.%s.%s" % (self.__base_type, attribute)
+            return self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn)
+        
+        return(filter(lambda x: check_acl(x), self.__method_map.keys()))
 
     def get_parent_dn(self):
         return dn2str(str2dn(self.__base.dn.encode('utf-8'))[1:]).decode('utf-8')
@@ -211,8 +216,12 @@ class ObjectProxy(object):
             extension.commit()
 
     def __getattr__(self, name):
-        # Valid method?
+
+        # Valid method? and enough permissions?
         if name in self.__method_map:
+            topic = "org.clacks.objects.%s.%s" % (self.__base_type, name)
+            if not self.__acl_resolver.check(self.__current_user, topic, "rw", base=self.dn):
+                raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
             return self.__method_map[name]
 
         if name == 'modifyTimestamp':

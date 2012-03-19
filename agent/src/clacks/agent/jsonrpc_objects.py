@@ -209,8 +209,8 @@ class JSONRPCObjectMapper(Plugin):
         # Add dynamic information - if available
         if hasattr(obj, 'get_attributes'):
             properties = properties + obj.get_attributes()
-        if hasattr(obj, 'get_nmethods'):
-            methods = properties + obj.get_methods()
+        if hasattr(obj, 'get_methods'):
+            methods = methods + obj.get_methods()
 
         pickle = not hasattr(obj, "_no_pickle_")
         if not pickle:
