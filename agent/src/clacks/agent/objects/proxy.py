@@ -37,6 +37,7 @@ from ldap.dn import str2dn, dn2str
 from logging import getLogger
 from clacks.common import Environment
 from clacks.common.components import PluginRegistry
+from clacks.agent.acl import ACLResolver, ACLException
 
 
 class ProxyException(Exception):
@@ -86,6 +87,7 @@ class ObjectProxy(object):
 
         # Load base object and extenions
         self.__base = self.__factory.getObject(base, dn_or_base, mode=base_mode)
+        self.__base_type = base
         for extension in extensions:
             self.__log.debug("loading %s extension for %s" % (extension, dn_or_base))
             self.__extensions[extension] = self.__factory.getObject(extension, self.__base.uuid)
@@ -112,7 +114,12 @@ class ObjectProxy(object):
         """
         Returns a list containing all property names known for the instantiated object.
         """
-        return(self.__attribute_map.keys())
+        # Do we have read permissions for the requested attribute, method
+        def check_acl(attribute):
+            topic = "org.clacks.objects.%s.%s" % (self.__base_type, attribute)
+            return self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn)
+        
+        return(filter(lambda x: check_acl(x), self.__attribute_map.keys()))
 
     def get_methods(self):
         """
@@ -215,6 +222,11 @@ class ObjectProxy(object):
         if not name in self.__attribute_map:
             raise AttributeError("no such attribute '%s'" % name)
 
+        # Do we have read permissions for the requested attribute, method
+        topic = "org.clacks.objects.%s.%s" % (self.__base_type, name)
+        if not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
+            raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
+
         # Load from primary object
         objs = self.__attribute_map[name]['primary']
         for obj in objs:
@@ -260,6 +272,11 @@ class ObjectProxy(object):
         """
         atypes = self.__factory.getAttributeTypes()
 
+        # Check permissions
+        topic = "org.clacks.objects.%s" % (self.__base_type)
+        if not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
+            raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
+        
         # Get the xml definitions combined for all objects.
         xmldefs = etree.tostring(self.__factory.getXMLDefinitionsCombined())
 

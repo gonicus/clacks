@@ -843,7 +843,7 @@ def main():
         sys.exit(0)
 
     # Predefine some values
-    cfgFile = os.environ.get("CLACKS_CONFIG_DIR")
+    cfgFile = os.environ.get('CLACKS_CONFIG_DIR') or "/etc/clacks"
 
     # Parse out config parameter
     my_args = sys.argv

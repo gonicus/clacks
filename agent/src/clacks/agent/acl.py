@@ -803,6 +803,13 @@ class ACLResolver(Plugin):
         # Load initial ACL information from file
         self.load_from_file()
 
+    @staticmethod
+    def get_instance():
+        if not ACLResolver.instance:
+            ACLResolver.instance = ACLResolver()
+
+        return ACLResolver.instance
+
     def list_admin_accounts(self):
         return self.admins
 
@@ -1221,8 +1228,6 @@ class ACLResolver(Plugin):
         base           The base we want to delete ACLSets for.
         ============== =============
         """
-        if type(base) != str:
-            raise ACLException("ACLSets can only be removed by base name, '%s' is an invalid parameter" % base)
 
         # Remove all aclsets for the given base
         found = 0
