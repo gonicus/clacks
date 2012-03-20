@@ -656,14 +656,8 @@ class ObjectFactory(object):
                         else:
                             raise FactoryException("Method '%s' depends on unknown attribute '%s'!" % (command, value))
 
-                    # Dispatch message
-                    try:
-                        cr = PluginRegistry.getInstance('CommandRegistry')
-                    except:
-                        raise FactoryException("The command registry could not be found, are you running things manually?!")
-
-                    # TODO: Cajus adjust this command dispatch, the parameter list seems to lack user and queue.
-                    return(cr.dispatch(command, *parmList))
+                    cr = PluginRegistry.getInstance('CommandRegistry')
+                    return cr.call(command, *parmList)
 
                 # Append the method to the list of registered methods for this
                 # object
