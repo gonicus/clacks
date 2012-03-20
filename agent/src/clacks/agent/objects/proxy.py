@@ -219,7 +219,7 @@ class ObjectProxy(object):
 
         # Valid method? and enough permissions?
         if name in self.__method_map:
-            topic = "org.clacks.objects.%s.method.%s" % (self.__base_type, name)
+            topic = "org.clacks.objects.%s.methods.%s" % (self.__base_type, name)
             if not self.__acl_resolver.check(self.__current_user, topic, "rw", base=self.dn):
                 raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
             return self.__method_map[name]
@@ -237,7 +237,7 @@ class ObjectProxy(object):
             raise AttributeError("no such attribute '%s'" % name)
 
         # Do we have read permissions for the requested attribute, method
-        topic = "org.clacks.objects.%s.attribute.%s" % (self.__base_type, name)
+        topic = "org.clacks.objects.%s.attributes.%s" % (self.__base_type, name)
         if not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
             raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
 
