@@ -262,6 +262,7 @@ class ObjectProxy(object):
         return None
 
     def __setattr__(self, name, value):
+
         # Store non property values
         try:
             object.__getattribute__(self, name)
@@ -269,6 +270,14 @@ class ObjectProxy(object):
             return
         except AttributeError:
             pass
+
+        # If we try to modify pbject specific properties then check acls
+        if self.__attribute_map and name in self.__attribute_map and self.__current_user != None:
+
+            # Do we have read permissions for the requested attribute, method
+            topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, self.__base_type, name)
+            if not self.__acl_resolver.check(self.__current_user, topic, "w", base=self.dn):
+                raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
 
         found = False
         for obj in self.__attribute_map[name]['primary'] + self.__attribute_map[name]['objects']:
