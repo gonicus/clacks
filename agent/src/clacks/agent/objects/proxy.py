@@ -121,7 +121,7 @@ class ObjectProxy(object):
         """
         # Do we have read permissions for the requested attribute, method
         def check_acl(attribute):
-            topic = "org.clacks.objects.%s.attributes.%s" % (self.__base_type, attribute)
+            topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, self.__base_type, attribute)
             return self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn)
         
         return(filter(lambda x: check_acl(x), self.__attribute_map.keys()))
@@ -132,8 +132,8 @@ class ObjectProxy(object):
         """
         # Do we have read permissions for the requested method
         def check_acl(attribute):
-            topic = "org.clacks.objects.%s.methods.%s" % (self.__base_type, attribute)
-            return self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn)
+            topic = "%s.objects.%s.methods.%s" % (self.__env.domain, self.__base_type, attribute)
+            return self.__acl_resolver.check(self.__current_user, topic, "x", base=self.dn)
         
         return(filter(lambda x: check_acl(x), self.__method_map.keys()))
 
@@ -219,8 +219,8 @@ class ObjectProxy(object):
 
         # Valid method? and enough permissions?
         if name in self.__method_map:
-            topic = "org.clacks.objects.%s.methods.%s" % (self.__base_type, name)
-            if not self.__acl_resolver.check(self.__current_user, topic, "rw", base=self.dn):
+            topic = "%s.objects.%s.methods.%s" % (self.__env.domain, self.__base_type, name)
+            if not self.__acl_resolver.check(self.__current_user, topic, "x", base=self.dn):
                 raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
             return self.__method_map[name]
 
@@ -237,7 +237,7 @@ class ObjectProxy(object):
             raise AttributeError("no such attribute '%s'" % name)
 
         # Do we have read permissions for the requested attribute, method
-        topic = "org.clacks.objects.%s.attributes.%s" % (self.__base_type, name)
+        topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, self.__base_type, name)
         if not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
             raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
 
@@ -287,7 +287,7 @@ class ObjectProxy(object):
         atypes = self.__factory.getAttributeTypes()
 
         # Check permissions
-        topic = "org.clacks.objects.%s" % (self.__base_type)
+        topic = "%s.objects.%s" % (self.__env.domain, self.__base_type)
         if not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
             raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
         
