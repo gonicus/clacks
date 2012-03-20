@@ -386,7 +386,7 @@ class ObjectFactory(object):
                     self.log.info("loaded schema for '%s'" % (str(attr['Name'])))
 
         except etree.XMLSyntaxError as e:
-            raise FactoryException("Error loading object-schema: % (e))
+            raise FactoryException("Error loading object-schema:" % (e))
 
     def __build_class(self, name):
         """
