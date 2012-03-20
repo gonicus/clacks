@@ -662,6 +662,7 @@ class ObjectFactory(object):
                     except:
                         raise FactoryException("The command registry could not be found, are you running things manually?!")
 
+                    # TODO: Cajus adjust this command dispatch, the parameter list seems to lack user and queue.
                     return(cr.dispatch(command, *parmList))
 
                 # Append the method to the list of registered methods for this
