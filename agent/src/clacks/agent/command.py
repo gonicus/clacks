@@ -221,7 +221,9 @@ class CommandRegistry(Plugin):
 
         ``Return:`` return value from the method call
         """
-        return self.dispatch('internal', None, func, arg, larg)
+
+        # We pass 'self' as user, to skip acls checks.
+        return self.dispatch(self, None, func, *arg, **larg)
 
     def dispatch(self, user, queue, func, *arg, **larg):
         """
@@ -253,8 +255,8 @@ class CommandRegistry(Plugin):
         ``Return:`` the real methods result
         """
 
-        # Check for user authentication
-        if not user:
+        # Check for user authentication (if user is 'self' this is an internal call)
+        if not user and user != self:
             raise CommandNotAuthorized("call of function '%s' without a valid username is not permitted" % func)
 
         # Check if the command is available
@@ -265,11 +267,12 @@ class CommandRegistry(Plugin):
         if not queue:
             queue = self.env.domain + ".command.%s" % self.capabilities[func]['target']
 
-        # Check for permission
-        chk_options = dict(dict(zip(self.capabilities[func]['sig'], arg)).items() + larg.items())
-        acl = PluginRegistry.getInstance("ACLResolver")
-        if not acl.check(user, "%s.%s" % (queue, func), "x", options=chk_options):
-            raise CommandNotAuthorized("call of function '%s.%s' is not permitted" % (queue, func))
+        # Check for permission (if user equals 'self' then this is an internal call)
+        if user != self:
+            chk_options = dict(dict(zip(self.capabilities[func]['sig'], arg)).items() + larg.items())
+            acl = PluginRegistry.getInstance("ACLResolver")
+            if not acl.check(user, "%s.%s" % (queue, func), "x", options=chk_options):
+                raise CommandNotAuthorized("call of function '%s.%s' is not permitted" % (queue, func))
 
         # Convert to list
         arg = list(arg)
