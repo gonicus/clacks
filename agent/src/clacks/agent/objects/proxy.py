@@ -59,6 +59,8 @@ class ObjectProxy(object):
     __acl_resolver = None
     __current_user = None
     __attribute_type_map = None
+    __method_type_map = None
+    __attributes = None
 
     def __init__(self, dn_or_base, what=None, user=None):
         self.__env = Environment.getInstance()
@@ -71,6 +73,8 @@ class ObjectProxy(object):
         self.__current_user = user
         self.__acl_resolver = ACLResolver.get_instance()
         self.__attribute_type_map = {}
+        self.__attributes = {}
+        self.__method_type_map = {}
 
         # Load available object types
         object_types = self.__factory.getObjectTypes()
@@ -92,7 +96,6 @@ class ObjectProxy(object):
         self.__log.debug("loading %s base object for %s" % (base, dn_or_base))
         all_extensions = object_types[base]['extended_by']
 
-
         # Load base object and extenions
         self.__base = self.__factory.getObject(base, dn_or_base, mode=base_mode)
         self.__base_type = base
@@ -108,22 +111,27 @@ class ObjectProxy(object):
             for method in object_types[obj]['methods']:
                 if obj == self.__base.__class__.__name__:
                     self.__method_map[method] = getattr(self.__base, method)
+                    self.__method_type_map[method] = self.__base_type
                     continue
                 if obj in self.__extensions:
                     self.__method_map[method] = getattr(self.__extensions[obj], method)
+                    self.__method_type_map[method] = obj
 
         # Generate read and write mapping for attributes
         self.__attribute_map = self.__factory.getAttributes()
+        self.__attributes = []
 
         # Generate attribute to object-type mapping
         for attr in [n for n, o in self.__base.getProperties().items() if not o['foreign']]:
             self.__attribute_type_map[attr] = self.__base_type
-        for ext in self.__extensions:
+            self.__attributes.append(attr)
+        for ext in all_extensions:
             if self.__extensions[ext]:
                 props = self.__extensions[ext].getProperties()
             else:
                 props = self.__factory.getObject(ext, dn_or_base, mode=base_mode).getProperties()
             for attr in [n for n, o in props.items() if not o['foreign']]:
+                self.__attributes.append(attr)
                 self.__attribute_type_map[attr] = ext
 
         self.uuid = self.__base.uuid
@@ -139,22 +147,25 @@ class ObjectProxy(object):
 
         # Do we have read permissions for the requested attribute, method
         if self.__current_user:
-            def check_acl(attribute):
-                topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, self.__base_type, attribute)
+            def check_acl(self, attribute):
+                attr_type = self.__attribute_type_map[attribute]
+                topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, attribute)
                 return self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn)
-            
-            return(filter(lambda x: check_acl(x), self.__attribute_map.keys()))
+           
+            return(filter(lambda x: check_acl(self, x), self.__attributes))
         else:
-            return self.__attribute_map.keys()
+            return self.__attributes
 
     def get_methods(self):
         """
         Returns a list containing all method names known for the instantiated object.
         """
+
         # Do we have read permissions for the requested method
         if self.__current_user:
-            def check_acl(attribute):
-                topic = "%s.objects.%s.methods.%s" % (self.__env.domain, self.__base_type, attribute)
+            def check_acl(method):
+                attr_type = self.__method_type_map[method]
+                topic = "%s.objects.%s.methods.%s" % (self.__env.domain, attr_type, method)
                 return self.__acl_resolver.check(self.__current_user, topic, "x", base=self.dn)
             
             return(filter(lambda x: check_acl(x), self.__method_map.keys()))
@@ -243,7 +254,8 @@ class ObjectProxy(object):
 
         # Valid method? and enough permissions?
         if name in self.__method_map:
-            topic = "%s.objects.%s.methods.%s" % (self.__env.domain, self.__base_type, name)
+            attr_type = self.__method_type_map[name]
+            topic = "%s.objects.%s.methods.%s" % (self.__env.domain, attr_type, name)
             if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "x", base=self.dn):
                 raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
             return self.__method_map[name]
@@ -261,7 +273,8 @@ class ObjectProxy(object):
             raise AttributeError("no such attribute '%s'" % name)
 
         # Do we have read permissions for the requested attribute, method
-        topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, self.__base_type, name)
+        attr_type = self.__attribute_type_map[name]
+        topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, name)
         if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
             raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
 
@@ -292,15 +305,8 @@ class ObjectProxy(object):
         if self.__attribute_map and name in self.__attribute_map and self.__current_user != None:
 
             # Do we have read permissions for the requested attribute, method
-            topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, self.__base_type, name)
-            if not self.__acl_resolver.check(self.__current_user, topic, "w", base=self.dn):
-                raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
-
-        # If we try to modify pbject specific properties then check acls
-        if self.__attribute_map and name in self.__attribute_map and self.__current_user != None:
-
-            # Do we have read permissions for the requested attribute, method
-            topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, self.__base_type, name)
+            attr_type = self.__attribute_type_map[name]
+            topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, name)
             if not self.__acl_resolver.check(self.__current_user, topic, "w", base=self.dn):
                 raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
 
@@ -328,7 +334,8 @@ class ObjectProxy(object):
         atypes = self.__factory.getAttributeTypes()
 
         # Check permissions
-        topic = "%s.objects.%s" % (self.__env.domain, self.__base_type)
+        attr_type = self.__attribute_type_map[name]
+        topic = "%s.objects.%s" % (self.__env.domain, attr_type)
         if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
             raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
         
