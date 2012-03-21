@@ -58,6 +58,7 @@ class ObjectProxy(object):
     __method_map = None
     __acl_resolver = None
     __current_user = None
+    __attribute_type_map = None
 
     def __init__(self, dn_or_base, what=None, user=None):
         self.__env = Environment.getInstance()
@@ -69,6 +70,7 @@ class ObjectProxy(object):
         self.__method_map = {}
         self.__current_user = user
         self.__acl_resolver = ACLResolver.get_instance()
+        self.__attribute_type_map = {}
 
         # Load available object types
         object_types = self.__factory.getObjectTypes()
@@ -89,6 +91,7 @@ class ObjectProxy(object):
         # Get available extensions
         self.__log.debug("loading %s base object for %s" % (base, dn_or_base))
         all_extensions = object_types[base]['extended_by']
+
 
         # Load base object and extenions
         self.__base = self.__factory.getObject(base, dn_or_base, mode=base_mode)
@@ -112,8 +115,22 @@ class ObjectProxy(object):
         # Generate read and write mapping for attributes
         self.__attribute_map = self.__factory.getAttributes()
 
+        # Generate attribute to object-type mapping
+        for attr in [n for n, o in self.__base.getProperties().items() if not o['foreign']]:
+            self.__attribute_type_map[attr] = self.__base_type
+        for ext in self.__extensions:
+            if self.__extensions[ext]:
+                props = self.__extensions[ext].getProperties()
+            else:
+                props = self.__factory.getObject(ext, dn_or_base, mode=base_mode).getProperties()
+            for attr in [n for n, o in props.items() if not o['foreign']]:
+                self.__attribute_type_map[attr] = ext
+
         self.uuid = self.__base.uuid
         self.dn = self.__base.dn
+
+    def get_attribute_type_map(self):
+        return(self.__attribute_type_map)
 
     def get_attributes(self):
         """
@@ -270,6 +287,14 @@ class ObjectProxy(object):
             return
         except AttributeError:
             pass
+
+        # If we try to modify pbject specific properties then check acls
+        if self.__attribute_map and name in self.__attribute_map and self.__current_user != None:
+
+            # Do we have read permissions for the requested attribute, method
+            topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, self.__base_type, name)
+            if not self.__acl_resolver.check(self.__current_user, topic, "w", base=self.dn):
+                raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
 
         # If we try to modify pbject specific properties then check acls
         if self.__attribute_map and name in self.__attribute_map and self.__current_user != None:
