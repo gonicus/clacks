@@ -286,7 +286,8 @@ class ObjectProxy(object):
             for ext_type in required_acl_objects:
                 topic = "%s.objects.%s" % (self.__env.domain, ext_type)
                 if not self.__acl_resolver.check(self.__current_user, topic, "d", base=self.dn):
-                    self.__log.debug("user '%s' has insufficient permissions to remove %s (%s)" % (self.__current_user, self.__base.dn, topic))
+                    self.__log.debug("user '%s' has insufficient permissions to remove %s, required is %s:%s" % (
+                        self.__current_user, self.__base.dn, topic, 'd'))
                     raise ACLException("you've no permission to remove %s (%s)" % (self.__base.dn, topic))
 
         if recursive:
@@ -324,6 +325,9 @@ class ObjectProxy(object):
 
         # Valid method? and enough permissions?
         if name in self.__method_map:
+
+            # Check permissions
+            # To execute a method the 'x' permission is required.
             attr_type = self.__method_type_map[name]
             topic = "%s.objects.%s.methods.%s" % (self.__env.domain, attr_type, name)
             if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "x", base=self.dn):
@@ -344,7 +348,7 @@ class ObjectProxy(object):
         if not name in self.__attribute_map:
             raise AttributeError("no such attribute '%s'" % name)
 
-        # Do we have read permissions for the requested attribute, method
+        # Do we have read permissions for the requested attribute
         attr_type = self.__attribute_type_map[name]
         topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, name)
         if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
