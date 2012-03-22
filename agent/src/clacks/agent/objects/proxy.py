@@ -40,7 +40,6 @@ from clacks.common.components import PluginRegistry
 from clacks.agent.acl import ACLResolver, ACLException
 
 
-
 class ProxyException(Exception):
     pass
 
