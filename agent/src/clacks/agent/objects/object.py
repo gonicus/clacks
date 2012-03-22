@@ -965,7 +965,7 @@ class Object(object):
                     remove_attrs.append(attr)
 
             self.remove_refs()
-            self.remove_dn_refs(obj.dn)
+            self.remove_dn_refs()
 
             #pylint: disable=E1101
             be.retract(self.uuid, [a for a in remove_attrs if self.is_attr_set(a)], self._backendAttrs[backend] \

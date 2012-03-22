@@ -284,7 +284,7 @@ class ObjectProxy(object):
         if self.__current_user != None:
             required_acl_objects = [self.__base_type] + [ext for ext, item in self.__extensions.items() if item != None]
             for ext_type in required_acl_objects:
-                topic = "%s.objects.%s" % (self.__env.domain, self.__base_type)
+                topic = "%s.objects.%s" % (self.__env.domain, ext_type)
                 if not self.__acl_resolver.check(self.__current_user, topic, "d", base=self.dn):
                     self.__log.debug("user '%s' has insufficient permissions to remove %s (%s)" % (self.__current_user, self.__base.dn, topic))
                     raise ACLException("you've no permission to remove %s (%s)" % (self.__base.dn, topic))
@@ -317,7 +317,7 @@ class ObjectProxy(object):
     def commit(self):
         self.__base.commit()
 
-        for extension in [e for x, e in self.__extensions.iteritems() if e]:
+        for extension in [ext for tmp, ext in self.__extensions.iteritems() if ext]:
             extension.commit()
 
     def __getattr__(self, name):
@@ -327,6 +327,8 @@ class ObjectProxy(object):
             attr_type = self.__method_type_map[name]
             topic = "%s.objects.%s.methods.%s" % (self.__env.domain, attr_type, name)
             if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "x", base=self.dn):
+                self.__log.debug("user '%s' has insufficient permissions to execute %s on %s, required is %s:%s" % (
+                    name, self.dn, topic, "x"))
                 raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
             return self.__method_map[name]
 
@@ -346,6 +348,8 @@ class ObjectProxy(object):
         attr_type = self.__attribute_type_map[name]
         topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, name)
         if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
+            self.__log.debug("user '%s' has insufficient permissions to read %s on %s, required is %s:%s" % (
+                name, self.dn, topic, "r"))
             raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
 
         # Load from primary object
@@ -378,6 +382,8 @@ class ObjectProxy(object):
             attr_type = self.__attribute_type_map[name]
             topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, name)
             if not self.__acl_resolver.check(self.__current_user, topic, "w", base=self.dn):
+                self.__log.debug("user '%s' has insufficient permissions to write %s on %s, required is %s:%s" % (
+                    name, self.dn, topic, "w"))
                 raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
 
         found = False
@@ -406,6 +412,8 @@ class ObjectProxy(object):
         # Check permissions
         topic = "%s.objects.%s" % (self.__env.domain, self.__base_type)
         if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
+            self.__log.debug("user '%s' has insufficient permissions for asXML on %s, required is %s:%s" % (
+                self.__current_user, self.dn, topic, "r"))
             raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
         
         # Get the xml definitions combined for all objects.
@@ -422,7 +430,7 @@ class ObjectProxy(object):
         propertiestag = etree.Element("properties")
         attrs = {}
         attrs['dn'] = [self.__base.dn]
-        attrs['parent-dn'] = [re.sub("^[^,]*,","",self.__base.dn)]
+        attrs['parent-dn'] = [re.sub("^[^,]*,", "", self.__base.dn)]
         attrs['entry-uuid'] = [self.__base.uuid]
         attrs['modify-date'] = atypes['Timestamp'].convert_to("UnicodeString", [self.__base.modifyTimestamp])
 
@@ -433,13 +441,13 @@ class ObjectProxy(object):
             # Use the object-type conversion method to get valid item string-representations.
             # This does not work for boolean values, due to the fact that xml requires
             # lowercase (true/false)
-            v = props[propname]['value']
+            prop_value = props[propname]['value']
             if props[propname]['type'] == "Boolean":
-                attrs[propname] = map(lambda x: 'true' if x == True else 'false', v)
+                attrs[propname] = map(lambda x: 'true' if x == True else 'false', prop_value)
             elif props[propname]['type'] == "Binary":
-                attrs[propname] = map(lambda x: b64encode(x), v)
+                attrs[propname] = map(lambda x: b64encode(x), prop_value)
             else:
-                attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString", v)
+                attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString", prop_value)
 
         # Create a list of extensions and their properties
         exttag = etree.Element("extensions")
@@ -457,17 +465,17 @@ class ObjectProxy(object):
                     # Use the object-type conversion method to get valid item string-representations.
                     # This does not work for boolean values, due to the fact that xml requires
                     # lowercase (true/false)
-                    v = props[propname]['value']
+                    prop_value = props[propname]['value']
                     if props[propname]['type'] == "Boolean":
-                        attrs[propname] = map(lambda x: 'true' if x == True else 'false', v)
+                        attrs[propname] = map(lambda x: 'true' if x == True else 'false', prop_value)
 
                     # Skip binary ones
                     elif props[propname]['type'] == "Binary":
-                        attrs[propname] = map(lambda x: b64encode(x), v)
+                        attrs[propname] = map(lambda x: b64encode(x), prop_value)
 
                     # Make remaining values unicode
                     else:
-                        attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString", v)
+                        attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString", prop_value)
 
         # Build a xml represention of the collected properties
         for key in attrs:
@@ -477,16 +485,16 @@ class ObjectProxy(object):
                 continue
 
             # Build up xml-elements
-            t = etree.Element("property")
+            xml_prop = etree.Element("property")
             for value in attrs[key]:
-                v = etree.Element("value")
-                v.text = value
-                n = etree.Element('name')
-                n.text = key
-                t.append(n)
-                t.append(v)
+                xml_value = etree.Element("value")
+                xml_value.text = value
+                xml_name = etree.Element('name')
+                xml_name.text = key
+                xml_prop.append(xml_name)
+                xml_prop.append(xml_value)
 
-            propertiestag.append(t)
+            propertiestag.append(xml_prop)
 
         # Combine all collected class info in a single xml file, this
         # enables us to compute things using xsl
