@@ -556,7 +556,6 @@ class ACL(object):
 
          * r - Read
          * w - Write
-         * m - Move
          * c - Create
          * d - Delete
          * s - Search - or beeing found
@@ -590,9 +589,9 @@ class ACL(object):
             raise ACLException("ACL classes that use a role cannot define"
                    " additional costum acls!")
 
-        # Check given acls allowed are 'rwcdmsex'
-        if not all(map(lambda x: x in 'rwcdmsex', acls)):
-            raise ACLException("got invalid acls string, allows is a combination of '%s' but got '%s'!" % ('rwcdmsex', acls))
+        # Check given acls allowed are 'rwcdsex'
+        if not all(map(lambda x: x in 'rwcdsex', acls)):
+            raise ACLException("got invalid acls string, allows is a combination of '%s' but got '%s'!" % ('rwcdsex', acls))
 
         acl = {
                 'topic': topic,
