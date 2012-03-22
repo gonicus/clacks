@@ -137,9 +137,6 @@ class ObjectProxy(object):
         self.uuid = self.__base.uuid
         self.dn = self.__base.dn
 
-    def get_attribute_type_map(self):
-        return(self.__attribute_type_map)
-
     def get_attributes(self):
         """
         Returns a list containing all property names known for the instantiated object.
@@ -182,22 +179,47 @@ class ObjectProxy(object):
         return dict([(e, i != None) for e, i in self.__extensions.iteritems()])
 
     def extend(self, extension):
+        """
+        Extends the base-object with the given extension 
+        """
+
         if not extension in self.__extensions:
             raise ProxyException("extension '%s' not allowed" % extension)
 
         if self.__extensions[extension] != None:
             raise ProxyException("extension '%s' already defined" % extension)
 
+        # Check Acls
+        # Required is the 'c' (create) right for the extension on the current object.
+        if self.__current_user != None:
+            topic = "%s.objects.%s" % (self.__env.domain, extension)
+            if not self.__acl_resolver.check(self.__current_user, topic, "c", base=self.__base.dn):
+                self.__log.debug("user '%s' has insufficient permissions to add extension %s to %s, required is %s:%s on %s" % (
+                self.__current_user, extension, self.__base.dn, topic, "c", self.__base.dn))
+                raise ACLException("you've no permission to extend %s with %s" % (self.__base.dn, extension))
+
         # Create extension
         self.__extensions[extension] = self.__factory.getObject(extension,
                 self.__base.uuid, mode="extend")
 
     def retract(self, extension):
+        """
+        Retracts an extension from the current object
+        """
         if not extension in self.__extensions:
             raise ProxyException("extension '%s' not allowed" % extension)
 
         if self.__extensions[extension] == None:
             raise ProxyException("extension '%s' already retracted" % extension)
+
+        # Check Acls
+        # Required is the 'd' (delete) right for the extension on the current object.
+        if self.__current_user != None:
+            topic = "%s.objects.%s" % (self.__env.domain, extension)
+            if not self.__acl_resolver.check(self.__current_user, topic, "d", base=self.__base.dn):
+                self.__log.debug("user '%s' has insufficient permissions to add extension %s to %s, required is %s:%s on %s" % (
+                self.__current_user, extension, self.__base.dn, topic, "d", self.__base.dn))
+                raise ACLException("you've no permission to retract %s from %s" % (extension, self.__base.dn))
 
         # Immediately remove extension
         self.__extensions[extension].retract()
