@@ -204,8 +204,42 @@ class ObjectProxy(object):
         self.__extensions[extension] = None
 
     def move(self, new_base, recursive=False):
-        #TODO: see if refs are affected
+        """
+        Moves the currently proxied object to another base
+        """
 
+        # Check ACLs
+        # to move an object we need the 'w' (write) right on the virtual attribute base,
+        # the d (delete) right for the complete source object and at least the c (create)
+        # right on the target base.
+        if self.__current_user != None:
+           
+            # Prepare ACL results
+            topic_user = "%s.objects.%s" % (self.__env.domain, self.__base_type)
+            topic_base = "%s.objects.%s.attributes.base" % (self.__env.domain, self.__base_type)
+            allowed_base_mod = self.__acl_resolver.check(self.__current_user, topic_base, "w", base=self.dn)
+            allowed_delete = self.__acl_resolver.check(self.__current_user, topic_user, "d", base=self.dn)
+            allowed_create = self.__acl_resolver.check(self.__current_user, topic_user, "c", base=new_base)
+
+            # Check for 'w' access to attribute base
+            if not allowed_base_mod:
+                self.__log.debug("user '%s' has insufficient permissions to move %s, required is %s:%s on %s" % (
+                    self.__current_user, self.__base.dn, topic_base, "w", self.__base.dn))
+                raise ACLException("you've no permission to move %s (%s) to %s" % (self.__base.dn, topic_base, new_base))
+
+            # Check for 'd' permission on the source object
+            if not allowed_delete:
+                self.__log.debug("user '%s' has insufficient permissions to move %s, required is %s:%s on %s" % (
+                    self.__current_user, self.__base.dn, topic_user, "d", self.__base.dn))
+                raise ACLException("you've no permission to move %s (%s) to %s" % (self.__base.dn, topic_user, new_base))
+
+            # Check for 'c' permission on the source object
+            if not allowed_create:
+                self.__log.debug("user '%s' has insufficient permissions to move %s, required is %s:%s on %s" % (
+                    self.__current_user, self.__base.dn, topic_user, "c", new_base))
+                raise ACLException("you've no permission to move %s (%s) to %s" % (self.__base.dn, topic_user, new_base))
+
+        #TODO: see if refs are affected
         if recursive:
             #TODO: implement me
             raise NotImplemented("recursive move is not implemented")
@@ -219,6 +253,20 @@ class ObjectProxy(object):
         raise NotImplemented()
 
     def remove(self, recursive=False):
+        """
+        Removes the currently proxied object.
+        """
+
+        # Check ACLs
+        # We need the 'd' right for the current base-object and all its active extensions to be able to remove it.
+        if self.__current_user != None:
+            required_acl_objects = [self.__base_type] + [ext for ext, item in self.__extensions.items() if item != None]
+            for ext_type in required_acl_objects:
+                topic = "%s.objects.%s" % (self.__env.domain, self.__base_type)
+                if not self.__acl_resolver.check(self.__current_user, topic, "d", base=self.dn):
+                    self.__log.debug("user '%s' has insufficient permissions to remove %s (%s)" % (self.__current_user, self.__base.dn, topic))
+                    raise ACLException("you've no permission to remove %s (%s)" % (self.__base.dn, topic))
+
         if recursive:
 
             # Load all children and remove them, starting from the most
@@ -334,8 +382,7 @@ class ObjectProxy(object):
         atypes = self.__factory.getAttributeTypes()
 
         # Check permissions
-        attr_type = self.__attribute_type_map[name]
-        topic = "%s.objects.%s" % (self.__env.domain, attr_type)
+        topic = "%s.objects.%s" % (self.__env.domain, self.__base_type)
         if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
             raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
         
