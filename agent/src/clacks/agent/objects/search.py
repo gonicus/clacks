@@ -502,12 +502,21 @@ class Limit(MyNode):
     """
 
     def get_range(self):
+
+        # Get number of object types and mutliple the start and stop values
+        # with it.
+        # We have to do this due to the fact that the resulting query entries
+        # are multiplied by the number of object types too.
+        o_types_cnt = len(self.query_base.object_types)
         if len(self) == 2:
-            start = self[0]
-            stop = self[1]
+            start = int(self[0])
+            stop = int(self[1])
         else:
             start = 1
-            stop = self[0]
+            stop = int(self[0])
+
+        start = ((start -1) * o_types_cnt) + 1
+        stop = stop * o_types_cnt
         return(start, stop)
 
 
