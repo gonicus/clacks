@@ -122,6 +122,7 @@ class ObjectProxy(object):
         self.__attributes = []
 
         # Generate attribute to object-type mapping
+        # TODO: Fabian -> Use factory.getAttributeTypeMap() instead
         for attr in [n for n, o in self.__base.getProperties().items() if not o['foreign']]:
             self.__attribute_type_map[attr] = self.__base_type
             self.__attributes.append(attr)

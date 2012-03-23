@@ -151,6 +151,35 @@ class ObjectFactory(object):
                         res.append(attr.Name.text)
         return res
 
+    def getAttributeTypeMap(self, objectType):
+        """
+        Returns a mapping containing all attributes provided by
+        the given object Type and the object-type they belong to.
+        """
+        if not objectType in self.__xml_defs:
+            raise Exception("cannot create attribute map, object %s does not exist!" % objectType)
+
+        if not self.__xml_defs[objectType]['BaseObject']:
+            raise Exception("cannot create attribute map, %s is not a base-object!" % objectType)
+
+
+        # Collect all object-types that can extend this class.
+        find = objectify.ObjectPath("Object.Extends")
+        dependandObjectTypes = [objectType]
+        for oc in self.__xml_defs:
+            if find.hasattr(self.__xml_defs[oc]) and objectType in map(lambda x: x.Value, find(self.__xml_defs[oc])):
+                dependandObjectTypes.append(oc)
+
+        # Get all <Attribute> tags and check if the property is not foreign
+        res = {}
+        for oc in dependandObjectTypes:
+            find = objectify.ObjectPath("Object.Attributes.Attribute")
+            if find.hasattr(self.__xml_defs[oc]):
+                for attr in find(self.__xml_defs[oc]):
+                    if not bool(load(attr, "Foreign", False)):
+                        res[attr.Name.text] = oc
+        return res
+
     def getReferences(self, s_obj=None, s_attr=None):
         """
         Returns a dictionary containing all attribute references.
