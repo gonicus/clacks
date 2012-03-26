@@ -676,13 +676,13 @@ class SearchWrapper(object):
 
             self.query_parser = ~spaces & select & bases & Optional(where) & Optional(order_by) & Optional(limit) & ~spaces > Query
 
-    def execute(self, query):
+    def execute(self, query, user=None):
         """
         Parses the given query and executes the resulting xquery statement.
         """
         self.env.log.debug("about to execute query '%s'" % query)
         q_o = self.query_parser.parse(query)[0]
-        res = q_o.execute()
+        res = q_o.execute(user)
         self.env.log.debug("query took %ds" % q_o.time)
         return res
 
