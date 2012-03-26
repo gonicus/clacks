@@ -178,11 +178,11 @@ class Query(MyNode):
             where_result.append("order by " + self.OrderBy[0].compile_xquery())
 
         # Add the return statement for the result.
-        attrs_get_list = []
+        attrs_get_list = [str(len(self.object_types.keys()))]
         for item in self.object_types.keys():
             attrs_get_list.append("$%s" % (item))
         attr_get_list = ", ".join(attrs_get_list)
-
+        
         where_result += ['return(' + attr_get_list + ')']
 
         """
@@ -233,21 +233,13 @@ class Query(MyNode):
 
         # The list we return later
         result = []
-
-        # We will receive a list of results, each entry represents an object
-        # that was returned by the query.
-        # e.g. ['<User>', '<User>', '<User>'] for a simple search
-        # or ['<User>', '<SambaDomain>', '<User>', '<SambaDomain>'] for a search
-        # over the two object types User and SambaDomain
-        objs_cnt = len(self.object_types)
-
         while(len(q_res)):
 
-            # Get the amount of result-items that represents one query-result.
-            # If we've startet a query that returns values of two objects
-            # then 'obj_cnt' is 2.
-            items_data = q_res[0:objs_cnt]
-            q_res = q_res[objs_cnt::]
+            # The first item tells us how many items are part of one result.
+            # e.g.     2, User, Group, 2, User, Group
+            length = int(q_res[0])
+            items_data = q_res[1:1+length]
+            q_res = q_res[1+length::]
 
             tmp = {}
             res = {}
