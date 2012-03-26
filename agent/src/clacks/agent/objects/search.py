@@ -44,6 +44,8 @@ from lxml import etree
 from time import time
 from clacks.common import Environment
 from clacks.agent.xmldb.handler import XMLDBHandler
+from clacks.agent.objects.factory import ObjectFactory
+from clacks.agent.acl import ACLResolver, ACLException
 from lepl import Literal, Node, Regexp, UnsignedReal, Space, Separator, Delayed, Optional, String
 
 
@@ -95,6 +97,9 @@ class Query(MyNode):
 
     _collection = 'objects'
 
+    __acl_resolver = None
+    __env = None
+
     def __init__(self, *args):
 
         # Prepare class members
@@ -104,6 +109,8 @@ class Query(MyNode):
         self._selected_attributes = []
         self._xquery = ""
         self.result = []
+        self.__acl_resolver = ACLResolver.get_instance()
+        self.__env = Environment.getInstance()
 
         # Ensure that all Nodes are initialized and have access to the base-node 'Query'.
         self.__populate_self(args)
@@ -197,17 +204,26 @@ class Query(MyNode):
                     return
                 ), 5, 10)
         """
-        if self.Limit:
-            where_result =  ['return subsequence('] + where_result + [",%s,%s)" % (self.Limit[0].get_range())]
+
+        #TODO: We limit the results in python after we've applied ACLs...
+        #if self.Limit:
+        #    where_result =  ['return subsequence('] + where_result + [",%s,%s)" % (self.Limit[0].get_range())]
 
         result += where_result
         self._xquery = "\n".join(result)
 
-    def execute(self):
+    def execute(self, user=None):
         """
         Execute the created xquery and return only selected and accessible attributes.
         """
         start = time()
+
+        # get the attribute mapping to be able to check the results
+        # against the currently active aclsets.
+        of = ObjectFactory.getInstance()
+        attrmap = {}
+        for oType in self.object_types:
+            attrmap[oType] = of.getAttributeTypeMap(oType)
 
         # Start the given query
         xmldb = XMLDBHandler.get_instance()
@@ -251,19 +267,23 @@ class Query(MyNode):
             # Extract the requested attributes out of the result.
             for suffix, name in self._selected_attributes:
 
+                DN = tmp[suffix]['DN'][0]
+
                 # Return all attributes
                 if name == "*":
 
                     # Append all attributes of the object
-                    res[suffix] = tmp[suffix]['Attributes'][0]
+                    for name in tmp[suffix]['Attributes'][0]:
+                        if self.__has_access_to(user, DN, suffix, name):
+                            res[suffix][name] = tmp[suffix]['Attributes'][0][name]
 
                     # Append special attributes like the DN etc.
                     for name in ('UUID', 'Type', 'DN', 'ParentDN'):
-                        if name in tmp[suffix]:
+                        if name in tmp[suffix] and self.__has_access_to(user, DN, suffix, name):
                             res[suffix][name] = (tmp[suffix][name])
 
                     # Append extension if they exists
-                    if 'Extensions' in tmp[suffix]:
+                    if 'Extensions' in tmp[suffix] and self.__has_access_to(user, DN, suffix, 'Extension'):
                         res[suffix]['Extension'] = map(lambda x: x, tmp[suffix]['Extensions'][0]['Extension'])
                 else:
 
@@ -271,14 +291,27 @@ class Query(MyNode):
                     path = self._get_attribute_location(name, False)
                     if path:
                         if path in tmp[suffix]:
-                            res[suffix][name] = (tmp[suffix][path][0][name])
-                    else:
+                            if self.__has_access_to(user, DN, suffix, name):
+                                res[suffix][name] = (tmp[suffix][path][0][name])
+                    elif self.__has_access_to(user, DN, suffix, name):
                         res[suffix][name] = (tmp[suffix][name])
 
             # Append the created item to the result.
             result.append(res)
         self.time = time() - start
+
+        #TODO: Limitate resulting entries, manually, due to the fact that we cannot filter by acls in the xquery
+        if self.Limit:
+            start, stop = self.Limit[0].get_range()
+            result =  result[start:stop]
         return result
+
+    def __has_access_to(self, user, dn, objectType, attr):
+        if user:
+            topic = "%s.%s.attributes.%s" % (self.__env.domain, objectType, attr)
+            return self.__acl_resolver.check(user, topic, "r", base=dn)
+        else:
+            return True
 
     def recursive_dict(self, element, strip_namespaces=False):
         """
@@ -502,21 +535,12 @@ class Limit(MyNode):
     """
 
     def get_range(self):
-
-        # Get number of object types and mutliple the start and stop values
-        # with it.
-        # We have to do this due to the fact that the resulting query entries
-        # are multiplied by the number of object types too.
-        o_types_cnt = len(self.query_base.object_types)
         if len(self) == 2:
             start = int(self[0])
             stop = int(self[1])
         else:
             start = 1
             stop = int(self[0])
-
-        start = ((start -1) * o_types_cnt) + 1
-        stop = stop * o_types_cnt
         return(start, stop)
 
 

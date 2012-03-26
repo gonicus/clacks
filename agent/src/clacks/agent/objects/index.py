@@ -320,8 +320,8 @@ class ObjectIndex(Plugin):
         """
         return self.db.documentExists('objects', uuid)
 
-    @Command(__help__=N_("Filter for indexed attributes and return the matches."))
-    def search(self, qstring):
+    @Command(needsUser=True, __help__=N_("Filter for indexed attributes and return the matches."))
+    def search(self, user, qstring):
         """
         Query the database using the given filter and return the
         result set.
@@ -341,4 +341,4 @@ class ObjectIndex(Plugin):
         if GlobalLock.exists("scan_index"):
             raise FilterException("index rebuild in progress - try again later")
 
-        return self.__sw.execute(qstring)
+        return self.__sw.execute(qstring, user=user)
