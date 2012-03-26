@@ -308,8 +308,9 @@ class Query(MyNode):
 
     def __has_access_to(self, user, dn, objectType, attr):
         if user:
-            topic = "%s.%s.attributes.%s" % (self.__env.domain, objectType, attr)
-            return self.__acl_resolver.check(user, topic, "r", base=dn)
+            topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, objectType, attr)
+            res = self.__acl_resolver.check(user, topic, "r", base=dn)
+            return res
         else:
             return True
 
