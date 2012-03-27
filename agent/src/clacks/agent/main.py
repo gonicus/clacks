@@ -27,7 +27,6 @@ def shutdown(a=None, b=None):
 
     logging.info("shut down")
     logging.shutdown()
-    exit(0)
 
 
 def handleTermSignal(a=None, b=None):
