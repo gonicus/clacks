@@ -923,6 +923,12 @@ class Object(object):
             be = ObjectBackendRegistry.getBackend(backend)
             be.move(self.uuid, new_base)
 
+        # Update the DN refs which have most probably changed
+        p_backend = getattr(self, '_backend')
+        be = ObjectBackendRegistry.getBackend(p_backend)
+        dn = be.uuid2dn(self.uuid)
+        self.update_dn_refs(dn)
+
         zope.event.notify(ObjectChanged("post move", obj))
 
     def retract(self):

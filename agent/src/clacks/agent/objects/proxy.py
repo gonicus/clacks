@@ -149,7 +149,7 @@ class ObjectProxy(object):
                 attr_type = self.__attribute_type_map[attribute]
                 topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, attribute)
                 return self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn)
-           
+
             return(filter(lambda x: check_acl(self, x), self.__attributes))
         else:
             return self.__attributes
@@ -165,7 +165,7 @@ class ObjectProxy(object):
                 attr_type = self.__method_type_map[method]
                 topic = "%s.objects.%s.methods.%s" % (self.__env.domain, attr_type, method)
                 return self.__acl_resolver.check(self.__current_user, topic, "x", base=self.dn)
-            
+
             return(filter(lambda x: check_acl(x), self.__method_map.keys()))
         else:
             return(self.__method_map.keys())
@@ -181,7 +181,7 @@ class ObjectProxy(object):
 
     def extend(self, extension):
         """
-        Extends the base-object with the given extension 
+        Extends the base-object with the given extension
         """
 
         if not extension in self.__extensions:
@@ -236,7 +236,7 @@ class ObjectProxy(object):
         # the d (delete) right for the complete source object and at least the c (create)
         # right on the target base.
         if self.__current_user != None:
-           
+
             # Prepare ACL results
             topic_user = "%s.objects.%s" % (self.__env.domain, self.__base_type)
             topic_base = "%s.objects.%s.attributes.base" % (self.__env.domain, self.__base_type)
@@ -262,7 +262,6 @@ class ObjectProxy(object):
                     self.__current_user, self.__base.dn, topic_user, "c", new_base))
                 raise ACLException("you've no permission to move %s (%s) to %s" % (self.__base.dn, topic_user, new_base))
 
-        #TODO: see if refs are affected
         if recursive:
             #TODO: implement me
             raise NotImplemented("recursive move is not implemented")
@@ -272,8 +271,7 @@ class ObjectProxy(object):
             if len(self.__factory.getObjectChildren(self.__base.dn)):
                 raise ProxyException("specified object has children - use the recursive flag to move them")
 
-        #TODO: implement me
-        raise NotImplemented()
+        return self.__base.move(new_base)
 
     def remove(self, recursive=False):
         """
@@ -420,7 +418,7 @@ class ObjectProxy(object):
             self.__log.debug("user '%s' has insufficient permissions for asXML on %s, required is %s:%s" % (
                 self.__current_user, self.dn, topic, "r"))
             raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
-        
+
         # Get the xml definitions combined for all objects.
         xmldefs = etree.tostring(self.__factory.getXMLDefinitionsCombined())
 
