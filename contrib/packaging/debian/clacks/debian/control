@@ -26,7 +26,8 @@ Description: clacks infrastructure service - common files
 Package: clacks-dbus
 Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, clacks-client, hal,
- python-notify, python-daemon, python-dbus, python-dateutil, python-pynotify
+ python-notify, python-daemon, python-dbus, python-dateutil, python-pynotify,
+ python-setproctitle
 Description: clacks infrastructure service - DBUS service provider
  Brief description is missing.
  .
@@ -36,7 +37,7 @@ Package: clacks-client
 Architecture: all
 Conflicts: clacks-agent
 Depends: ${python:Depends}, ${misc:Depends}, python-dateutil, python-netifaces,
- python-crypto, adduser, python-newt, python-zope.event
+ python-crypto, adduser, python-newt, python-zope.event, python-setproctitle
 Suggests: clacks-dbus, fusioninventory-agent, python-pyside | python-qt4, avahi-utils
 Description: clacks infrastructure service - client
  Brief description is missing.
@@ -56,7 +57,7 @@ Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, clacks-common,
  python-dumbnet, python-ldap, python-smbpasswd, python-unidecode,
  python-dbxml, python-sqlalchemy, python-mysqldb, python-sqlalchemy-ext,
- adduser, python-zope.event, python-lepl
+ adduser, python-zope.event, python-lepl, python-setproctitle
 Conflicts: clacks-client
 Suggests: qpidd
 Description: clacks infrastructure service - agent
