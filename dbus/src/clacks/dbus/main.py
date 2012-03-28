@@ -10,6 +10,7 @@ import gobject
 import dbus.mainloop.glib
 import logging
 
+from setproctitle import setproctitle
 from clacks.common import Environment
 from clacks.dbus import __version__ as VERSION
 from clacks.common.components.registry import PluginRegistry
@@ -61,6 +62,10 @@ def mainLoop(env):
 def main():
     """ Main programm which is called when the clacks agent process gets started.
         It does the main forking os related tasks. """
+
+    # Set process list title
+    os.putenv('SPT_NOENV', 'non_empty_value')
+    setproctitle("clacks-dbus")
 
     # Inizialize core environment
     env = Environment.getInstance()
