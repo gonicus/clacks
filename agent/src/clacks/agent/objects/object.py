@@ -3,7 +3,6 @@ import copy
 import re
 import zope.event
 import ldap
-import ldap.dn
 from logging import getLogger
 from zope.interface import Interface, implements
 from clacks.common.components import PluginRegistry
@@ -954,11 +953,9 @@ class Object(object):
         obj = self
         zope.event.notify(ObjectChanged("pre move", obj))
 
-        # Move for all backends (...)
-        backends.reverse()
-        for backend in backends:
-            be = ObjectBackendRegistry.getBackend(backend)
-            be.move(self.uuid, new_base)
+        # Move for primary backend
+        be = ObjectBackendRegistry.getBackend(backends[0])
+        be.move(self.uuid, new_base)
 
         # Update the DN refs which have most probably changed
         p_backend = getattr(self, '_backend')
@@ -966,7 +963,7 @@ class Object(object):
         dn = be.uuid2dn(self.uuid)
         self.update_dn_refs(dn)
 
-        zope.event.notify(ObjectChanged("post move", obj))
+        zope.event.notify(ObjectChanged("post move", obj, dn=dn))
 
     def retract(self):
         """

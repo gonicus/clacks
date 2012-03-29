@@ -39,7 +39,6 @@ import re
 import logging
 import zope.event
 import ldap
-import ldap.dn
 import StringIO
 from lxml import etree, objectify
 from clacks.common import Environment

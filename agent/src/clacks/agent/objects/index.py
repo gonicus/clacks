@@ -10,7 +10,6 @@ local index database
 ----
 """
 import logging
-import ldap.dn
 import zope.event
 import datetime
 from itertools import izip
@@ -185,6 +184,7 @@ class ObjectIndex(Plugin):
 
             if event.reason == "post move":
                 self.log.debug("updating object index for %s" % uuid)
+                print "Updating object index ->", event.dn
                 obj = ObjectProxy(event.dn)
                 self.update(obj)
 
