@@ -931,7 +931,7 @@ class Object(object):
         be = ObjectBackendRegistry.getBackend(p_backend)
         self.update_dn_refs(self.dn)
 
-        zope.event.notify(ObjectChanged("pre move", obj, dn=self.dn, orig_dn=orig_dn))
+        zope.event.notify(ObjectChanged("post move", obj, dn=self.dn, orig_dn=orig_dn))
 
     def move(self, new_base):
         """
