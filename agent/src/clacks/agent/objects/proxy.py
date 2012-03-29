@@ -403,7 +403,7 @@ class ObjectProxy(object):
             topic = "%s.objects.%s.methods.%s" % (self.__env.domain, attr_type, name)
             if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "x", base=self.dn):
                 self.__log.debug("user '%s' has insufficient permissions to execute %s on %s, required is %s:%s" % (
-                    name, self.dn, topic, "x"))
+                    self.__current_user, name, self.dn, topic, "x"))
                 raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
             return self.__method_map[name]
 
@@ -424,7 +424,7 @@ class ObjectProxy(object):
         topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, name)
         if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
             self.__log.debug("user '%s' has insufficient permissions to read %s on %s, required is %s:%s" % (
-                name, self.dn, topic, "r"))
+                self.__current_user, name, self.dn, topic, "r"))
             raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
 
         # Load from primary object
@@ -458,7 +458,7 @@ class ObjectProxy(object):
             topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, name)
             if not self.__acl_resolver.check(self.__current_user, topic, "w", base=self.dn):
                 self.__log.debug("user '%s' has insufficient permissions to write %s on %s, required is %s:%s" % (
-                    name, self.dn, topic, "w"))
+                    self.__current_user, name, self.dn, topic, "w"))
                 raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
 
         found = False
