@@ -122,11 +122,7 @@ class AsteriskNotificationReceiver(object):
         # Send from/to messages as needed
         amqp = PluginRegistry.getInstance('AMQPHandler')
         if from_msg:
-            self.__cr.dispatch(amqp.url['user'], None, "notifyUser",
-                i_from['ldap_uid'], self.TYPE_MAP[event['Type']],
-                from_msg.strip())
+            self.__cr.call("notifyUser", i_from['ldap_uid'], self.TYPE_MAP[event['Type']], from_msg.strip())
 
         if to_msg:
-            self.__cr.dispatch(amqp.url['user'], None, "notifyUser",
-                    i_to['ldap_uid'], self.TYPE_MAP[event['Type']],
-                    to_msg.strip())
+            self.__cr.call("notifyUser", i_to['ldap_uid'], self.TYPE_MAP[event['Type']], to_msg.strip())

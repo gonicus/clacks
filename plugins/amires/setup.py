@@ -50,7 +50,6 @@ setup(
         [phone.resolver]
         res.ldap = amires.modules.ldap_res:LDAPNumberResolver
         res.sugar = amires.modules.sugar_res:SugarNumberResolver
-        res.telekom = amires.modules.telekom_res:TelekomNumberResolver
         res.xml = amires.modules.xml_res:XMLNumberResolver
 
         [notification.renderer]
@@ -58,4 +57,5 @@ setup(
         render.goforge = amires.modules.goforge_render:GOForgeRenderer
 
     """,
+    #res.telekom = amires.modules.telekom_res:TelekomNumberResolver
 )
