@@ -237,8 +237,8 @@ class ClientService(Plugin):
                         self.clientDispatch(client, "notify", user, title, message,
                                 timeout, level, icon)
                     #pylint: disable=W0141
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        self.log.error("sending message failed: %s", str(e))
 
         else:
             # Notify all users
