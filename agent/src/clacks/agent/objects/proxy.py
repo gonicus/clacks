@@ -31,6 +31,7 @@ will list the available extension types for that specific object.
 import StringIO
 import pkg_resources
 import re
+from itertools import izip
 from lxml import etree
 from base64 import b64encode
 from ldap.dn import str2dn, dn2str
@@ -38,6 +39,7 @@ from logging import getLogger
 from clacks.common import Environment
 from clacks.common.components import PluginRegistry
 from clacks.agent.acl import ACLResolver, ACLException
+from clacks.agent.objects.backend.registry import ObjectBackendRegistry
 
 
 class ProxyException(Exception):
@@ -263,8 +265,78 @@ class ObjectProxy(object):
                 raise ACLException("you've no permission to move %s (%s) to %s" % (self.__base.dn, topic_user, new_base))
 
         if recursive:
-            #TODO: implement me
-            raise NotImplemented("recursive move is not implemented")
+            try:
+                print "------> recursive move -"
+                old_base = self.get_parent_dn()
+                print "------> Old base", old_base, "new base", new_base
+
+                # Get primary backend of the object to be moved
+                p_backend = getattr(self.__base, '_backend')
+                print "-> primary backend:", p_backend
+
+                # Traverse tree and find different backends
+                foreign_backends = {}
+                index = PluginRegistry.getInstance("ObjectIndex")
+                children = index.xquery("""xquery version '1.0';
+                    let $doc := collection('objects')
+                    for $x in $doc/node()
+                    where ends-with($x/o:ParentDN, '%s')
+                    return
+                      ($x/o:DN/string(), $x/o:Type/string())""" % self.__base.dn)
+
+                # Note all elements with different backends
+                i = iter(children)
+                children = dict(izip(i, i))
+                for cdn, ctype in children.items():
+                    cback = self.__factory.getObjectTypes()[ctype]['backend']
+                    if cback != p_backend:
+                        if not cback in foreign_backends:
+                            foreign_backends = []
+                        foreign_backends[cback].append(cdn)
+
+                # Only keep the first per backend that is close to the root
+                root_elements = {}
+                for fbe, fdns in foreign_backends.items():
+                    fdns.sort(key=len)
+                    root_elements[fbe] = fdns[0]
+
+                # Move base object
+                self.__base.move(new_base)
+
+                # Move additional backends if needed
+                for fbe, fdn in root_elements.items():
+
+                    # Get new base of child
+                    new_child_dn = fdn[:len(fdn) - len(old_base)] + new_base
+                    new_child_base = dn2str(str2dn(new_child_dn.encode('utf-8'))[1:]).decode('utf-8')
+
+                    # Select objects with different base and trigger a move, the
+                    # primary backend move will be triggered and do a recursive
+                    # move for that backend.
+                    obj = Object(fdn)
+                    obj.move(new_child_base)
+
+                # Update all DN references
+                # Emit 'post move' events
+                for cdn, ctype in children.items():
+
+                    # Don't handle objects that already have been moved
+                    if cdn in root_elements.values():
+                        continue
+
+                    # These objects have been moved automatically. Open
+                    # them and let them do a simulated move to update
+                    # their refs.
+                    new_cdn = cdn[:len(cdn) - len(old_base)] + new_base
+                    obj = Object(new_cdn)
+                    obj.simulate_move(cdn)
+
+                print "- recursive move -----<"
+                return True
+
+            except Exception as e:
+                self.log.error("moving object '%s' from '%s' to '%s' failed: %s" % (self._base.uuid, old_base, new_base, str(e)))
+                return False
 
         else:
             # Test if we've children
@@ -299,7 +371,7 @@ class ObjectProxy(object):
 
             for child in children:
                 c_obj = ObjectProxy(child)
-                c_obj.remove()
+                c_obj.remove(recursive=True)
 
         else:
             # Test if we've children
@@ -514,3 +586,4 @@ class ObjectProxy(object):
 
 
 from .factory import ObjectFactory
+from .object import Object

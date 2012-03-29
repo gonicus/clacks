@@ -185,7 +185,7 @@ class Query(MyNode):
         for item in self.object_types.keys():
             attrs_get_list.append("$%s" % (item))
         attr_get_list = ", ".join(attrs_get_list)
-        
+
         where_result += ['return(' + attr_get_list + ')']
 
         """
