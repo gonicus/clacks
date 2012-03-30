@@ -10,6 +10,13 @@
 		<Backend>LDAP</Backend>
                 <Attributes>
                         <Attribute>
+                                <Name>ou</Name>
+                                <Description></Description>
+                                <Type>UnicodeString</Type>
+                                <MultiValue>false</MultiValue>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+                        <Attribute>
                                 <Name>description</Name>
                                 <Description></Description>
                                 <Type>UnicodeString</Type>

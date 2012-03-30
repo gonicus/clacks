@@ -31,6 +31,7 @@ will list the available extension types for that specific object.
 import StringIO
 import pkg_resources
 import re
+from itertools import izip
 from lxml import etree
 from base64 import b64encode
 from ldap.dn import str2dn, dn2str
@@ -38,6 +39,7 @@ from logging import getLogger
 from clacks.common import Environment
 from clacks.common.components import PluginRegistry
 from clacks.agent.acl import ACLResolver, ACLException
+from clacks.agent.objects.backend.registry import ObjectBackendRegistry
 
 
 class ProxyException(Exception):
@@ -149,7 +151,7 @@ class ObjectProxy(object):
                 attr_type = self.__attribute_type_map[attribute]
                 topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, attribute)
                 return self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn)
-           
+
             return(filter(lambda x: check_acl(self, x), self.__attributes))
         else:
             return self.__attributes
@@ -165,7 +167,7 @@ class ObjectProxy(object):
                 attr_type = self.__method_type_map[method]
                 topic = "%s.objects.%s.methods.%s" % (self.__env.domain, attr_type, method)
                 return self.__acl_resolver.check(self.__current_user, topic, "x", base=self.dn)
-            
+
             return(filter(lambda x: check_acl(x), self.__method_map.keys()))
         else:
             return(self.__method_map.keys())
@@ -181,7 +183,7 @@ class ObjectProxy(object):
 
     def extend(self, extension):
         """
-        Extends the base-object with the given extension 
+        Extends the base-object with the given extension
         """
 
         if not extension in self.__extensions:
@@ -236,7 +238,7 @@ class ObjectProxy(object):
         # the d (delete) right for the complete source object and at least the c (create)
         # right on the target base.
         if self.__current_user != None:
-           
+
             # Prepare ACL results
             topic_user = "%s.objects.%s" % (self.__env.domain, self.__base_type)
             topic_base = "%s.objects.%s.attributes.base" % (self.__env.domain, self.__base_type)
@@ -262,18 +264,86 @@ class ObjectProxy(object):
                     self.__current_user, self.__base.dn, topic_user, "c", new_base))
                 raise ACLException("you've no permission to move %s (%s) to %s" % (self.__base.dn, topic_user, new_base))
 
-        #TODO: see if refs are affected
         if recursive:
-            #TODO: implement me
-            raise NotImplemented("recursive move is not implemented")
+            try:
+                old_base = self.__base.dn
+                child_new_base = dn2str([str2dn(self.__base.dn.encode('utf-8'))[0]]).decode('utf-8') + "," + new_base
+
+                # Get primary backend of the object to be moved
+                p_backend = getattr(self.__base, '_backend')
+
+                # Traverse tree and find different backends
+                foreign_backends = {}
+                index = PluginRegistry.getInstance("ObjectIndex")
+                children = index.xquery("""xquery version '1.0';
+                    let $doc := collection('objects')
+                    for $x in $doc/node()
+                    where ends-with($x/o:ParentDN, '%s')
+                    return
+                      ($x/o:DN/string(), $x/o:Type/string())""" % self.__base.dn)
+
+                # Note all elements with different backends
+                i = iter(children)
+                children = dict(izip(i, i))
+                children = dict(map(lambda x: (x[0].decode("utf-8"), x[1]), children.items()))
+                for cdn, ctype in children.items():
+                    cback = self.__factory.getObjectTypes()[ctype]['backend']
+                    if cback != p_backend:
+                        if not cback in foreign_backends:
+                            foreign_backends = []
+                        foreign_backends[cback].append(cdn)
+
+                # Only keep the first per backend that is close to the root
+                root_elements = {}
+                for fbe, fdns in foreign_backends.items():
+                    fdns.sort(key=len)
+                    root_elements[fbe] = fdns[0]
+
+                # Move base object
+                self.__base.move(new_base)
+
+                # Move additional backends if needed
+                for fbe, fdn in root_elements.items():
+
+                    # Get new base of child
+                    new_child_dn = fdn[:len(fdn) - len(old_base)] + child_new_base
+                    new_child_base = dn2str(str2dn(new_child_dn.encode('utf-8'))[1:]).decode('utf-8')
+
+                    # Select objects with different base and trigger a move, the
+                    # primary backend move will be triggered and do a recursive
+                    # move for that backend.
+                    obj = self.__factory.getObject(children[fdn], fdn)
+                    obj.move(new_child_base)
+
+                # Update all DN references
+                # Emit 'post move' events
+                for cdn, ctype in children.items():
+
+                    # Don't handle objects that already have been moved
+                    if cdn in root_elements.values():
+                        continue
+
+                    # These objects have been moved automatically. Open
+                    # them and let them do a simulated move to update
+                    # their refs.
+                    new_cdn = cdn[:len(cdn) - len(old_base)] + child_new_base
+                    obj = self.__factory.getObject(ctype, new_cdn)
+                    obj.simulate_move(cdn)
+
+                return True
+
+            except Exception as e:
+                from traceback import print_exc
+                print_exc();
+                self.__log.error("moving object '%s' from '%s' to '%s' failed: %s" % (self.__base.uuid, old_base, new_base, str(e)))
+                return False
 
         else:
             # Test if we've children
             if len(self.__factory.getObjectChildren(self.__base.dn)):
                 raise ProxyException("specified object has children - use the recursive flag to move them")
 
-        #TODO: implement me
-        raise NotImplemented()
+        return self.__base.move(new_base)
 
     def remove(self, recursive=False):
         """
@@ -301,7 +371,7 @@ class ObjectProxy(object):
 
             for child in children:
                 c_obj = ObjectProxy(child)
-                c_obj.remove()
+                c_obj.remove(recursive=True)
 
         else:
             # Test if we've children
@@ -317,10 +387,77 @@ class ObjectProxy(object):
         self.__base.remove()
 
     def commit(self):
+        # Gather information about children
+        old_base = self.__base.dn
+
+        # Get primary backend of the object to be moved
+        p_backend = getattr(self.__base, '_backend')
+
+        # Traverse tree and find different backends
+        foreign_backends = {}
+        index = PluginRegistry.getInstance("ObjectIndex")
+        children = index.xquery("""xquery version '1.0';
+                    let $doc := collection('objects')
+                    for $x in $doc/node()
+                    where ends-with($x/o:ParentDN, '%s')
+                    return
+                      ($x/o:DN/string(), $x/o:Type/string())""" % self.__base.dn)
+
+        # Note all elements with different backends
+        i = iter(children)
+        children = dict(izip(i, i))
+        children = dict(map(lambda x: (x[0].decode("utf-8"), x[1]), children.items()))
+        for cdn, ctype in children.items():
+            cback = self.__factory.getObjectTypes()[ctype]['backend']
+            if cback != p_backend:
+                if not cback in foreign_backends:
+                    foreign_backends = []
+                foreign_backends[cback].append(cdn)
+
+        # Only keep the first per backend that is close to the root
+        root_elements = {}
+        for fbe, fdns in foreign_backends.items():
+            fdns.sort(key=len)
+            root_elements[fbe] = fdns[0]
+
         self.__base.commit()
 
         for extension in [ext for tmp, ext in self.__extensions.iteritems() if ext]:
             extension.commit()
+
+        # Did the commit result in a move?
+        if self.dn != self.__base.dn:
+
+            if children:
+                # Move additional backends if needed
+                for fbe, fdn in root_elements.items():
+
+                    # Get new base of child
+                    new_child_dn = fdn[:len(fdn) - len(old_base)] + self.__base.dn
+                    new_child_base = dn2str(str2dn(new_child_dn.encode('utf-8'))[1:]).decode('utf-8')
+
+                    # Select objects with different base and trigger a move, the
+                    # primary backend move will be triggered and do a recursive
+                    # move for that backend.
+                    obj = self.__factory.getObject(children[fdn], fdn)
+                    obj.move(new_child_base)
+
+                # Update all DN references
+                # Emit 'post move' events
+                for cdn, ctype in children.items():
+
+                    # Don't handle objects that already have been moved
+                    if cdn in root_elements.values():
+                        continue
+
+                    # These objects have been moved automatically. Open
+                    # them and let them do a simulated move to update
+                    # their refs.
+                    new_cdn = cdn[:len(cdn) - len(old_base)] + self.__base.dn
+                    obj = self.__factory.getObject(ctype, new_cdn)
+                    obj.simulate_move(cdn)
+
+            self.dn = self.__base.dn
 
     def __getattr__(self, name):
 
@@ -333,7 +470,7 @@ class ObjectProxy(object):
             topic = "%s.objects.%s.methods.%s" % (self.__env.domain, attr_type, name)
             if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "x", base=self.dn):
                 self.__log.debug("user '%s' has insufficient permissions to execute %s on %s, required is %s:%s" % (
-                    name, self.dn, topic, "x"))
+                    self.__current_user, name, self.dn, topic, "x"))
                 raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
             return self.__method_map[name]
 
@@ -354,7 +491,7 @@ class ObjectProxy(object):
         topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, name)
         if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
             self.__log.debug("user '%s' has insufficient permissions to read %s on %s, required is %s:%s" % (
-                name, self.dn, topic, "r"))
+                self.__current_user, name, self.dn, topic, "r"))
             raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
 
         # Load from primary object
@@ -388,7 +525,7 @@ class ObjectProxy(object):
             topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, name)
             if not self.__acl_resolver.check(self.__current_user, topic, "w", base=self.dn):
                 self.__log.debug("user '%s' has insufficient permissions to write %s on %s, required is %s:%s" % (
-                    name, self.dn, topic, "w"))
+                    self.__current_user, name, self.dn, topic, "w"))
                 raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
 
         found = False
@@ -420,7 +557,7 @@ class ObjectProxy(object):
             self.__log.debug("user '%s' has insufficient permissions for asXML on %s, required is %s:%s" % (
                 self.__current_user, self.dn, topic, "r"))
             raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
-        
+
         # Get the xml definitions combined for all objects.
         xmldefs = etree.tostring(self.__factory.getXMLDefinitionsCombined())
 
@@ -516,3 +653,4 @@ class ObjectProxy(object):
 
 
 from .factory import ObjectFactory
+from .object import Object

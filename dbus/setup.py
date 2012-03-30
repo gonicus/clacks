@@ -52,6 +52,7 @@ setup(
         ],
     install_requires = [
         'clacks.common',
+        'setproctitle'
         ],
     dependency_links = [
         'http://oss.gonicus.de/pub/gosa/eggs',

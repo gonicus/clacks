@@ -6,6 +6,7 @@ import logging
 import pkg_resources
 import codecs
 
+from setproctitle import setproctitle
 from clacks.common import Environment
 from clacks.common.utils import SystemLoad
 from clacks.common.event import EventMaker
@@ -27,7 +28,6 @@ def shutdown(a=None, b=None):
 
     logging.info("shut down")
     logging.shutdown()
-    exit(0)
 
 
 def handleTermSignal(a=None, b=None):
@@ -125,6 +125,9 @@ def mainLoop(env):
         log.critical("unexpected error in mainLoop")
         log.exception(detail)
 
+    except KeyboardInterrupt:
+        log.info("console requested shutdown")
+
     finally:
         shutdown()
 
@@ -132,6 +135,10 @@ def mainLoop(env):
 def main():
     """ Main programm which is called when the clacks agent process gets started.
         It does the main forking os related tasks. """
+
+    # Set process list title
+    os.putenv('SPT_NOENV', 'non_empty_value')
+    setproctitle("clacks-agent")
 
     # Inizialize core environment
     env = Environment.getInstance()

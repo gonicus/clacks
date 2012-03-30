@@ -9,6 +9,7 @@ import codecs
 import traceback
 from random import randint
 
+from setproctitle import setproctitle
 from clacks.common import Environment
 from clacks.client import __version__ as VERSION
 from clacks.common.components.registry import PluginRegistry
@@ -78,7 +79,7 @@ def mainLoop(env):
 
             # Lets do an environment reset now
             PluginRegistry.shutdown()
-            
+
             # Make us active and loop from the beginning
             env.reset_requested = False
             env.active = True
@@ -101,8 +102,14 @@ def mainLoop(env):
 
 
 def main():
-    """ Main programm which is called when the clacks agent process gets started.
-        It does the main forking os related tasks. """
+    """
+    Main programm which is called when the clacks agent process gets started.
+    It does the main forking os related tasks.
+    """
+
+    # Set process list title
+    os.putenv('SPT_NOENV', 'non_empty_value')
+    setproctitle("clacks-client")
 
     # Inizialize core environment
     env = Environment.getInstance()

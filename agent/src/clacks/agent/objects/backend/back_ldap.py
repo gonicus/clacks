@@ -257,6 +257,7 @@ class LDAP(ObjectBackend):
         # Return automatic uuid
         return self.dn2uuid(dn)
 
+
     def update(self, uuid, data):
 
         # Assemble a proper modlist
@@ -301,6 +302,7 @@ class LDAP(ObjectBackend):
 
         # Build new target DN and check if it has changed...
         tdn = ldap.dn.dn2str([new_rdn_parts] + rdns[1:]).decode('utf-8')
+
         if tdn != dn:
             self.log.debug("entry needs a rename from '%s' to '%s'" % (dn, tdn))
             self.con.rename_s(dn.encode('utf-8'), ldap.dn.dn2str([new_rdn_parts]))

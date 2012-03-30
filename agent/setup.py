@@ -68,6 +68,7 @@ setup(
         'unidecode',
         'sqlalchemy',
         'lepl',
+        'setproctitle',
         ],
     dependency_links = [
         'http://oss.gonicus.de/pub/gosa/eggs',

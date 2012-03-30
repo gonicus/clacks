@@ -37,3 +37,39 @@ class ObjectBackendRegistry(object):
             raise ValueError("no such backend '%s'" % name)
 
         return ObjectBackendRegistry.backends[name]
+
+    def load(self, uuid, info):
+        raise NotImplementedError("no way to find new DN implemented")
+
+    def identify(self, dn, params, fixed_rdn=None):
+        raise NotImplementedError("no way to find new DN implemented")
+
+    def exists(self, misc):
+        raise NotImplementedError("no way to find new DN implemented")
+
+    def remove(self, uuid, recursive=False):
+        raise NotImplementedError("no way to find new DN implemented")
+
+    def retract(self, uuid, data, params):
+        raise NotImplementedError("no way to find new DN implemented")
+
+    def extend(self, uuid, data, params, foreign_keys):
+        raise NotImplementedError("no way to find new DN implemented")
+
+    def move_extension(self, uuid, new_base):
+        raise NotImplementedError("no way to find new DN implemented")
+
+    def move(self, uuid, new_base):
+        raise NotImplementedError("no way to find new DN implemented")
+
+    def create(self, base, data, params, foreign_keys=None):
+        raise NotImplementedError("no way to find new DN implemented")
+
+    def update(self, uuid, data):
+        raise NotImplementedError("no way to find new DN implemented")
+
+    def is_uniq(self, attr, value, at_type):
+        raise NotImplementedError("no way to find new DN implemented")
+
+    def query(self, base, scope, params, fixed_rdn=None):
+        raise NotImplementedError("no way to find new DN implemented")

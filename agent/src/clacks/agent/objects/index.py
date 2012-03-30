@@ -10,7 +10,6 @@ local index database
 ----
 """
 import logging
-import ldap.dn
 import zope.event
 import datetime
 from itertools import izip

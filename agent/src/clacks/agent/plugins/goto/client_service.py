@@ -240,7 +240,7 @@ class ClientService(Plugin):
                                     timeout, level, icon)
                         #pylint: disable=W0141
                         except Exception as e:
-                            pass
+                            self.log.error("sending message failed: %s", str(e))
                 else:
                     raise Exception("no client found for user '%s'" % user)
 

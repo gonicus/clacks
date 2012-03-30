@@ -45,7 +45,7 @@ from time import time
 from clacks.common import Environment
 from clacks.agent.xmldb.handler import XMLDBHandler
 from clacks.agent.objects.factory import ObjectFactory
-from clacks.agent.acl import ACLResolver, ACLException
+from clacks.agent.acl import ACLResolver
 from lepl import Literal, Node, Regexp, UnsignedReal, Space, Separator, Delayed, Optional, String
 
 
@@ -61,6 +61,9 @@ class MyNode(Node):
     query_base = None
 
     def set_query_base_object(self, obj):
+        """
+        Introduce the 'base' node to the current node.
+        """
         self.query_base = obj
 
 
@@ -182,7 +185,7 @@ class Query(MyNode):
         for item in self.object_types.keys():
             attrs_get_list.append("$%s" % (item))
         attr_get_list = ", ".join(attrs_get_list)
-        
+
         where_result += ['return(' + attr_get_list + ')']
 
         """
@@ -220,10 +223,10 @@ class Query(MyNode):
 
         # get the attribute mapping to be able to check the results
         # against the currently active aclsets.
-        of = ObjectFactory.getInstance()
+        object_factory = ObjectFactory.getInstance()
         attrmap = {}
-        for oType in self.object_types:
-            attrmap[oType] = of.getAttributeTypeMap(oType)
+        for object_type in self.object_types:
+            attrmap[object_type] = object_factory.getAttributeTypeMap(object_type)
 
         # Start the given query
         xmldb = XMLDBHandler.get_instance()
@@ -259,23 +262,23 @@ class Query(MyNode):
             # Extract the requested attributes out of the result.
             for suffix, name in self._selected_attributes:
 
-                DN = tmp[suffix]['DN'][0]
+                object_dn = tmp[suffix]['DN'][0]
 
                 # Return all attributes
                 if name == "*":
 
                     # Append all attributes of the object
                     for name in tmp[suffix]['Attributes'][0]:
-                        if self.__has_access_to(user, DN, suffix, name):
+                        if self.__has_access_to(user, object_dn, suffix, name):
                             res[suffix][name] = tmp[suffix]['Attributes'][0][name]
 
                     # Append special attributes like the DN etc.
                     for name in ('UUID', 'Type', 'DN', 'ParentDN'):
-                        if name in tmp[suffix] and self.__has_access_to(user, DN, suffix, name):
+                        if name in tmp[suffix] and self.__has_access_to(user, object_dn, suffix, name):
                             res[suffix][name] = (tmp[suffix][name])
 
                     # Append extension if they exists
-                    if 'Extensions' in tmp[suffix] and self.__has_access_to(user, DN, suffix, 'Extension'):
+                    if 'Extensions' in tmp[suffix] and self.__has_access_to(user, object_dn, suffix, 'Extension'):
                         res[suffix]['Extension'] = map(lambda x: x, tmp[suffix]['Extensions'][0]['Extension'])
                 else:
 
@@ -283,9 +286,9 @@ class Query(MyNode):
                     path = self._get_attribute_location(name, False)
                     if path:
                         if path in tmp[suffix]:
-                            if self.__has_access_to(user, DN, suffix, name):
+                            if self.__has_access_to(user, object_dn, suffix, name):
                                 res[suffix][name] = (tmp[suffix][path][0][name])
-                    elif self.__has_access_to(user, DN, suffix, name):
+                    elif self.__has_access_to(user, object_dn, suffix, name):
                         res[suffix][name] = (tmp[suffix][name])
 
             # Append the created item to the result.
@@ -298,10 +301,13 @@ class Query(MyNode):
             result =  result[start:stop]
         return result
 
-    def __has_access_to(self, user, dn, objectType, attr):
+    def __has_access_to(self, user, object_dn, object_type, attr):
+        """
+        Checks whether the given user has access to the given object/attribute or not.
+        """
         if user:
-            topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, objectType, attr)
-            res = self.__acl_resolver.check(user, topic, "r", base=dn)
+            topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, object_type, attr)
+            res = self.__acl_resolver.check(user, topic, "r", base=object_dn)
             return res
         else:
             return True
@@ -441,6 +447,9 @@ class Operator(MyNode):
         The operator of (User.sn="test") is '='.
     """
     def compile_for_match(self):
+        """
+        Returns the operator.
+        """
         return (self[0])
 
 
@@ -465,6 +474,9 @@ class Collection(MyNode):
 
     """
     def compile(self):
+        """
+        Returns the compiled xquery for collection-match.
+        """
         left = self[0].compile()
         right = self[2].compile()
         con = self[1].lower()
@@ -489,6 +501,9 @@ class StringValue(MyNode):
         User.sn = "hickert"
     """
     def compile_for_match(self):
+        """
+        Return a xquery valid string
+        """
         ret = self[0].replace("(", "\\(").replace(")", "\\)").replace(" ", "\\ ")
         return ("\"%s\"" % (ret))
 
@@ -542,6 +557,11 @@ class OrderBy(MyNode):
     Represents the ORDER BY statement
     """
     def compile_xquery(self):
+        """
+        Generate the resulting xquery for the 'order' statement
+
+        ORDER BY <User.sn DESC, User.uid ASC>
+        """
         return(", ".join(map(lambda x: x.compile_xquery(), self)))
 
 
@@ -554,6 +574,11 @@ class OrderedAttribute(MyNode):
     Attribute = None
 
     def compile_xquery(self):
+        """
+        Compiles the xquery for an ordered-attribute
+
+        ORDER BY <User.sn DESC>, <User.uid ASC>
+        """
         if self.Direction:
             return("%s %s" % (self.Attribute[0].compile_for_match(), self.Direction[0].get_direction()))
         else:
@@ -565,6 +590,9 @@ class Direction(MyNode):
     This node represents the order direction of the 'ORDER BY' attribute list.
     """
     def get_direction(self):
+        """
+        Returns the sort-direction.
+        """
         return "ascending" if self[0] == 'ASC' else 'descending'
 
 
