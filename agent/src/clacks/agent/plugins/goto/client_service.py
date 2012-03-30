@@ -474,6 +474,8 @@ class ClientService(Plugin):
         if client in self.__proxy:
             self.__proxy[client].close()
             del self.__proxy[client]
+            if self.env.domain + ".client." + client in AMQPServiceProxy.methods:
+                AMQPServiceProxy.methods[self.env.domain + ".client." + client] = self.clientDispatch(client, "getMethods")
 
         # Assemble caps
         caps = {}
@@ -486,10 +488,6 @@ class ClientService(Plugin):
         # This may happen if we get a stuck event
         if not data.Id.text in self.__client:
             return
-
-        # Drop proxy for that client
-        if client in self.__proxy:
-            del self.__proxy[client]
 
         # Decide if we need to notify someone about new methods
         current = copy(self.__client[data.Id.text]['caps'])
