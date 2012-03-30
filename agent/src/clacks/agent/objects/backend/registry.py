@@ -38,9 +38,6 @@ class ObjectBackendRegistry(object):
 
         return ObjectBackendRegistry.backends[name]
 
-    def get_update_dn(self, uuid, data):
-        raise NotImplementedError("no way to find new DN implemented")
-
     def load(self, uuid, info):
         raise NotImplementedError("no way to find new DN implemented")
 

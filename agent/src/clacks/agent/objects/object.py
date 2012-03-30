@@ -485,22 +485,6 @@ class Object(object):
                         self.getForeignProperties())
 
             else:
-                try:
-                    new_dn = be.get_update_dn(self.uuid, toStore[p_backend])
-                    #TODO: check if the DN changes - and if it changes, make
-                    #      make a recursive move happen before the update.
-                    #        1. Feststellen des Primären Backends
-                    #        2. Taversiere den Baum und finde Vorkommen von anderen Primären Backends,
-                    #           notiere jeweils ein Vorkommnis pro Unterbaum.
-                    #        3. Traversiere den Baum und notiere alle betroffenen Objekte
-                    #        4. Führe "update" des umzubenennenden Objektes aus
-                    #        5. Führe "move" für jedes weitere unter 2. gefundene primäres Backend
-                    #           aus.
-                    #        6. Aktualisiere die DN-Referenzen für alle betroffenen Objekte
-                    #        7. Emitte ein "post move" Event für alle betroffenen Objekte
-                except NotImplementedError:
-                    pass
-
                 be.update(self.uuid, toStore[p_backend])
 
             # Eventually the DN has changed

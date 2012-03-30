@@ -387,10 +387,77 @@ class ObjectProxy(object):
         self.__base.remove()
 
     def commit(self):
+        # Gather information about children
+        old_base = self.__base.dn
+
+        # Get primary backend of the object to be moved
+        p_backend = getattr(self.__base, '_backend')
+
+        # Traverse tree and find different backends
+        foreign_backends = {}
+        index = PluginRegistry.getInstance("ObjectIndex")
+        children = index.xquery("""xquery version '1.0';
+                    let $doc := collection('objects')
+                    for $x in $doc/node()
+                    where ends-with($x/o:ParentDN, '%s')
+                    return
+                      ($x/o:DN/string(), $x/o:Type/string())""" % self.__base.dn)
+
+        # Note all elements with different backends
+        i = iter(children)
+        children = dict(izip(i, i))
+        children = dict(map(lambda x: (x[0].decode("utf-8"), x[1]), children.items()))
+        for cdn, ctype in children.items():
+            cback = self.__factory.getObjectTypes()[ctype]['backend']
+            if cback != p_backend:
+                if not cback in foreign_backends:
+                    foreign_backends = []
+                foreign_backends[cback].append(cdn)
+
+        # Only keep the first per backend that is close to the root
+        root_elements = {}
+        for fbe, fdns in foreign_backends.items():
+            fdns.sort(key=len)
+            root_elements[fbe] = fdns[0]
+
         self.__base.commit()
 
         for extension in [ext for tmp, ext in self.__extensions.iteritems() if ext]:
             extension.commit()
+
+        # Did the commit result in a move?
+        if self.dn != self.__base.dn:
+
+            if children:
+                # Move additional backends if needed
+                for fbe, fdn in root_elements.items():
+
+                    # Get new base of child
+                    new_child_dn = fdn[:len(fdn) - len(old_base)] + self.__base.dn
+                    new_child_base = dn2str(str2dn(new_child_dn.encode('utf-8'))[1:]).decode('utf-8')
+
+                    # Select objects with different base and trigger a move, the
+                    # primary backend move will be triggered and do a recursive
+                    # move for that backend.
+                    obj = self.__factory.getObject(children[fdn], fdn)
+                    obj.move(new_child_base)
+
+                # Update all DN references
+                # Emit 'post move' events
+                for cdn, ctype in children.items():
+
+                    # Don't handle objects that already have been moved
+                    if cdn in root_elements.values():
+                        continue
+
+                    # These objects have been moved automatically. Open
+                    # them and let them do a simulated move to update
+                    # their refs.
+                    new_cdn = cdn[:len(cdn) - len(old_base)] + self.__base.dn
+                    obj = self.__factory.getObject(ctype, new_cdn)
+                    obj.simulate_move(cdn)
+
+            self.dn = self.__base.dn
 
     def __getattr__(self, name):
 
