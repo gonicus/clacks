@@ -487,6 +487,10 @@ class ClientService(Plugin):
         if not data.Id.text in self.__client:
             return
 
+        # Drop proxy for that client
+        if client in self.__proxy:
+            del self.__proxy[client]
+
         # Decide if we need to notify someone about new methods
         current = copy(self.__client[data.Id.text]['caps'])
         self.__client[data.Id.text]['caps'] = caps
