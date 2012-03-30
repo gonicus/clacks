@@ -155,6 +155,8 @@ class ClientService(Plugin):
             raise JSONRPCException("client '%s' not available" % client)
         if not self.__client[client]['online']:
             raise JSONRPCException("client '%s' is offline" % client)
+        if not method in self.__client[client]['caps']:
+            raise JSONRPCException("client '%s' has no method '%s' exported" % (client, method))
 
         # Generate tage queue name
         queue = '%s.client.%s' % (self.env.domain, client)

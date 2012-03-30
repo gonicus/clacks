@@ -89,8 +89,10 @@ class AsteriskNotificationReceiver(object):
                 key=lambda k: k[1]['priority']):
             if not i_from:
                 i_from = info['object'].resolve(event['From'])
+                print "+++ from", mod, "result", i_from
             if not i_to:
                 i_to = info['object'].resolve(event['To'])
+                print "+++ to", mod, "result", i_from
             if i_from and i_to:
                 break
 
