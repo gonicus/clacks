@@ -234,13 +234,17 @@ class ClientService(Plugin):
                 users = [users]
 
             for user in users:
-                for client in self.getUserClients(user):
-                    try:
-                        self.clientDispatch(client, "notify", user, title, message,
-                                timeout, level, icon)
-                    #pylint: disable=W0141
-                    except Exception as e:
-                        self.log.error("sending message failed: %s", str(e))
+                clients = self.getUserClients(user)
+                if clients:
+                    for client in clients:
+                        try:
+                            self.clientDispatch(client, "notify", user, title, message,
+                                    timeout, level, icon)
+                        #pylint: disable=W0141
+                        except Exception as e:
+                            self.log.error("sending message failed: %s", str(e))
+                else:
+                    raise Exception("no client found for user '%s'" % user)
 
         else:
             # Notify all users
