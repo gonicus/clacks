@@ -9,6 +9,7 @@ import time
 import datetime
 import types
 import logging
+from copy import copy
 from threading import Timer
 from zope.interface import implements
 from clacks.common.components.jsonrpc_proxy import JSONRPCException
@@ -487,13 +488,12 @@ class ClientService(Plugin):
             return
 
         # Decide if we need to notify someone about new methods
-        current = self.__client[data.Id.text]['caps']
+        current = copy(self.__client[data.Id.text]['caps'])
+        self.__client[data.Id.text]['caps'] = caps
         for method in [m for m in current.keys() if not m in caps]:
             self.notify_listeners(data.Id.text, method, False)
         for method in [m for m in caps if not m in current.keys()]:
             self.notify_listeners(data.Id.text, method, True)
-
-        self.__client[data.Id.text]['caps'] = caps
 
     def notify_listeners(self, cid, method, status):
         if method in self.__listeners:
