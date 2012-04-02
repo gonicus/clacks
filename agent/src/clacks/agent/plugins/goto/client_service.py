@@ -225,10 +225,14 @@ class ClientService(Plugin):
         return [client for client, users in self.__user_session.items() if user in users]
 
     @Command(__help__=N_("Send synchronous notification message to user"))
-    def notifyUser(self, users, title, message, timeout=10, level='normal', icon='dialog-information'):
+    def notifyUser(self, users, title, message, timeout=10, level='normal', icon="dialog-information"):
         """
-        TODO
+        Send a notification request to the user client.
         """
+
+        if icon == None:
+            icon = "_no_icon_"
+
         if users:
             # Notify a single / group of users
             if type(users) != types.ListType:
