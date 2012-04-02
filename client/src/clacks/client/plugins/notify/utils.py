@@ -80,10 +80,6 @@ class Notify(Plugin):
         """ Sent a notification to a given user """
 
         # Send notification and keep return code
-        print
-        print icon
-        print
-
         o = self.clacks_dbus._notify(user, title, message, timeout, urgency,
             icon, actions, recurrence, dbus_interface="org.clacks")
         return(int(o))
