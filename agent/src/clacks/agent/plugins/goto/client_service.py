@@ -249,7 +249,7 @@ class ClientService(Plugin):
                         except Exception as e:
                             self.log.error("sending message failed: %s", str(e))
                 else:
-                    raise Exception("no client found for user '%s'" % user)
+                    self.log.error("sending message failed: no client found for user '%s'" % user)
 
         else:
             # Notify all users
