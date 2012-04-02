@@ -130,7 +130,10 @@ class Notify(object):
             os.environ['DBUS_SESSION_BUS_ADDRESS'] = dbus_session
 
             # Build notification
-            notify = pynotify.Notification(title, message, icon)
+            if icon == "_no_icon_":
+                notify = pynotify.Notification(title, message)
+            else:
+                notify = pynotify.Notification(title, message, icon)
 
             # Set up notification details like actions
             notify.set_urgency(urgency)
