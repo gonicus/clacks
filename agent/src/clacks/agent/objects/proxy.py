@@ -123,20 +123,8 @@ class ObjectProxy(object):
         self.__attribute_map = self.__factory.getAttributes()
         self.__attributes = []
 
-        # Generate attribute to object-type mapping
-        # TODO: Fabian -> Use factory.getAttributeTypeMap() instead
-        for attr in [n for n, o in self.__base.getProperties().items() if not o['foreign']]:
-            self.__attribute_type_map[attr] = self.__base_type
-            self.__attributes.append(attr)
-        for ext in all_extensions:
-            if self.__extensions[ext]:
-                props = self.__extensions[ext].getProperties()
-            else:
-                props = self.__factory.getObject(ext, dn_or_base, mode=base_mode).getProperties()
-            for attr in [n for n, o in props.items() if not o['foreign']]:
-                self.__attributes.append(attr)
-                self.__attribute_type_map[attr] = ext
-
+        # Get attribute to object-type mapping
+        self.__attribute_type_map = self.__factory.getAttributeTypeMap(self.__base_type)
         self.uuid = self.__base.uuid
         self.dn = self.__base.dn
 
