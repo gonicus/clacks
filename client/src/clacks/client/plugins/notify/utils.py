@@ -54,7 +54,6 @@ class Notify(Plugin):
                     'Sent a notification to a given user')
             amcs = PluginRegistry.getInstance('AMQPClientService')
             amcs.reAnnounce()
-            print "----> Announced!"
             self.log.info("established dbus connection")
 
         else:
@@ -68,7 +67,6 @@ class Notify(Plugin):
                 amcs = PluginRegistry.getInstance('AMQPClientService')
                 amcs.reAnnounce()
                 self.log.info("lost dbus connection")
-                print "----> Revoked!"
             else:
                 self.log.info("no dbus connection")
 
@@ -79,7 +77,6 @@ class Notify(Plugin):
         actions="",
         recurrence=60):
 
-        print "----> Called notify!"
         """ Sent a notification to a given user """
 
         # Send notification and keep return code
@@ -93,7 +90,6 @@ class Notify(Plugin):
         icon="dialog-information",
         actions="",
         recurrence=60):
-        print "----> Called notify all!"
 
         """ Sent a notification to all users on a machine """
 
