@@ -456,6 +456,11 @@ class Object(object):
                                     'value': collectedAttrs[prop_key]['value'],
                                     'type': collectedAttrs[prop_key]['backend_type']}
 
+        # We may have a plugin without any attributes, like the group asterisk extension, in
+        # this case we've to update the object despite of the lack of properties.
+        if not len(props) and self._backend:
+            toStore[self._backend] = {}
+
         # Leave the show if there's nothing to do
         if not toStore:
             return
@@ -489,7 +494,15 @@ class Object(object):
 
             # Eventually the DN has changed
             dn = be.uuid2dn(self.uuid)
-            if dn != obj.dn:
+
+            #TODO: Cajus please check this, we still get errors while creating new objects.
+            #      I've the extended the <if dn != obj.dn> with a precondition <if self._mode == "create">
+            if self._mode == "create":
+                if self._base_object:
+                    obj.dn = dn
+                    #zope.event.notify(ObjectChanged("post create", obj))
+
+            elif dn != obj.dn:
 
                 self.update_dn_refs(dn)
 
