@@ -975,7 +975,7 @@ class Object(object):
 
         # Collect backends
         backends = [getattr(self, '_backend')]
-        be_attrs = {}
+        be_attrs = {getattr(self, '_backend'): []}
 
         for prop, info in self.myProperties.items():
             for backend in info['backend']:
