@@ -75,7 +75,7 @@ class ObjectProxy(object):
         self.__current_user = user
         self.__acl_resolver = ACLResolver.get_instance()
         self.__attribute_type_map = {}
-        self.__attributes = {}
+        self.__attributes = []
         self.__method_type_map = {}
 
         # Load available object types
@@ -121,7 +121,17 @@ class ObjectProxy(object):
 
         # Generate read and write mapping for attributes
         self.__attribute_map = self.__factory.getAttributes()
-        self.__attributes = []
+
+        # Generate attribute to object-type mapping
+        for attr in [n for n, o in self.__base.getProperties().items() if not o['foreign']]:
+            self.__attributes.append(attr)
+        for ext in all_extensions:
+            if self.__extensions[ext]:
+                props = self.__extensions[ext].getProperties()
+            else:
+                props = self.__factory.getObject(ext, dn_or_base, mode=base_mode).getProperties()
+            for attr in [n for n, o in props.items() if not o['foreign']]:
+                self.__attributes.append(attr)
 
         # Get attribute to object-type mapping
         self.__attribute_type_map = self.__factory.getAttributeTypeMap(self.__base_type)

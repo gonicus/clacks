@@ -475,6 +475,9 @@ class ObjectFactory(object):
             fixed_rdn = str(classr.FixedRDN)
 
         # Tweak name to the new target
+        if type(name) == unicode:
+            name = name.encode('ascii')
+
         setattr(klass, '__name__', name)
         setattr(klass, '_objectFactory', self)
         setattr(klass, '_backend', str(classr.Backend))
