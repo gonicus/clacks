@@ -24,9 +24,5 @@ class IsValidSambaDomainName(ElementComparator):
         if value[0] in domains:
             return True
 
-        if not errors:
-            errors = []
-
         errors.append(_("The given sambaDomainName '%s' does not exists!") % value[0])
-
         return False
