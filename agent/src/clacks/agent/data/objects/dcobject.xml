@@ -49,7 +49,7 @@
 			<Type>Domain</Type>
 			<Type>Country</Type>
 			<Type>SambaDomain</Type>
-			<Type>Devices</Type>
+			<Type>DeviceContainer</Type>
 		</Container>
 		<BaseObject>true</BaseObject>
 	</Object>
