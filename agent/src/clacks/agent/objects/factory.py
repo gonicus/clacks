@@ -150,6 +150,24 @@ class ObjectFactory(object):
                         res.append(attr.Name.text)
         return res
 
+    def getAllowedSubElementsForObject(self, objectType):
+        """
+        Returns a list of objects that can be stored as sub-objects for the given object.
+        """
+        if not objectType in self.__xml_defs:
+            raise Exception("cannot create attribute map, object %s does not exist!" % objectType)
+
+        if not self.__xml_defs[objectType]['BaseObject']:
+            raise Exception("cannot create attribute map, %s is not a base-object!" % objectType)
+
+        # Get list of allowed sub-elements
+        res = []
+        find = objectify.ObjectPath("Object.Container.Type")
+        if find.hasattr(self.__xml_defs[objectType]):
+            for attr in find(self.__xml_defs[objectType]):
+                res.append(attr.text)
+        return(res)
+
     def getAttributeTypeMap(self, objectType):
         """
         Returns a mapping containing all attributes provided by

@@ -371,6 +371,12 @@ class Object(object):
         if not self._base_object and self._mode in ['create', 'remove']:
             raise ObjectException("mode '%s' only available for base objects" % self._mode)
 
+        # Check if we are allowed to create this base object on the given base
+        if self._base_object and self._mode == "create":
+            base_type = self.get_object_type_by_dn(self.dn)
+            if self.__class__.__name__ not in self._objectFactory.getAllowedSubElementsForObject(base_type):
+                raise ObjectException("objects of type '%s' cannot be added as sub-objects to '%s'" % (self.__class__.__name__, base_type))
+
         self.log.debug("saving object modifications for [%s|%s]" % (type(self).__name__, self.uuid))
 
         # Ensure that mandatory values are set, use default if possible
@@ -760,6 +766,13 @@ class Object(object):
                 fltr[line]['params'] = map(_placeHolder,
                         fltr[line]['params'])
         return fltr
+
+    def get_object_type_by_dn(self, dn):
+        """
+        Returns the objectType for a given DN
+        """
+        index = PluginRegistry.getInstance("ObjectIndex")
+        return index.xquery("collection('objects')/*/.[o:DN = '%s']/o:Type/text()" % dn)[0]
 
     def get_references(self, override=None):
         res = []
