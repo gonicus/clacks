@@ -496,7 +496,7 @@ class Object(object):
             dn = be.uuid2dn(self.uuid)
 
             #TODO: Cajus please check this, we still get errors while creating new objects.
-            #      I've the extended the <if dn != obj.dn> with a precondition <if self._mode == "create">
+            #      I've extended the <if dn != obj.dn> with a precondition <if self._mode == "create">
             if self._mode == "create":
                 if self._base_object:
                     obj.dn = dn
