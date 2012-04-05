@@ -237,9 +237,10 @@ class LDAP(ObjectBackend):
 
             # Build unique DN using maybe optional RDN parameters
             rdns = [d.strip() for d in params['RDN'].split(",")]
-            dn = self.get_uniq_dn(rdns, base, data, params).encode("utf-8")
+            dn = self.get_uniq_dn(rdns, base, data, params)
             if not dn:
-                raise DNGeneratorError("no unique DN available on '%' using: %s" % (base, ",".join(rdns)))
+                raise DNGeneratorError("no unique DN available on '%s' using: %s" % (base, ",".join(rdns)))
+            dn = dn.encode('utf-8')
 
         else:
             dn = base
