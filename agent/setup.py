@@ -120,6 +120,8 @@ setup(
         smaller = clacks.agent.objects.comparator.basic:Smaller
         isvalidsambadomainname = clacks.agent.plugins.samba.domain:IsValidSambaDomainName
         isvalidhostname = clacks.agent.plugins.misc.filter_validators:IsValidHostName
+        isexistingdn = clacks.agent.plugins.misc.filter_validators:IsExistingDN
+        isexistingdnoftype = clacks.agent.plugins.misc.filter_validators:IsExistingDnOfType
 
         [object.filter]
         concatstring = clacks.agent.objects.filter.strings:ConcatString
