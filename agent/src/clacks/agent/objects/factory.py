@@ -491,6 +491,7 @@ class ObjectFactory(object):
         fixed_rdn = None
         if "FixedRDN" in classr.__dict__:
             fixed_rdn = str(classr.FixedRDN)
+            back_attrs[str(classr.Backend)]['FixedRDN'] = fixed_rdn
 
         # Tweak name to the new target
         if type(name) == unicode:
@@ -500,7 +501,6 @@ class ObjectFactory(object):
         setattr(klass, '_objectFactory', self)
         setattr(klass, '_backend', str(classr.Backend))
         setattr(klass, '_displayName', str(classr.DisplayName))
-        setattr(klass, '_fixedRDN', fixed_rdn)
         setattr(klass, '_backendAttrs', back_attrs)
         setattr(klass, '_extends', extends)
         setattr(klass, '_base_object', base_object)
