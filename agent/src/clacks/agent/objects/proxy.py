@@ -63,6 +63,7 @@ class ObjectProxy(object):
     __attribute_type_map = None
     __method_type_map = None
     __attributes = None
+    __base_mode = None
 
     def __init__(self, dn_or_base, what=None, user=None):
         self.__env = Environment.getInstance()
@@ -101,6 +102,7 @@ class ObjectProxy(object):
         # Load base object and extenions
         self.__base = self.__factory.getObject(base, dn_or_base, mode=base_mode)
         self.__base_type = base
+        self.__base_mode = base_mode
         for extension in extensions:
             self.__log.debug("loading %s extension for %s" % (extension, dn_or_base))
             self.__extensions[extension] = self.__factory.getObject(extension, self.__base.uuid)
@@ -423,8 +425,13 @@ class ObjectProxy(object):
         for extension in [ext for tmp, ext in self.__extensions.iteritems() if ext]:
             extension.commit()
 
+
+        #TODO: Cajus please check this
+        if self.__base_mode == "create":
+            pass
+
         # Did the commit result in a move?
-        if self.dn != self.__base.dn:
+        elif self.dn != self.__base.dn:
 
             if children:
                 # Move additional backends if needed
