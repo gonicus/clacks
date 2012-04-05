@@ -5,7 +5,7 @@
 		<Description>A GOsa device</Description>
 		<DisplayName>Device</DisplayName>
 		<BackendParameters>
-			<Backend objectClasses="registeredDevice,device"
+			<Backend objectClasses="registeredDevice,device,ieee802Device,ipHost"
 				RDN="cn">LDAP</Backend>
 		</BackendParameters>
 		<Backend>LDAP</Backend>
@@ -33,6 +33,47 @@
 					<Param>User</Param>
 				    </Condition>
 				</Validators>
+                        </Attribute>
+                        <Attribute>
+                                <Name>description</Name>
+                                <Description>description</Description>
+                                <Type>String</Type>
+                        </Attribute>
+                        <Attribute>
+                                <Name>serialNumber</Name>
+                                <Description>serialNumber</Description>
+                                <Type>String</Type>
+                        </Attribute>
+                        <Attribute>
+                                <Name>seeAlso</Name>
+                                <Description>seeAlso</Description>
+                                <Type>String</Type>
+                        </Attribute>
+                        <Attribute>
+                                <Name>owner</Name>
+                                <Description>owner</Description>
+                                <Type>String</Type>
+                        </Attribute>
+                        <Attribute>
+                                <Name>ou</Name>
+                                <Description>ou</Description>
+                                <Type>String</Type>
+                        </Attribute>
+                        <Attribute>
+                                <Name>o</Name>
+                                <Description>o</Description>
+                                <Type>String</Type>
+                        </Attribute>
+                        <Attribute>
+                                <Name>l</Name>
+                                <Description>location</Description>
+                                <Type>String</Type>
+                        </Attribute>
+                        <Attribute>
+                                <Name>ipHostNumber</Name>
+                                <Description>location</Description>
+                                <Type>String</Type>
+                                <Mandatory>true</Mandatory>
                         </Attribute>
                         <Attribute>
                                 <Name>deviceStatus</Name>
