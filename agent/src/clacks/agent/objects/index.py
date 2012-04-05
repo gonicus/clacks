@@ -63,11 +63,17 @@ class ObjectIndex(Plugin):
         self.db = PluginRegistry.getInstance("XMLDBHandler")
         self.base = LDAPHandler.get_instance().get_base()
 
+        # Create the database on demand
+        schema = self.factory.getXMLObjectSchema(True)
         if not self.db.collectionExists("objects"):
-            schema = self.factory.getXMLObjectSchema(True)
             self.db.createCollection("objects",
                 {"o": "http://www.gonicus.de/Objects", "xsi": "http://www.w3.org/2001/XMLSchema-instance"},
                 {"objects.xsd": schema})
+        else: 
+            # if the already exists, check for schema updates!
+            if not self.db.validateSchema('objects', 'objects.xsd', schemaString=schema):
+                self.db.setSchema('objects', 'objects.xsd', schema) 
+                self.log.info('object definitions changed, updated database schema')
 
         # Sync index
         if self.env.config.get("index.disable", "False").lower() != "true":
