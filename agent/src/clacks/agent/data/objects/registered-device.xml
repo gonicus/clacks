@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Objects xmlns="http://www.gonicus.de/Objects">
+	<Object>
+		<Name>RegisteredDevice</Name>
+		<Description>The registeredDevice is a device that is known to GOsa and will displaye additional information.</Description>
+		<DisplayName>RegisteredDevice</DisplayName>
+		<BackendParameters>
+			<Backend objectClasses="registeredDevice" RDN="cn">LDAP</Backend>
+		</BackendParameters>
+		<Backend>LDAP</Backend>
+		<Attributes>
+                        <Attribute>
+                                <Name>manager</Name>
+                                <Description>DN of manager</Description>
+                                <Type>String</Type>
+				<Validators>
+				    <Condition>
+					<Name>IsExistingDnOfType</Name>
+					<Param>User</Param>
+				    </Condition>
+				</Validators>
+                        </Attribute>
+                        <Attribute>
+                                <Name>deviceKey</Name>
+                                <Description>This attribute keeps the encrypted (initial) device secret</Description>
+                                <Type>String</Type>
+                        </Attribute>
+                        <Attribute>
+                                <Name>deviceStatus</Name>
+				<Description>The deviceStatus attribute represents several states a system can represent.
+					Note that this is the current status - i.e. no history of states is
+					recordable this way. The attribute is mostly used to quickly determine
+					the state without reading system logs.
+				</Description>
+                                <Type>String</Type>
+                        </Attribute>
+                        <Attribute>
+                                <Name>deviceType</Name>
+                                <Description>To order systems, you can mark a system i.e. as a server</Description>
+				<Type>String</Type>
+				<Values>
+					<Value>terminal</Value>
+					<Value>workstation</Value>
+					<Value>server</Value>
+					<Value>sipphone</Value>
+					<Value>switch</Value>
+					<Value>router</Value>
+					<Value>printer</Value>
+					<Value>scanner</Value>
+				</Values>
+                        </Attribute>
+                        <Attribute>
+                                <Name>deviceUUID</Name>
+				<Description>This attribute keeps a unique indentifier for a device that should be
+					registered to the GOsa services. It is used as a unique key to find
+					the relationship of the registered device to other information like
+					inventory, received events and logging data.
+				</Description>
+                                <Type>String</Type>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+                </Attributes>
+		<Extends>
+			<Value>Device</Value>
+		</Extends>
+		<BaseObject>false</BaseObject>
+	</Object>
+</Objects>
+
