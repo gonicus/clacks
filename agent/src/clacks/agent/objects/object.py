@@ -501,8 +501,7 @@ class Object(object):
             # Eventually the DN has changed
             dn = be.uuid2dn(self.uuid)
 
-            #TODO: Cajus please check this
-            #      I've extended the <if dn != obj.dn> with a precondition <if self._mode == "create">
+            # Take DN for newly created objects
             if self._mode == "create":
                 if self._base_object:
                     obj.dn = dn

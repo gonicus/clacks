@@ -69,10 +69,10 @@ class ObjectIndex(Plugin):
             self.db.createCollection("objects",
                 {"o": "http://www.gonicus.de/Objects", "xsi": "http://www.w3.org/2001/XMLSchema-instance"},
                 {"objects.xsd": schema})
-        else: 
+        else:
             # if the already exists, check for schema updates!
             if not self.db.validateSchema('objects', 'objects.xsd', schemaString=schema):
-                self.db.setSchema('objects', 'objects.xsd', schema) 
+                self.db.setSchema('objects', 'objects.xsd', schema)
                 self.log.info('object definitions changed, updated database schema')
 
         # Sync index
