@@ -24,7 +24,7 @@ class LDAPNumberResolver(PhoneNumberResolver):
         number = self.replaceNumber(number)
 
         filtr = ldap.filter.filter_format("(&(uid=*)(telephoneNumber=%s))", [str(number)])
-        attrs = ['cn', 'uid', 'telephoneNumber']
+        attrs = ['cn', 'uid', 'telephoneNumber', 'jpegPhoto']
 
         # search ldap
         lh = LDAPHandler.get_instance()
@@ -40,6 +40,7 @@ class LDAPNumberResolver(PhoneNumberResolver):
                         'contact_name': unicode(res[0][1]['cn'][0], 'UTF-8'),
                         'contact_phone': res[0][1]['telephoneNumber'][0],
                         'contact_detail_url': '',
+                        'avatar': res[0][1]['jpegPhoto'][0] if 'jpegPhoto' in res[0][1] else None,
                         'ldap_uid': res[0][1]['uid'][0],
                         'resource': 'ldap',
                 }

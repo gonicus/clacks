@@ -266,6 +266,7 @@ class ClientService(Plugin):
         """
         TODO
         """
+        #TODO: use object backends instead of LDAP
         lh = LDAPHandler.get_instance()
         fltr = "deviceUUID=%s" % device_uuid
 
@@ -286,6 +287,9 @@ class ClientService(Plugin):
         """
         TODO
         """
+
+        #TODO: use object backends instead of LDAP
+
         # Check params
         valid = [STATUS_SYSTEM_ON, STATUS_LOCKED, STATUS_UPDATABLE,
             STATUS_UPDATING, STATUS_INVENTORY, STATUS_CONFIGURING,
@@ -331,6 +335,9 @@ class ClientService(Plugin):
         """
         TODO
         """
+
+        #TODO: use objects
+
         uuid_check = re.compile(r"^[0-9a-f]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$", re.IGNORECASE)
         if not uuid_check.match(device_uuid):
             raise ValueError("join with invalid UUID %s" % device_uuid)

@@ -2,8 +2,11 @@
 # -*- coding: utf-8 -*-
 import pkg_resources
 import gettext
+import base64
 import re
 import logging
+from StringIO import StringIO
+from PIL import Image
 from lxml import etree
 from zope.interface import implements
 from clacks.common.handler import IInterfaceHandler
@@ -34,6 +37,8 @@ class AsteriskNotificationReceiver(object):
         self.env = env = Environment.getInstance()
         self.log = logging.getLogger(__name__)
         self.log.debug("initializing asterisk number resolver")
+
+        self.__default_image = Image.open(pkg_resources.resource_filename("amires", "data/phone.png"))
 
         # Load resolver
         for entry in pkg_resources.iter_entry_points("phone.resolver"):
@@ -89,10 +94,8 @@ class AsteriskNotificationReceiver(object):
                 key=lambda k: k[1]['priority']):
             if not i_from:
                 i_from = info['object'].resolve(event['From'])
-                print "+++ from", mod, "result", i_from
             if not i_to:
                 i_to = info['object'].resolve(event['To'])
-                print "+++ to", mod, "result", i_from
             if i_from and i_to:
                 break
 
@@ -121,10 +124,33 @@ class AsteriskNotificationReceiver(object):
         to_msg = to_msg.encode('ascii', 'xmlcharrefreplace')
         from_msg = from_msg.encode('ascii', 'xmlcharrefreplace')
 
+        # Define avatar view
+        if 'avatar' in i_from and i_from['avatar']:
+            img = Image.open(StringIO(i_from['avatar']))
+        elif 'avatar' in i_to and i_to['avatar']:
+            img = Image.open(StringIO(i_to['avatar']))
+        else:
+            img = self.__default_image
+
+        # Scale image to a reasonable size and convert it to base64
+        out = StringIO()
+        mw = int(self.env.config.get("amires.avatar_size", default="96"))
+        sx, sy = img.size
+        if sx >= sy:
+            img.thumbnail((mw, int(sy * mw / sx)))
+        else:
+            img.thumbnail((int(sx * mw / sy), mw))
+
+        img.save(out, format="PNG")
+        out.seek(0)
+        image_data = "base64:" + base64.b64encode(out.read())
+
         # Send from/to messages as needed
         amqp = PluginRegistry.getInstance('AMQPHandler')
         if from_msg:
-            self.__cr.call("notifyUser", i_from['ldap_uid'], self.TYPE_MAP[event['Type']], from_msg.strip())
+            self.__cr.call("notifyUser", i_from['ldap_uid'],
+            self.TYPE_MAP[event['Type']], from_msg.strip(), timeout=10, level='normal', icon=image_data)
 
         if to_msg:
-            self.__cr.call("notifyUser", i_to['ldap_uid'], self.TYPE_MAP[event['Type']], to_msg.strip())
+            self.__cr.call("notifyUser", i_to['ldap_uid'],
+            self.TYPE_MAP[event['Type']], to_msg.strip(), timeout=10, level='normal', icon=image_data)

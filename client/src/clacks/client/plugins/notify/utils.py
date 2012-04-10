@@ -13,8 +13,11 @@ e.g.:
 """
 
 # -*- coding: utf-8 -*-
+import os
 import dbus
 import logging
+import base64
+import hashlib
 from clacks.common.components import PluginRegistry
 from clacks.common.components import Plugin
 from clacks.common.components import Command
@@ -34,6 +37,9 @@ class Notify(Plugin):
         # Register ourselfs for bus changes on org.clacks
         self.bus = dbus.SystemBus()
         self.bus.watch_name_owner("org.clacks", self.__dbus_proxy_monitor)
+
+        # Create icon cache directory
+        self.spool = env.config.get("client.spool", default="/var/spool/clacks")
 
     def __dbus_proxy_monitor(self, bus_name):
         """
@@ -77,7 +83,20 @@ class Notify(Plugin):
         actions="",
         recurrence=60):
 
-        """ Sent a notification to a given user """
+        # If the icon is base64 encoded, save it as a hash filename to
+        # our home directory
+        if icon.startswith("base64:"):
+            data = base64.b64decode(icon[7:])
+            m = hashlib.md5()
+            m.update(data)
+            icon = os.path.join(self.spool, m.hexdigest() + ".png")
+
+            try:
+                with open(icon, "w") as f:
+                    f.write(data)
+
+            except OSError:
+                icon = "dialog-information"
 
         # Send notification and keep return code
         o = self.clacks_dbus._notify(user, title, message, timeout, urgency,

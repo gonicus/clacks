@@ -36,11 +36,12 @@ setup(
 
     include_package_data = True,
     package_data = {
-        'amires': ['data/events'],
+        'amires': ['data/events', 'data/phone.png'],
     },
 
     install_requires = [
         'clacks.agent',
+        'PIL',
         ],
 
     entry_points = """
