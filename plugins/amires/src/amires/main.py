@@ -126,31 +126,43 @@ class AsteriskNotificationReceiver(object):
 
         # Define avatar view
         if 'avatar' in i_from and i_from['avatar']:
-            img = Image.open(StringIO(i_from['avatar']))
-        elif 'avatar' in i_to and i_to['avatar']:
-            img = Image.open(StringIO(i_to['avatar']))
+            f_img = Image.open(StringIO(i_from['avatar']))
         else:
-            img = self.__default_image
+            f_img = self.__default_image
+        if 'avatar' in i_to and i_to['avatar']:
+            t_img = Image.open(StringIO(i_to['avatar']))
+        else:
+            t_img = self.__default_image
 
         # Scale image to a reasonable size and convert it to base64
-        out = StringIO()
         mw = int(self.env.config.get("amires.avatar_size", default="96"))
-        sx, sy = img.size
+        sx, sy = f_img.size
         if sx >= sy:
-            img.thumbnail((mw, int(sy * mw / sx)))
+            f_img.thumbnail((mw, int(sy * mw / sx)))
         else:
-            img.thumbnail((int(sx * mw / sy), mw))
+            f_img.thumbnail((int(sx * mw / sy), mw))
+        sx, sy = t_img.size
+        if sx >= sy:
+            t_img.thumbnail((mw, int(sy * mw / sx)))
+        else:
+            t_img.thumbnail((int(sx * mw / sy), mw))
 
-        img.save(out, format="PNG")
+        out = StringIO()
+        f_img.save(out, format="PNG")
         out.seek(0)
-        image_data = "base64:" + base64.b64encode(out.read())
+        f_image_data = "base64:" + base64.b64encode(out.read())
+
+        out = StringIO()
+        t_img.save(out, format="PNG")
+        out.seek(0)
+        t_image_data = "base64:" + base64.b64encode(out.read())
 
         # Send from/to messages as needed
         amqp = PluginRegistry.getInstance('AMQPHandler')
         if from_msg:
             self.__cr.call("notifyUser", i_from['ldap_uid'],
-            self.TYPE_MAP[event['Type']], from_msg.strip(), timeout=10, level='normal', icon=image_data)
+            self.TYPE_MAP[event['Type']], from_msg.strip(), timeout=10, level='normal', icon=t_image_data)
 
         if to_msg:
             self.__cr.call("notifyUser", i_to['ldap_uid'],
-            self.TYPE_MAP[event['Type']], to_msg.strip(), timeout=10, level='normal', icon=image_data)
+            self.TYPE_MAP[event['Type']], to_msg.strip(), timeout=10, level='normal', icon=f_image_data)
