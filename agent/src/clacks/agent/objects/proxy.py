@@ -426,7 +426,7 @@ class ObjectProxy(object):
             extension.commit()
 
 
-        #TODO: Cajus please check this
+        # Skip further actions if we're in create mode
         if self.__base_mode == "create":
             pass
 
