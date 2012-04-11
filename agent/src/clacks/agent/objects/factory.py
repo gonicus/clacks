@@ -181,10 +181,10 @@ class ObjectFactory(object):
 
 
         # Collect all object-types that can extend this class.
-        find = objectify.ObjectPath("Object.Extends")
+        find = objectify.ObjectPath("Object.Extends.Value")
         dependandObjectTypes = [objectType]
         for oc in self.__xml_defs:
-            if find.hasattr(self.__xml_defs[oc]) and objectType in map(lambda x: x.Value, find(self.__xml_defs[oc])):
+            if find.hasattr(self.__xml_defs[oc]) and objectType in map(lambda x: x.text, find(self.__xml_defs[oc])):
                 dependandObjectTypes.append(oc)
 
         # Get all <Attribute> tags and check if the property is not foreign
