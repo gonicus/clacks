@@ -464,7 +464,7 @@ class Object(object):
 
         # We may have a plugin without any attributes, like the group asterisk extension, in
         # this case we've to update the object despite of the lack of properties.
-        if not len(props) and self._backend:
+        if not len(toStore) and self._backend:
             toStore[self._backend] = {}
 
         # Leave the show if there's nothing to do
