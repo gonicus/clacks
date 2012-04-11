@@ -37,7 +37,7 @@
 
         <Extends>
             <Value>PosixGroup</Value>
-            <Value>PosixUser</Value>
+            <Value>User</Value>
         </Extends>
 
 	<BaseObject>false</BaseObject>

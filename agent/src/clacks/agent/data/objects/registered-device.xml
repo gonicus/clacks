@@ -5,7 +5,7 @@
 		<Description>The registeredDevice is a device that is known to GOsa and will displaye additional information.</Description>
 		<DisplayName>RegisteredDevice</DisplayName>
 		<BackendParameters>
-			<Backend objectClasses="registeredDevice" RDN="cn">LDAP</Backend>
+			<Backend objectClasses="registeredDevice">LDAP</Backend>
 		</BackendParameters>
 		<Backend>LDAP</Backend>
 		<Attributes>

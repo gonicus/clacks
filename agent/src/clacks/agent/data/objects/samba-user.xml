@@ -208,6 +208,7 @@
                 <Name>displayName</Name>
                 <Description>Display name</Description>
                 <Type>String</Type>
+                <Foreign>true</Foreign>
             </Attribute>
 
             <Attribute>

@@ -5,7 +5,7 @@
 		<Description>ieee802Device</Description>
 		<DisplayName>ieee802Device</DisplayName>
 		<BackendParameters>
-			<Backend objectClasses="ieee802Device" RDN="cn">LDAP</Backend>
+			<Backend objectClasses="ieee802Device">LDAP</Backend>
 		</BackendParameters>
 		<Backend>LDAP</Backend>
 		<Attributes>

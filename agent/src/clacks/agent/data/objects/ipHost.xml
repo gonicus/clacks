@@ -5,8 +5,7 @@
 		<Description>IpHost</Description>
 		<DisplayName>IpHost</DisplayName>
 		<BackendParameters>
-			<Backend objectClasses="ipHost"
-				RDN="cn">LDAP</Backend>
+			<Backend objectClasses="ipHost">LDAP</Backend>
 		</BackendParameters>
 		<Backend>LDAP</Backend>
 		<Attributes>
