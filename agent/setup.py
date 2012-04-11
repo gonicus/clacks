@@ -149,6 +149,8 @@ setup(
         password_lock = clacks.agent.plugins.password.locking:DetectAccountLockStatus
         password_hash = clacks.agent.plugins.password.hash:GeneratePasswordHash
         addbackend = clacks.agent.objects.filter.basic:AddBackend
+        registereddevicestatusin = clacks.agent.plugins.goto.in_out_filters:registeredDeviceStatusIn
+        registereddevicestatusout = clacks.agent.plugins.goto.in_out_filters:registeredDeviceStatusOut
 
         [object.operator]
         and = clacks.agent.objects.operator.bool:And
