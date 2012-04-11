@@ -142,6 +142,10 @@ def main():
 
     # Inizialize core environment
     env = Environment.getInstance()
+    if not env.base:
+        env.log.critical("Clacks agent needs a 'core.base' do operate on")
+        exit(1)
+
     env.log.info("Clacks %s is starting up (server id: %s)" % (VERSION, env.id))
 
     # Configured in daemon mode?
