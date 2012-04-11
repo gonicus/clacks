@@ -23,7 +23,6 @@ from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import Command, Plugin, PluginRegistry
 from clacks.agent.objects import ObjectFactory, ObjectProxy, ObjectChanged, SCOPE_BASE, SCOPE_ONE, SCOPE_SUB, ProxyException, ObjectException, SearchWrapper
 from clacks.agent.lock import GlobalLock
-from clacks.agent.ldap_utils import LDAPHandler
 
 
 class FilterException(Exception):
@@ -61,7 +60,6 @@ class ObjectIndex(Plugin):
     def serve(self):
         # Load db instance
         self.db = PluginRegistry.getInstance("XMLDBHandler")
-        self.base = LDAPHandler.get_instance().get_base()
 
         # if the already exists, check for schema updates!
         schema = self.factory.getXMLObjectSchema(True)
@@ -126,8 +124,8 @@ class ObjectIndex(Plugin):
             return res
 
         self.log.info("scanning for objects")
-        res = resolve_children(self.base)
-        res[self.base] = 'dummy'
+        res = resolve_children(self.env.base)
+        res[self.env.base] = 'dummy'
 
         self.log.info("generating object index")
 

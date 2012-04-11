@@ -29,7 +29,6 @@ import logging
 from zope.interface import implements
 from clacks.common.handler import IInterfaceHandler
 from clacks.common import Environment
-from clacks.agent.ldap_utils import LDAPHandler
 from clacks.common.components import Command, Plugin
 from clacks.common.utils import N_
 
@@ -67,13 +66,11 @@ class ACLSet(list):
 
     def __init__(self, base=None):
         super(ACLSet, self).__init__()
+        self.env = Environment.getInstance()
         self.log = logging.getLogger(__name__)
 
         # If no base is given use the default one.
-        if not base:
-            base = LDAPHandler.get_instance().get_base()
-
-        self.base = base
+        self.base = base or self.env.base
 
     def get_base(self):
         """
@@ -790,8 +787,7 @@ class ACLResolver(Plugin):
             self.admins = admins.split(",")
 
         # Load default LDAP base
-        lh = LDAPHandler.get_instance()
-        self.base = lh.get_base()
+        self.base = self.env.base
         self.acl_file = os.path.join(self.env.config.getBaseDir(), "agent.acl")
         self.clear()
 

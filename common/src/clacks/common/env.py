@@ -82,6 +82,9 @@ class Environment:
 
         self.active = True
 
+        # Load base - an agent needs one, though
+        self.base = self.config.get("core.base")
+
     def getDatabaseEngine(self, section, key="database"):
         """
         Return a database engine from the registry.
