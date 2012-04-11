@@ -237,7 +237,9 @@ class LDAP(ObjectBackend):
 
             # Build unique DN using maybe optional RDN parameters
             rdns = [d.strip() for d in params['RDN'].split(",")]
-            dn = self.get_uniq_dn(rdns, base, data, params)
+
+            FixedRDN = params['FixedRDN'] if 'FixedRDN' in params else None
+            dn = self.get_uniq_dn(rdns, base, data, FixedRDN)
             if not dn:
                 raise DNGeneratorError("no unique DN available on '%s' using: %s" % (base, ",".join(rdns)))
             dn = dn.encode('utf-8')
@@ -342,10 +344,10 @@ class LDAP(ObjectBackend):
         mts = self._convert_from_timestamp(res[0][1][self.modify_ts_entry][0])
         return (cts, mts)
 
-    def get_uniq_dn(self, rdns, base, data, params):
+    def get_uniq_dn(self, rdns, base, data, FixedRDN):
 
         try:
-            for dn in self.build_dn_list(rdns, base, data, params):
+            for dn in self.build_dn_list(rdns, base, data, FixedRDN):
                 res = self.con.search_s(dn.encode('utf-8'), ldap.SCOPE_BASE, '(objectClass=*)',
                     [self.uuid_entry])
 
@@ -368,14 +370,14 @@ class LDAP(ObjectBackend):
 
         return len(res) == 0
 
-    def build_dn_list(self, rdns, base, data, params):
+    def build_dn_list(self, rdns, base, data, FixedRDN):
         fix = rdns[0]
         var = rdns[1:] if len(rdns) > 1 else []
         dns = [fix]
 
         # Check if we've have to use a fixed RDN.
-        if 'FixedRDN' in params:
-            return(["%s,%s" % (params['FixedRDN'], base)])
+        if FixedRDN:
+            return(["%s,%s" % (FixedRDN, base)])
 
         # Bail out if fix part is not in data
         if not fix in data:
