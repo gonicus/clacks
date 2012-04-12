@@ -38,7 +38,7 @@ class ClacksNumberResolver(PhoneNumberResolver):
                     'contact_name': obj.cn,
                     'contact_phone': obj.telephoneNumber[0],
                     'contact_detail_url': '',
-                    'avatar': obj.jpegPhoto.get(),
+                    'avatar': obj.jpegPhoto.get() if obj.jpegPhoto else None,
                     'ldap_uid': obj.uid,
                     'resource': 'ldap',
             }
