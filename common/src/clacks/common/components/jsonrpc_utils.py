@@ -3,6 +3,7 @@ import datetime
 import json
 import pkg_resources
 import inspect
+import base64
 from clacks.common.components.jsonrpc_proxy import JSONObjectFactory
 
 json_handlers = {}
@@ -68,6 +69,25 @@ class DateTimeDateHandler(JSONDataHandler):
     @staticmethod
     def canhandle():
         return "datetime.date"
+
+
+class BinaryHandler(JSONDataHandler):
+
+    @staticmethod
+    def encode(data):
+        return  {'object': data.encode(), '__jsonclass__': 'json.Binary'}
+
+    @staticmethod
+    def decode(data):
+        return Binary(data['object'])
+
+    @staticmethod
+    def isinstance(data):
+        return isinstance(data, Binary)
+
+    @staticmethod
+    def canhandle():
+        return "json.Binary"
 
 
 class DateTimeHandler(JSONDataHandler):
@@ -153,6 +173,21 @@ def PObjectDecoder(dct):
         raise NotImplementedError("type '%s' is not serializeable" % clazz)
 
     return dct
+
+
+class Binary(object):
+
+    def __init__(self, data):
+        self.set(data)
+
+    def set(self, data):
+        self.data = base64.b64decode(data)
+
+    def get(self):
+        return self.data
+
+    def encode(self):
+        return base64.b64encode(self.data)
 
 
 # Load our entrypoints

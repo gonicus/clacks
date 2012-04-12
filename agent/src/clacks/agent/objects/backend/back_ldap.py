@@ -11,6 +11,7 @@ from logging import getLogger
 from clacks.common import Environment
 from clacks.agent.ldap_utils import LDAPHandler
 from clacks.agent.objects.backend import ObjectBackend, EntryNotFound, EntryNotUnique
+from clacks.common.components.jsonrpc_utils import Binary
 
 
 class RDNNotSpecified(Exception):
@@ -450,7 +451,7 @@ class LDAP(ObjectBackend):
         return datetime.date.fromtimestamp(ts)
 
     def _convert_from_binary(self, value):
-        return value
+        return Binary(value)
 
     def _convert_to_boolean(self, value):
         return "TRUE" if value else "FALSE"
@@ -471,4 +472,4 @@ class LDAP(ObjectBackend):
         return value.strftime("%Y%m%d%H%M%SZ")
 
     def _convert_to_binary(self, value):
-        return value
+        return value.encode()
