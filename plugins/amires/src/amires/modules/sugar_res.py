@@ -94,7 +94,7 @@ class SugarNumberResolver(PhoneNumberResolver):
                 if dat[0] is not None:
                     result['company_id'] = dat[0]
                     result['company_detail_url'] = self.sugar_url \
-                        + 'index.php?module=Accounts&action=DetailView' \
+                        + '/index.php?module=Accounts&action=DetailView' \
                         + '&record=' + dat[0]
                 if dat[1] is not None:
                     result['company_name'] = dat[1]
