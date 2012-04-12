@@ -106,6 +106,7 @@ setup(
         date = clacks.agent.objects.types.base:DateAttribute
         timestamp = clacks.agent.objects.types.base:TimestampAttribute
         sambalogonhours = clacks.agent.plugins.samba.logonhours:SambaLogonHoursAttribute
+        devicepartitiontabletype = clacks.agent.plugins.goto.types:DevicePartitionTableType
 
         [object.backend]
         ldap = clacks.agent.objects.backend.back_ldap:LDAP

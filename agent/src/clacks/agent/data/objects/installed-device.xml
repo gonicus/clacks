@@ -72,7 +72,8 @@
 			<Attribute>
 				<Name>installPartitionTable</Name>
 				<Description></Description>
-				<Type>String</Type>
+				<Type>DevicePartitionTableType</Type>
+                		<BackendType>UnicodeString</BackendType>
 			</Attribute>
 			<Attribute>
 				<Name>installRecipeDN</Name>
