@@ -474,9 +474,15 @@ class ClientService(Plugin):
     def _handleClientPing(self, data):
         data = data.ClientPing
         client = data.Id.text
+        print "------> ClientPing for", client
         self.__set_client_online(data.Id.text)
         if client in self.__client:
+            print self.__client[client]
+            print "---------------------------------------------"
+            print "Updated timestamp"
             self.__client[client]['last-seen'] = datetime.datetime.utcnow()
+            print self.__client[client]
+        print "---------------------------------------------"
 
     def _handleClientSignature(self, data):
         data = data.ClientSignature
@@ -598,10 +604,12 @@ class ClientService(Plugin):
     def __gc(self):
         interval = int(self.env.config.get("goto.timeout", default="600"))
 
-        for client in self.__client.items():
-            if not client[1]['online']:
+        for client, info in self.__client.items():
+            if not info['online']:
+                print "----> GC skipping", client, "not online"
                 continue
 
-            if client[1]['last-seen'] < datetime.datetime.utcnow() - datetime.timedelta(seconds=2*interval):
-                self.log.info("client '%s' looks dead - setting to 'offline'" % client[0])
-                self.__set_client_offline(client[0])
+            print "----> GC comparing", client, info['last-seen'], "with", datetime.datetime.utcnow() - datetime.timedelta(seconds=2*interval)
+            if info['last-seen'] < datetime.datetime.utcnow() - datetime.timedelta(seconds=2*interval):
+                self.log.info("client '%s' looks dead - setting to 'offline'" % client)
+                self.__set_client_offline(client)
