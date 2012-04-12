@@ -28,7 +28,7 @@ class ClacksNumberResolver(PhoneNumberResolver):
         res = index.xquery("collection('objects')/o:User[*/o:telephoneNumber = '%s']/o:DN/string()" % str(number))
 
         if len(res) == 1:
-            obj = ObjectProxy(res[0])
+            obj = ObjectProxy(res[0].encode('utf-8'))
             result = {
                     'company_id': '',
                     'company_name': 'Intern',
@@ -38,10 +38,11 @@ class ClacksNumberResolver(PhoneNumberResolver):
                     'contact_name': obj.cn,
                     'contact_phone': obj.telephoneNumber[0],
                     'contact_detail_url': '',
-                    'avatar': obj.jpegPhoto,
+                    'avatar': obj.jpegPhoto.get(),
                     'ldap_uid': obj.uid,
                     'resource': 'ldap',
             }
+
             return result
 
         return None

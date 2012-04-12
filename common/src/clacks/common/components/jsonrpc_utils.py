@@ -181,7 +181,7 @@ class Binary(object):
         self.set(data)
 
     def set(self, data):
-        self.data = base64.b64decode(data)
+        self.data = data
 
     def get(self):
         return self.data
