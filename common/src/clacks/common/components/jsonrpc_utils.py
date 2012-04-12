@@ -60,7 +60,7 @@ class DateTimeDateHandler(JSONDataHandler):
 
     @staticmethod
     def decode(data):
-        return datetime.datetime.strptime(data['object'], "%Y-%m-%d").date()
+        return datetime.datetime.strptime(data['object'].split(".")[0], "%Y-%m-%d").date()
 
     @staticmethod
     def isinstance(data):
@@ -98,7 +98,7 @@ class DateTimeHandler(JSONDataHandler):
 
     @staticmethod
     def decode(data):
-        return datetime.datetime.strptime(data, "%Y-%m-%d %H:%M:%S")
+        return datetime.datetime.strptime(data['object'].split(".")[0], "%Y-%m-%d %H:%M:%S")
 
     @staticmethod
     def isinstance(data):

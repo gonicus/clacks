@@ -8,7 +8,7 @@ from time import time
 from lxml import etree
 from clacks.common import Environment
 from clacks.agent.xmldb.interface import XMLDBInterface, XMLDBException
-from dbxml import XmlManager, XmlResolver, DBXML_LAZY_DOCS, DBXML_ALLOW_VALIDATION
+from dbxml import XmlManager, XmlResolver, DBXML_LAZY_DOCS, DBXML_ALLOW_VALIDATION, XmlQueryParserError
 from threading import Timer, Lock
 
 
@@ -461,7 +461,13 @@ class DBXml(XMLDBInterface):
         qcontext = self.collections[collection]['queryContext']
         query_str = query.encode('utf-8') if isinstance(query, unicode) else query
         start = time()
-        res = self.manager.query(query_str, qcontext)
+        try:
+            res = self.manager.query(query_str, qcontext)
+        except XmlQueryParserError as e:
+            self.log.error("xquery '%s' failed: %s" % (query_str, str(e)))
+            self._db_locks[collection].release()
+            raise(e)
+
         end = time()
         ret = []
         for t in res:
