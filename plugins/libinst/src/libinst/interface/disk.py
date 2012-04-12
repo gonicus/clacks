@@ -29,13 +29,14 @@ class DiskDefinition(object):
     supportedDeviceTypes = []
     supportEncryption = False
 
-    def __init__(self, definition=None, uuid=None):
+    def __init__(self, definition=None, uuid=None, user=None):
         self._disks = []
         self._parts = []
         self._raids = []
         self._volgroups = []
         self._vols = []
         self.uuid = uuid
+        self.user = user
 
         if definition:
             self._parseDiskDefinition(definition)
