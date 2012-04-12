@@ -64,7 +64,7 @@ class DateTimeDateHandler(JSONDataHandler):
 
     @staticmethod
     def isinstance(data):
-        return isinstance(data, datetime.date)
+        return type(data) == datetime.date
 
     @staticmethod
     def canhandle():
@@ -102,7 +102,7 @@ class DateTimeHandler(JSONDataHandler):
 
     @staticmethod
     def isinstance(data):
-        return isinstance(data, datetime.datetime)
+        return type(data) == datetime.datetime
 
     @staticmethod
     def canhandle():
