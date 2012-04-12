@@ -66,7 +66,7 @@ class ObjectIndex(Plugin):
         if self.db.collectionExists("objects") and not self.db.validateSchema('objects', 'objects.xsd', schemaString=schema):
                 self.db.dropCollection('objects')
                 self.log.info('object definitions changed, dropped old object index collection')
-        
+
         # Create the database on demand
         if not self.db.collectionExists("objects"):
             self.log.info('created object index collection')

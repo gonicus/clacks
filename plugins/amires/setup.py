@@ -49,7 +49,7 @@ setup(
         ami-resolver = amires.main:AsteriskNotificationReceiver
 
         [phone.resolver]
-        res.ldap = amires.modules.ldap_res:LDAPNumberResolver
+        res.clacks = amires.modules.clacks_res:ClacksNumberResolver
         res.sugar = amires.modules.sugar_res:SugarNumberResolver
         res.xml = amires.modules.xml_res:XMLNumberResolver
 
@@ -59,4 +59,5 @@ setup(
 
     """,
     #res.telekom = amires.modules.telekom_res:TelekomNumberResolver
+    #res.ldap = amires.modules.ldap_res:LDAPNumberResolver
 )
