@@ -20,6 +20,18 @@ class ElementFilter(object):
     def process(self, obj, key, value):
         raise NotImplementedError("not implemented")
 
+    def __copy__(self):
+        """
+        Do not make copies of ourselves.
+        """
+        return self
+    
+    def __deepcopy__(self, memo):
+        """
+        Do not make copies of ourselves.
+        """
+        return self
+
 
 class ElementFilterException(Exception):
     pass

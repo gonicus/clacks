@@ -20,3 +20,15 @@ class ElementComparator(object):
 
     def process(self, *args, **kwargs):
         raise NotImplementedError("not implemented")
+
+    def __copy__(self):
+        """
+        Do not make copies of ourselves.
+        """
+        return self
+    
+    def __deepcopy__(self, memo):
+        """
+        Do not make copies of ourselves.
+        """
+        return self
