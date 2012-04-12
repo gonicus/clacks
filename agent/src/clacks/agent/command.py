@@ -287,7 +287,10 @@ class CommandRegistry(Plugin):
 
         # Check if call is interested in calling user ID, prepend it
         if self.callNeedsUser(func):
-            arg.insert(0, user)
+            if user != self:
+                arg.insert(0, user)
+            else:
+                arg.insert(0, None)
 
         # Handle function type (additive, first match, regular)
         methodType = self.capabilities[func]['type']
