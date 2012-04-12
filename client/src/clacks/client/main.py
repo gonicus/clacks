@@ -31,11 +31,16 @@ def shutdown(a=None, b=None):
     PluginRegistry.shutdown()
 
     logging.shutdown()
-    exit(0)
 
 
 def sighup(a=None, b=None):
     pass
+
+
+def do_exit(a=None, b=None):
+    env = Environment.getInstance()
+    env.active = False
+
 
 def mainLoop(env):
     """ Main event loop which will process all registerd threads in a loop.
@@ -167,7 +172,7 @@ def main():
             )
 
             context.signal_map = {
-                signal.SIGTERM: shutdown,
+                signal.SIGTERM: do_exit,
                 signal.SIGHUP: sighup,
             }
 
