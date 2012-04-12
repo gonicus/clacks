@@ -197,7 +197,7 @@ class Object(object):
                     try:
                         self.myProperties[key]['value'] = atypes[a_type].convert_from(be_type, self.myProperties[key]['value'])
                     except Exception as e:
-                        self.log.error("conversion of '%s' from '%s' to type '%s' failed: %s", (key, be_type, a_type, str(e)))
+                        self.log.error("conversion of '%s' from '%s' to type '%s' failed: %s" % (key, be_type, a_type, str(e)))
                     else:
                         self.log.debug("converted '%s' from type '%s' to type '%s'!" % (key, be_type, a_type))
 
