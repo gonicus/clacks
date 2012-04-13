@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from qpid.messaging import Connection, Message, uuid4
+from qpid.messaging.util import auto_fetch_reconnect_urls
 from types import DictType
 from clacks.common.components.json_exception import JSONRPCException
 from clacks.common.gjson import dumps, loads
@@ -51,8 +52,18 @@ class AMQPServiceProxy(object):
 
         # Prepare AMQP connection if not already there
         if not conn:
-            conn = Connection(url['url'], transport=url['transport'], reconnect=True)
-            conn.open()
+
+            _url = "%s:%s" % (url['host'], url['port'])
+            conn = Connection.establish(_url, reconnect=True,
+                username=url['user'],
+                password=url['password'],
+                transport=url['transport'],
+                reconnect_interval=3,
+                reconnect_limit=0)
+
+            #TODO: configure reconnect
+            #auto_fetch_reconnect_urls(conn)
+
             AMQPServiceProxy.domain= domain
 
             # Prefill __serviceAddress correctly if domain is given
@@ -168,6 +179,7 @@ class AMQPServiceProxy(object):
                 queue = self.__serviceAddress
 
         # Find free session for requested queue
+        found = False
         for sess, dsc in AMQPServiceProxy.worker[self.__serviceAddress].iteritems():
             if not dsc['locked']:
                 self.__ssn = dsc['ssn']
@@ -175,10 +187,11 @@ class AMQPServiceProxy(object):
                 self.__receiver = dsc['receiver']
                 self.__worker = sess
                 dsc['locked'] = True
+                found = True
                 break
 
         # No free session?
-        if not self.__ssn:
+        if not found:
             raise AMQPException('no free session - increase workers')
 
         # Send
@@ -190,6 +203,7 @@ class AMQPServiceProxy(object):
         message = Message(postdata)
         message.user_id = self.__URL['user']
         message.reply_to = 'reply-%s' % self.__ssn.name
+
         self.__sender.send(message)
 
         # SVC workaround
@@ -256,8 +270,18 @@ class AMQPEventConsumer(object):
 
         # Build connection
         url = parseURL(url)
-        self.__conn = Connection(url['url'], transport=url['transport'], reconnect=True)
-        self.__conn.open()
+
+        _url = "%s:%s" % (url['host'], url['port'])
+        self.__conn = Connection.establish(_url, reconnect=True,
+            username=url['user'],
+            password=url['password'],
+            transport=url['transport'],
+            reconnect_interval=3,
+            reconnect_limit=0)
+
+        # Do automatic broker failover if requested
+        #TODO: configure reconnect
+        #auto_fetch_reconnect_urls(self.__conn)
 
         # Assemble subscription query
         queue = 'event-listener-%s' % uuid4()
