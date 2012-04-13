@@ -93,6 +93,7 @@ class Inventory(Plugin):
         # Get BUS connection
         try:
             # Request inventory result from dbus-client (He is running as root and can do much more than we can)
+            self.log.info("retrieving inventory data from dbus...")
             result = self.clacks_dbus.inventory(dbus_interface="org.clacks")
 
         except dbus.DBusException as e:
