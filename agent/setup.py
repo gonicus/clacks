@@ -69,6 +69,8 @@ setup(
         'sqlalchemy',
         'lepl',
         'setproctitle',
+        'tornado',
+        'python-Levenshtein',
         ],
     dependency_links = [
         'http://oss.gonicus.de/pub/gosa/eggs',

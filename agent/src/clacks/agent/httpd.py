@@ -10,9 +10,11 @@ is redirecting a path to a module.
 import os
 import thread
 import logging
+import tornado.wsgi
+from tornado.ioloop import IOLoop
+from tornado.httpserver import HTTPServer
 from zope.interface import implements
 from webob import exc
-from paste import httpserver
 
 from clacks.common import Environment
 from clacks.common.handler import IInterfaceHandler
@@ -113,7 +115,7 @@ class HTTPService(object):
         self.log.info("initializing HTTP service provider")
         self.env = env
         self.srv = None
-        self.ssl_pem = None
+        self.ssl = None
         self.app = None
         self.host = None
         self.scheme = None
@@ -127,17 +129,24 @@ class HTTPService(object):
 
         self.host = self.env.config.get('http.host', default="localhost")
         self.port = self.env.config.get('http.port', default=8080)
-        self.ssl_pem = self.env.config.get('http.sslpemfile', default=None)
+        self.ssl = self.env.config.get('http.ssl', default=None)
 
-        if self.ssl_pem:
+        if self.ssl and self.ssl.lower() in ['true', 'yes', 'on']:
             self.scheme = "https"
+            ssl_options = dict(
+                certfile=self.env.config.get('http.certfile', default=None),
+                keyfile=self.env.config.get('http.keyfile', default=None),
+                ca_certs=self.env.config.get('http.ca_certs', default=None))
         else:
             self.scheme = "http"
+            ssl_options = None
 
         # Fetch server
-        self.srv = httpserver.serve(self.app, self.host, self.port, start_loop=False, ssl_pem=self.ssl_pem)
+        self.srv = HTTPServer(tornado.wsgi.WSGIContainer(self.app), ssl_options=ssl_options)
+        self.srv.listen(self.port, self.host)
+        thread.start_new_thread(IOLoop.instance().start, ())
+
         self.log.info("now serving on %s://%s:%s" % (self.scheme, self.host, self.port))
-        thread.start_new_thread(self.srv.serve_forever, ())
 
         # Register all possible instances that have shown
         # interrest to be served
@@ -149,7 +158,7 @@ class HTTPService(object):
         Stop HTTP service thread.
         """
         self.log.debug("shutting down HTTP service provider")
-        self.srv.server_close()
+        IOLoop.instance().stop()
 
     def register(self, path, obj):
         """
