@@ -252,9 +252,13 @@ class ClacksService():
     def help(self):
         """ Prints some help """
         mlist = {}
-        for method, info in self.proxy.getMethods(None,
-                ".".join(locale.getdefaultlocale())).iteritems():
+        loc = locale.getdefaultlocale()
+        try:
+            loc = ".".join(loc)
+        except TypeError:
+            loc = None
 
+        for method, info in self.proxy.getMethods(None, loc).iteritems():
             # Get the name of the module.
             module = info['target']
             if module not in mlist:
