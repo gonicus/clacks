@@ -6,6 +6,12 @@ prepare_clacks() {
         cd $HERE
         echo -n "Creating virtual environment: "
         virtualenv --setuptools --system-site-packages clacks &> /dev/null && echo ok
+	if virtualenv --help | grep -q -- --setuptools; then
+		virtualenv --system-site-packages --setuptools clacks &> /dev/null && echo ok
+	else
+		virtualenv --system-site-packages clacks &> /dev/null && echo ok
+	fi
+
         if [ $? -ne 0 ]; then
                 echo "failed"
                 exit 1
