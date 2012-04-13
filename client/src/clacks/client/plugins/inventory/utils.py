@@ -113,9 +113,14 @@ class Inventory(Plugin):
         m.update(etree.tostring(checksum_result))
         checksum = m.hexdigest()
 
+        #TODO Debug
+        import datetime
+        open("/tmp/inventory_%s" % (str(datetime.datetime.now()),), 'w').write(etree.tostring(checksum_result, pretty_print=True))
+
         # Just don't do anything with the remote if the checksum did
         # not change
         if checksum == old_checksum:
+            self.log.info("skipped sending inventory data, nothing changed!")
             return
 
         # Insert the checksum into the resulting event
@@ -123,6 +128,7 @@ class Inventory(Plugin):
 
         def runner():
             # Establish amqp connection
+            self.log.info("sending inventory data, nothing changed!")
             amqp = PluginRegistry.getInstance("AMQPClientHandler")
             amqp.sendEvent(str(result))
 
