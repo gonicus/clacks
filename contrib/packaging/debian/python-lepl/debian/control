@@ -1,0 +1,16 @@
+Source: python-lepl
+Section: python
+Priority: optional
+Maintainer: Cajus Pollmeier <cajus@debian.org>
+Build-Depends: debhelper (>= 7.0.50~), python (>= 2.6.6-3~), python-setuptools,
+X-Python-Version: >= 2.6
+Standards-Version: 3.9.2
+Homepage: http://www.acooke.org/lepl/
+
+Package: python-lepl
+Architecture: all
+Depends: ${python:Depends}, ${misc:Depends}
+Description: clacks infrastructure service - common files
+ A recursive descent parser for Python 2.6+ (including 3!). Lepl is powerful,
+ simple to use, and easy to extend: grammars are written directly as Python
+ code, using a syntax similar to BNF; new matchers can be simple functions.
