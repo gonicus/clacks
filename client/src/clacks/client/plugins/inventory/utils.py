@@ -113,7 +113,7 @@ class Inventory(Plugin):
         m.update(etree.tostring(checksum_result))
         checksum = m.hexdigest()
 
-        #TODO Debug
+        #TODO Debug - remove me later
         import datetime
         open("/tmp/inventory_%s" % (str(datetime.datetime.now()),), 'w').write(etree.tostring(checksum_result, pretty_print=True))
 
