@@ -93,6 +93,7 @@ class Inventory(Plugin):
         # Get BUS connection
         try:
             # Request inventory result from dbus-client (He is running as root and can do much more than we can)
+            self.log.info("retrieving inventory data from dbus...")
             result = self.clacks_dbus.inventory(dbus_interface="org.clacks")
 
         except dbus.DBusException as e:
@@ -113,9 +114,14 @@ class Inventory(Plugin):
         m.update(etree.tostring(checksum_result))
         checksum = m.hexdigest()
 
+        #TODO Debug - remove me later
+        import datetime
+        open("/tmp/inventory_%s" % (str(datetime.datetime.now()),), 'w').write(etree.tostring(checksum_result, pretty_print=True))
+
         # Just don't do anything with the remote if the checksum did
         # not change
         if checksum == old_checksum:
+            self.log.info("skipped sending inventory data, nothing changed!")
             return
 
         # Insert the checksum into the resulting event
@@ -123,6 +129,7 @@ class Inventory(Plugin):
 
         def runner():
             # Establish amqp connection
+            self.log.info("sending inventory data, nothing changed!")
             amqp = PluginRegistry.getInstance("AMQPClientHandler")
             amqp.sendEvent(str(result))
 
