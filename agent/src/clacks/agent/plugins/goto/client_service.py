@@ -487,8 +487,6 @@ class ClientService(Plugin):
         if client in self.__proxy:
             self.__proxy[client].close()
             del self.__proxy[client]
-            if self.env.domain + ".client." + client in AMQPServiceProxy.methods:
-                AMQPServiceProxy.methods[self.env.domain + ".client." + client] = self.clientDispatch(client, "getMethods")
 
         # Assemble caps
         caps = {}
