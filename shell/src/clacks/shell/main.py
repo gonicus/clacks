@@ -212,7 +212,7 @@ class ClacksService():
                 url['port'],
                 url['path'])
 
-            self.proxy = AMQPServiceProxy(connection, workers=4)
+            self.proxy = AMQPServiceProxy(connection)
 
         # Default and HTTP
         elif url['scheme'][0:4] == "http":
