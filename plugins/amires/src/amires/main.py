@@ -59,6 +59,8 @@ class AsteriskNotificationReceiver(object):
                     'priority': module.priority,
             }
 
+        self.last_event = None
+
     def serve(self):
         self.log.info("listening for asterisk events...")
         amqp = PluginRegistry.getInstance('AMQPHandler')
@@ -85,6 +87,12 @@ class AsteriskNotificationReceiver(object):
                 event[tag] = t.text.split(" ")[0]
             else:
                 event[tag] = str(t.text)
+
+        # Simple debouncing
+        if self.last_event['From'] == event['From'] and self.last_event['To'] == event['To'] and self.last_event['Type'] == event['Type'] and (float(event['Timestamp']) - float(self.last_event['Timestamp'])) < 1:
+               return
+
+        self.last_event = event
 
         # Resolve numbers with all resolvers, sorted by priority
         i_from = None

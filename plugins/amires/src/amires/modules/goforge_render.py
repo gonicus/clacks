@@ -85,13 +85,13 @@ class GOForgeRenderer(BaseRenderer):
         if len(result) == 0:
             return ""
 
-        html = u"<b>%s</b>" % cgi.escape(_("Open GOForge tickets"))
+        html = u"<b>%s</b>" % _("Open GOForge tickets")
         for row in result:
-            html += "\n<a href='%s'>%s</a>: '%s'" %(
+            html += u"\n<a href='%s'>%s</a>: '%s'" %(
                 cgi.escape(self.forge_url + "/bugs/?func=detailbug" \
                     + "&bug_id=" + str(row['id']) \
                     + "&group_id=" + str(row['group_id'])),
                 row['id'],
-                cgi.escape(row['summary']))
+                cgi.escape(row['summary'].decode('utf-8')))
 
         return html
