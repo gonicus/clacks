@@ -89,8 +89,8 @@ class AsteriskNotificationReceiver(object):
                 event[tag] = str(t.text)
 
         # Simple debouncing
-        if self.last_event['From'] == event['From'] and self.last_event['To'] == event['To'] and self.last_event['Type'] == event['Type'] and (float(event['Timestamp']) - float(self.last_event['Timestamp'])) < 1:
-               return
+        if self.last_event and self.last_event['From'] == event['From'] and self.last_event['To'] == event['To'] and self.last_event['Type'] == event['Type'] and (float(event['Timestamp']) - float(self.last_event['Timestamp'])) < 1:
+            return
 
         self.last_event = event
 

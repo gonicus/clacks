@@ -92,6 +92,6 @@ class GOForgeRenderer(BaseRenderer):
                     + "&bug_id=" + str(row['id']) \
                     + "&group_id=" + str(row['group_id'])),
                 row['id'],
-                cgi.escape(row['summary'].decode('utf-8')))
+                cgi.escape(row['summary'].encode('raw_unicode_escape').decode('utf-8')))
 
         return html
