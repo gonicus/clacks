@@ -19,8 +19,8 @@ class CommonRenderer(BaseRenderer):
     def __init__(self):
         pass
 
-    def getHTML(self, info, event):
-        super(CommonRenderer, self).getHTML(info)
+    def getHTML(self, info, selfInfo, event):
+        super(CommonRenderer, self).getHTML(info, selfInfo, event)
 
         # build html for company name
         comp = u""

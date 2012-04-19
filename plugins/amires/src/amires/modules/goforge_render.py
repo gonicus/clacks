@@ -3,6 +3,7 @@ import cgi
 import MySQLdb
 import pkg_resources
 import gettext
+from sqlalchemy.exc import OperationalError
 from amires.render import BaseRenderer
 from clacks.common import Environment
 
@@ -33,8 +34,8 @@ class GOForgeRenderer(BaseRenderer):
         self.forge_url = self.env.config.get("fetcher-goforge.site_url",
             default="http://localhost/")
 
-    def getHTML(self, particiantInfo, event):
-        super(GOForgeRenderer, self).getHTML(particiantInfo)
+    def getHTML(self, particiantInfo, selfInfo, event):
+        super(GOForgeRenderer, self).getHTML(particiantInfo, selfInfo, event)
 
         if not 'company_id' in particiantInfo:
             return ""
@@ -47,6 +48,7 @@ class GOForgeRenderer(BaseRenderer):
         result = []
 
         cursor = self.forge_db.cursor()
+        html = ""
 
         try:
             # obtain GOforge internal customer id
@@ -79,19 +81,22 @@ class GOForgeRenderer(BaseRenderer):
                         'group_id': row[2],
                         'assigned': row[3]})
 
+            if len(result) == 0:
+                return ""
+
+            html = u"<b>%s</b>" % _("Open GOForge tickets")
+            for row in result:
+                html += u"\n<a href='%s'>%s</a>: '%s'" %(
+                    cgi.escape(self.forge_url + "/bugs/?func=detailbug" \
+                        + "&bug_id=" + str(row['id']) \
+                        + "&group_id=" + str(row['group_id'])),
+                    row['id'],
+                    cgi.escape(row['summary'].encode('raw_unicode_escape').decode('utf-8')))
+
+        except OperationalError:
+            pass
+
         finally:
             cursor.close()
-
-        if len(result) == 0:
-            return ""
-
-        html = u"<b>%s</b>" % _("Open GOForge tickets")
-        for row in result:
-            html += u"\n<a href='%s'>%s</a>: '%s'" %(
-                cgi.escape(self.forge_url + "/bugs/?func=detailbug" \
-                    + "&bug_id=" + str(row['id']) \
-                    + "&group_id=" + str(row['group_id'])),
-                row['id'],
-                cgi.escape(row['summary'].encode('raw_unicode_escape').decode('utf-8')))
 
         return html

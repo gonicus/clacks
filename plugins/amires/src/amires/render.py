@@ -9,7 +9,7 @@ class BaseRenderer(object):
         pass
 
 
-    def getHTML(self, particiantInfo):
+    def getHTML(self, particiantInfo, selfInfo, event):
         if not particiantInfo:
             raise RuntimeError("particiantInfo must not be None.")
         if type(particiantInfo) is not dict:

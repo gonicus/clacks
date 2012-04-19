@@ -56,6 +56,7 @@ setup(
         [notification.renderer]
         render.main = amires.modules.common_render:CommonRenderer
         render.goforge = amires.modules.goforge_render:GOForgeRenderer
+        render.tb = amires.modules.doingreport_render:DoingReportRenderer
 
     """,
     #res.telekom = amires.modules.telekom_res:TelekomNumberResolver

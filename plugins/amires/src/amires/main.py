@@ -121,11 +121,11 @@ class AsteriskNotificationReceiver(object):
                 key=lambda k: k[1]['priority']):
 
             if 'ldap_uid' in i_to and i_to['ldap_uid']:
-                to_msg += info['object'].getHTML(i_from, event)
+                to_msg += info['object'].getHTML(i_from, i_to, event)
                 to_msg += "\n\n"
 
             if 'ldap_uid' in i_from and i_from['ldap_uid'] and event['Type'] == 'CallEnded':
-                from_msg += info['object'].getHTML(i_to, event)
+                from_msg += info['object'].getHTML(i_to, i_from, event)
                 from_msg += "\n\n"
 
         # encode as ASCII with hexadecimal HTML entities for non-latin1 chars
