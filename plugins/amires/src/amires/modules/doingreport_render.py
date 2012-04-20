@@ -38,6 +38,13 @@ class DoingReportRenderer(BaseRenderer):
         self.forge_url = self.env.config.get("fetcher-goforge.site_url",
             default="http://localhost/")
 
+    def __get_cursor(self):
+        try:
+            return self.forge_db.cursor()
+        except (AttributeError, MySQLdb.OperationalError):
+            self.forge_db.connect()
+            return self.forge_db.cursor()
+
     def getHTML(self, particiantInfo, selfInfo, event):
         super(DoingReportRenderer, self).getHTML(particiantInfo, selfInfo, event)
 
@@ -45,13 +52,12 @@ class DoingReportRenderer(BaseRenderer):
             return ""
         if not "Duration" in event:
             return ""
-        #TODO: threshold?
 
         ldap_uid = selfInfo['ldap_uid'] if 'ldap_uid' in selfInfo else None
         if not ldap_uid:
             return ""
 
-        #TODO: remove me
+        # Filter out white listed users
         if self.whitelisted_users and not ldap_uid in self.whitelisted_users:
             return ""
 
@@ -64,7 +70,7 @@ class DoingReportRenderer(BaseRenderer):
         if not (contact_name or company_name or company_phone or contact_phone):
             return ""
 
-        cursor = self.forge_db.cursor()
+        cursor = self.__get_cursor()
 
         try:
             # Lookup GOforge user_id from ldap_uid
@@ -93,7 +99,7 @@ class DoingReportRenderer(BaseRenderer):
 
             # Assemble new entry for TB
             date = datetime.strftime(datetime.utcnow(), "%Y.%m.%d")
-            minutes = int(math.ceil(float(event["Duration"]) % 60))
+            minutes = int(math.ceil(float(event["Duration"]) / 60))
             details = u"Bitte ergänzen"
             comment = "Telefonat mit %s" % contact_name or contact_phone or company_name or company_phone
 
@@ -109,6 +115,20 @@ class DoingReportRenderer(BaseRenderer):
                     VALUES (%s, %s, %s, %s, %s)""", (user_id, date, minutes,
                         details.encode('ascii', 'xmlcharrefreplace'),
                         comment.encode('ascii', 'xmlcharrefreplace')))
+
+
+            # Eventually we need to create an entry in doing_account in order
+            # to make the TB editable.
+            res = cursor.execute("""
+                    SELECT id
+                    FROM doing_account
+                    WHERE date = %s and user_id = %s""",
+                    (date, user_id))
+            if not res:
+                cursor.execute("""
+                    INSERT INTO doing_account (date, user_id, account_user, account_billing)
+                    VALUES(%s, %s, 'no', 'no');
+                """, (date, user_id))
 
         finally:
             cursor.close()

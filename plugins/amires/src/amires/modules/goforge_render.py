@@ -34,6 +34,13 @@ class GOForgeRenderer(BaseRenderer):
         self.forge_url = self.env.config.get("fetcher-goforge.site_url",
             default="http://localhost/")
 
+    def __get_cursor(self):
+        try:
+            return self.forge_db.cursor()
+        except (AttributeError, MySQLdb.OperationalError):
+            self.forge_db.connect()
+            return self.forge_db.cursor()
+
     def getHTML(self, particiantInfo, selfInfo, event):
         super(GOForgeRenderer, self).getHTML(particiantInfo, selfInfo, event)
 
@@ -47,7 +54,7 @@ class GOForgeRenderer(BaseRenderer):
         # prepare result
         result = []
 
-        cursor = self.forge_db.cursor()
+        cursor = self.__get_cursor()
         html = ""
 
         try:
