@@ -105,14 +105,14 @@ class DoingReportRenderer(BaseRenderer):
 
             if customer_id:
                 cursor.execute("""
-                    INSERT INTO doingreport (user_id, customer_id, date, minutes, details, comments)
-                    VALUES (%s, %s, %s, %s, %s, %s)""", (user_id, customer_id,
+                    INSERT INTO doingreport (user_id, customer_id, date, minutes, details, comments, flag)
+                    VALUES (%s, %s, %s, %s, %s, %s, '?')""", (user_id, customer_id,
                         date, minutes, details.encode('ascii', 'xmlcharrefreplace'),
                         comment.encode('ascii', 'xmlcharrefreplace')))
             else:
                 cursor.execute("""
-                    INSERT INTO doingreport (user_id, date, minutes, details, comments)
-                    VALUES (%s, %s, %s, %s, %s)""", (user_id, date, minutes,
+                    INSERT INTO doingreport (user_id, date, minutes, details, comments, flag)
+                    VALUES (%s, %s, %s, %s, %s, '?')""", (user_id, date, minutes,
                         details.encode('ascii', 'xmlcharrefreplace'),
                         comment.encode('ascii', 'xmlcharrefreplace')))
 
