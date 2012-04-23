@@ -94,6 +94,12 @@ class AsteriskNotificationReceiver(object):
 
         self.last_event = event
 
+        #TODO: wrong place here - workaround
+        if event['From'] == "+49":
+            event['From'] = "Unbekannter Teilnehmer"
+        if event['To'] == "+49":
+            event['To'] = "Unbekannter Teilnehmer"
+
         # Resolve numbers with all resolvers, sorted by priority
         i_from = None
         i_to = None

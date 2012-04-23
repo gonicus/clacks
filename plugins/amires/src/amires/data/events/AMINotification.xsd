@@ -27,7 +27,8 @@
     </xs:simpleType>
 
     <xs:simpleType name="PhoneNumberList">
-        <xs:list itemType="e:PhoneNumber"/>
+        <xs:list itemType="xs:string"/>
+	<!--<xs:list itemType="e:PhoneNumber"/>-->
     </xs:simpleType>
 
     <xs:complexType name="Call" mixed="true">

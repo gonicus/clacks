@@ -91,14 +91,23 @@ class GOForgeRenderer(BaseRenderer):
             if len(result) == 0:
                 return ""
 
-            html = u"<b>%s</b>" % _("Open GOForge tickets")
+            html = u"<b>%s</b>" % _("GOForge tickets")
+            more = ""
+            try:
+                more = row['summary'].encode('raw_unicode_escape').decode('utf-8')
+            except:
+                print "-"*80
+                print "nicht enkodierbar:"
+                print row
+                print "-"*80
+
             for row in result:
-                html += u"\n<a href='%s'>%s</a>: '%s'" %(
-                    cgi.escape(self.forge_url + "/bugs/?func=detailbug" \
+                html += u"\n<a href='%s'>%s</a> %s" %(
+                    self.forge_url + "/bugs/?func=detailbug" \
                         + "&bug_id=" + str(row['id']) \
-                        + "&group_id=" + str(row['group_id'])),
+                        + "&group_id=" + str(row['group_id']),
                     row['id'],
-                    cgi.escape(row['summary'].encode('raw_unicode_escape').decode('utf-8')))
+                    cgi.escape(more))
 
         except OperationalError:
             pass

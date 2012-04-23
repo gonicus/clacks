@@ -55,7 +55,7 @@ class JSONRPCObjectMapper(Plugin):
         metadata.create_all(self.__engine)
 
         # Establish the connection
-        self.__conn = self.__engine.connect()
+        self.__session = self.env.getDatabaseSession('core')
 
     def serve(self):
         sched= PluginRegistry.getInstance("SchedulerService").getScheduler()
@@ -90,7 +90,7 @@ class JSONRPCObjectMapper(Plugin):
         if ref in self.__object:
             del self.__object[ref]
 
-        self.__conn.execute(self.__pool.delete().where(self.__pool.c.uuid == ref))
+        self.__session.execute(self.__pool.delete().where(self.__pool.c.uuid == ref))
 
     @Command(__help__=N_("Set property for object on stack"))
     def setObjectProperty(self, ref, name, value):
@@ -222,7 +222,7 @@ class JSONRPCObjectMapper(Plugin):
                 'methods': methods,
                 'properties': properties}
 
-        self.__conn.execute(self.__pool.insert(), {
+        self.__session.execute(self.__pool.insert(), {
             'uuid': ref,
             'node': self.env.id,
             'object': objdsc,
@@ -295,7 +295,7 @@ class JSONRPCObjectMapper(Plugin):
         return self.__proxy[provider]
 
     def __get_ref(self, ref):
-        tmp = self.__conn.execute(select([self.__pool.c.uuid, self.__pool.c.node, self.__pool.c.object, self.__pool.c.created], self.__pool.c.uuid == ref))
+        tmp = self.__session.execute(select([self.__pool.c.uuid, self.__pool.c.node, self.__pool.c.object, self.__pool.c.created], self.__pool.c.uuid == ref))
         res = tmp.fetchone()
         tmp.close()
         if not res:
@@ -311,7 +311,7 @@ class JSONRPCObjectMapper(Plugin):
     def __gc(self):
         self.env.log.debug("running garbage collector on object store")
 
-        entries = self.__conn.execute(select([self.__pool.c.uuid],
+        entries = self.__session.execute(select([self.__pool.c.uuid],
             and_(self.__pool.c.created < datetime.datetime.now() -
                 datetime.timedelta(hours=1), self.__pool.c.node ==
                 self.env.id)))
@@ -320,6 +320,6 @@ class JSONRPCObjectMapper(Plugin):
             if ref in self.__object:
                 del self.__object[ref]
 
-        self.__conn.execute(self.__pool.delete().where(and_(self.__pool.c.created <
+        self.__session.execute(self.__pool.delete().where(and_(self.__pool.c.created <
             datetime.datetime.now() - datetime.timedelta(hours=1),
             self.__pool.c.node == self.env.id)))

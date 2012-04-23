@@ -40,6 +40,13 @@ class SugarNumberResolver(PhoneNumberResolver):
         if hasattr(self, 'sugar_db') and self.sugar_db is not None:
             self.sugar_db.close()
 
+    def __get_cursor(self):
+        try:
+            return self.sugar_db.cursor()
+        except (AttributeError, MySQLdb.OperationalError):
+            self.sugar_db.connect()
+            return self.sugar_db.cursor()
+
     @cache(ttl=3600)
     def resolve(self, number):
         number = self.replaceNumber(number)
@@ -47,7 +54,7 @@ class SugarNumberResolver(PhoneNumberResolver):
         # split optional country code from rest of number
         res = re.match(r"^(\+([0-9]{2}))?([0-9]*)$", number)
         if res is None:
-            raise NameError("'number' is not in international format")
+            return None
 
         country = res.group(2)
         rest = res.group(3)
@@ -79,7 +86,7 @@ class SugarNumberResolver(PhoneNumberResolver):
             'ldap_uid': '',
             'resource': 'sugar'}
 
-        cursor = self.sugar_db.cursor()
+        cursor = self.__get_cursor()
 
         try:
             # query for accounts
