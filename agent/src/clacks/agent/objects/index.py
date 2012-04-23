@@ -107,72 +107,75 @@ class ObjectIndex(Plugin):
             return
 
         GlobalLock.acquire()
-        self._indexed = True
+        try:
+            self._indexed = True
 
-        t0 = time()
+            t0 = time()
 
-        def resolve_children(dn):
-            self.log.debug("found object '%s'" % dn)
-            res = {}
+            def resolve_children(dn):
+                self.log.debug("found object '%s'" % dn)
+                res = {}
 
-            children = self.factory.getObjectChildren(dn)
-            res = dict(res.items() + children.items())
+                children = self.factory.getObjectChildren(dn)
+                res = dict(res.items() + children.items())
 
-            for chld in children.keys():
-                res = dict(res.items() + resolve_children(chld).items())
+                for chld in children.keys():
+                    res = dict(res.items() + resolve_children(chld).items())
 
-            return res
+                return res
 
-        self.log.info("scanning for objects")
-        res = resolve_children(self.env.base)
-        res[self.env.base] = 'dummy'
+            self.log.info("scanning for objects")
+            res = resolve_children(self.env.base)
+            res[self.env.base] = 'dummy'
 
-        self.log.info("generating object index")
+            self.log.info("generating object index")
 
-        # Find new entries
-        backend_objects = []
-        for o in sorted(res.keys(), key=len):
+            # Find new entries
+            backend_objects = []
+            for o in sorted(res.keys(), key=len):
 
-            # Get object
-            try:
-                obj = ObjectProxy(o)
+                # Get object
+                try:
+                    obj = ObjectProxy(o)
 
-            except ProxyException as e:
-                self.log.warning("not indexing %s: %s" % (o, str(e)))
-                continue
+                except ProxyException as e:
+                    self.log.warning("not indexing %s: %s" % (o, str(e)))
+                    continue
 
-            except ObjectException as e:
-                self.log.warning("not indexing %s: %s" % (o, str(e)))
-                continue
+                except ObjectException as e:
+                    self.log.warning("not indexing %s: %s" % (o, str(e)))
+                    continue
 
-            # Check for index entry
-            changed = self.db.xquery("collection('objects')/*/.[o:UUID = '%s']/o:LastChanged/string()" % obj.uuid)
+                # Check for index entry
+                changed = self.db.xquery("collection('objects')/*/.[o:UUID = '%s']/o:LastChanged/string()" % obj.uuid)
 
-            # Entry is not in the database
-            if not changed:
-                self.insert(obj)
+                # Entry is not in the database
+                if not changed:
+                    self.insert(obj)
 
-            # Entry is in the database
-            else:
-                # OK: already there
-                if obj.modifyTimestamp == datetime.datetime.strptime(changed[0], "%Y-%m-%dT%H:%M:%S"):
-                    self.log.debug("found up-to-date object index for %s" % obj.uuid)
-
+                # Entry is in the database
                 else:
-                    self.log.debug("updating object index for %s" % obj.uuid)
-                    self.update(obj)
+                    # OK: already there
+                    if obj.modifyTimestamp == datetime.datetime.strptime(changed[0], "%Y-%m-%dT%H:%M:%S"):
+                        self.log.debug("found up-to-date object index for %s" % obj.uuid)
 
-            backend_objects.append(obj.uuid)
-            del obj
+                    else:
+                        self.log.debug("updating object index for %s" % obj.uuid)
+                        self.update(obj)
 
-        # Remove entries that are in XMLDB, but not in any other backends
-        for entry in self.db.xquery("collection('objects')/*/o:UUID/string()"):
-            if entry not in backend_objects:
-                self.remove_by_uuid(entry)
+                backend_objects.append(obj.uuid)
+                del obj
 
-        t1 = time()
-        self.log.info("processed %d objects in %ds" % (len(res), t1 - t0))
-        GlobalLock.release()
+            # Remove entries that are in XMLDB, but not in any other backends
+            for entry in self.db.xquery("collection('objects')/*/o:UUID/string()"):
+                if entry not in backend_objects:
+                    self.remove_by_uuid(entry)
+
+            t1 = time()
+            self.log.info("processed %d objects in %ds" % (len(res), t1 - t0))
+
+        finally:
+            GlobalLock.release()
 
     def index_active(self):
         return self._indexed

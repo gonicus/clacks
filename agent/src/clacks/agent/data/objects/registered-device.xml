@@ -24,6 +24,7 @@
 				<Name>deviceKey</Name>
 				<Description>This attribute keeps the encrypted (initial) device secret</Description>
 				<Type>Binary</Type>
+				<NotIndexed>true</NotIndexed>
 			</Attribute>
 			<Attribute>
 				<Name>deviceStatus</Name>
