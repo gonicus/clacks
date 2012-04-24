@@ -12,13 +12,13 @@ class SugarNumberResolver(PhoneNumberResolver):
     def __init__(self):
         super(SugarNumberResolver, self).__init__()
 
-        host = self.env.config.get("resolver-sugar.host",
+        self.host = self.env.config.get("resolver-sugar.host",
              default="localhost")
-        user = self.env.config.get("resolver-sugar.user",
+        self.user = self.env.config.get("resolver-sugar.user",
             default="root")
-        passwd = self.env.config.get("resolver-sugar.pass",
+        self.passwd = self.env.config.get("resolver-sugar.pass",
             default="")
-        base = self.env.config.get("resolver-sugar.base",
+        self.base = self.env.config.get("resolver-sugar.base",
             default="sugarcrm")
 
         try:
@@ -29,8 +29,8 @@ class SugarNumberResolver(PhoneNumberResolver):
             pass
 
         # connect to sugar db
-        self.sugar_db = MySQLdb.connect(host=host,
-            user=user, passwd=passwd, db=base, charset='utf8')
+        self.sugar_db = MySQLdb.connect(host=self.host,
+            user=self.user, passwd=self.passwd, db=self.base, charset='utf8')
         self.sugar_db.set_character_set('utf8')
 
         self.sugar_url = self.env.config.get("resolver-sugar.site_url",
@@ -44,7 +44,11 @@ class SugarNumberResolver(PhoneNumberResolver):
         try:
             return self.sugar_db.cursor()
         except (AttributeError, MySQLdb.OperationalError):
-            self.sugar_db.connect()
+            # connect to sugar db
+            self.sugar_db = MySQLdb.connect(host=self.host,
+                user=self.user, passwd=self.passwd, db=self.base, charset='utf8')
+            self.sugar_db.set_character_set('utf8')
+
             return self.sugar_db.cursor()
 
     @cache(ttl=3600)
