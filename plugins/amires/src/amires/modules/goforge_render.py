@@ -18,18 +18,18 @@ class GOForgeRenderer(BaseRenderer):
 
     def __init__(self):
         self.env = env = Environment.getInstance()
-        host = env.config.get("fetcher-goforge.host",
+        self.host = env.config.get("fetcher-goforge.host",
             default="localhost")
-        user = env.config.get("fetcher-goforge.user",
+        self.user = env.config.get("fetcher-goforge.user",
             default="root")
-        passwd = env.config.get("fetcher-goforge.pass",
+        self.passwd = env.config.get("fetcher-goforge.pass",
             default="")
-        db = env.config.get("fetcher-goforge.base",
+        self.db = env.config.get("fetcher-goforge.base",
             default="goforge")
 
         # connect to GOforge db
-        self.forge_db = MySQLdb.connect(host=host,
-            user=user, passwd=passwd, db=db, charset="utf8")
+        self.forge_db = MySQLdb.connect(host=self.host,
+            user=self.user, passwd=self.passwd, db=self.db, charset="utf8")
 
         self.forge_url = self.env.config.get("fetcher-goforge.site_url",
             default="http://localhost/")
@@ -38,7 +38,8 @@ class GOForgeRenderer(BaseRenderer):
         try:
             return self.forge_db.cursor()
         except (AttributeError, MySQLdb.OperationalError):
-            self.forge_db.connect()
+            self.forge_db = MySQLdb.connect(host=self.host,
+                user=self.user, passwd=self.passwd, db=self.db, charset="utf8")
             return self.forge_db.cursor()
 
     def getHTML(self, particiantInfo, selfInfo, event):
