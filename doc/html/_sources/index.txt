@@ -64,7 +64,7 @@ Key features
    I.e. an asterisk VoIP call can be signalized on that event bus, and a statistics module
    can subscribe for these events to generate its statistics. 
 
- * **Object abstraction various backends**
+ * **Object abstraction for various backends**
 
    The Clacks framework comes with a XML Xquery engine that allows to map certain information
    to various backends. If you - for example - need additional attributes for the predefined

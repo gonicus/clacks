@@ -16,7 +16,7 @@ of your home network. Everything is more or less ready to use.
 
   The agent consists of: clacks-agent, LDAP, AMQP, DBXML, GOsa 2.7.x and some sample data to get stuff running.
 
-  `Download agent OVA (04. February 2012) <http://clacks-project.org/downloads/ClacksInfrastructureServer-20120204.ova>`_
+  `Download agent OVA (24. April 2012) <http://clacks-project.org/downloads/ClacksInfrastructureServer-20120424.ova>`_
 
 
 * **Client OVA (~1,1GiB)**
