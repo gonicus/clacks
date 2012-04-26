@@ -39,10 +39,10 @@ else:
     ])
 
     modules = """
-        notify = clacks.client.plugins.notify.utils:Notify
-        inventory = clacks.client.plugins.inventory.utils:Inventory
+        notify = clacks.client.plugins.notify.main:Notify
+        inventory = clacks.client.plugins.inventory.main:Inventory
         service = clacks.client.plugins.dbus.proxy:DBUSProxy
-        powermanagement = clacks.client.plugins.powermanagement.utils:PowerManagement
+        powermanagement = clacks.client.plugins.powermanagement.main:PowerManagement
         session = clacks.client.plugins.sessions.main:SessionKeeper
     """
     joiner = """
