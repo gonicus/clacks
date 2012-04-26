@@ -200,7 +200,7 @@ class Notify(object):
             parent_pid = os.getpid()
             self.children = []
             for use_user in dbus_sessions:
-                for d_session in dbus_sessions[use_user]:
+                for d_session in set(dbus_sessions[use_user]):
 
                     # Some verbose output
                     if self.verbose:
