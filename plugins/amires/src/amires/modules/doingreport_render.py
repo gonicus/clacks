@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
-import MySQLdb
 import pkg_resources
 import gettext
 import math
 from datetime import datetime
 from amires.render import BaseRenderer
 from clacks.common import Environment
+from sqlalchemy import Column, String
+from sqlalchemy.sql import select, and_
+
 
 # Set locale domain
 t = gettext.translation('messages', pkg_resources.resource_filename("amires", "locale"), fallback=False)
@@ -18,18 +20,9 @@ class DoingReportRenderer(BaseRenderer):
 
     def __init__(self):
         self.env = env = Environment.getInstance()
-        host = env.config.get("fetcher-goforge.host",
-            default="localhost")
-        user = env.config.get("fetcher-goforge.user",
-            default="root")
-        passwd = env.config.get("fetcher-goforge.pass",
-            default="")
-        db = env.config.get("fetcher-goforge.base",
-            default="goforge")
 
-        # connect to GOforge db
-        self.forge_db = MySQLdb.connect(host=host,
-            user=user, passwd=passwd, db=db, charset="latin1")
+        # Connect to GOforge db
+        self.__sess = self.env.getDatabaseSession("fetcher-goforge")
 
         self.whitelisted_users = self.env.config.get("doingreport.users")
         if self.whitelisted_users:
@@ -37,13 +30,6 @@ class DoingReportRenderer(BaseRenderer):
 
         self.forge_url = self.env.config.get("fetcher-goforge.site_url",
             default="http://localhost/")
-
-    def __get_cursor(self):
-        try:
-            return self.forge_db.cursor()
-        except (AttributeError, MySQLdb.OperationalError):
-            self.forge_db.connect()
-            return self.forge_db.cursor()
 
     def getHTML(self, particiantInfo, selfInfo, event):
         super(DoingReportRenderer, self).getHTML(particiantInfo, selfInfo, event)
@@ -70,67 +56,60 @@ class DoingReportRenderer(BaseRenderer):
         if not (contact_name or company_name or company_phone or contact_phone):
             return ""
 
-        cursor = self.__get_cursor()
+        # Lookup GOforge user_id from ldap_uid
+        res = self.__sess.execute(select(['user_id'], Column(String(), name='user_name').__eq__(ldap_uid), 'user')).fetchone()
+        if not res:
+            return ""
 
-        try:
-            # Lookup GOforge user_id from ldap_uid
-            res = cursor.execute("""
-                SELECT user_id
-                FROM user
-                WHERE user_name = %s""",
-                (ldap_uid,))
+        user_id = int(res[0])
 
-            if not res:
-                return ""
+        # Lookup GOforge customer ID from sugar company_id
+        customer_id = None
+        if company_id:
+            res = self.__sess.execute(select(['customer_id'], Column(String(),
+                name='customer_unique_ldap_attribute').__eq__(company_id), 'customer')).fetchone()
 
-            user_id = int(cursor.fetchone()[0])
+            if res:
+                customer_id = int(res[0])
 
-            # Lookup GOforge customer ID from sugar company_id
-            customer_id = None
-            if company_id:
-                res = cursor.execute("""
-                    SELECT customer_id
-                    FROM customer
-                    WHERE customer_unique_ldap_attribute = %s""",
-                    (company_id,))
+        # Assemble new entry for TB
+        date = datetime.strftime(datetime.utcnow(), "%Y.%m.%d")
+        minutes = int(math.ceil(float(event["Duration"]) / 60))
+        details = u"Bitte ergänzen"
+        comment = "Telefonat mit %s" % contact_name or contact_phone or company_name or company_phone
 
-                if res:
-                    customer_id = int(cursor.fetchone()[0])
+        if customer_id:
+            self.__sess.execute("""
+                INSERT INTO doingreport (user_id, customer_id, date, minutes, details, comments, flag)
+                VALUES (:user_id, :customer_id, :date, :minutes, :details, :comments, '?')""",
+                dict(
+                    user_id=user_id,
+                    customer_id=customer_id,
+                    date=date,
+                    minutes=minutes,
+                    details=details.encode('ascii', 'xmlcharrefreplace'),
+                    comment=comment.encode('ascii', 'xmlcharrefreplace')))
+        else:
+            self.__sess.execute("""
+                INSERT INTO doingreport (user_id, date, minutes, details, comments, flag)
+                VALUES (:user_id, :date, :minutes, :details, :comments, '?')""",
+                dict(
+                    user_id=user_id,
+                    date=date,
+                    minutes=minutes,
+                    details=details.encode('ascii', 'xmlcharrefreplace'),
+                    comments=comment.encode('ascii', 'xmlcharrefreplace')))
 
-            # Assemble new entry for TB
-            date = datetime.strftime(datetime.utcnow(), "%Y.%m.%d")
-            minutes = int(math.ceil(float(event["Duration"]) / 60))
-            details = u"Bitte ergänzen"
-            comment = "Telefonat mit %s" % contact_name or contact_phone or company_name or company_phone
-
-            if customer_id:
-                cursor.execute("""
-                    INSERT INTO doingreport (user_id, customer_id, date, minutes, details, comments, flag)
-                    VALUES (%s, %s, %s, %s, %s, %s, '?')""", (user_id, customer_id,
-                        date, minutes, details.encode('ascii', 'xmlcharrefreplace'),
-                        comment.encode('ascii', 'xmlcharrefreplace')))
-            else:
-                cursor.execute("""
-                    INSERT INTO doingreport (user_id, date, minutes, details, comments, flag)
-                    VALUES (%s, %s, %s, %s, %s, '?')""", (user_id, date, minutes,
-                        details.encode('ascii', 'xmlcharrefreplace'),
-                        comment.encode('ascii', 'xmlcharrefreplace')))
-
-
-            # Eventually we need to create an entry in doing_account in order
-            # to make the TB editable.
-            res = cursor.execute("""
-                    SELECT id
-                    FROM doing_account
-                    WHERE date = %s and user_id = %s""",
-                    (date, user_id))
-            if not res:
-                cursor.execute("""
-                    INSERT INTO doing_account (date, user_id, account_user, account_billing)
-                    VALUES(%s, %s, 'no', 'no');
-                """, (date, user_id))
-
-        finally:
-            cursor.close()
+        # Eventually we need to create an entry in doing_account in order
+        # to make the TB editable.
+        res = self.__sess.execute(select(['id'], and_(
+            Column(String(), name='date').__eq__(date),
+            Column(String(), name='user_id').__eq__(user_id)),
+            'doing_account')).fetchone()
+        if not res:
+            self.__sess.execute("""
+                INSERT INTO doing_account (date, user_id, account_user, account_billing)
+                VALUES(:date, :user_id, 'no', 'no');
+            """, dict(date=date, user_id=user_id))
 
         return ""

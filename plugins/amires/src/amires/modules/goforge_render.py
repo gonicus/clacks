@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 import cgi
-import MySQLdb
 import pkg_resources
 import gettext
-from sqlalchemy.exc import OperationalError
 from amires.render import BaseRenderer
 from clacks.common import Environment
+from sqlalchemy import Column, String
+from sqlalchemy.sql import select, or_
+
 
 # Set locale domain
 t = gettext.translation('messages', pkg_resources.resource_filename("amires", "locale"), fallback=False)
@@ -18,29 +19,12 @@ class GOForgeRenderer(BaseRenderer):
 
     def __init__(self):
         self.env = env = Environment.getInstance()
-        self.host = env.config.get("fetcher-goforge.host",
-            default="localhost")
-        self.user = env.config.get("fetcher-goforge.user",
-            default="root")
-        self.passwd = env.config.get("fetcher-goforge.pass",
-            default="")
-        self.db = env.config.get("fetcher-goforge.base",
-            default="goforge")
 
-        # connect to GOforge db
-        self.forge_db = MySQLdb.connect(host=self.host,
-            user=self.user, passwd=self.passwd, db=self.db, charset="utf8")
+        # Connect to GOforge db
+        self.__sess = self.env.getDatabaseSession("fetcher-goforge")
 
         self.forge_url = self.env.config.get("fetcher-goforge.site_url",
             default="http://localhost/")
-
-    def __get_cursor(self):
-        try:
-            return self.forge_db.cursor()
-        except (AttributeError, MySQLdb.OperationalError):
-            self.forge_db = MySQLdb.connect(host=self.host,
-                user=self.user, passwd=self.passwd, db=self.db, charset="utf8")
-            return self.forge_db.cursor()
 
     def getHTML(self, particiantInfo, selfInfo, event):
         super(GOForgeRenderer, self).getHTML(particiantInfo, selfInfo, event)
@@ -54,66 +38,49 @@ class GOForgeRenderer(BaseRenderer):
 
         # prepare result
         result = []
-
-        cursor = self.__get_cursor()
         html = ""
 
+        # obtain GOforge internal customer id
+        res = self.__sess.execute(select(['customer_id'],
+            Column(String(), name='customer_unique_ldap_attribute').__eq__(company_id),
+            'customer')).fetchone()
+
+        if res and res.rowcount() == 1:
+            row = res.fetchone()
+
+            # fetch tickets from database
+            rows = self.__sess.execute(select(['bug.id', 'bug.summary', 'bug.group_id', 'user.user_name'],
+                and_(Column(String(), name='bug.status_id').__eq__(1),
+                    Column(String(), name='bug.assigned_to').__eq__(Column(String(), name='user.user_id')),
+                    Column(String(), name='bug.customer_id').__eq__(row[0])),
+                ['bug', 'user']).limit(29)).fetchall()
+
+            # put results into dictionary
+            for row in rows:
+                result.append({'id': row[0],
+                    'summary': row[1],
+                    'group_id': row[2],
+                    'assigned': row[3]})
+
+        if len(result) == 0:
+            return ""
+
+        html = u"<b>%s</b>" % _("GOForge tickets")
+        more = ""
         try:
-            # obtain GOforge internal customer id
-            leng = cursor.execute("""
-                SELECT customer_id
-                FROM customer
-                WHERE customer_unique_ldap_attribute = %s""",
-                (company_id,))
-            row = cursor.fetchone()
+            more = row['summary'].encode('raw_unicode_escape').decode('utf-8')
+        except:
+            print "-"*80
+            print "nicht enkodierbar:"
+            print row
+            print "-"*80
 
-            # if entry for company exists ...
-            if leng == 1:
-                # fetch tickets from database
-                leng = cursor.execute("""
-                    SELECT bug.bug_id, bug.summary,
-                        bug.group_id, user.user_name
-                    FROM bug, user
-                    WHERE bug.status_id = 1
-                        AND bug.assigned_to = user.user_id
-                        AND bug.customer_id = %s
-                    LIMIT 29;""",
-                    (row[0],))
-
-                rows = cursor.fetchall()
-
-                # put results into dictionary
-                for row in rows:
-                    result.append({'id': row[0],
-                        'summary': row[1],
-                        'group_id': row[2],
-                        'assigned': row[3]})
-
-            if len(result) == 0:
-                return ""
-
-            html = u"<b>%s</b>" % _("GOForge tickets")
-            more = ""
-            try:
-                more = row['summary'].encode('raw_unicode_escape').decode('utf-8')
-            except:
-                print "-"*80
-                print "nicht enkodierbar:"
-                print row
-                print "-"*80
-
-            for row in result:
-                html += u"\n<a href='%s'>%s</a> %s" %(
-                    self.forge_url + "/bugs/?func=detailbug" \
-                        + "&bug_id=" + str(row['id']) \
-                        + "&group_id=" + str(row['group_id']),
-                    row['id'],
-                    cgi.escape(more))
-
-        except OperationalError:
-            pass
-
-        finally:
-            cursor.close()
+        for row in result:
+            html += u"\n<a href='%s'>%s</a> %s" %(
+                self.forge_url + "/bugs/?func=detailbug" \
+                    + "&bug_id=" + str(row['id']) \
+                    + "&group_id=" + str(row['group_id']),
+                row['id'],
+                cgi.escape(more))
 
         return html
