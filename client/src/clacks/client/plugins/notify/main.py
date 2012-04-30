@@ -14,14 +14,12 @@ e.g.:
 
 # -*- coding: utf-8 -*-
 import os
-import dbus
 import logging
 import base64
 import hashlib
-from clacks.common.components import PluginRegistry
-from clacks.common.components import Plugin
-from clacks.common.components import Command
 from clacks.common import Environment
+from clacks.common.components.dbus_runner import DBusRunner
+from clacks.common.components import PluginRegistry, Plugin, Command
 
 
 class Notify(Plugin):
@@ -35,7 +33,8 @@ class Notify(Plugin):
         self.log = logging.getLogger(__name__)
 
         # Register ourselfs for bus changes on org.clacks
-        self.bus = dbus.SystemBus()
+        dr = DBusRunner.get_instance()
+        self.bus = dr.get_system_bus()
         self.bus.watch_name_owner("org.clacks", self.__dbus_proxy_monitor)
 
         # Create icon cache directory

@@ -2,14 +2,13 @@
 import gobject
 import pwd
 import time
-import dbus.glib
-import dbus.mainloop.glib
 import zope.event
 from threading import Thread
 from dateutil.parser import parse
 from clacks.common.components import Plugin
 from clacks.common.components import Command
 from clacks.common.components.registry import PluginRegistry
+from clacks.common.components.dbus_runner import DBusRunner
 from clacks.common import Environment
 from clacks.common.event import EventMaker
 from zope.interface import implements
@@ -32,9 +31,8 @@ class SessionKeeper(Plugin):
     def __init__(self):
         env = Environment.getInstance()
         self.env = env
+        self.__dr = DBusRunner.get_instance()
         self.__bus = None
-        self.__loop = None
-        self.__thread = None
 
         # Register for resume events
         zope.event.subscribers.append(self.__handle_events)
@@ -45,38 +43,24 @@ class SessionKeeper(Plugin):
         return self.__sessions
 
     def serve(self):
-        dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-        self.__bus = dbus.SystemBus()
-        self.active = True
+        self.__bus = self.__dr.get_system_bus()
 
-        def runner():
-            self.__update_sessions()
+        # Trigger session update
+        self.__update_sessions()
 
-            # register a signal receiver
-            self.__bus.add_signal_receiver(self.event_handler,
-                dbus_interface = "org.freedesktop.ConsoleKit.Seat",
-                message_keyword='dbus_message')
-
-            self.__loop = gobject.MainLoop()
-            gobject.threads_init()
-            dbus.glib.init_threads()
-            context = gobject.MainLoop().get_context()
-
-            while self.active:
-                context.iteration(False)
-                if not context.pending():
-                    time.sleep(1)
-
-        self.__thread = Thread(target=runner)
-        self.__thread.start()
+        # register a signal receiver
+        self.__bus.add_signal_receiver(self.event_handler,
+            dbus_interface = "org.freedesktop.ConsoleKit.Seat",
+            message_keyword='dbus_message')
 
         # Trigger session update
         self.__update_sessions()
 
     def stop(self):
-        self.active = False
-        self.__loop.quit()
-        self.__thread.join()
+        if self.__bus:
+            self.__bus.remove_signal_receiver(self.event_handler,
+                dbus_interface = "org.freedesktop.ConsoleKit.Seat",
+                message_keyword='dbus_message')
 
     def __handle_events(self, event):
         if isinstance(event, Resume):

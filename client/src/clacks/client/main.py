@@ -13,11 +13,16 @@ from setproctitle import setproctitle
 from clacks.common import Environment
 from clacks.client import __version__ as VERSION
 from clacks.common.components.registry import PluginRegistry
+from clacks.common.components.dbus_runner import DBusRunner
+from clacks.common.network import Monitor
 from clacks.common.event import EventMaker
 
 
 def shutdown(a=None, b=None):
+    global dr
+
     env = Environment.getInstance()
+    log = logging.getLogger(__name__)
 
     # Function to shut down the client. Do some clean up and close sockets.
     amqp = PluginRegistry.getInstance("AMQPClientHandler")
@@ -25,30 +30,65 @@ def shutdown(a=None, b=None):
     # Tell others that we're away now
     e = EventMaker()
     goodbye = e.Event(e.ClientLeave(e.Id(env.uuid)))
-    amqp.sendEvent(goodbye)
+    if amqp:
+        amqp.sendEvent(goodbye)
 
     # Shutdown plugins
     PluginRegistry.shutdown()
 
+    #TODO: remove me
+    wait = 1
+    for t in env.threads:
+        if t.isAlive():
+            log.warning("thread %s still alive" % t.getName())
+            if hasattr(t, 'stop'):
+                log.warning("calling 'stop' for thread %s" % t.getName())
+                t.stop()
+            if hasattr(t, 'cancel'):
+                log.warning("calling 'cancel' for thread %s" % t.getName())
+                t.cancel()
+            t.join(wait)
+
+        if t.isAlive():
+            try:
+                log.warning("calling built in 'stop' for thread %s" % t.getName())
+                t._Thread__stop()
+            except:
+                log.error("could not stop thread %s" % t.getName())
+
+    dr.stop()
+    log.info("shut down")
     logging.shutdown()
 
 
-def sighup(a=None, b=None):
+def handleTermSignal(a=None, b=None):
+    """ Signal handler which will shut down the whole machinery """
+    Environment.getInstance().active = False
+
+
+def handleHupSignal(a=None, b=None):
     pass
 
 
-def do_exit(a=None, b=None):
-    env = Environment.getInstance()
-    env.active = False
-
-
 def mainLoop(env):
+    global netstate, dr
+
+    # Enable DBus runner
+    dr = DBusRunner()
+    dr.start()
+
     """ Main event loop which will process all registerd threads in a loop.
         It will run as long env.active is set to True."""
     try:
         log = logging.getLogger(__name__)
 
         while True:
+
+            # Check netstate and wait until we're back online
+            if not netstate:
+                log.info("waiting for network connectivity")
+            while not netstate:
+                time.sleep(1)
 
             # Load plugins
             PluginRegistry(component='client.module')
@@ -78,9 +118,18 @@ def mainLoop(env):
 
             # Wait for threads to shut down
             for t in env.threads:
-                t.join(wait)
                 if hasattr(t, 'stop'):
                      t.stop()
+                if hasattr(t, 'cancel'):
+                     t.cancel()
+                t.join(wait)
+
+                #TODO: remove me
+                if t.isAlive():
+                    try:
+                        t._Thread__stop()
+                    except:
+                        print(str(t.getName()) + ' could not be terminated')
 
             # Lets do an environment reset now
             PluginRegistry.shutdown()
@@ -88,6 +137,11 @@ def mainLoop(env):
             # Make us active and loop from the beginning
             env.reset_requested = False
             env.active = True
+
+            if not netstate:
+                log.info("waiting for network connectivity")
+            while not netstate:
+                time.sleep(1)
 
             sleep = randint(30, 60)
             env.log.info("waiting %s seconds to try an AMQP connection recovery" % sleep)
@@ -98,12 +152,23 @@ def mainLoop(env):
         log.exception(detail)
         log.debug(traceback.format_exc())
 
-    finally:
-        for p in env.threads:
-            if hasattr(p, 'stop'):
-                p.stop()
+    except KeyboardInterrupt:
+        log.info("console requested shutdown")
 
+    finally:
         shutdown()
+
+
+def netactivity(online):
+    global netstate
+    if online:
+        netstate = True
+
+    else:
+        netstate = False
+        env = Environment.getInstance()
+        env.reset_requested = True
+        env.active = False
 
 
 def main():
@@ -111,6 +176,7 @@ def main():
     Main programm which is called when the clacks agent process gets started.
     It does the main forking os related tasks.
     """
+    global netstate
 
     # Set process list title
     os.putenv('SPT_NOENV', 'non_empty_value')
@@ -119,6 +185,9 @@ def main():
     # Inizialize core environment
     env = Environment.getInstance()
     env.log.info("Clacks client is starting up")
+
+    nm = Monitor(netactivity)
+    netstate = nm.is_online()
 
     # Configured in daemon mode?
     if not env.config.get('client.foreground', default=env.config.get('core.foreground')):
@@ -172,8 +241,8 @@ def main():
             )
 
             context.signal_map = {
-                signal.SIGTERM: do_exit,
-                signal.SIGHUP: sighup,
+                signal.SIGTERM: handleTermSignal,
+                signal.SIGHUP: handleHupSignal,
             }
 
             context.uid = pwd.getpwnam(user).pw_uid
@@ -231,4 +300,5 @@ if __name__ == '__main__':
 
     pkg_resources.require('clacks.common==%s' % VERSION)
 
+    netstate = False
     main()

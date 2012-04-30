@@ -40,14 +40,15 @@ class DBusRunner(object):
         self.__active = True
 
         def runner():
-            loop = gobject.MainLoop()
-            context = loop.get_context()
+            self.__gloop = gobject.MainLoop()
+            context = self.__gloop.get_context()
             while self.__active:
                 context.iteration(False)
                 if not context.pending():
-                    time.sleep(1)
+                    time.sleep(.1)
 
         self.__thread = Thread(target=runner)
+        self.__thread.daemon = True
         self.__thread.start()
 
     def stop(self):
@@ -59,7 +60,8 @@ class DBusRunner(object):
             return
 
         self.__active = False
-        self.__thread.join()
+        self.__gloop.quit()
+        self.__thread.join(5)
 
     def get_system_bus(self):
         """
