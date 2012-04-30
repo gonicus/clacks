@@ -5,7 +5,7 @@ import gettext
 from amires.render import BaseRenderer
 from clacks.common import Environment
 from sqlalchemy import Column, String
-from sqlalchemy.sql import select, or_
+from sqlalchemy.sql import select, and_
 
 
 # Set locale domain
@@ -43,9 +43,9 @@ class GOForgeRenderer(BaseRenderer):
         # obtain GOforge internal customer id
         res = self.__sess.execute(select(['customer_id'],
             Column(String(), name='customer_unique_ldap_attribute').__eq__(company_id),
-            'customer')).fetchone()
+            'customer'))
 
-        if res and res.rowcount() == 1:
+        if res.rowcount == 1:
             row = res.fetchone()
 
             # fetch tickets from database
@@ -62,25 +62,28 @@ class GOForgeRenderer(BaseRenderer):
                     'group_id': row[2],
                     'assigned': row[3]})
 
-        if len(result) == 0:
-            return ""
+            if len(result) == 0:
+                return ""
 
-        html = u"<b>%s</b>" % _("GOForge tickets")
-        more = ""
-        try:
-            more = row['summary'].encode('raw_unicode_escape').decode('utf-8')
-        except:
-            print "-"*80
-            print "nicht enkodierbar:"
-            print row
-            print "-"*80
+            html = u"<b>%s</b>" % _("GOForge tickets")
+            more = ""
+            try:
+                more = row['summary'].encode('raw_unicode_escape').decode('utf-8')
+            except:
+                import traceback
+                print "="*80
+                print "nicht enkodierbar:"
+                print row
+                print "-"*80
+                traceback.print_exc()
+                print "="*80
 
-        for row in result:
-            html += u"\n<a href='%s'>%s</a> %s" %(
-                self.forge_url + "/bugs/?func=detailbug" \
-                    + "&bug_id=" + str(row['id']) \
-                    + "&group_id=" + str(row['group_id']),
-                row['id'],
-                cgi.escape(more))
+            for row in result:
+                html += u"\n<a href='%s'>%s</a> %s" %(
+                    self.forge_url + "/bugs/?func=detailbug" \
+                        + "&bug_id=" + str(row['id']) \
+                        + "&group_id=" + str(row['group_id']),
+                    row['id'],
+                    cgi.escape(more))
 
         return html
