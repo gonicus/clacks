@@ -2,6 +2,7 @@
 import os
 import StringIO
 import logging
+from inspect import isclass
 from lxml import etree
 #pylint: disable=E0611
 from pkg_resources import resource_filename, resource_listdir, iter_entry_points, resource_isdir
@@ -99,6 +100,7 @@ class PluginRegistry(object):
         for clazz  in PluginRegistry.handlers.values():
             if hasattr(clazz, 'stop'):
                 clazz.stop()
+                del clazz
 
     @staticmethod
     def getInstance(name):
@@ -117,6 +119,9 @@ class PluginRegistry(object):
         """
         if not name in PluginRegistry.modules:
             raise ValueError("no module '%s' available" % name)
+
+        if isclass(PluginRegistry.modules[name]):
+            return None
 
         return PluginRegistry.modules[name]
 

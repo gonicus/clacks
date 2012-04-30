@@ -96,7 +96,9 @@ class Monitor(object):
             self.__callback(False)
   
     def __network_state(self, state):
-        if not self.__state and state in [NM_STATE_CONNECTED_SITE, NM_STATE_CONNECTED_GLOBAL]:
+        print "::: Current state", self.__state
+        print "::: Future state", state
+        if not self.__state and (state in [NM_STATE_CONNECTED_SITE, NM_STATE_CONNECTED_GLOBAL]):
             self.log.info("network up")
             self.__state = True
 

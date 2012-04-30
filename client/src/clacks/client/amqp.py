@@ -131,4 +131,5 @@ class AMQPClientHandler(AMQPHandler):
 
     def __del__(self):
         self.log.debug("shutting down AMQP client handler")
-        self._conn.close()
+        if self._conn:
+            self._conn.close()

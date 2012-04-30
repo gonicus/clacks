@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-import dbus
 import logging
 from clacks.common.components import Plugin
 from clacks.common.components import Command
 from clacks.common.components import PluginRegistry
+from clacks.common.components.dbus_runner import DBusRunner
 from clacks.common import Environment
 
 
@@ -23,7 +23,8 @@ class PowerManagement(Plugin):
         self.log = logging.getLogger(__name__)
 
         # Register ourselfs for bus changes on org.freedesktop.Hal
-        self.bus = dbus.SystemBus()
+        dr = DBusRunner.get_instance()
+        self.bus = dr.get_system_bus()
         self.bus.watch_name_owner("org.freedesktop.Hal", self.__dbus_proxy_monitor)
 
     def __dbus_proxy_monitor(self, bus_name):
