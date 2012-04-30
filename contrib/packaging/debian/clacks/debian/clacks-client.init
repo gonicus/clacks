@@ -71,6 +71,12 @@ if [ ! -d /var/run/clacks ]; then
     chmod 770 /var/run/clacks
 fi
 
+if [ ! -d /var/spool/clacks ]; then
+    mkdir -p /var/spool/clacks
+    chown root:clacks /var/spool/clacks
+    chmod 770 /var/spool/clacks
+fi
+
 # Don't start if we're not configured to start
 test $FORCE_JOIN = 0 -a ! -e /etc/clacks/config && exit 0
 
