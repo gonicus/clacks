@@ -166,11 +166,20 @@ def netactivity(online):
         netstate = True
 
     else:
-        netstate = False
         env = Environment.getInstance()
+        netstate = False
+
+        # Function to shut down the client. Do some clean up and close sockets.
+        amqp = PluginRegistry.getInstance("AMQPClientHandler")
+
+        # Tell others that we're away now
+        e = EventMaker()
+        goodbye = e.Event(e.ClientLeave(e.Id(env.uuid)))
+        if amqp:
+            amqp.sendEvent(goodbye)
+
         env.reset_requested = True
         env.active = False
-
 
 def main():
     """
