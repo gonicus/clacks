@@ -29,19 +29,6 @@ def shutdown(a=None, b=None):
 
     # Shutdown plugins
     PluginRegistry.shutdown()
-
-    # Eventually shut down remaining threads threads
-    wait = 2
-    for t in env.threads:
-        if t.isAlive():
-            if hasattr(t, 'stop'):
-                 t.stop()
-            if hasattr(t, 'cancel'):
-                 t.cancel()
-            t.join(wait)
-        if t.isAlive():
-            t._Thread__stop()
-
     dr.stop()
 
     logging.info("shut down")
