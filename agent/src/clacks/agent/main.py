@@ -11,11 +11,15 @@ from clacks.common import Environment
 from clacks.common.utils import SystemLoad
 from clacks.common.event import EventMaker
 from clacks.common.components import ObjectRegistry, PluginRegistry
+from clacks.common.components.dbus_runner import DBusRunner
 from clacks.agent import __version__ as VERSION
 
 
 def shutdown(a=None, b=None):
+    global dr
+
     """ Function to shut down the agent. Do some clean up and close sockets."""
+    env = Environment.getInstance()
     amqp = PluginRegistry.getInstance("AMQPHandler")
 
     # Tell others that we're away now
@@ -25,6 +29,20 @@ def shutdown(a=None, b=None):
 
     # Shutdown plugins
     PluginRegistry.shutdown()
+
+    # Eventually shut down remaining threads threads
+    wait = 2
+    for t in env.threads:
+        if t.isAlive():
+            if hasattr(t, 'stop'):
+                 t.stop()
+            if hasattr(t, 'cancel'):
+                 t.cancel()
+            t.join(wait)
+        if t.isAlive():
+            t._Thread__stop()
+
+    dr.stop()
 
     logging.info("shut down")
     logging.shutdown()
@@ -42,6 +60,13 @@ def handleHupSignal(a=None, b=None):
 def mainLoop(env):
     """ Main event loop which will process all registerd threads in a loop.
         It will run as long env.active is set to True."""
+
+    global dr
+
+    # Enable DBus runner
+    dr = DBusRunner()
+    dr.start()
+
     try:
         log = logging.getLogger(__name__)
 

@@ -1,9 +1,5 @@
-import gobject
 import dbus
-import dbus.glib
-import dbus.mainloop.glib
-from time import sleep
-from threading import Thread
+from clacks.common.components.dbus_runner import DBusRunner
 from logging import getLogger
 
 
@@ -28,11 +24,8 @@ class Monitor(object):
         self.log.info("Initializing network state monitor")
 
         # Initialize DBUS
-        dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-        self.__loop = gobject.MainLoop()
-        self.__bus = dbus.SystemBus()
-        gobject.threads_init()
-        dbus.glib.init_threads()
+        dr = DBusRunner.get_instance()
+        self.__bus = dr.get_system_bus()
 
         # Register actions to detect the network state
         self.__upower_actions()
@@ -48,25 +41,6 @@ class Monitor(object):
             self.log.warning("no network-manager detected: defaulting to state 'online'")
             self.__state = True
 
-    def start(self):
-        self.__running = True
-
-        def runner():
-            context = gobject.MainLoop().get_context()
-
-            while self.__running:
-                context.iteration(False)
-                if not context.pending():
-                    sleep(1)
-
-        self.__thread = Thread(target=runner)
-        self.__thread.start()
-
-    def stop(self):
-        self.__running = False
-        self.__loop.quit()
-        self.__thread.join()
-
     def is_online(self):
         return self.__state
 
@@ -74,7 +48,7 @@ class Monitor(object):
         try:
             proxy = self.__bus.get_object('org.freedesktop.UPower', '/org/freedesktop/UPower')
             iface = dbus.Interface(proxy, 'org.freedesktop.UPower')
-  
+
             iface.connect_to_signal("Sleeping", self.__upower_sleeping)
         except:
             self.log.warning("no UPower detected: will not be able to suppend network")
@@ -83,7 +57,7 @@ class Monitor(object):
         try:
             proxy = self.__bus.get_object('org.freedesktop.NetworkManager', '/org/freedesktop/NetworkManager')
             iface = dbus.Interface(proxy, 'org.freedesktop.NetworkManager')
-  
+
             iface.connect_to_signal("StateChanged", self.__network_state)
         except:
             self.log.warning("no network-manager detected: will not be able to suspend or activate network")
@@ -94,7 +68,7 @@ class Monitor(object):
 
         if self.__callback:
             self.__callback(False)
-  
+
     def __network_state(self, state):
         print "::: Current state", self.__state
         print "::: Future state", state

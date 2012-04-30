@@ -12,6 +12,8 @@ except ImportError:
     print "Please install the python avahi module."
     sys.exit(1)
 
+from clacks.common.components.dbus_runner import DBusRunner
+
 
 class ZeroconfService:
     """
@@ -43,7 +45,8 @@ class ZeroconfService:
         """
         Start publishing the service.
         """
-        bus = dbus.SystemBus()
+        dr = DBusRunner.get_instance()
+        bus = dr.get_system_bus()
         server = dbus.Interface(
                          bus.get_object(
                                  avahi.DBUS_NAME,
