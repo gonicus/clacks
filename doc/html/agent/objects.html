@@ -800,6 +800,19 @@ which will then provide the defined attributes, methods, aso.</p>
 for each object, which can then be instantiated using
 <a class="reference internal" href="#clacks.agent.objects.factory.ObjectFactory.getObject" title="clacks.agent.objects.factory.ObjectFactory.getObject"><tt class="xref py py-meth docutils literal"><span class="pre">clacks.agent.objects.factory.ObjectFactory.getObject()</span></tt></a>.</p>
 <dl class="method">
+<dt id="clacks.agent.objects.factory.ObjectFactory.getAllowedSubElementsForObject">
+<tt class="descname">getAllowedSubElementsForObject</tt><big>(</big><em>objectType</em><big>)</big><a class="headerlink" href="#clacks.agent.objects.factory.ObjectFactory.getAllowedSubElementsForObject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of objects that can be stored as sub-objects for the given object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="clacks.agent.objects.factory.ObjectFactory.getAttributeTypeMap">
+<tt class="descname">getAttributeTypeMap</tt><big>(</big><em>objectType</em><big>)</big><a class="headerlink" href="#clacks.agent.objects.factory.ObjectFactory.getAttributeTypeMap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a mapping containing all attributes provided by
+the given object Type and the object-type they belong to.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="clacks.agent.objects.factory.ObjectFactory.getAttributes">
 <tt class="descname">getAttributes</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.objects.factory.ObjectFactory.getAttributes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of all object-attributes
@@ -938,9 +951,41 @@ existance flag.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="clacks.agent.objects.index.ObjectIndex.search">
+<tt class="descname">search</tt><big>(</big><em>user</em>, <em>qstring</em><big>)</big><a class="headerlink" href="#clacks.agent.objects.index.ObjectIndex.search" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition" id="cmd-1">
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>This method will be exported by the CommandRegistry.</strong></p>
+</div>
+<p>Query the database using the given filter and return the
+result set.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="36%" />
+<col width="64%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>qstring</td>
+<td>Query string</td>
+</tr>
+</tbody>
+</table>
+<p>For more information on the query format, consult the ref:<cite>clacks.agent.objects.search</cite>
+documentation.</p>
+<p><tt class="docutils literal"><span class="pre">Return</span></tt>: List of dicts</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="clacks.agent.objects.index.ObjectIndex.xquery">
 <tt class="descname">xquery</tt><big>(</big><em>query</em><big>)</big><a class="headerlink" href="#clacks.agent.objects.index.ObjectIndex.xquery" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition" id="cmd-1">
+<dd><div class="admonition" id="cmd-2">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -1036,7 +1081,7 @@ existance flag.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Cajus Pollmeier.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

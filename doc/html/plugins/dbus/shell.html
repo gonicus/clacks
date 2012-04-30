@@ -158,13 +158,13 @@ for details on signatures.</p>
 plugin to mark exported dbus methods - See clacks-client proxy  plugin for details)</p>
 <dl class="method">
 <dt id="clacks.dbus.plugins.shell.main.DBusShellHandler.register_dbus_method">
-<tt class="descname">register_dbus_method</tt><big>(</big><em>func</em>, <em>dbus_interface</em>, <em>in_sig=</em><span class="optional">[</span><span class="optional">]</span>, <em>out_sig=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#clacks.dbus.plugins.shell.main.DBusShellHandler.register_dbus_method" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">register_dbus_method</tt><big>(</big><em>func</em>, <em>dbus_interface</em>, <em>in_sig</em>, <em>out_sig</em><big>)</big><a class="headerlink" href="#clacks.dbus.plugins.shell.main.DBusShellHandler.register_dbus_method" title="Permalink to this definition">¶</a></dt>
 <dd><p>Marks the given method as exported to the dbus.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="clacks.dbus.plugins.shell.main.DBusShellHandler.shell_exec">
-<tt class="descname">shell_exec</tt><big>(</big><em>cmd</em>, <em>args</em><big>)</big><a class="headerlink" href="#clacks.dbus.plugins.shell.main.DBusShellHandler.shell_exec" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">shell_exec</tt><big>(</big><em>action</em>, <em>args</em><big>)</big><a class="headerlink" href="#clacks.dbus.plugins.shell.main.DBusShellHandler.shell_exec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Executes a shell command and returns the result with its return code
 stderr and stdout strings.</p>
 </dd></dl>
@@ -243,7 +243,7 @@ stderr and stdout strings.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Cajus Pollmeier.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

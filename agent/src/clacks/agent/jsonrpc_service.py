@@ -252,7 +252,7 @@ class JsonRpcApp(object):
                 else:
                     params.insert(0, queue)
 
-            self.log.info("received call [%s] for %s: %s(%s)" % (jid, user, method, params))
+            self.log.debug("received call [%s] for %s: %s(%s)" % (jid, user, method, params))
 
             # Don't process messages if the command registry thinks it's not ready
             if not self.dispatcher.processing.is_set():
