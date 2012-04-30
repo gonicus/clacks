@@ -36,7 +36,7 @@ def shutdown(a=None, b=None):
     # Shutdown plugins
     PluginRegistry.shutdown()
 
-    #TODO: remove me
+    #TODO: remove this hack
     wait = 1
     for t in env.threads:
         if t.isAlive():
@@ -57,6 +57,7 @@ def shutdown(a=None, b=None):
                 log.error("could not stop thread %s" % t.getName())
 
     dr.stop()
+
     log.info("shut down")
     logging.shutdown()
 
