@@ -67,17 +67,6 @@ class GOForgeRenderer(BaseRenderer):
                 return ""
 
             html = u"<b>%s</b>" % _("GOForge tickets")
-            more = ""
-            try:
-                more = row['summary'].encode('raw_unicode_escape').decode('utf-8')
-            except:
-                import traceback
-                print "="*80
-                print "nicht enkodierbar:"
-                print row
-                print "-"*80
-                traceback.print_exc()
-                print "="*80
 
             for row in result:
                 html += u"\n<a href='%s'>%s</a> %s" %(
@@ -85,7 +74,7 @@ class GOForgeRenderer(BaseRenderer):
                         + "&bug_id=" + str(row['id']) \
                         + "&group_id=" + str(row['group_id']),
                     row['id'],
-                    cgi.escape(more))
+                    cgi.escape(row['summary']))
 
         sess.close()
         return html
