@@ -18,9 +18,6 @@ class SugarNumberResolver(PhoneNumberResolver):
         self.sugar_url = self.env.config.get("resolver-sugar.site_url",
             default="http://localhost/sugarcrm")
 
-        # Get sugar DB
-        self.__sess = self.env.getDatabaseSession("resolver-sugar")
-
     @cache(ttl=3600)
     def resolve(self, number):
         number = self.replaceNumber(number)
@@ -61,7 +58,8 @@ class SugarNumberResolver(PhoneNumberResolver):
             'resource': 'sugar'}
 
         # query for accounts
-        dat = self.__sess.execute(select(['id', 'name', 'phone_office'], Column(String(), name='phone_office').op('regexp')(regex), 'accounts')).fetchone()
+        sess = self.env.getDatabaseSession("resolver-sugar")
+        dat = sess.execute(select(['id', 'name', 'phone_office'], Column(String(), name='phone_office').op('regexp')(regex), 'accounts')).fetchone()
 
         if dat:
 
@@ -79,7 +77,7 @@ class SugarNumberResolver(PhoneNumberResolver):
             found = True
         else:
             # query for contacts
-            dat = self.__sess.execute(select(['id', 'first_name', 'last_name', 'phone_work'],
+            dat = sess.execute(select(['id', 'first_name', 'last_name', 'phone_work'],
                     or_(Column(String(), name='phone_work').op('regexp')(regex),
                         Column(String(), name='phone_home').op('regexp')(regex),
                         Column(String(), name='phone_mobile').op('regexp')(regex),
@@ -104,12 +102,12 @@ class SugarNumberResolver(PhoneNumberResolver):
 
                 found = True
 
-                dat = self.__sess.execute(select(['account_id'],
+                dat = sess.execute(select(['account_id'],
                     Column(String(), name='contact_id').__eq__(dat[0]),
                     'accounts_contacts')).fetchone()
 
                 if dat:
-                    dat = self.__sess.execute(select(['id', 'name', 'phone_office'],
+                    dat = sess.execute(select(['id', 'name', 'phone_office'],
                         Column(String(), name='id').__eq__(dat[0]),
                         'accounts')).fetchone()
 
@@ -123,6 +121,9 @@ class SugarNumberResolver(PhoneNumberResolver):
                             result['company_name'] = dat[1]
                         if dat[2] is not None:
                             result['company_phone'] = dat[2]
+
+        # Close session
+        sess.close()
 
         # return what was found
         if found == False:

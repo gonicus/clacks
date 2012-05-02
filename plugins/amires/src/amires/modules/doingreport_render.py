@@ -21,9 +21,6 @@ class DoingReportRenderer(BaseRenderer):
     def __init__(self):
         self.env = env = Environment.getInstance()
 
-        # Connect to GOforge db
-        self.__sess = self.env.getDatabaseSession("fetcher-goforge")
-
         self.whitelisted_users = self.env.config.get("doingreport.users")
         if self.whitelisted_users:
             self.whitelisted_users = [s.strip() for s in self.whitelisted_users.split(",")]
@@ -56,9 +53,13 @@ class DoingReportRenderer(BaseRenderer):
         if not (contact_name or company_name or company_phone or contact_phone):
             return ""
 
+        # Connect to GOforge db
+        sess = self.env.getDatabaseSession("fetcher-goforge")
+
         # Lookup GOforge user_id from ldap_uid
-        res = self.__sess.execute(select(['user_id'], Column(String(), name='user_name').__eq__(ldap_uid), 'user')).fetchone()
+        res = sess.execute(select(['user_id'], Column(String(), name='user_name').__eq__(ldap_uid), 'user')).fetchone()
         if not res:
+            sess.close()
             return ""
 
         user_id = int(res[0])
@@ -66,7 +67,7 @@ class DoingReportRenderer(BaseRenderer):
         # Lookup GOforge customer ID from sugar company_id
         customer_id = None
         if company_id:
-            res = self.__sess.execute(select(['customer_id'], Column(String(),
+            res = sess.execute(select(['customer_id'], Column(String(),
                 name='customer_unique_ldap_attribute').__eq__(company_id), 'customer')).fetchone()
 
             if res:
@@ -79,7 +80,7 @@ class DoingReportRenderer(BaseRenderer):
         comment = "Telefonat mit %s" % contact_name or contact_phone or company_name or company_phone
 
         if customer_id:
-            self.__sess.execute("""
+            sess.execute("""
                 INSERT INTO doingreport (user_id, customer_id, date, minutes, details, comments, flag)
                 VALUES (:user_id, :customer_id, :date, :minutes, :details, :comments, '?')""",
                 dict(
@@ -90,7 +91,7 @@ class DoingReportRenderer(BaseRenderer):
                     details=details.encode('ascii', 'xmlcharrefreplace'),
                     comment=comment.encode('ascii', 'xmlcharrefreplace')))
         else:
-            self.__sess.execute("""
+            sess.execute("""
                 INSERT INTO doingreport (user_id, date, minutes, details, comments, flag)
                 VALUES (:user_id, :date, :minutes, :details, :comments, '?')""",
                 dict(
@@ -102,14 +103,15 @@ class DoingReportRenderer(BaseRenderer):
 
         # Eventually we need to create an entry in doing_account in order
         # to make the TB editable.
-        res = self.__sess.execute(select(['id'], and_(
+        res = sess.execute(select(['id'], and_(
             Column(String(), name='date').__eq__(date),
             Column(String(), name='user_id').__eq__(user_id)),
             'doing_account')).fetchone()
         if not res:
-            self.__sess.execute("""
+            sess.execute("""
                 INSERT INTO doing_account (date, user_id, account_user, account_billing)
                 VALUES(:date, :user_id, 'no', 'no');
             """, dict(date=date, user_id=user_id))
 
+        sess.close()
         return ""

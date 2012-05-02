@@ -20,9 +20,6 @@ class GOForgeRenderer(BaseRenderer):
     def __init__(self):
         self.env = env = Environment.getInstance()
 
-        # Connect to GOforge db
-        self.__sess = self.env.getDatabaseSession("fetcher-goforge")
-
         self.forge_url = self.env.config.get("fetcher-goforge.site_url",
             default="http://localhost/")
 
@@ -40,8 +37,11 @@ class GOForgeRenderer(BaseRenderer):
         result = []
         html = ""
 
+        # Connect to GOforge db
+        sess = self.env.getDatabaseSession("fetcher-goforge")
+
         # obtain GOforge internal customer id
-        res = self.__sess.execute(select(['customer_id'],
+        res = sess.execute(select(['customer_id'],
             Column(String(), name='customer_unique_ldap_attribute').__eq__(company_id),
             'customer'))
 
@@ -49,7 +49,7 @@ class GOForgeRenderer(BaseRenderer):
             row = res.fetchone()
 
             # fetch tickets from database
-            rows = self.__sess.execute(select(['bug.id', 'bug.summary', 'bug.group_id', 'user.user_name'],
+            rows = sess.execute(select(['bug.id', 'bug.summary', 'bug.group_id', 'user.user_name'],
                 and_(Column(String(), name='bug.status_id').__eq__(1),
                     Column(String(), name='bug.assigned_to').__eq__(Column(String(), name='user.user_id')),
                     Column(String(), name='bug.customer_id').__eq__(row[0])),
@@ -63,6 +63,7 @@ class GOForgeRenderer(BaseRenderer):
                     'assigned': row[3]})
 
             if len(result) == 0:
+                sess.close()
                 return ""
 
             html = u"<b>%s</b>" % _("GOForge tickets")
@@ -86,4 +87,5 @@ class GOForgeRenderer(BaseRenderer):
                     row['id'],
                     cgi.escape(more))
 
+        sess.close()
         return html
