@@ -218,10 +218,10 @@ class AMQPWorker(object):
         self.callback = callback
 
         # Get reader handle
-        ssn = connection.session()
+        self.__ssn = connection.session()
         if s_address:
             self.log.debug("creating AMQP sender for %s" % s_address)
-            self.sender = ssn.sender(s_address, capacity=100)
+            self.sender = self.__ssn.sender(s_address, capacity=100)
 
         # Get one receiver object or...
         if not r_address or workers == 0:
@@ -231,10 +231,13 @@ class AMQPWorker(object):
         else:
             for i in range(workers):
                 self.log.debug("creating AMQP receiver (%d) for %s" % (i, r_address))
-                ssn.receiver(r_address, capacity=100)
-                proc = AMQPProcessor(ssn, self.callback)
+                self.__ssn.receiver(r_address, capacity=100)
+                proc = AMQPProcessor(self.__ssn, self.callback)
                 proc.start()
                 self.env.threads.append(proc)
+
+    def close(self):
+        self.__ssn.close(timeout=5)
 
 
 class AMQPProcessor(Thread):
@@ -279,6 +282,9 @@ class AMQPProcessor(Thread):
 
     def invokeCallback(self, msg):
         return self.__callback(self.__ssn, msg)
+
+    def stop(self):
+        self.__ssn.close()
 
 
 class EventNotAuthorized(Exception):

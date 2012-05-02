@@ -66,6 +66,13 @@ class AMQPClientService(object):
         self.__cr = None
         self.__cmdWorker = None
 
+    def close(self):
+        if self.__cmdWorker:
+            self.__cmdWorker.close()
+
+    def __del__(self):
+        self.close()
+
     def serve(self):
         """ Start AMQP service for this clacks service provider. """
         # Load AMQP and Command registry instances

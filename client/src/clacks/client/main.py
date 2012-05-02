@@ -32,6 +32,7 @@ def shutdown(a=None, b=None):
     goodbye = e.Event(e.ClientLeave(e.Id(env.uuid)))
     if amqp:
         amqp.sendEvent(goodbye)
+        amqp.close()
 
     # Shutdown plugins
     PluginRegistry.shutdown()
@@ -177,6 +178,7 @@ def netactivity(online):
         goodbye = e.Event(e.ClientLeave(e.Id(env.uuid)))
         if amqp:
             amqp.sendEvent(goodbye)
+            amqp.close()
 
         env.reset_requested = True
         env.active = False
