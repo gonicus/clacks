@@ -49,7 +49,7 @@ class GOForgeRenderer(BaseRenderer):
             row = res.fetchone()
 
             # fetch tickets from database
-            rows = sess.execute(select(['bug.id', 'bug.summary', 'bug.group_id', 'user.user_name'],
+            rows = sess.execute(select(['bug.bug_id', 'bug.summary', 'bug.group_id', 'user.user_name'],
                 and_(Column(String(), name='bug.status_id').__eq__(1),
                     Column(String(), name='bug.assigned_to').__eq__(Column(String(), name='user.user_id')),
                     Column(String(), name='bug.customer_id').__eq__(row[0])),

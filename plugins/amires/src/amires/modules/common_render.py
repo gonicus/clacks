@@ -6,8 +6,7 @@ from amires.render import BaseRenderer
 from clacks.common import Environment
 
 # Set locale domain
-t = gettext.translation('messages', pkg_resources.resource_filename("amires",
-"locale"),
+t = gettext.translation('messages', pkg_resources.resource_filename("amires", "locale"),
         fallback=False)
 _ = t.ugettext
 
@@ -25,12 +24,21 @@ class CommonRenderer(BaseRenderer):
         # build html for company name
         comp = u""
         if info['company_name']:
-            if 'company_detail_url' in info and info['company_detail_url']:
-                comp += "<a href='%s'>%s</a>" %(
-                    cgi.escape(info['company_detail_url']),
-                    cgi.escape(info['company_name']))
-            else:
-                comp += cgi.escape(info['company_name'])
+            try:
+                if 'company_detail_url' in info and info['company_detail_url']:
+                    comp += "<a href='%s'>%s</a>" % (
+                        cgi.escape(info['company_detail_url']),
+                        cgi.escape(info['company_name']))
+                else:
+                    comp += cgi.escape(info['company_name'])
+            except Exception as e:
+                print "!"*80
+                print "FEHLER", str(e)
+                import traceback
+                traceback.print_exc()
+                print "!"*80
+                print info
+                print "!"*80
 
         # build html for contact name
         cont = u""
