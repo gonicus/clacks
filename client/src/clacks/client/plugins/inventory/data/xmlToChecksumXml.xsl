@@ -19,5 +19,7 @@
 	<xsl:template match="/e:Event/e:Inventory/e:Hardware/e:ProcessorSpeed"></xsl:template>
 	<xsl:template match="/e:Event/e:Inventory/e:Cpu/e:Speed"></xsl:template>
 	<xsl:template match="/e:Event/e:Inventory/e:Hardware/e:Description"></xsl:template>
+	<xsl:template match="/e:Event/e:Inventory/e:Hardware/e:UserID"></xsl:template>
+	<xsl:template match="/e:Event/e:Inventory/e:Login"></xsl:template>
 	<xsl:template match="/e:Event/e:Inventory/e:Drive/e:FreeSpace"></xsl:template>
 </xsl:stylesheet>
