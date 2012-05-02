@@ -7,7 +7,7 @@ import os
 import re
 import sys
 import grp
-import pynotify
+import dbus
 import gobject
 import dbus.mainloop.glib
 import time
@@ -33,7 +33,6 @@ class Notify(object):
     children = []
 
     def __init__(self, quiet=False, verbose=False):
-        pynotify.init('clacks')
         self.quiet = quiet
         self.verbose = verbose
 
@@ -53,7 +52,7 @@ class Notify(object):
     def __close(self, *args, **kwargs):
 
         """
-        Closes the corrent show notification and its mainloop if it exists.
+        Closes the current show notification and its mainloop if it exists.
         """
         if self.verbose:
             print "%s: Closing" % (str(os.getpid()))
@@ -74,7 +73,7 @@ class Notify(object):
         if self.__actions and self.__res == -1:
             try:
                 if self.verbose:
-                    print "%s: Notification was avoided, showing it again in (%s) second" % (
+                    print "%s: Notification was cancelled, showing it again in (%s) second" % (
                         str(os.getpid()), str(self.__recurrenceTime))
 
                 time.sleep(self.__recurrenceTime)
@@ -91,9 +90,8 @@ class Notify(object):
             self.__loop.quit()
 
     def send(self, title, message, dbus_session,
-        icon="dialog-information",
-        urgency=pynotify.URGENCY_NORMAL,
-        timeout=pynotify.EXPIRES_DEFAULT,
+        icon="",
+        timeout=5000,
         recurrence=60,
         actions=[],
         **kwargs):
@@ -108,7 +106,7 @@ class Notify(object):
         self.__actions = actions
 
         # Prepare timeout, use seconds not milliseconds
-        if timeout != pynotify.EXPIRES_DEFAULT:
+        if timeout != 5000:
             timeout *= 1000
 
         # Initially start with result id -1
@@ -130,52 +128,46 @@ class Notify(object):
             os.environ['DBUS_SESSION_BUS_ADDRESS'] = dbus_session
 
             # Build notification
-            if icon == "_no_icon_":
-                notify = pynotify.Notification(title, message)
-            else:
-                notify = pynotify.Notification(title, message, icon)
+            notifyid = 0
+            bus = dbus.Bus(dbus.Bus.TYPE_SESSION)
+            notifyservice = bus.get_object('org.freedesktop.Notifications', '/org/freedesktop/Notifications')
+            notifyservice = dbus.Interface(notifyservice, "org.freedesktop.Notifications")
+            self.notifyid = notifyservice.Notify("Clacks Client", notifyid, icon, title, message, [], {}, timeout)
 
             # Set up notification details like actions
-            notify.set_urgency(urgency)
-            if actions:
-                notify.set_timeout(pynotify.EXPIRES_NEVER)
-                self.__recurrenceTime = recurrence
-                for action in actions:
-                    notify.add_action(action, action, self.__callback)
-            else:
-                notify.set_timeout(timeout)
+            #if actions:
+            #    notify.set_timeout(0)
+            #    self.__recurrenceTime = recurrence
+            #    for action in actions:
+            #        notify.add_action(action, action, self.__callback)
 
-            # Display all created notifications
-            self.__notify = notify
-            self.__notify.show()
-
+        return RETURN_CLOSED
         # Register provided actions and then hook in the main loop
-        if not actions:
-            self.__res = RETURN_CLOSED
-        else:
+        #if not actions:
+        #   self.__res = RETURN_CLOSED
+        #else:
 
-            # Register callback for 'NotificationClosed' event on the dbus.
-            dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-            bus = dbus.SessionBus()
-            bus.add_signal_receiver(self.notification_closed,
-                dbus_interface="org.freedesktop.Notifications", signal_name="NotificationClosed")
+        #    # Register callback for 'NotificationClosed' event on the dbus.
+        #    dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+        #    bus = dbus.SessionBus()
+        #    bus.add_signal_receiver(self.notification_closed,
+        #        dbus_interface="org.freedesktop.Notifications", signal_name="NotificationClosed")
 
-            # Hook in the main loop, to keep the programm running till an action
-            # was selected or the application was closed.
-            self.__loop = gobject.MainLoop()
-            try:
-                self.__loop.run()
-            except KeyboardInterrupt:
-                self.__res = RETURN_ABORTED
-                self.__close()
+        #    # Hook in the main loop, to keep the programm running till an action
+        #    # was selected or the application was closed.
+        #    self.__loop = gobject.MainLoop()
+        #    try:
+        #        self.__loop.run()
+        #    except KeyboardInterrupt:
+        #        self.__res = RETURN_ABORTED
+        #        self.__close()
 
-        return self.__res
+        #return self.__res
 
     def send_to_user(self, title, message, user,
         icon="dialog-information",
         actions=[],
-        urgency=pynotify.URGENCY_NORMAL,
-        timeout=pynotify.EXPIRES_DEFAULT,
+        timeout=5000,
         recurrence=60, **kwargs):
 
         """
@@ -242,7 +234,7 @@ class Notify(object):
 
                         # Try to send the notification now.
                         res = self.send(title, message, actions=actions, icon=icon,
-                            urgency=urgency, timeout=timeout, recurrence=recurrence,
+                            timeout=timeout, recurrence=recurrence,
                             dbus_session=d_session)
 
                         # Exit the cild process
@@ -315,30 +307,6 @@ class Notify(object):
         return dbusAddresses
 
 
-def checkUrgency(option, opt, value, parser):
-    """
-    checkUrgency    checks whether the given value for the urgency option
-    is valid or not and then updates the cli-option-parser
-    It defaults to pynotify.URGENCY_NORMAL.
-    """
-
-    # Create a dictionary for all valid values.
-    attrMap = {}
-    attrMap[None] = pynotify.URGENCY_NORMAL
-    attrMap['critical'] = pynotify.URGENCY_CRITICAL
-    attrMap['normal'] = pynotify.URGENCY_NORMAL
-    attrMap['low'] = pynotify.URGENCY_LOW
-
-    # If a invalid value was specified, then tell the user and default to normal.
-    if value not in attrMap:
-        value = None
-        print OptionValueError("Invalid urgency level specified. (critical, normal, low)")
-        sys.exit(RETURN_ABORTED)
-
-    # Update the cli-option-parser now.
-    parser.values.urgency = value
-
-
 def main():
 
     # Define cli-script parameters
@@ -346,8 +314,6 @@ def main():
         "to a user on the local machine.",
         prog="notify", usage="%prog <title> <message> [options] ")
 
-    parser.add_option("-l", "--urgency", type="string", help="Urgency level",
-        callback=checkUrgency, action="callback", default=pynotify.URGENCY_NORMAL)
     parser.add_option("-i", "--icon", dest="icon", default="dialog-information",
         help="An icon file to use in the notifcation", metavar="FILE")
     parser.add_option("-t", "--timeout", dest="timeout",
@@ -397,14 +363,14 @@ def main():
         if options.timeout:
             options.timeout = int(options.timeout)
         else:
-            options.timeout = pynotify.EXPIRES_DEFAULT
+            options.timeout = 5000
 
         # Create notifcation object
         n = Notify(options.quiet, options.verbose)
 
         # Call the send method for our notification instance
         sys.exit(n.send_to_user(args[0], args[1], user=options.user, actions=actions, icon=options.icon,
-            urgency=options.urgency, timeout=options.timeout, recurrence=options.recurrence))
+            timeout=options.timeout, recurrence=options.recurrence))
 
 
 if __name__ == '__main__':

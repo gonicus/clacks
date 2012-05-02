@@ -33,28 +33,27 @@ class DBusNotifyHandler(dbus.service.Object, Plugin):
         dbus.service.Object.__init__(self, conn, '/org/clacks/notify')
         self.env = Environment.getInstance()
 
-    @dbus.service.method('org.clacks', in_signature='ssisssi', out_signature='i')
-    def _notify_all(self, title, message, timeout, urgency, icon, actions, recurrence):
+    @dbus.service.method('org.clacks', in_signature='ssissi', out_signature='i')
+    def _notify_all(self, title, message, timeout, icon, actions, recurrence):
         """
         Try to send a notification to all users on a machine user using the 'notify-user' script.
         """
         return(self.call(message=message, title=title, broadcast=True, timeout=timeout,
-            urgency=urgency, icon=icon, recurrence=recurrence, actions=actions))
+            icon=icon, recurrence=recurrence, actions=actions))
 
-    @dbus.service.method('org.clacks', in_signature='sssisssi', out_signature='i')
-    def _notify(self, user, title, message, timeout, urgency, icon, actions, recurrence):
+    @dbus.service.method('org.clacks', in_signature='sssissi', out_signature='i')
+    def _notify(self, user, title, message, timeout, icon, actions, recurrence):
         """
         Try to send a notification to a user using the 'notify-user' script.
         """
         return(self.call(message=message, title=title, user=user, timeout=timeout,
-            urgency=urgency, icon=icon, recurrence=recurrence, actions=actions))
+            icon=icon, recurrence=recurrence, actions=actions))
 
     def call(self, message, title,
         user="",
         broadcast=False,
         timeout=120,
         actions="",
-        urgency="normal",
         icon="dialog-information",
         recurrence=60):
 
@@ -79,10 +78,6 @@ class DBusNotifyHandler(dbus.service.Object, Plugin):
             if actions:
                 cmd += ["--actions"]
                 cmd += [str(actions)]
-
-            if urgency:
-                cmd += ["--urgency"]
-                cmd += [str(urgency)]
 
             if timeout:
                 cmd += ["--timeout"]
