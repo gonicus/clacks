@@ -132,6 +132,15 @@ class Notify(object):
             bus = dbus.Bus(dbus.Bus.TYPE_SESSION)
             notifyservice = bus.get_object('org.freedesktop.Notifications', '/org/freedesktop/Notifications')
             notifyservice = dbus.Interface(notifyservice, "org.freedesktop.Notifications")
+
+            # Maybe clean before sending around
+            capabilities = notifyservice.GetCapabilities()
+
+            if not "body-markup" in capabilities:
+                message = re.sub('<[^<]+?>', '', message)
+            if not "body-hyperlinks" in capabilities:
+                message = re.sub('<a[^<]+</a>', '', message)
+
             self.notifyid = notifyservice.Notify("Clacks Client", notifyid, icon, title, message, [], {}, timeout)
 
             # Set up notification details like actions
