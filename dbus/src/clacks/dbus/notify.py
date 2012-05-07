@@ -15,6 +15,7 @@ from optparse import OptionParser, OptionValueError
 import pwd
 import getpass
 import signal
+import lxml.html.clean
 
 # Define return codes
 RETURN_ABORTED = 0b10000000
@@ -139,7 +140,7 @@ class Notify(object):
             if not "body-markup" in capabilities:
                 message = re.sub('<[^<]+?>', '', message)
             if not "body-hyperlinks" in capabilities:
-                message = re.sub('<a[^<]+</a>', '', message)
+                message = lxml.html.clean.Cleaner(remove_tags=['a']).clean_html(message)
 
             self.notifyid = notifyservice.Notify("Clacks Client", notifyid, icon, title, message, [], {}, timeout)
 
