@@ -4,7 +4,7 @@ import pkg_resources
 import gettext
 from amires.render import BaseRenderer
 from clacks.common import Environment
-from sqlalchemy import Column, String
+from sqlalchemy import Column, String, Integer
 from sqlalchemy.sql import select, and_
 
 
@@ -50,9 +50,9 @@ class GOForgeRenderer(BaseRenderer):
 
             # fetch tickets from database
             rows = sess.execute(select(['bug.bug_id', 'bug.summary', 'bug.group_id', 'user.user_name'],
-                and_(Column(String(), name='bug.status_id').__eq__(1),
-                    Column(String(), name='bug.assigned_to').__eq__(Column(String(), name='user.user_id')),
-                    Column(String(), name='bug.customer_id').__eq__(row[0])),
+                and_(Column(Integer(), name='bug.status_id').__eq__(1),
+                    Column(Integer(), name='bug.assigned_to').__eq__(Column(Integer(), name='user.user_id')),
+                    Column(Integer(), name='bug.customer_id').__eq__(row[0])),
                 ['bug', 'user']).limit(29)).fetchall()
 
             # put results into dictionary

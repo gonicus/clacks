@@ -11,6 +11,19 @@ t = gettext.translation('messages', pkg_resources.resource_filename("amires", "l
 _ = t.ugettext
 
 
+def mr(data):
+    try:
+        return data.decode("utf-8")
+    except:
+        try:
+            return data.decode("raw_unicode_escape").encode("utf-8")
+        except:
+            try:
+                return data.encode("raw_unicode_escape").decode("utf-8")
+            except:
+                return data
+
+
 class CommonRenderer(BaseRenderer):
 
     priority = 1
@@ -24,31 +37,22 @@ class CommonRenderer(BaseRenderer):
         # build html for company name
         comp = u""
         if info['company_name']:
-            try:
-                if 'company_detail_url' in info and info['company_detail_url']:
-                    comp += "<a href='%s'>%s</a>" % (
-                        cgi.escape(info['company_detail_url']),
-                        cgi.escape(info['company_name']))
-                else:
-                    comp += cgi.escape(info['company_name'])
-            except Exception as e:
-                print "!"*80
-                print "FEHLER", str(e)
-                import traceback
-                traceback.print_exc()
-                print "!"*80
-                print info
-                print "!"*80
+            if 'company_detail_url' in info and info['company_detail_url']:
+                comp += "<a href='%s'>%s</a>" % (
+                    cgi.escape(mr(info['company_detail_url'])),
+                    cgi.escape(mr(info['company_name'])))
+            else:
+                comp += cgi.escape(mr(info['company_name']))
 
         # build html for contact name
         cont = u""
         if info['contact_name']:
             if 'contact_detail_url' in info and info['contact_detail_url']:
                 cont += "<a href='%s'>%s</a>" %(
-                    cgi.escape(info['contact_detail_url']),
-                    cgi.escape(info['contact_name']))
+                    cgi.escape(mr(info['contact_detail_url'])),
+                    cgi.escape(mr(info['contact_name'])))
             else:
-                cont += cgi.escape(info['contact_name'])
+                cont += cgi.escape(mr(info['contact_name']))
 
         # build actual html section
         html = u"<b>%s:</b>\n" % cgi.escape(_("Attendee"))
