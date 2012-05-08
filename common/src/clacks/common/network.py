@@ -35,7 +35,18 @@ class Monitor(object):
         try:
             proxy = self.__bus.get_object('org.freedesktop.NetworkManager', '/org/freedesktop/NetworkManager')
             iface = dbus.Interface(proxy, 'org.freedesktop.DBus.Properties')
-            self.__state = iface.Get("org.freedesktop.NetworkManager", "State") in [NM_STATE_CONNECTED_SITE, NM_STATE_CONNECTED_GLOBAL]
+
+            version = str(iface.Get("org.freedesktop.NetworkManager", "Version"))
+            if tuple(version.split(".")) < ("0", "9"):
+                self.log.warning("network-manager is too old: defaulting to state 'online'")
+                self.__state = True
+
+            else:
+                # Register actions to detect the network state
+                self.__upower_actions()
+                self.__network_actions()
+
+                self.__state = iface.Get("org.freedesktop.NetworkManager", "State") in [NM_STATE_CONNECTED_SITE, NM_STATE_CONNECTED_GLOBAL]
 
         except:
             self.log.warning("no network-manager detected: defaulting to state 'online'")
