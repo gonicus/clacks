@@ -79,6 +79,10 @@ def mainLoop(env):
     dr = DBusRunner()
     dr.start()
 
+    # Do network monitoring
+    nm = Monitor(netactivity)
+    netstate = nm.is_online()
+
     """ Main event loop which will process all registerd threads in a loop.
         It will run as long env.active is set to True."""
     try:
@@ -188,7 +192,6 @@ def main():
     Main programm which is called when the clacks agent process gets started.
     It does the main forking os related tasks.
     """
-    global netstate
 
     # Set process list title
     os.putenv('SPT_NOENV', 'non_empty_value')
@@ -197,9 +200,6 @@ def main():
     # Inizialize core environment
     env = Environment.getInstance()
     env.log.info("Clacks client is starting up")
-
-    nm = Monitor(netactivity)
-    netstate = nm.is_online()
 
     # Configured in daemon mode?
     if not env.config.get('client.foreground', default=env.config.get('core.foreground')):
