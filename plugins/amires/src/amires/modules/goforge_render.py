@@ -2,7 +2,7 @@
 import cgi
 import pkg_resources
 import gettext
-from amires.render import BaseRenderer
+from amires.render import BaseRenderer, mr
 from clacks.common import Environment
 from sqlalchemy import Table, Column, String, Integer, MetaData
 from sqlalchemy.sql import select, and_
@@ -84,7 +84,7 @@ class GOForgeRenderer(BaseRenderer):
                         + "&bug_id=" + str(row['id']) \
                         + "&group_id=" + str(row['group_id']),
                     row['id'],
-                    cgi.escape(row['summary']))
+                    cgi.escape(mr(row['summary'])))
 
         sess.close()
         return html

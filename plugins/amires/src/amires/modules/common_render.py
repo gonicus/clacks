@@ -2,26 +2,13 @@
 import cgi
 import pkg_resources
 import gettext
-from amires.render import BaseRenderer
+from amires.render import BaseRenderer, mr
 from clacks.common import Environment
 
 # Set locale domain
 t = gettext.translation('messages', pkg_resources.resource_filename("amires", "locale"),
         fallback=False)
 _ = t.ugettext
-
-
-def mr(data):
-    try:
-        return data.decode("utf-8")
-    except:
-        try:
-            return data.decode("raw_unicode_escape").encode("utf-8")
-        except:
-            try:
-                return data.encode("raw_unicode_escape").decode("utf-8")
-            except:
-                return data
 
 
 class CommonRenderer(BaseRenderer):
