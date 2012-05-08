@@ -244,7 +244,7 @@ class ClientService(Plugin):
                     for client in clients:
                         try:
                             self.clientDispatch(client, "notify", user, title, message,
-                                    timeout, level, icon)
+                                    timeout, icon)
                         #pylint: disable=W0141
                         except Exception as e:
                             import traceback
@@ -258,7 +258,7 @@ class ClientService(Plugin):
             for client in self.__client.keys():
                 try:
                     self.clientDispatch(client, "notify_all", title, message,
-                            timeout, level, icon)
+                            timeout, icon)
                 #pylint: disable=W0141
                 except Exception:
                     pass
