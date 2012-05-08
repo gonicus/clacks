@@ -4,7 +4,7 @@ import pkg_resources
 import gettext
 from amires.render import BaseRenderer
 from clacks.common import Environment
-from sqlalchemy import Column, String, Integer, MetaData
+from sqlalchemy import Table, Column, String, Integer, MetaData
 from sqlalchemy.sql import select, and_
 
 
