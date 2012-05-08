@@ -4,7 +4,7 @@ import pkg_resources
 import gettext
 from amires.render import BaseRenderer
 from clacks.common import Environment
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import Column, String, Integer, MetaData
 from sqlalchemy.sql import select, and_
 
 
@@ -49,11 +49,21 @@ class GOForgeRenderer(BaseRenderer):
             row = res.fetchone()
 
             # fetch tickets from database
-            rows = sess.execute(select(['bug.bug_id', 'bug.summary', 'bug.group_id', 'user.user_name'],
-                and_(Column(Integer(), name='bug.status_id').__eq__(1),
-                    Column(Integer(), name='bug.assigned_to').__eq__(Column(Integer(), name='user.user_id')),
-                    Column(Integer(), name='bug.customer_id').__eq__(row[0])),
-                ['bug', 'user']).limit(29)).fetchall()
+            m = MetaData()
+            bug = Table('bug', m,
+                    Column('bug_id', Integer),
+                    Column('summary', String),
+                    Column('group_id', String),
+                    Column('status_id', Integer),
+                    Column('assigned_to', Integer),
+                    Column('customer_id', Integer))
+            user = Table('user', m,
+                    Column('user_name', String),
+                    Column('user_id', Integer))
+            rows = sess.execute(select([bug.c.bug_id, bug.c.summary, bug.c.group_id, user.c.user_name],
+                and_(bug.c.status_id == 1, bug.c.assigned_to == user.c.user_id,
+                    bug.c.customer_id == row[0]),
+                [bug, user]).limit(29)).fetchall()
 
             # put results into dictionary
             for row in rows:
