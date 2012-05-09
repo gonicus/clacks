@@ -3,7 +3,7 @@ import pkg_resources
 import gettext
 import math
 from datetime import datetime
-from amires.render import BaseRenderer
+from amires.render import BaseRenderer, mr
 from clacks.common import Environment
 from sqlalchemy import Column, String
 from sqlalchemy.sql import select, and_
@@ -88,8 +88,8 @@ class DoingReportRenderer(BaseRenderer):
                     customer_id=customer_id,
                     date=date,
                     minutes=minutes,
-                    details=details.encode('ascii', 'xmlcharrefreplace'),
-                    comment=comment.encode('ascii', 'xmlcharrefreplace')))
+                    details=mr(details).encode('ascii', 'xmlcharrefreplace'),
+                    comment=mr(comment).encode('ascii', 'xmlcharrefreplace')))
         else:
             sess.execute("""
                 INSERT INTO doingreport (user_id, date, minutes, details, comments, flag)
@@ -98,8 +98,8 @@ class DoingReportRenderer(BaseRenderer):
                     user_id=user_id,
                     date=date,
                     minutes=minutes,
-                    details=details.encode('ascii', 'xmlcharrefreplace'),
-                    comments=comment.encode('ascii', 'xmlcharrefreplace')))
+                    details=mr(details).encode('ascii', 'xmlcharrefreplace'),
+                    comments=mr(comment).encode('ascii', 'xmlcharrefreplace')))
 
         # Eventually we need to create an entry in doing_account in order
         # to make the TB editable.
