@@ -55,11 +55,7 @@ class PluginRegistry(object):
                 self.log.debug("registering handler module %s" % module.__name__)
                 PluginRegistry.handlers[module.__name__] = module
 
-        # Initialize component handlers
-        for handler, clazz  in PluginRegistry.handlers.iteritems():
-            PluginRegistry.handlers[handler] = clazz()
-
-        # Initialize modules
+        # Register module events
         for module, clazz  in PluginRegistry.modules.iteritems():
 
             # Check for event resources
@@ -76,7 +72,12 @@ class PluginRegistry(object):
                         PluginRegistry.evreg[event] = os.path.join(base_dir, filename)
                         self.log.debug("adding module event '%s'" % event)
 
-            # Register modules
+        # Initialize component handlers
+        for handler, clazz  in PluginRegistry.handlers.iteritems():
+            PluginRegistry.handlers[handler] = clazz()
+
+        # Initialize modules
+        for module, clazz  in PluginRegistry.modules.iteritems():
             if module in PluginRegistry.handlers:
                 PluginRegistry.modules[module] = PluginRegistry.handlers[module]
             else:
