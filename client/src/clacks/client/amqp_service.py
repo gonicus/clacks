@@ -222,11 +222,13 @@ class AMQPClientService(object):
             i_info = netifaces.ifaddresses(interface)
 
             # Skip lo interfaces
-            if i_info[netifaces.AF_LINK][0]['addr'] == '00:00:00:00:00:00':
+            if not netifaces.AF_INET in i_info:
                 continue
 
             # Skip lo interfaces
-            if not netifaces.AF_INET in i_info:
+            if not netifaces.AF_LINK in i_info:
+                continue
+            if i_info[netifaces.AF_LINK][0]['addr'] == '00:00:00:00:00:00':
                 continue
 
             # Assemble ipv6 information
