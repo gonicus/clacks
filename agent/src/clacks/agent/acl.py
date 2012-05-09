@@ -428,7 +428,7 @@ class ACL(object):
         ============== =============
 
         """
-        if type(rolename) != str:
+        if isinstance(rolename, str):
             raise ACLException("Expected type str for rolename!")
 
         r = ACLResolver.instance
@@ -689,7 +689,7 @@ class ACL(object):
                             continue
 
                         # Simply match string options.
-                        if type(act['options'][entry]) == str and not re.match(act['options'][entry], options[entry]):
+                        if isinstance(act['options'][entry], str) and not re.match(act['options'][entry], options[entry]):
                             self.log.debug("ACL option '%s' with value '%s' does not match with '%s'" % (entry,
                                         act['options'][entry], options[entry]))
                             continue
@@ -1161,7 +1161,7 @@ class ACLResolver(Plugin):
         ============== =============
         """
 
-        if type(rolename) != str:
+        if isinstance(rolename, str):
             raise ACLException("Expected parameter to be of type 'str'!")
 
         for aclset in self.acl_sets:
@@ -1251,7 +1251,7 @@ class ACLResolver(Plugin):
             name = name.name
 
         # Check if we've got a valid name type.
-        if type(name) != str:
+        if isinstance(name, str):
             raise ACLException("Roles can only be removed by name, '%s' is an invalid parameter" % name)
 
         # Check if such a role-name exists and then try to remove it.
@@ -1696,7 +1696,7 @@ class ACLResolver(Plugin):
             raise ACLException("The requested operation is not allowed!")
 
         # Validate the rolename
-        if type(rolename) != str or len(rolename) <= 0:
+        if isinstance(rolename, str) or len(rolename) <= 0:
             raise ACLException("Expected parameter to be of type str!")
 
         # Check if rolename exists
