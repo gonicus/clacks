@@ -47,7 +47,8 @@ def main():
     try:
         env = Environment.getInstance()
     except ConfigNoFile:
-        config_file = "/etc/clacks/config"
+        config_file = os.environ.get("CLACKS_CONFIG_DIR") or "/etc/clacks"
+        config_file = os.path.join(config_file, "config")
         service = None
 
         # Try to find config file without optparser
