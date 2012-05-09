@@ -108,6 +108,12 @@ def main():
     env.log.debug("setting ownership for '%s' to (%s/%s)" % (cfg, "root", group))
     os.chown(cfg, 0, gid)
     env.log.debug("setting permission for '%s' to (%s)" % (cfg, '0640'))
+    os.chmod(cfg, 0750)
+
+    cfg = os.path.join(cfg, "config")
+    env.log.debug("setting ownership for '%s' to (%s/%s)" % (cfg, "root", group))
+    os.chown(cfg, 0, gid)
+    env.log.debug("setting permission for '%s' to (%s)" % (cfg, '0640'))
     os.chmod(cfg, 0640)
 
 

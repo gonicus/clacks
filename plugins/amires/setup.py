@@ -36,7 +36,7 @@ setup(
 
     include_package_data = True,
     package_data = {
-        'amires': ['data/events/*xsd', 'data/phone.png'],
+        'amires': ['data/events/*xsd', 'data/phone.png', 'locale/*/*/*.mo'],
     },
 
     install_requires = [
