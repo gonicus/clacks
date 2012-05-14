@@ -129,7 +129,7 @@ class Inventory(Plugin):
 
         def runner():
             # Establish amqp connection
-            self.log.info("sending inventory data, nothing changed!")
+            self.log.info("sending inventory data!")
             amqp = PluginRegistry.getInstance("AMQPClientHandler")
             amqp.sendEvent(str(result))
 
