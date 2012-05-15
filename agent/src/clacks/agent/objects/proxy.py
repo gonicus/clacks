@@ -150,7 +150,12 @@ class ObjectProxy(object):
             def check_acl(self, attribute):
                 attr_type = self.__attribute_type_map[attribute]
                 topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, attribute)
-                return self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn)
+                result = self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn)
+                if result:
+                    self.__log.debug("User %s is allowed to access property %s!" % (self.__current_user, topic))
+                else:
+                    self.__log.debug("User %s is NOT allowed to access property %s!" % (self.__current_user, topic))
+                return result
 
             return(filter(lambda x: check_acl(self, x), self.__attributes))
         else:

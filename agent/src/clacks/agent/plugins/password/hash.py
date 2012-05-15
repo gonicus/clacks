@@ -24,8 +24,8 @@ class GeneratePasswordHash(ElementFilter):
         if valDict[key]['status'] == STATUS_CHANGED:
             #pwdhash = "{%s}213GERSDF2351" % (method,)
 
-            #TODO: Set passwort to tester - for testing
-            pwdhash = "{CRYPT}$1$nBUoCvAs$GOiZ2H8zMKCnimLvdpoGY."
+            #TODO: Set passwort to secret - for testing
+            pwdhash = "{CRYPT}$1$nDvjGkcB$PwJQibqWqVZMwa9c4scgh1"
 
         # Unlock account
         if pwdhash:
