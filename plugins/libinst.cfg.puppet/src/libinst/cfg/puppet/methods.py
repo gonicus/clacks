@@ -76,7 +76,7 @@ class PuppetInstallMethod(InstallMethod):
 
         # Initialize git repository if not present
         if not os.path.exists(os.path.join(self.__repo_path, "config")):
-            repo = Repo.create(self.__repo_path)
+            repo = Repo.init(self.__repo_path, bare=True)
             assert repo.bare == True
             os.chmod(self.__repo_path, 0750)
 

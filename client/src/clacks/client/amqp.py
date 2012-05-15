@@ -129,6 +129,10 @@ class AMQPClientHandler(AMQPHandler):
             self.env.log.critical("queue has gone: %s" % str(e))
             self.env.requestRestart()
 
-    def __del__(self):
+    def close(self):
         self.log.debug("shutting down AMQP client handler")
-        self._conn.close()
+        if self._conn:
+            self._conn.close()
+
+    def __del__(self):
+        self.close()

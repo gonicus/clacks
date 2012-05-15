@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 import cgi
-import MySQLdb
 import pkg_resources
 import gettext
-from amires.render import BaseRenderer
+from amires.render import BaseRenderer, mr
 from clacks.common import Environment
+from sqlalchemy import Table, Column, String, Integer, MetaData
+from sqlalchemy.sql import select, and_
+
 
 # Set locale domain
 t = gettext.translation('messages', pkg_resources.resource_filename("amires", "locale"), fallback=False)
@@ -17,24 +19,12 @@ class GOForgeRenderer(BaseRenderer):
 
     def __init__(self):
         self.env = env = Environment.getInstance()
-        host = env.config.get("fetcher-goforge.host",
-            default="localhost")
-        user = env.config.get("fetcher-goforge.user",
-            default="root")
-        passwd = env.config.get("fetcher-goforge.pass",
-            default="")
-        db = env.config.get("fetcher-goforge.base",
-            default="goforge")
-
-        # connect to GOforge db
-        self.forge_db = MySQLdb.connect(host=host,
-            user=user, passwd=passwd, db=db, charset="utf8")
 
         self.forge_url = self.env.config.get("fetcher-goforge.site_url",
             default="http://localhost/")
 
-    def getHTML(self, particiantInfo, event):
-        super(GOForgeRenderer, self).getHTML(particiantInfo)
+    def getHTML(self, particiantInfo, selfInfo, event):
+        super(GOForgeRenderer, self).getHTML(particiantInfo, selfInfo, event)
 
         if not 'company_id' in particiantInfo:
             return ""
@@ -45,53 +35,56 @@ class GOForgeRenderer(BaseRenderer):
 
         # prepare result
         result = []
+        html = ""
 
-        cursor = self.forge_db.cursor()
+        # Connect to GOforge db
+        sess = self.env.getDatabaseSession("fetcher-goforge")
 
-        try:
-            # obtain GOforge internal customer id
-            leng = cursor.execute("""
-                SELECT customer_id
-                FROM customer
-                WHERE customer_unique_ldap_attribute = %s""",
-                (company_id,))
-            row = cursor.fetchone()
+        # obtain GOforge internal customer id
+        res = sess.execute(select(['customer_id'],
+            Column(String(), name='customer_unique_ldap_attribute').__eq__(company_id),
+            'customer'))
 
-            # if entry for company exists ...
-            if leng == 1:
-                # fetch tickets from database
-                leng = cursor.execute("""
-                    SELECT bug.bug_id, bug.summary,
-                        bug.group_id, user.user_name
-                    FROM bug, user
-                    WHERE bug.status_id = 1
-                        AND bug.assigned_to = user.user_id
-                        AND bug.customer_id = %s
-                    LIMIT 29;""",
-                    (row[0],))
+        if res.rowcount == 1:
+            row = res.fetchone()
 
-                rows = cursor.fetchall()
+            # fetch tickets from database
+            m = MetaData()
+            bug = Table('bug', m,
+                    Column('bug_id', Integer),
+                    Column('summary', String),
+                    Column('group_id', String),
+                    Column('status_id', Integer),
+                    Column('assigned_to', Integer),
+                    Column('customer_id', Integer))
+            user = Table('user', m,
+                    Column('user_name', String),
+                    Column('user_id', Integer))
+            rows = sess.execute(select([bug.c.bug_id, bug.c.summary, bug.c.group_id, user.c.user_name],
+                and_(bug.c.status_id == 1, bug.c.assigned_to == user.c.user_id,
+                    bug.c.customer_id == row[0]),
+                [bug, user]).limit(29)).fetchall()
 
-                # put results into dictionary
-                for row in rows:
-                    result.append({'id': row[0],
-                        'summary': row[1],
-                        'group_id': row[2],
-                        'assigned': row[3]})
+            # put results into dictionary
+            for row in rows:
+                result.append({'id': row[0],
+                    'summary': row[1],
+                    'group_id': row[2],
+                    'assigned': row[3]})
 
-        finally:
-            cursor.close()
+            if len(result) == 0:
+                sess.close()
+                return ""
 
-        if len(result) == 0:
-            return ""
+            html = u"<b>%s</b>" % _("GOForge tickets")
 
-        html = u"<b>%s</b>" % cgi.escape(_("Open GOForge tickets"))
-        for row in result:
-            html += "\n<a href='%s'>%s</a>: '%s'" %(
-                cgi.escape(self.forge_url + "/bugs/?func=detailbug" \
-                    + "&bug_id=" + str(row['id']) \
-                    + "&group_id=" + str(row['group_id'])),
-                row['id'],
-                cgi.escape(row['summary']))
+            for row in result:
+                html += u"\n<a href='%s'>%s</a> %s" %(
+                    self.forge_url + "/bugs/?func=detailbug" \
+                        + "&bug_id=" + str(row['id']) \
+                        + "&group_id=" + str(row['group_id']),
+                    row['id'],
+                    cgi.escape(mr(row['summary'])))
 
+        sess.close()
         return html

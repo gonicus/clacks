@@ -43,8 +43,6 @@ accessible by calling ``dbus_wake_on_lan``. (:class:`clacks.dbus.plugins.wakeonl
 
 
 # -*- coding: utf-8 -*-
-import dbus
-import dbus.service
 from _dbus_bindings import INTROSPECTABLE_IFACE
 from dbus.exceptions import DBusException
 
@@ -53,8 +51,8 @@ import logging
 from lxml import etree
 from zope.interface import implements
 from clacks.common.handler import IInterfaceHandler
-from clacks.common.components import Plugin, PluginRegistry
-from clacks.common.components import Command
+from clacks.common.components import Plugin, PluginRegistry, Command
+from clacks.common.components.dbus_runner import DBusRunner
 
 
 class DBusProxyException(Exception):
@@ -105,11 +103,9 @@ class DBUSProxy(Plugin):
 
         # Get a dbus proxy and check if theres a service registered called 'org.clacks'
         # if not, then we can skip all further processing. (The clacks-dbus seems not to be running)
-        self.bus = dbus.SystemBus()
+        self.__dr = DBusRunner.get_instance()
+        self.bus = self.__dr.get_system_bus()
         self.methods = {}
-
-        # Register ourselfs for bus changes on org.clacks
-        self.bus.watch_name_owner("org.clacks", self.__dbus_proxy_monitor)
 
     def __dbus_proxy_monitor(self, bus_name):
         """
@@ -313,6 +309,9 @@ class DBUSProxy(Plugin):
         """
         This method registeres all known methods to the command registry.
         """
+        # Register ourselfs for bus changes on org.clacks
+        self.bus.watch_name_owner("org.clacks", self.__dbus_proxy_monitor)
+
         ccr = PluginRegistry.getInstance('ClientCommandRegistry')
         for name in self.methods.keys():
             ccr.register(name, 'DBUSProxy.callDBusMethod', [name], ['(signatur)'], 'docstring')

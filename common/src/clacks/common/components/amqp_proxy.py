@@ -9,6 +9,10 @@ from clacks.common.utils import parseURL
 from lxml import objectify
 
 
+# Number of AMQP workers for the proxy
+WORKERS = 3
+
+
 class AMQPException(Exception):
     pass
 
@@ -33,7 +37,8 @@ class AMQPServiceProxy(object):
     serviceAddress  Address string describing the target queue to bind to, must be skipped if no special queue is needed
     serviceName     *internal*
     conn            *internal*
-    workers         Number of workers to allocate for processing
+    worker          *internal*
+    methods         *internal*
     =============== ============
 
     The AMQPService proxy creates a temporary AMQP *reply to* queue, which
@@ -42,13 +47,14 @@ class AMQPServiceProxy(object):
     worker = {}
 
     def __init__(self, serviceURL, serviceAddress=None, serviceName=None,
-                 conn=None, workers=3):
+                 conn=None, worker=None, methods=None):
         self.__URL = url = parseURL(serviceURL)
         self.__serviceURL = serviceURL
         self.__serviceName = serviceName
         self.__serviceAddress = serviceAddress
-        self.__workers = workers
-        domain = url['path']
+        self.__worker = worker
+        self.__domain = url['path']
+        self.__methods = methods
 
         # Prepare AMQP connection if not already there
         if not conn:
@@ -64,24 +70,20 @@ class AMQPServiceProxy(object):
             #TODO: configure reconnect
             #auto_fetch_reconnect_urls(conn)
 
-            AMQPServiceProxy.domain= domain
-
             # Prefill __serviceAddress correctly if domain is given
-            if AMQPServiceProxy.domain:
-                self.__serviceAddress = '%s.command.core' % AMQPServiceProxy.domain
+            if self.__domain:
+                self.__serviceAddress = '%s.command.core' % self.__domain
 
             if not self.__serviceAddress:
                 raise AMQPException("no serviceAddress or domain specified")
 
-            try:
-                AMQPServiceProxy.worker[self.__serviceAddress]
-            except KeyError:
-                AMQPServiceProxy.worker[self.__serviceAddress] = {}
+            if not self.__worker:
+                self.__worker = {self.__serviceAddress: {}}
 
             # Pre instanciate core sessions
-            for i in range(0, workers):
+            for i in range(0, WORKERS):
                 ssn = conn.session(str(uuid4()))
-                AMQPServiceProxy.worker[self.__serviceAddress][i] = {
+                self.__worker[self.__serviceAddress][i] = {
                         'ssn': ssn,
                         'sender': ssn.sender(self.__serviceAddress),
                         'receiver': ssn.receiver('reply-%s; {create:always, delete:always, node: { type: queue, durable: False, x-declare: { exclusive: False, auto-delete: True } }}' % ssn.name),
@@ -92,38 +94,30 @@ class AMQPServiceProxy(object):
         self.__ssn = None
         self.__sender = None
         self.__receiver = None
-        self.__worker = None
+        self.__sess = None
 
         # Retrieve methods
-        try:
-            AMQPServiceProxy.methods
-        except AttributeError:
-            AMQPServiceProxy.methods = None
-            AMQPServiceProxy.methods = {}
-
-        # Retrieve methods
-        try:
-            AMQPServiceProxy.methods[self.__serviceAddress]
-        except KeyError:
-            AMQPServiceProxy.methods[self.__serviceAddress] = None
-            AMQPServiceProxy.methods[self.__serviceAddress] = self.getMethods()
+        if not self.__methods:
+            self.__serviceName = "getMethods"
+            self.__methods = self.__call__()
+            self.__serviceName = None
 
             # If we've no direct queue, we need to push to different queues
-            if AMQPServiceProxy.domain:
+            if self.__domain:
                 queues = set([
-                        x['target'] for x in AMQPServiceProxy.methods[self.__serviceAddress].itervalues()
+                        x['target'] for x in self.__methods.itervalues()
                         if x['target'] != 'core'
                     ])
 
                 # Pre instanciate queue sessions
                 for queue in queues:
-                    for i in range(0, workers):
+                    for i in range(0, WORKERS):
                         ssn = conn.session(str(uuid4()))
-                        AMQPServiceProxy.worker[queue] = {}
-                        AMQPServiceProxy.worker[queue][i] = {
+                        self.__worker[queue] = {}
+                        self.__worker[queue][i] = {
                                 'ssn': ssn,
                                 'sender': ssn.sender("%s.command.%s" %
-                                    (AMQPServiceProxy.domain, queue)),
+                                    (self.__domain, queue)),
                                 'receiver': ssn.receiver('reply-%s; {create:always, delete:always, node: { type: queue, durable: False, x-declare: { exclusive: False, auto-delete: True } }}' % ssn.name),
                                 'locked': False}
 
@@ -134,7 +128,7 @@ class AMQPServiceProxy(object):
         """
 
         # Close all senders/receivers
-        for value in AMQPServiceProxy.worker.values():
+        for value in self.__worker.values():
             for vvalue in value.values():
                 vvalue['sender'].close()
                 vvalue['receiver'].close()
@@ -153,14 +147,15 @@ class AMQPServiceProxy(object):
                 self.__serviceAddress,
                 None,
                 self.__conn,
-                workers=self.__workers)
+                worker=self.__worker,
+                methods=self.__methods)
 
     def __getattr__(self, name):
         if self.__serviceName != None:
             name = "%s.%s" % (self.__serviceName, name)
 
         return AMQPServiceProxy(self.__serviceURL, self.__serviceAddress, name,
-                self.__conn, workers=self.__workers)
+                self.__conn, worker=self.__worker, methods=self.__methods)
 
     def __call__(self, *args, **kwargs):
         if len(kwargs) > 0 and len(args) > 0:
@@ -169,23 +164,23 @@ class AMQPServiceProxy(object):
         # Default to 'core' queue, pylint: disable=W0612
         queue = "core"
 
-        if AMQPServiceProxy.methods[self.__serviceAddress]:
-            if not self.__serviceName in AMQPServiceProxy.methods[self.__serviceAddress]:
+        if self.__methods:
+            if not self.__serviceName in self.__methods:
                 raise NameError("name '%s' not defined" % self.__serviceName)
 
-            if AMQPServiceProxy.domain:
-                queue = AMQPServiceProxy.methods[self.__serviceAddress][self.__serviceName]['target']
+            if self.__domain:
+                queue = self.__methods[self.__serviceName]['target']
             else:
                 queue = self.__serviceAddress
 
         # Find free session for requested queue
         found = False
-        for sess, dsc in AMQPServiceProxy.worker[self.__serviceAddress].iteritems():
+        for sess, dsc in self.__worker[self.__serviceAddress].iteritems():
             if not dsc['locked']:
                 self.__ssn = dsc['ssn']
                 self.__sender = dsc['sender']
                 self.__receiver = dsc['receiver']
-                self.__worker = sess
+                self.__sess = sess
                 dsc['locked'] = True
                 found = True
                 break
@@ -206,18 +201,12 @@ class AMQPServiceProxy(object):
 
         self.__sender.send(message)
 
-        # SVC workaround
-        svc_url = self.__serviceURL
-        svc_addr = self.__serviceAddress
-        svc_conn = self.__conn
-        svc_workers = self.__workers
-
         # Get response
         respdata = self.__receiver.fetch()
         resp = loads(respdata.content)
         self.__ssn.acknowledge(respdata)
 
-        AMQPServiceProxy.worker[self.__serviceAddress][self.__worker]['locked'] = False
+        self.__worker[self.__serviceAddress][self.__sess]['locked'] = False
 
         if resp['error'] != None:
             raise JSONRPCException(resp['error'])

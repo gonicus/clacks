@@ -14,14 +14,12 @@ e.g.:
 
 # -*- coding: utf-8 -*-
 import os
-import dbus
 import logging
 import base64
 import hashlib
-from clacks.common.components import PluginRegistry
-from clacks.common.components import Plugin
-from clacks.common.components import Command
 from clacks.common import Environment
+from clacks.common.components.dbus_runner import DBusRunner
+from clacks.common.components import PluginRegistry, Plugin, Command
 
 
 class Notify(Plugin):
@@ -35,7 +33,8 @@ class Notify(Plugin):
         self.log = logging.getLogger(__name__)
 
         # Register ourselfs for bus changes on org.clacks
-        self.bus = dbus.SystemBus()
+        dr = DBusRunner.get_instance()
+        self.bus = dr.get_system_bus()
         self.bus.watch_name_owner("org.clacks", self.__dbus_proxy_monitor)
 
         # Create icon cache directory
@@ -53,10 +52,10 @@ class Notify(Plugin):
             self.clacks_dbus = self.bus.get_object('org.clacks', '/org/clacks/notify')
             ccr = PluginRegistry.getInstance('ClientCommandRegistry')
             ccr.register("notify", 'Notify.notify', [], \
-                    ['user','title','message','timeout','urgency','icon','actions','recurrence'], \
+                    ['user','title','message','timeout','icon','actions','recurrence'], \
                     'Sent a notification to a given user')
             ccr.register("notify_all", 'Notify.notify_all', [], \
-                    ['title','message','timeout','urgency','icon','actions','recurrence'], \
+                    ['title','message','timeout','icon','actions','recurrence'], \
                     'Sent a notification to a given user')
             amcs = PluginRegistry.getInstance('AMQPClientService')
             amcs.reAnnounce()
@@ -78,7 +77,6 @@ class Notify(Plugin):
 
     def notify(self, user, title, message,
         timeout=0,
-        urgency="normal",
         icon="dialog-information",
         actions="",
         recurrence=60):
@@ -99,13 +97,12 @@ class Notify(Plugin):
                 icon = "dialog-information"
 
         # Send notification and keep return code
-        o = self.clacks_dbus._notify(user, title, message, timeout, urgency,
+        o = self.clacks_dbus._notify(user, title, message, timeout,
             icon, actions, recurrence, dbus_interface="org.clacks")
         return(int(o))
 
     def notify_all(self, title, message,
         timeout=0,
-        urgency="normal",
         icon="dialog-information",
         actions="",
         recurrence=60):
@@ -113,6 +110,6 @@ class Notify(Plugin):
         """ Sent a notification to all users on a machine """
 
         # Send notification and keep return code
-        o = self.clacks_dbus._notify_all(title, message, timeout, urgency,
+        o = self.clacks_dbus._notify_all(title, message, timeout,
             icon, actions, recurrence, dbus_interface="org.clacks")
         return(int(o))

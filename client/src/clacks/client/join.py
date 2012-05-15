@@ -47,7 +47,8 @@ def main():
     try:
         env = Environment.getInstance()
     except ConfigNoFile:
-        config_file = "/etc/clacks/config"
+        config_file = os.environ.get("CLACKS_CONFIG_DIR") or "/etc/clacks"
+        config_file = os.path.join(config_file, "config")
         service = None
 
         # Try to find config file without optparser
@@ -105,6 +106,12 @@ def main():
         exit(1)
 
     # Fix configuration file permission
+    env.log.debug("setting ownership for '%s' to (%s/%s)" % (cfg, "root", group))
+    os.chown(cfg, 0, gid)
+    env.log.debug("setting permission for '%s' to (%s)" % (cfg, '0640'))
+    os.chmod(cfg, 0750)
+
+    cfg = os.path.join(cfg, "config")
     env.log.debug("setting ownership for '%s' to (%s/%s)" % (cfg, "root", group))
     os.chown(cfg, 0, gid)
     env.log.debug("setting permission for '%s' to (%s)" % (cfg, '0640'))

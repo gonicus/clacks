@@ -7,6 +7,7 @@ import dbus.service
 import random
 import string
 import hashlib
+import logging
 from pkg_resources import resource_filename
 from lxml import etree, objectify
 from clacks.common import Environment
@@ -52,9 +53,15 @@ class DBusInventoryHandler(dbus.service.Object, Plugin):
         os.mkdir(path)
 
         # Execute the inventory agent.
-        process = subprocess.Popen(["fusioninventory-agent","--local="+path], \
-                shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        process.communicate()
+        try:
+            process = subprocess.Popen(["fusioninventory-agent","--local="+path], \
+                    shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            process.communicate()
+
+        except OSError as e:
+            log = logging.getLogger(__name__)
+            log.error("failed to invoke fusion-inventory agent: %s" % str(e))
+            return None
 
         # Try to read the generated xml result.
         flist = os.listdir(path)

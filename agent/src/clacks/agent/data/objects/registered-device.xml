@@ -23,7 +23,8 @@
 			<Attribute>
 				<Name>deviceKey</Name>
 				<Description>This attribute keeps the encrypted (initial) device secret</Description>
-				<Type>String</Type>
+				<Type>Binary</Type>
+				<NotIndexed>true</NotIndexed>
 			</Attribute>
 			<Attribute>
 				<Name>deviceStatus</Name>

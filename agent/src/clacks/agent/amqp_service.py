@@ -198,7 +198,7 @@ class AMQPService(object):
         p = re.compile(r';.*$')
         queue = p.sub('', message._receiver.source)
 
-        self.log.info("received call [%s/%s] for %s: %s(%s)" % (id_, queue, message.user_id, name, args))
+        self.log.debug("received call [%s/%s] for %s: %s(%s)" % (id_, queue, message.user_id, name, args))
 
         # Don't process messages if the command registry thinks it's not ready
         if not self.__cr.processing.is_set():

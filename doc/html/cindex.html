@@ -235,47 +235,52 @@ Add a new interval job to the scheduler.</div>
 Remove job from the scheduler.</div>
 </td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="agent/command.html#cmd-2">sendEvent</a></td>
+<tr class="row-even"><td><a class="reference internal" href="agent/objects.html#cmd-1">search</a></td>
+<td><div class="first last container">
+Filter for indexed attributes and return the matches.</div>
+</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="agent/command.html#cmd-2">sendEvent</a></td>
 <td><div class="first last container">
 Send event to the bus.</div>
 </td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="agent/jsonrpc.html#cmd-5">setObjectProperty</a></td>
+<tr class="row-even"><td><a class="reference internal" href="agent/jsonrpc.html#cmd-5">setObjectProperty</a></td>
 <td><div class="first last container">
 Set property for object on stack</div>
 </td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="agent/command.html#cmd-3">shutdown</a></td>
+<tr class="row-odd"><td><a class="reference internal" href="agent/command.html#cmd-3">shutdown</a></td>
 <td><div class="first last container">
 Shut down the service belonging to the supplied queue. In case of HTTP connections, this command will shut down the node you&#8217;re currently logged in.</div>
 </td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="plugins/agent/goto.html#cmd-8">systemGetStatus</a></td>
+<tr class="row-even"><td><a class="reference internal" href="plugins/agent/goto.html#cmd-8">systemGetStatus</a></td>
 <td><div class="first last container">
 Set system status</div>
 </td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="plugins/agent/goto.html#cmd-9">systemSetStatus</a></td>
+<tr class="row-odd"><td><a class="reference internal" href="plugins/agent/goto.html#cmd-9">systemSetStatus</a></td>
 <td><div class="first last container">
 Set system status</div>
 </td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="plugins/agent/misc.html#cmd-0">transliterate</a></td>
+<tr class="row-even"><td><a class="reference internal" href="plugins/agent/misc.html#cmd-0">transliterate</a></td>
 <td><div class="first last container">
 Transliterate a given string</div>
 </td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="agent/acl.html#cmd-8">updateACL</a></td>
+<tr class="row-odd"><td><a class="reference internal" href="agent/acl.html#cmd-8">updateACL</a></td>
 <td><div class="first last container">
 Refresh existing ACL by ID.</div>
 </td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="agent/acl.html#cmd-9">updateACLRole</a></td>
+<tr class="row-even"><td><a class="reference internal" href="agent/acl.html#cmd-9">updateACLRole</a></td>
 <td><div class="first last container">
 Refresh existing role by ID.</div>
 </td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="agent/objects.html#cmd-1">xquery</a></td>
+<tr class="row-odd"><td><a class="reference internal" href="agent/objects.html#cmd-2">xquery</a></td>
 <td><div class="first last container">
 Perform a raw xquery on the collections</div>
 </td>
@@ -298,74 +303,14 @@ Perform a raw xquery on the collections</div>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="plugins/client/dbus.html#cmd-0">callDBusMethod</a></td>
-<td><div class="first last container">
-This method allows to access registered dbus methods by forwarding methods calls </div>
-</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="client/command.html#cmd-0">getMethods</a></td>
+<tr class="row-even"><td><a class="reference internal" href="client/command.html#cmd-0">getMethods</a></td>
 <td><div class="first last container">
 List all available client commands </div>
 </td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="plugins/client/goto.html#cmd-5">getSessions</a></td>
+<tr class="row-odd"><td><a class="reference internal" href="plugins/client/goto.html#cmd-0">getSessions</a></td>
 <td><div class="first last container">
 Return the list of active sessions </div>
-</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="plugins/client/goto.html#cmd-0">hibernate</a></td>
-<td><div class="first last container">
-Execute a hibernation of the client. </div>
-</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="plugins/client/dbus.html#cmd-1">listDBusMethods</a></td>
-<td><div class="first last container">
-This method lists all callable dbus methods </div>
-</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="plugins/client/goto.html#cmd-6">notify</a></td>
-<td><div class="first last container">
-Sent a notification to a given user </div>
-</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="plugins/client/notify.html#cmd-0">notify</a></td>
-<td><div class="first last container">
-Sent a notification to a given user </div>
-</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="plugins/client/goto.html#cmd-7">notify_all</a></td>
-<td><div class="first last container">
-Sent a notification to all users on a machine </div>
-</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="plugins/client/notify.html#cmd-1">notify_all</a></td>
-<td><div class="first last container">
-Sent a notification to all users on a machine </div>
-</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="plugins/client/goto.html#cmd-1">reboot</a></td>
-<td><div class="first last container">
-Execute a reboot of the client. </div>
-</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="plugins/client/inventory.html#cmd-0">request_inventory</a></td>
-<td><div class="first last container">
-Sent a notification to a given user </div>
-</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="plugins/client/goto.html#cmd-2">setpowersave</a></td>
-<td><div class="first last container">
-Set powersave mode of the client. </div>
-</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="plugins/client/goto.html#cmd-3">shutdown</a></td>
-<td><div class="first last container">
-Execute a shutdown of the client. </div>
-</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="plugins/client/goto.html#cmd-4">suspend</a></td>
-<td><div class="first last container">
-Execute a suspend of the client. </div>
 </td>
 </tr>
 </tbody>
@@ -417,7 +362,7 @@ Execute a suspend of the client. </div>
     </div>
     <div class="footer">
         &copy; Copyright 2011, Cajus Pollmeier.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

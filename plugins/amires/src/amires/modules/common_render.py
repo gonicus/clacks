@@ -2,12 +2,11 @@
 import cgi
 import pkg_resources
 import gettext
-from amires.render import BaseRenderer
+from amires.render import BaseRenderer, mr
 from clacks.common import Environment
 
 # Set locale domain
-t = gettext.translation('messages', pkg_resources.resource_filename("amires",
-"locale"),
+t = gettext.translation('messages', pkg_resources.resource_filename("amires", "locale"),
         fallback=False)
 _ = t.ugettext
 
@@ -19,28 +18,28 @@ class CommonRenderer(BaseRenderer):
     def __init__(self):
         pass
 
-    def getHTML(self, info, event):
-        super(CommonRenderer, self).getHTML(info)
+    def getHTML(self, info, selfInfo, event):
+        super(CommonRenderer, self).getHTML(info, selfInfo, event)
 
         # build html for company name
         comp = u""
         if info['company_name']:
             if 'company_detail_url' in info and info['company_detail_url']:
-                comp += "<a href='%s'>%s</a>" %(
-                    cgi.escape(info['company_detail_url']),
-                    cgi.escape(info['company_name']))
+                comp += "<a href='%s'>%s</a>" % (
+                    cgi.escape(mr(info['company_detail_url'])),
+                    cgi.escape(mr(info['company_name'])))
             else:
-                comp += cgi.escape(info['company_name'])
+                comp += cgi.escape(mr(info['company_name']))
 
         # build html for contact name
         cont = u""
         if info['contact_name']:
             if 'contact_detail_url' in info and info['contact_detail_url']:
                 cont += "<a href='%s'>%s</a>" %(
-                    cgi.escape(info['contact_detail_url']),
-                    cgi.escape(info['contact_name']))
+                    cgi.escape(mr(info['contact_detail_url'])),
+                    cgi.escape(mr(info['contact_name'])))
             else:
-                cont += cgi.escape(info['contact_name'])
+                cont += cgi.escape(mr(info['contact_name']))
 
         # build actual html section
         html = u"<b>%s:</b>\n" % cgi.escape(_("Attendee"))

@@ -2,6 +2,7 @@
 import os
 import StringIO
 import logging
+from inspect import isclass
 from lxml import etree
 #pylint: disable=E0611
 from pkg_resources import resource_filename, resource_listdir, iter_entry_points, resource_isdir
@@ -54,11 +55,7 @@ class PluginRegistry(object):
                 self.log.debug("registering handler module %s" % module.__name__)
                 PluginRegistry.handlers[module.__name__] = module
 
-        # Initialize component handlers
-        for handler, clazz  in PluginRegistry.handlers.iteritems():
-            PluginRegistry.handlers[handler] = clazz()
-
-        # Initialize modules
+        # Register module events
         for module, clazz  in PluginRegistry.modules.iteritems():
 
             # Check for event resources
@@ -75,7 +72,12 @@ class PluginRegistry(object):
                         PluginRegistry.evreg[event] = os.path.join(base_dir, filename)
                         self.log.debug("adding module event '%s'" % event)
 
-            # Register modules
+        # Initialize component handlers
+        for handler, clazz  in PluginRegistry.handlers.iteritems():
+            PluginRegistry.handlers[handler] = clazz()
+
+        # Initialize modules
+        for module, clazz  in PluginRegistry.modules.iteritems():
             if module in PluginRegistry.handlers:
                 PluginRegistry.modules[module] = PluginRegistry.handlers[module]
             else:
@@ -99,6 +101,7 @@ class PluginRegistry(object):
         for clazz  in PluginRegistry.handlers.values():
             if hasattr(clazz, 'stop'):
                 clazz.stop()
+                del clazz
 
     @staticmethod
     def getInstance(name):
@@ -117,6 +120,9 @@ class PluginRegistry(object):
         """
         if not name in PluginRegistry.modules:
             raise ValueError("no module '%s' available" % name)
+
+        if isclass(PluginRegistry.modules[name]):
+            return None
 
         return PluginRegistry.modules[name]
 

@@ -58,6 +58,10 @@ class AMQPClientService(object):
     implements(IInterfaceHandler)
     _priority_ = 10
 
+    # Time instance that helps us preventing re-announce-event flooding
+    time_obj = None
+    time_int = 3
+
     def __init__(self):
         env = Environment.getInstance()
         self.log = logging.getLogger(__name__)
@@ -65,6 +69,13 @@ class AMQPClientService(object):
         self.env = env
         self.__cr = None
         self.__cmdWorker = None
+
+    def close(self):
+        if self.__cmdWorker:
+            self.__cmdWorker.close()
+
+    def __del__(self):
+        self.close()
 
     def serve(self):
         """ Start AMQP service for this clacks service provider. """
@@ -124,8 +135,26 @@ class AMQPClientService(object):
         self.env.threads.append(pinger)
 
     def reAnnounce(self):
+        """
+        Re-announce signature changes to the agent.
+
+        This method waits a given amount of time and then sends re-sends
+        the client method-signatures.
+        """
         if self.__cr:
-            self.__announce(False)
+
+            # Cancel running jobs
+            if self.time_obj:
+                self.time_obj.cancel()
+
+            self.time_obj = Timer(self.time_int, self._reAnnounce)
+            self.time_obj.start()
+
+    def _reAnnounce(self):
+        """
+        Re-announces the client signatures
+        """
+        self.__announce(False)
 
     def commandReceived(self, ssn, message):
         """
@@ -215,11 +244,13 @@ class AMQPClientService(object):
             i_info = netifaces.ifaddresses(interface)
 
             # Skip lo interfaces
-            if i_info[netifaces.AF_LINK][0]['addr'] == '00:00:00:00:00:00':
+            if not netifaces.AF_INET in i_info:
                 continue
 
             # Skip lo interfaces
-            if not netifaces.AF_INET in i_info:
+            if not netifaces.AF_LINK in i_info:
+                continue
+            if i_info[netifaces.AF_LINK][0]['addr'] == '00:00:00:00:00:00':
                 continue
 
             # Assemble ipv6 information

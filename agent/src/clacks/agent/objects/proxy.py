@@ -619,7 +619,7 @@ class ObjectProxy(object):
 
                     # Skip binary ones
                     elif props[propname]['type'] == "Binary":
-                        attrs[propname] = map(lambda x: b64encode(x), prop_value)
+                        attrs[propname] = map(lambda x: x.encode(), prop_value)
 
                     # Make remaining values unicode
                     else:
