@@ -579,7 +579,8 @@ class ObjectProxy(object):
         attrs['dn'] = [self.__base.dn]
         attrs['parent-dn'] = [re.sub("^[^,]*,", "", self.__base.dn)]
         attrs['entry-uuid'] = [self.__base.uuid]
-        attrs['modify-date'] = atypes['Timestamp'].convert_to("UnicodeString", [self.__base.modifyTimestamp])
+        if self.__base.modifyTimestamp: 
+            attrs['modify-date'] = atypes['Timestamp'].convert_to("UnicodeString", [self.__base.modifyTimestamp])
 
         # Add base class properties
         props = self.__base.getProperties()
