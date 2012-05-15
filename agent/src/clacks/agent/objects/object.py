@@ -770,7 +770,8 @@ class Object(object):
         Returns the objectType for a given DN
         """
         index = PluginRegistry.getInstance("ObjectIndex")
-        return index.xquery("collection('objects')/*/.[o:DN = '%s']/o:Type/text()" % dn)[0]
+        res = index.xquery("collection('objects')/*/.[o:DN = '%s']/o:Type/text()" % dn)
+        return res[0] if len(res) else None
 
     def get_references(self, override=None):
         res = []
