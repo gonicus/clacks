@@ -275,6 +275,7 @@
                 <Name>passwordMethod</Name>
                 <Description>The selected password encryption method</Description>
                 <Type>String</Type>
+                <Default>CRYPT</Default>
                 <InFilter>
                     <FilterChain>
                         <FilterEntry>
