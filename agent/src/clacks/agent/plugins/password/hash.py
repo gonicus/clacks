@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
-from clacks.agent.objects.factory import STATUS_OK
+from clacks.agent.objects.factory import STATUS_OK, STATUS_CHANGED
 from clacks.agent.objects.filter import ElementFilter
 
 
@@ -22,7 +22,10 @@ class GeneratePasswordHash(ElementFilter):
 
         # Generate new pwd hash
         if valDict[key]['status'] == STATUS_CHANGED:
-            pwdhash = "{%s}213GERSDF2351" % (method,)
+            #pwdhash = "{%s}213GERSDF2351" % (method,)
+
+            #TODO: Set passwort to tester - for testing
+            pwdhash = "{CRYPT}$1$nBUoCvAs$GOiZ2H8zMKCnimLvdpoGY."
 
         # Unlock account
         if pwdhash:
