@@ -255,19 +255,19 @@ class ObjectProxy(object):
             if not allowed_base_mod:
                 self.__log.debug("user '%s' has insufficient permissions to move %s, required is %s:%s on %s" % (
                     self.__current_user, self.__base.dn, topic_base, "w", self.__base.dn))
-                raise ACLException("you've no permission to move %s (%s) to %s" % (self.__base.dn, topic_base, new_base))
+                raise ACLException("you've no permission to move %s (%s:%s) to %s" % (self.__base.dn, topic_base, "w", new_base))
 
             # Check for 'd' permission on the source object
             if not allowed_delete:
                 self.__log.debug("user '%s' has insufficient permissions to move %s, required is %s:%s on %s" % (
                     self.__current_user, self.__base.dn, topic_user, "d", self.__base.dn))
-                raise ACLException("you've no permission to move %s (%s) to %s" % (self.__base.dn, topic_user, new_base))
+                raise ACLException("you've no permission to move %s (%s:%s) to %s" % (self.__base.dn, topic_user, "d", new_base))
 
             # Check for 'c' permission on the source object
             if not allowed_create:
                 self.__log.debug("user '%s' has insufficient permissions to move %s, required is %s:%s on %s" % (
                     self.__current_user, self.__base.dn, topic_user, "c", new_base))
-                raise ACLException("you've no permission to move %s (%s) to %s" % (self.__base.dn, topic_user, new_base))
+                raise ACLException("you've no permission to move %s (%s:%s) to %s" % (self.__base.dn, topic_user, "c", new_base))
 
         if recursive:
             try:
@@ -392,6 +392,15 @@ class ObjectProxy(object):
         self.__base.remove()
 
     def commit(self):
+
+        # Check create permissions
+        if self.__base_mode == "create":
+            topic = "%s.objects.%s" % (self.__env.domain, self.__base_type)
+            if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "c", base=self.dn):
+                self.__log.debug("user '%s' has insufficient permissions to create %s, required is %s:%s" % (
+                    self.__current_user, self.__base.dn, topic, 'c'))
+                raise ACLException("you've no permission to create %s (%s)" % (self.__base.dn, topic))
+
         # Gather information about children
         old_base = self.__base.dn
 
