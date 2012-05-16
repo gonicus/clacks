@@ -258,6 +258,11 @@ class LDAP(ObjectBackend):
         else:
             self.con.modify_s(dn, mod_attrs)
 
+        # Clear identify cache, else we will receive old values from self.identifyObject
+        if dn in self.__i_cache_ttl:
+            del self.__i_cache[dn]
+            del self.__i_cache_ttl[dn]
+
         # Return automatic uuid
         return self.dn2uuid(dn)
 
