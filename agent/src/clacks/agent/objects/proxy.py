@@ -202,7 +202,7 @@ class ObjectProxy(object):
         # Ensure that all precondition for this extension are fullfilled
         oTypes = self.__factory.getObjectTypes()
         for r_ext in oTypes[extension]['requires']:
-            if not r_ext in self.__extensions or self.__extensions[extension] == None:
+            if not r_ext in self.__extensions or self.__extensions[r_ext] == None:
               raise ProxyException("extension '%s' is required to to extend %s" % (r_ext, extension))
 
         # Check Acls
