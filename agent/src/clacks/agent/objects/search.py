@@ -295,7 +295,7 @@ class Query(MyNode):
             result.append(res)
         self.time = time() - start
 
-        #TODO: Limitate resulting entries, manually, due to the fact that we cannot filter by acls in the xquery
+        # Limitate resulting entries manually, due to the fact that we cannot filter by acls in the xquery
         if self.Limit:
             start, stop = self.Limit[0].get_range()
             result =  result[start:stop]

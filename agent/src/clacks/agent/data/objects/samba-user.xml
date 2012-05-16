@@ -263,6 +263,7 @@
                 <Name>sambaDomainName</Name>
                 <Description>Windows NT domain to which the user belongs</Description>
                 <Type>UnicodeString</Type>
+                <Mandatory>true</Mandatory>
             </Attribute>
 
             <Attribute>
