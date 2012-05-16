@@ -282,6 +282,7 @@ class ObjectFactory(object):
                 'backend': backend,
                 'backend_attrs': backend_attrs,
                 'extended_by': [],
+                'requires': [],
                 'methods': methods,
                 'base': is_base,
             }
