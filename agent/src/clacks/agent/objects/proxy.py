@@ -228,6 +228,13 @@ class ObjectProxy(object):
         if self.__extensions[extension] == None:
             raise ProxyException("extension '%s' already retracted" % extension)
 
+        # Collect all extensions that are required due to dependencies..
+        oTypes = self.__factory.getObjectTypes()
+        for ext in self.__extensions:
+            if self.__extensions[ext]:
+                if extension in  oTypes[ext]['requires']:
+                    raise ProxyException("extension '%s' is still required by '%s'" % (extension, ext))
+
         # Check Acls
         # Required is the 'd' (delete) right for the extension on the current object.
         if self.__current_user != None:
