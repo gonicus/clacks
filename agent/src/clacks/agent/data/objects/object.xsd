@@ -53,6 +53,10 @@
         		minOccurs="0"
         	>
         	</element>
+        	<element name="RequiresExtension" type="o:RequiresExtension"
+        		maxOccurs="1" minOccurs="0"
+        	>
+        	</element>
         </all>
     </complexType>
 
@@ -334,6 +338,12 @@
     <complexType name="DependsOn">
     	<sequence>
     		<element name="Attribute" type="string" maxOccurs="unbounded" minOccurs="1"></element>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="RequiresExtension">
+    	<sequence>
+    		<element name="Extension" type="string" maxOccurs="unbounded" minOccurs="1"></element>
     	</sequence>
     </complexType>
 

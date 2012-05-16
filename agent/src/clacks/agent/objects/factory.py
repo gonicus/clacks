@@ -296,6 +296,9 @@ class ObjectFactory(object):
             if "Container" in t_obj.__dict__:
                 types[str(t_obj.Name)]['container'] = [str(v) for v in t_obj.Container.Type]
 
+            if "RequiresExtension" in t_obj.__dict__:
+                types[str(t_obj.Name)]['requires'] = [str(v) for v in t_obj.RequiresExtension.Extension]
+
         for name, ext in extends.items():
             if not name in types:
                 continue

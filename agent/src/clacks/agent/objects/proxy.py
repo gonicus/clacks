@@ -191,11 +191,19 @@ class ObjectProxy(object):
         Extends the base-object with the given extension
         """
 
+        # Is this a valid extension?
         if not extension in self.__extensions:
             raise ProxyException("extension '%s' not allowed" % extension)
 
+        # Is this extension already active?
         if self.__extensions[extension] != None:
             raise ProxyException("extension '%s' already defined" % extension)
+
+        # Ensure that all precondition for this extension are fullfilled
+        oTypes = self.__factory.getObjectTypes()
+        for r_ext in oTypes[extension]['requires']:
+            if not r_ext in self.__extensions or self.__extensions[extension] == None:
+              raise ProxyException("extension '%s' is required to to extend %s" % (r_ext, extension))
 
         # Check Acls
         # Required is the 'c' (create) right for the extension on the current object.

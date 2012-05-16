@@ -826,6 +826,9 @@
             <Value>User</Value>
         </Extends>
         <BaseObject>false</BaseObject>
+        <RequiresExtension>
+          <Extension>PosixUser</Extension>
+        </RequiresExtension>
     </Object>
 </Objects>
 
