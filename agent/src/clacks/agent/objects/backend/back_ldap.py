@@ -188,6 +188,11 @@ class LDAP(ObjectBackend):
 
         self.con.modify_s(dn, mod_attrs)
 
+        # Clear identify cache, else we will receive old values from self.identifyObject
+        if dn in self.__i_cache_ttl:
+            del self.__i_cache[dn]
+            del self.__i_cache_ttl[dn]
+
     def extend(self, uuid, data, params, foreign_keys):
         dn = self.uuid2dn(uuid)
         return self.create(dn, data, params, foreign_keys)
