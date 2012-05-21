@@ -7,5 +7,6 @@
     notifempty
     postrotate
         invoke-rc.d rsyslog rotate > /dev/null
+    endscript
     create 640 clacks adm
 }
