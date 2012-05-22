@@ -148,9 +148,9 @@ setup(
         posixgetnextid = clacks.agent.plugins.posix.id:GetNextID
         datetoshadowdays = clacks.agent.plugins.posix.shadow:DateToShadowDays
         shadowdaystodate = clacks.agent.plugins.posix.shadow:ShadowDaysToDate
-        password_methods = clacks.agent.plugins.password.methods:DetectPasswordMethod
-        password_lock = clacks.agent.plugins.password.locking:DetectAccountLockStatus
-        password_hash = clacks.agent.plugins.password.hash:GeneratePasswordHash
+        detect_pwd_method = clacks.agent.plugins.password.filter.detect_method:DetectPasswordMethod
+        password_lock = clacks.agent.plugins.password.filter.detect_locking:DetectAccountLockStatus
+        password_hash = clacks.agent.plugins.password:GeneratePasswordHash
         addbackend = clacks.agent.objects.filter.basic:AddBackend
         registereddevicestatusin = clacks.agent.plugins.goto.in_out_filters:registeredDeviceStatusIn
         registereddevicestatusout = clacks.agent.plugins.goto.in_out_filters:registeredDeviceStatusOut
@@ -165,5 +165,8 @@ setup(
 
         [object]
         object = clacks.agent.objects.proxy:ObjectProxy
+
+        [password.methods]
+        crypt_method = clacks.agent.plugins.password.crypt_password:PasswordMethodCrypt
     """,
 )
