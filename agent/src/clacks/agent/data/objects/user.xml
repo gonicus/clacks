@@ -304,6 +304,10 @@
                         </FilterEntry>
                     </FilterChain>
                 </InFilter>
+                <DependsOn>
+                    <Attribute>userPassword</Attribute>
+                    <Attribute>passwordMethod</Attribute>
+                </DependsOn>
             </Attribute>
             <Attribute>
                 <Name>userPassword</Name>

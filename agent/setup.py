@@ -150,7 +150,7 @@ setup(
         shadowdaystodate = clacks.agent.plugins.posix.shadow:ShadowDaysToDate
         detect_pwd_method = clacks.agent.plugins.password.filter.detect_method:DetectPasswordMethod
         password_lock = clacks.agent.plugins.password.filter.detect_locking:DetectAccountLockStatus
-        password_hash = clacks.agent.plugins.password:GeneratePasswordHash
+        password_hash = clacks.agent.plugins.password.filter.generate_hash:GeneratePasswordHash
         addbackend = clacks.agent.objects.filter.basic:AddBackend
         registereddevicestatusin = clacks.agent.plugins.goto.in_out_filters:registeredDeviceStatusIn
         registereddevicestatusout = clacks.agent.plugins.goto.in_out_filters:registeredDeviceStatusOut
