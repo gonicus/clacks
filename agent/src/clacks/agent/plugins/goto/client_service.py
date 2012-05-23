@@ -224,6 +224,14 @@ class ClientService(Plugin):
         """
         return [client for client, users in self.__user_session.items() if user in users]
 
+    @Command(__help__=N_("Sets a new password for a user"))
+    def setUserPassword(self, dn, password):
+        """
+        Set a new password for a user
+        """
+        print "ja", dn, password
+
+
     @Command(__help__=N_("Send synchronous notification message to user"))
     def notifyUser(self, users, title, message, timeout=10, level='normal', icon="dialog-information"):
         """

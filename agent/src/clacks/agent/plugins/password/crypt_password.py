@@ -3,6 +3,7 @@ import re
 import crypt
 import random
 import string
+import re
 
 class PasswordMethodCrypt(PasswordMethod):
     hash_name = "CRYPT"
@@ -12,7 +13,23 @@ class PasswordMethodCrypt(PasswordMethod):
             return True
         return False
 
-    def detect_method(self, password_hash):
+    def detect_hash_method(self, password_hash):
+        if not self.is_responsible_for_password_hash(password_hash):
+            return None
+
+        password_hash = re.sub('^{[^}]+}!?', '', password_hash)
+        if re.match('^[a-zA-Z0-9.\/][a-zA-Z0-9.\/]', password_hash):
+            return "crypt/standard-des"
+
+        if re.match('^_[a-zA-Z0-9.\/]', password_hash):
+            return "crypt/enhanced-des"
+
+        if re.match('^\$1\$', password_hash):
+            return "crypt/md5"
+
+        if re.match('^(\$2\$|\$2a\$)', password_hash):
+            return "crypt/blowfish"
+
         return None
 
     def is_locked(self, password_hash):

@@ -12,31 +12,18 @@
 
         <Methods>
             <Method>
-                <Name>notify</Name>
+                <Name>changePassword</Name>
                 <MethodParameters>
                     <MethodParameter>
-                        <Name>notify_title</Name>
+                        <Name>password</Name>
                         <Type>UnicodeString</Type>
                         <Default></Default>
                     </MethodParameter>
-                    <MethodParameter>
-                        <Name>notify_message</Name>
-                        <Type>UnicodeString</Type>
-                        <Required>true</Required>
-                    </MethodParameter>
-                    <MethodParameter>
-                        <Name>notify_duration</Name>
-                        <Type>Integer</Type>
-                        <Required>false</Required>
-                        <Default>60</Default>
-                    </MethodParameter>
                 </MethodParameters>
-                <Command>notifyUser</Command>
+                <Command>setUserPassword</Command>
                 <CommandParameters>
-                    <Value>uid</Value>
-                    <Value>notify_title</Value>
-                    <Value>notify_message</Value>
-                    <Value>notify_duration</Value>
+                    <Value>dn</Value>
+                    <Value>password</Value>
                 </CommandParameters>
             </Method>
         </Methods>
@@ -275,18 +262,19 @@
                 <Name>passwordMethod</Name>
                 <Description>The selected password encryption method</Description>
                 <Type>String</Type>
-                <Default>CRYPT</Default>
+                <Default>crypt/md5</Default>
+                <ReadOnly>true</ReadOnly>
                 <InFilter>
                     <FilterChain>
                         <FilterEntry>
                             <Filter>
                                 <Name>DetectPasswordMethod</Name>
-                                <Param>%(userPassword)s</Param>
                             </Filter>
                         </FilterEntry>
                     </FilterChain>
                 </InFilter>
                 <Backend>NULL</Backend>
+                <Mandatory>true</Mandatory>
             </Attribute>
             <Attribute>
                 <Name>isLocked</Name>
@@ -299,35 +287,17 @@
                         <FilterEntry>
                             <Filter>
                                 <Name>DetectAccountLockStatus</Name>
-                                <Param>%(userPassword)s</Param>
                             </Filter>
                         </FilterEntry>
                     </FilterChain>
                 </InFilter>
-                <DependsOn>
-                    <Attribute>userPassword</Attribute>
-                    <Attribute>passwordMethod</Attribute>
-                </DependsOn>
+                <ReadOnly>true</ReadOnly>
+                <Mandatory>true</Mandatory>
             </Attribute>
             <Attribute>
                 <Name>userPassword</Name>
-                <DependsOn>
-                    <Attribute>passwordMethod</Attribute>
-                    <Attribute>isLocked</Attribute>
-                </DependsOn>
                 <Description>Passwords are stored using an Octet String syntax and are not encrypted.  Transfer of cleartext passwords are strongly discouraged where the underlying transport service cannot guarantee confidentiality and may result in disclosure of the password to unauthorized parties.</Description>
                 <Type>UnicodeString</Type>
-                <OutFilter>
-                    <FilterChain>
-                        <FilterEntry>
-                            <Filter>
-                                <Name>GeneratePasswordHash</Name>
-                                <Param>%(passwordMethod)s</Param>
-                                <Param>%(isLocked)s</Param>
-                            </Filter>
-                        </FilterEntry>
-                    </FilterChain>
-                </OutFilter>
             </Attribute>
             <Attribute>
                 <Name>seeAlso</Name>

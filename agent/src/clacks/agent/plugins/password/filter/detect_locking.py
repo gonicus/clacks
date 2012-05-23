@@ -11,6 +11,8 @@ class DetectAccountLockStatus(ElementFilter):
     def __init__(self, obj):
         super(DetectAccountLockStatus, self).__init__(obj)
 
-    def process(self, obj, key, valDict, pwdhash):
-        valDict[key]['value'] = [re.match(r'^{[^\}]+}!', pwdhash) != None]
+    def process(self, obj, key, valDict):
+        if len(valDict['userPassword']['in_value']):
+            pwdh = valDict['userPassword']['in_value'][0]
+            valDict[key]['value'] = [re.match(r'^{[^\}]+}!', pwdh) != None]
         return key, valDict

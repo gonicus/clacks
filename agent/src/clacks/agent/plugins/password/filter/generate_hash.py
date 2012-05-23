@@ -1,5 +1,7 @@
 from clacks.agent.objects.factory import STATUS_OK, STATUS_CHANGED
 from clacks.agent.objects.filter import ElementFilter
+from clacks.agent.plugins.password.manager import PasswordManager
+import re
 
 
 class GeneratePasswordHash(ElementFilter):
@@ -9,28 +11,30 @@ class GeneratePasswordHash(ElementFilter):
     def __init__(self, obj):
         super(GeneratePasswordHash, self).__init__(obj)
 
-    def process(self, obj, key, valDict, method, is_locked):
+    def process(self, obj, key, valDict):
 
-        is_locked = is_locked == "True"
+        # Get required informations to set a new password
+        is_locked = valDict['isLocked']['value'][0]
+        method = valDict['passwordMethod']['value'][0]
+        password = valDict[key]['value'][0]
 
-        # Get current pwdhash
-        pwdhash = ""
-        if valDict[key]['value']:
-            pwdhash = valDict[key]['value'][0]
+        # If no method was given we do not have to save a password
+        if not method:
+            raise Exception("No password method was given!")
+        else:
+            manager = PasswordManager.get_instance()
 
-        # Generate new pwd hash
-        if valDict[key]['status'] == STATUS_CHANGED:
-            #pwdhash = "{%s}213GERSDF2351" % (method,)
+            # Ask the password manager for a password-method that is
+            # responsible for the given hashing-method.
+            pwd_o = manager.get_method_by_method_type(method)
+            if pwd_o:
 
-            #TODO: Set passwort to secret - for testing
-            pwdhash = "{CRYPT}$1$nDvjGkcB$PwJQibqWqVZMwa9c4scgh1"
+                # Create a password hash and lock the account if necessary
+                pwd_str = pwd_o.generate_password_hash(password, method)
+                if is_locked:
+                    pwd_str = pwd_o.lock_account(pwd_str)
+                valDict[key]['value'] = [pwd_str]
+            else:
+                raise Exception("invalid password method given '%s'!" % method)
 
-        # Unlock account
-        if pwdhash:
-            if re.match(r'^{[^\}]+}!', pwdhash) and not is_locked:
-                pwdhash = re.sub(r'^({[^\}]+})!(.*)$',"\\1\\2", pwdhash)
-            elif not re.match(r'^{[^\}]+}!', pwdhash) and is_locked:
-                pwdhash = re.sub(r'^({[^\}]+})(.*)$',"\\1!\\2", pwdhash)
-
-        valDict[key]['value'] = [pwdhash]
         return key, valDict

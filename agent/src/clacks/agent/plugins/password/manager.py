@@ -19,9 +19,9 @@ class PasswordManager(object):
                 return methods[hash_name]
         return None
 
-    def get_method_by_hash(self, hash_name):
+    def get_method_by_method_type(self, method_type):
         methods = self.list_methods()
-        return methods[hash_name] if hash_name in methods else None
+        return methods[method_type] if method_type in methods.keys() else None
 
     def list_methods(self):
         if not PasswordManager.methods:
