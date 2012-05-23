@@ -19,6 +19,25 @@ class PasswordManager(Plugin):
     instance = None
     implements(IInterfaceHandler)
 
+    @Command(__help__=N_("Changes the used password enryption method"))
+    def setUserPasswordMethod(self, dn, method, password):
+        """
+        Changes the used password encryption method
+        """
+
+        # Try to detect the responsible password method-class
+        pwd_o = self.get_method_by_method_type(method)
+        if not pwd_o:
+            raise Exception("No password method found to generate hash of type '%s'!" % (method,))
+
+        # Generate the new password hash usind the detected method
+        pwd_str = pwd_o.generate_password_hash(password, method)
+
+        # Set the password and commit the changes
+        user = ObjectProxy(dn)
+        user.userPassword = pwd_str
+        user.commit()
+
     @Command(__help__=N_("Sets a new password for a user"))
     def setUserPassword(self, dn, password):
         """

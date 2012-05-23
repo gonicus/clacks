@@ -712,6 +712,7 @@ class ObjectFactory(object):
                             raise FactoryException("Method '%s' depends on unknown attribute '%s'!" % (command, value))
 
                     cr = PluginRegistry.getInstance('CommandRegistry')
+                    self.log.info("Executed %s.%s which invoked %s(...)" % (klass.__name__, methodName, command))
                     return cr.call(command, *parmList)
 
                 # Append the method to the list of registered methods for this

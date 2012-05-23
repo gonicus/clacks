@@ -27,7 +27,7 @@ class PasswordMethodCrypt(PasswordMethod):
         if re.match('^\$1\$', password_hash):
             return "crypt/md5"
 
-        if re.match('^(\$2\$|\$2a\$)', password_hash):
+        if re.match('^(\$2\$|\$2a|\$2x)', password_hash):
             return "crypt/blowfish"
 
         return None
@@ -64,9 +64,10 @@ class PasswordMethodCrypt(PasswordMethod):
 
         if method == "crypt/blowfish":
             salt = "$2a$07$";
-            CRYPT_SALT_LENGTH = 8 #TODO: ??
+            CRYPT_SALT_LENGTH = 22 #TODO: ??
             for i in range(CRYPT_SALT_LENGTH):
                 salt += random.choice(string.letters + string.digits)
             salt += "$"
+            print salt
 
         return u"{%s}%s" % (self.hash_name, crypt.crypt(new_password, salt))
