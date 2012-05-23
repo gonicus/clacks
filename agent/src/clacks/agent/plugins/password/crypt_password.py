@@ -6,14 +6,29 @@ import string
 import re
 
 class PasswordMethodCrypt(PasswordMethod):
+    """
+    Crypt password method.
+    It support the following hashing-methods:
+     * crypt/standard-des
+     * crypt/enhanced-des
+     * crypt/md5
+     * crypt/blowfish
+    """
+
     hash_name = "CRYPT"
 
     def is_responsible_for_password_hash(self, password_hash):
+        """
+        See PasswordMethod Interface for details
+        """
         if re.match("^\{%s\}" % self.hash_name, password_hash):
             return True
         return False
 
     def detect_hash_method(self, password_hash):
+        """
+        See PasswordMethod Interface for details
+        """
         if not self.is_responsible_for_password_hash(password_hash):
             return None
 
@@ -33,18 +48,33 @@ class PasswordMethodCrypt(PasswordMethod):
         return None
 
     def is_locked(self, password_hash):
+        """
+        See PasswordMethod Interface for details
+        """
         return re.match("\{[^\}]*\}!", password_hash) != None
 
     def lock_account(self, password_hash):
+        """
+        See PasswordMethod Interface for details
+        """
         return re.sub("\{([^\}]*)\}!?", "{\\1}!", password_hash)
 
     def unlock_account(self, password_hash):
+        """
+        See PasswordMethod Interface for details
+        """
         return re.sub("\{([^\}]*)\}!?", "{\\1}", password_hash)
 
     def get_hash_names(self):
+        """
+        See PasswordMethod Interface for details
+        """
         return ["crypt/standard-des", "crypt/enhanced-des", "crypt/md5", "crypt/blowfish"]
 
     def generate_password_hash(self, new_password, method=None):
+        """
+        See PasswordMethod Interface for details
+        """
 
         salt = ""
         if method == "crypt/standard-des":
