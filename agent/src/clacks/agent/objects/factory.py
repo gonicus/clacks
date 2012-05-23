@@ -665,65 +665,71 @@ class ObjectFactory(object):
                     for param in method['CommandParameters']['Value']:
                         cParams.append(str(param))
 
-                # Now add the method to the object
-                def funk(caller_object, *args, **kwargs):
-
-                    # Convert all given parameters into named arguments
-                    # The eases up things a lot.
-                    cnt = 0
-                    arguments = {}
-                    for mParam in mParams:
-                        mName, mType, mRequired, mDefault = mParam
-                        if mName in kwargs:
-                            arguments[mName] = kwargs[mName]
-                        elif cnt < len(args):
-                            arguments[mName] = args[cnt]
-                        elif mDefault:
-                            arguments[mName] = mDefault
-                        else:
-                            raise FactoryException("Missing parameter '%s'!" % mName)
-
-                        # Convert value to its required type.
-                        arguments[mName] = self.__attribute_type['String'].convert_to(mType,[arguments[mName]])[0]
-                        cnt = cnt + 1
-
-                    # Build the command-parameter list.
-                    # Collect all property values of this object to be able to fill in
-                    # placeholders in command-parameters later.
-                    propList = {}
-                    for key in props:
-                        if props[key]['value']:
-                            propList[key] = props[key]['value'][0]
-                        else:
-                            propList[key] = None
-
-                    # Add method-parameters passed to this method.
-                    for entry in arguments:
-                        propList[entry] = arguments[entry]
-
-                    # Fill in the placeholders of the command-parameters now.
-                    parmList = []
-                    for value in cParams:
-                        if value in propList:
-                            parmList.append(propList[value])
-                        elif value in ['dn']:
-                            parmList.append(getattr(caller_object, value))
-                        else:
-                            raise FactoryException("Method '%s' depends on unknown attribute '%s'!" % (command, value))
-
-                    cr = PluginRegistry.getInstance('CommandRegistry')
-                    self.log.info("Executed %s.%s which invoked %s(...)" % (klass.__name__, methodName, command))
-                    return cr.call(command, *parmList)
-
                 # Append the method to the list of registered methods for this
                 # object
                 self.log.debug("adding method: '%s'" % (methodName, ))
-                methods[methodName] = {'ref': funk}
+                methods[methodName] = {'ref': self.__create_class_method(klass, methodName, command, mParams, cParams, props)}
 
         # Set properties and methods for this object.
         setattr(klass, '__properties', props)
         setattr(klass, '__methods', methods)
         return klass
+
+    def __create_class_method(self, klass, methodName, command, mParams, cParams, props):
+        """
+        Creates a new klass-method for the current objekt.
+        """
+
+        # Now add the method to the object
+        def funk(caller_object, *args, **kwargs):
+
+            # Convert all given parameters into named arguments
+            # The eases up things a lot.
+            cnt = 0
+            arguments = {}
+            for mParam in mParams:
+                mName, mType, mRequired, mDefault = mParam
+                if mName in kwargs:
+                    arguments[mName] = kwargs[mName]
+                elif cnt < len(args):
+                    arguments[mName] = args[cnt]
+                elif mDefault:
+                    arguments[mName] = mDefault
+                else:
+                    raise FactoryException("Missing parameter '%s'!" % mName)
+
+                # Convert value to its required type.
+                arguments[mName] = self.__attribute_type['String'].convert_to(mType,[arguments[mName]])[0]
+                cnt = cnt + 1
+
+            # Build the command-parameter list.
+            # Collect all property values of this object to be able to fill in
+            # placeholders in command-parameters later.
+            propList = {}
+            for key in props:
+                if props[key]['value']:
+                    propList[key] = props[key]['value'][0]
+                else:
+                    propList[key] = None
+
+            # Add method-parameters passed to this method.
+            for entry in arguments:
+                propList[entry] = arguments[entry]
+
+            # Fill in the placeholders of the command-parameters now.
+            parmList = []
+            for value in cParams:
+                if value in propList:
+                    parmList.append(propList[value])
+                elif value in ['dn']:
+                    parmList.append(getattr(caller_object, value))
+                else:
+                    raise FactoryException("Method '%s' depends on unknown attribute '%s'!" % (command, value))
+
+            cr = PluginRegistry.getInstance('CommandRegistry')
+            self.log.info("Executed %s.%s which invoked %s(...)" % (klass.__name__, methodName, command))
+            return cr.call(command, *parmList)
+        return funk
 
     def __build_filter(self, element, out=None):
         """
