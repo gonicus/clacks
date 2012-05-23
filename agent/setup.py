@@ -98,6 +98,7 @@ setup(
         goto.network = clacks.agent.plugins.goto.network:NetworkUtils
         goto.client_service = clacks.agent.plugins.goto.client_service:ClientService
         inventory = clacks.agent.plugins.inventory.consumer:InventoryConsumer
+        password = clacks.agent.plugins.password.manager:PasswordManager
 
         [object.type]
         string = clacks.agent.objects.types.base:StringAttribute

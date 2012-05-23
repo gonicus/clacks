@@ -69,4 +69,4 @@ class PasswordMethodCrypt(PasswordMethod):
                 salt += random.choice(string.letters + string.digits)
             salt += "$"
 
-        return "{%s}%s" % (self.hash_name, crypt.crypt(new_password, salt))
+        return u"{%s}%s" % (self.hash_name, crypt.crypt(new_password, salt))

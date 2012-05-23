@@ -19,9 +19,10 @@ class DetectPasswordMethod(ElementFilter):
             pwd_method = pwd_m.detect_method_by_hash(pwdh)
 
             # Get the used hashing method
-            method = pwd_method.detect_hash_method(pwdh)
-            if not method:
-                valDict[key]['value'] = []
-            else:
-                valDict[key]['value'] = [method]
+            valDict[key]['value'] = []
+            if pwd_method:
+                method = pwd_method.detect_hash_method(pwdh)
+                if method:
+                    valDict[key]['value'] = [method]
+
         return key, valDict
