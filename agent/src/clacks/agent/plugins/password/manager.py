@@ -2,7 +2,7 @@
 import pkg_resources
 from clacks.common.components import Plugin
 from clacks.common.components.command import Command
-from clacks.common.utils import stripNs, N_
+from clacks.common.utils import N_
 from zope.interface import implements
 from clacks.common.handler import IInterfaceHandler
 from clacks.agent.objects.proxy import ObjectProxy
@@ -19,8 +19,17 @@ class PasswordManager(Plugin):
     instance = None
     implements(IInterfaceHandler)
 
+    @staticmethod
+    def get_instance():
+        """
+        Returns an instance of this object
+        """
+        if not PasswordManager.instance:
+            PasswordManager.instance = PasswordManager()
+        return PasswordManager.instance
+
     @Command(__help__=N_("Changes the used password enryption method"))
-    def setUserPasswordMethod(self, dn, method, password):
+    def setUserPasswordMethod(self, object_dn, method, password):
         """
         Changes the used password encryption method
         """
@@ -34,16 +43,16 @@ class PasswordManager(Plugin):
         pwd_str = pwd_o.generate_password_hash(password, method)
 
         # Set the password and commit the changes
-        user = ObjectProxy(dn)
+        user = ObjectProxy(object_dn)
         user.userPassword = pwd_str
         user.commit()
 
     @Command(__help__=N_("Sets a new password for a user"))
-    def setUserPassword(self, dn, password):
+    def setUserPassword(self, object_dn, password):
         """
         Set a new password for a user
         """
-        user = ObjectProxy(dn)
+        user = ObjectProxy(object_dn)
         method = user.passwordMethod
 
         # Try to detect the responsible password method-class
@@ -58,13 +67,10 @@ class PasswordManager(Plugin):
         user.userPassword = pwd_str
         user.commit()
 
-    @staticmethod
-    def get_instance():
-        if not PasswordManager.instance:
-            PasswordManager.instance = PasswordManager()
-        return PasswordManager.instance
-
     def detect_method_by_hash(self, hash_value):
+        """
+        Tries to find a password-method that is resposible for this kind of hashes
+        """
         methods = self.list_methods()
         for hash_name in methods:
             if(methods[hash_name].is_responsible_for_password_hash(hash_value)):
@@ -72,12 +78,24 @@ class PasswordManager(Plugin):
         return None
 
     def get_method_by_method_type(self, method_type):
+        """
+        Returns the passwod-method that is responsible for the given hashing-method
+
+        e.g. get_method_by_method_type('crypt/blowfish')
+        """
         methods = self.list_methods()
         return methods[method_type] if method_type in methods.keys() else None
 
     def list_methods(self):
+        """
+        Return a list of all useable password-hashing methods
+        """
+
+        # Build up a method hash map if not done before
         if not PasswordManager.methods:
             methods = {}
+
+            # Walk through password methods and build up a hash-map
             for entry in pkg_resources.iter_entry_points("password.methods"):
                 module = entry.load()()
                 names = module.get_hash_names()
@@ -85,6 +103,7 @@ class PasswordManager(Plugin):
                     raise Exception("invalid hash-type for password method '%s' given!" % module.__class__.__name__)
 
                 for name in names:
-                  methods[name] = module
+                    methods[name] = module
             PasswordManager.methods = methods
+
         return PasswordManager.methods
