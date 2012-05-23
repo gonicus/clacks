@@ -10,6 +10,9 @@ class DetectPasswordMethod(ElementFilter):
         super(DetectPasswordMethod, self).__init__(obj)
 
     def process(self, obj, key, valDict):
+        """
+        Detects what password-method was used to generate this hash.
+        """
 
         if len(valDict['userPassword']['in_value']):
             pwdh = valDict['userPassword']['in_value'][0]

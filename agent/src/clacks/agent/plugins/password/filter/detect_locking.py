@@ -12,6 +12,9 @@ class DetectAccountLockStatus(ElementFilter):
         super(DetectAccountLockStatus, self).__init__(obj)
 
     def process(self, obj, key, valDict):
+        """
+        Detects whether this password hash was marked as locked or not
+        """
         if len(valDict['userPassword']['in_value']):
             pwdh = valDict['userPassword']['in_value'][0]
             valDict[key]['value'] = [re.match(r'^{[^\}]+}!', pwdh) != None]
