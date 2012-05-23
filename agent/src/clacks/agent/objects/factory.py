@@ -666,7 +666,7 @@ class ObjectFactory(object):
                         cParams.append(str(param))
 
                 # Now add the method to the object
-                def funk(*args, **kwargs):
+                def funk(caller_object, *args, **kwargs):
 
                     # Convert all given parameters into named arguments
                     # The eases up things a lot.
@@ -706,6 +706,8 @@ class ObjectFactory(object):
                     for value in cParams:
                         if value in propList:
                             parmList.append(propList[value])
+                        elif value in ['dn']:
+                            parmList.append(getattr(caller_object, value))
                         else:
                             raise FactoryException("Method '%s' depends on unknown attribute '%s'!" % (command, value))
 

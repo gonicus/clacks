@@ -342,7 +342,10 @@ class Object(object):
 
         # The requested property-name seems to be a method, return the method reference.
         elif name in methods:
-            return methods[name]['ref']
+
+            def m_call(*args, **kwargs):
+                methods[name]['ref'](self, *args, **kwargs)
+            return m_call
 
         else:
             raise AttributeError("no such property '%s'" % name)
@@ -632,7 +635,7 @@ class Object(object):
         """
 
         # Search for replaceable patterns in the process-list.
-        fltr = self.__fillInPlaceholders(fltr)
+        fltr = self.__fillInPlaceholders(fltr, prop)
 
         # This is our process-line pointer it points to the process-list line
         #  we're executing at the moment
@@ -663,10 +666,7 @@ class Object(object):
                     args.append(entry)
 
                 # Process filter and keep results
-                try:
-                    key, prop = (curline['filter']).process(*args)
-                except Exception as e:
-                    raise ObjectException("Failed to execute filter '%s' for attribute '%s': %s" % (fname, key, str(e)))
+                key, prop = (curline['filter']).process(*args)
 
                 # Ensure that the processed data is still valid.
                 # Filter may mess things up and then the next cannot process correctly.
@@ -733,19 +733,19 @@ class Object(object):
         self.log.debug(" <- FILTER ENDED")
         return prop
 
-    def __fillInPlaceholders(self, fltr):
+    def __fillInPlaceholders(self, fltr, props):
         """
         This method fill in placeholder into in- and out-filters.
         """
 
         # Collect all property values
         propList = {}
-        for key in self.myProperties:
-            if self.myProperties[key]['multivalue']:
-                propList[key] = self.myProperties[key]['value']
+        for key in props:
+            if props[key]['multivalue']:
+                propList[key] = props[key]['value']
             else:
-                if self.myProperties[key]['value'] and len(self.myProperties[key]['value']):
-                    propList[key] = self.myProperties[key]['value'][0]
+                if props[key]['value'] and len(props[key]['value']):
+                    propList[key] = props[key]['value'][0]
                 else:
                     propList[key] = None
 
