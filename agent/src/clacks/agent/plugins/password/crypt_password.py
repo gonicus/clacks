@@ -93,11 +93,10 @@ class PasswordMethodCrypt(PasswordMethod):
             salt += "$"
 
         if method == "crypt/blowfish":
-            salt = "$2a$07$";
+            salt = "$2a$07$"
             CRYPT_SALT_LENGTH = 22 #TODO: ??
             for i in range(CRYPT_SALT_LENGTH):
                 salt += random.choice(string.letters + string.digits)
             salt += "$"
-            print salt
 
         return u"{%s}%s" % (self.hash_name, crypt.crypt(new_password, salt))
