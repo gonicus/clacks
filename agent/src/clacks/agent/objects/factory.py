@@ -345,6 +345,7 @@ class ObjectFactory(object):
                                         " - multiple base objects are not supported" % (dn, id_base, name))
                             id_base = name
 
+        # .. then find all active extensions
         if uuid:
             for name, info in self.__object_types.items():
                 be = ObjectBackendRegistry.getBackend(info['backend'])
