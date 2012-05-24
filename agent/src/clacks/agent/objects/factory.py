@@ -322,24 +322,36 @@ class ObjectFactory(object):
         id_extend = []
 
         # First, find all base objects
+        uuid = None
         for name, info in self.__object_types.items():
             be = ObjectBackendRegistry.getBackend(info['backend'])
             classr = self.__xml_defs[name]
             fixed_rdn = classr.FixedRDN.text if 'FixedRDN' in classr.__dict__ else None
 
-            if be.identify(dn, info['backend_attrs'], fixed_rdn):
+            if info['base']:
+                uuid = be.dn2uuid(dn);
+                if be.identify(dn, info['backend_attrs'], fixed_rdn):
 
-                if info['base']:
-                    if fixed_rdn:
-                        if id_base_fixed:
-                            raise FactoryException("looks like '%s' beeing '%s' and '%s' at the same time - multiple base objects are not supported" % (dn, id_base, name))
-                        id_base_fixed = name
+                    if info['base']:
+                        if fixed_rdn:
+                            if id_base_fixed:
+                                raise FactoryException("looks like '%s' beeing '%s' and '%s' at the same time" + \
+                                        " - multiple base objects are not supported" % (dn, id_base, name))
+                            id_base_fixed = name
 
-                    else:
-                        if id_base:
-                            raise FactoryException("looks like '%s' beeing '%s' and '%s' at the same time - multiple base objects are not supported" % (dn, id_base, name))
-                        id_base = name
-                else:
+                        else:
+                            if id_base:
+                                raise FactoryException("looks like '%s' beeing '%s' and '%s' at the same time" + \
+                                        " - multiple base objects are not supported" % (dn, id_base, name))
+                            id_base = name
+
+        if uuid:
+            for name, info in self.__object_types.items():
+                be = ObjectBackendRegistry.getBackend(info['backend'])
+                classr = self.__xml_defs[name]
+                fixed_rdn = classr.FixedRDN.text if 'FixedRDN' in classr.__dict__ else None
+                if not info['base'] and (be.identify(dn, info['backend_attrs'], fixed_rdn) or \
+                        be.identify_by_uuid(uuid, info['backend_attrs'])):
                     id_extend.append(name)
 
         if id_base or id_base_fixed:

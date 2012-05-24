@@ -13,6 +13,9 @@ class NULL(ObjectBackend):
     def identify(self, dn, params, fixed_rdn=None):
         return False
 
+    def identify_by_uuid(self, uuid, params):
+        return False
+
     def exists(self, misc):
         return False
 

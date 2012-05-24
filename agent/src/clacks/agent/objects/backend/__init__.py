@@ -98,6 +98,9 @@ class ObjectBackend(object):
     def identify(self, dn, params, fixed_rdn=None):
         raise NotImplementedError("object backend is missing identify()")
 
+    def identify_by_uuid(self, dn, params):
+        raise NotImplementedError("object backend is missing identify_by_uuid()")
+
     def query(self, base, scope, params, fixed_rdn=None):
         raise NotImplementedError("object backend is missing query()")
 

@@ -63,8 +63,10 @@ class LDAP(ObjectBackend):
             for lvalue in items[key]:
                 lcnv.append(cnv(lvalue))
             items[key] = lcnv
-
         return items
+
+    def identify_by_uuid(self, uuid, params):
+        return False
 
     def identify(self, dn, params, fixed_rdn=None):
         # Check for special RDN attribute

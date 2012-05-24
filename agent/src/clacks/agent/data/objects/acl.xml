@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Objects xmlns="http://www.gonicus.de/Objects">
+	<Object>
+		<Name>Acl</Name>
+		<DisplayName>Acl</DisplayName>
+		<Description>Acl extension</Description>
+		<BaseObject>false</BaseObject>
+		<Backend>JSON</Backend>
+    <BackendParameters>
+      <Backend type="Acl">JSON</Backend>
+    </BackendParameters>
+    <Attributes>
+      <Attribute>
+        <Name>topic</Name>
+        <Description></Description>
+        <Type>UnicodeString</Type>
+      </Attribute>
+    </Attributes>
+		<Extends>
+			<Value>User</Value>
+		</Extends>
+	</Object>
+</Objects>
+

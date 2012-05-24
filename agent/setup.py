@@ -114,6 +114,7 @@ setup(
         [object.backend]
         ldap = clacks.agent.objects.backend.back_ldap:LDAP
         null = clacks.agent.objects.backend.back_null:NULL
+        json = clacks.agent.objects.backend.back_json:JSON
 
         [object.comparator]
         like = clacks.agent.objects.comparator.strings:Like
