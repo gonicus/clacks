@@ -18,6 +18,8 @@ class JSON(ObjectBackend):
 
         # Read storage path from config
         self._file_path = self.env.config.get("json.database_file", None)
+        if not self._file_path:
+            raise Exception("no json.database_file found in config file")
 
         # Create a json file on demand
         if not os.path.exists(self._file_path):
