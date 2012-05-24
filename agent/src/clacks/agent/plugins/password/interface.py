@@ -23,12 +23,6 @@ class PasswordMethod(object):
         """
         raise NotImplementedError("password method is not capable of locking accounts")
 
-    def is_configurable(self):
-        """
-        Returns whether this password method is configurable or not
-        """
-        return False
-
     def get_hash_names(self):
         """
         Returns a list of hashing-mechanisms that are supported by the password method.
