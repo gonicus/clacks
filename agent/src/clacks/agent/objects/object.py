@@ -502,22 +502,23 @@ class Object(object):
                 be.update(self.uuid, toStore[p_backend])
 
             # Eventually the DN has changed
-            dn = be.uuid2dn(self.uuid)
+            if self._base_object:
+                dn = be.uuid2dn(self.uuid)
 
-            # Take DN for newly created objects
-            if self._mode == "create":
-                if self._base_object:
+                # Take DN for newly created objects
+                if self._mode == "create":
+                    if self._base_object:
+                        obj.dn = dn
+
+                elif dn != obj.dn:
+
+                    self.update_dn_refs(dn)
+
                     obj.dn = dn
+                    if self._base_object:
+                        zope.event.notify(ObjectChanged("post move", obj))
 
-            elif dn != obj.dn:
-
-                self.update_dn_refs(dn)
-
-                obj.dn = dn
-                if self._base_object:
-                    zope.event.notify(ObjectChanged("post move", obj))
-
-                obj.orig_dn = dn
+                    obj.orig_dn = dn
 
         # ... then walk thru the remaining ones
         for backend, data in toStore.items():
