@@ -12,6 +12,20 @@
 
         <Methods>
             <Method>
+                <Name>lock</Name>
+                <Command>lockAccountPassword</Command>
+                <CommandParameters>
+                    <Value>dn</Value>
+                </CommandParameters>
+            </Method>
+            <Method>
+                <Name>unlock</Name>
+                <Command>unlockAccountPassword</Command>
+                <CommandParameters>
+                    <Value>dn</Value>
+                </CommandParameters>
+            </Method>
+            <Method>
                 <Name>notify</Name>
                 <MethodParameters>
                     <MethodParameter>

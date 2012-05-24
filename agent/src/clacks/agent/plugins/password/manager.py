@@ -28,6 +28,54 @@ class PasswordManager(Plugin):
             PasswordManager.instance = PasswordManager()
         return PasswordManager.instance
 
+    @Command(__help__=N_("Locks the account password for the given DN"))
+    def lockAccountPassword(self, object_dn):
+        """
+        Locks the account password for the given DN
+        """
+
+        # Get the object for the given dn
+        user = ObjectProxy(object_dn)
+
+        # Check if there is a userPasswort available and set
+        if not "userPassword" in user.get_attributes():
+            raise Exception("object does not support userPassword attributes!")
+        if not user.userPassword:
+            raise Exception("no password set, cannot lock it")
+
+        # Try to detect the responsible password method-class
+        pwd_o = self.detect_method_by_hash(user.userPassword)
+        if not pwd_o:
+            raise Exception("Could not identify password method!")
+
+        # Lock the hash and save it
+        user.userPassword = pwd_o.lock_account(user.userPassword)
+        user.commit()
+
+    @Command(__help__=N_("Unlocks the account password for the given DN"))
+    def unlockAccountPassword(self, object_dn):
+        """
+        Unlocks the account password for the given DN
+        """
+
+        # Get the object for the given dn and its used password method
+        user = ObjectProxy(object_dn)
+
+        # Check if there is a userPasswort available and set
+        if not "userPassword" in user.get_attributes():
+            raise Exception("object does not support userPassword attributes!")
+        if not user.userPassword:
+            raise Exception("no password set, cannot lock it")
+
+        # Try to detect the responsible password method-class
+        pwd_o = self.detect_method_by_hash(user.userPassword)
+        if not pwd_o:
+            raise Exception("Could not identify password method!")
+
+        # Unlock the hash and save it
+        user.userPassword = pwd_o.unlock_account(user.userPassword)
+        user.commit()
+
     @Command(__help__=N_("Changes the used password enryption method"))
     def setUserPasswordMethod(self, object_dn, method, password):
         """
@@ -67,9 +115,16 @@ class PasswordManager(Plugin):
         user.userPassword = pwd_str
         user.commit()
 
+    @Command(__help__=N_("List all password hashing-methods"))
+    def listPasswordMethods(self):
+        """
+        Returns a list of all available password methods
+        """
+        return self.list_methods().keys()
+
     def detect_method_by_hash(self, hash_value):
         """
-        Tries to find a password-method that is resposible for this kind of hashes
+        Tries to find a password-method that is responsible for this kind of hashes
         """
         methods = self.list_methods()
         for hash_name in methods:
