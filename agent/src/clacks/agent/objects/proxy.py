@@ -440,7 +440,7 @@ class ObjectProxy(object):
             cback = self.__factory.getObjectTypes()[ctype]['backend']
             if cback != p_backend:
                 if not cback in foreign_backends:
-                    foreign_backends = []
+                    foreign_backends[cback] = []
                 foreign_backends[cback].append(cdn)
 
         # Only keep the first per backend that is close to the root
