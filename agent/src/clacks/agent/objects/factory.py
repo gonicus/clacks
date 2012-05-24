@@ -128,6 +128,12 @@ class ObjectFactory(object):
     def getAttributeTypes(self):
         return(self.__attribute_type)
 
+    def getObjectProperties(self, name):
+        if not name in self.__classes:
+            self.__classes[name] = self.__build_class(name)
+
+        return getattr(self.__classes[name], "__properties")
+
     def getXMLDefinitionsCombined(self):
         """
         Returns a complete XML of all defined objects.
@@ -472,8 +478,8 @@ class ObjectFactory(object):
 
 
         # Collect Backend attributes per Backend
-        back_attrs = {}
         classr = self.__xml_defs[name]
+        back_attrs = {str(classr.Backend): {}}
         if "BackendParameters" in classr.__dict__:
             for entry in classr["BackendParameters"]:
                 back_attrs[str(entry.Backend)] = entry.Backend.attrib
@@ -982,7 +988,7 @@ class ObjectFactory(object):
         return ObjectFactory.__instance
 
     def __get_backend_parameters(self, obj):
-        backend_attrs = None
+        backend_attrs = {}
 
         if "BackendParameters" in obj.__dict__:
             for bp in obj.BackendParameters.Backend:
