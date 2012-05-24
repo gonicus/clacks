@@ -131,7 +131,7 @@ class ObjectProxy(object):
             if self.__extensions[ext]:
                 props = self.__extensions[ext].getProperties()
             else:
-                props = self.__factory.getObject(ext, dn_or_base, mode=base_mode).getProperties()
+                props = self.__factory.getObjectProperties(ext)
             for attr in [n for n, o in props.items() if not o['foreign']]:
                 self.__attributes.append(attr)
 
@@ -453,7 +453,6 @@ class ObjectProxy(object):
 
         for extension in [ext for tmp, ext in self.__extensions.iteritems() if ext]:
             extension.commit()
-
 
         # Skip further actions if we're in create mode
         if self.__base_mode == "create":
