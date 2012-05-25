@@ -38,6 +38,11 @@
         <Type>AclAction</Type>
         <BackendType>UnicodeString</BackendType>
         <MultiValue>true</MultiValue>
+        <Validators>
+          <Condition>
+            <Name>IsAclAction</Name>
+          </Condition>
+        </Validators>
       </Attribute>
     </Attributes>
 		<BaseObject>false</BaseObject>

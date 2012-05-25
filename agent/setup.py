@@ -128,6 +128,7 @@ setup(
         isvalidhostname = clacks.agent.plugins.misc.filter_validators:IsValidHostName
         isexistingdn = clacks.agent.plugins.misc.filter_validators:IsExistingDN
         isexistingdnoftype = clacks.agent.plugins.misc.filter_validators:IsExistingDnOfType
+        is_acl_action = clacks.agent.objects.comparator.acl_actions:IsAclAction
 
         [object.filter]
         concatstring = clacks.agent.objects.filter.strings:ConcatString
