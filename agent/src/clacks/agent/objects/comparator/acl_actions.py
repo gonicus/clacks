@@ -21,8 +21,6 @@ class IsAclAction(ElementComparator):
         # Check each property value
         for item in value:
 
-            print item
-
             # If a 'rolename' is we do not allow other dict, keys
             if "rolename" in item and len(item) != 1:
                 keys = item.keys()
@@ -31,7 +29,7 @@ class IsAclAction(ElementComparator):
                 return False
 
             # If a 'rolename' is we do not allow other dict, keys
-            if "rolename" in item and not isinstance(item["rolename"], str):
+            if "rolename" in item and not type(item["rolename"]) in [str, unicode]:
                 errors.append(_("expected attribute '%s' to be of type '%s' but found '%s!'" % ("rolename", str, type(item["rolename"]))))
                 return False
 
@@ -47,10 +45,10 @@ class IsAclAction(ElementComparator):
                     return False
 
                 # Check for the correct attribute types
-                if not isinstance(item["topic"], str):
+                if not type(item["topic"]) in [str, unicode]:
                     errors.append(_("expected attribute '%s' to be of type '%s' but found '%s!'" % ("topic", str, type(item["topic"]))))
                     return False
-                if not isinstance(item["topic"], str):
+                if not type(item["acl"]) in [str, unicode]:
                     errors.append(_("expected attribute '%s' to be of type '%s' but found '%s!'" % ("topic", str, type(item["topic"]))))
                     return False
 
@@ -69,7 +67,7 @@ class IsAclAction(ElementComparator):
                     errors.append(_("invalid attributes given '%s', allowed are 'rolename, topic, acl, options'!" % (', '.join(keys))))
                     return False
 
-                if "options" in item and type(item['options']) != dict:
+                if "options" in item and not type(item["options"]) in [str, unicode]:
                     errors.append(_("expected attribute '%s' to be of type '%s' but found '%s!'" % ("options", dict, type(item["options"]))))
                     return False
 
