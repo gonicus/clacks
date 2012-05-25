@@ -10,9 +10,34 @@
     </BackendParameters>
     <Attributes>
       <Attribute>
-        <Name>topic</Name>
+        <Name>name</Name>
         <Description></Description>
         <Type>UnicodeString</Type>
+      </Attribute>
+      <Attribute>
+        <Name>scope</Name>
+        <Description></Description>
+        <Type>String</Type>
+        <Default>sub</Default>
+        <Values>
+          <Value>one</Value>
+          <Value>sub</Value>
+          <Value>psub</Value>
+          <Value>reset</Value>
+        </Values>
+        <Mandatory>true</Mandatory>
+      </Attribute>
+      <Attribute>
+        <Name>priority</Name>
+        <Description></Description>
+        <Type>Integer</Type>
+      </Attribute>
+      <Attribute>
+        <Name>actions</Name>
+        <Description></Description>
+        <Type>AclAction</Type>
+        <BackendType>UnicodeString</BackendType>
+        <MultiValue>true</MultiValue>
       </Attribute>
     </Attributes>
 		<BaseObject>false</BaseObject>
