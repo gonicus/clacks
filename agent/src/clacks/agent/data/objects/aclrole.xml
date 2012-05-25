@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Objects xmlns="http://www.gonicus.de/Objects">
+	<Object>
+		<Name>AclRole</Name>
+		<DisplayName>AclRole</DisplayName>
+		<Description>AclRole</Description>
+		<Backend>JSON</Backend>
+    <BackendParameters>
+      <Backend type="AclRole">JSON</Backend>
+    </BackendParameters>
+    <Attributes>
+      <Attribute>
+        <Name>topic</Name>
+        <Description></Description>
+        <Type>UnicodeString</Type>
+      </Attribute>
+    </Attributes>
+		<BaseObject>false</BaseObject>
+		<Extends>
+			<Value>OrganizationalRole</Value>
+		</Extends>
+	</Object>
+</Objects>
+

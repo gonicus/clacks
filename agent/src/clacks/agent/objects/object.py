@@ -377,6 +377,9 @@ class Object(object):
         # Check if we are allowed to create this base object on the given base
         if self._base_object and self._mode == "create":
             base_type = self.get_object_type_by_dn(self.dn)
+            if not base_type:
+                raise ObjectException("unable to detect type of base-object '%s'" % (self.dn,))
+
             if self.__class__.__name__ not in self._objectFactory.getAllowedSubElementsForObject(base_type):
                 raise ObjectException("objects of type '%s' cannot be added as sub-objects to '%s'" % (self.__class__.__name__, base_type))
 

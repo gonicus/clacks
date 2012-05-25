@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Objects xmlns="http://www.gonicus.de/Objects">
+	<Object>
+		<Name>OrganizationalRole</Name>
+		<DisplayName>OrganizationalRole</DisplayName>
+		<Description>RFC2256: an organizational role</Description>
+		<Backend>LDAP</Backend>
+    <BackendParameters>
+      <Backend objectClasses="organizationalRole" RDN="cn">LDAP</Backend>
+    </BackendParameters>
+    <Attributes>
+      <Attribute>
+        <Name>cn</Name>
+        <Description></Description>
+        <Type>UnicodeString</Type>
+        <MultiValue>false</MultiValue>
+        <Mandatory>true</Mandatory>
+      </Attribute>
+      <Attribute>
+        <Name>description</Name>
+        <Description></Description>
+        <Type>UnicodeString</Type>
+        <MultiValue>false</MultiValue>
+        <Mandatory>false</Mandatory>
+      </Attribute>
+    </Attributes>
+    <BaseObject>true</BaseObject>
+  </Object>
+</Objects>
+
