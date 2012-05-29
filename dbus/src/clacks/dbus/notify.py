@@ -21,13 +21,12 @@ RETURN_ABORTED = 0b10000000
 RETURN_TIMEDOUT = 0b1000000
 RETURN_CLOSED = 0b0
 
+
 class Notify(object):
     """
     Allows to send desktop notifications to users.
     """
-    __actions = None
     __loop = None
-    __recurrenceTime = 60
     quiet = False
     verbose = False
     children = []
@@ -35,19 +34,6 @@ class Notify(object):
     def __init__(self, quiet=False, verbose=False):
         self.quiet = quiet
         self.verbose = verbose
-
-    def __callback(self, notification=None, action=None):
-        """
-        __callback acts on notification actions, if actions were defined.
-        """
-        # Get the selected action id, the first is 0 so we just add +1 to it,
-        # to get a more useable return code.
-        self.__res = (self.__actions.index(action) + 1) | RETURN_CLOSED
-
-        if self.verbose:
-            print "%s: Action selected (%s) " % (str(os.getpid()), str(action))
-
-        self.__close()
 
     def __close(self, *args, **kwargs):
 
@@ -57,53 +43,16 @@ class Notify(object):
         if self.verbose:
             print "%s: Closing" % (str(os.getpid()))
 
-        if self.__notify:
-            self.__notify.close()
-
         if self.__loop:
-            self.__loop.quit()
-
-    def notification_closed(self, *args, **kwargs):
-        """
-        notification_closed is called whenever a notification is closed
-        If no action was selected from the given ones, then show the
-        notification again.
-        """
-        # Is there a valid result selected? If not, then show the dialog again.
-        if self.__actions and self.__res == -1:
-            try:
-                if self.verbose:
-                    print "%s: Notification was cancelled, showing it again in (%s) second" % (
-                        str(os.getpid()), str(self.__recurrenceTime))
-
-                time.sleep(self.__recurrenceTime)
-                self.__notify.show()
-            except KeyboardInterrupt:
-
-                if self.verbose:
-                    print "%s: Keyboard interrupt. CLOSING" % (str(os.getpid()))
-
-                self.__res = RETURN_ABORTED
-                self.__close()
-
-        else:
             self.__loop.quit()
 
     def send(self, title, message, dbus_session,
         icon="",
         timeout=5000,
-        recurrence=60,
-        actions=[],
         **kwargs):
         """
-        send    initiates the notification with the given option details.
-        If actions were specified then it hooks in the MainLoop to keep
-        the programm running till an action was selected or the programm
-        was interrupted.
+        send initiates the notification with the given option details.
         """
-
-        # Keep 'actions' value to be able to act on callbacks later
-        self.__actions = actions
 
         # Prepare timeout, use seconds not milliseconds
         if timeout != 5000:
@@ -143,41 +92,12 @@ class Notify(object):
 
             self.notifyid = notifyservice.Notify("Clacks Client", notifyid, icon, title, message, [], {}, timeout)
 
-            # Set up notification details like actions
-            #if actions:
-            #    notify.set_timeout(0)
-            #    self.__recurrenceTime = recurrence
-            #    for action in actions:
-            #        notify.add_action(action, action, self.__callback)
-
         return RETURN_CLOSED
-        # Register provided actions and then hook in the main loop
-        #if not actions:
-        #   self.__res = RETURN_CLOSED
-        #else:
-
-        #    # Register callback for 'NotificationClosed' event on the dbus.
-        #    dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-        #    bus = dbus.SessionBus()
-        #    bus.add_signal_receiver(self.notification_closed,
-        #        dbus_interface="org.freedesktop.Notifications", signal_name="NotificationClosed")
-
-        #    # Hook in the main loop, to keep the programm running till an action
-        #    # was selected or the application was closed.
-        #    self.__loop = gobject.MainLoop()
-        #    try:
-        #        self.__loop.run()
-        #    except KeyboardInterrupt:
-        #        self.__res = RETURN_ABORTED
-        #        self.__close()
-
-        #return self.__res
 
     def send_to_user(self, title, message, user,
         icon="dialog-information",
-        actions=[],
         timeout=5000,
-        recurrence=60, **kwargs):
+        **kwargs):
 
         """
         Sends a notification message to a given user.
@@ -242,9 +162,8 @@ class Notify(object):
                                 str(os.getpid()), str(info[2]), str(info[3]), str(gids))
 
                         # Try to send the notification now.
-                        res = self.send(title, message, actions=actions, icon=icon,
-                            timeout=timeout, recurrence=recurrence,
-                            dbus_session=d_session)
+                        res = self.send(title, message, icon=icon,
+                            timeout=timeout, dbus_session=d_session)
 
                         # Exit the cild process
                         sys.exit(res)
@@ -334,10 +253,6 @@ def main():
         default=False, help="don't print status messages to stdout")
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose",
         default=False, help="Run in verbose mode")
-    parser.add_option("-a", "--actions", dest="actions",
-        help="A list of actions the notification is displayed. E.g. -a 'yes,no'")
-    parser.add_option("-r", "--recurrence-time", dest="recurrence", type="float",
-        help="Recurrence time of unanswered actions notifications.", default=60)
 
     # Check if at least 'message' and 'title' are given.
     (options, args) = parser.parse_args()
@@ -345,15 +260,6 @@ def main():
     if len(args) != 2:
         parser.print_help()
     else:
-
-        # Prepare actions
-        actions = []
-        if options.actions:
-            actions = options.actions.split(',')
-
-        # Check if actions and timeout are given, timeout will be ignored in this case.
-        if options.actions and options.timeout and not options.quiet:
-            print "The options 'timeout' and 'actions' cannot be combined, timeout will be ingored!"
 
         # Check if we've to send the message to all users instead of just one.
         if options.to_all:
@@ -378,8 +284,8 @@ def main():
         n = Notify(options.quiet, options.verbose)
 
         # Call the send method for our notification instance
-        sys.exit(n.send_to_user(args[0], args[1], user=options.user, actions=actions, icon=options.icon,
-            timeout=options.timeout, recurrence=options.recurrence))
+        sys.exit(n.send_to_user(args[0], args[1], user=options.user, icon=options.icon,
+            timeout=options.timeout))
 
 
 if __name__ == '__main__':

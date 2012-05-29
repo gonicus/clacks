@@ -52,10 +52,10 @@ class Notify(Plugin):
             self.clacks_dbus = self.bus.get_object('org.clacks', '/org/clacks/notify')
             ccr = PluginRegistry.getInstance('ClientCommandRegistry')
             ccr.register("notify", 'Notify.notify', [], \
-                    ['user','title','message','timeout','icon','actions','recurrence'], \
+                    ['user', 'title', 'message', 'timeout', 'icon'], \
                     'Sent a notification to a given user')
             ccr.register("notify_all", 'Notify.notify_all', [], \
-                    ['title','message','timeout','icon','actions','recurrence'], \
+                    ['title', 'message', 'timeout', 'icon'], \
                     'Sent a notification to a given user')
             amcs = PluginRegistry.getInstance('AMQPClientService')
             amcs.reAnnounce()
@@ -75,11 +75,7 @@ class Notify(Plugin):
             else:
                 self.log.info("no dbus connection")
 
-    def notify(self, user, title, message,
-        timeout=0,
-        icon="dialog-information",
-        actions="",
-        recurrence=60):
+    def notify(self, user, title, message, timeout=0, icon="dialog-information"):
 
         # If the icon is base64 encoded, save it as a hash filename to
         # our home directory
@@ -98,18 +94,13 @@ class Notify(Plugin):
 
         # Send notification and keep return code
         o = self.clacks_dbus._notify(user, title, message, timeout,
-            icon, actions, recurrence, dbus_interface="org.clacks")
+            icon, dbus_interface="org.clacks")
         return(int(o))
 
-    def notify_all(self, title, message,
-        timeout=0,
-        icon="dialog-information",
-        actions="",
-        recurrence=60):
-
-        """ Sent a notification to all users on a machine """
+    def notify_all(self, title, message, timeout=0, icon="dialog-information"):
+        """ Send a notification to all users on a machine """
 
         # Send notification and keep return code
         o = self.clacks_dbus._notify_all(title, message, timeout,
-            icon, actions, recurrence, dbus_interface="org.clacks")
+            icon, dbus_interface="org.clacks")
         return(int(o))
