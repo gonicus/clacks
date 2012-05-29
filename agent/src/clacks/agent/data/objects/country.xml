@@ -49,8 +49,8 @@
 			<Type>Domain</Type>
 			<Type>Country</Type>
 			<Type>SambaDomain</Type>
-      <Type>DeviceContainer</Type>
-      <Type>OrganizationalRoleContainer</Type>
+			<Type>DeviceContainer</Type>
+			<Type>OrganizationalRoleContainer</Type>
 		</Container>
 		<BaseObject>true</BaseObject>
 	</Object>
