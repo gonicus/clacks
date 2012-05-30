@@ -1,69 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Objects xmlns="http://www.gonicus.de/Objects">
-	<Object>
-		<Name>PosixGroup</Name>
-		<Description>A posix group</Description>
-		<DisplayName>Posix group</DisplayName>
-		<BackendParameters>
-			<Backend objectClasses="posixGroup"
-				RDN="cn">LDAP</Backend>
-		</BackendParameters>
-		<Backend>LDAP</Backend>
+  <Object>
+    <Name>PosixGroup</Name>
+    <Description>A posix group</Description>
+    <DisplayName>Posix group</DisplayName>
+    <BackendParameters>
+      <Backend objectClasses="posixGroup"
+        RDN="cn">LDAP</Backend>
+    </BackendParameters>
+    <Backend>LDAP</Backend>
 
-		<Attributes>
-                        <Attribute>
-                                <Name>cn</Name>
-                                <Description>Common Name</Description>
-                                <Type>UnicodeString</Type>
-                                <MultiValue>false</MultiValue>
-                                <Mandatory>true</Mandatory>
-                        </Attribute>
-                        <Attribute>
-                                <Name>description</Name>
-                                <Description>Description</Description>
-                                <Type>UnicodeString</Type>
-                                <MultiValue>false</MultiValue>
-                                <Mandatory>false</Mandatory>
-                        </Attribute>
-                        <Attribute>
-                                <Name>gidNumber</Name>
-                                <Description>The primary group number  number</Description>
-                                <Type>Integer</Type>
-                                <MultiValue>false</MultiValue>
-                                <Mandatory>true</Mandatory>
-                                <Default>-1</Default>
-                                <OutFilter>
-                                        <FilterChain>
-                                                <FilterEntry>
-                                                        <Filter>
-                                                                <Name>GetNextID</Name>
-                                                                <Param>gidNumber</Param>
-                                                        </Filter>
-                                                </FilterEntry>
-                                        </FilterChain>
-                                </OutFilter>
- 				<Validators>
-					<Condition>
-						<Name>Smaller</Name>
-						<Param>65500</Param>
-					</Condition>
-                                </Validators>
-                        </Attribute>
-                        <Attribute>
-                                <Name>memberUid</Name>
-                                <Description>A list of member-uids</Description>
-                                <Type>String</Type>
-                                <MultiValue>true</MultiValue>
-				<Mandatory>false</Mandatory>
-				<References>
-					<Reference>
-						<Object>PosixUser</Object>
-						<Attribute>uid</Attribute>
-					</Reference>
-				</References>
-                        </Attribute>
-                </Attributes>
-		<BaseObject>true</BaseObject>
-	</Object>
+    <Attributes>
+      <Attribute>
+        <Name>cn</Name>
+        <Description>Common Name</Description>
+        <Type>UnicodeString</Type>
+        <MultiValue>false</MultiValue>
+        <Mandatory>true</Mandatory>
+      </Attribute>
+      <Attribute>
+        <Name>description</Name>
+        <Description>Description</Description>
+        <Type>UnicodeString</Type>
+        <MultiValue>false</MultiValue>
+        <Mandatory>false</Mandatory>
+      </Attribute>
+      <Attribute>
+        <Name>gidNumber</Name>
+        <Description>The primary group number  number</Description>
+        <Type>Integer</Type>
+        <MultiValue>false</MultiValue>
+        <Mandatory>true</Mandatory>
+        <Default>-1</Default>
+        <OutFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>GetNextID</Name>
+                <Param>gidNumber</Param>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </OutFilter>
+        <Validators>
+          <Condition>
+            <Name>Smaller</Name>
+            <Param>65500</Param>
+          </Condition>
+        </Validators>
+      </Attribute>
+      <Attribute>
+        <Name>memberUid</Name>
+        <Description>A list of member-uids</Description>
+        <Type>String</Type>
+        <MultiValue>true</MultiValue>
+        <Mandatory>false</Mandatory>
+        <References>
+          <Reference>
+            <Object>PosixUser</Object>
+            <Attribute>uid</Attribute>
+          </Reference>
+        </References>
+      </Attribute>
+    </Attributes>
+    <BaseObject>true</BaseObject>
+  </Object>
 </Objects>
-

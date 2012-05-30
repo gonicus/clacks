@@ -11,9 +11,41 @@
     </BackendParameters>
     <Attributes>
       <Attribute>
-        <Name>topic</Name>
+        <Name>members</Name>
+        <Description>A list of members</Description>
+        <Type>String</Type>
+        <MultiValue>true</MultiValue>
+        <Mandatory>false</Mandatory>
+      </Attribute>
+      <Attribute>
+        <Name>scope</Name>
         <Description></Description>
-        <Type>UnicodeString</Type>
+        <Type>String</Type>
+        <Default>sub</Default>
+        <Values>
+          <Value>one</Value>
+          <Value>sub</Value>
+          <Value>psub</Value>
+          <Value>reset</Value>
+        </Values>
+        <Mandatory>true</Mandatory>
+      </Attribute>
+      <Attribute>
+        <Name>priority</Name>
+        <Description></Description>
+        <Type>Integer</Type>
+      </Attribute>
+      <Attribute>
+        <Name>actions</Name>
+        <Description></Description>
+        <Type>AclAction</Type>
+        <BackendType>UnicodeString</BackendType>
+        <MultiValue>true</MultiValue>
+        <Validators>
+          <Condition>
+            <Name>IsAclAction</Name>
+          </Condition>
+        </Validators>
       </Attribute>
     </Attributes>
 		<Extends>
