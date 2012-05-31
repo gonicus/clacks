@@ -12,44 +12,64 @@ VERSION = "1.0"
 TYPE_MAP = {
     "1.3.6.1.4.1.1466.115.121.1.6": dict(
         name="Binary",
+        #widget="BinaryEdit",
+        condition="RegEx",
+        param=[r"^'[01]*'B$"],
         index=False),
     "1.3.6.1.4.1.1466.115.121.1.7": dict(
+        widget="QCheckBox",
         name="Boolean"),
     "1.3.6.1.4.1.1466.115.121.1.12": dict(
+        #widget="DNChooser",
         name="UnicodeString",
         condition="IsExistingDN"),
     "1.3.6.1.4.1.1466.115.121.1.15": dict(
-        name="UnicodeString"),
+        name="UnicodeString",
+        widget="QLineEdit"),
     "1.3.6.1.4.1.1466.115.121.1.24": dict(
-        name="Timestamp"),
+        name="Timestamp",
+        widget="QDateTimeEdit"),
     "1.3.6.1.4.1.1466.115.121.1.26": dict(
-        name="String"),
+        name="String",
+        condition="RegEx",
+        param=[r"^[\x00-\x7F]*$"]),
     "1.3.6.1.4.1.1466.115.121.1.27": dict(
-        name="Integer"),
+        name="Integer",
+	widget="QSpinBox"),
     "1.3.6.1.4.1.1466.115.121.1.44": dict(
-        name="UnicodeString"),
+        name="UnicodeString",
+	widget="QLineEdit",
+        condition="RegEx",
+        param=[r'^[a-zA-Z0-9"()+,./? -]+$']),
     "1.3.6.1.4.1.1466.115.121.1.53": dict(
-        name="Timestamp"),
+        name="Timestamp",
+        skip=True,
+        widget="QDateTimeEdit"),
     "1.3.6.1.4.1.1466.115.121.1.14": dict(
         name="String",
+        widget="QComboBox",
         options=["any", "mhs", "physical", "telex", "teletex", "g3fax",
             "g4fax", "ia5", "videotex", "telephone"]),
     "1.3.6.1.4.1.1466.115.121.1.50": dict(
         name="String",
+        widget="QLineEdit",
         condition="RegEx",
         param=[r"^\+[0-9]{2}\s*[0-9\s]+$"]),
     "1.3.6.1.4.1.1466.115.121.1.5": dict(
         name="Binary",
+	#widget="Upload",
         index=False),
     "1.3.6.1.4.1.1466.115.121.1.25": dict(
         name="UnicodeString",
         skip=True,
         index=False),
     "1.3.6.1.4.1.1466.115.121.1.40": dict(
-        name="String",
+        name="Binary",
+	#widget="Upload",
         index=False),
     "1.3.6.1.4.1.1466.115.121.1.36": dict(
         name="String",
+	widget="QLineEdit",
         condition="RegEx",
         param=[r"^[0-9 ]+$"]),
 
@@ -93,6 +113,10 @@ TYPE_MAP = {
 
 log = logging.getLogger("schema2xml")
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+
+
+def CLASS(v):
+    return {'class': v}
 
 
 def list_classes(uri):
@@ -160,6 +184,88 @@ def skip(syntax):
         return True
 
     return 'skip' in TYPE_MAP[syntax] and TYPE_MAP[syntax]['skip']
+
+
+def dump_ui(uri, oc, outfile=None, extend=None, rdn=None, contains=None):
+    subschemasubentry_dn, schema = ldap.schema.urlfetch(uri)
+    schema_reverse = ldap.schema.SubSchema(schema.ldap_entry())
+
+    oco = schema.get_obj(ldap.schema.ObjectClass, oc)
+    if oco is None:
+        log.error("unknown objectclass '%s' - please use the --list option to see what's there" % oc)
+        exit(1)
+
+    # Complete attributes in case of inheritance
+    if oco.kind == 0:
+        r = resolve_inherited_attrs(schema, oco.sup[0])
+        oco.must = list(set(list(oco.must) + r['must']))
+        oco.may = list(set(list(oco.may) + r['must']))
+
+    # Build resulting XML dump
+    e = ElementMaker()
+
+    n = 0
+    attrs = []
+    for mua in oco.must:
+        attr = resolve_attribute(schema, mua)
+        syntax = attr['syntax']
+
+        if skip(syntax):
+            continue
+
+        if not 'widget' in TYPE_MAP[syntax]:
+            continue
+
+        widget = TYPE_MAP[syntax]['widget']
+
+        attrs.append(
+           e.item(
+               e.widget(
+                   e.property(e.string(mua), name="text"),
+                   CLASS("QLabel"), name="%sLabel*" % mua), row=str(n), column="0"))
+        attrs.append(e.item(e.widget(CLASS(widget), name="%sEdit*" % mua), row=str(n), column="1"))
+
+        n += 1
+
+    for mua in oco.may:
+        if mua in oco.must:
+            continue
+
+        attr = resolve_attribute(schema, mua)
+        syntax = attr['syntax']
+
+        if skip(syntax):
+            continue
+
+        if not 'widget' in TYPE_MAP[syntax]:
+            continue
+
+        widget = TYPE_MAP[syntax]['widget']
+
+        attrs.append(
+           e.item(
+               e.widget(
+                   e.property(e.string(mua), name="text"),
+                   CLASS("QLabel"), name="%sLabel" % mua), row=str(n), column="0"))
+        attrs.append(e.item(e.widget(CLASS(widget), name="%sEdit" % mua), row=str(n), column="1"))
+
+        n += 1
+
+    res = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    data = e.ui(
+        e("class", oc),
+        e.widget(
+            e.property(e.rect(e.x("0"), e.y("0"), e.width("400"), e.height("300")), name="geometry"),
+            e.property(e.string(oc), name="windowTitle"),
+            e.layout(
+                e.item(
+                    e.layout(CLASS("QFormLayout"), *attrs, name="formLayout"), row="0", column="0"),
+                CLASS("QGridLayout"), name="gridLayout"),
+            CLASS("QWidget"), name=oc),
+        version="4.0")
+    res += etree.tostring(data, pretty_print=True)
+
+    return res
 
 
 def dump_class(uri, oc, outfile=None, extend=None, rdn=None, contains=None):
@@ -327,7 +433,10 @@ def main():
     parser.add_argument("-l", "--list", dest="list", action="store_true",
                       help="show list of available objectclasses")
     parser.add_argument("-o", "--output-file", dest="target",
-                      help="write output to FILE, defaults to objectclass name.xml",
+                      help="write output to FILE",
+                      metavar="FILE")
+    parser.add_argument("-u", "--ui-output-file", dest="target_ui",
+                      help="write output to FILE",
                       metavar="FILE")
     parser.add_argument("--rdn", dest="rdn", default="None",
                       help="RDN to use for primary objects",
@@ -355,6 +464,14 @@ def main():
 
     if options.target:
         with open(options.target, "w+") as f:
+            f.write(res)
+    else:
+        print res
+
+    res = dump_ui(options.uri, options.oc, options.target, options.extend,
+            options.rdn, options.contains)
+    if options.target_ui:
+        with open(options.target_ui, "w+") as f:
             f.write(res)
     else:
         print res
