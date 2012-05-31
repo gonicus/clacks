@@ -342,8 +342,11 @@ class LDAP(ObjectBackend):
         return res[0][0].decode('utf-8')
 
     def dn2uuid(self, dn):
-        res = self.con.search_s(dn.encode('utf-8'), ldap.SCOPE_BASE, '(objectClass=*)',
-                [self.uuid_entry])
+        try:
+            res = self.con.search_s(dn.encode('utf-8'), ldap.SCOPE_BASE, '(objectClass=*)',
+                    [self.uuid_entry])
+        except:
+            return False
 
         # Check if res is valid
         self.__check_res(dn, res)
