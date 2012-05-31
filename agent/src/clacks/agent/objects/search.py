@@ -43,11 +43,13 @@ import re
 from lxml import etree
 from time import time
 from clacks.common import Environment
+from zope.interface import implements
 from clacks.agent.xmldb.handler import XMLDBHandler
 from clacks.agent.objects.factory import ObjectFactory
 from clacks.agent.acl import ACLResolver
 from lepl import Literal, Node, Regexp, UnsignedReal, Space, Separator, Delayed, Optional, String
-
+from clacks.common.handler import IInterfaceHandler
+from clacks.common.components import Plugin
 
 class MyNode(Node):
     """
@@ -596,7 +598,7 @@ class Direction(MyNode):
         return "ascending" if self[0] == 'ASC' else 'descending'
 
 
-class SearchWrapper(object):
+class SearchWrapper(Plugin):
     """
     This class is a search wrapper, which hides the xquery syntax from the user but allows
     to use a SQL like query syntax.
@@ -611,6 +613,11 @@ class SearchWrapper(object):
     """
     instance = None
     query_parser = None
+
+    implements(IInterfaceHandler)
+
+    _priority_ = 21
+    _target_ = 'core'
 
     def __init__(self):
         self._construct_parser()
