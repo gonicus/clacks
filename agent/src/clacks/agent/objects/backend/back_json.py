@@ -75,14 +75,14 @@ class JSON(ObjectBackend):
         """
         open(self._file_path, "w").write(dumps(json, indent=2))
 
-    def load(self, uuid, info):
+    def load(self, item_uuid, info):
         """
         Load object properties for the given uuid
         """
         json = self.__load()
         data = {}
-        if uuid in json:
-            data = dict(data.items() + json[uuid].items())
+        if item_uuid in json:
+            data = dict(data.items() + json[item_uuid].items())
             return data
         return {}
 
@@ -90,39 +90,39 @@ class JSON(ObjectBackend):
         """
         Identify an object by dn
         """
-        uuid = self.dn2uuid(object_dn)
-        if not uuid:
+        item_uuid = self.dn2uuid(object_dn)
+        if not item_uuid:
             return False
 
-        res =  self.identify_by_uuid(uuid, params)
+        res =  self.identify_by_uuid(item_uuid, params)
         return res
 
-    def identify_by_uuid(self, uuid, params):
+    def identify_by_uuid(self, item_uuid, params):
         """
         Identify an object by uuid
         """
         json = self.__load()
-        if uuid in json and params['type'] == json[uuid]['type']:
+        if item_uuid in json and params['type'] == json[item_uuid]['type']:
             return True
         return False
 
-    def retract(self, uuid, data, params):
+    def retract(self, item_uuid, data, params):
         """
         Remove an object extension
         """
         json = self.__load()
-        if uuid in json:
-            del(json[uuid])
+        if item_uuid in json:
+            del(json[item_uuid])
         self.__save(json)
 
-    def extend(self, uuid, data, params, foreign_keys):
+    def extend(self, item_uuid, data, params, foreign_keys):
         """
         Create an object extension
         """
         json = self.__load()
-        json[uuid] = {'type': params['type']}
+        json[item_uuid] = {'type': params['type']}
         for item in data:
-            json[uuid][item] = data[item]['value']
+            json[item_uuid][item] = data[item]['value']
         self.__save(json)
 
     def dn2uuid(self, object_dn):
@@ -136,14 +136,14 @@ class JSON(ObjectBackend):
                 return item
         return None
 
-    def uuid2dn(self, uuid):
+    def uuid2dn(self, item_uuid):
         """
         Tries to find the given uuid in the backend and returnd the
         dn for the entry.
         """
         json = self.__load()
-        if uuid in json and "dn" in json[uuid]:
-            return json[uuid]["dn"]
+        if item_uuid in json and "dn" in json[item_uuid]:
+            return json[item_uuid]["dn"]
         return None
 
     def query(self, base, scope, params, fixed_rdn=None):
@@ -219,12 +219,12 @@ class JSON(ObjectBackend):
         Returns the create- and modify-timestamps for the given dn
         """
         json = self.__load()
-        uuid = self.dn2uuid(object_dn)
-        if uuid:
-            if 'createTimestamp' in json[uuid]:
-                ctime = datetime.datetime.strptime(json[uuid]['createTimestamp'], "%Y-%m-%dT%H:%M:%S.%f")
-            if 'modifyTimestamp' in json[uuid]:
-                mtime = datetime.datetime.strptime(json[uuid]['modifyTimestamp'], "%Y-%m-%dT%H:%M:%S.%f")
+        item_uuid = self.dn2uuid(object_dn)
+        if item_uuid:
+            if 'createTimestamp' in json[item_uuid]:
+                ctime = datetime.datetime.strptime(json[item_uuid]['createTimestamp'], "%Y-%m-%dT%H:%M:%S.%f")
+            if 'modifyTimestamp' in json[item_uuid]:
+                mtime = datetime.datetime.strptime(json[item_uuid]['modifyTimestamp'], "%Y-%m-%dT%H:%M:%S.%f")
         return (ctime, mtime)
 
 
@@ -280,13 +280,13 @@ class JSON(ObjectBackend):
 
         return sorted(dn_list, key=len)
 
-    def remove(self, uuid, recursive=False):
+    def remove(self, item_uuid, recursive=False):
         """
         Removes the entry with the given uuid from the database
         """
         json = self.__load()
-        if uuid in json:
-            del(json[uuid])
+        if item_uuid in json:
+            del(json[item_uuid])
             self.__save(json)
             return True
         return False
@@ -297,7 +297,7 @@ class JSON(ObjectBackend):
         """
         json = self.__load()
         if self.is_uuid(misc):
-            return uuid in json
+            return item_uuid in json
         else:
             for item in json:
                 if "dn" in json[item] and json[item]["dn"] == misc:
@@ -315,31 +315,34 @@ class JSON(ObjectBackend):
                 return False
         return True
 
-    def update(self, uuid, data):
+    def update(self, item_uuid, data):
         """
         Update the given entry (by uuid) with a new set of values.
         """
         json = self.__load()
-        if uuid in json:
+        if item_uuid in json:
             for item in data:
-                json[uuid][item] = data[item]['value']
+                json[item_uuid][item] = data[item]['value']
             self.__save(json)
             return True
         return False
 
-    def move_extension(self, uuid, new_base):
+    def move_extension(self, item_uuid, new_base):
         """
         Moves the extension to a new base
         """
         # Nothing to do here.
         return True
 
-    def move(self, uuid, new_base):
+    def move(self, item_uuid, new_base):
+        """
+        Moves an entry to antoher base
+        """
         json = self.__load()
-        if uuid in json:
+        if item_uuid in json:
 
             # Update the source entry
-            entry = json[uuid]
+            entry = json[item_uuid]
             entry['dn'] = re.sub(re.escape(entry['parentDN'])+"$", new_base, entry['dn'])
             entry['parentDN'] = new_base
 
@@ -348,7 +351,7 @@ class JSON(ObjectBackend):
                 raise JsonBackendError("cannot move entry, the target DN '%s' already exists!" % entry['dn'])
 
             # Save the changes
-            json[uuid] = entry
+            json[item_uuid] = entry
             self.__save(json)
             return True
         return False
