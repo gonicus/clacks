@@ -6,13 +6,15 @@
 		<Description>AclRole</Description>
 		<Backend>JSON</Backend>
     <BackendParameters>
-      <Backend type="AclRole">JSON</Backend>
+      <Backend type="AclRole" rdn="name">JSON</Backend>
     </BackendParameters>
     <Attributes>
       <Attribute>
         <Name>name</Name>
         <Description></Description>
         <Type>UnicodeString</Type>
+        <Mandatory>true</Mandatory>
+        <Unique>true</Unique>
       </Attribute>
       <Attribute>
         <Name>scope</Name>
@@ -31,6 +33,8 @@
         <Name>priority</Name>
         <Description></Description>
         <Type>Integer</Type>
+        <Default>0</Default>
+        <Mandatory>true</Mandatory>
       </Attribute>
       <Attribute>
         <Name>actions</Name>
@@ -45,10 +49,7 @@
         </Validators>
       </Attribute>
     </Attributes>
-		<BaseObject>false</BaseObject>
-		<Extends>
-			<Value>OrganizationalRole</Value>
-		</Extends>
+		<BaseObject>true</BaseObject>
 	</Object>
 </Objects>
 

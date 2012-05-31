@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Objects xmlns="http://www.gonicus.de/Objects">
-	<Object>
-		<Name>IpHost</Name>
-		<Description>IpHost</Description>
-		<DisplayName>IpHost</DisplayName>
-		<BackendParameters>
-			<Backend objectClasses="ipHost">LDAP</Backend>
-		</BackendParameters>
-		<Backend>LDAP</Backend>
-		<Attributes>
-                        <Attribute>
-                                <Name>ipHostNumber</Name>
-                                <Description>location</Description>
-                                <Type>String</Type>
-                                <Mandatory>true</Mandatory>
-                        </Attribute>
-                </Attributes>
-		<Extends>
-			<Value>Device</Value>
-		</Extends>
-		<BaseObject>false</BaseObject>
-	</Object>
+  <Object>
+    <Name>IpHost</Name>
+    <Description>IpHost</Description>
+    <DisplayName>IpHost</DisplayName>
+    <BackendParameters>
+      <Backend objectClasses="ipHost">LDAP</Backend>
+    </BackendParameters>
+    <Backend>LDAP</Backend>
+    <Attributes>
+      <Attribute>
+        <Name>ipHostNumber</Name>
+        <Description>location</Description>
+        <Type>String</Type>
+        <Mandatory>true</Mandatory>
+      </Attribute>
+    </Attributes>
+    <Extends>
+      <Value>Device</Value>
+    </Extends>
+    <BaseObject>false</BaseObject>
+  </Object>
 </Objects>
-

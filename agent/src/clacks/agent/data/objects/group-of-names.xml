@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Objects xmlns="http://www.gonicus.de/Objects">
-	<Object>
-		<Name>GroupOfNames</Name>
-		<Description>A group containing DN references</Description>
-		<DisplayName>Group of names</DisplayName>
-		<BackendParameters>
-			<Backend objectClasses="groupOfNames" RDN="cn">LDAP</Backend>
-		</BackendParameters>
-		<Backend>LDAP</Backend>
+  <Object>
+    <Name>GroupOfNames</Name>
+    <Description>A group containing DN references</Description>
+    <DisplayName>Group of names</DisplayName>
+    <BackendParameters>
+      <Backend objectClasses="groupOfNames" RDN="cn">LDAP</Backend>
+    </BackendParameters>
+    <Backend>LDAP</Backend>
 
-		<Attributes>
-                        <Attribute>
-                                <Name>cn</Name>
-                                <Description>Common Name</Description>
-                                <Type>UnicodeString</Type>
-                                <MultiValue>false</MultiValue>
-                                <Mandatory>true</Mandatory>
-                        </Attribute>
-                        <Attribute>
-                                <Name>description</Name>
-                                <Description>Description</Description>
-                                <Type>UnicodeString</Type>
-                                <MultiValue>false</MultiValue>
-                                <Mandatory>false</Mandatory>
-                        </Attribute>
-                        <Attribute>
-                                <Name>member</Name>
-                                <Description>A list of member-DNs</Description>
-                                <Type>UnicodeString</Type>
-                                <MultiValue>true</MultiValue>
-				<Mandatory>true</Mandatory>
-				<References>
-					<Reference>
-						<Object>*</Object>
-						<Attribute>dn</Attribute>
-					</Reference>
-				</References>
-                        </Attribute>
-                </Attributes>
-		<BaseObject>true</BaseObject>
-	</Object>
+    <Attributes>
+      <Attribute>
+        <Name>cn</Name>
+        <Description>Common Name</Description>
+        <Type>UnicodeString</Type>
+        <MultiValue>false</MultiValue>
+        <Mandatory>true</Mandatory>
+      </Attribute>
+      <Attribute>
+        <Name>description</Name>
+        <Description>Description</Description>
+        <Type>UnicodeString</Type>
+        <MultiValue>false</MultiValue>
+        <Mandatory>false</Mandatory>
+      </Attribute>
+      <Attribute>
+        <Name>member</Name>
+        <Description>A list of member-DNs</Description>
+        <Type>UnicodeString</Type>
+        <MultiValue>true</MultiValue>
+        <Mandatory>true</Mandatory>
+        <References>
+          <Reference>
+            <Object>*</Object>
+            <Attribute>dn</Attribute>
+          </Reference>
+        </References>
+      </Attribute>
+    </Attributes>
+    <BaseObject>true</BaseObject>
+  </Object>
 </Objects>
 

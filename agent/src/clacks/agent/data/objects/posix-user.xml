@@ -1,158 +1,158 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Objects xmlns="http://www.gonicus.de/Objects">
-	<Object>
-		<Name>PosixUser</Name>
-		<DisplayName>Posix extension</DisplayName>
-		<Description>A posix extension for a generic user</Description>
-		<BaseObject>false</BaseObject>
-		<BackendParameters>
-			<Backend objectClasses="posixAccount,shadowAccount">LDAP</Backend>
-		</BackendParameters>
-		<Backend>LDAP</Backend>
+  <Object>
+    <Name>PosixUser</Name>
+    <DisplayName>Posix extension</DisplayName>
+    <Description>A posix extension for a generic user</Description>
+    <BaseObject>false</BaseObject>
+    <BackendParameters>
+      <Backend objectClasses="posixAccount,shadowAccount">LDAP</Backend>
+    </BackendParameters>
+    <Backend>LDAP</Backend>
 
-		<Attributes>
-                        <Attribute>
-                                <Name>uid</Name>
-                                <Description>User ID</Description>
-                                <Type>String</Type>
-				<Foreign>true</Foreign>
-                        </Attribute>
-           		<Attribute>
-                                <Name>shadowLastChange</Name>
-                                <Description>The dat of the last password change.</Description>
-                                <Type>Date</Type>
-                                <BackendType>Integer</BackendType>
-	                       	<InFilter>
-                                        <FilterChain>
-                                                <FilterEntry>
-                                                        <Filter>
-                                                                <Name>ShadowDaysToDate</Name>
-                                                        </Filter>
-                                                </FilterEntry>
-                                        </FilterChain>
-                                </InFilter>
-	                       	<OutFilter>
-                                        <FilterChain>
-                                                <FilterEntry>
-                                                        <Filter>
-                                                                <Name>DateToShadowDays</Name>
-                                                        </Filter>
-                                                </FilterEntry>
-                                        </FilterChain>
-                                </OutFilter>
-                        </Attribute>
+    <Attributes>
+      <Attribute>
+        <Name>uid</Name>
+        <Description>User ID</Description>
+        <Type>String</Type>
+        <Foreign>true</Foreign>
+      </Attribute>
+      <Attribute>
+        <Name>shadowLastChange</Name>
+        <Description>The dat of the last password change.</Description>
+        <Type>Date</Type>
+        <BackendType>Integer</BackendType>
+        <InFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>ShadowDaysToDate</Name>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </InFilter>
+        <OutFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>DateToShadowDays</Name>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </OutFilter>
+      </Attribute>
 
-           		<Attribute>
-                                <Name>shadowMin</Name>
-                                <Description>The minimum password age is the number of days the user will have to wait before she will be allowed to change her password again.</Description>
-                                <Type>Integer</Type>
-                        </Attribute>
+      <Attribute>
+        <Name>shadowMin</Name>
+        <Description>The minimum password age is the number of days the user will have to wait before she will be allowed to change her password again.</Description>
+        <Type>Integer</Type>
+      </Attribute>
 
-           		<Attribute>
-                                <Name>shadowMax</Name>
-                                <Description>The maximum password age is the number of days after which the user will have to change her password.</Description>
-                                <Type>Integer</Type>
-                        </Attribute>
+      <Attribute>
+        <Name>shadowMax</Name>
+        <Description>The maximum password age is the number of days after which the user will have to change her password.</Description>
+        <Type>Integer</Type>
+      </Attribute>
 
-           		<Attribute>
-                                <Name>shadowWarning</Name>
-				<Description>The number of days before a password is going to expire (see the shadowMax) during which the user should be warned.</Description>
-                                <Type>Integer</Type>
-                        </Attribute>
+      <Attribute>
+        <Name>shadowWarning</Name>
+        <Description>The number of days before a password is going to expire (see the shadowMax) during which the user should be warned.</Description>
+        <Type>Integer</Type>
+      </Attribute>
 
-           		<Attribute>
-                                <Name>shadowInactive</Name>
-				<Description>The number of days after a password has expired (see the shadowMax) during which the password should still be accepted (and the user should update her password during the next login).</Description>
-                                <Type>Integer</Type>
-                        </Attribute>
+      <Attribute>
+        <Name>shadowInactive</Name>
+        <Description>The number of days after a password has expired (see the shadowMax) during which the password should still be accepted (and the user should update her password during the next login).</Description>
+        <Type>Integer</Type>
+      </Attribute>
 
-           		<Attribute>
-                                <Name>shadowExpire</Name>
-                                <Description>The date of expiration of the account.</Description>
-                                <Type>Date</Type>
-                                <BackendType>Integer</BackendType>
-	                       	<InFilter>
-                                        <FilterChain>
-                                                <FilterEntry>
-                                                        <Filter>
-                                                                <Name>ShadowDaysToDate</Name>
-                                                        </Filter>
-                                                </FilterEntry>
-                                        </FilterChain>
-                                </InFilter>
-	                       	<OutFilter>
-                                        <FilterChain>
-                                                <FilterEntry>
-                                                        <Filter>
-                                                                <Name>DateToShadowDays</Name>
-                                                        </Filter>
-                                                </FilterEntry>
-                                        </FilterChain>
-                                </OutFilter>
-                        </Attribute>
+      <Attribute>
+        <Name>shadowExpire</Name>
+        <Description>The date of expiration of the account.</Description>
+        <Type>Date</Type>
+        <BackendType>Integer</BackendType>
+        <InFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>ShadowDaysToDate</Name>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </InFilter>
+        <OutFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>DateToShadowDays</Name>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </OutFilter>
+      </Attribute>
 
-           		<Attribute>
-                                <Name>shadowFlag</Name>
-                                <Description></Description>
-                                <Type>UnicodeString</Type>
-                        </Attribute>
+      <Attribute>
+        <Name>shadowFlag</Name>
+        <Description></Description>
+        <Type>UnicodeString</Type>
+      </Attribute>
 
-           		<Attribute>
-                                <Name>uidNumber</Name>
-				<Unique>true</Unique>
-				<Default>-1</Default>
-                                <Description>An integer uniquely identifying a user in an administrative domain</Description>
-                                <Type>Integer</Type>
-                                <Mandatory>true</Mandatory>
-                                <OutFilter>
-                                        <FilterChain>
-                                                <FilterEntry>
-                                                        <Filter>
-                                                                <Name>GetNextID</Name>
-                                                                <Param>uidNumber</Param>
-                                                        </Filter>
-                                                </FilterEntry>
-                                        </FilterChain>
-                                </OutFilter>
- 				<Validators>
-					<Condition>
-						<Name>Smaller</Name>
-						<Param>65500</Param>
-					</Condition>
-                                </Validators>
-                        </Attribute>
+      <Attribute>
+        <Name>uidNumber</Name>
+        <Unique>true</Unique>
+        <Default>-1</Default>
+        <Description>An integer uniquely identifying a user in an administrative domain</Description>
+        <Type>Integer</Type>
+        <Mandatory>true</Mandatory>
+        <OutFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>GetNextID</Name>
+                <Param>uidNumber</Param>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </OutFilter>
+        <Validators>
+          <Condition>
+            <Name>Smaller</Name>
+            <Param>65500</Param>
+          </Condition>
+        </Validators>
+      </Attribute>
 
-           		<Attribute>
-                                <Name>gidNumber</Name>
-                                <Description>An integer uniquely identifying a group in an administrative domain</Description>
-                                <Type>Integer</Type>
-                                <Mandatory>true</Mandatory>
-                        </Attribute>
+      <Attribute>
+        <Name>gidNumber</Name>
+        <Description>An integer uniquely identifying a group in an administrative domain</Description>
+        <Type>Integer</Type>
+        <Mandatory>true</Mandatory>
+      </Attribute>
 
-           		<Attribute>
-                                <Name>homeDirectory</Name>
-                                <Description>The absolute path to the home directory</Description>
-                                <Type>String</Type>
-                                <Mandatory>true</Mandatory>
-                        </Attribute>
+      <Attribute>
+        <Name>homeDirectory</Name>
+        <Description>The absolute path to the home directory</Description>
+        <Type>String</Type>
+        <Mandatory>true</Mandatory>
+      </Attribute>
 
-           		<Attribute>
-                                <Name>loginShell</Name>
-                                <Description>The path to the login shell</Description>
-                                <Type>String</Type>
-                        </Attribute>
+      <Attribute>
+        <Name>loginShell</Name>
+        <Description>The path to the login shell</Description>
+        <Type>String</Type>
+      </Attribute>
 
-           		<Attribute>
-                                <Name>gecos</Name>
-                                <Description>The GECOS field; the common name</Description>
-                                <Type>UnicodeString</Type>
-                        </Attribute>
-                </Attributes>
+      <Attribute>
+        <Name>gecos</Name>
+        <Description>The GECOS field; the common name</Description>
+        <Type>UnicodeString</Type>
+      </Attribute>
+    </Attributes>
 
-		<Extends>
-			<Value>User</Value>
-		</Extends>
-	</Object>
+    <Extends>
+      <Value>User</Value>
+    </Extends>
+  </Object>
 </Objects>
 
 

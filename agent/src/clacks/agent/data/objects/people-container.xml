@@ -10,7 +10,6 @@
 		<Backend>LDAP</Backend>
 		<Container>
 			<Type>User</Type>
-			<Type>JsonTest</Type>
 		</Container>
 		<BaseObject>true</BaseObject>
 		<FixedRDN>ou=people</FixedRDN>
