@@ -31,6 +31,7 @@ from clacks.common.handler import IInterfaceHandler
 from clacks.common import Environment
 from clacks.common.components import Command, Plugin
 from clacks.common.utils import N_
+from clacks.common.components import PluginRegistry
 
 
 #TODO: Think about ldap relations, how to store and load objects.
@@ -770,7 +771,7 @@ class ACLResolver(Plugin):
 
     next_acl_id = 0
 
-    _priority_ = 0
+    _priority_ = 99
     _target_ = 'core'
 
     def __init__(self):
@@ -796,7 +797,16 @@ class ACLResolver(Plugin):
             self.save_to_file()
 
         # Load initial ACL information from file
+        #TODO: move loading of acls to serve() to be able to use the index...
+        #self.load_acls()
+
+    def load_acls(self):
+        """
+        Load acls definitions from backend
+        """
+        self.clear()
         self.load_from_file()
+        self.load_from_json()
 
     @staticmethod
     def get_instance():
@@ -894,11 +904,137 @@ class ACLResolver(Plugin):
         """
         self.acl_roles[role.name] = role
 
+    def serve(self):
+        self.load_acls()
+
+    def load_from_json(self):
+
+        def next_id():
+            return 1
+
+        acl_scope_map = {}
+        acl_scope_map['one'] = ACL.ONE
+        acl_scope_map['sub'] = ACL.SUB
+        acl_scope_map['psub'] = ACL.PSUB
+        acl_scope_map['reset'] = ACL.RESET
+
+        from clacks.agent.objects.proxy import ObjectProxy
+        index = PluginRegistry.getInstance("ObjectIndex")
+        dns = index.xquery("collection('objects')/o:AclRole/o:DN/text()")
+        roles = {}
+        unresolved = []
+        for entry_dn in dns:
+
+            try:
+                o = ObjectProxy(entry_dn)
+            except:
+                print
+                print "Failed to load", entry_dn
+                print
+                continue
+
+            # Create a new role object with the given name on demand.
+            if o.name not in roles:
+                roles[o.name] = ACLRole(o.name)
+
+            # Check if this role was referenced before but not initialized
+            if o.name in unresolved:
+                unresolved.remove(o.name)
+
+            # Append the role acls to the ACLRole object
+            for acl_entry in o.actions:
+
+                # The acl entry refers to another role ebtry.
+                if 'rolename' in acl_entry:
+
+                    # If the role wasn't loaded yet, then create and attach the requested role
+                    # to the list of roles, but mark it as unresolved
+                    rn = acl_entry['rolename']
+                    if rn not in roles:
+                        unresolved.append(rn)
+                        roles[rn] = ACLRole(rn)
+                        self.add_acl_role(roles[rn])
+
+                    # Add the acl entry entry which refers to the role.
+                    acl = ACLRoleEntry()
+                    acl.uses_role = True
+                    acl.scope = None
+                    acl.role = rn
+                    acl.id = next_id()
+                    acl.set_priority(acl_entry["priority"])
+                    roles[o.name].add(acl)
+                    self.add_acl_role(roles[o.name])
+                else:
+
+                    # Add a normal (non-role) base acl entry
+                    acl = ACLRoleEntry(acl_scope_map[acl_entry["scope"]])
+                    acl.id = next_id()
+                    acl.set_priority(acl_entry["priority"])
+                    for action in acl_entry["actions"]:
+                        acl.add_action(action["topic"], action['acl'], action['options'])
+                    roles[o.name].add(acl)
+
+        for item in roles:
+            print
+            print "----", item, "----"
+            print roles[item]
+
+
+        # Check if we've got unresolved roles!
+        if len(unresolved):
+            raise ACLException("Loading ACls failed, we've got unresolved roles references: '%s'!" % (str(unresolved), ))
+
+        # Add the recently created roles.
+        for role_name in roles:
+            self.add_acl_role(roles[role_name])
+
+        # Add ACLSets
+        index = PluginRegistry.getInstance("ObjectIndex")
+        dns = index.xquery("collection('objects')/o:User[o:Attributes/o:actions]/o:DN/text()")
+        for entry_dn in dns:
+
+            try:
+                o = ObjectProxy(entry_dn)
+            except:
+                print
+                print "Failed to load", entry_dn
+                print
+                continue
+
+            if not o.actions:
+                print
+                print "Failed to load", entry_dn
+                print
+                continue
+
+
+            base = o.dn
+
+            ## The ACL defintion is based on an acl role.
+            acls = ACLSet(base)
+            for acls_data in o.actions:
+                if 'rolename' in acls_data:
+                    acl = ACL(role=str(acls_data['rolename']))
+                    acl.set_members(acls_data["members"])
+                    acl.set_priority(acls_data["priority"])
+                    acl.id = next_id()
+                    acls.add(acl)
+                else:
+                    acl = ACL(acl_scope_map[acls_data["scope"]])
+                    acl.set_members(acls_data["members"])
+                    acl.set_priority(acls_data["priority"])
+                    acl.id = next_id()
+                    for action in acls_data["actions"]:
+                        acl.add_action(action['topic'], action['acl'], action['options'])
+
+                    acls.add(acl)
+            self.add_acl_set(acls)
+
     def load_from_file(self):
         """
         Load the acl definitions from the configured storage file.
         """
-        self.clear()
+        return
         self.acl_sets = []
 
         acl_scope_map = {}
