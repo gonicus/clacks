@@ -17,34 +17,14 @@
         <Unique>true</Unique>
       </Attribute>
       <Attribute>
-        <Name>scope</Name>
-        <Description></Description>
-        <Type>String</Type>
-        <Default>sub</Default>
-        <Values>
-          <Value>one</Value>
-          <Value>sub</Value>
-          <Value>psub</Value>
-          <Value>reset</Value>
-        </Values>
-        <Mandatory>true</Mandatory>
-      </Attribute>
-      <Attribute>
-        <Name>priority</Name>
-        <Description></Description>
-        <Type>Integer</Type>
-        <Default>0</Default>
-        <Mandatory>true</Mandatory>
-      </Attribute>
-      <Attribute>
         <Name>actions</Name>
         <Description></Description>
-        <Type>AclAction</Type>
+        <Type>AclRole</Type>
         <BackendType>UnicodeString</BackendType>
         <MultiValue>true</MultiValue>
         <Validators>
           <Condition>
-            <Name>IsAclAction</Name>
+            <Name>IsAclRole</Name>
           </Condition>
         </Validators>
       </Attribute>
