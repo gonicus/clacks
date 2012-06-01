@@ -60,6 +60,8 @@ class AclRole(AttributeType):
         """
         if len(value):
 
+            # Convert each acl-role entry into a usable dict
+            # The result will look like this
             new_value = []
             for item in value:
                 data = item.split("\n")
@@ -77,6 +79,7 @@ class AclRole(AttributeType):
                 new_entry['actions'] = []
                 new_value.append(new_entry)
 
+                # Append actions, but skip processing empty lines
                 for action in actions:
                     if not action:
                         continue
