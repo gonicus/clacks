@@ -159,7 +159,7 @@ class JSON(ObjectBackend):
         found = []
         if self.scope_map[scope] == "one":
             for item in json:
-                if json[item]['parentDN'] == base:
+                if "parentDN" in json[item] and json[item]['parentDN'] == base:
                     found.append(json[item]['dn'])
 
         # For base searches the base has the dn has to match the requested base
@@ -171,7 +171,7 @@ class JSON(ObjectBackend):
         # For sub-queries the requested-base has to be part parentDN
         if self.scope_map[scope] == "sub":
             for item in json:
-                if re.match(re.escape(json[item]['parentDN']) + "$", base):
+                if "parentDN" in json[item] and re.match(re.escape(json[item]['parentDN']) + "$", base):
                     found.append(json[item]['dn'])
         return found
 
