@@ -111,8 +111,8 @@ setup(
         timestamp = clacks.agent.objects.types.base:TimestampAttribute
         sambalogonhours = clacks.agent.plugins.samba.logonhours:SambaLogonHoursAttribute
         devicepartitiontabletype = clacks.agent.plugins.goto.goto_types:DevicePartitionTableType
-        aclaction = clacks.agent.objects.types.acl_actions:AclAction
         aclrole = clacks.agent.objects.types.acl_roles:AclRole
+        aclset = clacks.agent.objects.types.acl_set:AclSet
 
         [object.backend]
         ldap = clacks.agent.objects.backend.back_ldap:LDAP
@@ -130,8 +130,8 @@ setup(
         isvalidhostname = clacks.agent.plugins.misc.filter_validators:IsValidHostName
         isexistingdn = clacks.agent.plugins.misc.filter_validators:IsExistingDN
         isexistingdnoftype = clacks.agent.plugins.misc.filter_validators:IsExistingDnOfType
-        is_acl_action = clacks.agent.objects.comparator.acl_actions:IsAclAction
         is_acl_role = clacks.agent.objects.comparator.acl_roles:IsAclRole
+        is_acl_set = clacks.agent.objects.comparator.acl_set:IsAclSet
 
         [object.filter]
         concatstring = clacks.agent.objects.filter.strings:ConcatString
