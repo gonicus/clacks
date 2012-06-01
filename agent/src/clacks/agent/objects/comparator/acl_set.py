@@ -8,13 +8,13 @@ t = gettext.translation('messages', resource_filename("clacks.agent", "locale"),
 _ = t.ugettext
 
 
-class IsAclRole(ElementComparator):
+class IsAclSet(ElementComparator):
     """
-    Checks whether the given value is a valid AclRole.
+    Checks whether the given value is a valid AclSet.
     """
 
     def __init__(self, obj):
-        super(IsAclRole, self).__init__()
+        super(IsAclSet, self).__init__()
 
     def process(self, key, value, errors=[]):
 
@@ -33,6 +33,10 @@ class IsAclRole(ElementComparator):
 
             if not "actions" in entry:
                 errors.append(_("missing attribute 'actions'! for acl-entry %s!" % (str(entry_cnt,))))
+                return False
+
+            if not "members" in entry:
+                errors.append(_("missing attribute 'members'! for acl-entry %s!" % (str(entry_cnt,))))
                 return False
 
             for item in entry['actions']:
