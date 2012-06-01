@@ -907,6 +907,19 @@ class ACLResolver(Plugin):
     def serve(self):
         self.load_acls()
 
+        print "Roles:"
+        for item in self.acl_roles:
+            print "#", item
+            print "-" * 20
+            print self.acl_roles[item]
+            print
+
+        print "Sets:"
+        for item in self.acl_sets:
+            print "-" * 20
+            print item
+            print
+
     def load_from_json(self):
 
         def next_id():
@@ -974,12 +987,6 @@ class ACLResolver(Plugin):
                         acl.add_action(action["topic"], action['acl'], action['options'])
                     roles[o.name].add(acl)
 
-        for item in roles:
-            print
-            print "----", item, "----"
-            print roles[item]
-
-
         # Check if we've got unresolved roles!
         if len(unresolved):
             raise ACLException("Loading ACls failed, we've got unresolved roles references: '%s'!" % (str(unresolved), ))
@@ -1034,8 +1041,6 @@ class ACLResolver(Plugin):
         """
         Load the acl definitions from the configured storage file.
         """
-        return
-        self.acl_sets = []
 
         acl_scope_map = {}
         acl_scope_map['one'] = ACL.ONE

@@ -23,8 +23,25 @@
         </Validators>
       </Attribute>
     </Attributes>
-		<Extends>
-			<Value>User</Value>
+    <Extends>
+      <Value>PosixGroup</Value>
+      <Value>PeopleContainer</Value>
+      <Value>OrganizationalRole</Value>
+      <Value>Domain</Value>
+      <Value>GroupContainer</Value>
+      <Value>DomainComponent</Value>
+      <Value>SambaDomain</Value>
+      <Value>User</Value>
+      <Value>SetBackends</Value>
+      <Value>Device</Value>
+      <Value>OrganizationalUnit</Value>
+      <Value>OrganizationalRoleContainer</Value>
+      <Value>Country</Value>
+      <Value>Organization</Value>
+      <Value>GroupOfNames</Value>
+      <Value>Locality</Value>
+      <Value>DeviceContainer</Value>
+      <Value>DomainComponentOrg</Value>
 		</Extends>
 	</Object>
 </Objects>
