@@ -25,6 +25,7 @@ import os
 import json
 import ldap
 import logging
+import zope.event
 
 from zope.interface import implements
 from clacks.common.handler import IInterfaceHandler
@@ -780,6 +781,9 @@ class ACLResolver(Plugin):
         self.log = logging.getLogger(__name__)
         self.log.debug("initializing ACL resolver")
 
+        # Listen for object events
+        zope.event.subscribers.append(self.__handle_events)
+
         # Load override admins from configuration
         admins = self.env.config.get("core.admins", default=None)
         if admins:
@@ -799,6 +803,19 @@ class ACLResolver(Plugin):
         # Load initial ACL information from file
         #TODO: move loading of acls to serve() to be able to use the index...
         #self.load_acls()
+
+    def __handle_events(self, event):
+        """
+        React on object modifications to keep active ACLs up to date.
+        """
+
+        #TODO: Improve this, react on all necessary events
+        if event.reason in ["post update"]:
+            print "A"
+            print event.uuid
+            print event.dn
+            print event.reason
+            self.load_acls()
 
     def load_acls(self):
         """
