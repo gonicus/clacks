@@ -11,7 +11,7 @@
     </BackendParameters>
     <Attributes>
       <Attribute>
-        <Name>actions</Name>
+        <Name>AclSets</Name>
         <Description></Description>
         <Type>AclSet</Type>
         <BackendType>UnicodeString</BackendType>

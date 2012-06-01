@@ -17,7 +17,7 @@
         <Unique>true</Unique>
       </Attribute>
       <Attribute>
-        <Name>actions</Name>
+        <Name>AclRoles</Name>
         <Description></Description>
         <Type>AclRole</Type>
         <BackendType>UnicodeString</BackendType>
