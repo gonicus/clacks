@@ -2,14 +2,14 @@
 from clacks.agent.objects.types import AttributeType
 from json import loads, dumps
 
-class AclRole(AttributeType):
+class AclSet(AttributeType):
     """
     This is a special object-attribute-type for AclAction.
 
     This class can convert acl-actions into an UnicodeString and vice versa.
     """
 
-    __alias__ = "AclRole"
+    __alias__ = "AclSet"
 
     def values_match(self, value1, value2):
         """
@@ -37,6 +37,10 @@ class AclRole(AttributeType):
             res = []
             for entry in value:
                 item = "%(scope)s\n%(priority)s\n" % (entry)
+                if not "members" in entry:
+                    entry["members"] = []
+                item += ",".join(entry["members"])
+
                 for action in entry["actions"]:
                     item += "\n%(topic)s:%(acl)s:" % action
                     if "options" in action:
@@ -65,11 +69,16 @@ class AclRole(AttributeType):
             for item in value:
                 data = item.split("\n")
                 scope, priority, members_str = data[:3]
+                members = members_str.split(",")
                 actions = data[3::]
+
+                if "" in members:
+                    members.remove("")
 
                 new_entry = {}
                 new_entry['scope'] = scope
                 new_entry['priority'] = priority
+                new_entry['members'] = members
                 new_entry['actions'] = []
                 new_value.append(new_entry)
 
