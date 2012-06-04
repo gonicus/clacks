@@ -438,7 +438,7 @@ def main():
     parser.add_argument("-u", "--ui-output-file", dest="target_ui",
                       help="write output to FILE",
                       metavar="FILE")
-    parser.add_argument("--rdn", dest="rdn", default="None",
+    parser.add_argument("--rdn", dest="rdn", default=None,
                       help="RDN to use for primary objects",
                       metavar="RDN")
     parser.add_argument("--extend", dest="extend", default="None",
