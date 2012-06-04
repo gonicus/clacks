@@ -1048,11 +1048,12 @@ class IAttributeChanged(Interface):
 class ObjectChanged(object):
     implements(IObjectChanged)
 
-    def __init__(self, reason, obj=None, dn=None, uuid=None, orig_dn=None):
+    def __init__(self, reason, obj=None, dn=None, uuid=None, orig_dn=None, o_type=None):
         self.reason = reason
         self.uuid = uuid or obj.uuid
         self.dn = dn or obj.dn
         self.orig_dn = orig_dn or obj.orig_dn
+        self.o_type = o_type or obj.__class__.__name__
 
 
 class AttributeChanged(object):

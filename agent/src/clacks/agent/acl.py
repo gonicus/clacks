@@ -801,7 +801,7 @@ class ACLResolver(Plugin):
             self.save_to_file()
 
         # Load initial ACL information from file
-        #TODO: move loading of acls to serve() to be able to use the index...
+        #TODO: moved loading of acls to serve() to be able to use the index...
         #self.load_acls()
 
     def __handle_events(self, event):
@@ -809,13 +809,11 @@ class ACLResolver(Plugin):
         React on object modifications to keep active ACLs up to date.
         """
 
-        #TODO: Improve this, react on all necessary events
-        if event.reason in ["post update"]:
-            print "A"
-            print event.uuid
-            print event.dn
-            print event.reason
-            self.load_acls()
+        from clacks.agent.objects import ObjectChanged
+        if isinstance(event, ObjectChanged):
+            if event.o_type in ["Acl", "AclRole"] and event.reason in ["post update"]:
+                self.log.info("object change for %s triggered acl-reload" % (event.dn))
+                self.load_acls()
 
     def load_acls(self):
         """
@@ -926,6 +924,7 @@ class ACLResolver(Plugin):
         """
         Load ACL definitions once all plugins are loaded.
         """
+        from clacks.agent.objects.proxy import ObjectProxy
         self.load_acls()
 
     def load_from_object_database(self):
@@ -944,7 +943,6 @@ class ACLResolver(Plugin):
         unresolved = []
 
         # Read all AclRole objects.
-        from clacks.agent.objects.proxy import ObjectProxy
         index = PluginRegistry.getInstance("ObjectIndex")
         dns = index.xquery("collection('objects')/o:AclRole/o:DN/text()")
         for entry_dn in dns:
