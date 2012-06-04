@@ -920,7 +920,7 @@ class ACLResolver(Plugin):
                     acl.scope = None
                     acl.role = rn
                     acl.id = self.get_next_acl_id()
-                    acl.set_priority(acl_entry["priority"])
+                    acl.set_priority(int(acl_entry["priority"]))
                     roles[o.name].add(acl)
                     self.add_acl_role(roles[o.name])
                 else:
@@ -928,7 +928,7 @@ class ACLResolver(Plugin):
                     # Add a normal (non-role) base acl entry
                     acl = ACLRoleEntry(acl_scope_map[acl_entry["scope"]])
                     acl.id = self.get_next_acl_id()
-                    acl.set_priority(acl_entry["priority"])
+                    acl.set_priority(int(acl_entry["priority"]))
                     for action in acl_entry["actions"]:
                         acl.add_action(action["topic"], action['acl'], action['options'])
                     roles[o.name].add(acl)
@@ -965,13 +965,13 @@ class ACLResolver(Plugin):
                 if 'rolename' in acls_data:
                     acl = ACL(role=str(acls_data['rolename']))
                     acl.set_members(acls_data["members"])
-                    acl.set_priority(acls_data["priority"])
+                    acl.set_priority(int(acls_data["priority"]))
                     acl.id = self.get_next_acl_id()
                     acls.add(acl)
                 else:
                     acl = ACL(acl_scope_map[acls_data["scope"]])
                     acl.set_members(acls_data["members"])
-                    acl.set_priority(acls_data["priority"])
+                    acl.set_priority(int(acls_data["priority"]))
                     acl.id = self.get_next_acl_id()
                     for action in acls_data["actions"]:
                         acl.add_action(action['topic'], action['acl'], action['options'])
