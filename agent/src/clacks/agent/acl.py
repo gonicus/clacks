@@ -883,6 +883,8 @@ class ACLResolver(Plugin):
         dns = index.xquery("collection('objects')/o:AclRole/o:DN/text()")
         for entry_dn in dns:
 
+            self.log.info("found acl-role %s" % (entry_dn))
+
             # Try to open the object
             try:
                 o = ObjectProxy(entry_dn)
@@ -943,6 +945,7 @@ class ACLResolver(Plugin):
         index = PluginRegistry.getInstance("ObjectIndex")
         dns = index.xquery("collection('objects')/*[o:Attributes/o:AclSets]/o:DN/text()")
         for entry_dn in dns:
+            self.log.info("found acl for object %s" % (entry_dn))
 
             # Try to load the object to read the AclSets parameter from it.
             try:
