@@ -38,7 +38,6 @@ from ldap.dn import str2dn, dn2str
 from logging import getLogger
 from clacks.common import Environment
 from clacks.common.components import PluginRegistry
-from clacks.agent.acl import ACLResolver, ACLException
 from clacks.agent.objects.backend.registry import ObjectBackendRegistry
 
 
@@ -688,3 +687,4 @@ class ObjectProxy(object):
 
 from .factory import ObjectFactory
 from .object import Object
+from clacks.agent.acl import ACLResolver, ACLException

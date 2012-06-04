@@ -33,6 +33,8 @@ from clacks.common import Environment
 from clacks.common.components import Command, Plugin
 from clacks.common.utils import N_
 from clacks.common.components import PluginRegistry
+from clacks.agent.objects.object import ObjectChanged
+from clacks.agent.objects.proxy import ObjectProxy
 
 
 #TODO: Think about ldap relations, how to store and load objects.
@@ -801,7 +803,6 @@ class ACLResolver(Plugin):
         """
         React on object modifications to keep active ACLs up to date.
         """
-        from clacks.agent.objects import ObjectChanged
         if isinstance(event, ObjectChanged):
             if event.o_type in ["Acl", "AclRole"] and event.reason in ["post update"]:
                 self.log.info("object change for %s triggered acl-reload" % (event.dn))
@@ -864,9 +865,6 @@ class ACLResolver(Plugin):
         """
         Loads acl definitions from the object databases
         """
-
-        #TODO: Why does it only works to include the ObjectProxy inline?
-        from clacks.agent.objects.proxy import ObjectProxy
 
         # A map for scope-strings to konstants
         acl_scope_map = {}
@@ -1085,6 +1083,9 @@ class ACLResolver(Plugin):
         while self.base in base and len(base):
 
             # Check acls for each acl set.
+            if not self.acl_sets:
+                continue
+
             for acl_set in self.acl_sets:
 
                 # Skip acls that do not match the current ldap base.
