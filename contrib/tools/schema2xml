@@ -339,14 +339,14 @@ def dump_class(uri, oc, outfile=None, extend=None, rdn=None, contains=None):
     more.append(e.Attributes(*attrs))
 
     # Add container
-    if contains:
+    if contains == None:
         c = []
         for typ in contains.split(","):
             c.append(e.Type(typ))
         more.append(e.Container(*c))
 
     # Maintain extension
-    if extend:
+    if extend == None:
         more.append(e.Extends(e.Value(extend)))
 
     res = '<?xml version="1.0" encoding="UTF-8"?>\n'
