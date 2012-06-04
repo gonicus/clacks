@@ -297,6 +297,8 @@ def dump_class(uri, oc, outfile=None, extend=None, rdn=None, contains=None):
 
     if oco.kind != 0:
         more.append(e.BaseObject("false"))
+    else:
+        more.append(e.BaseObject("true"))
 
     # Build attribute set
     attrs = []
@@ -316,7 +318,7 @@ def dump_class(uri, oc, outfile=None, extend=None, rdn=None, contains=None):
                e.Name(attr['name']),
                e.Description(attr['desc']),
                e.Type(attr['type']),
-               e.Multivalue("true" if attr['multivalue'] else "false"),
+               e.MultiValue("true" if attr['multivalue'] else "false"),
                e.Mandatory("true"),
 	       *values))
     for mua in oco.may:
@@ -332,7 +334,7 @@ def dump_class(uri, oc, outfile=None, extend=None, rdn=None, contains=None):
                e.Name(attr['name']),
                e.Description(attr['desc']),
                e.Type(attr['type']),
-               e.Multivalue("true" if attr['multivalue'] else "false"),
+               e.MultiValue("true" if attr['multivalue'] else "false"),
                e.Mandatory("false"),
 	       *values))
 
@@ -350,7 +352,7 @@ def dump_class(uri, oc, outfile=None, extend=None, rdn=None, contains=None):
         more.append(e.Extends(e.Value(extend)))
 
     res = '<?xml version="1.0" encoding="UTF-8"?>\n'
-    data = e.Objects(e.Object(e.Name(oc), e.DisplayName(oc)), *more)
+    data = e.Objects(e.Object(e.Name(oc), e.DisplayName(oc), *more))
     res += etree.tostring(data, pretty_print=True)
 
     return res
