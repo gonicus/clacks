@@ -784,31 +784,23 @@ class ACLResolver(Plugin):
         # Listen for object events
         zope.event.subscribers.append(self.__handle_events)
 
-        # Load override admins from configuration
-        admins = self.env.config.get("core.admins", default=None)
-        if admins:
-            admins = re.sub(r'\s', '', admins)
-            self.log.warning("adding users to the ACL override: %s" % admins)
-            self.admins = admins.split(",")
-
         # Load default LDAP base
         self.base = self.env.base
-        self.acl_file = os.path.join(self.env.config.getBaseDir(), "agent.acl")
-        self.clear()
 
-        # Try to create an new and empty acl file, if there was none yet!
-        if not os.path.exists(self.acl_file):
-            self.save_to_file()
+    @staticmethod
+    def get_instance():
+        """
+        Return an instance of the ACLResolver
+        """
+        if not ACLResolver.instance:
+            ACLResolver.instance = ACLResolver()
 
-        # Load initial ACL information from file
-        #TODO: moved loading of acls to serve() to be able to use the index...
-        #self.load_acls()
+        return ACLResolver.instance
 
     def __handle_events(self, event):
         """
         React on object modifications to keep active ACLs up to date.
         """
-
         from clacks.agent.objects import ObjectChanged
         if isinstance(event, ObjectChanged):
             if event.o_type in ["Acl", "AclRole"] and event.reason in ["post update"]:
@@ -820,21 +812,27 @@ class ACLResolver(Plugin):
         Load acls definitions from backend
         """
         self.clear()
-        self.load_from_file()
+
+        # Load override admins from configuration
+        admins = self.env.config.get("core.admins", default=None)
+        if admins:
+            admins = re.sub(r'\s', '', admins)
+            self.log.warning("adding users to the ACL override: %s" % admins)
+            self.admins = admins.split(",")
+
+        # Load Acls from the object DB
         self.load_from_object_database()
 
-    @staticmethod
-    def get_instance():
-        if not ACLResolver.instance:
-            ACLResolver.instance = ACLResolver()
-
-        return ACLResolver.instance
-
     def list_admin_accounts(self):
+        """
+        Returns the list of admins accounts. Those hardcoded in the clacks config.
+        """
         return self.admins
 
     def get_next_acl_id(self):
-
+        """
+        Generate a uniqe ID for each AclEntry used in Sets or Roles.
+        """
         used_ids = []
         for aclset in self.acl_sets:
             for acl in aclset:
@@ -853,84 +851,22 @@ class ACLResolver(Plugin):
         Clears all information abouts roles and acls.
         This is called during initialization of the ACLResolver class.
         """
-
         self.acl_sets = []
         self.acl_roles = {}
-
-    def add_acl_set(self, acl):
-        """
-        Adds an ACLSet object to the list of active-acl rules.
-        """
-        if not self.aclset_exists_by_base(acl.base):
-            self.acl_sets.append(acl)
-        else:
-            for item in acl:
-                self.add_acl_to_set(acl.base, item)
-
-    def add_acl_to_set(self, base, acl):
-        """
-        Adds an ACL-object to an existing ACLSet.
-
-        ============== =============
-        Key            Description
-        ============== =============
-        base           The base we want to add an ACL object to.
-        acl            The ACL object we want to add.
-        ============== =============
-        """
-        if not self.aclset_exists_by_base(base):
-            raise ACLException("No acl definition found for base '%s' cannot add acl!" % (base,))
-        else:
-            aclset = self.get_aclset_by_base(base)
-            aclset.add(acl)
-
-        return(True)
-
-    def add_acl_to_role(self, rolename, acl):
-        """
-        Adds an ACLRoleEntry-object to an existing ACLRole.
-
-        ============== =============
-        Key            Description
-        ============== =============
-        rolename       The name of the role we want to add this ACLRoleEntry to.
-        acl            The ACLRoleEntry object we want to add.
-        ============== =============
-        """
-
-        if type(acl) != ACLRoleEntry:
-            raise ACLException("expected parameter '%s' to be of type '%s' but got '%s'!" % ("acl", ACLRoleEntry, type(acl)))
-
-        if rolename not in self.acl_roles:
-            raise ACLException("A role with the given name does not exists! (%s)" % (rolename,))
-        else:
-            self.acl_roles[rolename].add(acl)
-
-        return(True)
-
-    def add_acl_role(self, role):
-        """
-        Adds a new ACLRole-object to the ACLResolver class.
-
-        ============== =============
-        Key            Description
-        ============== =============
-        role           The ACLRole object we want to add.
-        ============== =============
-        """
-        self.acl_roles[role.name] = role
 
     def serve(self):
         """
         Load ACL definitions once all plugins are loaded.
         """
-        from clacks.agent.objects.proxy import ObjectProxy
         self.load_acls()
 
     def load_from_object_database(self):
         """
         Loads acl definitions from the object databases
         """
+
+        #TODO: Why does it only works to include the ObjectProxy inline?
+        from clacks.agent.objects.proxy import ObjectProxy
 
         # A map for scope-strings to konstants
         acl_scope_map = {}
@@ -951,7 +887,7 @@ class ACLResolver(Plugin):
             try:
                 o = ObjectProxy(entry_dn)
             except:
-                self.log.warning("failed to load acl information for '%s'" % entry_dn)
+                self.log.warning("failed to load acl-role information for '%s'" % entry_dn)
                 continue
 
             # Create a new role object with the given name on demand.
@@ -1015,6 +951,7 @@ class ACLResolver(Plugin):
                 self.log.warning("failed to load acl information for '%s'" % entry_dn)
                 continue
 
+            # No definitions in this Acl
             if not o.AclSets:
                 continue
 
@@ -1039,155 +976,68 @@ class ACLResolver(Plugin):
                     acls.add(acl)
             self.add_acl_set(acls)
 
-    def load_from_file(self):
+    def add_acl_set(self, acl):
         """
-        Load the acl definitions from the configured storage file.
+        Adds an ACLSet object to the list of active-acl rules.
+        """
+        if not self.aclset_exists_by_base(acl.base):
+            self.acl_sets.append(acl)
+        else:
+            for item in acl:
+                self.add_acl_to_set(acl.base, item)
+
+    def add_acl_to_set(self, base, acl):
+        """
+        Adds an ACL-object to an existing ACLSet.
+
+        ============== =============
+        Key            Description
+        ============== =============
+        base           The base we want to add an ACL object to.
+        acl            The ACL object we want to add.
+        ============== =============
+        """
+        if not self.aclset_exists_by_base(base):
+            raise ACLException("No acl definition found for base '%s' cannot add acl!" % (base,))
+        else:
+            aclset = self.get_aclset_by_base(base)
+            aclset.add(acl)
+
+        return(True)
+
+    def add_acl_to_role(self, rolename, acl):
+        """
+        Adds an ACLRoleEntry-object to an existing ACLRole.
+
+        ============== =============
+        Key            Description
+        ============== =============
+        rolename       The name of the role we want to add this ACLRoleEntry to.
+        acl            The ACLRoleEntry object we want to add.
+        ============== =============
         """
 
-        acl_scope_map = {}
-        acl_scope_map['one'] = ACL.ONE
-        acl_scope_map['sub'] = ACL.SUB
-        acl_scope_map['psub'] = ACL.PSUB
-        acl_scope_map['reset'] = ACL.RESET
+        if type(acl) != ACLRoleEntry:
+            raise ACLException("expected parameter '%s' to be of type '%s' but got '%s'!" % ("acl", ACLRoleEntry, type(acl)))
 
-        data = json.loads(open(self.acl_file).read())
+        if rolename not in self.acl_roles:
+            raise ACLException("A role with the given name does not exists! (%s)" % (rolename,))
+        else:
+            self.acl_roles[rolename].add(acl)
 
-        # Add ACLRoles
-        roles = {}
-        unresolved = []
-        for name in data['roles']:
+        return(True)
 
-            # Create a new role object on demand.
-            if name not in roles:
-                roles[name] = ACLRole(name)
-
-            # Check if this role was referenced before but not initialized
-            if name in unresolved:
-                unresolved.remove(name)
-
-            # Append the role acls to the ACLRole object
-            acls = data['roles'][name]
-            for acl_entry in acls:
-
-                # The acl entry refers to another role ebtry.
-                if 'role' in acl_entry:
-
-                    # If the role was'nt loaded yet, the create and attach requested role
-                    #  to the list of roles, but mark it as unresolved
-                    rn = str(acl_entry['role'])
-                    if rn not in roles:
-                        unresolved.append(rn)
-                        roles[rn] = ACLRole(rn)
-                        self.add_acl_role(roles[rn])
-
-                    # Add the acl entry entry which refers to the role.
-                    acl = ACLRoleEntry()
-                    acl.uses_role = True
-                    acl.scope = None
-                    acl.role = rn
-                    acl.id = acl_entry['id']
-                    acl.set_priority(acl_entry['priority'])
-                    roles[name].add(acl)
-                    self.add_acl_role(roles[name])
-                else:
-
-                    # Add a normal (non-role) base acl entry
-                    acl = ACLRoleEntry(acl_scope_map[acl_entry['scope']])
-                    acl.id = acl_entry['id']
-                    acl.set_priority(acl_entry['priority'])
-                    for action in acl_entry['actions']:
-                        acl.add_action(action['topic'], action['acls'], action['options'])
-                    roles[name].add(acl)
-
-        # Check if we've got unresolved roles!
-        if len(unresolved):
-            raise ACLException("Loading ACls failed, we've got unresolved roles references: '%s'!" % (str(unresolved), ))
-
-        # Add the recently created roles.
-        for role_name in roles:
-            self.add_acl_role(roles[role_name])
-
-        # Add ACLSets
-        for base in data['acl']:
-
-            # The ACL defintion is based on an acl role.
-            for acls_data in data['acl'][base]:
-
-                acls = ACLSet(base)
-                for acl_entry in acls_data['acls']:
-
-                    if 'role' in acl_entry:
-                        acl = ACL(role=acl_entry['role'])
-                        acl.set_members(acl_entry['members'])
-                        acl.set_priority(acl_entry['priority'])
-                        acl.id = acl_entry['id']
-                        acls.add(acl)
-                    else:
-                        acl = ACL(acl_scope_map[acl_entry['scope']])
-                        acl.set_members(acl_entry['members'])
-                        acl.set_priority(acl_entry['priority'])
-                        acl.id = acl_entry['id']
-
-                        for action in acl_entry['actions']:
-                            acl.add_action(action['topic'], action['acls'], action['options'])
-
-                        acls.add(acl)
-                self.add_acl_set(acls)
-
-    def save_to_file(self):
+    def add_acl_role(self, role):
         """
-        Saves the acl definitions back the configured storage file.
+        Adds a new ACLRole-object to the ACLResolver class.
+
+        ============== =============
+        Key            Description
+        ============== =============
+        role           The ACLRole object we want to add.
+        ============== =============
         """
-        raise Exception("do not call save_to_file anymore... instead use objects")
-        ret = {'acl': {}, 'roles':  {}}
-
-        acl_scope_map = {}
-        acl_scope_map[ACL.ONE] = 'one'
-        acl_scope_map[ACL.SUB] = 'sub'
-        acl_scope_map[ACL.PSUB] = 'psub'
-        acl_scope_map[ACL.RESET] = 'reset'
-
-        # Save ACLSets
-        for acl_set in self.acl_sets:
-
-            # Prepare lists
-            if acl_set.base not in ret['acl']:
-                ret['acl'][acl_set.base] = []
-
-            acls = []
-            for acl in acl_set:
-                if acl.uses_role:
-                    entry = {'priority': acl.priority,
-                            'role': acl.role,
-                             'id': acl.id,
-                            'members': acl.members}
-                else:
-                    entry = {'actions': acl.actions,
-                            'members': acl.members,
-                             'id': acl.id,
-                            'priority': acl.priority,
-                            'scope': acl_scope_map[acl.scope]}
-                acls.append(entry)
-            ret['acl'][acl_set.base].append({'acls': acls})
-
-        # Save ACLRoles
-        for role_name in self.acl_roles:
-            ret['roles'][role_name] = []
-            for acl in self.acl_roles[role_name]:
-                if acl.uses_role:
-                    entry = {'role': acl.role,
-                             'id': acl.id,
-                             'priority': acl.priority}
-                else:
-                    entry = {'actions': acl.actions,
-                             'id': acl.id,
-                             'priority': acl.priority,
-                             'scope': acl_scope_map[acl.scope]}
-                ret['roles'][role_name].append(entry)
-
-        # Store json data into a file
-        with open(self.acl_file, 'w') as f:
-            json.dump(ret, f, indent=2)
+        self.acl_roles[role.name] = role
 
     def check(self, user, topic, acls, options=None, base=None):
         """
