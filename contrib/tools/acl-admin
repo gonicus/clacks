@@ -137,13 +137,13 @@ class ACLAdmin(object):
                     "\n"
                     "\n Command examples:"
                     "\n   A single definition without options:"
-                    "\n       '^org\.clacks\..*:rwcdm'"
+                    "\n       '^org\.clacks\..*:rwcdsex'"
                     "\n"
                     "\n   A single definition with options:"
-                    "\n       '^org\.clacks\..*:rwcdm:uid=user_*:tag=event'"
+                    "\n       '^org\.clacks\..*:rwcdsex:uid=user_*:tag=event'"
                     "\n"
                     "\n   A multi action defintion"
-                    "\n       '^org\.clacks\.events$:rwcdm,^org\.clacks\.factory$:rw,^org\.clacks\.something$:rw'"
+                    "\n       '^org\.clacks\.events$:rwcdsex,^org\.clacks\.factory$:rw,^org\.clacks\.something$:rw'"
                     "\n"
                     "\n <topic> "
                     "\n ========"
@@ -473,7 +473,7 @@ class ACLAdmin(object):
                 self.resolver.updateACL('tmp_admin', aid, rolename=rolename)
                 self.resolver.save_to_file()
 
-        except ACLException as e:
+        except Exception as e:
             print e
 
     @helpDecorator(_("Removes an acl entry"), _("remove acl <ID>"))
@@ -493,7 +493,7 @@ class ACLAdmin(object):
         try:
             self.resolver.removeACL('tmp_admin', rid)
             self.resolver.save_to_file()
-        except ACLException as e:
+        except Exception as e:
             print e
 
     @helpDecorator(_("Adds a new acl entry"), _("add acl [with-role|with-actions] <base> <priority> <members> [rolename|<scope> <topic> <acls> [options]]"))
@@ -516,11 +516,15 @@ class ACLAdmin(object):
             action_type = self.get_value_from_args("acl-add-action", args)
             actions = rolename = scope = members = None
             base = self.get_value_from_args("base", args)
+            try:
+                o = self.proxy.openObject("object", base)
+            except:
+                print "invalid base given, failed to open object!"
+                
             priority = self.get_value_from_args("priority", args)
             members = self.get_value_from_args("members", args)
 
             # Do we create an acl with direct actions or do we use a role.
-            o = self.proxy.openObject("object", base)
             if action_type == "with-actions":
                 scope = self.get_value_from_args("scope", args)
                 actions = self.get_value_from_args("acl-definition", args)
@@ -533,7 +537,7 @@ class ACLAdmin(object):
                 rolename = self.get_value_from_args("rolename", args)
                 acl_entry = {"priority": priority, 
                             "members": members, 
-                            "actions": [{"rolename": rolename}]}
+                            "rolename": rolename}
 
 
             asets = o.AclSets
@@ -574,7 +578,7 @@ class ACLAdmin(object):
                 self.resolver.addACLToRole('tmp_admin', rolename, priority, use_role=use_role)
 
             self.resolver.save_to_file()
-        except ACLException as e:
+        except Exception as e:
             print e
 
     @helpDecorator(_("Adds a new role"), _("add role <rolename>"))
@@ -591,11 +595,13 @@ class ACLAdmin(object):
         =========== =============
         """
 
+        base = self.get_value_from_args("base", args)
         rolename = self.get_value_from_args("rolename", args)
         try:
-            self.resolver.addACLRole('tmp_admin', rolename)
-            self.resolver.save_to_file()
-        except ACLException as e:
+            o = self.proxy.openObject("object", base, "AclRole")
+            o.name = rolename
+            o.commit()
+        except Exception as e:
             print e
 
     @helpDecorator(_("Removes an acl entry from a role"), _("remove roleacl <ID>"))
@@ -614,7 +620,7 @@ class ACLAdmin(object):
         try:
             self.resolver.removeRoleACL('tmp_admin', aid)
             self.resolver.save_to_file()
-        except ACLException as e:
+        except Exception as e:
             print e
 
     @helpDecorator(_("Removes a role"), _("remove role <rolename>"))
@@ -633,7 +639,7 @@ class ACLAdmin(object):
         try:
             self.resolver.removeRole('tmp_admin', rolename)
             self.resolver.save_to_file()
-        except ACLException as e:
+        except Exception as e:
             print e
 
     @helpDecorator(_("Updates an acl entry of a role"), _("update roleacl [set-scope|set-priority|set-action|set-role] <ID> [parameters]"))
@@ -674,7 +680,7 @@ class ACLAdmin(object):
                 rolename = self.get_value_from_args("rolename", args)
                 self.resolver.updateACLRole('tmp_admin', aid, use_role=rolename)
                 self.resolver.save_to_file()
-        except ACLException as e:
+        except Exception as e:
             print e
 
     @helpDecorator(_("List all defined acls"))
@@ -720,20 +726,21 @@ class ACLAdmin(object):
             print("   ... none")
         for aclset in allRoles:
             print("ROLENAME: \t%s" % (aclset['name']))
-            print("PRIORITY: \t%s" % (aclset['priority']))
             print("DN: \t\t%s" % (aclset['dn']))
-            if "rolename" in aclset:
-                print("ACTIONS: \t-")
-                print("ROLE: \t\t%s" % aclset["rolename"])
-            else:
-                first = True
-                for action in aclset['actions']:
-                    if first:
-                        print("ACTIONS:\t%s (%s)  %s" % (action['topic'], action['acls'], action['options']))
-                        first = False
-                    else:
-                        print("        \t%s (%s)  %s" % (action['topic'], action['acls'], action['options']))
-                print("ROLE: \t\t-")
+            for acl in aclset['acls']:
+                if "rolename" in acl:
+                    print(" - ROLE: \t\t%s" % acl["rolename"])
+                else:
+                    print(" - SCOPE: \t%s" % acl["scope"])
+                    print(" - PRIORITY: \t%s" % acl["priority"])
+                    first = True
+                    for action in acl['actions']:
+                        if first:
+                            print(" - ACTIONS:\t%s (%s)  %s" % (action['topic'], action['acls'], action['options']))
+                            first = False
+                        else:
+                            print(" -      \t%s (%s)  %s" % (action['topic'], action['acls'], action['options']))
+                print "---"
             print
 
 

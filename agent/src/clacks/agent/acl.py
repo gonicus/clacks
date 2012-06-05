@@ -1066,7 +1066,7 @@ class ACLResolver(Plugin):
         """
 
         # Admin users are allowed to do anything.
-        if user in self.admins:
+        if user in self.admins or user == None:
             self.log.warning("ACL check override active for %s/%s/%s" % (user, base, str(topic)))
             return True
 
@@ -1659,20 +1659,22 @@ class ACLResolver(Plugin):
         # Collect all acls
         result = []
         for aclrole in self.acl_roles:
+            entry = {'name': self.acl_roles[aclrole].name,
+                     'dn': self.acl_roles[aclrole].dn,
+                     'acls': []}
+
             for acl in self.acl_roles[aclrole]:
+                acl_entry = {}
                 if acl.uses_role:
-                    entry = {'name': self.acl_roles[aclrole].name,
-                        'dn': self.acl_roles[aclrole].dn,
-                        'priority': acl.priority,
-                        'rolename': acl.role}
+                    acl_entry['priority'] = acl.priority
+                    acl_entry['rolename'] = acl.role
                 else:
-                    entry = {'name': self.acl_roles[aclrole].name,
-                        'id': acl.id,
-                        'dn': self.acl_roles[aclrole].dn,
-                        'priority': acl.priority,
-                        'actions': acl.actions,
-                        'scope': acl_scope_map[acl.scope]}
-                result.append(entry)
+                    acl_entry['priority'] = acl.priority
+                    acl_entry['scope'] = acl_scope_map[acl.scope]
+                    acl_entry['actions'] = acl.actions
+                entry['acls'].append(acl_entry)
+            result.append(entry)
+
         return result
 
     @Command(needsUser=True, __help__=N_("Add new role."))
