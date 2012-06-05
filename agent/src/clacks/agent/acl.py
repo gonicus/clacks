@@ -255,12 +255,14 @@ class ACLRole(list):
         >>> resolver.add_acl_set(aclset)
     """
     name = None
+    dn = None
     priority = None
 
-    def __init__(self, name):
+    def __init__(self, name, dn=None):
         super(ACLRole, self).__init__()
         self.log = logging.getLogger(__name__)
         self.name = name
+        self.dn = dn
 
     def add(self, item):
         """
@@ -892,7 +894,7 @@ class ACLResolver(Plugin):
 
             # Create a new role object with the given name on demand.
             if o.name not in roles:
-                roles[o.name] = ACLRole(o.name)
+                roles[o.name] = ACLRole(o.name, entry_dn)
 
             # Check if this role was referenced before but not initialized
             if o.name in unresolved:
@@ -902,7 +904,7 @@ class ACLResolver(Plugin):
             for acl_entry in o.AclRoles:
 
                 # The acl entry refers to another role ebtry.
-                if 'rolename' in acl_entry:
+                if 'rolename' in acl_entry and acl_entry['rolename']:
 
                     # If the role wasn't loaded yet, then create and attach the requested role
                     # to the list of roles, but mark it as unresolved
@@ -960,7 +962,7 @@ class ACLResolver(Plugin):
             base = o.dn
             acls = ACLSet(base)
             for acls_data in o.AclSets:
-                if 'rolename' in acls_data:
+                if 'rolename' in acls_data and acls_data['rolename']:
                     acl = ACL(role=str(acls_data['rolename']))
                     acl.set_members(acls_data["members"])
                     acl.set_priority(int(acls_data["priority"]))
@@ -1367,7 +1369,7 @@ class ACLResolver(Plugin):
                                 'id': acl.id,
                                 'members': acl.members,
                                 'priority': acl.priority,
-                                'role': acl.role})
+                                'rolename': acl.role})
                         else:
                             result.append({'base': aclset.base,
                                 'id': acl.id,
@@ -1659,13 +1661,14 @@ class ACLResolver(Plugin):
         for aclrole in self.acl_roles:
             for acl in self.acl_roles[aclrole]:
                 if acl.uses_role:
-                    entry = {'rolename': self.acl_roles[aclrole].name,
-                        'id': acl.id,
+                    entry = {'name': self.acl_roles[aclrole].name,
+                        'dn': self.acl_roles[aclrole].dn,
                         'priority': acl.priority,
-                        'role': acl.role}
+                        'rolename': acl.role}
                 else:
-                    entry = {'rolename': self.acl_roles[aclrole].name,
+                    entry = {'name': self.acl_roles[aclrole].name,
                         'id': acl.id,
+                        'dn': self.acl_roles[aclrole].dn,
                         'priority': acl.priority,
                         'actions': acl.actions,
                         'scope': acl_scope_map[acl.scope]}
