@@ -806,7 +806,7 @@ class ACLResolver(Plugin):
         React on object modifications to keep active ACLs up to date.
         """
         if isinstance(event, ObjectChanged):
-            if event.o_type in ["Acl", "AclRole"] and event.reason in ["post update", "post extend", "post create", "post remove"]:
+            if event.o_type in ["Acl", "AclRole"] and event.reason in ["post update", "post extend", "post create", "post remove", "post retract"]:
                 self.log.info("object change for %s triggered acl-reload" % (event.dn))
                 self.load_acls()
 
