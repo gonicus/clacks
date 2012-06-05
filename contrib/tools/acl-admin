@@ -616,6 +616,7 @@ class ACLAdmin(object):
 
             for acl in allSets[base]:
                 if "rolename" in acl:
+                    print(" - MEMBERS: \t%s" % ", ".join(acl["members"]))
                     print(" - ROLE: \t%s" % acl["rolename"])
                 else:
                     print(" - SCOPE: \t%s" % acl["scope"])
