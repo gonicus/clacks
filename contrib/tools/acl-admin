@@ -609,24 +609,26 @@ class ACLAdmin(object):
         self.printReportHeader(_("Listing of active GOsa-ng acls"))
         allSets = self.proxy.getACLs()
         if not len(allSets):
-            print(_("   ... none"))
-        for aclset in allSets:
+            print("   ... none")
 
-            print("BASE: \t\t%s" % (aclset['base']))
-            print("PRIORITY: \t%s" % (aclset['priority']))
-            if "rolename" in aclset:
-                print("ACTIONS: \t-")
-                print("ROLE: \t\t%s" % aclset["rolename"])
-            else:
-                first = True
-                print("SCOPE: \t\t%s" % (aclset['scope']))
-                for action in aclset['actions']:
-                    if first:
-                        print("ACTIONS:\t%s (%s)  %s" % (action['topic'], action['acls'], action['options']))
-                        first = False
-                    else:
-                        print("        \t%s (%s)  %s" % (action['topic'], action['acls'], action['options']))
-                print("ROLE: \t\t-")
+        for base in allSets:
+            print("BASE: \t\t%s" % (base))
+
+            for acl in allSets[base]:
+                if "rolename" in acl:
+                    print(" - ROLE: \t%s" % acl["rolename"])
+                else:
+                    print(" - SCOPE: \t%s" % acl["scope"])
+                    print(" - MEMBERS: \t%s" % ", ".join(acl["members"]))
+                    print(" - PRIORITY: \t%s" % acl["priority"])
+                    first = True
+                    for action in acl['actions']:
+                        if first:
+                            print(" - ACTIONS:\t%s (%s)  %s" % (action['topic'], action['acls'], action['options']))
+                            first = False
+                        else:
+                            print(" -      \t%s (%s)  %s" % (action['topic'], action['acls'], action['options']))
+                print "---"
             print
 
         self.printReportHeader(_("Listing of active GOsa-ng roles"))

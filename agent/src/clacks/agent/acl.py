@@ -1340,7 +1340,7 @@ class ACLResolver(Plugin):
         acl_scope_map[ACL.RESET] = 'reset'
 
         # Collect all acls
-        result = []
+        result = {}
         for aclset in self.acl_sets:
             if base == aclset.base or base == None:
 
@@ -1364,15 +1364,17 @@ class ACLResolver(Plugin):
 
                     # The current ACL matches the requested topic add it to the result.
                     if match:
+
+                        if not aclset.base in result:
+                            result[aclset.base] = []
+
                         if acl.uses_role:
-                            result.append({'base': aclset.base,
-                                'id': acl.id,
+                            result[aclset.base].append({'id': acl.id,
                                 'members': acl.members,
                                 'priority': acl.priority,
                                 'rolename': acl.role})
                         else:
-                            result.append({'base': aclset.base,
-                                'id': acl.id,
+                            result[aclset.base].append({'id': acl.id,
                                 'members': acl.members,
                                 'scope': acl_scope_map[acl.scope],
                                 'priority': acl.priority,
@@ -1382,10 +1384,10 @@ class ACLResolver(Plugin):
         admins = self.list_admin_accounts()
         if len(admins) and self.check(user, '%s.acl' % self.env.domain, 'r'):
             if topic == None or re.match(topic, '*'):
-                result.append(
-                   {'base': self.base,
-                    'id': None,
-                    'priority': 100,
+                if not self.base in result:
+                    result[self.base] = []
+                result[self.base].append(
+                   {'priority': 100,
                     'members': admins,
                     'scope': acl_scope_map[ACL.PSUB],
                     'actions': [{'topic': '*', 'acls':'rwcdmsxe', 'options': {}}]})
