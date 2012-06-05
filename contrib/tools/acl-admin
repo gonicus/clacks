@@ -46,37 +46,7 @@ class ACLAdmin(object):
     def __init__(self):
         self.proxy = JSONServiceProxy('https://agent:secret@localhost:8080/rpc')
 
-    def idToScopeStr(self, sid):
-        """
-        Helper method which converts a given scope value from int to string.
-
-        =========== =============
-        key         description
-        =========== =============
-        sid         The corresponding scope value
-        =========== =============
-
-        """
-        if sid in self.rev_acl_scope_map:
-            return(self.rev_acl_scope_map[sid])
-        else:
-            return(_("unknown"))
-
-    def strToScopeId(self, sid):
-        """
-        Helper method which converts a given scope value from string to int.
-
-        =========== =============
-        key         description
-        =========== =============
-        sid         The corresponding scope value
-        =========== =============
-
-        """
-        if sid in self.acl_scope_map:
-            return(self.acl_scope_map[sid])
-        else:
-            return(None)
+        self.acl_scope_map = ["sub", "one", "psub", "reset"]
 
     def printReportHeader(self, string):
         """
@@ -242,7 +212,6 @@ class ACLAdmin(object):
         args        The arguments-list we want to extract from.
         =========== =============
         """
-
         # Validate given id-parameters
         if name in ["id"]:
             if len(args):
@@ -327,7 +296,7 @@ class ACLAdmin(object):
                     else:
                         action = {}
                         action['topic'] = entries[0]
-                        action['acls'] = entries[1]
+                        action['acl'] = entries[1]
                         action['options'] = {}
                         for opt in entries[2::]:
                             opt_entries = opt.split("=")
@@ -447,7 +416,7 @@ class ACLAdmin(object):
         else:
             raise(Exception("Unknown parameter to extract: %s" % (name,)))
 
-    @helpDecorator(_("Updates an acl entry"), _("update acl [set-scope|set-members|set-priority|set-action|set-role] <ID> [parameters]"))
+    #@helpDecorator(_("Updates an acl entry"), _("update acl [set-scope|set-members|set-priority|set-action|set-role] <DN> [parameters]"))
     def update_acl(self, args):
         """
         This method updates an existing ACL-rule
@@ -462,12 +431,25 @@ class ACLAdmin(object):
         """
 
         action_type = self.get_value_from_args("acl-update-action", args)
+        dn = self.get_value_from_args("base", args)
+        o = self.proxy.openObject("object", dn)
+
+        print "Acl-Items:"
+
+        cnt = 0
+        for acl in o.AclSets:
+            
+            print "\t%s: %s" % (cnt, str(acl))
+            cnt += 1
         aid = self.get_value_from_args("id", args)
+
+        print aid
+        print o.AclSets[aid]
+        return
 
         try:
             if "set-scope" == action_type:
                 scope = self.get_value_from_args("scope", args)
-                self.resolver.updateACL('tmp_admin', aid, scope=scope)
                 self.resolver.save_to_file()
 
             if "set-members" == action_type:
@@ -528,6 +510,8 @@ class ACLAdmin(object):
         =========== =============
         """
 
+        import pprint
+
         try:
             action_type = self.get_value_from_args("acl-add-action", args)
             actions = rolename = scope = members = None
@@ -536,16 +520,28 @@ class ACLAdmin(object):
             members = self.get_value_from_args("members", args)
 
             # Do we create an acl with direct actions or do we use a role.
+            o = self.proxy.openObject("object", base)
             if action_type == "with-actions":
                 scope = self.get_value_from_args("scope", args)
                 actions = self.get_value_from_args("acl-definition", args)
-                self.resolver.addACL('tmp_admin', base, priority, members, actions=actions, scope=scope)
+                acl_entry = {"priority": priority, 
+                            "members": members, 
+                            "actions": actions, 
+                            "scope": scope}
+
             else:
                 rolename = self.get_value_from_args("rolename", args)
-                self.resolver.addACL('tmp_admin', base, priority, members, rolename=rolename)
+                acl_entry = {"priority": priority, 
+                            "members": members, 
+                            "actions": [{"rolename": rolename}]}
 
-            self.resolver.save_to_file()
-        except ACLException as e:
+
+            asets = o.AclSets
+            asets.append(acl_entry)
+            o.AclSets = asets
+            o.commit()
+
+        except Exception as e:
             print e
 
     @helpDecorator(_("Adds a new acl entry to an existing role"), _("add roleacl [with-role|with-actions] <rolename> <priority> [rolename|<scope> <topic> <acls> [options]]"))
@@ -700,28 +696,45 @@ class ACLAdmin(object):
         if not len(allSets):
             print(_("   ... none"))
         for aclset in allSets:
-            print("SCOPE(%s)\tPRIORITY: %s \t BASE (%s)" % (aclset['scope'], aclset['priority'], aclset['base']))
-            print("MEMBER: %s" % (", ".join(aclset['members'])))
-            print("     \tACTIONS:")
-            for action in aclset['actions']:
-                if "rolename" in action:
-                    print(_("\trefers to role: %s") % action["rolename"])
-                else:
-                    print("        - %s (%s)  %s" % (action['topic'], action['acls'], action['options']))
+
+            print("BASE: \t\t%s" % (aclset['base']))
+            print("PRIORITY: \t%s" % (aclset['priority']))
+            if "rolename" in aclset:
+                print("ACTIONS: \t-")
+                print("ROLE: \t\t%s" % aclset["rolename"])
+            else:
+                first = True
+                print("SCOPE: \t\t%s" % (aclset['scope']))
+                for action in aclset['actions']:
+                    if first:
+                        print("ACTIONS:\t%s (%s)  %s" % (action['topic'], action['acls'], action['options']))
+                        first = False
+                    else:
+                        print("        \t%s (%s)  %s" % (action['topic'], action['acls'], action['options']))
+                print("ROLE: \t\t-")
+            print
 
         self.printReportHeader(_("Listing of active GOsa-ng roles"))
         allRoles = self.proxy.getACLRoles()
         if not len(allRoles):
             print("   ... none")
         for aclset in allRoles:
-            print("ROLENAME: %s \t SCOPE(%s)\tPRIORITY: %s" % (aclset['rolename'], aclset['scope'], aclset['priority']))
-            print("     \tACTIONS:")
-            for action in aclset['actions']:
-                if "rolename" in action:
-                    print(_("\trefers to role: %s") % action["rolename"])
-                else:
-                    print("        - %s (%s)  %s" % (action['topic'], action['acls'], action['options']))
-        print
+            print("ROLENAME: \t%s" % (aclset['name']))
+            print("PRIORITY: \t%s" % (aclset['priority']))
+            print("DN: \t\t%s" % (aclset['dn']))
+            if "rolename" in aclset:
+                print("ACTIONS: \t-")
+                print("ROLE: \t\t%s" % aclset["rolename"])
+            else:
+                first = True
+                for action in aclset['actions']:
+                    if first:
+                        print("ACTIONS:\t%s (%s)  %s" % (action['topic'], action['acls'], action['options']))
+                        first = False
+                    else:
+                        print("        \t%s (%s)  %s" % (action['topic'], action['acls'], action['options']))
+                print("ROLE: \t\t-")
+            print
 
 
 def print_help():
