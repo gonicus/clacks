@@ -168,7 +168,7 @@ class ACLAdmin(object):
                     "\n"
                     "\n <options>"
                     "\n ========="
-                    "\n Options are additional checks, please read the GOsa documentation for details."
+                    "\n Options are additional checks, please read the clacks documentation for details."
                     "\n The format is:  key:value;key:value;..."
                     "\n  e.g. (Do not forget to use quotes!)"
                     "\n   'uid:peter;eventType:start;'"),
@@ -606,7 +606,7 @@ class ACLAdmin(object):
         =========== =============
         """
 
-        self.printReportHeader(_("Listing of active GOsa-ng acls"))
+        self.printReportHeader(_("Listing of active clacks acls"))
         allSets = self.proxy.getACLs()
         if not len(allSets):
             print(_("   ... none"))
@@ -629,7 +629,7 @@ class ACLAdmin(object):
                 print("ROLE: \t\t-")
             print
 
-        self.printReportHeader(_("Listing of active GOsa-ng roles"))
+        self.printReportHeader(_("Listing of active clacks roles"))
         allRoles = self.proxy.getACLRoles()
         if not len(allRoles):
             print("   ... none")
@@ -660,7 +660,7 @@ def print_help():
 
     # Define cli-script parameters
     print(_(
-        "\nAdministrate GOsa-ng permissions from the command line."
+        "\nAdministrate clacks permissions from the command line."
         "\n"))
 
     # Add methods marked with the helpDecorator
