@@ -1383,9 +1383,10 @@ class ACLResolver(Plugin):
                 result.append(
                    {'base': self.base,
                     'id': None,
+                    'priority': 100,
                     'members': admins,
                     'scope': acl_scope_map[ACL.PSUB],
-                    'actions': [{'action': '*', 'acls':'rwcdmsxe', 'options': {}}]})
+                    'actions': [{'topic': '*', 'acls':'rwcdmsxe', 'options': {}}]})
 
         return(result)
 

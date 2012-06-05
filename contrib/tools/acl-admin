@@ -6,8 +6,8 @@ import time
 import sys
 import copy
 import gettext
-from clacks.agent.acl import ACL, ACLResolver, ACLException
 from clacks.common import Environment
+from clacks.common.components import JSONServiceProxy
 
 _ = gettext.gettext
 
@@ -41,71 +41,10 @@ class ACLAdmin(object):
     All script actions will be forwarded to exported gosa commands.
     """
 
-    acl_scope_map = {
-        'one': ACL.ONE,
-        'sub': ACL.SUB,
-        'psub': ACL.PSUB,
-        'reset': ACL.RESET,
-        }
+    proxy = None
 
-    def __init__(self, cfgFile, drop=False):
-        Environment.noargs = True
-        Environment.config = cfgFile
-        self.env = Environment.getInstance()
-
-        acl_file = os.path.join(self.env.config.getBaseDir(), "agent.acl")
-        self.acl_file = acl_file
-
-        # Drop an existing agent.acl file
-        if drop:
-            if os.path.exists(self.acl_file):
-
-                # Create a unique nackup name for the  existing acl file
-                backup_name = "agent.acl._back_" + time.strftime("%d.%m.%Y")
-                new_name = backup_name
-                cnt = 1
-                while os.path.exists(os.path.join(self.env.config.getBaseDir(), new_name)):
-                    new_name = backup_name + "_" + str(cnt)
-                    cnt += 1
-
-                # Now try to rename the existing agent.acl file
-                try:
-                    os.rename(acl_file, os.path.join(self.env.config.getBaseDir(), new_name))
-                except Exception as e:
-                    print e
-                    print(_("\n... maybe you are not allowed to access the acls file! (%s)") % acl_file)
-                    print
-                    sys.exit(1)
-            else:
-                print(_("\n... no old acl-file found, nothing dropped!"))
-                print
-                sys.exit(1)
-
-        # Try to load the ACLResolver class.
-        try:
-            self.resolver = ACLResolver()
-        except IOError as e:
-            print e
-            print
-            print(_("... maybe you are not allowed to access the acls file! (%s)") % acl_file)
-            print
-            sys.exit(1)
-        except ValueError as e:
-            print e
-            print(_("... the file seems to be corrupt!"))
-            print
-            print(_("You could try the --drop-all-permissions to create a new and clean acl-file! (%s)") % acl_file)
-            print
-            sys.exit(1)
-
-        self.ldap_base = self.resolver.base
-
-        # Tell the resolver to ignore acls for us (temporarily)
-        self.resolver.admins.append('tmp_admin')
-
-        # Build reverse scope map
-        self.rev_acl_scope_map = dict((v, k) for k, v in
-                self.acl_scope_map.iteritems())
+    def __init__(self):
+        self.proxy = JSONServiceProxy('https://agent:secret@localhost:8080/rpc')
 
     def idToScopeStr(self, sid):
         """
@@ -743,11 +682,11 @@ class ACLAdmin(object):
             print e
 
     @helpDecorator(_("List all defined acls"))
-    def list_acls(self, args):
+    def list(self, args):
         """
         This method lists all defined acls.
 
-        (It can be accessed via parameter 'list acls')
+        (It can be accessed via parameter 'list')
 
         =========== =============
         key         description
@@ -757,51 +696,32 @@ class ACLAdmin(object):
         """
 
         self.printReportHeader(_("Listing of active GOsa-ng acls"))
-        allSets = self.resolver.list_acls()
+        allSets = self.proxy.getACLs()
         if not len(allSets):
             print(_("   ... none"))
         for aclset in allSets:
-            for acl in aclset:
-                print("ID: %i \tSCOPE(%s)\tPRIORITY: %s \t BASE (%s)" % (acl.id, self.idToScopeStr(acl.scope), acl.priority, aclset.base))
-                print("       \tMEMBER: %s" % (", ".join(acl.members)))
-                if acl.uses_role:
-                    print(_("\trefers to role: %s") % acl.role)
+            print("SCOPE(%s)\tPRIORITY: %s \t BASE (%s)" % (aclset['scope'], aclset['priority'], aclset['base']))
+            print("MEMBER: %s" % (", ".join(aclset['members'])))
+            print("     \tACTIONS:")
+            for action in aclset['actions']:
+                if "rolename" in action:
+                    print(_("\trefers to role: %s") % action["rolename"])
                 else:
-                    cnt = 1
-                    print("     \tACTIONS:")
-                    for action in acl.actions:
-                        print("        - %s. %s (%s)  %s" % (cnt, action['topic'], action['acls'], action['options']))
-                        cnt += 1
+                    print("        - %s (%s)  %s" % (action['topic'], action['acls'], action['options']))
 
-    @helpDecorator(_("List all defined roles"))
-    def list_roles(self, args):
-        """
-        This method lists all defined acl roles.
-
-        (It can be accessed via parameter 'list acls')
-
-        =========== =============
-        key         description
-        =========== =============
-        args        The arguments-list we use as information basis
-        =========== =============
-        """
         self.printReportHeader(_("Listing of active GOsa-ng roles"))
-        allRoles = self.resolver.list_roles()
+        allRoles = self.proxy.getACLRoles()
         if not len(allRoles):
             print("   ... none")
-        for aclrole in allRoles:
-            print("  Entries for role: %s" % aclrole)
-            for acl in allRoles[aclrole]:
-                print("ID: %i \tROLENAME: %s \t SCOPE (%s) \t PRIORITY (%s)" % (acl.id, allRoles[aclrole].name, self.idToScopeStr(acl.scope), str(acl.priority)))
-                if acl.uses_role:
-                    print(_("\trefers to role: %s") % acl.role)
+        for aclset in allRoles:
+            print("ROLENAME: %s \t SCOPE(%s)\tPRIORITY: %s" % (aclset['rolename'], aclset['scope'], aclset['priority']))
+            print("     \tACTIONS:")
+            for action in aclset['actions']:
+                if "rolename" in action:
+                    print(_("\trefers to role: %s") % action["rolename"])
                 else:
-                    cnt = 1
-                    print("     \tACTIONS:")
-                    for action in acl.actions:
-                        print("        - %s. %s (%s)  %s" % (cnt, action['topic'], action['acls'], action['options']))
-                        cnt += 1
+                    print("        - %s (%s)  %s" % (action['topic'], action['acls'], action['options']))
+        print
 
 
 def print_help():
@@ -818,9 +738,6 @@ def print_help():
         "\noptional arguments:"
         "\n  -c CFGFILE, --config CFGFILE"
         "\n    the agent-config file to use"
-        "\n"
-        "\n  --drop-all-permissions"
-        "\n    drops all defined acls and roles"
         "\n"))
 
     # Add methods marked with the helpDecorator
@@ -842,31 +759,8 @@ def main():
         print_help()
         sys.exit(0)
 
-    # Predefine some values
-    cfgFile = os.environ.get('CLACKS_CONFIG_DIR') or "/etc/clacks"
-
-    # Parse out config parameter
-    my_args = sys.argv
-    if "-c" in my_args or "--config" in my_args:
-        if "-c" in my_args:
-            pos = my_args.index("-c")
-        if "--config" in my_args:
-            pos = my_args.index("--config")
-
-        if (len(my_args) - 1) <= pos:
-            print(_("Missing config file parameter!"))
-            sys.exit(1)
-        else:
-            cfgFile = my_args[pos]
-            del(my_args[pos])
-            del(my_args[pos])
-
-    # Check if we've to drop all acls and roles
-    if "--drop-all-permissions" in my_args:
-        a = ACLAdmin(cfgFile, drop=True)
-        sys.exit(1)
-
     # Remove the first element of my_args, we don't need it.
+    my_args = sys.argv
     del(my_args[0])
 
     # If no args were given print the help message and quit
@@ -885,7 +779,7 @@ def main():
 
         method = re.sub(r"^_", "", method)
         if method in helpDecorator.method_list:
-            a = ACLAdmin(cfgFile)
+            a = ACLAdmin()
             ret = getattr(a, method)(args_left)
             called = True
 
