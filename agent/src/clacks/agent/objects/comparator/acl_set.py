@@ -23,38 +23,38 @@ class IsAclSet(ElementComparator):
         for entry in value:
             entry_cnt += 1
 
-            if not "scope" in entry:
-                errors.append(_("missing attribute 'scope' for acl-entry %s!" % (str(entry_cnt,))))
-                return False
-
             if not "priority" in entry:
                 errors.append(_("missing attribute 'priority' for acl-entry %s!" % (str(entry_cnt,))))
-                return False
-
-            if not "actions" in entry:
-                errors.append(_("missing attribute 'actions'! for acl-entry %s!" % (str(entry_cnt,))))
                 return False
 
             if not "members" in entry:
                 errors.append(_("missing attribute 'members'! for acl-entry %s!" % (str(entry_cnt,))))
                 return False
 
-            for item in entry['actions']:
+            if "rolename" in entry:
 
-                # If a 'rolename' is we do not allow other dict, keys
-                if "rolename" in item and len(item) != 1:
-                    keys = item.keys()
-                    keys.remove("rolename")
-                    errors.append(_("you can either use a 'rolename' or use 'topic, acl, options' but not both! (%s)" % (', '.join(keys),)))
+                if "actions" in entry and entry["actions"]:
+                    errors.append(_("you can either use a rolename or actions but not both!"))
                     return False
 
                 # If a 'rolename' is we do not allow other dict, keys
-                if "rolename" in item and not type(item["rolename"]) in [str, unicode]:
-                    errors.append(_("expected attribute '%s' to be of type '%s' but found '%s!'" % ("rolename", str, type(item["rolename"]))))
+                if type(entry["rolename"]) not in [str, unicode]:
+                    errors.append(_("expected attribute '%s' to be of type '%s' but found '%s!'" % ("rolename", str, type(entry["rolename"]))))
                     return False
 
-                # We do not have a role here...
-                if not "rolename" in item:
+                #TODO: Ensure that the given role exists.... but how?
+
+            else:
+
+                if not "scope" in entry:
+                    errors.append(_("missing attribute 'scope' for acl-entry %s!" % (str(entry_cnt,))))
+                    return False
+
+                if not "actions" in entry:
+                    errors.append(_("missing attribute 'actions'! for acl-entry %s!" % (str(entry_cnt,))))
+                    return False
+
+                for item in entry['actions']:
 
                     # Check  if the required keys 'topic' and 'acl' are present
                     if not "topic" in item:

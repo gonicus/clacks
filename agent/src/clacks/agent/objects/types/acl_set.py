@@ -36,15 +36,27 @@ class AclSet(AttributeType):
         if len(value):
             res = []
             for entry in value:
-                item = "%(scope)s\n%(priority)s\n" % (entry)
+
+                # Add scope and priority (scope is not available for role based acls)
+                if "rolename" in entry and entry["rolename"]:
+                    item = "\n%(priority)s\n" % (entry)
+                else:
+                    item = "%(scope)s\n%(priority)s\n" % (entry)
+
+                # Add members
                 if not "members" in entry:
                     entry["members"] = []
                 item += ",".join(entry["members"])
 
-                for action in entry["actions"]:
-                    item += "\n%(topic)s:%(acl)s:" % action
-                    if "options" in action:
-                        item += dumps(action["options"])
+                # Add rolename or actions
+                if "rolename" in entry and entry["rolename"]:
+                    item += "\n%s" % entry["rolename"]
+                else:
+                    item += "\n"
+                    for action in entry["actions"]:
+                        item += "\n%(topic)s:%(acl)s:" % action
+                        if "options" in action:
+                            item += dumps(action["options"])
 
                 res.append(item)
             return res
@@ -67,32 +79,42 @@ class AclSet(AttributeType):
             # The result will look like this
             new_value = []
             for item in value:
-                data = item.split("\n")
-                scope, priority, members_str = data[:3]
-                members = members_str.split(",")
-                actions = data[3::]
 
+                # Load base info
+                data = item.split("\n")
+                scope, priority, members_str, rolename = data[:4]
+                members = members_str.split(",")
+                actions = data[4::]
+
+                # cleanup members
                 if "" in members:
                     members.remove("")
 
+                # Build entry list
                 new_entry = {}
-                new_entry['scope'] = scope
                 new_entry['priority'] = priority
                 new_entry['members'] = members
-                new_entry['actions'] = []
                 new_value.append(new_entry)
 
-                # Append actions, but skip processing empty lines
-                for action in actions:
-                    if not action:
-                        continue
+                # Do we have a role or action-based acl
+                if rolename:
+                    new_entry['rolename'] = rolename
+                else:
+                    # Add scope
+                    new_entry['scope'] = scope
 
-                    topic, acl, options_json = action.split(":", 2)
-                    if options_json:
-                        options = loads(options_json)
-                    else:
-                        options = {}
+                    # Append actions, but skip processing empty lines
+                    new_entry['actions'] = []
+                    for action in actions:
+                        if not action:
+                            continue
 
-                    new_entry['actions'].append({"topic": topic, "acl": acl, "options": options})
+                        topic, acl, options_json = action.split(":", 2)
+                        if options_json:
+                            options = loads(options_json)
+                        else:
+                            options = {}
+
+                        new_entry['actions'].append({"topic": topic, "acl": acl, "options": options})
 
         return(new_value)
