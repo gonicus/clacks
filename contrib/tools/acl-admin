@@ -115,6 +115,7 @@ class ACLAdmin(object):
         """
 
         help_msgs = {
+                "dn": _("The dn parameter specifies the location for the acl/role"),
                 "base": _("The base parameter specifies the position acls are active for. For example: dc=example,dc=de"),
                 "scope": _("The scope value specifies how the acl role influences sub-directories"
                     "\n Possible scope values are:"
@@ -230,13 +231,13 @@ class ACLAdmin(object):
                 sys.exit(1)
 
         # Validate the base value
-        elif name == "base":
+        elif name in ["base", "dn"]:
             if len(args):
                 base = args[0]
                 del(args[0])
                 return(base)
             else:
-                self.para_missing('base')
+                self.para_missing(name)
                 sys.exit(1)
 
         # Validate the scope value
@@ -416,86 +417,6 @@ class ACLAdmin(object):
         else:
             raise(Exception("Unknown parameter to extract: %s" % (name,)))
 
-    #@helpDecorator(_("Updates an acl entry"), _("update acl [set-scope|set-members|set-priority|set-action|set-role] <DN> [parameters]"))
-    def update_acl(self, args):
-        """
-        This method updates an existing ACL-rule
-
-        (It can be accessed via parameter 'update acl')
-
-        =========== =============
-        key         description
-        =========== =============
-        args        The arguments-list we use as information basis
-        =========== =============
-        """
-
-        action_type = self.get_value_from_args("acl-update-action", args)
-        dn = self.get_value_from_args("base", args)
-        o = self.proxy.openObject("object", dn)
-
-        print "Acl-Items:"
-
-        cnt = 0
-        for acl in o.AclSets:
-            
-            print "\t%s: %s" % (cnt, str(acl))
-            cnt += 1
-        aid = self.get_value_from_args("id", args)
-
-        print aid
-        print o.AclSets[aid]
-        return
-
-        try:
-            if "set-scope" == action_type:
-                scope = self.get_value_from_args("scope", args)
-                self.resolver.save_to_file()
-
-            if "set-members" == action_type:
-                members = self.get_value_from_args("members", args)
-                self.resolver.updateACL('tmp_admin', aid, members=members)
-                self.resolver.save_to_file()
-
-            if "set-priority" == action_type:
-                priority = self.get_value_from_args("priority", args)
-                self.resolver.updateACL('tmp_admin', aid, priority=priority)
-                self.resolver.save_to_file()
-
-            if "set-action" == action_type:
-                scope = self.get_value_from_args("scope", args)
-                actions = self.get_value_from_args("acl-definition", args)
-                self.resolver.updateACL('tmp_admin', aid, actions=actions, scope=scope)
-                self.resolver.save_to_file()
-
-            if "set-role" == action_type:
-                rolename = self.get_value_from_args("rolename", args)
-                self.resolver.updateACL('tmp_admin', aid, rolename=rolename)
-                self.resolver.save_to_file()
-
-        except Exception as e:
-            print e
-
-    @helpDecorator(_("Removes an acl entry"), _("remove acl <ID>"))
-    def remove_acl(self, args):
-        """
-        This method removes an ACL-rule entry by ID.
-
-        (It can be accessed via parameter 'remove acl')
-
-        =========== =============
-        key         description
-        =========== =============
-        args        The arguments-list we use as information basis
-        =========== =============
-        """
-        rid = self.get_value_from_args("id", args)
-        try:
-            self.resolver.removeACL('tmp_admin', rid)
-            self.resolver.save_to_file()
-        except Exception as e:
-            print e
-
     @helpDecorator(_("Adds a new acl entry"), _("add acl [with-role|with-actions] <base> <priority> <members> [rolename|<scope> <topic> <acls> [options]]"))
     def add_acl(self, args):
         """
@@ -565,19 +486,27 @@ class ACLAdmin(object):
         try:
             action_type = self.get_value_from_args("acl-add-action", args)
             actions = rolename = scope = members = None
-            rolename = self.get_value_from_args("rolename", args)
+            dn = self.get_value_from_args("dn", args)
+
+            o = self.proxy.openObject("object", dn)
+
             priority = self.get_value_from_args("priority", args)
 
             # Do we create an acl with direct actions or do we use a role.
+            aclentry = {"priority": priority}
             if action_type == "with-actions":
                 scope = self.get_value_from_args("scope", args)
                 actions = self.get_value_from_args("acl-definition", args)
-                self.resolver.addACLToRole('tmp_admin', rolename, priority, actions=actions, scope=scope)
+                aclentry["scope"] = scope
+                aclentry["actions"] = actions
             else:
                 use_role = self.get_value_from_args("rolename", args)
-                self.resolver.addACLToRole('tmp_admin', rolename, priority, use_role=use_role)
+                aclentry["rolename"] = use_role
 
-            self.resolver.save_to_file()
+            roles = o.AclRoles
+            roles.append(aclentry)
+            o.AclRoles = roles
+            o.commit()
         except Exception as e:
             print e
 
@@ -604,10 +533,10 @@ class ACLAdmin(object):
         except Exception as e:
             print e
 
-    @helpDecorator(_("Removes an acl entry from a role"), _("remove roleacl <ID>"))
-    def remove_roleacl(self, args):
+    @helpDecorator(_("Removes all acl entries from a role"), _("remove roleacl <DN>"))
+    def remove_roleacls(self, args):
         """
-        This method removes an ACL from an ROLE
+        This method removes removes all defined acls from a role 
 
         =========== =============
         key         description
@@ -616,14 +545,36 @@ class ACLAdmin(object):
         =========== =============
         """
 
-        aid = self.get_value_from_args("id", args)
+        dn = self.get_value_from_args("dn", args)
         try:
-            self.resolver.removeRoleACL('tmp_admin', aid)
-            self.resolver.save_to_file()
+            o = self.proxy.openObject("object", dn)
+            o.AclRoles = []
+            o.commit()
         except Exception as e:
             print e
 
-    @helpDecorator(_("Removes a role"), _("remove role <rolename>"))
+    @helpDecorator(_("Removes all acl entries for a given base"), _("remove roleacl <BASE>"))
+    def remove_acls(self, args):
+        """
+        Removes all acl entries for a given base
+
+        =========== =============
+        key         description
+        =========== =============
+        args        The arguments-list we use as information basis
+        =========== =============
+        """
+
+        dn = self.get_value_from_args("base", args)
+        try:
+            o = self.proxy.openObject("object", dn)
+            o.retract("Acl")
+            o.commit()
+        except Exception as e:
+            print e
+
+
+    @helpDecorator(_("Removes a role"), _("remove role <DN>"))
     def remove_role(self, args):
         """
         This method removes an ACLRole
@@ -634,52 +585,10 @@ class ACLAdmin(object):
         args        The arguments-list we use as information basis
         =========== =============
         """
-
-        rolename = self.get_value_from_args("rolename", args)
+        dn = self.get_value_from_args("dn", args)
         try:
-            self.resolver.removeRole('tmp_admin', rolename)
-            self.resolver.save_to_file()
-        except Exception as e:
-            print e
-
-    @helpDecorator(_("Updates an acl entry of a role"), _("update roleacl [set-scope|set-priority|set-action|set-role] <ID> [parameters]"))
-    def update_roleacl(self, args):
-        """
-        This method updates an existing ACL ROLE entry.
-
-        (It can be accessed via parameter 'update roleacl')
-
-        =========== =============
-        key         description
-        =========== =============
-        args        The arguments-list we use as information basis
-        =========== =============
-        """
-
-        action_type = self.get_value_from_args("roleacl-update-action", args)
-        aid = self.get_value_from_args("id", args)
-
-        try:
-            if "set-scope" == action_type:
-                scope = self.get_value_from_args("scope", args)
-                self.resolver.updateACLRole('tmp_admin', aid, scope=scope)
-                self.resolver.save_to_file()
-
-            if "set-priority" == action_type:
-                priority = self.get_value_from_args("priority", args)
-                self.resolver.updateACLRole('tmp_admin', aid, priority=priority)
-                self.resolver.save_to_file()
-
-            if "set-action" == action_type:
-                scope = self.get_value_from_args("scope", args)
-                actions = self.get_value_from_args("acl-definition", args)
-                self.resolver.updateACLRole('tmp_admin', aid, actions=actions, scope=scope)
-                self.resolver.save_to_file()
-
-            if "set-role" == action_type:
-                rolename = self.get_value_from_args("rolename", args)
-                self.resolver.updateACLRole('tmp_admin', aid, use_role=rolename)
-                self.resolver.save_to_file()
+            o = self.proxy.openObject("object", dn)
+            o.remove()
         except Exception as e:
             print e
 
@@ -729,7 +638,7 @@ class ACLAdmin(object):
             print("DN: \t\t%s" % (aclset['dn']))
             for acl in aclset['acls']:
                 if "rolename" in acl:
-                    print(" - ROLE: \t\t%s" % acl["rolename"])
+                    print(" - ROLE: \t%s" % acl["rolename"])
                 else:
                     print(" - SCOPE: \t%s" % acl["scope"])
                     print(" - PRIORITY: \t%s" % acl["priority"])
@@ -752,12 +661,6 @@ def print_help():
     # Define cli-script parameters
     print(_(
         "\nAdministrate GOsa-ng permissions from the command line."
-        "\n"
-        "\nusage: acl-admin [-c CFGFILE] <list/add/update/remove> <acl/role> [parameters]"
-        "\n"
-        "\noptional arguments:"
-        "\n  -c CFGFILE, --config CFGFILE"
-        "\n    the agent-config file to use"
         "\n"))
 
     # Add methods marked with the helpDecorator
