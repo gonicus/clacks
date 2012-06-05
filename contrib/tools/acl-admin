@@ -7,7 +7,7 @@ import sys
 import copy
 import gettext
 from clacks.common import Environment
-from clacks.agent.acl import ACL, ACLResolver, ACLException
+from clacks.common.components import JSONServiceProxy
 
 _ = gettext.gettext
 
@@ -41,103 +41,12 @@ class ACLAdmin(object):
     All script actions will be forwarded to exported gosa commands.
     """
 
-    acl_scope_map = {
-        'one': ACL.ONE,
-        'sub': ACL.SUB,
-        'psub': ACL.PSUB,
-        'reset': ACL.RESET,
-        }
+    proxy = None
 
-    def __init__(self, cfgFile, drop=False):
-        Environment.noargs = True
-        Environment.config = cfgFile
-        self.env = Environment.getInstance()
+    def __init__(self):
+        self.proxy = JSONServiceProxy('https://agent:secret@localhost:8080/rpc')
 
-        acl_file = os.path.join(self.env.config.getBaseDir(), "agent.acl")
-        self.acl_file = acl_file
-
-        # Drop an existing agent.acl file
-        if drop:
-            if os.path.exists(self.acl_file):
-
-                # Create a unique nackup name for the  existing acl file
-                backup_name = "agent.acl._back_" + time.strftime("%d.%m.%Y")
-                new_name = backup_name
-                cnt = 1
-                while os.path.exists(os.path.join(self.env.config.getBaseDir(), new_name)):
-                    new_name = backup_name + "_" + str(cnt)
-                    cnt += 1
-
-                # Now try to rename the existing agent.acl file
-                try:
-                    os.rename(acl_file, os.path.join(self.env.config.getBaseDir(), new_name))
-                except Exception as e:
-                    print e
-                    print(_("\n... maybe you are not allowed to access the acls file! (%s)") % acl_file)
-                    print
-                    sys.exit(1)
-            else:
-                print(_("\n... no old acl-file found, nothing dropped!"))
-                print
-                sys.exit(1)
-
-        # Try to load the ACLResolver class.
-        try:
-            self.resolver = ACLResolver()
-        except IOError as e:
-            print e
-            print
-            print(_("... maybe you are not allowed to access the acls file! (%s)") % acl_file)
-            print
-            sys.exit(1)
-        except ValueError as e:
-            print e
-            print(_("... the file seems to be corrupt!"))
-            print
-            print(_("You could try the --drop-all-permissions to create a new and clean acl-file! (%s)") % acl_file)
-            print
-            sys.exit(1)
-
-        self.ldap_base = self.resolver.base
-
-        # Tell the resolver to ignore acls for us (temporarily)
-        self.resolver.admins.append('tmp_admin')
-
-        # Build reverse scope map
-        self.rev_acl_scope_map = dict((v, k) for k, v in
-                self.acl_scope_map.iteritems())
-
-    def idToScopeStr(self, sid):
-        """
-        Helper method which converts a given scope value from int to string.
-
-        =========== =============
-        key         description
-        =========== =============
-        sid         The corresponding scope value
-        =========== =============
-
-        """
-        if sid in self.rev_acl_scope_map:
-            return(self.rev_acl_scope_map[sid])
-        else:
-            return(_("unknown"))
-
-    def strToScopeId(self, sid):
-        """
-        Helper method which converts a given scope value from string to int.
-
-        =========== =============
-        key         description
-        =========== =============
-        sid         The corresponding scope value
-        =========== =============
-
-        """
-        if sid in self.acl_scope_map:
-            return(self.acl_scope_map[sid])
-        else:
-            return(None)
+        self.acl_scope_map = ["sub", "one", "psub", "reset"]
 
     def printReportHeader(self, string):
         """
@@ -228,13 +137,13 @@ class ACLAdmin(object):
                     "\n"
                     "\n Command examples:"
                     "\n   A single definition without options:"
-                    "\n       '^org\.clacks\..*:rwcdm'"
+                    "\n       '^org\.clacks\..*:rwcdsex'"
                     "\n"
                     "\n   A single definition with options:"
-                    "\n       '^org\.clacks\..*:rwcdm:uid=user_*:tag=event'"
+                    "\n       '^org\.clacks\..*:rwcdsex:uid=user_*:tag=event'"
                     "\n"
                     "\n   A multi action defintion"
-                    "\n       '^org\.clacks\.events$:rwcdm,^org\.clacks\.factory$:rw,^org\.clacks\.something$:rw'"
+                    "\n       '^org\.clacks\.events$:rwcdsex,^org\.clacks\.factory$:rw,^org\.clacks\.something$:rw'"
                     "\n"
                     "\n <topic> "
                     "\n ========"
@@ -303,7 +212,6 @@ class ACLAdmin(object):
         args        The arguments-list we want to extract from.
         =========== =============
         """
-
         # Validate given id-parameters
         if name in ["id"]:
             if len(args):
@@ -388,7 +296,7 @@ class ACLAdmin(object):
                     else:
                         action = {}
                         action['topic'] = entries[0]
-                        action['acls'] = entries[1]
+                        action['acl'] = entries[1]
                         action['options'] = {}
                         for opt in entries[2::]:
                             opt_entries = opt.split("=")
@@ -508,7 +416,7 @@ class ACLAdmin(object):
         else:
             raise(Exception("Unknown parameter to extract: %s" % (name,)))
 
-    @helpDecorator(_("Updates an acl entry"), _("update acl [set-scope|set-members|set-priority|set-action|set-role] <ID> [parameters]"))
+    #@helpDecorator(_("Updates an acl entry"), _("update acl [set-scope|set-members|set-priority|set-action|set-role] <DN> [parameters]"))
     def update_acl(self, args):
         """
         This method updates an existing ACL-rule
@@ -523,12 +431,25 @@ class ACLAdmin(object):
         """
 
         action_type = self.get_value_from_args("acl-update-action", args)
+        dn = self.get_value_from_args("base", args)
+        o = self.proxy.openObject("object", dn)
+
+        print "Acl-Items:"
+
+        cnt = 0
+        for acl in o.AclSets:
+            
+            print "\t%s: %s" % (cnt, str(acl))
+            cnt += 1
         aid = self.get_value_from_args("id", args)
+
+        print aid
+        print o.AclSets[aid]
+        return
 
         try:
             if "set-scope" == action_type:
                 scope = self.get_value_from_args("scope", args)
-                self.resolver.updateACL('tmp_admin', aid, scope=scope)
                 self.resolver.save_to_file()
 
             if "set-members" == action_type:
@@ -552,7 +473,7 @@ class ACLAdmin(object):
                 self.resolver.updateACL('tmp_admin', aid, rolename=rolename)
                 self.resolver.save_to_file()
 
-        except ACLException as e:
+        except Exception as e:
             print e
 
     @helpDecorator(_("Removes an acl entry"), _("remove acl <ID>"))
@@ -572,7 +493,7 @@ class ACLAdmin(object):
         try:
             self.resolver.removeACL('tmp_admin', rid)
             self.resolver.save_to_file()
-        except ACLException as e:
+        except Exception as e:
             print e
 
     @helpDecorator(_("Adds a new acl entry"), _("add acl [with-role|with-actions] <base> <priority> <members> [rolename|<scope> <topic> <acls> [options]]"))
@@ -589,10 +510,17 @@ class ACLAdmin(object):
         =========== =============
         """
 
+        import pprint
+
         try:
             action_type = self.get_value_from_args("acl-add-action", args)
             actions = rolename = scope = members = None
             base = self.get_value_from_args("base", args)
+            try:
+                o = self.proxy.openObject("object", base)
+            except:
+                print "invalid base given, failed to open object!"
+                
             priority = self.get_value_from_args("priority", args)
             members = self.get_value_from_args("members", args)
 
@@ -600,13 +528,24 @@ class ACLAdmin(object):
             if action_type == "with-actions":
                 scope = self.get_value_from_args("scope", args)
                 actions = self.get_value_from_args("acl-definition", args)
-                self.resolver.addACL('tmp_admin', base, priority, members, actions=actions, scope=scope)
+                acl_entry = {"priority": priority, 
+                            "members": members, 
+                            "actions": actions, 
+                            "scope": scope}
+
             else:
                 rolename = self.get_value_from_args("rolename", args)
-                self.resolver.addACL('tmp_admin', base, priority, members, rolename=rolename)
+                acl_entry = {"priority": priority, 
+                            "members": members, 
+                            "rolename": rolename}
 
-            self.resolver.save_to_file()
-        except ACLException as e:
+
+            asets = o.AclSets
+            asets.append(acl_entry)
+            o.AclSets = asets
+            o.commit()
+
+        except Exception as e:
             print e
 
     @helpDecorator(_("Adds a new acl entry to an existing role"), _("add roleacl [with-role|with-actions] <rolename> <priority> [rolename|<scope> <topic> <acls> [options]]"))
@@ -639,7 +578,7 @@ class ACLAdmin(object):
                 self.resolver.addACLToRole('tmp_admin', rolename, priority, use_role=use_role)
 
             self.resolver.save_to_file()
-        except ACLException as e:
+        except Exception as e:
             print e
 
     @helpDecorator(_("Adds a new role"), _("add role <rolename>"))
@@ -656,11 +595,13 @@ class ACLAdmin(object):
         =========== =============
         """
 
+        base = self.get_value_from_args("base", args)
         rolename = self.get_value_from_args("rolename", args)
         try:
-            self.resolver.addACLRole('tmp_admin', rolename)
-            self.resolver.save_to_file()
-        except ACLException as e:
+            o = self.proxy.openObject("object", base, "AclRole")
+            o.name = rolename
+            o.commit()
+        except Exception as e:
             print e
 
     @helpDecorator(_("Removes an acl entry from a role"), _("remove roleacl <ID>"))
@@ -679,7 +620,7 @@ class ACLAdmin(object):
         try:
             self.resolver.removeRoleACL('tmp_admin', aid)
             self.resolver.save_to_file()
-        except ACLException as e:
+        except Exception as e:
             print e
 
     @helpDecorator(_("Removes a role"), _("remove role <rolename>"))
@@ -698,7 +639,7 @@ class ACLAdmin(object):
         try:
             self.resolver.removeRole('tmp_admin', rolename)
             self.resolver.save_to_file()
-        except ACLException as e:
+        except Exception as e:
             print e
 
     @helpDecorator(_("Updates an acl entry of a role"), _("update roleacl [set-scope|set-priority|set-action|set-role] <ID> [parameters]"))
@@ -739,15 +680,15 @@ class ACLAdmin(object):
                 rolename = self.get_value_from_args("rolename", args)
                 self.resolver.updateACLRole('tmp_admin', aid, use_role=rolename)
                 self.resolver.save_to_file()
-        except ACLException as e:
+        except Exception as e:
             print e
 
     @helpDecorator(_("List all defined acls"))
-    def list_acls(self, args):
+    def list(self, args):
         """
         This method lists all defined acls.
 
-        (It can be accessed via parameter 'list acls')
+        (It can be accessed via parameter 'list')
 
         =========== =============
         key         description
@@ -757,51 +698,50 @@ class ACLAdmin(object):
         """
 
         self.printReportHeader(_("Listing of active GOsa-ng acls"))
-        allSets = self.resolver.list_acls()
+        allSets = self.proxy.getACLs()
         if not len(allSets):
             print(_("   ... none"))
         for aclset in allSets:
-            for acl in aclset:
-                print("ID: %i \tSCOPE(%s)\tPRIORITY: %s \t BASE (%s)" % (acl.id, self.idToScopeStr(acl.scope), acl.priority, aclset.base))
-                print("       \tMEMBER: %s" % (", ".join(acl.members)))
-                if acl.uses_role:
-                    print(_("\trefers to role: %s") % acl.role)
-                else:
-                    cnt = 1
-                    print("     \tACTIONS:")
-                    for action in acl.actions:
-                        print("        - %s. %s (%s)  %s" % (cnt, action['topic'], action['acls'], action['options']))
-                        cnt += 1
 
-    @helpDecorator(_("List all defined roles"))
-    def list_roles(self, args):
-        """
-        This method lists all defined acl roles.
+            print("BASE: \t\t%s" % (aclset['base']))
+            print("PRIORITY: \t%s" % (aclset['priority']))
+            if "rolename" in aclset:
+                print("ACTIONS: \t-")
+                print("ROLE: \t\t%s" % aclset["rolename"])
+            else:
+                first = True
+                print("SCOPE: \t\t%s" % (aclset['scope']))
+                for action in aclset['actions']:
+                    if first:
+                        print("ACTIONS:\t%s (%s)  %s" % (action['topic'], action['acls'], action['options']))
+                        first = False
+                    else:
+                        print("        \t%s (%s)  %s" % (action['topic'], action['acls'], action['options']))
+                print("ROLE: \t\t-")
+            print
 
-        (It can be accessed via parameter 'list acls')
-
-        =========== =============
-        key         description
-        =========== =============
-        args        The arguments-list we use as information basis
-        =========== =============
-        """
         self.printReportHeader(_("Listing of active GOsa-ng roles"))
-        allRoles = self.resolver.list_roles()
+        allRoles = self.proxy.getACLRoles()
         if not len(allRoles):
             print("   ... none")
-        for aclrole in allRoles:
-            print("  Entries for role: %s" % aclrole)
-            for acl in allRoles[aclrole]:
-                print("ID: %i \tROLENAME: %s \t SCOPE (%s) \t PRIORITY (%s)" % (acl.id, allRoles[aclrole].name, self.idToScopeStr(acl.scope), str(acl.priority)))
-                if acl.uses_role:
-                    print(_("\trefers to role: %s") % acl.role)
+        for aclset in allRoles:
+            print("ROLENAME: \t%s" % (aclset['name']))
+            print("DN: \t\t%s" % (aclset['dn']))
+            for acl in aclset['acls']:
+                if "rolename" in acl:
+                    print(" - ROLE: \t\t%s" % acl["rolename"])
                 else:
-                    cnt = 1
-                    print("     \tACTIONS:")
-                    for action in acl.actions:
-                        print("        - %s. %s (%s)  %s" % (cnt, action['topic'], action['acls'], action['options']))
-                        cnt += 1
+                    print(" - SCOPE: \t%s" % acl["scope"])
+                    print(" - PRIORITY: \t%s" % acl["priority"])
+                    first = True
+                    for action in acl['actions']:
+                        if first:
+                            print(" - ACTIONS:\t%s (%s)  %s" % (action['topic'], action['acls'], action['options']))
+                            first = False
+                        else:
+                            print(" -      \t%s (%s)  %s" % (action['topic'], action['acls'], action['options']))
+                print "---"
+            print
 
 
 def print_help():
@@ -818,9 +758,6 @@ def print_help():
         "\noptional arguments:"
         "\n  -c CFGFILE, --config CFGFILE"
         "\n    the agent-config file to use"
-        "\n"
-        "\n  --drop-all-permissions"
-        "\n    drops all defined acls and roles"
         "\n"))
 
     # Add methods marked with the helpDecorator
@@ -842,31 +779,8 @@ def main():
         print_help()
         sys.exit(0)
 
-    # Predefine some values
-    cfgFile = os.environ.get('CLACKS_CONFIG_DIR') or "/etc/clacks"
-
-    # Parse out config parameter
-    my_args = sys.argv
-    if "-c" in my_args or "--config" in my_args:
-        if "-c" in my_args:
-            pos = my_args.index("-c")
-        if "--config" in my_args:
-            pos = my_args.index("--config")
-
-        if (len(my_args) - 1) <= pos:
-            print(_("Missing config file parameter!"))
-            sys.exit(1)
-        else:
-            cfgFile = my_args[pos]
-            del(my_args[pos])
-            del(my_args[pos])
-
-    # Check if we've to drop all acls and roles
-    if "--drop-all-permissions" in my_args:
-        a = ACLAdmin(cfgFile, drop=True)
-        sys.exit(1)
-
     # Remove the first element of my_args, we don't need it.
+    my_args = sys.argv
     del(my_args[0])
 
     # If no args were given print the help message and quit
@@ -885,7 +799,7 @@ def main():
 
         method = re.sub(r"^_", "", method)
         if method in helpDecorator.method_list:
-            a = ACLAdmin(cfgFile)
+            a = ACLAdmin()
             ret = getattr(a, method)(args_left)
             called = True
 

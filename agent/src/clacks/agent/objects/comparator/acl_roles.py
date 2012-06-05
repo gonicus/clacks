@@ -1,5 +1,6 @@
 import gettext
 from clacks.agent.objects.comparator import ElementComparator
+from clacks.agent.acl import ACLResolver
 from pkg_resources import resource_filename
 
 
@@ -20,37 +21,44 @@ class IsAclRole(ElementComparator):
 
         # Check each property value
         entry_cnt = 0
+
+        ares = ACLResolver.get_instance()
+        rolenames = [n["name"] for n in ares.getACLRoles(None) if "name" in n]
+
         for entry in value:
             entry_cnt += 1
-
-            if not "scope" in entry:
-                errors.append(_("missing attribute 'scope' for acl-entry %s!" % (str(entry_cnt,))))
-                return False
 
             if not "priority" in entry:
                 errors.append(_("missing attribute 'priority' for acl-entry %s!" % (str(entry_cnt,))))
                 return False
 
-            if not "actions" in entry:
-                errors.append(_("missing attribute 'actions'! for acl-entry %s!" % (str(entry_cnt,))))
-                return False
+            if "rolename" in entry:
 
-            for item in entry['actions']:
-
-                # If a 'rolename' is we do not allow other dict, keys
-                if "rolename" in item and len(item) != 1:
-                    keys = item.keys()
-                    keys.remove("rolename")
-                    errors.append(_("you can either use a 'rolename' or use 'topic, acl, options' but not both! (%s)" % (', '.join(keys),)))
+                if "actions" in entry and entry["actions"]:
+                    errors.append(_("you can either use a rolename or actions but not both!"))
                     return False
 
                 # If a 'rolename' is we do not allow other dict, keys
-                if "rolename" in item and not type(item["rolename"]) in [str, unicode]:
-                    errors.append(_("expected attribute '%s' to be of type '%s' but found '%s!'" % ("rolename", str, type(item["rolename"]))))
+                if type(entry["rolename"]) not in [str, unicode]:
+                    errors.append(_("expected attribute '%s' to be of type '%s' but found '%s!'" % ("rolename", str, type(entry["rolename"]))))
                     return False
 
-                # We do not have a role here...
-                if not "rolename" in item:
+                # Ensure that the given role exists....
+                if not entry["rolename"] in rolenames:
+                    errors.append(_("unknown role %s used!" % entry["rolename"]))
+                    return False
+
+            else:
+
+                if not "scope" in entry:
+                    errors.append(_("missing attribute 'scope' for acl-entry %s!" % (str(entry_cnt,))))
+                    return False
+
+                if not "actions" in entry:
+                    errors.append(_("missing attribute 'actions'! for acl-entry %s!" % (str(entry_cnt,))))
+                    return False
+
+                for item in entry['actions']:
 
                     # Check  if the required keys 'topic' and 'acl' are present
                     if not "topic" in item:
