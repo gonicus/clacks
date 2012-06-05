@@ -1,5 +1,6 @@
 import gettext
 from clacks.agent.objects.comparator import ElementComparator
+from clacks.agent.acl import ACLResolver
 from pkg_resources import resource_filename
 
 
@@ -20,6 +21,10 @@ class IsAclRole(ElementComparator):
 
         # Check each property value
         entry_cnt = 0
+
+        ares = ACLResolver.get_instance()
+        rolenames = [n["name"] for n in ares.getACLRoles(None) if "name" in n]
+
         for entry in value:
             entry_cnt += 1
 
@@ -38,7 +43,10 @@ class IsAclRole(ElementComparator):
                     errors.append(_("expected attribute '%s' to be of type '%s' but found '%s!'" % ("rolename", str, type(entry["rolename"]))))
                     return False
 
-                #TODO: Ensure that the given role exists.... but how?
+                # Ensure that the given role exists....
+                if not entry["rolename"] in rolenames:
+                    errors.append(_("unknown role %s used!" % entry["rolename"]))
+                    return False
 
             else:
 
