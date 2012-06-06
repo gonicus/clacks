@@ -28,7 +28,7 @@ class helpDecorator(object):
         self.largeHelp = largeHelp
 
     def __call__(self, func):
-        helpDecorator.method_list[f.__name__] = (self.smallHelp, self.largeHelp)
+        helpDecorator.method_list[func.__name__] = (self.smallHelp, self.largeHelp)
         return func
 
 
