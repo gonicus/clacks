@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import re
-import os
-import time
 import sys
 import copy
 import gettext
-from clacks.common import Environment
+#from clacks.common import Environment
 from clacks.common.components import JSONServiceProxy
 
 _ = gettext.gettext
@@ -29,9 +27,9 @@ class helpDecorator(object):
         self.smallHelp = smallHelp
         self.largeHelp = largeHelp
 
-    def __call__(self, f):
+    def __call__(self, func):
         helpDecorator.method_list[f.__name__] = (self.smallHelp, self.largeHelp)
-        return f
+        return func
 
 
 class ACLAdmin(object):
@@ -45,7 +43,6 @@ class ACLAdmin(object):
 
     def __init__(self):
         self.proxy = JSONServiceProxy('https://agent:secret@localhost:8080/rpc')
-
         self.acl_scope_map = ["sub", "one", "psub", "reset"]
 
     def printReportHeader(self, string):
@@ -115,7 +112,7 @@ class ACLAdmin(object):
         """
 
         help_msgs = {
-                "dn": _("The dn parameter specifies the location for the acl/role"),
+                "dn": _("The dn parameter specifies the location of an acl/role"),
                 "base": _("The base parameter specifies the position acls are active for. For example: dc=example,dc=de"),
                 "scope": _("The scope value specifies how the acl role influences sub-directories"
                     "\n Possible scope values are:"
@@ -172,7 +169,6 @@ class ACLAdmin(object):
                     "\n The format is:  key:value;key:value;..."
                     "\n  e.g. (Do not forget to use quotes!)"
                     "\n   'uid:peter;eventType:start;'"),
-                "id": _("ID parameters have to be of type int!"),
                 "rolename": _("The name of the acl role you want to set"),
                 "acl-update-action": _("You can specify the upate-action for the acl."
                     "\n  Possible values are:"
@@ -213,25 +209,9 @@ class ACLAdmin(object):
         args        The arguments-list we want to extract from.
         =========== =============
         """
-        # Validate given id-parameters
-        if name in ["id"]:
-            if len(args):
-                try:
-                    if int(args[0]) < -100 or int(args[0]) > 100:
-                        self.para_invalid(name)
-                        sys.exit(1)
-                except KeyError:
-                    self.para_invalid(name)
-                    sys.exit(1)
-                aid = int(args[0])
-                del(args[0])
-                return(aid)
-            else:
-                self.para_missing(name)
-                sys.exit(1)
 
         # Validate the base value
-        elif name in ["base", "dn"]:
+        if name in ["base", "dn"]:
             if len(args):
                 base = args[0]
                 del(args[0])
@@ -305,8 +285,8 @@ class ACLAdmin(object):
                                 self.para_missing(name)
                                 sys.exit(1)
                             else:
-                                on, ov = opt_entries
-                                action['options'][on] = ov
+                                onname, ovalue = opt_entries
+                                action['options'][oname] = ovalue
                         actions.append(action)
                 del(args[0])
                 return(actions)
@@ -417,98 +397,81 @@ class ACLAdmin(object):
         else:
             raise(Exception("Unknown parameter to extract: %s" % (name,)))
 
-    @helpDecorator(_("Adds a new acl entry"), _("add acl [with-role|with-actions] <base> <priority> <members> [rolename|<scope> <topic> <acls> [options]]"))
+    @helpDecorator(_("Adds a new acl entry to an object"), _("add acl [with-role|with-actions] <base> <priority> <members> [rolename|<scope> <topic> <acls> [options]]"))
     def add_acl(self, args):
         """
-        This method creates a new ACL rule
-
-        (It can be accessed via parameter 'add acl')
-
-        =========== =============
-        key         description
-        =========== =============
-        args        The arguments-list we use as information basis
-        =========== =============
+        This method creates adds a new ACL to an object
         """
+        
+        # Extract information from script-arguments
+        action_type = self.get_value_from_args("acl-add-action", args)
+        actions = rolename = scope = members = None
+        base = self.get_value_from_args("base", args)
 
-        import pprint
-
+        # Try to open the target object
         try:
-            action_type = self.get_value_from_args("acl-add-action", args)
-            actions = rolename = scope = members = None
-            base = self.get_value_from_args("base", args)
-            try:
-                o = self.proxy.openObject("object", base)
-            except:
-                print "invalid base given, failed to open object!"
-                
-            priority = self.get_value_from_args("priority", args)
-            members = self.get_value_from_args("members", args)
+            obj = self.proxy.openObject("object", base)
+        except:
+            print "invalid base given, failed to open object!"
+            
+        priority = self.get_value_from_args("priority", args)
+        members = self.get_value_from_args("members", args)
 
-            # Do we create an acl with direct actions or do we use a role.
-            if action_type == "with-actions":
-                scope = self.get_value_from_args("scope", args)
-                actions = self.get_value_from_args("acl-definition", args)
-                acl_entry = {"priority": priority, 
-                            "members": members, 
-                            "actions": actions, 
-                            "scope": scope}
+        # Do we create an acl with direct actions or do we use a role.
+        if action_type == "with-actions":
+            scope = self.get_value_from_args("scope", args)
+            actions = self.get_value_from_args("acl-definition", args)
+            acl_entry = {"priority": priority, 
+                        "members": members, 
+                        "actions": actions, 
+                        "scope": scope}
 
-            else:
-                rolename = self.get_value_from_args("rolename", args)
-                acl_entry = {"priority": priority, 
-                            "members": members, 
-                            "rolename": rolename}
+        else:
+            rolename = self.get_value_from_args("rolename", args)
+            acl_entry = {"priority": priority, 
+                        "members": members, 
+                        "rolename": rolename}
+        # Update the object with the given acls
+        asets = obj.AclSets
+        asets.append(acl_entry)
+        obj.AclSets = asets
+        obj.commit()
 
-
-            asets = o.AclSets
-            asets.append(acl_entry)
-            o.AclSets = asets
-            o.commit()
-
-        except Exception as e:
-            print e
-
-    @helpDecorator(_("Adds a new acl entry to an existing role"), _("add roleacl [with-role|with-actions] <rolename> <priority> [rolename|<scope> <topic> <acls> [options]]"))
+    @helpDecorator(_("Adds a new acl entry to an existing role"), _("add roleacl [with-role|with-actions] <dn> <priority> [rolename|<scope> <topic> <acls> [options]]"))
     def add_roleacl(self, args):
         """
-        This method creates a new ACLRole entry for a given role.
-
-        (It can be accessed via parameter 'add roleacl')
-
-        =========== =============
-        key         description
-        =========== =============
-        args        The arguments-list we use as information basis
-        =========== =============
+        Adds a new acl entry to an existing role
         """
 
+        # Extract information from script-arguments
+        action_type = self.get_value_from_args("acl-add-action", args)
+        actions = rolename = scope = members = None
+        obj_dn = self.get_value_from_args("dn", args)
+
+        # Try to open the target object
         try:
-            action_type = self.get_value_from_args("acl-add-action", args)
-            actions = rolename = scope = members = None
-            dn = self.get_value_from_args("dn", args)
+            obj = self.proxy.openObject("object", obj_dn)
+        except:
+            print "invalid dn given, failed to open object!"
 
-            o = self.proxy.openObject("object", dn)
+        priority = self.get_value_from_args("priority", args)
 
-            priority = self.get_value_from_args("priority", args)
+        # Do we create an acl with direct actions or do we use a role.
+        aclentry = {"priority": priority}
+        if action_type == "with-actions":
+            scope = self.get_value_from_args("scope", args)
+            actions = self.get_value_from_args("acl-definition", args)
+            aclentry["scope"] = scope
+            aclentry["actions"] = actions
+        else:
+            use_role = self.get_value_from_args("rolename", args)
+            aclentry["rolename"] = use_role
 
-            # Do we create an acl with direct actions or do we use a role.
-            aclentry = {"priority": priority}
-            if action_type == "with-actions":
-                scope = self.get_value_from_args("scope", args)
-                actions = self.get_value_from_args("acl-definition", args)
-                aclentry["scope"] = scope
-                aclentry["actions"] = actions
-            else:
-                use_role = self.get_value_from_args("rolename", args)
-                aclentry["rolename"] = use_role
-
-            roles = o.AclRoles
-            roles.append(aclentry)
-            o.AclRoles = roles
-            o.commit()
-        except Exception as e:
-            print e
+        # Update the object with the given acls
+        roles = obj.AclRoles
+        roles.append(aclentry)
+        obj.AclRoles = roles
+        obj.commit()
 
     @helpDecorator(_("Adds a new role"), _("add role <rolename>"))
     def add_role(self, args):
@@ -527,31 +490,27 @@ class ACLAdmin(object):
         base = self.get_value_from_args("base", args)
         rolename = self.get_value_from_args("rolename", args)
         try:
-            o = self.proxy.openObject("object", base, "AclRole")
-            o.name = rolename
-            o.commit()
-        except Exception as e:
-            print e
+            obj = self.proxy.openObject("object", base, "AclRole")
+        except:
+            print "invalid dn given, failed to open object!"
+
+        obj.name = rolename
+        obj.commit()
 
     @helpDecorator(_("Removes all acl entries from a role"), _("remove roleacl <DN>"))
     def remove_roleacls(self, args):
         """
-        This method removes removes all defined acls from a role 
-
-        =========== =============
-        key         description
-        =========== =============
-        args        The arguments-list we use as information basis
-        =========== =============
+        This method removes all defined acls from a role 
         """
 
-        dn = self.get_value_from_args("dn", args)
+        obj_dn = self.get_value_from_args("dn", args)
         try:
-            o = self.proxy.openObject("object", dn)
-            o.AclRoles = []
-            o.commit()
-        except Exception as e:
-            print e
+            obj = self.proxy.openObject("object", obj_dn)
+        except:
+            print "invalid dn given, failed to open object!"
+
+        obj.AclRoles = []
+        obj.commit()
 
     @helpDecorator(_("Removes all acl entries for a given base"), _("remove roleacl <BASE>"))
     def remove_acls(self, args):
@@ -565,19 +524,21 @@ class ACLAdmin(object):
         =========== =============
         """
 
-        dn = self.get_value_from_args("base", args)
+        obj_dn = self.get_value_from_args("base", args)
         try:
-            o = self.proxy.openObject("object", dn)
-            o.retract("Acl")
-            o.commit()
-        except Exception as e:
-            print e
+            obj = self.proxy.openObject("object", obj_dn)
+        except:
+            print "invalid dn given, failed to open object!"
+
+        # Retract the acl extension
+        obj.retract("Acl")
+        obj.commit()
 
 
     @helpDecorator(_("Removes a role"), _("remove role <DN>"))
     def remove_role(self, args):
         """
-        This method removes an ACLRole
+        This method removes a role
 
         =========== =============
         key         description
@@ -585,12 +546,13 @@ class ACLAdmin(object):
         args        The arguments-list we use as information basis
         =========== =============
         """
-        dn = self.get_value_from_args("dn", args)
+        obj_dn = self.get_value_from_args("dn", args)
         try:
-            o = self.proxy.openObject("object", dn)
-            o.remove()
-        except Exception as e:
-            print e
+            obj = self.proxy.openObject("object", obj_dn)
+        except:
+            print "invalid dn given, failed to open object!"
+
+        obj.remove()
 
     @helpDecorator(_("List all defined acls"))
     def list(self, args):
@@ -669,13 +631,13 @@ def print_help():
     # Add methods marked with the helpDecorator
     mlist = sorted(helpDecorator.method_list)
     for method in mlist:
-        sh = helpDecorator.method_list[method][0]
-        lh = helpDecorator.method_list[method][1]
+        short = helpDecorator.method_list[method][0]
+        long_header = helpDecorator.method_list[method][1]
         method = re.sub("_", " ", method)
-        if lh != "":
-            print("  %s %s\n    %s\n" % (method.ljust(20), sh, lh))
+        if long_header != "":
+            print("  %s %s\n    %s\n" % (method.ljust(20), short, long_header))
         else:
-            print("  %s %s" % (method.ljust(20), sh))
+            print("  %s %s" % (method.ljust(20), short))
 
 
 def main():
@@ -705,8 +667,8 @@ def main():
 
         method = re.sub(r"^_", "", method)
         if method in helpDecorator.method_list:
-            a = ACLAdmin()
-            ret = getattr(a, method)(args_left)
+            admin = ACLAdmin()
+            getattr(admin, method)(args_left)
             called = True
 
     if not called:
