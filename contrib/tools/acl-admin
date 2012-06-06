@@ -4,8 +4,24 @@ import re
 import sys
 import copy
 import gettext
+import getopt
+
 #from clacks.common import Environment
 from clacks.common.components import JSONServiceProxy
+import socket
+import getpass
+#pylint: disable=W0611
+import readline
+import textwrap
+import locale
+from types import ListType
+from urllib2 import HTTPError
+from dbus.exceptions import DBusException
+
+from clacks.common.components import AMQPServiceProxy
+from clacks.common.components import JSONServiceProxy, JSONRPCException
+from clacks.common.components.zeroconf_client import ZeroconfClient
+from clacks.common.utils import parseURL
 
 _ = gettext.gettext
 
@@ -41,8 +57,8 @@ class ACLAdmin(object):
 
     proxy = None
 
-    def __init__(self):
-        self.proxy = JSONServiceProxy('https://agent:secret@localhost:8080/rpc')
+    def __init__(self, proxy):
+        self.proxy = proxy
         self.acl_scope_map = ["sub", "one", "psub", "reset"]
 
     def printReportHeader(self, string):
@@ -76,7 +92,7 @@ class ACLAdmin(object):
         print(_("<%s> parameter is missing!") % name)
         desc = self.get_para_help(name)
         if len(desc):
-            print " %s" % desc
+            print(" %s" % desc)
         print
 
     def para_invalid(self, name):
@@ -95,7 +111,7 @@ class ACLAdmin(object):
         print(_("<%s> parameter is invalid!") % name)
         desc = self.get_para_help(name)
         if len(desc):
-            print " %s" % desc
+            print(" %s" % desc)
         print
 
     def get_para_help(self, para):
@@ -412,7 +428,7 @@ class ACLAdmin(object):
         try:
             obj = self.proxy.openObject("object", base)
         except:
-            print "invalid base given, failed to open object!"
+            print("invalid base given, failed to open object!")
             
         priority = self.get_value_from_args("priority", args)
         members = self.get_value_from_args("members", args)
@@ -435,7 +451,7 @@ class ACLAdmin(object):
         # Check if we've to add the Acl-extension
         ext_types = obj.get_extension_types()
         if not "Acl" in ext_types:
-            print "the given object does not support Acls"
+            print("the given object does not support Acls")
             return
        
         # Add Acl-extension on demand
@@ -464,7 +480,7 @@ class ACLAdmin(object):
         try:
             obj = self.proxy.openObject("object", obj_dn)
         except:
-            print "invalid dn given, failed to open object!"
+            print("invalid dn given, failed to open object!")
             return
 
         priority = self.get_value_from_args("priority", args)
@@ -505,7 +521,7 @@ class ACLAdmin(object):
         try:
             obj = self.proxy.openObject("object", base, "AclRole")
         except:
-            print "invalid dn given, failed to open object!"
+            print("invalid dn given, failed to open object!")
 
         obj.name = rolename
         obj.commit()
@@ -520,7 +536,7 @@ class ACLAdmin(object):
         try:
             obj = self.proxy.openObject("object", obj_dn)
         except:
-            print "invalid dn given, failed to open object!"
+            print("invalid dn given, failed to open object!")
 
         obj.AclRoles = []
         obj.commit()
@@ -541,18 +557,18 @@ class ACLAdmin(object):
         try:
             obj = self.proxy.openObject("object", obj_dn)
         except:
-            print "invalid dn given, failed to open object!"
+            print("invalid dn given, failed to open object!")
             return
 
         # Check if we've to add the Acl-extension
         ext_types = obj.get_extension_types()
         if not "Acl" in ext_types:
-            print "the given object does not support Acls"
+            print("the given object does not support Acls")
             return
        
         # Add Acl-extension on demand
         if not ext_types["Acl"]:
-            print "the acl-extension is not activated for the given object!"
+            print("the acl-extension is not activated for the given object!")
             return
 
         # Retract the acl extension
@@ -575,7 +591,7 @@ class ACLAdmin(object):
         try:
             obj = self.proxy.openObject("object", obj_dn)
         except:
-            print "invalid dn given, failed to open object!"
+            print("invalid dn given, failed to open object!")
 
         obj.remove()
 
@@ -617,7 +633,7 @@ class ACLAdmin(object):
                             first = False
                         else:
                             print(" -      \t%s (%s)  %s" % (action['topic'], action['acls'], action['options']))
-                print "---"
+                print("---")
             print
 
         self.printReportHeader(_("Listing of active clacks roles"))
@@ -641,7 +657,7 @@ class ACLAdmin(object):
                             first = False
                         else:
                             print(" -      \t%s (%s)  %s" % (action['topic'], action['acls'], action['options']))
-                print "---"
+                print("---")
             print
 
 
@@ -669,14 +685,33 @@ def print_help():
 
 def main():
 
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "u:p:", ["user=", "password="])
+    except getopt.GetoptError:
+        print "??"
+        sys.exit(2)
+
+    service_uri = ''
+    username = ''
+    password = ''
+
+    if len(args) >= 1:
+        service_uri = args[0]
+
+    
+    for opt, arg in opts:
+        if opt in ("-u", "--user"):
+            username = arg
+        elif opt in ("-p", "--password"):
+            password = arg
+
     # Print out help if no args is given.
     if "-h" in sys.argv:
         print_help()
         sys.exit(0)
 
-    # Remove the first element of my_args, we don't need it.
-    my_args = sys.argv
-    del(my_args[0])
+    # Remove the first element, username and password of my_args, we don't need it.
+    my_args = sys.argv[1 + len(opts)::]
 
     # If no args were given print the help message and quit
     if len(my_args) == 0:
@@ -694,7 +729,8 @@ def main():
 
         method = re.sub(r"^_", "", method)
         if method in helpDecorator.method_list:
-            admin = ACLAdmin()
+            con = connect('', username, password)
+            admin = ACLAdmin(con)
             getattr(admin, method)(args_left)
             called = True
 
@@ -704,5 +740,103 @@ def main():
         sys.exit(1)
 
 
+def connect(service_uri='', username='', password=''):
+    """ Creates a service proxy object from the arguments. """
+
+    # Clean arguments
+    username = username.strip()
+    password = password.strip()
+    service_uri = service_uri.strip()
+    domain = socket.getfqdn().split('.', 1)[1]
+
+    if len(service_uri) <= 0:
+        print(_("Searching service provider..."))
+        try:
+            service_uri = ZeroconfClient.discover(['_amqps._tcp', '_amqp._tcp',
+                '_https._tcp', '_http._tcp'], domain=domain)[0]
+
+        except DBusException as e:
+            print(_("DBUS error: %s") % str(e))
+            sys.exit(1)
+
+        except Exception as e:
+            print(e.__dict__)
+
+    # Test if one argument is still needed.
+    if len(service_uri) <= 0:
+        tmp = service_uri
+        service_uri = raw_input('Service URI: [%s]' % service_uri).strip()
+        if len(service_uri) <= 0:
+            service_uri = tmp
+
+    # Chek if URL is parsable
+    url = parseURL(service_uri)
+
+    # If we have still no service host, quit, because the connect will fail
+    # pylint: disable-msg=E1101
+    if not url:
+        print(_("Need at least a service URI!"))
+        sys.exit(1)
+
+    # TRANSLATOR: Conected to URL, i.e. https://amqp.local:8080/rpc
+    print(_("Connected to %s://%s:%s/%s") %
+            (url['scheme'], url['host'], url['port'], url['path']))
+
+    # Check weather to use method parameters or the URI elements.
+    # If URI username is set and the method username is not set
+    if url['user']:
+        username = url['user']
+    # If URI password is set and the username is set and the method password is not set
+    if url['password']:
+        password = url['password']
+
+    # If we have still no credentials query for them
+    if len(username) <= 0:
+        # TRANSLATOR: This is a prompt - Username [joe]:
+        username = raw_input(_("Username") + " [%s]: " % getpass.getuser()).strip()
+        if len(username) <= 0:
+            username = getpass.getuser()
+
+    if len(password) <= 0:
+        # TRANSLATOR: This is a prompt - Password:
+        password = getpass.getpass(_("Password") + ': ')
+
+    # Create service proxy
+    if url['scheme'][0:4] == "amqp":
+        connection = '%s://%s:%s@%s:%s/%s' % (
+                url['scheme'],
+                username,
+                password,
+                url['host'],
+                url['port'],
+                url['path'])
+
+        proxy = AMQPServiceProxy(connection)
+
+    elif url['scheme'][0:4] == "http":
+        connection = '%s://%s:%s/%s' % (
+                url['scheme'],
+                url['host'],
+                url['port'],
+                url['path'])
+
+        proxy = JSONServiceProxy(connection)
+    else:
+        print(_("The selected protocol is not supported!"))
+        sys.exit(1)
+
+    # Try to log in
+    try:
+        if not proxy.login(username, password):
+            print(_("Login of user '%s' failed") % username)
+            sys.exit(1)
+    except Exception, e:
+        print(e)
+        sys.exit(1)
+
+    return proxy
+
+
 if __name__ == '__main__':
     main()
+
