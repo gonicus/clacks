@@ -431,6 +431,18 @@ class ACLAdmin(object):
             acl_entry = {"priority": priority, 
                         "members": members, 
                         "rolename": rolename}
+
+        # Check if we've to add the Acl-extension
+        ext_types = obj.get_extension_types()
+        if not "Acl" in ext_types:
+            print "the given object does not support Acls"
+            return
+       
+        # Add Acl-extension on demand
+        if not ext_types["Acl"]:
+            obj.extend("Acl")
+            obj.AclSets = []
+
         # Update the object with the given acls
         asets = obj.AclSets
         asets.append(acl_entry)
@@ -453,6 +465,7 @@ class ACLAdmin(object):
             obj = self.proxy.openObject("object", obj_dn)
         except:
             print "invalid dn given, failed to open object!"
+            return
 
         priority = self.get_value_from_args("priority", args)
 
@@ -476,7 +489,7 @@ class ACLAdmin(object):
     @helpDecorator(_("Adds a new role"), _("add role <rolename>"))
     def add_role(self, args):
         """
-        This method creates a new ACL ROLE
+        This method creates a new role
 
         (It can be accessed via parameter 'add role')
 
@@ -529,6 +542,18 @@ class ACLAdmin(object):
             obj = self.proxy.openObject("object", obj_dn)
         except:
             print "invalid dn given, failed to open object!"
+            return
+
+        # Check if we've to add the Acl-extension
+        ext_types = obj.get_extension_types()
+        if not "Acl" in ext_types:
+            print "the given object does not support Acls"
+            return
+       
+        # Add Acl-extension on demand
+        if not ext_types["Acl"]:
+            print "the acl-extension is not activated for the given object!"
+            return
 
         # Retract the acl extension
         obj.retract("Acl")
