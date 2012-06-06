@@ -5,9 +5,6 @@ import sys
 import copy
 import gettext
 import getopt
-
-#from clacks.common import Environment
-from clacks.common.components import JSONServiceProxy
 import socket
 import getpass
 #pylint: disable=W0611
@@ -17,9 +14,7 @@ import locale
 from types import ListType
 from urllib2 import HTTPError
 from dbus.exceptions import DBusException
-
-from clacks.common.components import AMQPServiceProxy
-from clacks.common.components import JSONServiceProxy, JSONRPCException
+from clacks.common.components import JSONServiceProxy, JSONRPCException, AMQPServiceProxy
 from clacks.common.components.zeroconf_client import ZeroconfClient
 from clacks.common.utils import parseURL
 
@@ -664,9 +659,6 @@ class ACLAdmin(object):
 def print_help():
     """
     This method prints out the command-line help for this script.
-
-    
-
     """
 
     # Define cli-script parameters

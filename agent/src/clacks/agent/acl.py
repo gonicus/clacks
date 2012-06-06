@@ -1389,7 +1389,7 @@ class ACLResolver(Plugin):
                     'priority': 100,
                     'members': admins,
                     'scope': acl_scope_map[ACL.PSUB],
-                    'actions': [{'topic': '*', 'acls':'rwcdmsxe', 'options': {}}]})
+                    'actions': [{'topic': '*', 'acls':'rwcdsxe', 'options': {}}]})
 
         return(result)
 
