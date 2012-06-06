@@ -664,12 +664,18 @@ class ACLAdmin(object):
 def print_help():
     """
     This method prints out the command-line help for this script.
+
+    
+
     """
 
     # Define cli-script parameters
     print(_(
         "\nAdministrate clacks permissions from the command line."
-        "\n"))
+        "\n"
+        "\n ./acl-admin [-u/--user username] [-p/--password passwort] [-s/--url service-url] <action>"
+        "\n"
+        "\nActions:"))
 
     # Add methods marked with the helpDecorator
     mlist = sorted(helpDecorator.method_list)
@@ -686,24 +692,21 @@ def print_help():
 def main():
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "u:p:", ["user=", "password="])
+        opts, args = getopt.getopt(sys.argv[1:], "u:p:s", ["user=", "password=", "url="])
     except getopt.GetoptError:
-        print "??"
         sys.exit(2)
 
     service_uri = ''
     username = ''
     password = ''
 
-    if len(args) >= 1:
-        service_uri = args[0]
-
-    
     for opt, arg in opts:
         if opt in ("-u", "--user"):
             username = arg
         elif opt in ("-p", "--password"):
             password = arg
+        elif opt in ("-s", "--url"):
+            service_uri = arg
 
     # Print out help if no args is given.
     if "-h" in sys.argv:
@@ -711,7 +714,7 @@ def main():
         sys.exit(0)
 
     # Remove the first element, username and password of my_args, we don't need it.
-    my_args = sys.argv[1 + len(opts)::]
+    my_args = sys.argv[1 + (len(opts) *2)::]
 
     # If no args were given print the help message and quit
     if len(my_args) == 0:
@@ -729,7 +732,7 @@ def main():
 
         method = re.sub(r"^_", "", method)
         if method in helpDecorator.method_list:
-            con = connect('', username, password)
+            con = connect(service_uri, username, password)
             admin = ACLAdmin(con)
             getattr(admin, method)(args_left)
             called = True
