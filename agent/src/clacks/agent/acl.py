@@ -845,8 +845,10 @@ class ACLResolver(Plugin):
             for acl in self.acl_roles[aclrole]:
                 used_ids.append(acl.id)
 
+        self.next_acl_id += 1
         while self.next_acl_id in used_ids:
             self.next_acl_id += 1
+
         return(self.next_acl_id)
 
     def clear(self):
@@ -919,7 +921,6 @@ class ACLResolver(Plugin):
                     acl.uses_role = True
                     acl.scope = None
                     acl.role = rn
-                    acl.id = self.get_next_acl_id()
                     acl.set_priority(int(acl_entry["priority"]))
                     roles[o.name].add(acl)
                     self.add_acl_role(roles[o.name])
@@ -927,7 +928,6 @@ class ACLResolver(Plugin):
 
                     # Add a normal (non-role) base acl entry
                     acl = ACLRoleEntry(acl_scope_map[acl_entry["scope"]])
-                    acl.id = self.get_next_acl_id()
                     acl.set_priority(int(acl_entry["priority"]))
                     for action in acl_entry["actions"]:
                         acl.add_action(action["topic"], action['acl'], action['options'])
@@ -966,13 +966,11 @@ class ACLResolver(Plugin):
                     acl = ACL(role=str(acls_data['rolename']))
                     acl.set_members(acls_data["members"])
                     acl.set_priority(int(acls_data["priority"]))
-                    acl.id = self.get_next_acl_id()
                     acls.add(acl)
                 else:
                     acl = ACL(acl_scope_map[acls_data["scope"]])
                     acl.set_members(acls_data["members"])
                     acl.set_priority(int(acls_data["priority"]))
-                    acl.id = self.get_next_acl_id()
                     for action in acls_data["actions"]:
                         acl.add_action(action['topic'], action['acl'], action['options'])
 
@@ -1387,7 +1385,8 @@ class ACLResolver(Plugin):
                 if not self.base in result:
                     result[self.base] = []
                 result[self.base].append(
-                   {'priority': 100,
+                        {'id': None,
+                    'priority': 100,
                     'members': admins,
                     'scope': acl_scope_map[ACL.PSUB],
                     'actions': [{'topic': '*', 'acls':'rwcdmsxe', 'options': {}}]})
@@ -1397,7 +1396,7 @@ class ACLResolver(Plugin):
     @Command(needsUser=True, __help__=N_("Remove defined ACL by ID."))
     def removeACL(self, user, acl_id):
         """
-        This command removes an acl an acl definition by its id.
+        This command removes an acl definition by its id.
 
         ============== =============
         Key            Description
@@ -1666,7 +1665,7 @@ class ACLResolver(Plugin):
                      'acls': []}
 
             for acl in self.acl_roles[aclrole]:
-                acl_entry = {}
+                acl_entry = {'id': acl.id}
                 if acl.uses_role:
                     acl_entry['priority'] = acl.priority
                     acl_entry['rolename'] = acl.role

@@ -602,6 +602,7 @@ class ACLAdmin(object):
             print("BASE: \t\t%s" % (base))
 
             for acl in allSets[base]:
+                print(" - ID: \t\t%s" % acl["id"])
                 if "rolename" in acl:
                     print(" - MEMBERS: \t%s" % ", ".join(acl["members"]))
                     print(" - ROLE: \t%s" % acl["rolename"])
@@ -627,6 +628,7 @@ class ACLAdmin(object):
             print("ROLENAME: \t%s" % (aclset['name']))
             print("DN: \t\t%s" % (aclset['dn']))
             for acl in aclset['acls']:
+                print(" - ID: \t\t%s" % acl["id"])
                 if "rolename" in acl:
                     print(" - ROLE: \t%s" % acl["rolename"])
                 else:
