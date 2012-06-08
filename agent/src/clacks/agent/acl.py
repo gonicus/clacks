@@ -805,6 +805,11 @@ class ACLResolver(Plugin):
         """
         React on object modifications to keep active ACLs up to date.
         """
+
+        if event.__class__.__name__ == "IndexScanFinished":
+            self.log.info("index scan finished, triggered acl-reload")
+            self.load_acls()
+
         if isinstance(event, ObjectChanged):
             if event.o_type in ["Acl", "AclRole"] and event.reason in ["post update", "post extend", "post create", "post remove", "post retract"]:
                 self.log.info("object change for %s triggered acl-reload" % (event.dn))

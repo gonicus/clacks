@@ -14,7 +14,7 @@ import zope.event
 import datetime
 from itertools import izip
 from lxml import etree, objectify
-from zope.interface import implements
+from zope.interface import Interface, implements
 from time import time
 from ldap import DN_FORMAT_LDAPV3
 from clacks.common import Environment
@@ -23,6 +23,10 @@ from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import Command, Plugin, PluginRegistry
 from clacks.agent.objects import ObjectFactory, ObjectProxy, ObjectChanged, SCOPE_BASE, SCOPE_ONE, SCOPE_SUB, ProxyException, ObjectException, SearchWrapper
 from clacks.agent.lock import GlobalLock
+
+
+class IndexScanFinished():
+    pass
 
 
 class FilterException(Exception):
@@ -175,13 +179,13 @@ class ObjectIndex(Plugin):
             self.log.info("processed %d objects in %ds" % (len(res), t1 - t0))
 
         finally:
+            zope.event.notify(IndexScanFinished())
             GlobalLock.release()
 
     def index_active(self):
         return self._indexed
 
     def __handle_events(self, event):
-        uuid = event.uuid
 
         if isinstance(event, ObjectChanged):
             uuid = event.uuid
