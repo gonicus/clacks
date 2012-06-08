@@ -527,7 +527,7 @@ class ObjectProxy(object):
             raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
 
         # Load from primary object
-        objs = self.__attribute_map[name]['primary']
+        objs = self.__attribute_map[name].keys()
         for obj in objs:
             if self.__base.__class__.__name__ == obj:
                 return getattr(self.__base, name)
@@ -561,7 +561,13 @@ class ObjectProxy(object):
                 raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
 
         found = False
-        for obj in self.__attribute_map[name]['primary'] + self.__attribute_map[name]['objects']:
+        classes = self.__attribute_map[name].keys()
+        nc = []
+        for cls in classes:
+            nc = nc + self.__attribute_map[name][cls]['primary'] + self.__attribute_map[name][cls]['objects']
+
+        for obj in nc:
+
             if self.__base.__class__.__name__ == obj:
                 found = True
                 setattr(self.__base, name, value)

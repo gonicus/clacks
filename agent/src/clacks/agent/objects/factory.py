@@ -199,8 +199,7 @@ class ObjectFactory(object):
             find = objectify.ObjectPath("Object.Attributes.Attribute")
             if find.hasattr(self.__xml_defs[oc]):
                 for attr in find(self.__xml_defs[oc]):
-                    if not bool(load(attr, "Foreign", False)):
-                        res[attr.Name.text] = oc
+                    res[attr.Name.text] = oc
         return res
 
     def getReferences(self, s_obj=None, s_attr=None):
@@ -238,6 +237,46 @@ class ObjectFactory(object):
 
         return res
 
+    def __get_primary_class_for_foreign_attribute(self, attribute, obj):
+
+        # Find the base-object for the given object
+        baseclass = None
+        if obj in self.__xml_defs:
+
+            # Is this class a base-object?i
+            if bool(load(self.__xml_defs[obj], "BaseObject", False)):
+                baseclass = obj
+
+            # Detect base-object for the given class
+            else:
+                find = objectify.ObjectPath("Object.Extends")
+                if find.hasattr(self.__xml_defs[obj]):
+                    for attr in find(self.__xml_defs[obj]).iterchildren():
+                        baseclass = attr.text
+                        break
+
+            # No base class found
+            if not baseclass:
+                raise Exception("could not detect base-object for %s, is it really an extension?" % obj)
+
+            # Now find all possible extensions and check if they have an attribute defined with the given name
+            for item in self.__xml_defs.values():
+                find = objectify.ObjectPath("Object.Extends")
+                if find.hasattr(item):
+                    for ext in item["Extends"].iterchildren():
+                        if ext.text == baseclass:
+                            for attr in item["Attributes"].iterchildren():
+                                if attr.tag == "{http://www.gonicus.de/Objects}Attribute" and attr["Name"] == attribute:
+                                    return attr
+
+                for attr in self.__xml_defs[baseclass]["Attributes"].iterchildren():
+                    if attr.tag == "{http://www.gonicus.de/Objects}Attribute" and attr["Name"] == attribute:
+                        return attr
+
+            raise Exception("no primary attribute found for %s" % attribute)
+        else:
+            raise Exception("unknown object %s given" % obj)
+
     def getAttributes(self):
         """
         Returns a list of all object-attributes
@@ -253,7 +292,10 @@ class ObjectFactory(object):
                     if attr.tag == "{http://www.gonicus.de/Objects}Attribute":
                         obj = attr.getparent().getparent().Name.text
                         if not attr.Name.text in res:
-                            res[attr.Name.text] = {
+                            res[attr.Name.text] = {}
+
+                        if not obj in res[attr.Name.text]:
+                            res[attr.Name.text][obj] = {
                                 'description': attr.Description.text,
                                 'type': attr.Type.text,
                                 'multivalue': bool(load(attr, "MultiValue", False)),
@@ -264,7 +306,7 @@ class ObjectFactory(object):
                                 'objects': [],
                                 'primary': [],
                                 }
-                            res[attr.Name.text]['primary'].append(obj)
+                            res[attr.Name.text][obj]['primary'].append(obj)
 
         # Add foreign attributes
         for element in self.__xml_defs.values():
@@ -272,8 +314,10 @@ class ObjectFactory(object):
             if find.hasattr(element):
                 for attr in find(element).iterchildren():
                     if attr.tag == "{http://www.gonicus.de/Objects}ForeignAttribute":
+                        obj = attr.getparent().getparent().Name.text
                         if attr.Name.text in res:
-                            res[attr.Name.text]['objects'].append(obj)
+                            for cls in res[attr.Name.text]:
+                                res[attr.Name.text][cls]['objects'].append(obj)
         return res
 
     def load_object_types(self):
@@ -551,9 +595,18 @@ class ObjectFactory(object):
 
         # Append attributes
         if 'Attributes' in classr.__dict__:
-            for prop in classr['Attributes']['Attribute']:
+
+            for prop in classr['Attributes'].iterchildren():
 
                 self.log.debug("adding property: '%s'" % (str(prop['Name']),))
+
+                # If this is a foreign attribute then load the definitions from its original class
+                if prop.tag == "{http://www.gonicus.de/Objects}Attribute":
+                    foreign = False
+                else:
+                    foreign = True
+                    attrName = str(prop['Name'])
+                    prop = self.__get_primary_class_for_foreign_attribute(attrName, name)
 
                 # Read backend definition per property (if it exists)
                 backend = defaultBackend
@@ -605,7 +658,6 @@ class ObjectFactory(object):
                 mandatory = bool(load(prop, "Mandatory", False))
                 readonly = bool(load(prop, "ReadOnly", False))
                 case_sensitive = bool(load(prop, "CaseSensitive", False))
-                foreign = bool(load(prop, "Foreign", False))
 
                 # Check for property dependencies
                 depends_on = []
