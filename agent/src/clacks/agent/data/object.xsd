@@ -6,57 +6,24 @@
 
   <complexType name="Object">
     <all>
-      <element name="Name" type="token" maxOccurs="1"
-        minOccurs="1"
-        >
-      </element>
-      <element name="Description" type="string" maxOccurs="1"
-        minOccurs="1"
-        >
-      </element>
+      <element name="Name" type="token" maxOccurs="1" minOccurs="1"></element>
+      <element name="Description" type="string" maxOccurs="1" minOccurs="1"></element>
       <element name="DisplayName" type="string" maxOccurs="1" minOccurs="0"></element>
-      <element name="BackendParameters"
-        type="o:BackendParameters" maxOccurs="1" minOccurs="0"
-        >
-      </element>
-      <element name="Backend" type="token" maxOccurs="1"
-        minOccurs="1"
-        >
-      </element>
-      <element name="Attributes" type="o:Attributes"
-        maxOccurs="1" minOccurs="0"
-        >
-      </element>
-      <element name="Container" type="o:ContainerType"
-        maxOccurs="1" minOccurs="0"
-        >
-      </element>
+      <element name="BackendParameters" type="o:BackendParameters" maxOccurs="1" minOccurs="0"></element>
+      <element name="Backend" type="token" maxOccurs="1" minOccurs="1"></element>
+      <element name="Attributes" type="o:Attributes" maxOccurs="1" minOccurs="0"></element>
+      <element name="Container" type="o:ContainerType" maxOccurs="1" minOccurs="0"></element>
       <element name="Extends" maxOccurs="1" minOccurs="0">
         <complexType>
           <sequence>
-            <element name="Value" type="string"
-              maxOccurs="unbounded" minOccurs="1"
-              >
-            </element>
+            <element name="Value" type="string" maxOccurs="unbounded" minOccurs="1"></element>
           </sequence>
         </complexType>
       </element>
-      <element name="BaseObject" type="boolean" maxOccurs="1"
-        minOccurs="0"
-        >
-      </element>
-      <element name="Methods" type="o:Methods" maxOccurs="1"
-        minOccurs="0"
-        >
-      </element>
-      <element name="FixedRDN" type="string" maxOccurs="1"
-        minOccurs="0"
-        >
-      </element>
-      <element name="RequiresExtension" type="o:RequiresExtension"
-        maxOccurs="1" minOccurs="0"
-        >
-      </element>
+      <element name="BaseObject" type="boolean" maxOccurs="1" minOccurs="0"></element>
+      <element name="Methods" type="o:Methods" maxOccurs="1" minOccurs="0"></element>
+      <element name="FixedRDN" type="string" maxOccurs="1" minOccurs="0"></element>
+      <element name="RequiresExtension" type="o:RequiresExtension" maxOccurs="1" minOccurs="0"></element>
     </all>
   </complexType>
 
@@ -68,100 +35,39 @@
 
   <complexType name="Attribute">
     <all>
-      <element name="Name" type="token" maxOccurs="1"
-        minOccurs="1"
-        >
+      <element name="Name" type="token" maxOccurs="1" minOccurs="1"></element>
+      <element name="Description" type="string" maxOccurs="1" minOccurs="0">
       </element>
-      <element name="Description" type="string" maxOccurs="1"
-        minOccurs="0"
-        >
-      </element>
-      <element name="DependsOn" type="o:DependsOn"
-        maxOccurs="1" minOccurs="0"
-        >
-      </element>
-      <element name="Backend" type="token" maxOccurs="1"
-        minOccurs="0"
-        >
-      </element>
-      <element name="Type" type="o:AttributeTypes"
-        maxOccurs="1" minOccurs="1"
-        >
-      </element>
+      <element name="DependsOn" type="o:DependsOn" maxOccurs="1" minOccurs="0"></element>
+      <element name="Backend" type="token" maxOccurs="1" minOccurs="0"></element>
+      <element name="Type" type="o:AttributeTypes" maxOccurs="1" minOccurs="1"></element>
       <element name="Values" maxOccurs="1" minOccurs="0">
         <complexType>
           <sequence>
-            <element name="Value" type="string"
-              maxOccurs="unbounded" minOccurs="1"
-              >
-            </element>
+            <element name="Value" type="string" maxOccurs="unbounded" minOccurs="1"></element>
           </sequence>
         </complexType>
       </element>
-      <element name="Default" type="string" maxOccurs="1"
-        minOccurs="0"
-        >
-      </element>
-      <element name="BackendType"
-        type="o:AttributeBackendTypes" maxOccurs="1"
-        minOccurs="0"
-        >
-      </element>
-      <element name="Validators" type="o:Validator"
-        maxOccurs="1" minOccurs="0"
-        >
-      </element>
-      <element name="InFilter" type="o:FilterElement"
-        maxOccurs="1" minOccurs="0"
-        >
-      </element>
-      <element name="OutFilter" type="o:FilterElement"
-        maxOccurs="1" minOccurs="0"
-        >
-      </element>
-      <element name="MultiValue" type="boolean" maxOccurs="1"
-        minOccurs="0"
-        >
-      </element>
-      <element name="ReadOnly" type="boolean" maxOccurs="1"
-        minOccurs="0"
-        >
-      </element>
-      <element name="Mandatory" type="boolean" maxOccurs="1"
-        minOccurs="0"
-        >
-      </element>
-      <element name="Unique" type="boolean" maxOccurs="1"
-        minOccurs="0"
-        >
-      </element>
-      <element name="Foreign" type="boolean" maxOccurs="1"
-        minOccurs="0"
-        >
-      </element>
+      <element name="Default" type="string" maxOccurs="1" minOccurs="0"></element>
+      <element name="BackendType" type="o:AttributeBackendTypes" maxOccurs="1" minOccurs="0"></element>
+      <element name="Validators" type="o:Validator" maxOccurs="1" minOccurs="0"></element>
+      <element name="InFilter" type="o:FilterElement" maxOccurs="1" minOccurs="0"></element>
+      <element name="OutFilter" type="o:FilterElement" maxOccurs="1" minOccurs="0"></element>
+      <element name="MultiValue" type="boolean" maxOccurs="1" minOccurs="0"></element>
+      <element name="ReadOnly" type="boolean" maxOccurs="1" minOccurs="0"></element>
+      <element name="Mandatory" type="boolean" maxOccurs="1" minOccurs="0"></element>
+      <element name="Unique" type="boolean" maxOccurs="1" minOccurs="0"></element>
+      <element name="Foreign" type="boolean" maxOccurs="1" minOccurs="0"></element>
       <element name="BlockedBy" maxOccurs="1" minOccurs="0">
         <complexType>
           <sequence>
-            <element name="Name" type="string" maxOccurs="1"
-              minOccurs="1"
-              >
-            </element>
-            <element name="Value" type="string"
-              maxOccurs="1" minOccurs="1"
-              >
-            </element>
+            <element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+            <element name="Value" type="string" maxOccurs="1" minOccurs="1"></element>
           </sequence>
-
         </complexType>
       </element>
-      <element name="CaseSensitive" type="boolean" maxOccurs="1"
-        minOccurs="0"
-        >
-      </element>
-      <element name="References" type="o:References"
-        maxOccurs="1" minOccurs="0"
-        >
-      </element>
+      <element name="CaseSensitive" type="boolean" maxOccurs="1" minOccurs="0"></element>
+      <element name="References" type="o:References" maxOccurs="1" minOccurs="0"></element>
       <element name="NotIndexed" type="boolean" maxOccurs="1" minOccurs="0"></element>
     </all>
   </complexType>
@@ -206,22 +112,10 @@
 
   <complexType name="Method">
     <all>
-      <element name="Name" type="token" maxOccurs="1"
-        minOccurs="1"
-        >
-      </element>
-      <element name="MethodParameters" type="o:MethodParameters"
-        maxOccurs="1" minOccurs="0"
-        >
-      </element>
-      <element name="Command" type="string" maxOccurs="1"
-        minOccurs="1"
-        >
-      </element>
-      <element name="CommandParameters"
-        type="o:CommandParameter" maxOccurs="1" minOccurs="0"
-        >
-      </element>
+      <element name="Name" type="token" maxOccurs="1" minOccurs="1"></element>
+      <element name="MethodParameters" type="o:MethodParameters" maxOccurs="1" minOccurs="0"></element>
+      <element name="Command" type="string" maxOccurs="1" minOccurs="1"></element>
+      <element name="CommandParameters" type="o:CommandParameter" maxOccurs="1" minOccurs="0"></element>
     </all>
   </complexType>
 
@@ -242,23 +136,14 @@
 
   <complexType name="Choice">
     <sequence>
-      <element name="When" type="o:When" maxOccurs="unbounded"
-        minOccurs="1"
-        >
-      </element>
+      <element name="When" type="o:When" maxOccurs="unbounded" minOccurs="1"></element>
     </sequence>
   </complexType>
 
   <complexType name="When">
     <sequence>
-      <element name="ConditionChain" type="o:ConditionChain"
-        maxOccurs="1" minOccurs="1"
-        >
-      </element>
-      <element name="FilterChain" type="o:FilterChain"
-        maxOccurs="unbounded" minOccurs="1"
-        >
-      </element>
+      <element name="ConditionChain" type="o:ConditionChain" maxOccurs="1" minOccurs="1"></element>
+      <element name="FilterChain" type="o:FilterChain" maxOccurs="unbounded" minOccurs="1"></element>
       <element name="Else" type="o:Else" maxOccurs="1" minOccurs="0"></element>
     </sequence>
 
@@ -273,10 +158,7 @@
   <complexType name="Filter">
     <sequence>
       <element name="Name" type="token" maxOccurs="1" minOccurs="1"></element>
-      <element name="Param" type="string" maxOccurs="unbounded"
-        minOccurs="0"
-        >
-      </element>
+      <element name="Param" type="string" maxOccurs="unbounded" minOccurs="0"></element>
     </sequence>
   </complexType>
 
@@ -289,10 +171,7 @@
   <complexType name="ConditionChain">
     <choice>
       <element name="Condition" type="o:Condition" maxOccurs="1" minOccurs="0"></element>
-      <element name="ConditionOperator"
-        type="o:ConditionOperator"
-        maxOccurs="1" minOccurs="0">
-      </element>
+      <element name="ConditionOperator" type="o:ConditionOperator" maxOccurs="1" minOccurs="0"></element>
     </choice>
   </complexType>
 
@@ -305,11 +184,7 @@
 
   <complexType name="Validator">
     <choice>
-      <element name="ConditionOperator"
-        type="o:ConditionOperator" maxOccurs="1"
-        minOccurs="0"
-        >
-      </element>
+      <element name="ConditionOperator" type="o:ConditionOperator" maxOccurs="1" minOccurs="0"></element>
       <element name="Condition" type="o:Condition" maxOccurs="1" minOccurs="0"></element>
     </choice>
   </complexType>
@@ -323,14 +198,8 @@
 
   <complexType name="ConditionOperator">
     <sequence>
-      <element name="Operator" type="o:NewType" maxOccurs="1"
-        minOccurs="1"
-        >
-      </element>
-      <element name="LeftConditionChain"
-        type="o:ConditionChain"
-        maxOccurs="1" minOccurs="1">
-      </element>
+      <element name="Operator" type="o:NewType" maxOccurs="1" minOccurs="1"></element>
+      <element name="LeftConditionChain" type="o:ConditionChain" maxOccurs="1" minOccurs="1"></element>
       <element name="RightConditionChain" type="o:ConditionChain" maxOccurs="1" minOccurs="1"></element>
     </sequence>
   </complexType>
@@ -371,24 +240,15 @@
   <complexType name="MethodParameter">
     <all>
       <element name="Name" type="token" maxOccurs="1" minOccurs="1"></element>
-      <element name="Required" type="boolean" maxOccurs="1"
-        minOccurs="0"
-        >
-      </element>
+      <element name="Required" type="boolean" maxOccurs="1" minOccurs="0"></element>
       <element name="Default" type="string" maxOccurs="1" minOccurs="0"></element>
-      <element name="Type" type="o:AttributeTypes" maxOccurs="1"
-        minOccurs="1"
-        >
-      </element>
+      <element name="Type" type="o:AttributeTypes" maxOccurs="1" minOccurs="1"></element>
     </all>
   </complexType>
 
   <complexType name="MethodParameters">
     <sequence>
-      <element name="MethodParameter"
-        type="o:MethodParameter"
-        maxOccurs="unbounded" minOccurs="1">
-      </element>
+      <element name="MethodParameter" type="o:MethodParameter" maxOccurs="unbounded" minOccurs="1"></element>
     </sequence>
   </complexType>
 
@@ -402,19 +262,13 @@
 
   <complexType name="BackendParameters">
     <sequence>
-      <element name="Backend"
-        type="o:BackendParameter"
-        >
-      </element>
+      <element name="Backend" type="o:BackendParameter"></element>
     </sequence>
   </complexType>
 
   <complexType name="References">
     <sequence>
-      <element name="Reference" type="o:Reference"
-        maxOccurs="unbounded" minOccurs="1"
-        >
-      </element>
+      <element name="Reference" type="o:Reference" maxOccurs="unbounded" minOccurs="1"></element>
     </sequence>
   </complexType>
 

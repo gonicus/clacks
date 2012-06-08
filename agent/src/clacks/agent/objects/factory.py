@@ -104,7 +104,7 @@ class ObjectFactory(object):
 
         # Initialize parser
         #pylint: disable=E1101
-        schema_path = pkg_resources.resource_filename('clacks.agent', 'data/objects/object.xsd')
+        schema_path = pkg_resources.resource_filename('clacks.agent', 'data/object.xsd')
         schema_doc = open(schema_path).read()
 
         # Prepare list of object types
