@@ -243,28 +243,37 @@ class ObjectFactory(object):
         Returns a list of all object-attributes
         Including information about primary/foreign attributes.
         """
+
+        # Add primary attributes
         res = {}
         for element in self.__xml_defs.values():
             find = objectify.ObjectPath("Object.Attributes")
             if find.hasattr(element):
                 for attr in find(element).iterchildren():
-                    obj = attr.getparent().getparent().Name.text
-                    if not attr.Name.text in res:
-                        res[attr.Name.text] = {
-                            'description': attr.Description.text,
-                            'type': attr.Type.text,
-                            'multivalue': bool(load(attr, "MultiValue", False)),
-                            'mandatory': bool(load(attr, "Mandatory", False)),
-                            'read-only': bool(load(attr, "ReadOnly", False)),
-                            'case-sensitive': bool(load(attr, "CaseSensitive", False)),
-                            'unique': bool(load(attr, "Unique", False)),
-                            'objects': [],
-                            'primary': [],
-                            }
-                    if bool(load(attr, "Foreign", False)):
-                        res[attr.Name.text]['objects'].append(obj)
-                    else:
-                        res[attr.Name.text]['primary'].append(obj)
+                    if attr.tag == "{http://www.gonicus.de/Objects}Attribute":
+                        obj = attr.getparent().getparent().Name.text
+                        if not attr.Name.text in res:
+                            res[attr.Name.text] = {
+                                'description': attr.Description.text,
+                                'type': attr.Type.text,
+                                'multivalue': bool(load(attr, "MultiValue", False)),
+                                'mandatory': bool(load(attr, "Mandatory", False)),
+                                'read-only': bool(load(attr, "ReadOnly", False)),
+                                'case-sensitive': bool(load(attr, "CaseSensitive", False)),
+                                'unique': bool(load(attr, "Unique", False)),
+                                'objects': [],
+                                'primary': [],
+                                }
+                            res[attr.Name.text]['primary'].append(obj)
+
+        # Add foreign attributes
+        for element in self.__xml_defs.values():
+            find = objectify.ObjectPath("Object.Attributes")
+            if find.hasattr(element):
+                for attr in find(element).iterchildren():
+                    if attr.tag == "{http://www.gonicus.de/Objects}ForeignAttribute":
+                        if attr.Name.text in res:
+                            res[attr.Name.text]['objects'].append(obj)
         return res
 
     def load_object_types(self):

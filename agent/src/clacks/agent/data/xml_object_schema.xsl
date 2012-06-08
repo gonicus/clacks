@@ -65,36 +65,33 @@
                     <!-- Sort attributes by their name -->
                     <xsl:sort select="g:Name"/>
 
-                    <xsl:if test="not(g:Foreign='true')">
+                    <!-- Convert Type-Strings used by clacks into xsd:types To allow a more detailed validation -->
+                    <xsl:variable name="type">
+                      <xsl:choose>
+                        <xsl:when test="g:Type='String'">xsd:string</xsl:when>
+                        <xsl:when test="g:Type='Integer'">xsd:integer</xsl:when>
+                        <xsl:when test="g:Type='Boolean'">xsd:boolean</xsl:when>
+                        <xsl:when test="g:Type='Timestamp'">xsd:dateTime</xsl:when>
+                        <xsl:when test="g:Type='Date'">xsd:date</xsl:when>
+                        <xsl:otherwise>xsd:string</xsl:otherwise>
+                      </xsl:choose>
+                    </xsl:variable>
 
-                      <!-- Convert Type-Strings used by clacks into xsd:types To allow a more detailed validation -->
-                      <xsl:variable name="type">
-                        <xsl:choose>
-                          <xsl:when test="g:Type='String'">xsd:string</xsl:when>
-                          <xsl:when test="g:Type='Integer'">xsd:integer</xsl:when>
-                          <xsl:when test="g:Type='Boolean'">xsd:boolean</xsl:when>
-                          <xsl:when test="g:Type='Timestamp'">xsd:dateTime</xsl:when>
-                          <xsl:when test="g:Type='Date'">xsd:date</xsl:when>
-                          <xsl:otherwise>xsd:string</xsl:otherwise>
-                        </xsl:choose>
-                      </xsl:variable>
-
-                      <!-- Add an element describing the attribute --> 
-                      <xsl:element name="xsd:element">
-                        <xsl:attribute name="name"><xsl:value-of select="g:Name" /></xsl:attribute>
-                        <xsl:attribute name="minOccurs">0</xsl:attribute>
-                        <xsl:attribute name="maxOccurs">unbounded</xsl:attribute>
-                        <xsl:if test="g:Type='Binary'">
-                          <xsd:complexType>
-                            <xsd:simpleContent>
-                              <xsd:extension base="xsd:string">
-                                <xsd:attribute name="base64" type="xsd:boolean"></xsd:attribute>
-                              </xsd:extension>
-                            </xsd:simpleContent>
-                          </xsd:complexType>
-                        </xsl:if>
-                      </xsl:element>
-                    </xsl:if>
+                    <!-- Add an element describing the attribute --> 
+                    <xsl:element name="xsd:element">
+                      <xsl:attribute name="name"><xsl:value-of select="g:Name" /></xsl:attribute>
+                      <xsl:attribute name="minOccurs">0</xsl:attribute>
+                      <xsl:attribute name="maxOccurs">unbounded</xsl:attribute>
+                      <xsl:if test="g:Type='Binary'">
+                        <xsd:complexType>
+                          <xsd:simpleContent>
+                            <xsd:extension base="xsd:string">
+                              <xsd:attribute name="base64" type="xsd:boolean"></xsd:attribute>
+                            </xsd:extension>
+                          </xsd:simpleContent>
+                        </xsd:complexType>
+                      </xsl:if>
+                    </xsl:element>
                   </xsl:for-each>
                 </xsd:sequence>
               </xsd:complexType>

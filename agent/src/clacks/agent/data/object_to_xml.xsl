@@ -91,7 +91,7 @@
                             1. Skip foreign attributes
                             2. Skip attributes we've already added.
                     -->
-                    <xsl:if test="not(g:Foreign='true') and not(g:Name=preceding-sibling::g:Attribute/g:Name)">
+                    <xsl:if test="not(g:Name=preceding-sibling::g:Attribute/g:Name)">
 
                         <!-- Skip attributes that do not have to be indexed-->
                         <xsl:if test="($only_indexed='false') or ($only_indexed='true') and not(g:NotIndexed='true')">
