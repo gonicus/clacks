@@ -28,9 +28,16 @@
   </complexType>
 
   <complexType name="Attributes">
-    <sequence>
-      <element name="Attribute" type="o:Attribute" maxOccurs="unbounded" minOccurs="1"></element>
-    </sequence>
+    <choice maxOccurs="unbounded">
+      <element name="ForeignAttribute" type="o:ForeignAttribute" />
+      <element name="Attribute" type="o:Attribute" />
+    </choice>
+  </complexType>
+
+  <complexType name="ForeignAttribute" >
+    <all>
+      <element name="Name" type="token" maxOccurs="1" minOccurs="1"></element>
+    </all>
   </complexType>
 
   <complexType name="Attribute">

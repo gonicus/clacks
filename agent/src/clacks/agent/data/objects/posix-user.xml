@@ -11,12 +11,9 @@
     <Backend>LDAP</Backend>
 
     <Attributes>
-      <Attribute>
+      <ForeignAttribute>
         <Name>uid</Name>
-        <Description>User ID</Description>
-        <Type>String</Type>
-        <Foreign>true</Foreign>
-      </Attribute>
+      </ForeignAttribute>
       <Attribute>
         <Name>shadowLastChange</Name>
         <Description>The dat of the last password change.</Description>
