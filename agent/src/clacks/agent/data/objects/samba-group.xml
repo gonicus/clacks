@@ -47,12 +47,9 @@
           </Condition>
         </Validators>
       </Attribute>
-      <Attribute>
+      <ForeignAttribute>
         <Name>gidNumber</Name>
-        <Type>Integer</Type>
-        <Description></Description>
-        <Foreign>true</Foreign>
-      </Attribute>
+      </ForeignAttribute>
       <Attribute>
         <Name>sambaGroupType</Name>
         <Description>Samba group(0) Domain administrators(512) Domain users(513) Domain guests(514)</Description>

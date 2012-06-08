@@ -10,12 +10,15 @@
     <Backend>LDAP</Backend>
 
     <Attributes>
-      <Attribute>
+      <ForeignAttribute>
         <Name>uid</Name>
-        <Description>User ID</Description>
-        <Type>String</Type>
-        <Foreign>true</Foreign>
-      </Attribute>
+      </ForeignAttribute>
+      <ForeignAttribute>
+        <Name>uidNumber</Name>
+      </ForeignAttribute>
+      <ForeignAttribute>
+        <Name>displayName</Name>
+      </ForeignAttribute>
 
       <Attribute>
         <Name>sambaSID</Name>
@@ -35,12 +38,7 @@
           </FilterChain>
         </OutFilter>
       </Attribute>
-      <Attribute>
-        <Name>uidNumber</Name>
-        <Description></Description>
-        <Type>Integer</Type>
-        <Foreign>true</Foreign>
-      </Attribute>
+
       <Attribute>
         <Name>sambaLMPassword</Name>
         <Description>LanManager Password</Description>
@@ -203,12 +201,6 @@
             </FilterEntry>
           </FilterChain>
         </OutFilter>
-      </Attribute>
-      <Attribute>
-        <Name>displayName</Name>
-        <Description>Display name</Description>
-        <Type>String</Type>
-        <Foreign>true</Foreign>
       </Attribute>
 
       <Attribute>
