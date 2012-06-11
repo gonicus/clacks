@@ -316,7 +316,12 @@ class ObjectFactory(object):
         # Add base-object attributes
         res = {}
         if object_name in self.__xml_defs:
+            if not bool(load(self.__xml_defs[object_name], "BaseObject", False)):
+                raise Exception("object %s is no base-object" %s (object_name))
+
             res = extract_attrs(res, self.__xml_defs[object_name])
+        else:
+            raise Exception("unknown object-type %s" % (object_name))
 
         # Add extension attributes
         for element in self.__xml_defs.values():
