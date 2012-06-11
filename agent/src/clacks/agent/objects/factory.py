@@ -238,16 +238,24 @@ class ObjectFactory(object):
         return res
 
     def __get_primary_class_for_foreign_attribute(self, attribute, obj):
+        """
+        Returns the primary class for a given primary attribute which belongs
+        to the the given object (obj).
+
+        e.g.    __get_primary_class_for_foreign_attribute("uidNumber", "PosixUser")
+                would return "User"
+        """
 
         # Find the base-object for the given object
         baseclass = None
         if obj in self.__xml_defs:
 
-            # Is this class a base-object?i
+            # Is this class a base-object?
+            # Then we can skip searching for the base-object of the given extension.
             if bool(load(self.__xml_defs[obj], "BaseObject", False)):
                 baseclass = obj
 
-            # Detect base-object for the given class
+            # Detect base-object for the given object
             else:
                 find = objectify.ObjectPath("Object.Extends")
                 if find.hasattr(self.__xml_defs[obj]):
@@ -259,7 +267,7 @@ class ObjectFactory(object):
             if not baseclass:
                 raise Exception("could not detect base-object for %s, is it really an extension?" % obj)
 
-            # Now find all possible extensions and check if they have an attribute defined with the given name
+            # Now find all possible extensions and check if they contain a primary-attribute with the given name
             for item in self.__xml_defs.values():
                 find = objectify.ObjectPath("Object.Extends")
                 if find.hasattr(item):
@@ -276,6 +284,49 @@ class ObjectFactory(object):
             raise Exception("no primary attribute found for %s" % attribute)
         else:
             raise Exception("unknown object %s given" % obj)
+
+    def get_attributes_by_object(self, object_name):
+        """
+        Extracts all attributes with their base/secondary classes.
+
+        e.g.      get_attributes_by_object("User")
+                    {'CtxCallback':       {'base': 'SambaUser', 'secondary': []},
+                     'CtxCallbackNumber': {'base': 'SambaUser', 'secondary': []},
+                     ...
+                     'uid':               {'base': 'User',      'secondary': ['SambaUser', 'PosixUser']},
+                     ...
+        """
+
+        # Helper method used to extract attributes and their base and secondary
+        # classes.
+        def extract_attrs(res, obj):
+            find = objectify.ObjectPath("Object.Attributes")
+            if find.hasattr(obj):
+                for attr in find(obj).iterchildren():
+                    obj_name = attr.getparent().getparent().Name.text
+                    if not attr.Name.text in res:
+                        res[attr.Name.text] = {'base': None, 'secondary': []}
+
+                    if attr.tag == "{http://www.gonicus.de/Objects}Attribute":
+                        res[attr.Name.text]['base'] = obj_name
+                    else:
+                        res[attr.Name.text]['secondary'].append(obj_name)
+            return res
+
+        # Add base-object attributes
+        res = {}
+        if object_name in self.__xml_defs:
+            res = extract_attrs(res, self.__xml_defs[object_name])
+
+        # Add extension attributes
+        for element in self.__xml_defs.values():
+            find = objectify.ObjectPath("Object.Extends")
+            if find.hasattr(element):
+                for extends in find(element).iterchildren():
+                    if extends.text == object_name:
+                        obj = extends.getparent().getparent()
+                        res = extract_attrs(res, obj)
+        return res
 
     def getAttributes(self):
         """

@@ -121,7 +121,7 @@ class ObjectProxy(object):
                     self.__method_type_map[method] = obj
 
         # Generate read and write mapping for attributes
-        self.__attribute_map = self.__factory.getAttributes()
+        self.__attribute_map = self.__factory.get_attributes_by_object(self.__base_type)
 
         # Generate attribute to object-type mapping
         for attr in [n for n, o in self.__base.getProperties().items() if not o['foreign']]:
@@ -527,14 +527,13 @@ class ObjectProxy(object):
             raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
 
         # Load from primary object
-        objs = self.__attribute_map[name].keys()
-        for obj in objs:
-            if self.__base.__class__.__name__ == obj:
-                return getattr(self.__base, name)
+        base_object = self.__attribute_map[name]['base']
+        if self.__base_type == base_object:
+            return getattr(self.__base, name)
 
-            # Check for extensions
-            if obj in self.__extensions and self.__extensions[obj]:
-                return getattr(self.__extensions[obj], name)
+        # Check for extensions
+        if base_object in self.__extensions and self.__extensions[base_object]:
+            return getattr(self.__extensions[base_object], name)
 
         # Not set
         return None
@@ -561,14 +560,11 @@ class ObjectProxy(object):
                 raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
 
         found = False
-        classes = self.__attribute_map[name].keys()
-        nc = []
-        for cls in classes:
-            nc = nc + self.__attribute_map[name][cls]['primary'] + self.__attribute_map[name][cls]['objects']
+        classes = [self.__attribute_map[name]['base']] + self.__attribute_map[name]['secondary']
 
-        for obj in nc:
+        for obj in classes:
 
-            if self.__base.__class__.__name__ == obj:
+            if self.__base_type == obj:
                 found = True
                 setattr(self.__base, name, value)
                 continue
