@@ -270,9 +270,10 @@ class Query(MyNode):
                 if name == "*":
 
                     # Append all attributes of the object
-                    for name in tmp[suffix]['Attributes'][0]:
-                        if self.__has_access_to(user, object_dn, suffix, name):
-                            res[suffix][name] = tmp[suffix]['Attributes'][0][name]
+                    if "Attributes" in tmp[suffix]:
+                        for name in tmp[suffix]['Attributes'][0]:
+                            if self.__has_access_to(user, object_dn, suffix, name):
+                                res[suffix][name] = tmp[suffix]['Attributes'][0][name]
 
                     # Append special attributes like the DN etc.
                     for name in ('UUID', 'Type', 'DN', 'ParentDN'):
