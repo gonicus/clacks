@@ -438,8 +438,8 @@ class ObjectFactory(object):
             fixed_rdn = classr.FixedRDN.text if 'FixedRDN' in classr.__dict__ else None
 
             if info['base']:
-                uuid = be.dn2uuid(dn);
                 if be.identify(dn, info['backend_attrs'], fixed_rdn):
+                    uuid = be.dn2uuid(dn);
 
                     if info['base']:
                         if fixed_rdn:
