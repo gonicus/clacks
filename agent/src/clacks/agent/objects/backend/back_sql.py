@@ -62,11 +62,16 @@ class SQL(ObjectBackend):
         self.connect()
 
     def connect(self):
-        #TODO: Use config property
-        self.engine = create_engine('sqlite:////tmp/file.db', echo=False)
+
+        # Read storage path from config
+        con_str = self.env.config.get("sql.backend_connection", None)
+        if not con_str:
+            raise Exception("no sql.backend_connection found in config file")
+
+        # Create table definition
+        self.engine = create_engine(con_str, echo=False)
         self.metadata = MetaData()
         self.metadata.bind = self.engine
-
         self.objects = Table('objects', self.metadata,
                 Column('id', Integer, primary_key=True),
                 Column('dn', String(255)),
@@ -77,16 +82,21 @@ class SQL(ObjectBackend):
                 Column('modifyTimestamp', DateTime),
                 Column('attributes', BLOB())
                 )
-        self.metadata.create_all(self.engine)
 
+        # Create table on demand
+        self.metadata.create_all(self.engine)
 
     def load(self, item_uuid, info):
         """
         Load object properties for the given uuid
         """
+
+        # Search for all entries with the given uuid and combine found attributes
         s = self.objects.select(self.objects.c.uuid==item_uuid).execute()
         data = {}
         for entry in s:
+
+            # Convert json to python-dict and combine all attributes
             attrs = loads(entry.attributes)
             for attrname in attrs:
                 data[attrname] = attrs[attrname]
@@ -102,6 +112,8 @@ class SQL(ObjectBackend):
         """
         Identify an object by uuid
         """
+
+        # Try to find an entry with the given uuid and type
         s = self.objects.select(and_(self.objects.c.uuid==item_uuid, self.objects.c.type == params['type'])).execute()
         entry = s.first()
         if entry:
@@ -112,12 +124,16 @@ class SQL(ObjectBackend):
         """
         Remove an object extension
         """
+
+        # Remove the entry with the given uuid and type
         self.objects.delete().where(and_(self.objects.c.uuid==item_uuid, self.objects.c.type == params['type'])).execute()
 
     def extend(self, item_uuid, data, params, foreign_keys):
         """
         Create an object extension
         """
+
+        # create a new database entry for the given  object-type (params['type'])
         attrs = {}
         for item in data:
             attrs[item] = data[item]['value']
@@ -125,6 +141,8 @@ class SQL(ObjectBackend):
         data['type']=params['type']
         data['uuid']=item_uuid
         data['attributes']=dumps(attrs)
+
+        # Insert the entry in the database
         self.objects.insert().execute(**data)
 
     def dn2uuid(self, object_dn):
@@ -132,6 +150,8 @@ class SQL(ObjectBackend):
         Tries to identify the given dn in the json-database, if an
         entry with the given dn was found, its uuid is returned.
         """
+
+        # Try to find an entry with the given dn and return its uuid on success
         s = self.objects.select(self.objects.c.dn==object_dn).execute()
         entry = s.first()
         if entry:
@@ -143,7 +163,9 @@ class SQL(ObjectBackend):
         Tries to find the given uuid in the backend and returnd the
         dn for the entry.
         """
-        s = self.objects.select(self.objects.c.uuid==item_uuid).execute()
+
+        # Try to find an entry with the uuid and return its dn
+        s = self.objects.select(and_(self.objects.c.dn != None, self.objects.c.uuid==item_uuid)).execute()
         entry = s.first()
         if entry:
             return entry.dn
@@ -209,6 +231,7 @@ class SQL(ObjectBackend):
             attrs[attr] = data[attr]['value']
         obj['attributes'] = dumps(attrs)
 
+        # Insert the entry into the database
         self.objects.insert().execute(**obj)
 
         # Return the uuid of the generated entry
@@ -298,12 +321,17 @@ class SQL(ObjectBackend):
         """
         Update the given entry (by uuid) with a new set of values.
         """
+
+        # Try to find an entry with the given uuid and type (params['type']) and
+        # update the objects attributes.
         o_type = params['type']
         entry = self.objects.select(and_(self.objects.c.uuid==item_uuid, self.objects.c.type==o_type)).execute().first()
         if entry:
             attrs = loads(entry.attributes)
             for item in data:
                 attrs[item] = data[item]['value']
+
+            # Update the database entry
             self.objects.update().where(self.objects.c.uuid==item_uuid).values(modifyTimestamp=datetime.datetime.now(), attributes=dumps(attrs)).execute()
             return True
         return False
