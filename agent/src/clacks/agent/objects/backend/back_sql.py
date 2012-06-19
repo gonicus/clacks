@@ -62,6 +62,7 @@ class SQL(ObjectBackend):
         self.connect()
 
     def connect(self):
+        #TODO: Use config property
         self.engine = create_engine('sqlite:////tmp/file.db', echo=False)
         self.metadata = MetaData()
         self.metadata.bind = self.engine
