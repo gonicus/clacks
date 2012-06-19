@@ -297,7 +297,8 @@ class SQL(ObjectBackend):
         """
         Update the given entry (by uuid) with a new set of values.
         """
-        entry = self.objects.select(self.objects.c.uuid==item_uuid).execute().first()
+        o_type = params['type']
+        entry = self.objects.select(and_(self.objects.c.uuid==item_uuid, self.objects.c.type==o_type)).execute().first()
         if entry:
             attrs = loads(entry.attributes)
             for item in data:
