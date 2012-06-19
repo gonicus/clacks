@@ -3,20 +3,18 @@ This class implements the SQL-Backend
 """
 
 # -*- coding: utf-8 -*-
-import os
 import re
 import uuid
+import ldap
 import datetime
 from clacks.agent.objects.backend import ObjectBackend
 from json import loads, dumps
 from logging import getLogger
 from clacks.common import Environment
 from itertools import permutations
-import ldap
 
-from sqlalchemy import create_engine
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, BLOB, DateTime
-from sqlalchemy.sql import select, and_
+from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, BLOB, DateTime
+from sqlalchemy.sql import and_
 
 
 
@@ -92,9 +90,9 @@ class SQL(ObjectBackend):
         """
 
         # Search for all entries with the given uuid and combine found attributes
-        s = self.objects.select(self.objects.c.uuid==item_uuid).execute()
+        search = self.objects.select(self.objects.c.uuid==item_uuid).execute()
         data = {}
-        for entry in s:
+        for entry in search:
 
             # Convert json to python-dict and combine all attributes
             attrs = loads(entry.attributes)
@@ -114,8 +112,8 @@ class SQL(ObjectBackend):
         """
 
         # Try to find an entry with the given uuid and type
-        s = self.objects.select(and_(self.objects.c.uuid==item_uuid, self.objects.c.type == params['type'])).execute()
-        entry = s.first()
+        search = self.objects.select(and_(self.objects.c.uuid==item_uuid, self.objects.c.type == params['type'])).execute()
+        entry = search.first()
         if entry:
             return True
         return False
@@ -137,10 +135,10 @@ class SQL(ObjectBackend):
         attrs = {}
         for item in data:
             attrs[item] = data[item]['value']
-        data= {}
-        data['type']=params['type']
-        data['uuid']=item_uuid
-        data['attributes']=dumps(attrs)
+        data = {}
+        data['type'] = params['type']
+        data['uuid'] = item_uuid
+        data['attributes'] = dumps(attrs)
 
         # Insert the entry in the database
         self.objects.insert().execute(**data)
@@ -152,8 +150,8 @@ class SQL(ObjectBackend):
         """
 
         # Try to find an entry with the given dn and return its uuid on success
-        s = self.objects.select(self.objects.c.dn==object_dn).execute()
-        entry = s.first()
+        search = self.objects.select(self.objects.c.dn==object_dn).execute()
+        entry = search.first()
         if entry:
             return entry.uuid
         return None
@@ -165,8 +163,8 @@ class SQL(ObjectBackend):
         """
 
         # Try to find an entry with the uuid and return its dn
-        s = self.objects.select(and_(self.objects.c.dn != None, self.objects.c.uuid==item_uuid)).execute()
-        entry = s.first()
+        search = self.objects.select(and_(self.objects.c.dn != None, self.objects.c.uuid==item_uuid)).execute()
+        entry = search.first()
         if entry:
             return entry.dn
         return None
@@ -180,20 +178,20 @@ class SQL(ObjectBackend):
         # For one-level scope the parentDN must be equal with the reqeusted base.
         found = []
         if self.scope_map[scope] == "one":
-            s = self.objects.select(self.objects.c.parentDN==base).execute()
-            for item in s:
+            search = self.objects.select(self.objects.c.parentDN==base).execute()
+            for item in search:
                 found.append(item.dn)
 
         # For base searches the base has the dn has to match the requested base
         if self.scope_map[scope] == "base":
-            s = self.objects.select(self.objects.c.dn==base).execute()
-            for item in s:
+            search = self.objects.select(self.objects.c.dn==base).execute()
+            for item in search:
                 found.append(item.dn)
 
         # For sub-queries the requested-base has to be part parentDN
         if self.scope_map[scope] == "sub":
-            s = self.objects.select(self.objects.c.parentDN.endswith(base)).execute()
-            for item in s:
+            search = self.objects.select(self.objects.c.parentDN.endswith(base)).execute()
+            for item in search:
                 found.append(item.dn)
         return found
 
@@ -210,10 +208,10 @@ class SQL(ObjectBackend):
         rdns = [d.strip() for d in params['rdn'].split(",")]
 
         # Get FixedRDN attribute
-        FixedRDN = params['FixedRDN'] if 'FixedRDN' in params else None
+        fixed_rdn = params['FixedRDN'] if 'FixedRDN' in params else None
 
         # Get a unique dn for this entry, if there was no free dn left (None) throw an error
-        object_dn = self.get_uniq_dn(rdns, base, data, FixedRDN)
+        object_dn = self.get_uniq_dn(rdns, base, data, fixed_rdn)
         if not object_dn:
             raise DNGeneratorError("no unique DN available on '%s' using: %s" % (base, ",".join(rdns)))
         object_dn = object_dn.encode('utf-8')
@@ -241,27 +239,27 @@ class SQL(ObjectBackend):
         """
         Returns the create- and modify-timestamps for the given dn
         """
-        s = self.objects.select(self.objects.c.dn==object_dn).execute().first()
-        if s:
-            ctime = s.createTimestamp
-            mtime = s.modifyTimestamp
+        search = self.objects.select(self.objects.c.dn==object_dn).execute().first()
+        if search:
+            ctime = search.createTimestamp
+            mtime = search.modifyTimestamp
             return (ctime, mtime)
         return None, None
 
 
-    def get_uniq_dn(self, rdns, base, data, FixedRDN):
+    def get_uniq_dn(self, rdns, base, data, fixed_rdn):
         """
         Tries to find an unused dn for the given properties
         """
 
         # Check if there is still a free dn left
-        for object_dn in self.build_dn_list(rdns, base, data, FixedRDN):
+        for object_dn in self.build_dn_list(rdns, base, data, fixed_rdn):
             if not self.objects.select(self.objects.c.dn == object_dn).execute().first():
                 return object_dn
 
         return None
 
-    def build_dn_list(self, rdns, base, data, FixedRDN):
+    def build_dn_list(self, rdns, base, data, fixed_rdn):
         """
         Build a list of possible DNs for the given properties
         """
@@ -270,8 +268,8 @@ class SQL(ObjectBackend):
         dns = [fix]
 
         # Check if we've have to use a fixed RDN.
-        if FixedRDN:
-            return(["%s,%s" % (FixedRDN, base)])
+        if fixed_rdn:
+            return(["%s,%s" % (fixed_rdn, base)])
 
         # Bail out if fix part is not in data
         if not fix in data:
@@ -305,17 +303,17 @@ class SQL(ObjectBackend):
         """
 
         if self.is_uuid(misc):
-            s = self.objects.select(self.objects.c.uuid==misc).execute().first()
+            search = self.objects.select(self.objects.c.uuid==misc).execute().first()
         else:
-            s = self.objects.select(self.objects.c.dn==misc).execute().first()
-        return True if res else False
+            search = self.objects.select(self.objects.c.dn==misc).execute().first()
+        return True if search else False
 
     def is_uniq(self, attr, value, at_type):
         """
         Check whether the given attribute is not used yet.
         """
-        s = self.objects.select(getattr(self.objects.c, attr)==value).execute().first()
-        return False if res else True
+        search = self.objects.select(getattr(self.objects.c, attr)==value).execute().first()
+        return False if search else True
 
     def update(self, item_uuid, data, params):
         """
