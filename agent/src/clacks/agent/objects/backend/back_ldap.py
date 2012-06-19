@@ -274,7 +274,7 @@ class LDAP(ObjectBackend):
         return self.dn2uuid(dn)
 
 
-    def update(self, uuid, data):
+    def update(self, uuid, data, params):
 
         # Assemble a proper modlist
         dn = self.uuid2dn(uuid)

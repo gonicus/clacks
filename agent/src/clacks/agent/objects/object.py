@@ -492,6 +492,7 @@ class Object(object):
 
         # First, take care about the primary backend...
         if p_backend in toStore:
+            beAttrs = self._backendAttrs[p_backend] if p_backend in self._backendAttrs else {}
             be = ObjectBackendRegistry.getBackend(p_backend)
             if self._mode == "create":
                 obj.uuid = be.create(self.dn, toStore[p_backend], self._backendAttrs[p_backend])
@@ -502,7 +503,7 @@ class Object(object):
                         self.getForeignProperties())
 
             else:
-                be.update(self.uuid, toStore[p_backend])
+                be.update(self.uuid, toStore[p_backend], beAttrs)
 
             # Eventually the DN has changed
             if self._base_object:
@@ -537,7 +538,7 @@ class Object(object):
             elif self._mode == "extend":
                 be.extend(self.uuid, data, beAttrs, self.getForeignProperties())
             else:
-                be.update(self.uuid, data)
+                be.update(self.uuid, data, beAttrs)
 
         zope.event.notify(ObjectChanged("post %s" % self._mode, obj))
 

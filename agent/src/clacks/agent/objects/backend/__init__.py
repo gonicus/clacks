@@ -62,7 +62,7 @@ class ObjectBackend(object):
         """
         raise NotImplementedError("object backend is not capable of creating object extensions")
 
-    def update(self, uuid, data):
+    def update(self, uuid, data, params):
         """
         Update a base entry or an extension with the given UUID.
         """

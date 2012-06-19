@@ -37,7 +37,7 @@ class NULL(ObjectBackend):
     def create(self, base, data, params, foreign_keys=None):
         return None
 
-    def update(self, uuid, data):
+    def update(self, uuid, data, params):
         return True
 
     def is_uniq(self, attr, value, at_type):

@@ -82,9 +82,9 @@ class JSON(ObjectBackend):
         json = self.__load()
         data = {}
         if item_uuid in json:
-            data = dict(data.items() + json[item_uuid].items())
-            return data
-        return {}
+            for obj in json[item_uuid]:
+                data = dict(data.items() + json[item_uuid][obj].items())
+        return data
 
     def identify(self, object_dn, params, fixed_rdn=None):
         """
@@ -101,9 +101,13 @@ class JSON(ObjectBackend):
         """
         Identify an object by uuid
         """
+
         json = self.__load()
-        if item_uuid in json and params['type'] == json[item_uuid]['type']:
-            return True
+        if item_uuid in json:
+            for obj in json[item_uuid]:
+                if json[item_uuid][obj]['type'] == params['type']:
+                    return True
+
         return False
 
     def retract(self, item_uuid, data, params):
@@ -111,8 +115,8 @@ class JSON(ObjectBackend):
         Remove an object extension
         """
         json = self.__load()
-        if item_uuid in json:
-            del(json[item_uuid])
+        if item_uuid in json and params['type'] in json[item_uuid]:
+            del(json[item_uuid][params['type']])
         self.__save(json)
 
     def extend(self, item_uuid, data, params, foreign_keys):
@@ -120,9 +124,9 @@ class JSON(ObjectBackend):
         Create an object extension
         """
         json = self.__load()
-        json[item_uuid] = {'type': params['type']}
+        json[item_uuid][params['type']] = {'type': params['type']}
         for item in data:
-            json[item_uuid][item] = data[item]['value']
+            json[item_uuid][params['type']][item] = data[item]['value']
         self.__save(json)
 
     def dn2uuid(self, object_dn):
@@ -131,9 +135,10 @@ class JSON(ObjectBackend):
         entry with the given dn was found, its uuid is returned.
         """
         json = self.__load()
-        for item in json:
-            if 'dn' in json[item] and object_dn == json[item]['dn']:
-                return item
+        for uuid in json:
+            for obj in json[uuid]:
+                if 'dn' in json[uuid][obj] and object_dn == json[uuid][obj]['dn']:
+                    return uuid
         return None
 
     def uuid2dn(self, item_uuid):
@@ -142,8 +147,10 @@ class JSON(ObjectBackend):
         dn for the entry.
         """
         json = self.__load()
-        if item_uuid in json and "dn" in json[item_uuid]:
-            return json[item_uuid]["dn"]
+        if item_uuid in json:
+            for obj in json[item_uuid]:
+                if "dn" in json[item_uuid][obj]:
+                    return json[item_uuid][obj]["dn"]
         return None
 
     def query(self, base, scope, params, fixed_rdn=None):
@@ -158,21 +165,24 @@ class JSON(ObjectBackend):
         # For one-level scope the parentDN must be equal with the reqeusted base.
         found = []
         if self.scope_map[scope] == "one":
-            for item in json:
-                if "parentDN" in json[item] and json[item]['parentDN'] == base:
-                    found.append(json[item]['dn'])
+            for uuid in json:
+                for obj in json[uuid]:
+                    if "parentDN" in json[uuid][obj] and json[uuid][obj]['parentDN'] == base:
+                        found.append(json[uuid][obj]['dn'])
 
         # For base searches the base has the dn has to match the requested base
         if self.scope_map[scope] == "base":
-            for item in json:
-                if json[item]['dn'] == base:
-                    found.append(json[item]['dn'])
+            for uuid in json:
+                for obj in json[uuid]:
+                    if "dn" in json[uuid][obj] and json[uuid][obj]['dn'] == base:
+                        found.append(json[uuid][obj]['dn'])
 
         # For sub-queries the requested-base has to be part parentDN
         if self.scope_map[scope] == "sub":
-            for item in json:
-                if "parentDN" in json[item] and re.match(re.escape(json[item]['parentDN']) + "$", base):
-                    found.append(json[item]['dn'])
+            for uuid in json:
+                for obj in json[uuid]:
+                    if "parentDN" in json[uuid][obj] and re.match(re.escape(base) + "$", json[uuid][obj]['parentDN']):
+                        found.append(json['objects'][item]['dn'])
         return found
 
     def create(self, base, data, params, foreign_keys=None):
@@ -208,7 +218,9 @@ class JSON(ObjectBackend):
             obj[attr] = data[attr]['value']
 
         # Append the entry to the databse and save the changes
-        json[str_uuid] = obj
+        if not str_uuid in json:
+            json[str_uuid] = {}
+        json[str_uuid][params['type']] = obj
         self.__save(json)
 
         # Return the uuid of the generated entry
@@ -220,13 +232,13 @@ class JSON(ObjectBackend):
         """
         json = self.__load()
         item_uuid = self.dn2uuid(object_dn)
-        if item_uuid:
-            if 'createTimestamp' in json[item_uuid]:
-                ctime = datetime.datetime.strptime(json[item_uuid]['createTimestamp'], "%Y-%m-%dT%H:%M:%S.%f")
-            if 'modifyTimestamp' in json[item_uuid]:
-                mtime = datetime.datetime.strptime(json[item_uuid]['modifyTimestamp'], "%Y-%m-%dT%H:%M:%S.%f")
+        if item_uuid in json:
+            for obj in json[item_uuid]:
+                if 'createTimestamp' in json[item_uuid][obj]:
+                    ctime = datetime.datetime.strptime(json[item_uuid][obj]['createTimestamp'], "%Y-%m-%dT%H:%M:%S.%f")
+                if 'modifyTimestamp' in json[item_uuid][obj]:
+                    mtime = datetime.datetime.strptime(json[item_uuid][obj]['modifyTimestamp'], "%Y-%m-%dT%H:%M:%S.%f")
         return (ctime, mtime)
-
 
     def get_uniq_dn(self, rdns, base, data, FixedRDN):
         """
@@ -236,9 +248,10 @@ class JSON(ObjectBackend):
         # Get all DNs
         json = self.__load()
         dns = []
-        for item in json:
-            if "dn" in json[item]:
-                dns.append(json[item]["dn"])
+        for uuid in json:
+            for obj in json[uuid]:
+                if "dn" in json[uuid][obj]:
+                    dns.append(json[uuid][obj]["dn"])
 
         # Check if there is still a free dn left
         for object_dn in self.build_dn_list(rdns, base, data, FixedRDN):
@@ -297,11 +310,12 @@ class JSON(ObjectBackend):
         """
         json = self.__load()
         if self.is_uuid(misc):
-            return item_uuid in json
+            return item_uuid in json['objects']
         else:
-            for item in json:
-                if "dn" in json[item] and json[item]["dn"] == misc:
-                    return True
+            for uuid in json:
+                for obj in json[uuid]:
+                    if "dn" in json[uuid][obj] and json[uuid][obj]["dn"] == misc:
+                        return True
 
         return False
 
@@ -309,20 +323,25 @@ class JSON(ObjectBackend):
         """
         Check whether the given attribute is not used yet.
         """
+
+        #TODO: Include extensions!!
         json = self.__load()
-        for item in json:
-            if attr in json[item] and json[item][attr] == value:
-                return False
+        for uuid in json:
+            for obj in json[uuid]:
+                if attr in json[uuid][obj] and json[uuid][obj][attr] == value:
+                    return False
         return True
 
-    def update(self, item_uuid, data):
+    def update(self, item_uuid, data, params):
         """
         Update the given entry (by uuid) with a new set of values.
         """
+        o_type = params['type']
         json = self.__load()
         if item_uuid in json:
-            for item in data:
-                json[item_uuid][item] = data[item]['value']
+            if o_type in json[item_uuid]:
+                for item in data:
+                    json[item_uuid][o_type][item] = data[item]['value']
             self.__save(json)
             return True
         return False
@@ -340,18 +359,20 @@ class JSON(ObjectBackend):
         """
         json = self.__load()
         if item_uuid in json:
+            for obj in json[item_uuid]:
+                if "dn" in json[item_uuid][obj]:
 
-            # Update the source entry
-            entry = json[item_uuid]
-            entry['dn'] = re.sub(re.escape(entry['parentDN'])+"$", new_base, entry['dn'])
-            entry['parentDN'] = new_base
+                    # Update the source entry
+                    entry = json[item_uuid][obj]
+                    entry['dn'] = re.sub(re.escape(entry['parentDN'])+"$", new_base, entry['dn'])
+                    entry['parentDN'] = new_base
 
-            # Check if we can move the entry
-            if self.exists(entry['dn']):
-                raise JsonBackendError("cannot move entry, the target DN '%s' already exists!" % entry['dn'])
+                    # Check if we can move the entry
+                    if self.exists(entry['dn']):
+                        raise JsonBackendError("cannot move entry, the target DN '%s' already exists!" % entry['dn'])
 
-            # Save the changes
-            json[item_uuid] = entry
-            self.__save(json)
-            return True
+                    # Save the changes
+                    json[item_uuid][obj] = entry
+                    self.__save(json)
+                    return True
         return False

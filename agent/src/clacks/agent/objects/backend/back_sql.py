@@ -293,7 +293,7 @@ class SQL(ObjectBackend):
         s = self.objects.select(getattr(self.objects.c, attr)==value).execute().first()
         return False if res else True
 
-    def update(self, item_uuid, data):
+    def update(self, item_uuid, data, params):
         """
         Update the given entry (by uuid) with a new set of values.
         """
