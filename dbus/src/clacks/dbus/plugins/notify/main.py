@@ -33,21 +33,21 @@ class DBusNotifyHandler(dbus.service.Object, Plugin):
         dbus.service.Object.__init__(self, conn, '/org/clacks/notify')
         self.env = Environment.getInstance()
 
-    @dbus.service.method('org.clacks', in_signature='ssissi', out_signature='i')
-    def _notify_all(self, title, message, timeout, icon, actions, recurrence):
+    @dbus.service.method('org.clacks', in_signature='ssis', out_signature='i')
+    def _notify_all(self, title, message, timeout, icon):
         """
         Try to send a notification to all users on a machine user using the 'notify-user' script.
         """
         return(self.call(message=message, title=title, broadcast=True, timeout=timeout,
-            icon=icon, recurrence=recurrence, actions=actions))
+            icon=icon))
 
-    @dbus.service.method('org.clacks', in_signature='sssissi', out_signature='i')
-    def _notify(self, user, title, message, timeout, icon, actions, recurrence):
+    @dbus.service.method('org.clacks', in_signature='sssis', out_signature='i')
+    def _notify(self, user, title, message, timeout, icon):
         """
         Try to send a notification to a user using the 'notify-user' script.
         """
         return(self.call(message=message, title=title, user=user, timeout=timeout,
-            icon=icon, recurrence=recurrence, actions=actions))
+            icon=icon))
 
     def call(self, message, title,
         user="",
