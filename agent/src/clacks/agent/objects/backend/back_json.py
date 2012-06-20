@@ -124,6 +124,8 @@ class JSON(ObjectBackend):
         Create an object extension
         """
         json = self.__load()
+        if not item_uuid in json:
+            json[item_uuid] = {}
         json[item_uuid][params['type']] = {'type': params['type']}
         for item in data:
             json[item_uuid][params['type']][item] = data[item]['value']
