@@ -268,7 +268,7 @@
 
   <complexType name="BackendParameters">
     <sequence>
-      <element name="Backend" type="o:BackendParameter"></element>
+      <element name="Backend" type="o:BackendParameter" maxOccurs="unbounded" minOccurs="1"></element>
     </sequence>
   </complexType>
 
