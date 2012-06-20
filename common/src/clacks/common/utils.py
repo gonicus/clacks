@@ -197,7 +197,7 @@ try:
         for key, value in data.iteritems():
             if item == key.lower():
                 return value
-            if isinstance(value, dict):
+            if isinstance(value, dict) and value:
                 value = dmi_system(item, value)
                 if value:
                     return value
