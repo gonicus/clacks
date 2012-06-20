@@ -811,12 +811,13 @@ class Object(object):
                 # Load object and change value to the new one
                 c_obj = ObjectProxy(ref)
                 c_value = getattr(c_obj, ref_attr)
+                o_value = data[self_attr]['orig']
 
                 if type(c_value) == list:
-                    if type(value) == list:
-                        c_value = filter(lambda x: x not in value, c_value)
+                    if type(o_value) == list:
+                        c_value = filter(lambda x: x not in o_value, c_value)
                     else:
-                        c_value = filter(lambda x: x != value, c_value)
+                        c_value = filter(lambda x: x != o_value, c_value)
 
                     if multivalue:
                         c_value.append(data[self_attr]['value'])
