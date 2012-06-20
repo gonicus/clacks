@@ -303,6 +303,11 @@ class ObjectFactory(object):
             find = objectify.ObjectPath("Object.Attributes")
             if find.hasattr(obj):
                 for attr in find(obj).iterchildren():
+
+                    # Skip comments in XML
+                    if attr.tag == "comment":
+                        continue
+
                     obj_name = attr.getparent().getparent().Name.text
                     if not attr.Name.text in res:
                         res[attr.Name.text] = {'base': None, 'secondary': []}
@@ -603,8 +608,8 @@ class ObjectFactory(object):
         classr = self.__xml_defs[name]
         back_attrs = {str(classr.Backend): {}}
         if "BackendParameters" in classr.__dict__:
-            for entry in classr["BackendParameters"]:
-                back_attrs[str(entry.Backend)] = entry.Backend.attrib
+            for entry in classr["BackendParameters"].Backend:
+                back_attrs[entry.text] = entry.attrib
 
         # Collect extends lists. A list of objects that we can extend.
         extends = []
@@ -653,6 +658,10 @@ class ObjectFactory(object):
         if 'Attributes' in classr.__dict__:
 
             for prop in classr['Attributes'].iterchildren():
+
+                # Skip xml parts that were commented-out
+                if prop.tag == "comment":
+                    continue
 
                 self.log.debug("adding property: '%s'" % (str(prop['Name']),))
 
