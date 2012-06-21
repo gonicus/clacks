@@ -3,6 +3,37 @@ from clacks.agent.objects.types import AttributeType
 import datetime
 
 
+class AnyType(AttributeType):
+    __alias__ = "AnyType"
+
+    def is_valid_value(self, value):
+        return True
+
+    def values_match(self, value1, value2):
+        return(value1 == value2)
+
+    def _convert_from_string(self, value):
+        return(value)
+
+    def _convert_from_datetime(self, value):
+        return(value)
+
+    def _convert_to_boolean(self, value):
+        return(map(lambda x: not(x in ['', 'false', '0', 'False']), value))
+
+    def _convert_to_string(self, value):
+        return(map(lambda x: str(x), value))
+
+    def _convert_to_integer(self, value):
+        return(map(lambda x: int(x), value))
+
+    def _convert_to_unicodestring(self, value):
+        return(map(lambda x: unicode(x), value))
+
+    def fixup(self, value):
+        return self._convert_to_string(value)
+
+
 class StringAttribute(AttributeType):
     __alias__ = "String"
 

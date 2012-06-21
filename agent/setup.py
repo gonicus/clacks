@@ -103,6 +103,7 @@ setup(
 
         [object.type]
         string = clacks.agent.objects.types.base:StringAttribute
+        anytype = clacks.agent.objects.types.base:AnyType
         integer = clacks.agent.objects.types.base:IntegerAttribute
         boolean = clacks.agent.objects.types.base:BooleanAttribute
         binary = clacks.agent.objects.types.base:BinaryAttribute
@@ -119,6 +120,7 @@ setup(
         null = clacks.agent.objects.backend.back_null:NULL
         json = clacks.agent.objects.backend.back_json:JSON
         sql = clacks.agent.objects.backend.back_sql:SQL
+        dbmap = clacks.agent.objects.backend.back_db_map:DBMAP
 
         [object.comparator]
         like = clacks.agent.objects.comparator.strings:Like
@@ -161,6 +163,7 @@ setup(
         addbackend = clacks.agent.objects.filter.basic:AddBackend
         registereddevicestatusin = clacks.agent.plugins.goto.in_out_filters:registeredDeviceStatusIn
         registereddevicestatusout = clacks.agent.plugins.goto.in_out_filters:registeredDeviceStatusOut
+        storeGoFonAccountSettings = clacks.agent.plugins.goFon.filter.store:storeGoFonAccountSettings
 
         [object.operator]
         and = clacks.agent.objects.operator.bool:And
