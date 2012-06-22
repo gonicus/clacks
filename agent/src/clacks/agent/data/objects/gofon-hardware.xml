@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Objects xmlns="http://www.gonicus.de/Objects">
+  <Object>
+    <Name>goFonHardware</Name>
+    <DisplayName>goFonHardware</DisplayName>
+    <Description>defines a telephone (v2.7)</Description>
+    <Backend>LDAP</Backend>
+    <BackendParameters>
+      <Backend objectClasses="goFonHardware" RDN="cn">LDAP</Backend>
+    </BackendParameters>
+    <Attributes>
+      <Attribute>
+        <Name>macAddress</Name>
+        <Description>MAC address</Description>
+        <Type>String</Type>
+        <MultiValue>true</MultiValue>
+        <Mandatory>true</Mandatory>
+        <Validators>
+          <Condition>
+            <Name>RegEx</Name>
+            <Param>^[\x00-\x7F]*$</Param>
+          </Condition>
+        </Validators>
+      </Attribute>
+      <Attribute>
+        <Name>ipHostNumber</Name>
+        <Description>IP address</Description>
+        <Type>String</Type>
+        <MultiValue>true</MultiValue>
+        <Mandatory>true</Mandatory>
+        <Validators>
+          <Condition>
+            <Name>RegEx</Name>
+            <Param>^[\x00-\x7F]*$</Param>
+          </Condition>
+        </Validators>
+      </Attribute>
+      <Attribute>
+        <Name>cn</Name>
+        <Description>RFC4519: common name(s) for which the entity is known by</Description>
+        <Type>UnicodeString</Type>
+        <MultiValue>false</MultiValue>
+        <Mandatory>true</Mandatory>
+      </Attribute>
+      <Attribute>
+        <Name>goFonAuth</Name>
+        <Description>sets the sip.conf auth parameter</Description>
+        <Type>UnicodeString</Type>
+        <MultiValue>false</MultiValue>
+        <Mandatory>false</Mandatory>
+      </Attribute>
+      <Attribute>
+        <Name>goFonQualify</Name>
+        <Description>sets the sip.conf qualify parameter</Description>
+        <Type>String</Type>
+        <MultiValue>false</MultiValue>
+        <Mandatory>false</Mandatory>
+        <Validators>
+          <Condition>
+            <Name>RegEx</Name>
+            <Param>^[\x00-\x7F]*$</Param>
+          </Condition>
+        </Validators>
+      </Attribute>
+      <Attribute>
+        <Name>goFonMSN</Name>
+        <Description>sets the sip.conf msn parameter</Description>
+        <Type>String</Type>
+        <MultiValue>false</MultiValue>
+        <Mandatory>false</Mandatory>
+        <Validators>
+          <Condition>
+            <Name>RegEx</Name>
+            <Param>^\+[0-9]{2}\s*[0-9\s]+$</Param>
+          </Condition>
+        </Validators>
+      </Attribute>
+      <Attribute>
+        <Name>description</Name>
+        <Description>RFC4519: descriptive information</Description>
+        <Type>UnicodeString</Type>
+        <MultiValue>true</MultiValue>
+        <Mandatory>false</Mandatory>
+      </Attribute>
+      <Attribute>
+        <Name>goFonSecret</Name>
+        <Description>sets the sip.conf secret parameter</Description>
+        <Type>String</Type>
+        <MultiValue>false</MultiValue>
+        <Mandatory>false</Mandatory>
+        <Validators>
+          <Condition>
+            <Name>RegEx</Name>
+            <Param>^[\x00-\x7F]*$</Param>
+          </Condition>
+        </Validators>
+      </Attribute>
+      <Attribute>
+        <Name>goFonType</Name>
+        <Description>sets the sip.conf type parameter</Description>
+        <Type>String</Type>
+        <MultiValue>false</MultiValue>
+        <Mandatory>true</Mandatory>
+        <Default>friend</Default>
+        <Validators>
+          <Condition>
+            <Name>RegEx</Name>
+            <Param>^[\x00-\x7F]*$</Param>
+          </Condition>
+        </Validators>
+      </Attribute>
+      <Attribute>
+        <Name>goFonAccountCode</Name>
+        <Description>sets the sip.conf accountcode parameter</Description>
+        <Type>String</Type>
+        <MultiValue>false</MultiValue>
+        <Mandatory>false</Mandatory>
+        <Validators>
+          <Condition>
+            <Name>RegEx</Name>
+            <Param>^[\x00-\x7F]*$</Param>
+          </Condition>
+        </Validators>
+      </Attribute>
+      <Attribute>
+        <Name>goFonDmtfMode</Name>
+        <Description>sets the sip.conf dmtfmode parameter</Description>
+        <Type>String</Type>
+        <MultiValue>false</MultiValue>
+        <Mandatory>false</Mandatory>
+        <Validators>
+          <Condition>
+            <Name>RegEx</Name>
+            <Param>^[\x00-\x7F]*$</Param>
+          </Condition>
+        </Validators>
+      </Attribute>
+      <Attribute>
+        <Name>goFonOutkey</Name>
+        <Description>sets the sip.conf outkey parameter</Description>
+        <Type>String</Type>
+        <MultiValue>false</MultiValue>
+        <Mandatory>false</Mandatory>
+        <Validators>
+          <Condition>
+            <Name>RegEx</Name>
+            <Param>^[\x00-\x7F]*$</Param>
+          </Condition>
+        </Validators>
+      </Attribute>
+      <Attribute>
+        <Name>goFonDefaultIP</Name>
+        <Description>sets the sip.conf defaultip parameter</Description>
+        <Type>String</Type>
+        <MultiValue>false</MultiValue>
+        <Mandatory>false</Mandatory>
+        <Default>dynamic</Default>
+        <Validators>
+          <Condition>
+            <Name>RegEx</Name>
+            <Param>^[\x00-\x7F]*$</Param>
+          </Condition>
+        </Validators>
+      </Attribute>
+      <Attribute>
+        <Name>goFonHost</Name>
+        <Description>sets the sip.conf host parameter</Description>
+        <Type>String</Type>
+        <MultiValue>false</MultiValue>
+        <Mandatory>false</Mandatory>
+        <Validators>
+          <Condition>
+            <Name>RegEx</Name>
+            <Param>^[\x00-\x7F]*$</Param>
+          </Condition>
+        </Validators>
+      </Attribute>
+      <Attribute>
+        <Name>goFonInkeys</Name>
+        <Description>sets the sip.conf inkeys parameter</Description>
+        <Type>String</Type>
+        <MultiValue>false</MultiValue>
+        <Mandatory>false</Mandatory>
+        <Validators>
+          <Condition>
+            <Name>RegEx</Name>
+            <Param>^[\x00-\x7F]*$</Param>
+          </Condition>
+        </Validators>
+      </Attribute>
+      <Attribute>
+        <Name>goFonTrunk</Name>
+        <Description>sets the sip.conf trunk parameter</Description>
+        <Type>String</Type>
+        <MultiValue>false</MultiValue>
+        <Mandatory>false</Mandatory>
+        <Validators>
+          <Condition>
+            <Name>RegEx</Name>
+            <Param>^[\x00-\x7F]*$</Param>
+          </Condition>
+        </Validators>
+      </Attribute>
+      <Attribute>
+        <Name>goFonDeny</Name>
+        <Description>sets the sip.conf deny parameter</Description>
+        <Type>String</Type>
+        <MultiValue>true</MultiValue>
+        <Mandatory>false</Mandatory>
+        <Validators>
+          <Condition>
+            <Name>RegEx</Name>
+            <Param>^[\x00-\x7F]*$</Param>
+          </Condition>
+        </Validators>
+      </Attribute>
+      <Attribute>
+        <Name>goFonPermit</Name>
+        <Description>sets the sip.conf permit parameter</Description>
+        <Type>String</Type>
+        <MultiValue>true</MultiValue>
+        <Mandatory>false</Mandatory>
+        <Validators>
+          <Condition>
+            <Name>RegEx</Name>
+            <Param>^[\x00-\x7F]*$</Param>
+          </Condition>
+        </Validators>
+      </Attribute>
+    </Attributes>
+    <BaseObject>true</BaseObject>
+  </Object>
+</Objects>
