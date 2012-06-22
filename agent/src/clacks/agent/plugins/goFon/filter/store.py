@@ -2,6 +2,7 @@
 from clacks.agent.objects.filter import ElementFilter
 from clacks.agent.plugins.goFon.filter.table_defs import sip_users_table, extensions_table, voicemail_users_table
 from sqlalchemy.sql import select, delete, and_
+from clacks.common.components import PluginRegistry
 
 class storeGoFonAccountSettings(ElementFilter):
     """
@@ -16,9 +17,11 @@ class storeGoFonAccountSettings(ElementFilter):
         Detects what password-method was used to generate this hash.
         """
 
+        index = PluginRegistry.getInstance("ObjectIndex")
         actions=[]
-
         delimiter = "|"
+
+        # Extract required attribute values.
         uid = valDict["uid"]["value"][0]
         phone_numbers = valDict["telephoneNumber"]["value"]
         pin = valDict["goFonPIN"]["value"][0] if len(valDict["goFonPIN"]["value"]) else None
@@ -32,20 +35,21 @@ class storeGoFonAccountSettings(ElementFilter):
         macro = valDict["goFonMacro"]["value"][0] if len(valDict["goFonMacro"]["value"]) else None
         parameters = "test"
 
-        #TODO: Read this from the selected goFonHardware object later
-        dtmf_mode = "inband"
-        qualify = "yes"
-        hardware_type = "friend"
+        # Read phone-hardware settings from the index
+        res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonDmtfMode/string()" % hardware)
+        dtmf_mode = res[0] in len(res) and res[0] else "rfc2833"
+        res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonQualify/string()" % hardware)
+        qualify = res[0] in len(res) and res[0] else "yes"
+        res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonType/string()" % hardware)
+        hardware_type = res[0] in len(res) and res[0] else "friend"
+        res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonType/string()" % hardware)
+        hardware_type = res[0] in len(res) and res[0] else "friend"
 
-        # This is set to to the goFonDefaultIP of the goFonHardware (if it is set else "dynamic")
-        hardware_ip = hardware
+        # Set the ip to to the goFonDefaultIP of the goFonHardware if it is set.
+        res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonDefaultIP/string()" % hardware)
+        hardware_ip = res[0] in len(res) and res[0] != "dynamic" else None
 
-        ##
-        # Remove old entries first!
-        # Unfortunately there is no other solution to clean up the tables than using delete.
-        #TODO: verify the above!
-
-        # Query for the used callerid of for the given uid, to be able to remove its voicemail entries
+        # Query for the used callerid of the given uid, to be able to remove its voicemail entries
         callerid_s = select([sip_users_table.c.callerid]).where(sip_users_table.c.name == uid)
         actions.append(voicemail_users_table.delete().where(voicemail_users_table.c.customer_id == callerid_s))
 
@@ -90,7 +94,7 @@ class storeGoFonAccountSettings(ElementFilter):
         voice_entry["email"]       = mail
         actions.append(voicemail_users_table.insert().values(**voice_entry))
 
-        # Create extensions entries
+        # Create extensions entries (uid -> number)
         ext_entry = {}
         ext_entry['context'] = 'GOsa';
         ext_entry['exten']   = uid
@@ -99,7 +103,7 @@ class storeGoFonAccountSettings(ElementFilter):
         ext_entry['appdata'] = primary_number + delimiter + "1"
         actions.append(extensions_table.insert().values(**ext_entry))
 
-
+        # Create extensions entries (primary -> number)
         ext_entry = {}
         ext_entry['context'] = 'GOsa';
         ext_entry['exten']   = primary_number
@@ -107,6 +111,7 @@ class storeGoFonAccountSettings(ElementFilter):
         ext_entry['app']     = 'SIP/' + uid
         actions.append(extensions_table.insert().values(**ext_entry))
 
+        # Set macro if one is selected
         if macro:
             s_app = "Macro"
             s_par = macro + delimiter + macro_parameter
@@ -114,6 +119,7 @@ class storeGoFonAccountSettings(ElementFilter):
             s_app = "Dial"
             s_par = 'SIP/' + uid + delimiter + str(20) + delimiter + "r"
 
+        # Create extensions entries (secondary -> number)
         for item in valDict["telephoneNumber"]["in_value"]:
             ext_entry['context'] = 'GOsa'
             ext_entry['exten']   = item
@@ -123,5 +129,4 @@ class storeGoFonAccountSettings(ElementFilter):
             actions.append(extensions_table.insert().values(**ext_entry))
 
         valDict[key]["value"] = actions
-
         return key, valDict
