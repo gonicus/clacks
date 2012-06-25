@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Objects xmlns="http://www.gonicus.de/Objects">
 	<Object>
-		<Name>goPhone</Name>
-		<DisplayName>goPhone</DisplayName>
-		<Description>goPhone user extension</Description>
+		<Name>goFonUser</Name>
+		<DisplayName>goFonUser</DisplayName>
+		<Description>goFonUser user extension</Description>
 		<BaseObject>false</BaseObject>
     <BackendParameters>
       <Backend objectClasses="goFonAccount">LDAP</Backend>
@@ -154,7 +154,7 @@
         <Description>defines voicemail delivery format</Description>
         <Type>UnicodeString</Type>
         <MultiValue>false</MultiValue>
-        <Mandatory>false</Mandatory>
+        <Mandatory>true</Mandatory>
       </Attribute>
     </Attributes>
     <Extends>
