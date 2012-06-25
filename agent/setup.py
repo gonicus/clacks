@@ -100,6 +100,7 @@ setup(
         goto.client_service = clacks.agent.plugins.goto.client_service:ClientService
         inventory = clacks.agent.plugins.inventory.consumer:InventoryConsumer
         password = clacks.agent.plugins.password.manager:PasswordManager
+        gofon = clacks.agent.plugins.goFon.gofon:goFonAccount
 
         [object.type]
         string = clacks.agent.objects.types.base:StringAttribute
