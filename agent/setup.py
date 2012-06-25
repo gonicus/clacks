@@ -100,7 +100,7 @@ setup(
         goto.client_service = clacks.agent.plugins.goto.client_service:ClientService
         inventory = clacks.agent.plugins.inventory.consumer:InventoryConsumer
         password = clacks.agent.plugins.password.manager:PasswordManager
-        gofon = clacks.agent.plugins.goFon.gofon:goFonAccount
+        gofon = clacks.agent.plugins.gofon.gofon:goFonAccount
 
         [object.type]
         string = clacks.agent.objects.types.base:StringAttribute
@@ -164,7 +164,7 @@ setup(
         addbackend = clacks.agent.objects.filter.basic:AddBackend
         registereddevicestatusin = clacks.agent.plugins.goto.in_out_filters:registeredDeviceStatusIn
         registereddevicestatusout = clacks.agent.plugins.goto.in_out_filters:registeredDeviceStatusOut
-        storeGoFonAccountSettings = clacks.agent.plugins.goFon.filter.store:storeGoFonAccountSettings
+        storeGoFonAccountSettings = clacks.agent.plugins.gofon.filter.store:storeGoFonAccountSettings
 
         [object.operator]
         and = clacks.agent.objects.operator.bool:And
