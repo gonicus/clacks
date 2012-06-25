@@ -37,13 +37,13 @@ class storeGoFonAccountSettings(ElementFilter):
 
         # Read phone-hardware settings from the index
         res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonDmtfMode/string()" % hardware)
-        dtmf_mode = res[0] in len(res) and res[0] else "rfc2833"
+        dtmf_mode = res[0] if len(res) and res[0] else "rfc2833"
         res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonQualify/string()" % hardware)
-        qualify = res[0] in len(res) and res[0] else "yes"
+        qualify = res[0] if len(res) and res[0] else "yes"
         res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonType/string()" % hardware)
-        hardware_type = res[0] in len(res) and res[0] else "friend"
+        hardware_type = res[0] if len(res) and res[0] else "friend"
         res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonType/string()" % hardware)
-        hardware_type = res[0] in len(res) and res[0] else "friend"
+        hardware_type = res[0] if len(res) and res[0] else "friend"
 
         # Set the ip to to the goFonDefaultIP of the goFonHardware if it is set.
         res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonDefaultIP/string()" % hardware)
