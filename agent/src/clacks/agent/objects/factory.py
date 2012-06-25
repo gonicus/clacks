@@ -866,7 +866,7 @@ class ObjectFactory(object):
             for value in cParams:
                 if value in propList:
                     parmList.append(propList[value])
-                elif value in ['dn']:
+                elif value in ['dn', 'uuid']:
                     parmList.append(getattr(caller_object, value))
                 else:
                     raise FactoryException("Method '%s' depends on unknown attribute '%s'!" % (command, value))
