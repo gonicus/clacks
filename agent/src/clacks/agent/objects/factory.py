@@ -646,6 +646,7 @@ class ObjectFactory(object):
         # Prepare property and method list.
         props = {}
         methods = {}
+        hooks = {}
 
         # Add documentation if available
         if 'Description' in classr.__dict__:
@@ -815,10 +816,65 @@ class ObjectFactory(object):
                 self.log.debug("adding method: '%s'" % (methodName, ))
                 methods[methodName] = {'ref': self.__create_class_method(klass, methodName, command, mParams, cParams, props)}
 
+        # Build list of hooks
+        if 'Hooks' in classr.__dict__:
+            for method in classr['Hooks']['Hook']:
+
+                # Extract method information out of the xml tag
+                command = str(method['Command'])
+                m_type = str(method['Type'])
+
+                # Get the list of command parameters
+                cParams = []
+                if 'CommandParameters' in method.__dict__:
+                    for param in method['CommandParameters']['Value']:
+                        cParams.append(str(param))
+
+                # Append the method to the list of registered methods for this
+                # object
+                self.log.debug("adding %s-hook with command '%s'" % (m_type, command))
+                if not m_type in hooks:
+                    hooks[m_type] = []
+                hooks[m_type].append({'ref': self.__create_hook(klass, m_type, command, cParams, props)})
+
         # Set properties and methods for this object.
         setattr(klass, '__properties', props)
         setattr(klass, '__methods', methods)
+        setattr(klass, '__hooks', hooks)
         return klass
+
+    def __create_hook(self, klass, m_type, command, cParams, props):
+        """
+        Creates a new executeable hook-method for the current objekt.
+        """
+
+        # Now add the method to the object
+        def funk(caller_object, *args, **kwargs):
+
+            # Build the command-parameter list.
+            # Collect all property values of this object to be able to fill in
+            # placeholders in command-parameters later.
+            propList = {}
+            for key in props:
+                if props[key]['value']:
+                    propList[key] = props[key]['value'][0]
+                else:
+                    propList[key] = None
+
+            # Fill in the placeholders of the command-parameters now.
+            parmList = []
+            for value in cParams:
+                if value in propList:
+                    parmList.append(propList[value])
+                elif value in ['dn']:
+                    parmList.append(getattr(caller_object, value))
+                else:
+                    raise FactoryException("Method '%s' depends on unknown attribute '%s'!" % (command, value))
+
+            cr = PluginRegistry.getInstance('CommandRegistry')
+            self.log.info("Executed %s-hook for class %s which invoked %s(...)" % (m_type, klass.__name__, command))
+            return cr.call(command, *parmList)
+        return funk
 
     def __create_class_method(self, klass, methodName, command, mParams, cParams, props):
         """
