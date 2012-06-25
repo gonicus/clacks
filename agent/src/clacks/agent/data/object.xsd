@@ -22,6 +22,7 @@
       </element>
       <element name="BaseObject" type="boolean" maxOccurs="1" minOccurs="0"></element>
       <element name="Methods" type="o:Methods" maxOccurs="1" minOccurs="0"></element>
+      <element name="Hooks" type="o:Hooks" maxOccurs="1" minOccurs="0"></element>
       <element name="FixedRDN" type="string" maxOccurs="1" minOccurs="0"></element>
       <element name="RequiresExtension" type="o:RequiresExtension" maxOccurs="1" minOccurs="0"></element>
     </all>
@@ -116,6 +117,12 @@
     </sequence>
   </complexType>
 
+  <complexType name="Hooks">
+    <sequence>
+      <element name="Hook" type="o:Hook" maxOccurs="unbounded" minOccurs="1"></element>
+    </sequence>
+  </complexType>
+
   <complexType name="Method">
     <all>
       <element name="Name" type="token" maxOccurs="1" minOccurs="1"></element>
@@ -125,6 +132,24 @@
     </all>
   </complexType>
 
+  <complexType name="Hook">
+    <all>
+      <element name="Type" maxOccurs="1" minOccurs="1">
+        <simpleType>
+          <restriction base="string">
+            <enumeration value="PreCreate"></enumeration>
+            <enumeration value="PreUpdate"></enumeration>
+            <enumeration value="PreRemove"></enumeration>
+            <enumeration value="PostCreate"></enumeration>
+            <enumeration value="PostUpdate"></enumeration>
+            <enumeration value="PostRemove"></enumeration>
+          </restriction>
+        </simpleType>
+      </element>
+      <element name="Command" type="string" maxOccurs="1" minOccurs="1"></element>
+      <element name="CommandParameters" type="o:CommandParameter" maxOccurs="1" minOccurs="0"></element>
+    </all>
+  </complexType>
 
   <complexType name="Parameter">
     <all>

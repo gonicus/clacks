@@ -9,7 +9,23 @@
       <Backend objectClasses="goFonAccount">LDAP</Backend>
       <Backend database="gophone">DBMAP</Backend>
     </BackendParameters>
-		<Backend>LDAP</Backend>
+    <Backend>LDAP</Backend>
+    <Hooks>
+      <Hook>
+        <Type>PreRemove</Type>
+        <Command>removeGoFonAccount</Command>
+        <CommandParameters>
+          <Value>uuid</Value>
+        </CommandParameters>
+      </Hook>
+      <Hook>
+        <Type>PostCreate</Type>
+        <Command>storeGoFonAccount</Command>
+        <CommandParameters>
+          <Value>uuid</Value>
+        </CommandParameters>
+      </Hook>
+    </Hooks>
     <Attributes>
       <ForeignAttribute>
         <Name>sn</Name>
