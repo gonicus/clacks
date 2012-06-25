@@ -18,7 +18,7 @@ class storeGoFonAccountSettings(ElementFilter):
         """
 
         index = PluginRegistry.getInstance("ObjectIndex")
-        actions=[]
+        actions = {}
         delimiter = "|"
 
         # Extract required attribute values.
@@ -33,7 +33,9 @@ class storeGoFonAccountSettings(ElementFilter):
         cn_name = valDict["sn"]["value"][0] + " " + valDict["givenName"]["value"][0]
         mail = valDict["mail"]["value"][0] if "mail" in valDict and len(valDict["mail"]["value"]) else ""
         macro = valDict["goFonMacro"]["value"][0] if len(valDict["goFonMacro"]["value"]) else None
-        parameters = "test"
+        macro_parameter = "unknown"
+        old_home_server = valDict["goFonHomeServer"]["in_value"][0] if len(valDict["goFonHomeServer"]["in_value"]) else None
+        home_server = valDict["goFonHomeServer"]["value"][0]
 
         # Read phone-hardware settings from the index
         res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonDmtfMode/string()" % hardware)
@@ -42,30 +44,43 @@ class storeGoFonAccountSettings(ElementFilter):
         qualify = res[0] if len(res) and res[0] else "yes"
         res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonType/string()" % hardware)
         hardware_type = res[0] if len(res) and res[0] else "friend"
-        res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonType/string()" % hardware)
-        hardware_type = res[0] if len(res) and res[0] else "friend"
 
         # Set the ip to to the goFonDefaultIP of the goFonHardware if it is set.
         res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonDefaultIP/string()" % hardware)
         hardware_ip = res[0] if len(res) and res[0] != "dynamic" else None
 
+        # Remove entries from the old home server
+        actions[home_server] = []
+        if old_home_server and old_home_server != home_server:
+            actions[old_home_server] = []
+
+            # Query for the used callerid of the given uid, to be able to remove its voicemail entries
+            callerid_s = select([sip_users_table.c.callerid]).where(sip_users_table.c.name == uid)
+            actions[old_home_server].append(voicemail_users_table.delete().where(voicemail_users_table.c.customer_id == callerid_s))
+
+            # Remove sip_users and enxtensions entries
+            actions[old_home_server].append(sip_users_table.delete().where(sip_users_table.c.name == uid))
+            actions[old_home_server].append(extensions_table.delete().where(extensions_table.c.exten == uid))
+
+            # Delete old used phone numbers from the extension
+            for item in valDict["telephoneNumber"]["in_value"]:
+                actions[old_home_server].append(extensions_table.delete().where(extensions_table.c.exten == item))
+
         # Query for the used callerid of the given uid, to be able to remove its voicemail entries
         callerid_s = select([sip_users_table.c.callerid]).where(sip_users_table.c.name == uid)
-        actions.append(voicemail_users_table.delete().where(voicemail_users_table.c.customer_id == callerid_s))
+        actions[home_server].append(voicemail_users_table.delete().where(voicemail_users_table.c.customer_id == callerid_s))
 
         # Remove sip_users and enxtensions entries
-        actions.append(sip_users_table.delete().where(sip_users_table.c.name == uid))
-        actions.append(extensions_table.delete().where(extensions_table.c.exten == uid))
+        actions[home_server].append(sip_users_table.delete().where(sip_users_table.c.name == uid))
+        actions[home_server].append(extensions_table.delete().where(extensions_table.c.exten == uid))
 
         # Delete old used phone numbers from the extension
         for item in valDict["telephoneNumber"]["in_value"]:
-            actions.append(extensions_table.delete().where(extensions_table.c.exten == item))
+            actions[home_server].append(extensions_table.delete().where(extensions_table.c.exten == item))
 
-        # Delete phone numbers from the extension
+        # Delete phone numbers from the extension - to be sure that they are not used twice...
         for item in valDict["telephoneNumber"]["value"]:
-            actions.append(extensions_table.delete().where(extensions_table.c.exten == item))
-
-        #TODO: If the goFonHomeServer has changed, then try to remove the entries from the old server..
+            actions[home_server].append(extensions_table.delete().where(extensions_table.c.exten == item))
 
         # Now create the new entries
         sip_entry = {}
@@ -82,7 +97,7 @@ class storeGoFonAccountSettings(ElementFilter):
         sip_entry['secret']       = pin
         sip_entry['username']     = uid
         sip_entry['ipaddr']       = hardware
-        actions.append(sip_users_table.insert().values(**sip_entry))
+        actions[home_server].append(sip_users_table.insert().values(**sip_entry))
 
         # Create the voicemail entry
         voice_entry = {}
@@ -92,7 +107,7 @@ class storeGoFonAccountSettings(ElementFilter):
         voice_entry["fullname"]    = cn_name
         voice_entry["context"]     = voicemail_context
         voice_entry["email"]       = mail
-        actions.append(voicemail_users_table.insert().values(**voice_entry))
+        actions[home_server].append(voicemail_users_table.insert().values(**voice_entry))
 
         # Create extensions entries (uid -> number)
         ext_entry = {}
@@ -101,7 +116,7 @@ class storeGoFonAccountSettings(ElementFilter):
         ext_entry['priority']= 1;
         ext_entry['app']     = "Goto";
         ext_entry['appdata'] = primary_number + delimiter + "1"
-        actions.append(extensions_table.insert().values(**ext_entry))
+        actions[home_server].append(extensions_table.insert().values(**ext_entry))
 
         # Create extensions entries (primary -> number)
         ext_entry = {}
@@ -109,7 +124,7 @@ class storeGoFonAccountSettings(ElementFilter):
         ext_entry['exten']   = primary_number
         ext_entry['priority']= 0;
         ext_entry['app']     = 'SIP/' + uid
-        actions.append(extensions_table.insert().values(**ext_entry))
+        actions[home_server].append(extensions_table.insert().values(**ext_entry))
 
         # Set macro if one is selected
         if macro:
@@ -126,7 +141,7 @@ class storeGoFonAccountSettings(ElementFilter):
             ext_entry['priority']= 1
             ext_entry['app']     = s_app
             ext_entry['appdata'] = s_par
-            actions.append(extensions_table.insert().values(**ext_entry))
+            actions[home_server].append(extensions_table.insert().values(**ext_entry))
 
-        valDict[key]["value"] = actions
+        valDict[key]["value"] = [actions]
         return key, valDict
