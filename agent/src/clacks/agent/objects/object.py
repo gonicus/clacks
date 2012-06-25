@@ -490,6 +490,15 @@ class Object(object):
 
         zope.event.notify(ObjectChanged("pre %s" % self._mode, obj))
 
+        # Call pre-hooks now
+        hooks = getattr(self, '__hooks')
+        if self._mode in ["extend", "create"] and "PreCreate" in hooks:
+            for hook in hooks["PreCreate"]:
+                hook["ref"](self)
+        if self._mode in ["update"] and "PreModify" in hooks:
+            for hook in hooks["PreModify"]:
+                hook["ref"](self)
+
         # First, take care about the primary backend...
         if p_backend in toStore:
             beAttrs = self._backendAttrs[p_backend] if p_backend in self._backendAttrs else {}
@@ -541,6 +550,15 @@ class Object(object):
                 be.update(self.uuid, data, beAttrs)
 
         zope.event.notify(ObjectChanged("post %s" % self._mode, obj))
+
+        # Call post-hooks now
+        hooks = getattr(self, '__hooks')
+        if self._mode in ["extend", "create"] and "PostCreate" in hooks:
+            for hook in hooks["PostCreate"]:
+                hook["ref"](self)
+        if self._mode in ["update"] and "PostModify" in hooks:
+            for hook in hooks["PostModify"]:
+                hook["ref"](self)
 
     def revert(self):
         """
@@ -904,6 +922,12 @@ class Object(object):
         if not self._base_object:
             raise ObjectException("cannot remove non base object - use retract")
 
+        # Call pre-remove now
+        hooks = getattr(self, '__hooks')
+        if "PreRemove" in hooks:
+            for hook in hooks["PreRemove"]:
+                hook["ref"](self)
+
         # Remove all references to ourselves
         self.remove_refs()
 
@@ -926,6 +950,12 @@ class Object(object):
             be.remove(obj.uuid)
 
         zope.event.notify(ObjectChanged("post remove", obj))
+
+        # Call post-remove now
+        hooks = getattr(self, '__hooks')
+        if "PostRemove" in hooks:
+            for hook in hooks["PostRemove"]:
+                hook["ref"](self)
 
     def simulate_move(self, orig_dn):
         """
@@ -988,6 +1018,12 @@ class Object(object):
         if self._base_object:
             raise ObjectException("base objects cannot be retracted")
 
+        # Call pre-remove now
+        hooks = getattr(self, '__hooks')
+        if "PreRemove" in hooks:
+            for hook in hooks["PreRemove"]:
+                hook["ref"](self)
+
         # Remove all references to ourselves
         self.remove_refs()
 
@@ -1027,6 +1063,12 @@ class Object(object):
                     if backend in self._backendAttrs else None)
 
         zope.event.notify(ObjectChanged("post retract", obj))
+
+        # Call post-remove now
+        hooks = getattr(self, '__hooks')
+        if "PostRemove" in hooks:
+            for hook in hooks["PostRemove"]:
+                hook["ref"](self)
 
     def is_attr_set(self, name):
         return len(self.myProperties[name]['value'])
