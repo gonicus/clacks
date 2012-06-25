@@ -47,7 +47,7 @@ class storeGoFonAccountSettings(ElementFilter):
 
         # Set the ip to to the goFonDefaultIP of the goFonHardware if it is set.
         res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonDefaultIP/string()" % hardware)
-        hardware_ip = res[0] in len(res) and res[0] != "dynamic" else None
+        hardware_ip = res[0] if len(res) and res[0] != "dynamic" else None
 
         # Query for the used callerid of the given uid, to be able to remove its voicemail entries
         callerid_s = select([sip_users_table.c.callerid]).where(sip_users_table.c.name == uid)
