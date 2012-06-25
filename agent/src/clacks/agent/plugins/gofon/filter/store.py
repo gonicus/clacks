@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from clacks.agent.objects.filter import ElementFilter
-from clacks.agent.plugins.goFon.filter.table_defs import sip_users_table, extensions_table, voicemail_users_table
+from clacks.agent.plugins.gofon.filter.table_defs import sip_users_table, extensions_table, voicemail_users_table
 from sqlalchemy.sql import select, delete, and_
 from clacks.common.components import PluginRegistry
 
