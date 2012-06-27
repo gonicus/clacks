@@ -16,11 +16,15 @@ qx.Class.define("proxy_test.ObjectLoader", {
 
   members: {
 
-    openObject: function(dn){
+    openObject: function(dn, type){
 
       // Add an event listener
       var rpc = proxy_test.io.Rpc.getInstance();
-      var result = rpc.callSync("openObject", "object", dn);
+      if(type){
+        var result = rpc.callSync("openObject", "object", dn, type);
+      }else{
+        var result = rpc.callSync("openObject", "object", dn);
+      }
       var jDefs = result["__jsonclass__"][1];
       var uuid = jDefs[1];
       var methods = jDefs[3];
