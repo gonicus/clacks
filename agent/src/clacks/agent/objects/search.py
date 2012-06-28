@@ -50,6 +50,7 @@ from clacks.agent.acl import ACLResolver
 from lepl import Literal, Node, Regexp, UnsignedReal, Space, Separator, Delayed, Optional, String
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import Plugin
+from clacks.common.components import PluginRegistry
 
 class MyNode(Node):
     """
@@ -231,10 +232,9 @@ class Query(MyNode):
             attrmap[object_type] = object_factory.getAttributeTypeMap(object_type)
 
         # Start the given query
-        xmldb = XMLDBHandler.get_instance()
-        xmldb.setNamespace('objects', 'xs', "http://www.w3.org/2001/XMLSchema")
+        s_index = PluginRegistry.getInstance("ObjectIndex")
         xquery =  self.get_xquery()
-        q_res = xmldb.xquery(xquery, self._collection)
+        q_res = s_index.xquery(xquery)
 
         # The list we return later
         result = []
