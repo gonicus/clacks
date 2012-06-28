@@ -61,6 +61,24 @@ qx.Class.define("proxy_test.Application",
       rpc.cA(function(result, error){
           console.log("Yeah");
         }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
+      rpc.cA(function(result, error){
+          console.log("Yeah");
+        }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
+      rpc.cA(function(result, error){
+          console.log("Yeah");
+        }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
+      rpc.cA(function(result, error){
+          console.log("Yeah");
+        }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
+      rpc.cA(function(result, error){
+          console.log("Yeah");
+        }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
+      rpc.cA(function(result, error){
+          console.log("Yeah");
+        }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
+      rpc.cA(function(result, error){
+          console.log("Yeah");
+        }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
 
       //var proxy = new proxy_test.ObjectLoader();
       //var user = proxy.openObject("cn=test test,ou=people,dc=example,dc=net");

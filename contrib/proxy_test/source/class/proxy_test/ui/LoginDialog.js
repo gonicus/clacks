@@ -97,7 +97,7 @@ qx.Class.define("proxy_test.ui.LoginDialog",
         var that = this;
         rpc.callAsync(function(result, error){
             if(!result){
-              that.__info.setValue(this.tr("Invalid login ..."));
+              that.__info.setValue(that.tr("Invalid login ..."));
             }else{
               that.close();
               that.fireEvent("login");

@@ -14,15 +14,18 @@ qx.Class.define("proxy_test.io.Rpc", {
   members: {
   
     queue: [],
+    running: false,
 
     process_queue: function(){
-      if(this.queue.length){
-        var item = this.queue.pop();
-        console.log(item['arguments']);
-        this.callAsync.apply(this, [item['callback']].concat(item['arguments']));
-      }
-      if(this.queue.length){
-        this.process_queue();
+      if(!this.running){
+        this.running = true;
+        if(this.queue.length){
+          var item = this.queue.pop();
+          this.callAsync.apply(this, [item['callback']].concat(item['arguments']));
+        }
+        if(this.queue.length){
+          this.process_queue();
+        }
       }
     },
 
@@ -42,6 +45,7 @@ qx.Class.define("proxy_test.io.Rpc", {
       call['callback'] = function(result, error){
               if(error){
                 if(error.code == 401){
+                  cl.running = false;
                   var dialog = new proxy_test.ui.LoginDialog();
                   dialog.open();
                   dialog.addListener("login", function(e){
@@ -52,6 +56,8 @@ qx.Class.define("proxy_test.io.Rpc", {
                   console.log(error);
                 }
               }else{
+                cl.running = false;
+                cl.process_queue();
                 func.apply(call['context'], [result, error]);
               }
             };     
