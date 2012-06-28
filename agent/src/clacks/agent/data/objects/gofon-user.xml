@@ -2,9 +2,9 @@
 <Objects xmlns="http://www.gonicus.de/Objects">
 	<Object>
 		<Name>goFonUser</Name>
-		<DisplayName>goFonUser</DisplayName>
-		<Description>goFonUser user extension</Description>
-		<BaseObject>false</BaseObject>
+    <DisplayName>goFonUser</DisplayName>
+    <Description>goFonUser user extension</Description>
+    <BaseObject>false</BaseObject>
     <BackendParameters>
       <Backend objectClasses="goFonAccount">LDAP</Backend>
       <Backend database="gophone">DBMAP</Backend>
@@ -19,7 +19,28 @@
         </CommandParameters>
       </Hook>
       <Hook>
+        <Type>PreCreate</Type>
+        <Command>removeGoFonAccount</Command>
+        <CommandParameters>
+          <Value>uuid</Value>
+        </CommandParameters>
+      </Hook>
+      <Hook>
         <Type>PostCreate</Type>
+        <Command>storeGoFonAccount</Command>
+        <CommandParameters>
+          <Value>uuid</Value>
+        </CommandParameters>
+      </Hook>
+      <Hook>
+        <Type>PreUpdate</Type>
+        <Command>removeGoFonAccount</Command>
+        <CommandParameters>
+          <Value>uuid</Value>
+        </CommandParameters>
+      </Hook>
+      <Hook>
+        <Type>PostUpdate</Type>
         <Command>storeGoFonAccount</Command>
         <CommandParameters>
           <Value>uuid</Value>
@@ -39,29 +60,6 @@
       <ForeignAttribute>
         <Name>telephoneNumber</Name>
       </ForeignAttribute>
-      <Attribute>
-        <Name>db_ext</Name>
-        <Backend>DBMAP</Backend>
-        <Description>Used to forward changes to the databse backend.</Description>
-        <Type>AnyType</Type>
-        <MultiValue>true</MultiValue>
-        <ReadOnly>true</ReadOnly>
-        <DependsOn>
-          <Attribute>telephoneNumber</Attribute>
-          <Attribute>goFonPIN</Attribute>
-          <Attribute>goFonVoicemailPIN</Attribute>
-          <Attribute>goFonHardware</Attribute>
-        </DependsOn>
-        <OutFilter>
-          <FilterChain>
-            <FilterEntry>
-              <Filter>
-                <Name>storeGoFonAccountSettings</Name>
-              </Filter>
-            </FilterEntry>
-          </FilterChain>
-        </OutFilter>
-      </Attribute>
       <Attribute>
         <Name>goFonDeliveryMode</Name>
         <Description>GOFon delivery mode is defined here</Description>
@@ -106,7 +104,7 @@
         <Description>defines voicemail delivery format</Description>
         <Type>String</Type>
         <MultiValue>false</MultiValue>
-        <Mandatory>false</Mandatory>
+        <Mandatory>true</Mandatory>
         <Validators>
           <Condition>
             <Name>RegEx</Name>
@@ -167,7 +165,7 @@
       </Attribute>
       <Attribute>
         <Name>goFonHomeServer</Name>
-        <Description>defines voicemail delivery format</Description>
+        <Description>The gofon-server to use</Description>
         <Type>UnicodeString</Type>
         <MultiValue>false</MultiValue>
         <Mandatory>true</Mandatory>
