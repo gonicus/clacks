@@ -51,8 +51,8 @@ class goFonAccount(Plugin):
                 return
             else:
 
-                home_server = entry["goFonHomeServer"][0]
                 uid = entry["uid"][0]
+                home_server = entry["goFonHomeServer"][0]
                 phone_numbers = entry["telephoneNumber"]
 
 
@@ -78,6 +78,7 @@ class goFonAccount(Plugin):
     def storeGoFonAccount(self, uuid):
 
         s_wrapper = PluginRegistry.getInstance("SearchWrapper")
+        index = PluginRegistry.getInstance("ObjectIndex")
         query = """
         SELECT User.*
         BASE User SUB "dc=example,dc=net"
@@ -85,76 +86,100 @@ class goFonAccount(Plugin):
         ORDER BY User.UUID
         """ % (uuid)
         result = s_wrapper.execute(query)
-        #if result and len(result) == 1:
-        #    print result[0]
+        if result and len(result) == 1:
+            entry = result[0]["User"]
 
-        return
+            # Extract required attribute values.
+            uid = entry["uid"][0]
+            phone_numbers = entry["telephoneNumber"]
+            pin = entry["goFonPIN"][0] if "goFonPIN" in entry else None
+            voicemail_pin = entry["goFonVoicemailPIN"][0] if "goFonVoicemailPIN" in entry else None
+            hardware = entry["goFonHardware"][0]
+            primary_number = phone_numbers[0]
+            cn_name = entry["sn"][0] + " " + entry["givenName"][0]
+            mail = entry["mail"][0] if "mail" in entry else ""
+            macro = entry["goFonMacro"][0] if "goFonMacro" in entry else None
+            macro_parameter = "unknown"
+            home_server = entry["goFonHomeServer"][0]
 
-        # Now create the new entries
-        sip_entry = {}
-        sip_entry['dtmfmode']     = dtmf_mode
-        sip_entry['callerid']     = primary_number
-        sip_entry['name']         = uid
-        sip_entry['canreinvite']  = "no"
-        sip_entry['context']      = sip_context
-        sip_entry['host']         = hardware
-        sip_entry['mailbox']      = "%s@%s" % (primary_number, voicemail_context)
-        sip_entry['nat']          = "no"
-        sip_entry['qualify']      = qualify
-        sip_entry['restrictcid']  = "n"
-        sip_entry['secret']       = pin
-        sip_entry['username']     = uid
-        sip_entry['ipaddr']       = hardware
-        actions[home_server].append(sip_users_table.insert().values(**sip_entry))
+            delimiter = self.env.config.get("gofon.delimiter", "|")
+            voicemail_context = self.env.config.get("gofon.voicemail_context", None)
+            if not voicemail_context:
+                raise Exception("please define gofon.voicemail_context in your config!")
+            sip_context = self.env.config.get("gofon.sip_context", None)
+            if not sip_context:
+                raise Exception("please define gofon.sip_context in your config!")
 
-        # Create the voicemail entry
-        voice_entry = {}
-        voice_entry["customer_id"] = primary_number
-        voice_entry["mailbox"]     = primary_number
-        voice_entry["password"]    = voicemail_pin
-        voice_entry["fullname"]    = cn_name
-        voice_entry["context"]     = voicemail_context
-        voice_entry["email"]       = mail
-        actions[home_server].append(voicemail_users_table.insert().values(**voice_entry))
+            # Read phone-hardware settings from the index
+            res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonDmtfMode/string()" % hardware)
+            dtmf_mode = res[0] if len(res) and res[0] else "rfc2833"
+            res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonQualify/string()" % hardware)
+            qualify = res[0] if len(res) and res[0] else "yes"
+            res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonType/string()" % hardware)
+            hardware_type = res[0] if len(res) and res[0] else "friend"
 
-        # Create extensions entries (uid -> number)
-        ext_entry = {}
-        ext_entry['context'] = 'GOsa';
-        ext_entry['exten']   = uid
-        ext_entry['priority']= 1;
-        ext_entry['app']     = "Goto";
-        ext_entry['appdata'] = primary_number + delimiter + "1"
-        actions[home_server].append(extensions_table.insert().values(**ext_entry))
+            # Now create the new entries
+            sip_entry = {}
+            sip_entry['dtmfmode']     = dtmf_mode
+            sip_entry['callerid']     = primary_number
+            sip_entry['name']         = uid
+            sip_entry['canreinvite']  = "no"
+            sip_entry['context']      = sip_context
+            sip_entry['host']         = hardware
+            sip_entry['mailbox']      = "%s@%s" % (primary_number, voicemail_context)
+            sip_entry['nat']          = "no"
+            sip_entry['qualify']      = qualify
+            sip_entry['restrictcid']  = "n"
+            sip_entry['secret']       = pin
+            sip_entry['username']     = uid
+            sip_entry['ipaddr']       = hardware
+            actions = {home_server: []}
+            actions[home_server].append(sip_users_table.insert().values(**sip_entry))
 
-        # Create extensions entries (primary -> number)
-        ext_entry = {}
-        ext_entry['context'] = 'GOsa';
-        ext_entry['exten']   = primary_number
-        ext_entry['priority']= 0;
-        ext_entry['app']     = 'SIP/' + uid
-        actions[home_server].append(extensions_table.insert().values(**ext_entry))
+            # Create the voicemail entry
+            voice_entry = {}
+            voice_entry["customer_id"] = primary_number
+            voice_entry["mailbox"]     = primary_number
+            voice_entry["password"]    = voicemail_pin
+            voice_entry["fullname"]    = cn_name
+            voice_entry["context"]     = voicemail_context
+            voice_entry["email"]       = mail
+            actions[home_server].append(voicemail_users_table.insert().values(**voice_entry))
 
-        # Set macro if one is selected
-        if macro:
-            s_app = "Macro"
-            s_par = macro + delimiter + macro_parameter
-        else:
-            s_app = "Dial"
-            s_par = 'SIP/' + uid + delimiter + str(20) + delimiter + "r"
-
-        # Create extensions entries (secondary -> number)
-        for item in valDict["telephoneNumber"]["in_value"]:
-            ext_entry['context'] = 'GOsa'
-            ext_entry['exten']   = item
-            ext_entry['priority']= 1
-            ext_entry['app']     = s_app
-            ext_entry['appdata'] = s_par
+            # Create extensions entries (uid -> number)
+            ext_entry = {}
+            ext_entry['context'] = 'GOsa';
+            ext_entry['exten']   = uid
+            ext_entry['priority']= 1;
+            ext_entry['app']     = "Goto";
+            ext_entry['appdata'] = primary_number + delimiter + "1"
             actions[home_server].append(extensions_table.insert().values(**ext_entry))
 
-        valDict[key]["value"] = [actions]
-        return key, valDict
+            # Create extensions entries (primary -> number)
+            ext_entry = {}
+            ext_entry['context'] = 'GOsa';
+            ext_entry['exten']   = primary_number
+            ext_entry['priority']= 0;
+            ext_entry['app']     = 'SIP/' + uid
+            actions[home_server].append(extensions_table.insert().values(**ext_entry))
 
- 
+            # Set macro if one is selected
+            if macro:
+                s_app = "Macro"
+                s_par = macro + delimiter + macro_parameter
+            else:
+                s_app = "Dial"
+                s_par = 'SIP/' + uid + delimiter + str(20) + delimiter + "r"
+
+            # Create extensions entries (secondary -> number)
+            for item in phone_numbers:
+                ext_entry['context'] = 'GOsa'
+                ext_entry['exten']   = item
+                ext_entry['priority']= 1
+                ext_entry['app']     = s_app
+                ext_entry['appdata'] = s_par
+                actions[home_server].append(extensions_table.insert().values(**ext_entry))
+            self.execute_actions(actions)
 
 
     def execute_actions(self, data):
@@ -168,10 +193,10 @@ class goFonAccount(Plugin):
         for database in data:
 
             # Try to find a database connection for the DB
-            con_str = self.env.config.get("backend_dbmap.%s" % (database.replace(".", "_")), None)
+            con_str = self.env.config.get("gofon.%s" % (database.replace(".", "_")), None)
             if not con_str:
                 raise Exception("no database connection specified for %s! Please add config parameters for %s" % \
-                        (database, "backend_dbmap.%s" % (database.replace(".", "_"))))
+                        (database, "gofon.%s" % (database.replace(".", "_"))))
 
             # Try to establish the connection
             engine = create_engine(con_str)
