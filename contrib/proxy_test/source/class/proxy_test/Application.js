@@ -57,18 +57,14 @@ qx.Class.define("proxy_test.Application",
       -------------------------------------------------------------------------
       */
 
-      // Create a button
-      var proxy = new proxy_test.ObjectLoader();
-      var user = proxy.openObject("cn=test test,ou=people,dc=example,dc=net");
-      user.setTelephoneNumber([1234]);
-      user.commit();
-      
-      var user2 = proxy.openObject("ou=people,dc=example,dc=net", "User");
-      user2.setSn("test123");
-      user2.setGivenName("test123");
-      user2.setUid("test123");
-      user2.commit();
+      var rpc = proxy_test.io.Rpc.getInstance();
+      rpc.cA(function(result, error){
+          console.log("Yeah");
+        }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
 
+      //var proxy = new proxy_test.ObjectLoader();
+      //var user = proxy.openObject("cn=test test,ou=people,dc=example,dc=net");
+      //console.log("now:"  + user.getTelephoneNumber());
     }
   }
 });

@@ -23,7 +23,12 @@ qx.Class.define("proxy_test.Object", {
 
     setAttribute: function(name, value){
       if(this.initialized){
-        this.rpc.callSync("setObjectProperty", this.uuid, name, value);
+        this.rpc.callAsync(function(result, error) {
+          console.log(result, error);
+          if(error){
+            console.log(error.message);
+          }
+        },"setObjectProperty", this.uuid, name, value);
       }
     },
 
