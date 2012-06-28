@@ -491,20 +491,11 @@ class Object(object):
         zope.event.notify(ObjectChanged("pre %s" % self._mode, obj))
 
         # Call pre-hooks now
-        hooks = getattr(self, '__hooks')
-        if self._mode in ["extend", "create"] and "PreCreate" in hooks:
-            for hook in hooks["PreCreate"]:
-                try:
-                    hook["ref"](self)
-                except Exception as e:
-                    self.log.error("failed to execute PreCreate hook for %s" % (str(self)))
+        if self._mode in ["extend", "create"]:
+            self.__execute_hook("PreCreate")
 
-        if self._mode in ["update"] and "PreModify" in hooks:
-            for hook in hooks["PreModify"]:
-                try:
-                    hook["ref"](self)
-                except Exception as e:
-                    self.log.error("failed to execute PreModify hook for %s" % (str(self)))
+        if self._mode in ["update"]:
+            self.__execute_hook("PreModify")
 
         # First, take care about the primary backend...
         if p_backend in toStore:
@@ -559,19 +550,10 @@ class Object(object):
         zope.event.notify(ObjectChanged("post %s" % self._mode, obj))
 
         # Call post-hooks now
-        hooks = getattr(self, '__hooks')
-        if self._mode in ["extend", "create"] and "PostCreate" in hooks:
-            for hook in hooks["PostCreate"]:
-                try:
-                    hook["ref"](self)
-                except Exception as e:
-                    self.log.error("failed to execute PreCreate hook for %s" % (str(self)))
-        if self._mode in ["update"] and "PostModify" in hooks:
-            for hook in hooks["PostModify"]:
-                try:
-                    hook["ref"](self)
-                except Exception as e:
-                    self.log.error("failed to execute PreModify hook for %s" % (str(self)))
+        if self._mode in ["extend", "create"]:
+            self.__execute_hook("PostCreate")
+        if self._mode in ["update"] and "PostModify":
+            self.__execute_hook("PostModify")
 
     def revert(self):
         """
@@ -953,14 +935,7 @@ class Object(object):
         zope.event.notify(ObjectChanged("pre remove", obj))
 
         # Call pre-remove now
-        hooks = getattr(self, '__hooks')
-        if "PreRemove" in hooks:
-            for hook in hooks["PreRemove"]:
-                try:
-                    hook["ref"](self)
-                except Exception as e:
-                    self.log.error("failed to execute PreRemove hook for %s" % (str(self)))
-
+        self.__execute_hook("PreRemove")
 
         for backend in backends:
             be = ObjectBackendRegistry.getBackend(backend)
@@ -969,13 +944,7 @@ class Object(object):
         zope.event.notify(ObjectChanged("post remove", obj))
 
         # Call post-remove now
-        hooks = getattr(self, '__hooks')
-        if "PostRemove" in hooks:
-            for hook in hooks["PostRemove"]:
-                try:
-                    hook["ref"](self)
-                except Exception as e:
-                    self.log.error("failed to execute PostRemove hook for %s" % (str(self)))
+        self.__execute_hook("PostRemove")
 
     def simulate_move(self, orig_dn):
         """
@@ -1039,13 +1008,7 @@ class Object(object):
             raise ObjectException("base objects cannot be retracted")
 
         # Call pre-remove now
-        hooks = getattr(self, '__hooks')
-        if "PreRemove" in hooks:
-            for hook in hooks["PreRemove"]:
-                try:
-                    hook["ref"](self)
-                except Exception as e:
-                    self.log.error("failed to execute PreRemove hook for %s" % (str(self)))
+        self.__execute_hook("PreRemove")
 
         # Remove all references to ourselves
         self.remove_refs()
@@ -1088,19 +1051,25 @@ class Object(object):
         zope.event.notify(ObjectChanged("post retract", obj))
 
         # Call post-remove now
-        hooks = getattr(self, '__hooks')
-        if "PostRemove" in hooks:
-            for hook in hooks["PostRemove"]:
-                try:
-                    hook["ref"](self)
-                except Exception as e:
-                    self.log.error("failed to execute PostRemove hook for %s" % (str(self)))
+        self.__execute_hook("PostRemove")
 
     def is_attr_set(self, name):
         return len(self.myProperties[name]['value'])
 
     def is_attr_using_default(self, name):
         return not self.is_attr_set(name) and self.myProperties[name]['default']
+
+    def __execute_hook(self, hook_type):
+
+        # Call post-remove now
+        hooks = getattr(self, '__hooks')
+        if hook_type in hooks:
+            for hook in hooks[hook_type]:
+                try:
+                    hook["ref"](self)
+                except Exception as e:
+                    self.log.error("failed to execute '%s' hook for %s" % (hook_type, "test"))
+
 
 
 class IObjectChanged(Interface):
