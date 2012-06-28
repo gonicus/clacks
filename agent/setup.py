@@ -164,7 +164,6 @@ setup(
         addbackend = clacks.agent.objects.filter.basic:AddBackend
         registereddevicestatusin = clacks.agent.plugins.goto.in_out_filters:registeredDeviceStatusIn
         registereddevicestatusout = clacks.agent.plugins.goto.in_out_filters:registeredDeviceStatusOut
-        storeGoFonAccountSettings = clacks.agent.plugins.gofon.filter.store:storeGoFonAccountSettings
 
         [object.operator]
         and = clacks.agent.objects.operator.bool:And
