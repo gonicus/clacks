@@ -1065,11 +1065,7 @@ class Object(object):
         hooks = getattr(self, '__hooks')
         if hook_type in hooks:
             for hook in hooks[hook_type]:
-                try:
-                    hook["ref"](self)
-                except Exception as e:
-                    self.log.error("failed to execute '%s' hook for %s" % (hook_type, "test"))
-
+                hook["ref"](self)
 
 
 class IObjectChanged(Interface):

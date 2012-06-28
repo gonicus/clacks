@@ -139,24 +139,6 @@
         </Validators>
       </Attribute>
       <Attribute>
-        <Name>voicemailContext</Name>
-        <Description>The vocemail context to use</Description>
-        <Type>UnicodeString</Type>
-        <Backend>NULL</Backend>
-        <Default>yeah</Default>
-        <MultiValue>false</MultiValue>
-        <Mandatory>true</Mandatory>
-      </Attribute>
-      <Attribute>
-        <Name>sipContext</Name>
-        <Description>The sip context to use</Description>
-        <Type>UnicodeString</Type>
-        <Backend>NULL</Backend>
-        <Default>yeah</Default>
-        <MultiValue>false</MultiValue>
-        <Mandatory>true</Mandatory>
-      </Attribute>
-      <Attribute>
         <Name>goFonMacro</Name>
         <Description>Holds the macro parameter definitions</Description>
         <Type>UnicodeString</Type>
