@@ -494,10 +494,17 @@ class Object(object):
         hooks = getattr(self, '__hooks')
         if self._mode in ["extend", "create"] and "PreCreate" in hooks:
             for hook in hooks["PreCreate"]:
-                hook["ref"](self)
+                try:
+                    hook["ref"](self)
+                except Exception as e:
+                    self.log.error("failed to execute PreCreate hook for %s" % (str(self)))
+
         if self._mode in ["update"] and "PreModify" in hooks:
             for hook in hooks["PreModify"]:
-                hook["ref"](self)
+                try:
+                    hook["ref"](self)
+                except Exception as e:
+                    self.log.error("failed to execute PreModify hook for %s" % (str(self)))
 
         # First, take care about the primary backend...
         if p_backend in toStore:
@@ -555,10 +562,16 @@ class Object(object):
         hooks = getattr(self, '__hooks')
         if self._mode in ["extend", "create"] and "PostCreate" in hooks:
             for hook in hooks["PostCreate"]:
-                hook["ref"](self)
+                try:
+                    hook["ref"](self)
+                except Exception as e:
+                    self.log.error("failed to execute PreCreate hook for %s" % (str(self)))
         if self._mode in ["update"] and "PostModify" in hooks:
             for hook in hooks["PostModify"]:
-                hook["ref"](self)
+                try:
+                    hook["ref"](self)
+                except Exception as e:
+                    self.log.error("failed to execute PreModify hook for %s" % (str(self)))
 
     def revert(self):
         """
@@ -922,12 +935,6 @@ class Object(object):
         if not self._base_object:
             raise ObjectException("cannot remove non base object - use retract")
 
-        # Call pre-remove now
-        hooks = getattr(self, '__hooks')
-        if "PreRemove" in hooks:
-            for hook in hooks["PreRemove"]:
-                hook["ref"](self)
-
         # Remove all references to ourselves
         self.remove_refs()
 
@@ -945,6 +952,16 @@ class Object(object):
         obj = self
         zope.event.notify(ObjectChanged("pre remove", obj))
 
+        # Call pre-remove now
+        hooks = getattr(self, '__hooks')
+        if "PreRemove" in hooks:
+            for hook in hooks["PreRemove"]:
+                try:
+                    hook["ref"](self)
+                except Exception as e:
+                    self.log.error("failed to execute PreRemove hook for %s" % (str(self)))
+
+
         for backend in backends:
             be = ObjectBackendRegistry.getBackend(backend)
             be.remove(obj.uuid)
@@ -955,7 +972,10 @@ class Object(object):
         hooks = getattr(self, '__hooks')
         if "PostRemove" in hooks:
             for hook in hooks["PostRemove"]:
-                hook["ref"](self)
+                try:
+                    hook["ref"](self)
+                except Exception as e:
+                    self.log.error("failed to execute PostRemove hook for %s" % (str(self)))
 
     def simulate_move(self, orig_dn):
         """
@@ -1022,7 +1042,10 @@ class Object(object):
         hooks = getattr(self, '__hooks')
         if "PreRemove" in hooks:
             for hook in hooks["PreRemove"]:
-                hook["ref"](self)
+                try:
+                    hook["ref"](self)
+                except Exception as e:
+                    self.log.error("failed to execute PreRemove hook for %s" % (str(self)))
 
         # Remove all references to ourselves
         self.remove_refs()
@@ -1068,7 +1091,10 @@ class Object(object):
         hooks = getattr(self, '__hooks')
         if "PostRemove" in hooks:
             for hook in hooks["PostRemove"]:
-                hook["ref"](self)
+                try:
+                    hook["ref"](self)
+                except Exception as e:
+                    self.log.error("failed to execute PostRemove hook for %s" % (str(self)))
 
     def is_attr_set(self, name):
         return len(self.myProperties[name]['value'])
