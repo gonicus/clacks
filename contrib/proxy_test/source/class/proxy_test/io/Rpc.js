@@ -19,12 +19,10 @@ qx.Class.define("proxy_test.io.Rpc", {
     process_queue: function(){
       if(!this.running){
         this.running = true;
+        this.debug("started next rpc job (queue: " + this.queue.length + ")");
         if(this.queue.length){
           var item = this.queue.pop();
           this.callAsync.apply(this, [item['callback']].concat(item['arguments']));
-        }
-        if(this.queue.length){
-          this.process_queue();
         }
       }
     },
@@ -38,26 +36,41 @@ qx.Class.define("proxy_test.io.Rpc", {
       var call = {};
       call['arguments'] = argx;
       call['context'] = context;
+
+      // This is the method that gets called when the rpc is processed
       call['callback'] = function(result, error){
-              if(error){
-                if(error.code == 401){
+
+          // Check return codes first. 
+          if(error){
+
+            // Permission denied - show login screen to allow to log in.
+            if(error.code == 401){
+              var dialog = new proxy_test.ui.LoginDialog();
+              dialog.open();
+              dialog.addListener("login", function(e){
+                  cl.queue.push(call);
                   cl.running = false;
-                  var dialog = new proxy_test.ui.LoginDialog();
-                  dialog.open();
-                  dialog.addListener("login", function(e){
-                      cl.queue.push(call);
-                      cl.process_queue();
-                    }, cl);
-                }else{
-                  console.log(error);
-                }
-              }else{
-                cl.running = false;
-                cl.process_queue();
-                func.apply(call['context'], [result, error]);
-              }
-            };     
+                  cl.process_queue();
+                }, cl);
+            }else{
+              cl.running = false;
+              this.debug("unhandled error-code: " + error.code);
+              console.log(error);
+            }
+          }else{
+
+            // Everthing went fine, now call the callback method with the result.
+            cl.running = false;
+            func.apply(call['context'], [result]);
+
+            // Start next rpc-job
+            cl.process_queue();
+          }
+        };    
+
+      // Insert the job into the job-queue and trigger processing.
       this.queue.unshift(call);
+      this.debug("added new job to the queue (queue: " + this.queue.length + ")");
       this.process_queue();
     }
   }
