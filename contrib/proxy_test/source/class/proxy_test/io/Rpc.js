@@ -54,12 +54,14 @@ qx.Class.define("proxy_test.io.Rpc", {
               var dialog = new proxy_test.ui.LoginDialog();
               dialog.open();
               dialog.addListener("login", function(e){
+
+                  // Requeue the last reeust and trigger the queue
                   cl.queue.push(call);
                   cl.running = false;
                   cl.process_queue();
                 }, cl);
 
-            // Catch potential errors here. 
+          // Catch potential server-errors here. 
           }else if(error &&  error.code >= 400){
               cl.running = false;
               cl.error("unhandled error-code: " + error.code);

@@ -13,6 +13,8 @@ qx.Class.define("proxy_test.ObjectFactory", {
   statics: {
     classes: null,
 
+    // Instantiates an remote object for the given dn.
+    // You can than access properties or call methods as usual.
     openObject: function(c_callback, c_context, dn, type){
 
       // Initialize class-cache

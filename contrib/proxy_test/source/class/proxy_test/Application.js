@@ -78,6 +78,7 @@ qx.Class.define("proxy_test.Application",
           object.changePassword(function(result){
             console.log("Password changed");
           }, this, "tester123");
+
         }, this, "cn=test test,ou=people,dc=example,dc=net");
     }
   }
