@@ -31,7 +31,7 @@ qx.Class.define("proxy_test.ObjectFactory", {
         var attributes = jDefs[4];
         var baseType = null;
         var extensionTypes = null;
-        
+
         // This method is called below to make the code more readable.
         var _handleResult = function(){
 

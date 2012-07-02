@@ -27,13 +27,15 @@ qx.Class.define("proxy_test.Object", {
      * */
     setAttribute: function(name, value){
       if(this.initialized){
+        var that = this;
         var rpc = proxy_test.io.Rpc.getInstance();
         rpc.cA(function(result, error) {
-          console.log(result, error);
-          if(error){
-            console.log(error.message);
+          if(!error){
+            that.debug("update property value " + name + ": "+ value);
+          }else{
+            that.error("failed to update property value for " + name + "(" + error.message + ")");
           }
-        },"setObjectProperty", this.uuid, name, value);
+        }, this ,"setObjectProperty", this.uuid, name, value);
       }
     },
 
@@ -43,7 +45,9 @@ qx.Class.define("proxy_test.Object", {
       var rpc = proxy_test.io.Rpc.getInstance();
       var args = ["dispatchObjectMethod", this.uuid, method].concat(Array.prototype.slice.call(arguments, 3));
       rpc.cA.apply(rpc, [function(result){
-          func.apply(context, [result]);
+          if(func){
+            func.apply(context, [result]);
+          }
         }, this].concat(args));
     }
   }

@@ -48,11 +48,9 @@ qx.Class.define("proxy_test.io.Rpc", {
       var cl = this;
       call['callback'] = function(result, error){
 
-          // Check return codes first. 
-          if(error){
+          // Permission denied - show login screen to allow to log in.
+          if(error && error.code == 401){
 
-            // Permission denied - show login screen to allow to log in.
-            if(error.code == 401){
               var dialog = new proxy_test.ui.LoginDialog();
               dialog.open();
               dialog.addListener("login", function(e){
@@ -60,22 +58,17 @@ qx.Class.define("proxy_test.io.Rpc", {
                   cl.running = false;
                   cl.process_queue();
                 }, cl);
-            }else if(error.code == 100){
+
+            // Catch potential errors here. 
+          }else if(error &&  error.code >= 400){
               cl.running = false;
-              cl.debug("SERVER SIDE ERROR: " + error.code);
-              console.log(error);
-              console.log(call);
-            }else{
-              cl.running = false;
-              cl.debug("unhandled error-code: " + error.code);
-              console.log(error);
-            }
+              cl.error("unhandled error-code: " + error.code);
           }else{
 
             // Everthing went fine, now call the callback method with the result.
             cl.running = false;
             cl.debug("rpc job finished (queue: " + cl.queue.length + ")");
-            func.apply(call['context'], [result]);
+            func.apply(call['context'], [result, error]);
 
             // Start next rpc-job
             cl.process_queue();

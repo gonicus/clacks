@@ -59,13 +59,24 @@ qx.Class.define("proxy_test.Application",
 
       proxy_test.ObjectFactory.openObject(function(object){
 
-          object.setTelephoneNumber(['123']);
+          // Set values without callback
+          object.setTelephoneNumber(['123', 'asdfasdf']);
+          object.setUid("test");
+          object.setDepartmentNumber("asdf");
 
-          object.asXML(function(result){
+          // Commit changes without callback
+          object.commit();
+
+          // object.commit(function(){...}, this)     <--  with callback
+
+          // List object attributes
+          object.get_attributes(function(result){
             console.log(result);
           }, this);
+          
+          // Change the users password
           object.changePassword(function(result){
-            console.log(result);
+            console.log("Password changed");
           }, this, "tester123");
         }, this, "cn=test test,ou=people,dc=example,dc=net");
     }
