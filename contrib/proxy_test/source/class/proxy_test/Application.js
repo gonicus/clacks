@@ -58,34 +58,11 @@ qx.Class.define("proxy_test.Application",
       */
 
       var rpc = proxy_test.io.Rpc.getInstance();
-      rpc.cA(function(result, error){
-          console.log("Yeah");
-        }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
-      rpc.cA(function(result, error){
-          console.log("Yeah");
-        }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
-      rpc.cA(function(result, error){
-          console.log("Yeah");
-        }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
-      rpc.cA(function(result, error){
-          console.log("Yeah");
-        }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
-      rpc.cA(function(result, error){
-          console.log("Logout");
-        }, this, "logout");
-      rpc.cA(function(result, error){
-          console.log("Yeah");
-        }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
-      rpc.cA(function(result, error){
-          console.log("Yeah");
-        }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
-      rpc.cA(function(result, error){
-          console.log("Yeah");
-        }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
-
-      //var proxy = new proxy_test.ObjectLoader();
-      //var user = proxy.openObject("cn=test test,ou=people,dc=example,dc=net");
-      //console.log("now:"  + user.getTelephoneNumber());
+      for(var i= 0; i< 100; i++){
+        proxy_test.ObjectLoader.openObject(function(object){
+            console.log("*");
+          }, this, "cn=test test,ou=people,dc=example,dc=net");
+      }
     }
   }
 });
