@@ -71,6 +71,9 @@ qx.Class.define("proxy_test.Application",
           console.log("Yeah");
         }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
       rpc.cA(function(result, error){
+          console.log("Logout");
+        }, this, "logout");
+      rpc.cA(function(result, error){
           console.log("Yeah");
         }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
       rpc.cA(function(result, error){

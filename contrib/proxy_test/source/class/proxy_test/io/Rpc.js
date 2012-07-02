@@ -32,11 +32,7 @@ qx.Class.define("proxy_test.io.Rpc", {
     cA : function(func, context) {
       
       // Create argument list
-      var argx = Array();
-      for (var e=2; e<arguments.length; e++) {
-        argx.push(arguments[e]);
-      }
-  
+      var argx = Array.prototype.slice.call(arguments, 2);
 
       var cl = this;
       var call = {};

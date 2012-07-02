@@ -20,6 +20,9 @@ qx.Class.define("proxy_test.ui.LoginDialog",
     this.setAllowMaximize(false);
     this.setShowMinimize(false);
     this.setShowMaximize(false);
+    this.addListener("appear", function(){
+        this.center();
+      }, this);
 
     /* Try to receive currently loggedin user */
 
@@ -42,9 +45,9 @@ qx.Class.define("proxy_test.ui.LoginDialog",
       });
     }
 
-    this.__username = new qx.ui.form.TextField();
+    this.__username = new qx.ui.form.TextField("agent");
     this.__username.activate();
-    this.__password = new qx.ui.form.PasswordField();
+    this.__password = new qx.ui.form.PasswordField("secret");
 
     this.add(this.__username.set(
     {
@@ -92,7 +95,7 @@ qx.Class.define("proxy_test.ui.LoginDialog",
       column : 0
     });
 
-    login.addListener("click", function(){
+    var loginF = function(){
         var rpc = proxy_test.io.Rpc.getInstance();
         var that = this;
         rpc.callAsync(function(result, error){
@@ -103,6 +106,12 @@ qx.Class.define("proxy_test.ui.LoginDialog",
               that.fireEvent("login");
             }
           }, "login", this.__username.getValue(), this.__password.getValue());
+      }
+    login.addListener("click", loginF, this);
+    this.addListener("keydown", function(e){
+        if(e.getKeyCode() == 13){
+          loginF.apply(this);
+        }
       }, this);
   },
 
