@@ -57,12 +57,17 @@ qx.Class.define("proxy_test.Application",
       -------------------------------------------------------------------------
       */
 
-      var rpc = proxy_test.io.Rpc.getInstance();
-      for(var i= 0; i< 100; i++){
-        proxy_test.ObjectLoader.openObject(function(object){
-            console.log("*");
-          }, this, "cn=test test,ou=people,dc=example,dc=net");
-      }
+      proxy_test.ObjectFactory.openObject(function(object){
+
+          object.setTelephoneNumber(['123']);
+
+          object.asXML(function(result){
+            console.log(result);
+          }, this);
+          object.changePassword(function(result){
+            console.log(result);
+          }, this, "tester123");
+        }, this, "cn=test test,ou=people,dc=example,dc=net");
     }
   }
 });

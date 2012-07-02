@@ -1,12 +1,12 @@
-qx.Class.define("proxy_test.ObjectLoader", {
+qx.Class.define("proxy_test.ObjectFactory", {
 
   extend: qx.core.Object,
 
   construct: function(){
     this.base(arguments);
 
-    if(!proxy_test.ObjectLoader.classes){
-      proxy_test.ObjectLoader.classes = {}
+    if(!proxy_test.ObjectFactory.classes){
+      proxy_test.ObjectFactory.classes = {}
     }
   },
 
@@ -16,8 +16,8 @@ qx.Class.define("proxy_test.ObjectLoader", {
     openObject: function(c_callback, c_context, dn, type){
 
       // Initialize class-cache
-      if(!proxy_test.ObjectLoader.classes){
-        proxy_test.ObjectLoader.classes = {};
+      if(!proxy_test.ObjectFactory.classes){
+        proxy_test.ObjectFactory.classes = {};
       }
 
       // Add an event listener
@@ -40,8 +40,8 @@ qx.Class.define("proxy_test.ObjectLoader", {
           var className = "objects." + baseType;
 
           // Create a metaclass for this type of objects on demand, if not done already.
-          if(className in proxy_test.ObjectLoader.classes){
-            c_callback.apply(c_context, [new proxy_test.ObjectLoader.classes[className](userData)]); 
+          if(className in proxy_test.ObjectFactory.classes){
+            c_callback.apply(c_context, [new proxy_test.ObjectFactory.classes[className](userData)]); 
           }else{
 
             // The base member variables for the metaclass
@@ -88,8 +88,8 @@ qx.Class.define("proxy_test.ObjectLoader", {
 
             // Create meta class for this object
             var def = {extend: proxy_test.Object, members: members, properties: properties};
-            proxy_test.ObjectLoader.classes[className] = qx.Class.define(className, def);
-            c_callback.apply(c_context, [new proxy_test.ObjectLoader.classes[className](userData)]); 
+            proxy_test.ObjectFactory.classes[className] = qx.Class.define(className, def);
+            c_callback.apply(c_context, [new proxy_test.ObjectFactory.classes[className](userData)]); 
           }
         }
 

@@ -16,6 +16,10 @@ qx.Class.define("proxy_test.io.Rpc", {
     queue: [],
     running: false,
 
+    /* We use a queue to process incoming RPC requests to ensure that we can
+     * act on errors accordingly. E.g for error 401 we send a login request
+     * first and then re-queue the current remote-procedure-call again.
+     * */
     process_queue: function(){
       if(!this.running){
         this.running = true;
@@ -27,17 +31,21 @@ qx.Class.define("proxy_test.io.Rpc", {
       }
     },
 
+    /* This method pushes a new request into the rpc-queue and then
+     * triggers queue-processing.
+     * */
     cA : function(func, context) {
       
       // Create argument list
       var argx = Array.prototype.slice.call(arguments, 2);
 
-      var cl = this;
+      // Create queue object
       var call = {};
       call['arguments'] = argx;
       call['context'] = context;
 
-      // This is the method that gets called when the rpc is processed
+      // This is the method that gets called when the rpc reqeust has finished
+      var cl = this;
       call['callback'] = function(result, error){
 
           // Check return codes first. 
@@ -52,15 +60,21 @@ qx.Class.define("proxy_test.io.Rpc", {
                   cl.running = false;
                   cl.process_queue();
                 }, cl);
+            }else if(error.code == 100){
+              cl.running = false;
+              cl.debug("SERVER SIDE ERROR: " + error.code);
+              console.log(error);
+              console.log(call);
             }else{
               cl.running = false;
-              this.debug("unhandled error-code: " + error.code);
+              cl.debug("unhandled error-code: " + error.code);
               console.log(error);
             }
           }else{
 
             // Everthing went fine, now call the callback method with the result.
             cl.running = false;
+            cl.debug("rpc job finished (queue: " + cl.queue.length + ")");
             func.apply(call['context'], [result]);
 
             // Start next rpc-job

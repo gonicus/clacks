@@ -3,6 +3,8 @@ qx.Class.define("proxy_test.Object", {
   extend: qx.core.Object,
 
   construct: function(data){
+
+    // Call parent contructor
     this.base(arguments);
 
     // Initialize object values
@@ -21,9 +23,12 @@ qx.Class.define("proxy_test.Object", {
   members: {
     initialized: null,
 
+    /* Setter method for object values
+     * */
     setAttribute: function(name, value){
       if(this.initialized){
-        this.rpc.callAsync(function(result, error) {
+        var rpc = proxy_test.io.Rpc.getInstance();
+        rpc.cA(function(result, error) {
           console.log(result, error);
           if(error){
             console.log(error.message);
@@ -32,9 +37,14 @@ qx.Class.define("proxy_test.Object", {
       }
     },
 
-    callMethod: function(){
-      var args = ["dispatchObjectMethod", this.uuid].concat(Array.prototype.slice.call(arguments, 0));
-      return(this.rpc.callSync.apply(this.rpc, args));
+    /* Wrapper method for object calls
+     * */
+    callMethod: function(method, func, context){
+      var rpc = proxy_test.io.Rpc.getInstance();
+      var args = ["dispatchObjectMethod", this.uuid, method].concat(Array.prototype.slice.call(arguments, 3));
+      rpc.cA.apply(rpc, [function(result){
+          func.apply(context, [result]);
+        }, this].concat(args));
     }
   }
 });
