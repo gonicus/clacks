@@ -3,6 +3,8 @@ qx.Class.define("proxy_test.Object", {
   extend: qx.core.Object,
 
   construct: function(data){
+
+    // Call parent contructor
     this.base(arguments);
 
     // Initialize object values
@@ -21,20 +23,32 @@ qx.Class.define("proxy_test.Object", {
   members: {
     initialized: null,
 
+    /* Setter method for object values
+     * */
     setAttribute: function(name, value){
       if(this.initialized){
-        this.rpc.callAsync(function(result, error) {
-          console.log(result, error);
-          if(error){
-            console.log(error.message);
+        var that = this;
+        var rpc = proxy_test.io.Rpc.getInstance();
+        rpc.cA(function(result, error) {
+          if(!error){
+            that.debug("update property value " + name + ": "+ value);
+          }else{
+            that.error("failed to update property value for " + name + "(" + error.message + ")");
           }
-        },"setObjectProperty", this.uuid, name, value);
+        }, this ,"setObjectProperty", this.uuid, name, value);
       }
     },
 
-    callMethod: function(){
-      var args = ["dispatchObjectMethod", this.uuid].concat(Array.prototype.slice.call(arguments, 0));
-      return(this.rpc.callSync.apply(this.rpc, args));
+    /* Wrapper method for object calls
+     * */
+    callMethod: function(method, func, context){
+      var rpc = proxy_test.io.Rpc.getInstance();
+      var args = ["dispatchObjectMethod", this.uuid, method].concat(Array.prototype.slice.call(arguments, 3));
+      rpc.cA.apply(rpc, [function(result){
+          if(func){
+            func.apply(context, [result]);
+          }
+        }, this].concat(args));
     }
   }
 });

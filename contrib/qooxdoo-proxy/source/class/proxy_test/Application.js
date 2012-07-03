@@ -57,32 +57,28 @@ qx.Class.define("proxy_test.Application",
       -------------------------------------------------------------------------
       */
 
-      var rpc = proxy_test.io.Rpc.getInstance();
-      rpc.cA(function(result, error){
-          console.log("Yeah");
-        }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
-      rpc.cA(function(result, error){
-          console.log("Yeah");
-        }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
-      rpc.cA(function(result, error){
-          console.log("Yeah");
-        }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
-      rpc.cA(function(result, error){
-          console.log("Yeah");
-        }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
-      rpc.cA(function(result, error){
-          console.log("Yeah");
-        }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
-      rpc.cA(function(result, error){
-          console.log("Yeah");
-        }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
-      rpc.cA(function(result, error){
-          console.log("Yeah");
-        }, this, "openObject", "object", "cn=test test,ou=people,dc=example,dc=net");
+      proxy_test.ObjectFactory.openObject(function(object){
 
-      //var proxy = new proxy_test.ObjectLoader();
-      //var user = proxy.openObject("cn=test test,ou=people,dc=example,dc=net");
-      //console.log("now:"  + user.getTelephoneNumber());
+          // Set values without callback
+          object.setTelephoneNumber(['123', 'asdfasdf']);
+          object.setUid("test");
+          object.setDepartmentNumber("asdf");
+
+          // Commit changes without callback
+          object.commit();
+
+          // object.commit(function(){...}, this)     <--  with callback
+
+          // List object attributes
+          object.get_attributes(function(result){
+            console.log(result);
+          }, this);
+          
+          // Change the users password
+          object.changePassword(function(result){
+            console.log("Password changed");
+          }, this, "tester123");
+        }, this, "cn=test test,ou=people,dc=example,dc=net");
     }
   }
 });
