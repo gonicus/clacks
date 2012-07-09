@@ -9,6 +9,7 @@
       <element name="Name" type="token" maxOccurs="1" minOccurs="1"></element>
       <element name="Description" type="string" maxOccurs="1" minOccurs="1"></element>
       <element name="DisplayName" type="string" maxOccurs="1" minOccurs="0"></element>
+      <element name="Template" type="string" maxOccurs="1" minOccurs="0"></element>
       <element name="BackendParameters" type="o:BackendParameters" maxOccurs="1" minOccurs="0"></element>
       <element name="Backend" type="token" maxOccurs="1" minOccurs="1"></element>
       <element name="Attributes" type="o:Attributes" maxOccurs="1" minOccurs="0"></element>

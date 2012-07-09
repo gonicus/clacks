@@ -350,6 +350,12 @@ class Object(object):
         else:
             raise AttributeError("no such property '%s'" % name)
 
+    def getTemplate(self):
+        """
+        Return the name of the template file - if any. Else None.
+        """
+        return self._template
+
     def getAttrType(self, name):
         """
         Return the type of a given object attribute.
