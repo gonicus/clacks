@@ -271,6 +271,12 @@
         <Description>Telephone number</Description>
         <Type>String</Type>
         <MultiValue>true</MultiValue>
+        <Validators>
+          <Condition>
+            <Name>RegEx</Name>
+            <Param>^[0-9\_ \/ \\ \(\)\+\-]*$</Param>
+          </Condition>
+        </Validators>
       </Attribute>
       <Attribute>
         <Name>internationaliSDNNumber</Name>
