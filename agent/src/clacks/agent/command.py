@@ -93,6 +93,15 @@ class CommandRegistry(Plugin):
         self.log.info("initializing command registry")
         self.processing = Event()
 
+    @Command(__help__=N_("Returns the LDAP base"))
+    def getBase(self):
+        """
+        Returns the LDAP base used by the agent as string
+
+        ``Return``: a string representing the LDAP base
+        """
+        return self.env.base
+
     @Command(__help__=N_("List available service nodes on the bus."))
     def getNodes(self):
         """
