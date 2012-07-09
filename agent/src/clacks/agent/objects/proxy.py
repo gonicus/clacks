@@ -63,6 +63,7 @@ class ObjectProxy(object):
     __method_type_map = None
     __attributes = None
     __base_mode = None
+    __property_map = None
 
     def __init__(self, dn_or_base, what=None, user=None):
         self.__env = Environment.getInstance()
@@ -77,6 +78,7 @@ class ObjectProxy(object):
         self.__attribute_type_map = {}
         self.__attributes = []
         self.__method_type_map = {}
+        self.__property_map = {}
 
         # Load available object types
         object_types = self.__factory.getObjectTypes()
@@ -126,11 +128,15 @@ class ObjectProxy(object):
         # Generate attribute to object-type mapping
         for attr in [n for n, o in self.__base.getProperties().items() if not o['foreign']]:
             self.__attributes.append(attr)
+        self.__property_map = self.__base.getProperties()
         for ext in all_extensions:
             if self.__extensions[ext]:
                 props = self.__extensions[ext].getProperties()
             else:
                 props = self.__factory.getObjectProperties(ext)
+
+            self.__property_map = dict(self.__property_map.items() + props.items())
+
             for attr in [n for n, o in props.items() if not o['foreign']]:
                 self.__attributes.append(attr)
 
@@ -139,10 +145,11 @@ class ObjectProxy(object):
         self.uuid = self.__base.uuid
         self.dn = self.__base.dn
 
-    def get_attributes(self):
+    def get_attributes(self, detail=False):
         """
         Returns a list containing all property names known for the instantiated object.
         """
+        attrs = None
 
         # Do we have read permissions for the requested attribute, method
         if self.__current_user:
@@ -156,9 +163,27 @@ class ObjectProxy(object):
                     self.__log.debug("User %s is NOT allowed to access property %s!" % (self.__current_user, topic))
                 return result
 
-            return(filter(lambda x: check_acl(self, x), self.__attributes))
+            attrs = filter(lambda x: check_acl(self, x), self.__attributes)
         else:
-            return self.__attributes
+            attrs = self.__attributes
+
+        if detail:
+            res = {}
+            for attr in attrs:
+                res[attr] = {
+                    'case_sensitive': self.__property_map[attr]['case_sensitive'],
+                    'unique': self.__property_map[attr]['unique'],
+                    'mandatory': self.__property_map[attr]['mandatory'],
+                    'blocked_by': self.__property_map[attr]['blocked_by'],
+                    'default': self.__property_map[attr]['default'],
+                    'readonly': self.__property_map[attr]['readonly'],
+                    'values': self.__property_map[attr]['values'],
+                    'multivalue': self.__property_map[attr]['multivalue'],
+                    'type': self.__property_map[attr]['type']}
+
+            return res
+
+        return attrs
 
     def get_methods(self):
         """
