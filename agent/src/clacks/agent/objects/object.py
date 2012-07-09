@@ -3,6 +3,8 @@ import copy
 import re
 import zope.event
 import ldap
+import pkg_resources
+import os
 from logging import getLogger
 from zope.interface import Interface, implements
 from clacks.common.components import PluginRegistry
@@ -352,9 +354,34 @@ class Object(object):
 
     def getTemplate(self):
         """
-        Return the name of the template file - if any. Else None.
+        Return the template data - if any. Else None.
         """
-        return self._template
+        ui = None
+
+        # If there's a template file, try to find it
+        if self._template:
+            theme = "default"
+            path = None
+
+            # Absolute path
+            if self._template.startswith(os.path.sep):
+                path = self._template
+
+            # Relative path
+            else:
+                # Find path
+                #pylint: disable=E1101
+                path = pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', theme, self._template))
+                if not os.path.exists(path):
+                    path = os.path.join(self.env.config.getBaseDir(), 'templates',
+                        theme, self._template)
+                    if not os.path.exists(path):
+                        return None
+
+            with open(path, "r") as f:
+                ui = f.read()
+
+        return ui
 
     def getAttrType(self, name):
         """
