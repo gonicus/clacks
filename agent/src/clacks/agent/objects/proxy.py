@@ -174,6 +174,7 @@ class ObjectProxy(object):
                     'case_sensitive': self.__property_map[attr]['case_sensitive'],
                     'unique': self.__property_map[attr]['unique'],
                     'mandatory': self.__property_map[attr]['mandatory'],
+                    'depends_on': self.__property_map[attr]['depends_on'],
                     'blocked_by': self.__property_map[attr]['blocked_by'],
                     'default': self.__property_map[attr]['default'],
                     'readonly': self.__property_map[attr]['readonly'],
