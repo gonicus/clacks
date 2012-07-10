@@ -215,8 +215,7 @@ class ObjectProxy(object):
         res = {}
         res[self.get_base_type()] = self.__base.getTemplate()
         for name, ext in self.__extensions.items():
-            if ext:
-                res[name] = ext.getTemplate()
+            res[name] = ext.getTemplate() if ext else None
         return res
 
     def get_object_info(self):
