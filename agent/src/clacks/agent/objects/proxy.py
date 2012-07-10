@@ -211,6 +211,21 @@ class ObjectProxy(object):
     def get_extension_types(self):
         return dict([(e, i != None) for e, i in self.__extensions.iteritems()])
 
+    def get_templates(self):
+        res = {}
+        res[self.get_base_type()] = self.__base.getTemplate()
+        for name, ext in self.__extensions.items():
+            if ext:
+                res[name] = ext.getTemplate()
+        return res
+
+    def get_object_info(self):
+        res = {}
+        res['base'] = self.get_base_type()
+        res['extensions'] = self.get_extension_types()
+        res['templates'] = self.get_templates()
+        return res
+
     def extend(self, extension):
         """
         Extends the base-object with the given extension

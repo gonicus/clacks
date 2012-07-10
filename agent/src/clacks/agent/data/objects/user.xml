@@ -4,6 +4,7 @@
     <Name>User</Name>
     <Description>A generic user</Description>
     <DisplayName>User</DisplayName>
+    <Template>user.ui</Template>
     <BackendParameters>
       <Backend objectClasses="inetOrgPerson"
         RDN="cn,uid">LDAP</Backend>
