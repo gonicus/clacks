@@ -211,18 +211,26 @@ class ObjectProxy(object):
     def get_extension_types(self):
         return dict([(e, i != None) for e, i in self.__extensions.iteritems()])
 
-    def get_templates(self):
+    def get_templates(self, theme="default"):
         res = {}
         res[self.get_base_type()] = self.__base.getTemplate()
         for name, ext in self.__extensions.items():
             res[name] = ext.getTemplate() if ext else None
         return res
 
-    def get_object_info(self):
+    def get_translations(self, locale, theme="default"):
+        res = self.__base.getI18N(locale, theme)
+        for name, ext in self.__extensions.items():
+            if ext:
+                res.update(ext.getI18N(locale, theme))
+        return res
+
+    def get_object_info(self, locale=None, theme="default"):
         res = {}
         res['base'] = self.get_base_type()
         res['extensions'] = self.get_extension_types()
-        res['templates'] = self.get_templates()
+        res['templates'] = self.get_templates(theme)
+        res['i18n'] = self.get_translations(locale, theme)
         return res
 
     def extend(self, extension):
