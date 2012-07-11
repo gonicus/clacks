@@ -395,9 +395,9 @@ class Object(object):
         Return the i18n data - if any. Else None.
         """
         if not language:
-            return None
+            return {}
 
-        i18n = None
+        i18n = {}
         locales = []
         if "-" in language:
             tmp = language.split("-")
