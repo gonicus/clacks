@@ -442,18 +442,22 @@ class Object(object):
             # Reading the XML file will ignore extra tags, because they're not supported
             # for ordinary GUI rendering (i.e. plural needs a 'count').
             root = etree.fromstring(i18n)
-            context = root.find("context");
+            contexts = root.findall("context");
 
-            for message in context.findall("message"):
-                translation = message.find("translation")
+            for context in contexts:
+                for message in context.findall("message"):
+                    if "numerus" in message.keys():
+                        continue
 
-                # With length variants?
-                if "variants" in translation.keys() and translation.get("variants") == "yes":
-                     res[unicode(message.find("source").text)] = [unicode(m.text) for m in translation.findall("lengthvariant")]
+                    translation = message.find("translation")
 
-                # Ordinary?
-                else:
-                     res[unicode(message.find("source").text)] = [unicode(translation.text)]
+                    # With length variants?
+                    if "variants" in translation.keys() and translation.get("variants") == "yes":
+                         res[unicode(message.find("source").text)] = [unicode(m.text) for m in translation.findall("lengthvariant")][0]
+
+                    # Ordinary?
+                    else:
+                         res[unicode(message.find("source").text)] = unicode(translation.text)
 
             return res
 

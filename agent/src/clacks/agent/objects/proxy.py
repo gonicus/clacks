@@ -219,6 +219,8 @@ class ObjectProxy(object):
         return res
 
     def get_translations(self, locale, theme="default"):
+
+        # Merge translations
         res = self.__base.getI18N(locale, theme)
         for name, ext in self.__extensions.items():
             if ext:
