@@ -397,7 +397,7 @@ class Object(object):
         if not language:
             return {}
 
-        i18n = {}
+        i18n = None
         locales = []
         if "-" in language:
             tmp = language.split("-")
@@ -461,7 +461,7 @@ class Object(object):
 
             return res
 
-        return None
+        return {}
 
     def getAttrType(self, name):
         """
