@@ -11,6 +11,7 @@ import os
 import thread
 import logging
 import tornado.wsgi
+import tornado.web
 from tornado.ioloop import IOLoop
 from tornado.httpserver import HTTPServer
 from zope.interface import implements
@@ -142,7 +143,12 @@ class HTTPService(object):
             ssl_options = None
 
         # Fetch server
-        self.srv = HTTPServer(tornado.wsgi.WSGIContainer(self.app), ssl_options=ssl_options)
+        wsgi_app = tornado.wsgi.WSGIContainer(self.app)
+        application = tornado.web.Application([
+            (r".*", tornado.web.FallbackHandler, dict(fallback=wsgi_app))
+        ])
+        self.srv = HTTPServer(application, ssl_options=ssl_options)
+
         self.srv.listen(self.port, self.host)
         thread.start_new_thread(IOLoop.instance().start, ())
 
