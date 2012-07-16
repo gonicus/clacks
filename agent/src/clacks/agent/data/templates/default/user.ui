@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>organizationalPerson</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="resources/user.qrc">
+    <normaloff>:/images/edit-paste.png</normaloff>:/images/edit-paste.png</iconset>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <layout class="QFormLayout" name="formLayout">
