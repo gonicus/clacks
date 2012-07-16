@@ -250,97 +250,249 @@
   <tabstop>internationaliSDNNumberEdit</tabstop>
   <tabstop>destinationIndicatorEdit</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="resources/user.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>postOfficeBoxEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>organizationalPerson</receiver>
    <slot>property_postOfficeBox()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>206</x>
+     <y>164</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>telephoneNumberEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>organizationalPerson</receiver>
    <slot>property_telephoneNumber()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>206</x>
+     <y>79</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>cnEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>organizationalPerson</receiver>
    <slot>property_cn()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>206</x>
+     <y>52</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>titleEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>organizationalPerson</receiver>
    <slot>property_title()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>206</x>
+     <y>137</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>snEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>organizationalPerson</receiver>
    <slot>property_sn()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>206</x>
+     <y>25</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>lEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>organizationalPerson</receiver>
    <slot>property_l()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>206</x>
+     <y>191</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>stEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>organizationalPerson</receiver>
    <slot>property_st()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>206</x>
+     <y>218</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>postalCodeEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>organizationalPerson</receiver>
    <slot>property_postalCode()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>206</x>
+     <y>245</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>physicalDeliveryOfficeNameEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>organizationalPerson</receiver>
    <slot>property_physicalDeliveryOfficeName()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>206</x>
+     <y>106</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>streetEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>organizationalPerson</receiver>
    <slot>property_street()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>206</x>
+     <y>272</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>ouEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>organizationalPerson</receiver>
    <slot>property_ou()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>206</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>trustModelEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>organizationalPerson</receiver>
    <slot>property_trustModel()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>207</x>
+     <y>327</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>x121AddressEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>organizationalPerson</receiver>
    <slot>property_x121Address()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>206</x>
+     <y>356</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>internationaliSDNNumberEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>organizationalPerson</receiver>
    <slot>property_internationaliSDNNumber()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>206</x>
+     <y>383</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>destinationIndicatorEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>organizationalPerson</receiver>
    <slot>property_destinationIndicator()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>206</x>
+     <y>410</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
  </connections>
 </ui>
