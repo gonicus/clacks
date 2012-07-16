@@ -5,8 +5,11 @@ import zope.event
 import ldap
 import pkg_resources
 import os
+from lxml import etree
+from StringIO import StringIO
 from logging import getLogger
 from zope.interface import Interface, implements
+from clacks.common import Environment
 from clacks.common.components import PluginRegistry
 from clacks.agent.objects.backend.registry import ObjectBackendRegistry
 
@@ -47,9 +50,11 @@ class Object(object):
     createTimestamp = None
     modifyTimestamp = None
     myProperties = None
+    env = None
 
 
     def __init__(self, where=None, mode="update"):
+        self.env = Environment.getInstance();
 
         # Instantiate Backend-Registry
         self._reg = ObjectBackendRegistry.getInstance()
@@ -352,7 +357,7 @@ class Object(object):
         else:
             raise AttributeError("no such property '%s'" % name)
 
-    def getTemplate(self):
+    def getTemplate(self, theme="default"):
         """
         Return the template data - if any. Else None.
         """
@@ -360,7 +365,6 @@ class Object(object):
 
         # If there's a template file, try to find it
         if self._template:
-            theme = "default"
             path = None
 
             # Absolute path
@@ -373,15 +377,91 @@ class Object(object):
                 #pylint: disable=E1101
                 path = pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', theme, self._template))
                 if not os.path.exists(path):
-                    path = os.path.join(self.env.config.getBaseDir(), 'templates',
-                        theme, self._template)
+                    path = os.path.join(self.env.config.getBaseDir(), 'templates', theme, self._template)
                     if not os.path.exists(path):
-                        return None
+                        path = pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', "default", self._template))
+                        if not os.path.exists(path):
+                            path = os.path.join(self.env.config.getBaseDir(), 'templates', "default", self._template)
+                            if not os.path.exists(path):
+                                return None
 
             with open(path, "r") as f:
                 ui = f.read()
 
         return ui
+
+    def getI18N(self, language=None, theme="default"):
+        """
+        Return the i18n data - if any. Else None.
+        """
+        if not language:
+            return {}
+
+        i18n = None
+        locales = []
+        if "-" in language:
+            tmp = language.split("-")
+            locales.append(tmp[0].lower() + "_" + tmp[0].upper())
+            locales.append(tmp[0].lower())
+        else:
+            locales.append(language)
+
+        # If there's a template file, try to find it
+        if self._template:
+            paths = []
+
+            # Absolute path
+            if self._template.startswith(os.path.sep):
+                tp = os.path.dirname(self._template)
+                tn = os.path.basename(self._template)[:-3]
+                for loc in locales:
+                    paths.append(os.path.join(tp, "i18n", "%s_%s.ts" % (tn, loc)))
+
+            # Relative path
+            else:
+                tn = os.path.basename(self._template)[:-3]
+
+                # Find path
+                for loc in locales:
+                    #pylint: disable=E1101
+                    paths.append(pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', theme, "i18n", "%s_%s.ts" % (tn, loc))))
+                    paths.append(os.path.join(self.env.config.getBaseDir(), 'templates', theme, "%s_%s.ts" % (tn, loc)))
+                    #pylint: disable=E1101
+                    paths.append(pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', "default", "i18n", "%s_%s.ts" % (tn, loc))))
+                    paths.append(os.path.join(self.env.config.getBaseDir(), 'templates', "default", "%s_%s.ts" % (tn, loc)))
+
+            for path in paths:
+                if os.path.exists(path):
+                    with open(path, "r") as f:
+                        i18n = f.read()
+                    break
+
+        if i18n:
+            res = {}
+
+            # Reading the XML file will ignore extra tags, because they're not supported
+            # for ordinary GUI rendering (i.e. plural needs a 'count').
+            root = etree.fromstring(i18n)
+            contexts = root.findall("context");
+
+            for context in contexts:
+                for message in context.findall("message"):
+                    if "numerus" in message.keys():
+                        continue
+
+                    translation = message.find("translation")
+
+                    # With length variants?
+                    if "variants" in translation.keys() and translation.get("variants") == "yes":
+                         res[unicode(message.find("source").text)] = [unicode(m.text) for m in translation.findall("lengthvariant")][0]
+
+                    # Ordinary?
+                    else:
+                         res[unicode(message.find("source").text)] = unicode(translation.text)
+
+            return res
+
+        return {}
 
     def getAttrType(self, name):
         """
