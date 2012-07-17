@@ -54,8 +54,7 @@ class DBusNotifyHandler(dbus.service.Object, Plugin):
         broadcast=False,
         timeout=120,
         actions="",
-        icon="dialog-information",
-        recurrence=60):
+        icon="dialog-information"):
 
         try:
 
@@ -82,10 +81,6 @@ class DBusNotifyHandler(dbus.service.Object, Plugin):
             if timeout:
                 cmd += ["--timeout"]
                 cmd += [str(timeout)]
-
-            if recurrence:
-                cmd += ["--recurrence"]
-                cmd += [str(recurrence)]
 
             ret = subprocess.call(cmd)
             return int(ret)
