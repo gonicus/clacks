@@ -118,7 +118,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         self.log.debug("new websocket connection established by %s" % self.request.remote_ip)
 
         #TODO: do stuff
-        self.write_message("HELLO")
+        self.write_message("Websockets enabled")
 
     def on_message(self, message):
         if not self.check_cookie():
