@@ -1070,7 +1070,7 @@ class ACLResolver(Plugin):
 
         # Admin users are allowed to do anything.
         if user in self.admins or user == None:
-            self.log.warning("ACL check override active for %s/%s/%s" % (user, base, str(topic)))
+            self.log.debug("ACL check override active for %s/%s/%s" % (user, base, str(topic)))
             return True
 
         # Load default base if needed

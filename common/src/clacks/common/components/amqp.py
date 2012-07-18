@@ -353,6 +353,9 @@ class EventConsumer(object):
                         workers=1,
                         callback=self.__eventProcessor)
 
+    def close(self):
+        self.__eventWorker.close()
+
     #pylint: disable=W0613
     def __eventProcessor(self, ssn, data):
 

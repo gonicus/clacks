@@ -59,18 +59,9 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
     def __init__(self, *args, **kwargs):
         self.log = logging.getLogger(__name__)
-        env = Environment.getInstance()
-        self.__secret = env.config.get('http.cookie_secret', default="TecloigJink4")
-
-        # Add event processor
-        amqp = PluginRegistry.getInstance('AMQPHandler')
-        EventConsumer(env, amqp.getConnection(),
-            xquery="""
-                declare namespace f='http://www.gonicus.de/Events';
-                let $e := ./f:Event
-                return $e/f:Notification
-            """,
-            callback=self.__eventProcessor)
+        self.env = Environment.getInstance()
+        self.__secret = self.env.config.get('http.cookie_secret', default="TecloigJink4")
+        self.__consumer = None
 
         super(WSHandler, self).__init__(*args, **kwargs)
 
@@ -131,7 +122,22 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             self.log.warning("access to websocket from %s blocked due to invalid cookie" % self.request.remote_ip)
             return
 
+        # Store user information
+        info = self.__extract_cookie("ClacksRPC", self.__secret, self.request.headers['Cookie'])
+        self.__user = info['REMOTE_USER']
+
         self.log.debug("new websocket connection established by %s" % self.request.remote_ip)
+
+        # Add event processor
+        amqp = PluginRegistry.getInstance('AMQPHandler')
+        self.__consumer = EventConsumer(self.env, amqp.getConnection(),
+            xquery="""
+                declare namespace f='http://www.gonicus.de/Events';
+                let $e := ./f:Event
+                return $e/f:Notification
+            """,
+            callback=self.__eventProcessor)
+
         self.send_message("notification", { "title": N_("Server information"), "body": N_("Websockets enabled"), "icon": "dialog-information"})
 
     def on_message(self, message):
@@ -139,16 +145,16 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             self.log.warning("access to websocket from %s blocked due to invalid cookie" % self.request.remote_ip)
             return
 
-        #TODO: message just mirrored for testing
         self.log.debug("message received on websocket from %s: %s" % (self.request.remote_ip, message))
-        self.send_message("notification", { "title": N_("Server bounce"), "body": message, "icon": "dialog-information"})
 
     def on_close(self):
-        if not self.check_cookie():
-            return
+        # Close eventually existing consumer
+        if self.__consumer:
+            self.__consumer.close()
 
-        #TODO: do stuff
-        self.log.debug("new websocket connection established by %s" % self.request.remote_ip)
+        self.__consumer = None
+
+        self.log.debug("closing websocket connection to %s" % self.request.remote_ip)
 
     def __eventProcessor(self, data):
         eventType = stripNs(data.xpath('/g:Event/*', namespaces={'g': "http://www.gonicus.de/Events"})[0].tag)
@@ -157,6 +163,9 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
     def _handleNotification(self, data):
         data = data.Notification
+
+        if data.Target != self.__user:
+            return
 
         title = N_("System notification")
         icon = "dialog-information"
