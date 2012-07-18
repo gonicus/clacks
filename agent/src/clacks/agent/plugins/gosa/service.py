@@ -4,6 +4,7 @@ import tornado.websocket
 import logging
 import re
 import hmac, base64, time
+from clacks.common.gjson import dumps
 from hashlib import sha1
 from webob import exc
 from zope.interface import implements
@@ -110,6 +111,9 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
         return None
 
+    def send_message(self, message_type, message):
+        self.write_message(dumps([message_type, message]))
+
     def open(self):
         if not self.check_cookie():
             self.log.warning("access to websocket from %s blocked due to invalid cookie" % self.request.remote_ip)
@@ -118,7 +122,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         self.log.debug("new websocket connection established by %s" % self.request.remote_ip)
 
         #TODO: do stuff
-        self.write_message("Websockets enabled")
+        self.send_message("notification", { "title": "Server information", "body": "Websockets enabled", "icon": "dialog-information"})
 
     def on_message(self, message):
         if not self.check_cookie():
@@ -127,7 +131,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
         #TODO: message just mirrored for testing
         self.log.debug("message received on websocket from %s: %s" % (self.request.remote_ip, message))
-        self.write_message(message)
+        self.send_message("notification", { "title": "Server bounce", "body": message, "icon": "dialog-information"})
 
     def on_close(self):
         if not self.check_cookie():
