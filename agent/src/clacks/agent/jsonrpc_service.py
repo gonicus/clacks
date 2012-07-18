@@ -95,6 +95,8 @@ class JSONRPCService(object):
     def check_session(self, sid, user):
         return self.__app.check_session(sid, user)
 
+    def user_sessions_available(self, user=None):
+        return self.__app.user_sessions_available(user)
 
 class JsonRpcApp(object):
     """
@@ -347,3 +349,9 @@ class JsonRpcApp(object):
             return False
 
         return self.__session[sid] == user
+
+    def user_sessions_available(self, user):
+        if user:
+            return user in self.__session.values()
+        else:
+            return len(self.__session) > 0

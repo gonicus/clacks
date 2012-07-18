@@ -253,6 +253,12 @@ class ClientService(Plugin):
                 else:
                     self.log.error("sending message failed: no client found for user '%s'" % user)
 
+                # Notify websession user if available
+                jsrpc = PluginRegistry.getInstance("JSONRPCService")
+                if jsrpc.user_sessions_available(user):
+                    amqp = PluginRegistry.getInstance("AMQPHandler")
+                    amqp.sendEvent(e.Event(e.Notification(self.notification2event(user, title, message, timeout, icon))))
+
         else:
             # Notify all users
             for client in self.__client.keys():
@@ -262,6 +268,12 @@ class ClientService(Plugin):
                 #pylint: disable=W0141
                 except Exception:
                     pass
+
+            # Notify all websession users if any
+            jsrpc = PluginRegistry.getInstance("JSONRPCService")
+            if jsrpc.user_sessions_available():
+                amqp = PluginRegistry.getInstance("AMQPHandler")
+                amqp.sendEvent(e.Event(e.Notification(self.notification2event("*", title, message, timeout, icon))))
 
     @Command(__help__=N_("Set system status"))
     def systemGetStatus(self, device_uuid):
