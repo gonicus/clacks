@@ -8,10 +8,11 @@ from clacks.common.gjson import dumps
 from hashlib import sha1
 from webob import exc
 from zope.interface import implements
-from clacks.common.utils import N_
+from clacks.common.utils import stripNs, N_
 from clacks.common.handler import IInterfaceHandler
 from clacks.common import Environment
 from clacks.common.components import PluginRegistry, ZeroconfService, JSONRPCException
+from clacks.common.components.amqp import EventConsumer
 
 
 class GOsaService(object):
@@ -60,6 +61,17 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         self.log = logging.getLogger(__name__)
         env = Environment.getInstance()
         self.__secret = env.config.get('http.cookie_secret', default="TecloigJink4")
+
+        # Add event processor
+        amqp = PluginRegistry.getInstance('AMQPHandler')
+        EventConsumer(env, amqp.getConnection(),
+            xquery="""
+                declare namespace f='http://www.gonicus.de/Events';
+                let $e := ./f:Event
+                return $e/f:Notification
+            """,
+            callback=self.__eventProcessor)
+
         super(WSHandler, self).__init__(*args, **kwargs)
 
     def check_cookie(self):
@@ -120,9 +132,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             return
 
         self.log.debug("new websocket connection established by %s" % self.request.remote_ip)
-
-        #TODO: do stuff
-        self.send_message("notification", { "title": "Server information", "body": "Websockets enabled", "icon": "dialog-information"})
+        self.send_message("notification", { "title": N_("Server information"), "body": N_("Websockets enabled"), "icon": "dialog-information"})
 
     def on_message(self, message):
         if not self.check_cookie():
@@ -131,7 +141,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
         #TODO: message just mirrored for testing
         self.log.debug("message received on websocket from %s: %s" % (self.request.remote_ip, message))
-        self.send_message("notification", { "title": "Server bounce", "body": message, "icon": "dialog-information"})
+        self.send_message("notification", { "title": N_("Server bounce"), "body": message, "icon": "dialog-information"})
 
     def on_close(self):
         if not self.check_cookie():
@@ -139,3 +149,26 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
         #TODO: do stuff
         self.log.debug("new websocket connection established by %s" % self.request.remote_ip)
+
+    def __eventProcessor(self, data):
+        eventType = stripNs(data.xpath('/g:Event/*', namespaces={'g': "http://www.gonicus.de/Events"})[0].tag)
+        func = getattr(self, "_handle" + eventType)
+        func(data)
+
+    def _handleNotification(self, data):
+        data = data.Notification
+
+        title = N_("System notification")
+        icon = "dialog-information"
+        timeout = 10000
+        if hasattr(data, 'Title'):
+            title = data.Title.text
+        if hasattr(data, 'Icon'):
+            icon = data.Icon.text
+        if hasattr(data, 'Timeout'):
+            timeout = int(data.Timeout.text)
+
+        self.send_message("notification", {
+            "title": title,
+            "body": data.Body.text,
+            "icon": icon, "timeout": timeout})

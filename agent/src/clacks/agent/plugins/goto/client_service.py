@@ -257,7 +257,7 @@ class ClientService(Plugin):
                 jsrpc = PluginRegistry.getInstance("JSONRPCService")
                 if jsrpc.user_sessions_available(user):
                     amqp = PluginRegistry.getInstance("AMQPHandler")
-                    amqp.sendEvent(e.Event(e.Notification(self.notification2event(user, title, message, timeout, icon))))
+                    amqp.sendEvent(self.notification2event(user, title, message, timeout, icon))
 
         else:
             # Notify all users
@@ -273,7 +273,19 @@ class ClientService(Plugin):
             jsrpc = PluginRegistry.getInstance("JSONRPCService")
             if jsrpc.user_sessions_available():
                 amqp = PluginRegistry.getInstance("AMQPHandler")
-                amqp.sendEvent(e.Event(e.Notification(self.notification2event("*", title, message, timeout, icon))))
+                amqp.sendEvent(self.notification2event("*", title, message, timeout, icon))
+
+    def notification2event(self, user, title, message, timeout, icon):
+        e = EventMaker()
+        data = [e.Target(user)]
+        if title:
+            data.append(e.Title(title))
+        data.append(e.Body(message))
+        if timeout:
+            data.append(e.Timeout(str(timeout * 1000)))
+        if icon != "_no_icon_":
+            data.append(e.Icon(icon))
+        return e.Event(e.Notification(*data))
 
     @Command(__help__=N_("Set system status"))
     def systemGetStatus(self, device_uuid):
