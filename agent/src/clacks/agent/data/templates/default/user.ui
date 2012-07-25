@@ -1,272 +1,485 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>organizationalPerson</class>
- <widget class="QWidget" name="organizationalPerson">
+ <class>User</class>
+ <widget class="QWidget" name="User">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>481</width>
-    <height>440</height>
+    <width>766</width>
+    <height>546</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>organizationalPerson</string>
+   <string>Generic</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resources/user.qrc">
-    <normaloff>:/images/edit-paste.png</normaloff>:/images/edit-paste.png</iconset>
+    <normaloff>:/images/user.png</normaloff>:/images/user.png</iconset>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0">
-    <layout class="QFormLayout" name="formLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="snLabel">
-       <property name="text">
-        <string>sn</string>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="title">
+        <string>Personal setting</string>
        </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QGraphicsViewWidget" name="jpegPhotoEdit" native="true">
+            <property name="minimumSize">
+             <size>
+              <width>128</width>
+              <height>128</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>5</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <layout class="QFormLayout" name="formLayout">
+            <item row="0" column="0">
+             <widget class="QLabel" name="uidLabel">
+              <property name="text">
+               <string>Login</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="uidEdit"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="snLabel*">
+              <property name="text">
+               <string>Surname</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="snEdit"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="givenNameLabel">
+              <property name="text">
+               <string>Given name</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="givenNameEdit"/>
+            </item>
+            <item row="3" column="1">
+             <spacer name="verticalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>19</width>
+                <height>5</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="personalTitleLabel">
+              <property name="text">
+               <string>Title</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="academicTitleLabel">
+              <property name="text">
+               <string>Academic title</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QLineEdit" name="academicTitleEdit"/>
+            </item>
+            <item row="6" column="1">
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>19</width>
+                <height>5</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="7" column="0">
+             <widget class="QLabel" name="dateOfBirthLabel">
+              <property name="text">
+               <string>Date of birth</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="1">
+             <widget class="QDateEdit" name="dateOfBirthEdit"/>
+            </item>
+            <item row="8" column="0">
+             <widget class="QLabel" name="genderLabel">
+              <property name="text">
+               <string>Gender</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="1">
+             <widget class="QComboBox" name="genderEdit"/>
+            </item>
+            <item row="9" column="1">
+             <spacer name="verticalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>19</width>
+                <height>5</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="10" column="0">
+             <widget class="QLabel" name="preferredLanguageLabel">
+              <property name="text">
+               <string>Preferred language</string>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="1">
+             <widget class="QComboBox" name="preferredLanguageEdit"/>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLineEdit" name="titleEdit"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>5</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <layout class="QFormLayout" name="formLayout_2">
+            <property name="fieldGrowthPolicy">
+             <enum>QFormLayout::ExpandingFieldsGrow</enum>
+            </property>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>Address</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QPlainTextEdit" name="homePostalAddressEdit">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>120</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="homePhoneLabel">
+              <property name="text">
+               <string>Phone</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="homePhoneEdit"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="labeledURILabel">
+              <property name="text">
+               <string>Homepage</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="labeledURIEdit"/>
+            </item>
+            <item row="3" column="1">
+             <spacer name="verticalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>120</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="snEdit">
-       <property name="maximumSize">
-        <size>
-         <width>50</width>
-         <height>16777215</height>
-        </size>
+     <item>
+      <widget class="QGroupBox" name="groupBox_2">
+       <property name="title">
+        <string>Organizational information</string>
        </property>
-       <property name="maxLength">
-        <number>17</number>
-       </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <layout class="QFormLayout" name="formLayout_3">
+            <item row="0" column="0">
+             <widget class="QLabel" name="oLabel">
+              <property name="text">
+               <string>Organization</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="oEdit"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="ouLabel">
+              <property name="text">
+               <string>Unit</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="ouEdit"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="departmentNumberLabel">
+              <property name="text">
+               <string>Department no.</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="departmentNumberEdit"/>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="employeeNumberLabel">
+              <property name="text">
+               <string>Employee no.</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLineEdit" name="employeeNumberEdit"/>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="employeeTypeLabel">
+              <property name="text">
+               <string>Employee type</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLineEdit" name="employeeTypeEdit">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="managerLabel">
+              <property name="text">
+               <string>Manager</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QLineEdit" name="managerEdit"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>5</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <layout class="QFormLayout" name="formLayout_4">
+            <item row="0" column="0">
+             <widget class="QLabel" name="roomNumberLabel">
+              <property name="text">
+               <string>Room no.</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="roomNumberEdit"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="telephoneNumberLabel">
+              <property name="text">
+               <string>Phone</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="telephoneNumberEdit"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="mobileLabel">
+              <property name="text">
+               <string>Mobile phone</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="mobileEdit"/>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="pagerLabel">
+              <property name="text">
+               <string>Pager</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLineEdit" name="pagerEdit"/>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>Fax</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLineEdit" name="facsimileTelephoneNumberEdit"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>5</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <layout class="QFormLayout" name="formLayout_5">
+            <item row="0" column="0">
+             <widget class="QLabel" name="lLabel">
+              <property name="text">
+               <string>Location</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="lEdit"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="stLabel">
+              <property name="text">
+               <string>State</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="stEdit"/>
+            </item>
+            <item row="4" column="0" colspan="2">
+             <widget class="QLabel" name="postalAddressLabel">
+              <property name="text">
+               <string>Address</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QPlainTextEdit" name="postalAddressEdit"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="cnLabel">
-       <property name="text">
-        <string>cn</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="cnEdit">
-       <property name="toolTip">
-        <string>Common name</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="telephoneNumberLabel">
-       <property name="text">
-        <string>telephoneNumber</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="telephoneNumberEdit"/>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="physicalDeliveryOfficeNameLabel">
-       <property name="text">
-        <string>physicalDeliveryOfficeName</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QLineEdit" name="physicalDeliveryOfficeNameEdit"/>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="titleLabel">
-       <property name="text">
-        <string>title</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QLineEdit" name="titleEdit">
-       <property name="echoMode">
-        <enum>QLineEdit::Password</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="postOfficeBoxLabel">
-       <property name="text">
-        <string>postOfficeBox</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QLineEdit" name="postOfficeBoxEdit">
-       <property name="echoMode">
-        <enum>QLineEdit::Password</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="lLabel">
-       <property name="text">
-        <string>l</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="1">
-      <widget class="QLineEdit" name="lEdit">
-       <property name="placeholderText">
-        <string>the location comes here</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="0">
-      <widget class="QLabel" name="stLabel">
-       <property name="text">
-        <string>st</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="1">
-      <widget class="QLineEdit" name="stEdit"/>
-     </item>
-     <item row="9" column="0">
-      <widget class="QLabel" name="postalCodeLabel">
-       <property name="text">
-        <string>postalCode</string>
-       </property>
-       <property name="textFormat">
-        <enum>Qt::RichText</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="1">
-      <widget class="QLineEdit" name="postalCodeEdit"/>
-     </item>
-     <item row="10" column="0">
-      <widget class="QLabel" name="streetLabel">
-       <property name="text">
-        <string>street</string>
-       </property>
-      </widget>
-     </item>
-     <item row="10" column="1">
-      <widget class="QLineEdit" name="streetEdit"/>
-     </item>
-     <item row="11" column="0">
-      <widget class="QLabel" name="ouLabel">
-       <property name="text">
-        <string>ou</string>
-       </property>
-      </widget>
-     </item>
-     <item row="11" column="1">
-      <widget class="QLineEdit" name="ouEdit">
-       <property name="placeholderText">
-        <string>Placeholder</string>
-       </property>
-      </widget>
-     </item>
-     <item row="12" column="0">
-      <widget class="QLabel" name="trustModelLabel">
-       <property name="text">
-        <string>Trust model</string>
-       </property>
-      </widget>
-     </item>
-     <item row="12" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QComboBox" name="trustModelEdit">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>1</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="editable">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Expanding</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </item>
-     <item row="13" column="0">
-      <widget class="QLabel" name="x121AddressLabel">
-       <property name="text">
-        <string>x121Address</string>
-       </property>
-      </widget>
-     </item>
-     <item row="13" column="1">
-      <widget class="QLineEdit" name="x121AddressEdit"/>
-     </item>
-     <item row="14" column="0">
-      <widget class="QLabel" name="internationaliSDNNumberLabel">
-       <property name="text">
-        <string>internationaliSDNNumber</string>
-       </property>
-      </widget>
-     </item>
-     <item row="14" column="1">
-      <widget class="QLineEdit" name="internationaliSDNNumberEdit"/>
-     </item>
-     <item row="15" column="0">
-      <widget class="QLabel" name="destinationIndicatorLabel">
-       <property name="text">
-        <string>destinationIndicator</string>
-       </property>
-      </widget>
-     </item>
-     <item row="15" column="1">
-      <widget class="QLineEdit" name="destinationIndicatorEdit"/>
      </item>
     </layout>
    </item>
   </layout>
  </widget>
- <tabstops>
-  <tabstop>postOfficeBoxEdit</tabstop>
-  <tabstop>telephoneNumberEdit</tabstop>
-  <tabstop>cnEdit</tabstop>
-  <tabstop>titleEdit</tabstop>
-  <tabstop>snEdit</tabstop>
-  <tabstop>lEdit</tabstop>
-  <tabstop>stEdit</tabstop>
-  <tabstop>postalCodeEdit</tabstop>
-  <tabstop>physicalDeliveryOfficeNameEdit</tabstop>
-  <tabstop>streetEdit</tabstop>
-  <tabstop>ouEdit</tabstop>
-  <tabstop>trustModelEdit</tabstop>
-  <tabstop>x121AddressEdit</tabstop>
-  <tabstop>internationaliSDNNumberEdit</tabstop>
-  <tabstop>destinationIndicatorEdit</tabstop>
- </tabstops>
+ <customwidgets>
+  <customwidget>
+   <class>QGraphicsViewWidget</class>
+   <extends>QWidget</extends>
+   <header>qgraphicsviewwidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="resources/user.qrc"/>
  </resources>
  <connections>
   <connection>
-   <sender>postOfficeBoxEdit</sender>
+   <sender>snEdit</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>organizationalPerson</receiver>
-   <slot>property_postOfficeBox()</slot>
+   <receiver>User</receiver>
+   <slot>property_sn()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>206</x>
-     <y>164</y>
+     <x>20</x>
+     <y>20</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -277,28 +490,12 @@
   <connection>
    <sender>telephoneNumberEdit</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>organizationalPerson</receiver>
+   <receiver>User</receiver>
    <slot>property_telephoneNumber()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>206</x>
-     <y>79</y>
-    </hint>
-    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>cnEdit</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>organizationalPerson</receiver>
-   <slot>property_cn()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>206</x>
-     <y>52</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -309,28 +506,12 @@
   <connection>
    <sender>titleEdit</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>organizationalPerson</receiver>
+   <receiver>User</receiver>
    <slot>property_title()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>206</x>
-     <y>137</y>
-    </hint>
-    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>snEdit</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>organizationalPerson</receiver>
-   <slot>property_sn()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>206</x>
-     <y>25</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -341,12 +522,12 @@
   <connection>
    <sender>lEdit</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>organizationalPerson</receiver>
+   <receiver>User</receiver>
    <slot>property_l()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>206</x>
-     <y>191</y>
+     <x>20</x>
+     <y>20</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -357,60 +538,12 @@
   <connection>
    <sender>stEdit</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>organizationalPerson</receiver>
+   <receiver>User</receiver>
    <slot>property_st()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>206</x>
-     <y>218</y>
-    </hint>
-    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>postalCodeEdit</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>organizationalPerson</receiver>
-   <slot>property_postalCode()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>206</x>
-     <y>245</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>physicalDeliveryOfficeNameEdit</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>organizationalPerson</receiver>
-   <slot>property_physicalDeliveryOfficeName()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>206</x>
-     <y>106</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>streetEdit</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>organizationalPerson</receiver>
-   <slot>property_street()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>206</x>
-     <y>272</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -421,12 +554,12 @@
   <connection>
    <sender>ouEdit</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>organizationalPerson</receiver>
+   <receiver>User</receiver>
    <slot>property_ou()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>206</x>
-     <y>299</y>
+     <x>20</x>
+     <y>20</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -435,14 +568,14 @@
    </hints>
   </connection>
   <connection>
-   <sender>trustModelEdit</sender>
+   <sender>uidEdit</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>organizationalPerson</receiver>
-   <slot>property_trustModel()</slot>
+   <receiver>User</receiver>
+   <slot>property_uid()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>207</x>
-     <y>327</y>
+     <x>20</x>
+     <y>20</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -451,14 +584,14 @@
    </hints>
   </connection>
   <connection>
-   <sender>x121AddressEdit</sender>
+   <sender>jpegPhotoEdit</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>organizationalPerson</receiver>
-   <slot>property_x121Address()</slot>
+   <receiver>User</receiver>
+   <slot>property_jpegPhoto()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>206</x>
-     <y>356</y>
+     <x>20</x>
+     <y>20</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -467,14 +600,14 @@
    </hints>
   </connection>
   <connection>
-   <sender>internationaliSDNNumberEdit</sender>
+   <sender>employeeTypeEdit</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>organizationalPerson</receiver>
-   <slot>property_internationaliSDNNumber()</slot>
+   <receiver>User</receiver>
+   <slot>property_employeeType()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>206</x>
-     <y>383</y>
+     <x>20</x>
+     <y>20</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -483,20 +616,194 @@
    </hints>
   </connection>
   <connection>
-   <sender>destinationIndicatorEdit</sender>
+   <sender>departmentNumberEdit</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>organizationalPerson</receiver>
-   <slot>property_destinationIndicator()</slot>
+   <receiver>User</receiver>
+   <slot>property_departmentNumber()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>206</x>
-     <y>410</y>
+     <x>20</x>
+     <y>20</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
    </hints>
+  </connection>
+  <connection>
+   <sender>employeeNumberEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>User</receiver>
+   <slot>property_employeeNumber()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pagerEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>User</receiver>
+   <slot>property_pager()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>homePhoneEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>User</receiver>
+   <slot>property_homePhone()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>labeledURIEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>User</receiver>
+   <slot>property_labeledURI()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mobileEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>User</receiver>
+   <slot>property_mobile()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>roomNumberEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>User</receiver>
+   <slot>property_roomNumber()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>oEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>User</receiver>
+   <slot>property_o()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>givenNameEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>User</receiver>
+   <slot>property_givenName()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>academicTitleEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>User</receiver>
+   <slot>property_academicTitle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dateOfBirthEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>User</receiver>
+   <slot>property_dateOfBirth()</slot>
+  </connection>
+  <connection>
+   <sender>genderEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>User</receiver>
+   <slot>property_gender()</slot>
+  </connection>
+  <connection>
+   <sender>preferredLanguageEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>User</receiver>
+   <slot>property_preferredLanguage()</slot>
+  </connection>
+  <connection>
+   <sender>homePostalAddressEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>User</receiver>
+   <slot>property_homePostalAddress()</slot>
+  </connection>
+  <connection>
+   <sender>facsimileTelephoneNumberEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>User</receiver>
+   <slot>property_facsimileTelephoneNumber()</slot>
   </connection>
  </connections>
 </ui>
