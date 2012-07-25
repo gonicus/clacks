@@ -201,6 +201,10 @@ def dump_ui(uri, oc, outfile=None, extend=None, rdn=None, contains=None):
         oco.must = list(set(list(oco.must) + r['must']))
         oco.may = list(set(list(oco.may) + r['must']))
 
+    # Tabstop and connection collectors
+    ts = []
+    cs = []
+
     # Build resulting XML dump
     e = ElementMaker()
 
@@ -224,6 +228,13 @@ def dump_ui(uri, oc, outfile=None, extend=None, rdn=None, contains=None):
                    e.property(e.string(mua), name="text"),
                    CLASS("QLabel"), name="%sLabel*" % mua), row=str(n), column="0"))
         attrs.append(e.item(e.widget(CLASS(widget), name="%sEdit*" % mua), row=str(n), column="1"))
+
+        ts.append(e.tabstop(mua))
+        cs.append(e.connection(
+          e.sender("%sEdit" % mua),
+          e.signal("textChanged(QString)"),
+          e.receiver(oc),
+          e.slot("property_%s()" % mua)))
 
         n += 1
 
@@ -249,6 +260,13 @@ def dump_ui(uri, oc, outfile=None, extend=None, rdn=None, contains=None):
                    CLASS("QLabel"), name="%sLabel" % mua), row=str(n), column="0"))
         attrs.append(e.item(e.widget(CLASS(widget), name="%sEdit" % mua), row=str(n), column="1"))
 
+        ts.append(e.tabstop(mua))
+        cs.append(e.connection(
+          e.sender("%sEdit" % mua),
+          e.signal("textChanged(QString)"),
+          e.receiver(oc),
+          e.slot("property_%s()" % mua)))
+
         n += 1
 
     res = '<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -262,6 +280,8 @@ def dump_ui(uri, oc, outfile=None, extend=None, rdn=None, contains=None):
                     e.layout(CLASS("QFormLayout"), *attrs, name="formLayout"), row="0", column="0"),
                 CLASS("QGridLayout"), name="gridLayout"),
             CLASS("QWidget"), name=oc),
+            e.tabstops(*ts),
+            e.connections(*cs),
         version="4.0")
     res += etree.tostring(data, pretty_print=True)
 
