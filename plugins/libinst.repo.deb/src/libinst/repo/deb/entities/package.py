@@ -16,7 +16,7 @@ class DebianPackage(Package, UseInnoDB):
                 Sequence('debian_package_id_seq'),
                 ForeignKey('package.id'),
                 primary_key=True)
-    package = relationship(Package)
+    package = relationship(Package, passive_deletes=True)
     source = Column(String(255))
     maintainer = Column(String(255))
     installed_size = Column(String(255))

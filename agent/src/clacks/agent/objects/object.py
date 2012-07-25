@@ -6,6 +6,7 @@ import ldap
 import pkg_resources
 import os
 from lxml import etree
+from lxml.builder import E
 from StringIO import StringIO
 from logging import getLogger
 from zope.interface import Interface, implements
@@ -387,6 +388,31 @@ class Object(object):
 
             with open(path, "r") as f:
                 ui = f.read()
+
+            # Build new merged resource element
+            root = etree.fromstring(ui)
+            new_resources = []
+            resources = root.find("resources")
+            for include in resources.findall("include"):
+                rc = include.get("location")
+                location = os.path.join(os.path.dirname(path), rc)
+                if not os.path.exists(location):
+                    raise Exception("Cannot read resource file '%s'" % location)
+
+                res = None
+                with open(location, "r") as f:
+                    res = f.read()
+
+                for resource in etree.fromstring(res).findall("qresource"):
+                    files = []
+                    prefix = resource.get("prefix")
+                    for file in resource.findall("file"):
+                        files.append(E.file(os.path.join(prefix, unicode(file.text))))
+
+                    new_resources.append(E.resource(*files, location=rc))
+
+            root.replace(root.find("resources"), E.resources(*new_resources))
+            ui = etree.tostring(root)
 
         return ui
 

@@ -11,6 +11,8 @@ import os
 import thread
 import logging
 import tornado.wsgi
+import tornado.web
+import tornado.websocket
 from tornado.ioloop import IOLoop
 from tornado.httpserver import HTTPServer
 from zope.interface import implements
@@ -108,6 +110,8 @@ class HTTPService(object):
     _priority_ = 10
 
     __register = {}
+    __register_ws = {}
+    __register_static = {}
 
     def __init__(self):
         env = Environment.getInstance()
@@ -141,8 +145,25 @@ class HTTPService(object):
             self.scheme = "http"
             ssl_options = None
 
+        apps = []
+
+        # Make statics registerable
+        for pth, local_pth in self.__register_static.items():
+            apps.append((pth , tornado.web.StaticFileHandler, {"path": local_pth}))
+
+        # Make websockets available if registered
+        for pth, ws_app in self.__register_ws.items():
+            apps.append((pth, ws_app))
+
+        # Finally add the WSGI handler
+        wsgi_app = tornado.wsgi.WSGIContainer(self.app)
+        apps.append((r".*", tornado.web.FallbackHandler, dict(fallback=wsgi_app)))
+
+        application = tornado.web.Application(apps)
+
         # Fetch server
-        self.srv = HTTPServer(tornado.wsgi.WSGIContainer(self.app), ssl_options=ssl_options)
+        self.srv = HTTPServer(application, ssl_options=ssl_options)
+
         self.srv.listen(self.port, self.host)
         thread.start_new_thread(IOLoop.instance().start, ())
 
@@ -160,7 +181,7 @@ class HTTPService(object):
         self.log.debug("shutting down HTTP service provider")
         IOLoop.instance().stop()
 
-    def register(self, path, obj):
+    def register(self, path, app):
         """
         Register the application *app* on path *path*.
 
@@ -171,4 +192,39 @@ class HTTPService(object):
         app               WSGI application
         ================= ==========================
         """
-        self.__register[path] = obj
+        if path in self.__register_static or path in self.__register_ws:
+            raise Exception("path '%s' has already been registered" % path)
+
+        self.__register[path] = app
+
+    def register_static(self, path, local_path):
+        """
+        Register a static directory *local_path* in the web servers
+        *path*.
+
+        ================= ==========================
+        Parameter         Description
+        ================= ==========================
+        path              Path part of an URL - i.e. '/static'
+        local_path        Local path to serve from - i.e. '/var/www'
+        ================= ==========================
+        """
+        if path in self.__register or path in self.__register_ws:
+            raise Exception("path '%s' has already been registered" % path)
+
+        self.__register_static[path] = local_path
+
+    def register_ws(self, path, app):
+        """
+        Register the websocket application *app* on path *path*.
+
+        ================= ==========================
+        Parameter         Description
+        ================= ==========================
+        path              Path part of an URL - i.e. '/ws'
+        app               WSGI application
+        ================= ==========================
+        """
+        if path in self.__register or path in self.__register_static:
+            raise Exception("path '%s' has already been registered" % path)
+        self.__register_ws[path] = app

@@ -60,6 +60,7 @@ class JSONRPCService(object):
 
         self.__zeroconf = None
         self.__http = None
+        self.__app = None
 
     def serve(self):
         """ Start JSONRPC service for this clacks service provider. """
@@ -69,8 +70,8 @@ class JSONRPCService(object):
         cr = PluginRegistry.getInstance('CommandRegistry')
 
         # Register ourselves
-        app = JsonRpcApp(cr)
-        self.__http.app.register(self.path, AuthCookieHandler(app,
+        self.__app = JsonRpcApp(cr)
+        self.__http.app.register(self.path, AuthCookieHandler(self.__app,
             timeout=self.env.config.get('jsonrpc.cookie-lifetime',
             default=1800), cookie_name='ClacksRPC',
             secret=self.env.config.get('http.cookie_secret',
@@ -91,6 +92,11 @@ class JSONRPCService(object):
         self.log.debug("shutting down JSON RPC service provider")
         self.__http.app.unregister(self.path)
 
+    def check_session(self, sid, user):
+        return self.__app.check_session(sid, user)
+
+    def user_sessions_available(self, user=None):
+        return self.__app.user_sessions_available(user)
 
 class JsonRpcApp(object):
     """
@@ -337,3 +343,15 @@ class JsonRpcApp(object):
         """
         amqp = PluginRegistry.getInstance('AMQPHandler')
         return amqp.checkAuth(user, password)
+
+    def check_session(self, sid, user):
+        if not sid in self.__session:
+            return False
+
+        return self.__session[sid] == user
+
+    def user_sessions_available(self, user):
+        if user:
+            return user in self.__session.values()
+        else:
+            return len(self.__session) > 0
