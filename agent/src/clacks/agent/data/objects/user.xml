@@ -142,6 +142,20 @@
         <Type>String</Type>
       </Attribute>
       <Attribute>
+        <Name>gender</Name>
+        <Description>Gender of the user</Description>
+        <Type>String</Type>
+        <Values>
+          <Value>F</Value>
+          <Value>M</Value>
+        </Values>
+      </Attribute>
+      <Attribute>
+        <Name>dateOfBirth</Name>
+        <Description>Birthday of the user</Description>
+        <Type>String</Type>
+      </Attribute>
+      <Attribute>
         <Name>homePostalAddress</Name>
         <Description>The Home postal address attribute type specifies a home postal address for an object.  This should be limited to up to 6 lines of 30 characters each.</Description>
         <Type>UnicodeString</Type>
@@ -234,6 +248,11 @@
       <Attribute>
         <Name>title</Name>
         <Description>This attribute contains the title, such as "Vice President", of a person in their organizational context.  The "personalTitle" attribute would be used for a person's title independent of their job function.</Description>
+        <Type>UnicodeString</Type>
+      </Attribute>
+      <Attribute>
+        <Name>academicTitle</Name>
+        <Description>This attribute contains the title, such as "Phd", of a person in their organizational context.  The "academicTitle" attribute would be used for a person's title independent of their job function.</Description>
         <Type>UnicodeString</Type>
       </Attribute>
       <Attribute>
