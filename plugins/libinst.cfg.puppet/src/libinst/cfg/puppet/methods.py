@@ -186,7 +186,7 @@ reportdir=$logdir
                 for f in files:
                     if f== ".git":
                         continue
-                    if os.path.isdir(f):
+                    if os.path.isdir(os.path.join(current_dir, f)):
                         shutil.rmtree(os.path.join(current_dir, f))
                     else:
                         os.unlink(os.path.join(current_dir, f))
