@@ -1,5 +1,5 @@
 <RCC>
   <qresource prefix="images">
-    <file>edit-paste.png</file>
+    <file>user.png</file>
   </qresource>
 </RCC>
