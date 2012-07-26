@@ -146,8 +146,8 @@
         <Description>Gender of the user</Description>
         <Type>String</Type>
         <Values>
-          <Value>F</Value>
-          <Value>M</Value>
+          <Value key="F">female</Value>
+          <Value key="M">male</Value>
         </Values>
       </Attribute>
       <Attribute>
@@ -233,7 +233,7 @@
         <Name>preferredLanguage</Name>
         <Description>Preferred written or spoken language for a person</Description>
         <Type>String</Type>
-        <CaseSensitive>true</CaseSensitive>
+	<Values populate="getLanguageList"/>
       </Attribute>
       <Attribute>
         <Name>userSMIMECertificate</Name>

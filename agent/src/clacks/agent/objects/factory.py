@@ -390,7 +390,7 @@ class ObjectFactory(object):
         for name, obj in self.__xml_defs.items():
             t_obj = obj
             is_base = bool(t_obj.BaseObject)
-            backend = str(t_obj.Backend)
+            backend = t_obj.Backend.text
             backend_attrs = self.__get_backend_parameters(t_obj)
 
             methods = []
@@ -408,17 +408,17 @@ class ObjectFactory(object):
             }
 
             if "Extends" in t_obj.__dict__:
-                types[str(t_obj.Name)]['extends'] = [str(v) for v in t_obj.Extends.Value]
+                types[t_obj.Name.text]['extends'] = [v.text for v in t_obj.Extends.Value]
                 for ext in types[name]['extends']:
                     if ext not in extends:
                         extends[ext] = []
                     extends[ext].append(name)
 
             if "Container" in t_obj.__dict__:
-                types[str(t_obj.Name)]['container'] = [str(v) for v in t_obj.Container.Type]
+                types[t_obj.Name.text]['container'] = [v.text for v in t_obj.Container.Type]
 
             if "RequiresExtension" in t_obj.__dict__:
-                types[str(t_obj.Name)]['requires'] = [str(v) for v in t_obj.RequiresExtension.Extension]
+                types[t_obj.Name.text]['requires'] = [v.text for v in t_obj.RequiresExtension.Extension]
 
         for name, ext in extends.items():
             if not name in types:
@@ -565,8 +565,8 @@ class ObjectFactory(object):
             find = objectify.ObjectPath("Objects.Object")
             if find.hasattr(xml):
                 for attr in find(xml):
-                    self.__xml_defs[str(attr['Name'])] = attr
-                    self.log.info("loaded schema for '%s'" % (str(attr['Name'])))
+                    self.__xml_defs[attr['Name'].text] = attr
+                    self.log.info("loaded schema for '%s'" % (attr['Name'].text))
 
         except etree.XMLSyntaxError as e:
             raise FactoryException("Error loading object-schema: %s" % (str(e)))
@@ -606,7 +606,7 @@ class ObjectFactory(object):
 
         # Collect Backend attributes per Backend
         classr = self.__xml_defs[name]
-        back_attrs = {str(classr.Backend): {}}
+        back_attrs = {classr.Backend.text: {}}
         if "BackendParameters" in classr.__dict__:
             for entry in classr["BackendParameters"].Backend:
                 back_attrs[entry.text] = entry.attrib
@@ -615,20 +615,20 @@ class ObjectFactory(object):
         extends = []
         if "Extends" in classr.__dict__:
             for entry in classr["Extends"]:
-                extends.append(str(entry.Value))
+                extends.append(entry.Value.text)
 
         # Load object properties like: is base object and allowed container elements
         base_object = bool(classr['BaseObject']) if "BaseObject" in classr.__dict__ else False
         container = []
         if "Container" in classr.__dict__:
             for entry in classr["Container"]:
-                container.append(str(entry.Type))
+                container.append(entry.Type.text)
 
         # Load FixedRDN value
         fixed_rdn = None
         if "FixedRDN" in classr.__dict__:
-            fixed_rdn = str(classr.FixedRDN)
-            back_attrs[str(classr.Backend)]['FixedRDN'] = fixed_rdn
+            fixed_rdn = classr.FixedRDN.text
+            back_attrs[classr.Backend.text]['FixedRDN'] = fixed_rdn
 
         # Tweak name to the new target
         if type(name) == unicode:
@@ -636,8 +636,8 @@ class ObjectFactory(object):
 
         setattr(klass, '__name__', name)
         setattr(klass, '_objectFactory', self)
-        setattr(klass, '_backend', str(classr.Backend))
-        setattr(klass, '_displayName', str(classr.DisplayName))
+        setattr(klass, '_backend', classr.Backend.text)
+        setattr(klass, '_displayName', classr.DisplayName.text)
         setattr(klass, '_backendAttrs', back_attrs)
         setattr(klass, '_extends', extends)
         setattr(klass, '_base_object', base_object)
@@ -649,14 +649,14 @@ class ObjectFactory(object):
         hooks = {}
 
         # Set template if available
-        setattr(klass, '_template', str(classr.Template) if 'Template' in classr.__dict__ else None)
+        setattr(klass, '_template', classr.Template.text if 'Template' in classr.__dict__ else None)
 
         # Add documentation if available
         if 'Description' in classr.__dict__:
-            setattr(klass, '_description', str(classr['Description']))
+            setattr(klass, '_description', classr['Description'].text)
 
         # Load the backend and its attributes
-        defaultBackend = str(classr.Backend)
+        defaultBackend = classr.Backend.text
 
         # Append attributes
         if 'Attributes' in classr.__dict__:
@@ -667,20 +667,20 @@ class ObjectFactory(object):
                 if prop.tag == "comment":
                     continue
 
-                self.log.debug("adding property: '%s'" % (str(prop['Name']),))
+                self.log.debug("adding property: '%s'" % prop['Name'].text)
 
                 # If this is a foreign attribute then load the definitions from its original class
                 if prop.tag == "{http://www.gonicus.de/Objects}Attribute":
                     foreign = False
                 else:
                     foreign = True
-                    attrName = str(prop['Name'])
+                    attrName = prop['Name'].text
                     prop = self.__get_primary_class_for_foreign_attribute(attrName, name)
 
                 # Read backend definition per property (if it exists)
                 backend = defaultBackend
                 if "Backend" in prop.__dict__:
-                    backend = str(prop.Backend)
+                    backend = prop.Backend.text
 
                 # Do we have an output filter definition?
                 out_f = []
@@ -704,22 +704,22 @@ class ObjectFactory(object):
                     validator = self.__build_filter(prop['Validators'])
 
                 # Read the properties syntax
-                syntax = str(prop['Type'])
+                syntax = prop['Type'].text
                 backend_syntax = syntax
                 if "BackendType" in prop.__dict__:
-                    backend_syntax = str(prop['BackendType'])
+                    backend_syntax = prop['BackendType'].text
 
                 # Read blocked by settings - When they are fullfilled, these property cannot be changed.
                 blocked_by = []
                 if "BlockedBy" in prop.__dict__:
-                    name = str(prop['BlockedBy'].Name)
-                    value = str(prop['BlockedBy'].Value)
+                    name = prop['BlockedBy'].Name.text
+                    value = prop['BlockedBy'].Value.text
                     blocked_by.append({'name': name, 'value': value})
 
                 # Convert the default to the corresponding type.
                 default = None
                 if "Default" in prop.__dict__:
-                    default = self.__attribute_type[syntax].convert_from('String', [str(prop.Default)])
+                    default = self.__attribute_type[syntax].convert_from('String', [prop.Default.text])
 
                 # check for multivalue, mandatory and unique definition
                 multivalue = bool(load(prop, "MultiValue", False))
@@ -732,18 +732,29 @@ class ObjectFactory(object):
                 depends_on = []
                 if "DependsOn" in prop.__dict__:
                     for d in prop.__dict__['DependsOn'].iterchildren():
-                        depends_on.append(str(d))
+                        depends_on.append(d.text)
 
                 # Check for valid value list
                 values = None
                 if "Values" in prop.__dict__:
-                    values = []
+                    avalues = []
+                    dvalues = {}
                     for d in prop.__dict__['Values'].iterchildren():
-                        values.append(str(d))
-                    values = self.__attribute_type['String'].convert_to(syntax,values)
+                        #if 'key' in d.attrib:
+                        #    dvalues[d.attrib['key']] = self.__attribute_type['String'].convert_to(syntax, [d.text])[0]
+                        #else:
+                        #    avalues.append(d.text)
+                        values.append(d.text)
+
+                    #if avalues:
+                    #    values = self.__attribute_type['String'].convert_to(syntax, avalues)
+                    #else:
+                    #    values = dvalues
+
+                    values = self.__attribute_type['String'].convert_to(syntax, values)
 
                 # Create a new property with the given information
-                props[str(prop['Name'])] =  {
+                props[prop['Name'].text] =  {
                     'value': [],
                     'values': values,
                     'status': STATUS_OK,
@@ -791,8 +802,8 @@ class ObjectFactory(object):
             for method in classr['Methods']['Method']:
 
                 # Extract method information out of the xml tag
-                methodName = str(method['Name'])
-                command = str(method['Command'])
+                methodName = method['Name'].text
+                command = method['Command'].text
 
                 # Get the list of method parameters
                 mParams = []
@@ -802,8 +813,8 @@ class ObjectFactory(object):
                     # default value.
 
                     for param in method['MethodParameters']['MethodParameter']:
-                        pName = str(param['Name'])
-                        pType = str(param['Type'])
+                        pName = param['Name'].text
+                        pType = param['Type'].text
                         pRequired = bool(load(param, "Required", False))
                         pDefault = str(load(param, "Default"))
                         mParams.append( (pName, pType, pRequired, pDefault), )
@@ -812,7 +823,7 @@ class ObjectFactory(object):
                 cParams = []
                 if 'CommandParameters' in method.__dict__:
                     for param in method['CommandParameters']['Value']:
-                        cParams.append(str(param))
+                        cParams.append(param.text)
 
                 # Append the method to the list of registered methods for this
                 # object
@@ -824,14 +835,14 @@ class ObjectFactory(object):
             for method in classr['Hooks']['Hook']:
 
                 # Extract method information out of the xml tag
-                command = str(method['Command'])
-                m_type = str(method['Type'])
+                command = method['Command'].text
+                m_type = method['Type'].text
 
                 # Get the list of command parameters
                 cParams = []
                 if 'CommandParameters' in method.__dict__:
                     for param in method['CommandParameters']['Value']:
-                        cParams.append(str(param))
+                        cParams.append(param.text)
 
                 # Append the method to the list of registered methods for this
                 # object
@@ -1013,7 +1024,7 @@ class ObjectFactory(object):
 
         # Get the <Name> and the <Param> element values to be able
         # to create a process list entry.
-        name = str(element.__dict__['Name'])
+        name = element.__dict__['Name'].text
         params = []
         for entry in element.iterchildren():
             if entry.tag == "{http://www.gonicus.de/Objects}Param":
@@ -1167,7 +1178,7 @@ class ObjectFactory(object):
         # Get the condition name and the parameters to use.
         # The name of the condition specifies which ElementComparator
         # we schould use.
-        name = str(element.__dict__['Name'])
+        name = element.__dict__['Name'].text
         params = []
         for entry in element.iterchildren():
             if entry.tag == "{http://www.gonicus.de/Objects}Param":
@@ -1190,7 +1201,7 @@ class ObjectFactory(object):
 
         if "BackendParameters" in obj.__dict__:
             for bp in obj.BackendParameters.Backend:
-                if str(bp) == obj.Backend:
+                if bp.text == obj.Backend:
                     backend_attrs = bp.attrib
                     break
 

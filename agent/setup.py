@@ -95,6 +95,7 @@ setup(
         jsonrpc_service = clacks.agent.jsonrpc_service:JSONRPCService
         jsonrpc_om = clacks.agent.jsonrpc_objects:JSONRPCObjectMapper
         transliterate = clacks.agent.plugins.misc.transliterate:Transliterate
+        locales = clacks.agent.plugins.misc.locales:Locales
         gravatar = clacks.agent.plugins.misc.gravatar:Gravatar
         goto.network = clacks.agent.plugins.goto.network:NetworkUtils
         goto.client_service = clacks.agent.plugins.goto.client_service:ClientService

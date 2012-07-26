@@ -53,8 +53,9 @@
       <element name="Values" maxOccurs="1" minOccurs="0">
         <complexType>
           <sequence>
-            <element name="Value" type="string" maxOccurs="unbounded" minOccurs="1"></element>
+              <element name="Value" maxOccurs="unbounded" minOccurs="0" type="o:ValueWithKey"></element>
           </sequence>
+          <attribute name="populate" type="string" use="optional"/>
         </complexType>
       </element>
       <element name="Default" type="string" maxOccurs="1" minOccurs="0"></element>
@@ -179,6 +180,14 @@
       <element name="Else" type="o:Else" maxOccurs="1" minOccurs="0"></element>
     </sequence>
 
+  </complexType>
+
+  <complexType name="ValueWithKey">
+    <simpleContent>
+      <extension base="string">
+        <attribute name="key" type="string"/>
+      </extension>
+    </simpleContent>
   </complexType>
 
   <complexType name="FilterElement">
