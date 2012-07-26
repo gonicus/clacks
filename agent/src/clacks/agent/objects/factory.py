@@ -735,7 +735,7 @@ class ObjectFactory(object):
                         depends_on.append(d.text)
 
                 # Check for valid value list
-                values = None
+                values = []
                 if "Values" in prop.__dict__:
                     avalues = []
                     dvalues = {}
