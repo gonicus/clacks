@@ -14,7 +14,7 @@
    <string>Generic</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources/user.qrc">
+   <iconset>
     <normaloff>:/images/user.png</normaloff>:/images/user.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
@@ -29,7 +29,7 @@
         <item row="0" column="0">
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <widget class="QGraphicsView" name="jpegPhotoEdit" native="true">
+           <widget class="QGraphicsView" name="jpegPhotoEdit">
             <property name="minimumSize">
              <size>
               <width>128</width>
@@ -135,7 +135,7 @@
             </item>
             <item row="7" column="1">
              <widget class="QDateEdit" name="dateOfBirthEdit"/>
-	    </item>
+            </item>
             <item row="8" column="0">
              <widget class="QLabel" name="genderLabel">
               <property name="text">
@@ -145,7 +145,7 @@
             </item>
             <item row="8" column="1">
              <widget class="QComboBox" name="genderEdit"/>
-	    </item>
+            </item>
             <item row="9" column="1">
              <spacer name="verticalSpacer_3">
               <property name="orientation">
@@ -352,6 +352,9 @@
           </item>
           <item>
            <layout class="QFormLayout" name="formLayout_4">
+            <property name="fieldGrowthPolicy">
+             <enum>QFormLayout::ExpandingFieldsGrow</enum>
+            </property>
             <item row="0" column="0">
              <widget class="QLabel" name="roomNumberLabel">
               <property name="text">
@@ -402,6 +405,19 @@
             <item row="4" column="1">
              <widget class="QLineEdit" name="facsimileTelephoneNumberEdit"/>
             </item>
+            <item row="5" column="1">
+             <spacer name="verticalSpacer_5">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
            </layout>
           </item>
           <item>
@@ -419,6 +435,9 @@
           </item>
           <item>
            <layout class="QFormLayout" name="formLayout_5">
+            <property name="fieldGrowthPolicy">
+             <enum>QFormLayout::ExpandingFieldsGrow</enum>
+            </property>
             <item row="0" column="0">
              <widget class="QLabel" name="lLabel">
               <property name="text">
@@ -439,15 +458,41 @@
             <item row="2" column="1">
              <widget class="QLineEdit" name="stEdit"/>
             </item>
-            <item row="4" column="0" colspan="2">
+            <item row="3" column="0">
              <widget class="QLabel" name="postalAddressLabel">
               <property name="text">
                <string>Address</string>
               </property>
              </widget>
             </item>
+            <item row="3" column="1">
+             <widget class="QPlainTextEdit" name="postalAddressEdit">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>120</height>
+               </size>
+              </property>
+             </widget>
+            </item>
             <item row="4" column="1">
-             <widget class="QPlainTextEdit" name="postalAddressEdit"/>
+             <spacer name="verticalSpacer_6">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
             </item>
            </layout>
           </item>
@@ -773,30 +818,80 @@
    <signal>textChanged(QString)</signal>
    <receiver>User</receiver>
    <slot>property_dateOfBirth()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>genderEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>User</receiver>
    <slot>property_gender()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>preferredLanguageEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>User</receiver>
    <slot>property_preferredLanguage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>homePostalAddressEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>User</receiver>
    <slot>property_homePostalAddress()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>facsimileTelephoneNumberEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>User</receiver>
    <slot>property_facsimileTelephoneNumber()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
  </connections>
 </ui>
