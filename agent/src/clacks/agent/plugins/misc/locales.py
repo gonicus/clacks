@@ -15,7 +15,7 @@ class Locales(Plugin):
             try:
                 loc = babel.Locale(lang).display_name
                 if loc:
-                    self.__locales[lang] = loc
+                    self.__locales[lang] = {'value': loc, 'icon': 'flags/%s.png' % lang}
             except babel.core.UnknownLocaleError:
                 pass
 
