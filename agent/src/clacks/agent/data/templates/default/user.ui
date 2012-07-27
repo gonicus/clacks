@@ -14,7 +14,7 @@
    <string>Generic</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+    <iconset resource="resources/user.qrc">
     <normaloff>:/images/user.png</normaloff>:/images/user.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">

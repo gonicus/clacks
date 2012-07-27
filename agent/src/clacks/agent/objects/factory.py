@@ -740,18 +740,17 @@ class ObjectFactory(object):
                     avalues = []
                     dvalues = {}
                     for d in prop.__dict__['Values'].iterchildren():
-                        #if 'key' in d.attrib:
-                        #    dvalues[d.attrib['key']] = self.__attribute_type['String'].convert_to(syntax, [d.text])[0]
-                        #else:
-                        #    avalues.append(d.text)
-                        values.append(d.text)
+                        if 'key' in d.attrib:
+                            dvalues[d.attrib['key']] = self.__attribute_type['String'].convert_to(syntax, [d.text])[0]
+                        else:
+                            avalues.append(d.text)
 
-                    #if avalues:
-                    #    values = self.__attribute_type['String'].convert_to(syntax, avalues)
-                    #else:
-                    #    values = dvalues
+                    if avalues:
+                        values = self.__attribute_type['String'].convert_to(syntax, avalues)
+                    else:
+                        values = dvalues
 
-                    values = self.__attribute_type['String'].convert_to(syntax, values)
+                    #values = self.__attribute_type['String'].convert_to(syntax, values)
 
                 # Create a new property with the given information
                 props[prop['Name'].text] =  {
