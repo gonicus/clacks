@@ -15,14 +15,14 @@ class Locales(Plugin):
             if "_" in lang:
                 continue
             try:
-                loc = babel.Locale(lang).display_name
-                if loc:
-                    self.__locales[lang] = {'value': loc, 'icon': 'flags/%s.png' % lang}
+                loc = babel.Locale(lang)
+                if loc.display_name:
+                    self.__locales[lang] = {'value': "%s (%s)" % (loc.display_name, lang), 'icon': 'flags/%s.png' % lang}
             except babel.core.UnknownLocaleError:
                 pass
 
     @Command(__help__=N_("Return list of languages"))
-    def getLanguageList(self):
+    def getLanguageList(self, locale=None):
         """
         Deliver a dictionary of language code/display name
         mapping for all supported languages.
