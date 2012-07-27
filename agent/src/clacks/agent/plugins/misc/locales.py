@@ -12,6 +12,8 @@ class Locales(Plugin):
         self.__locales = {}
 
         for lang in babel.Locale("en").languages:
+            if "_" in lang:
+                continue
             try:
                 loc = babel.Locale(lang).display_name
                 if loc:

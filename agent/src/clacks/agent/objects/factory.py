@@ -739,11 +739,21 @@ class ObjectFactory(object):
                 if "Values" in prop.__dict__:
                     avalues = []
                     dvalues = {}
-                    for d in prop.__dict__['Values'].iterchildren():
-                        if 'key' in d.attrib:
-                            dvalues[d.attrib['key']] = self.__attribute_type['String'].convert_to(syntax, [d.text])[0]
+
+                    if 'populate' in prop.__dict__['Values'].attrib:
+                        cr = PluginRegistry.getInstance('CommandRegistry')
+                        values = cr.call(prop.__dict__['Values'].attrib['populate'])
+                        if type(values).__name__ == "dict":
+                            dvalues = values
                         else:
-                            avalues.append(d.text)
+                            avalues = values
+
+                    else:
+                        for d in prop.__dict__['Values'].iterchildren():
+                            if 'key' in d.attrib:
+                                dvalues[d.attrib['key']] = self.__attribute_type['String'].convert_to(syntax, [d.text])[0]
+                            else:
+                                avalues.append(d.text)
 
                     if avalues:
                         values = self.__attribute_type['String'].convert_to(syntax, avalues)
