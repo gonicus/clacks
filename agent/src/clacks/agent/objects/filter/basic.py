@@ -140,3 +140,49 @@ class DatetimeToInteger(ElementFilter):
         valDict[key]['value'] = map(lambda x: int(time.mktime(x.timetuple())), valDict[key]['value'])
         valDict[key]['backend_type'] = 'Integer'
         return key, valDict
+
+
+class StringToDatetime(ElementFilter):
+    """
+    Converts a string object into a datetime.datetime object..
+
+    e.g.:
+    >>> <FilterEntry>
+    >>>  <Filter>
+    >>>   <Name>StringToDatetime</Name>
+    >>>   <Param>%%Y-%%m-%%d</Param>
+    >>>  </Filter>
+    >>> </FilterEntry>
+    >>>  ...
+    """
+
+    def __init__(self, obj):
+        super(StringToDatetime, self).__init__(obj)
+
+    def process(self, obj, key, valDict, format):
+        valDict[key]['value'] = map(lambda x: datetime.datetime.strptime(x, format), valDict[key]['value'])
+        valDict[key]['backend_type'] = 'Timestamp'
+        return key, valDict
+
+
+class DatetimeToString(ElementFilter):
+    """
+    Converts a timestamp object into an string value of the given format...
+
+    e.g.:
+    >>> <FilterEntry>
+    >>>  <Filter>
+    >>>   <Name>DatetimeToInteger</Name>
+    >>>   <Param>%%Y-%%m-%%d</Param>
+    >>>  </Filter>
+    >>> </FilterEntry>
+    >>>  ...
+    """
+
+    def __init__(self, obj):
+        super(DatetimeToString, self).__init__(obj)
+
+    def process(self, obj, key, valDict, format):
+        valDict[key]['value'] = map(lambda x: x.strftime(format), valDict[key]['value'])
+        valDict[key]['backend_type'] = 'String'
+        return key, valDict

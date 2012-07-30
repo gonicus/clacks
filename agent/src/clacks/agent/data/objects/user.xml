@@ -153,7 +153,28 @@
       <Attribute>
         <Name>dateOfBirth</Name>
         <Description>Birthday of the user</Description>
-        <Type>String</Type>
+        <Type>Timestamp</Type>
+        <BackendType>String</BackendType>
+        <InFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>StringToDatetime</Name>
+                <Param>%%Y-%%m-%%d</Param>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </InFilter>
+        <OutFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>DatetimeToString</Name>
+                <Param>%%Y-%%m-%%d</Param>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </OutFilter>
       </Attribute>
       <Attribute>
         <Name>homePostalAddress</Name>

@@ -153,6 +153,8 @@ setup(
         clear = clacks.agent.objects.filter.basic:Clear
         integertodatetime = clacks.agent.objects.filter.basic:IntegerToDatetime
         datetimetointeger = clacks.agent.objects.filter.basic:DatetimeToInteger
+        stringtodatetime = clacks.agent.objects.filter.basic:StringToDatetime
+        datetimetostring = clacks.agent.objects.filter.basic:DatetimeToString
         sambaacctflagsin = clacks.agent.plugins.samba.flags:SambaAcctFlagsIn
         sambaacctflagsout = clacks.agent.plugins.samba.flags:SambaAcctFlagsOut
         sambamungedialin = clacks.agent.plugins.samba.munged:SambaMungedDialIn
