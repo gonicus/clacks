@@ -231,6 +231,8 @@ class Object(object):
             if self.myProperties[name]['mandatory']:
                 raise AttributeError("Cannot remove mandatory attribute '%s'" % name)
 
+            self.myProperties[name]['status'] = STATUS_CHANGED
+            self.myProperties[name]['last_value'] = copy.deepcopy(self.myProperties[name]['value'])
             self.myProperties[name]['value'] = []
         else:
             raise AttributeError("no such property '%s'" % name)
