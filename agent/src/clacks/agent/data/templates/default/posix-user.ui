@@ -222,6 +222,19 @@
           <item row="2" column="1">
            <widget class="QSpinBox" name="shadowMaxEdit"/>
           </item>
+          <item row="3" column="1">
+           <spacer name="verticalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>120</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
          </layout>
         </item>
         <item>
@@ -234,7 +247,7 @@
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>5</width>
+            <width>20</width>
             <height>20</height>
            </size>
           </property>
