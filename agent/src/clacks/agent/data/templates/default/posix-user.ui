@@ -58,42 +58,8 @@
           <item row="4" column="1">
            <widget class="QLineEdit" name="gecosEdit"/>
           </item>
-          <item row="7" column="0">
-           <widget class="QLabel" name="uidNumberLabel">
-            <property name="text">
-             <string>User ID</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="1">
-           <widget class="QLineEdit" name="uidNumberEdit"/>
-          </item>
-          <item row="8" column="0">
-           <widget class="QLabel" name="gidNumberLabel">
-            <property name="text">
-             <string>Group ID</string>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="1">
-           <widget class="QLineEdit" name="gidNumberEdit"/>
-          </item>
-          <item row="3" column="0" colspan="2">
-           <widget class="QCheckBox" name="checkBox">
-            <property name="text">
-             <string>Automatic GECOS</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0" colspan="2">
-           <widget class="QCheckBox" name="checkBox_2">
-            <property name="text">
-             <string>Automatic UID/GID numbers</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <spacer name="verticalSpacer">
+          <item row="5" column="0">
+           <spacer name="verticalSpacer_2">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
@@ -108,8 +74,42 @@
             </property>
            </spacer>
           </item>
-          <item row="5" column="0">
-           <spacer name="verticalSpacer_2">
+          <item row="6" column="0" colspan="2">
+           <widget class="QCheckBox" name="checkBox_2">
+            <property name="text">
+             <string>Automatic UID/GID numbers</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="uidNumberLabel">
+            <property name="text">
+             <string>User ID</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1">
+           <widget class="QSpinBox" name="uidNumberEdit"/>
+          </item>
+          <item row="8" column="0">
+           <widget class="QLabel" name="gidNumberLabel">
+            <property name="text">
+             <string>Group ID</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="1">
+           <widget class="QSpinBox" name="gidNumberEdit"/>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QCheckBox" name="checkBox">
+            <property name="text">
+             <string>Automatic GECOS</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <spacer name="verticalSpacer">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
@@ -200,7 +200,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="shadowLastChangeEdit"/>
+           <widget class="QSpinBox" name="shadowLastChangeEdit"/>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="shadowMinLabel">
@@ -210,7 +210,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QLineEdit" name="shadowMinEdit"/>
+           <widget class="QSpinBox" name="shadowMinEdit"/>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="shadowMaxLabel">
@@ -220,7 +220,7 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QLineEdit" name="shadowMaxEdit"/>
+           <widget class="QSpinBox" name="shadowMaxEdit"/>
           </item>
          </layout>
         </item>
@@ -250,7 +250,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="shadowWarningEdit"/>
+           <widget class="QSpinBox" name="shadowWarningEdit"/>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="shadowInactiveLabel">
@@ -260,7 +260,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QLineEdit" name="shadowInactiveEdit"/>
+           <widget class="QSpinBox" name="shadowInactiveEdit"/>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="shadowExpireLabel">
@@ -270,7 +270,7 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QLineEdit" name="shadowExpireEdit"/>
+           <widget class="QSpinBox" name="shadowExpireEdit"/>
           </item>
           <item row="3" column="0">
            <widget class="QLabel" name="shadowFlagLabel">
