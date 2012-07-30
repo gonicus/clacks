@@ -268,7 +268,7 @@ class Object(object):
                 raise AttributeError("Cannot write to readonly attribute '%s'" % name)
 
             # Check if the given value has to match one out of a given list.
-            if self.myProperties[name]['values'] != None and value not in self.myProperties[name]['values']:
+            if len(self.myProperties[name]['values']) and value not in self.myProperties[name]['values']:
                 raise TypeError("Invalid value given for %s! Expected is one of %s" % (name,str(self.myProperties[name]['values'])))
 
             # Set the new value
