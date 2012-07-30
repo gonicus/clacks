@@ -3,6 +3,7 @@
   <Object>
     <Name>PosixUser</Name>
     <DisplayName>Posix extension</DisplayName>
+    <Template>posix-user.ui</Template>
     <Description>A posix extension for a generic user</Description>
     <BaseObject>false</BaseObject>
     <BackendParameters>
