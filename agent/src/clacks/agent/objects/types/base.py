@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from clacks.agent.objects.types import AttributeType
+from clacks.common.components.jsonrpc_utils import Binary
 import datetime
 
 
@@ -125,7 +126,7 @@ class BinaryAttribute(AttributeType):
         return(value)
 
     def is_valid_value(self, value):
-        return(not len(value) or all(map(lambda x: type(x) == unicode, value)))
+        return(not len(value) or all(map(lambda x: type(x) == Binary, value)))
 
     def values_match(self, value1, value2):
         return(value1 == value2)
