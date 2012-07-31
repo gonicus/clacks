@@ -364,57 +364,58 @@ class Object(object):
         """
         Return the template data - if any. Else None.
         """
-        ui = None
+        ui = []
 
         # If there's a template file, try to find it
-        if self._template:
-            path = None
+        if self._templates:
+            for template in self._templates:
+                path = None
 
-            # Absolute path
-            if self._template.startswith(os.path.sep):
-                path = self._template
+                # Absolute path
+                if template.startswith(os.path.sep):
+                    path = template
 
-            # Relative path
-            else:
-                # Find path
-                #pylint: disable=E1101
-                path = pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', theme, self._template))
-                if not os.path.exists(path):
-                    path = os.path.join(self.env.config.getBaseDir(), 'templates', theme, self._template)
+                # Relative path
+                else:
+                    # Find path
+                    #pylint: disable=E1101
+                    path = pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', theme, template))
                     if not os.path.exists(path):
-                        path = pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', "default", self._template))
+                        path = os.path.join(self.env.config.getBaseDir(), 'templates', theme, template)
                         if not os.path.exists(path):
-                            path = os.path.join(self.env.config.getBaseDir(), 'templates', "default", self._template)
+                            path = pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', "default", template))
                             if not os.path.exists(path):
-                                return None
+                                path = os.path.join(self.env.config.getBaseDir(), 'templates', "default", template)
+                                if not os.path.exists(path):
+                                    return None
 
-            with open(path, "r") as f:
-                ui = f.read()
+                with open(path, "r") as f:
+                    _ui = f.read()
 
-            # Build new merged resource element
-            root = etree.fromstring(ui)
-            new_resources = []
-            resources = root.find("resources")
-            for include in resources.findall("include"):
-                rc = include.get("location")
-                location = os.path.join(os.path.dirname(path), rc)
-                if not os.path.exists(location):
-                    raise Exception("Cannot read resource file '%s'" % location)
+                # Build new merged resource element
+                root = etree.fromstring(_ui)
+                new_resources = []
+                resources = root.find("resources")
+                for include in resources.findall("include"):
+                    rc = include.get("location")
+                    location = os.path.join(os.path.dirname(path), rc)
+                    if not os.path.exists(location):
+                        raise Exception("Cannot read resource file '%s'" % location)
 
-                res = None
-                with open(location, "r") as f:
-                    res = f.read()
+                    res = None
+                    with open(location, "r") as f:
+                        res = f.read()
 
-                for resource in etree.fromstring(res).findall("qresource"):
-                    files = []
-                    prefix = resource.get("prefix")
-                    for file in resource.findall("file"):
-                        files.append(E.file(os.path.join(prefix, unicode(file.text))))
+                    for resource in etree.fromstring(res).findall("qresource"):
+                        files = []
+                        prefix = resource.get("prefix")
+                        for file in resource.findall("file"):
+                            files.append(E.file(os.path.join(prefix, unicode(file.text))))
 
-                    new_resources.append(E.resource(*files, location=rc))
+                        new_resources.append(E.resource(*files, location=rc))
 
-            root.replace(root.find("resources"), E.resources(*new_resources))
-            ui = etree.tostring(root)
+                root.replace(root.find("resources"), E.resources(*new_resources))
+                ui.append(etree.tostring(root))
 
         return ui
 
@@ -434,35 +435,36 @@ class Object(object):
         else:
             locales.append(language)
 
-        # If there's a template file, try to find it
-        if self._template:
-            paths = []
+        # If there's a i18n file, try to find it
+        if self._templates:
+            for template in self._templates:
+                paths = []
 
-            # Absolute path
-            if self._template.startswith(os.path.sep):
-                tp = os.path.dirname(self._template)
-                tn = os.path.basename(self._template)[:-3]
-                for loc in locales:
-                    paths.append(os.path.join(tp, "i18n", "%s_%s.ts" % (tn, loc)))
+                # Absolute path
+                if template.startswith(os.path.sep):
+                    tp = os.path.dirname(template)
+                    tn = os.path.basename(template)[:-3]
+                    for loc in locales:
+                        paths.append(os.path.join(tp, "i18n", "%s_%s.ts" % (tn, loc)))
 
-            # Relative path
-            else:
-                tn = os.path.basename(self._template)[:-3]
+                # Relative path
+                else:
+                    tn = os.path.basename(template)[:-3]
 
-                # Find path
-                for loc in locales:
-                    #pylint: disable=E1101
-                    paths.append(pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', theme, "i18n", "%s_%s.ts" % (tn, loc))))
-                    paths.append(os.path.join(self.env.config.getBaseDir(), 'templates', theme, "%s_%s.ts" % (tn, loc)))
-                    #pylint: disable=E1101
-                    paths.append(pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', "default", "i18n", "%s_%s.ts" % (tn, loc))))
-                    paths.append(os.path.join(self.env.config.getBaseDir(), 'templates', "default", "%s_%s.ts" % (tn, loc)))
+                    # Find path
+                    for loc in locales:
+                        #pylint: disable=E1101
+                        paths.append(pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', theme, "i18n", "%s_%s.ts" % (tn, loc))))
+                        paths.append(os.path.join(self.env.config.getBaseDir(), 'templates', theme, "%s_%s.ts" % (tn, loc)))
+                        #pylint: disable=E1101
+                        paths.append(pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', "default", "i18n", "%s_%s.ts" % (tn, loc))))
+                        paths.append(os.path.join(self.env.config.getBaseDir(), 'templates', "default", "%s_%s.ts" % (tn, loc)))
 
-            for path in paths:
-                if os.path.exists(path):
-                    with open(path, "r") as f:
-                        i18n = f.read()
-                    break
+                for path in paths:
+                    if os.path.exists(path):
+                        with open(path, "r") as f:
+                            i18n = f.read()
+                        break
 
         if i18n:
             res = {}

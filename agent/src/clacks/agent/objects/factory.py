@@ -649,7 +649,14 @@ class ObjectFactory(object):
         hooks = {}
 
         # Set template if available
-        setattr(klass, '_template', classr.Template.text if 'Template' in classr.__dict__ else None)
+        if 'Templates' in classr.__dict__:
+            templates = []
+            for template in classr.Templates.iterchildren():
+                templates.append(template.text);
+
+            setattr(klass, '_templates', templates)
+        else:
+            setattr(klass, '_templates', None)
 
         # Add documentation if available
         if 'Description' in classr.__dict__:

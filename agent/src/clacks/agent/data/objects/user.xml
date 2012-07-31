@@ -4,7 +4,10 @@
     <Name>User</Name>
     <Description>A generic user</Description>
     <DisplayName>User</DisplayName>
-    <Template>user.ui</Template>
+    <Templates>
+      <Template>user.ui</Template>
+      <Template>user-organizational.ui</Template>
+    </Templates>
     <BackendParameters>
       <Backend objectClasses="inetOrgPerson"
         RDN="cn,uid">LDAP</Backend>
