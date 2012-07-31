@@ -28,6 +28,9 @@
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <layout class="QFormLayout" name="formLayout_3">
+        <property name="labelAlignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        </property>
           <item row="0" column="0">
            <widget class="QLabel" name="homeDirectoryLabel">
             <property name="text">
@@ -206,6 +209,9 @@
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <layout class="QFormLayout" name="formLayout_2">
+        <property name="labelAlignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        </property>
           <item row="0" column="0">
            <widget class="QLabel" name="shadowLastChangeLabel">
             <property name="text">
@@ -269,6 +275,9 @@
         </item>
         <item>
          <layout class="QFormLayout" name="formLayout">
+        <property name="labelAlignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        </property>
           <item row="0" column="0">
            <widget class="QLabel" name="shadowWarningLabel">
             <property name="text">
