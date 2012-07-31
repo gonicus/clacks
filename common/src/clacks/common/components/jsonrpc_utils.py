@@ -75,11 +75,12 @@ class BinaryHandler(JSONDataHandler):
 
     @staticmethod
     def encode(data):
-        return  {'object': data.encode(), '__jsonclass__': 'json.Binary'}
+        content = base64.b64encode(data.get())
+        return  {'object': content, '__jsonclass__': 'json.Binary'}
 
     @staticmethod
     def decode(data):
-        return Binary(data['object'])
+        return Binary(base64.b64decode(data['object']))
 
     @staticmethod
     def isinstance(data):
@@ -185,9 +186,6 @@ class Binary(object):
 
     def get(self):
         return self.data
-
-    def encode(self):
-        return base64.b64encode(self.data)
 
 
 # Load our entrypoints

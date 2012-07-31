@@ -671,8 +671,6 @@ class ObjectProxy(object):
             prop_value = props[propname]['value']
             if props[propname]['type'] == "Boolean":
                 attrs[propname] = map(lambda x: 'true' if x == True else 'false', prop_value)
-            elif props[propname]['type'] == "Binary":
-                attrs[propname] = map(lambda x: x.encode(), prop_value)
             else:
                 attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString", prop_value)
 

@@ -487,4 +487,4 @@ class LDAP(ObjectBackend):
         return value.strftime("%Y%m%d%H%M%SZ")
 
     def _convert_to_binary(self, value):
-        return value.encode()
+        return value.get()
