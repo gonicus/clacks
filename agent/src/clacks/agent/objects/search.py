@@ -234,6 +234,7 @@ class Query(MyNode):
         # Start the given query
         s_index = PluginRegistry.getInstance("ObjectIndex")
         xquery =  self.get_xquery()
+        self.__env.log.debug("xquery statement:", xquery)
         q_res = s_index.xquery(xquery)
 
         # The list we return later
@@ -435,7 +436,11 @@ class Match(MyNode):
             attr1 = self[0].compile_for_match()
             comp  = self[1].compile_for_match()
             attr2 = self[2].compile_for_match()
-            match = ("(%s %s %s)" % (attr1, comp, attr2))
+
+            if(comp == "like"):
+                match = ("contains(%s, %s)" % (attr1, attr2))
+            else:
+                match = ("(%s %s %s)" % (attr1, comp, attr2))
 
         # Negate the match if a 'NOT' was placed in from of it.
         if 'NOT' in self:
@@ -667,7 +672,7 @@ class SearchWrapper(Plugin):
             ################
 
             statement = (attribute | (String() > StringValue))
-            operator = (Literal('=') | Literal('!=')) > Operator
+            operator = (Literal('=') | Literal('!=') | Literal('like')) > Operator
             condition_tmp = statement & operator & statement
 
             # Allow to have brakets in condition statements
