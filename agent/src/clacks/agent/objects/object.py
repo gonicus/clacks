@@ -436,6 +436,8 @@ class Object(object):
             locales.append(language)
 
         # If there's a i18n file, try to find it
+        res = {}
+
         if self._templates:
             for template in self._templates:
                 paths = []
@@ -466,32 +468,28 @@ class Object(object):
                             i18n = f.read()
                         break
 
-        if i18n:
-            res = {}
+                if i18n:
+                    # Reading the XML file will ignore extra tags, because they're not supported
+                    # for ordinary GUI rendering (i.e. plural needs a 'count').
+                    root = etree.fromstring(i18n)
+                    contexts = root.findall("context");
 
-            # Reading the XML file will ignore extra tags, because they're not supported
-            # for ordinary GUI rendering (i.e. plural needs a 'count').
-            root = etree.fromstring(i18n)
-            contexts = root.findall("context");
+                    for context in contexts:
+                        for message in context.findall("message"):
+                            if "numerus" in message.keys():
+                                continue
 
-            for context in contexts:
-                for message in context.findall("message"):
-                    if "numerus" in message.keys():
-                        continue
+                            translation = message.find("translation")
 
-                    translation = message.find("translation")
+                            # With length variants?
+                            if "variants" in translation.keys() and translation.get("variants") == "yes":
+                                 res[unicode(message.find("source").text)] = [unicode(m.text) for m in translation.findall("lengthvariant")][0]
 
-                    # With length variants?
-                    if "variants" in translation.keys() and translation.get("variants") == "yes":
-                         res[unicode(message.find("source").text)] = [unicode(m.text) for m in translation.findall("lengthvariant")][0]
+                            # Ordinary?
+                            else:
+                                 res[unicode(message.find("source").text)] = unicode(translation.text)
 
-                    # Ordinary?
-                    else:
-                         res[unicode(message.find("source").text)] = unicode(translation.text)
-
-            return res
-
-        return {}
+        return res
 
     def getAttrType(self, name):
         """
