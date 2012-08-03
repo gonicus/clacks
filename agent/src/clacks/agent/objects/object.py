@@ -487,7 +487,8 @@ class Object(object):
 
                             # Ordinary?
                             else:
-                                 res[unicode(message.find("source").text)] = unicode(translation.text)
+                                if translation.text:
+                                    res[unicode(message.find("source").text)] = unicode(translation.text)
 
         return res
 
