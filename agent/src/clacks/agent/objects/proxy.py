@@ -213,9 +213,9 @@ class ObjectProxy(object):
 
     def get_templates(self, theme="default"):
         res = {}
-        res[self.get_base_type()] = self.__base.getTemplate()
+        res[self.get_base_type()] = self.__base.getTemplate(theme)
         for name, ext in self.__extensions.items():
-            res[name] = ext.getTemplate() if ext else None
+            res[name] = ext.getTemplate(theme) if ext else self._get_template(name, theme)
         return res
 
     def get_translations(self, locale, theme="default"):
@@ -225,7 +225,32 @@ class ObjectProxy(object):
         for name, ext in self.__extensions.items():
             if ext:
                 res.update(ext.getI18N(locale, theme))
+            else:
+                res.update(self._get_translation(name, locale, theme))
         return res
+
+    def _get_object_templates(self, obj):
+        templates = []
+        schema = self.__factory.getXMLSchema(obj)
+        if "Templates" in schema.__dict__:
+            for template in schema.Templates.iterchildren():
+                templates.append(template.text);
+
+        return templates
+
+    def _get_template(self, obj, theme):
+        templates = self._get_object_templates(obj);
+        if templates:
+            return self.__base.getNamedTemplate(templates, theme)
+
+        return None
+
+    def _get_translation(self, obj, locale=None, theme="default"):
+        templates = self._get_object_templates(obj);
+        if templates:
+            return self.__base.getNamedI18N(templates, locale, theme)
+
+        return {}
 
     def get_object_info(self, locale=None, theme="default"):
         res = {}

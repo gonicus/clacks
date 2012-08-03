@@ -1223,6 +1223,12 @@ class ObjectFactory(object):
 
         return backend_attrs
 
+    def getXMLSchema(self, obj):
+        """
+        Returns a xml-schema for the requested object.
+        """
+        return self.__xml_defs[obj] if obj in self.__xml_defs else None
+
     def getXMLObjectSchema(self, asString=False):
         """
         Returns a xml-schema definition that can be used to validate the

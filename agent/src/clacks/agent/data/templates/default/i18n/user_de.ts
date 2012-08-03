@@ -11,7 +11,7 @@
     <message>
         <location filename="../user.ui" line="24"/>
         <source>Login information</source>
-        <translation>Anmelde-Informationen</translation>
+        <translation>Anmelde-Information</translation>
     </message>
     <message>
         <location filename="../user.ui" line="84"/>

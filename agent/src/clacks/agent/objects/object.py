@@ -364,11 +364,17 @@ class Object(object):
         """
         Return the template data - if any. Else None.
         """
+        return self.getNamedTemplate(self._templates, theme)
+
+    def getNamedTemplate(self, templates, theme="default"):
+        """
+        Return the template data - if any. Else None.
+        """
         ui = []
 
         # If there's a template file, try to find it
-        if self._templates:
-            for template in self._templates:
+        if templates:
+            for template in templates:
                 path = None
 
                 # Absolute path
@@ -423,6 +429,9 @@ class Object(object):
         """
         Return the i18n data - if any. Else None.
         """
+        return self.getNamedI18N(self._templates, language, theme)
+
+    def getNamedI18N(self, templates, language=None, theme="default"):
         if not language:
             return {}
 
@@ -438,8 +447,8 @@ class Object(object):
         # If there's a i18n file, try to find it
         res = {}
 
-        if self._templates:
-            for template in self._templates:
+        if templates:
+            for template in templates:
                 paths = []
 
                 # Absolute path
