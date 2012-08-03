@@ -1,102 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="de_DE" sourcelanguage="de_DE">
+<TS version="2.0" language="de_DE">
 <context>
-    <name>organizationalPerson</name>
+    <name>User</name>
     <message>
-        <location filename="test.ui" line="14"/>
-        <source>organizationalPerson</source>
-        <translation>Organisationsinformationen</translation>
+        <location filename="../user.ui" line="14"/>
+        <source>Personal</source>
+        <translation>Persönlich</translation>
     </message>
     <message>
-        <location filename="test.ui" line="22"/>
-        <source>sn</source>
+        <location filename="../user.ui" line="24"/>
+        <source>Login information</source>
+        <translation>Anmelde-Informationen</translation>
+    </message>
+    <message>
+        <location filename="../user.ui" line="84"/>
+        <source>Login ID</source>
+        <translation>Anmelde-ID</translation>
+    </message>
+    <message>
+        <location filename="../user.ui" line="110"/>
+        <source>Surname</source>
         <translation>Nachname</translation>
     </message>
     <message>
-        <location filename="test.ui" line="42"/>
-        <source>cn</source>
-        <translation>Objektname</translation>
+        <location filename="../user.ui" line="120"/>
+        <source>Given name</source>
+        <translation>Vorname</translation>
     </message>
     <message>
-        <location filename="test.ui" line="49"/>
-        <source>Common name</source>
-        <translation>Allgemeiner Name</translation>
+        <location filename="../user.ui" line="146"/>
+        <source>Preferred language</source>
+        <translation>Bevorzugte Sprache</translation>
     </message>
     <message>
-        <location filename="test.ui" line="56"/>
-        <source>telephoneNumber</source>
-        <translation>Telefonnummer</translation>
+        <location filename="../user.ui" line="174"/>
+        <source>Contact information</source>
+        <translation>Kontakt-Information</translation>
     </message>
     <message>
-        <location filename="test.ui" line="66"/>
-        <source>physicalDeliveryOfficeName</source>
-        <translation>Büro Auslieferungsname</translation>
-    </message>
-    <message>
-        <location filename="test.ui" line="76"/>
-        <source>title</source>
+        <location filename="../user.ui" line="185"/>
+        <source>Title</source>
         <translation>Titel</translation>
     </message>
     <message>
-        <location filename="test.ui" line="90"/>
-        <source>postOfficeBox</source>
-        <translation>Briefkasten</translation>
+        <location filename="../user.ui" line="195"/>
+        <source>Academic title</source>
+        <translation>Akademischer Titel</translation>
     </message>
     <message>
-        <location filename="test.ui" line="104"/>
-        <source>l</source>
-        <translation>Ort</translation>
+        <location filename="../user.ui" line="221"/>
+        <source>Date of birth</source>
+        <translation>Geburtsdatum</translation>
     </message>
     <message>
-        <location filename="test.ui" line="111"/>
-        <source>the location comes here</source>
-        <translation>hier den Ort einfügen</translation>
+        <location filename="../user.ui" line="247"/>
+        <source>Gender</source>
+        <translation>Geschlecht</translation>
     </message>
     <message>
-        <location filename="test.ui" line="118"/>
-        <source>st</source>
-        <translation>Bundesland</translation>
+        <location filename="../user.ui" line="277"/>
+        <source>Address</source>
+        <translation>Adresse</translation>
     </message>
     <message>
-        <location filename="test.ui" line="128"/>
-        <source>postalCode</source>
-        <translation>Postleitzahl</translation>
+        <location filename="../user.ui" line="306"/>
+        <source>Phone</source>
+        <translation>Telefon</translation>
     </message>
     <message>
-        <location filename="test.ui" line="141"/>
-        <source>street</source>
-        <translation>Straße</translation>
-    </message>
-    <message>
-        <location filename="test.ui" line="151"/>
-        <source>ou</source>
-        <translation>Organisationseinheit</translation>
-    </message>
-    <message>
-        <location filename="test.ui" line="158"/>
-        <source>Placeholder</source>
-        <translation>Platzhalter</translation>
-    </message>
-    <message>
-        <location filename="test.ui" line="165"/>
-        <source>Trust model</source>
-        <translation>Vertrauensmodell</translation>
-    </message>
-    <message>
-        <location filename="test.ui" line="205"/>
-        <source>x121Address</source>
-        <translation>x121 Adresse</translation>
-    </message>
-    <message>
-        <location filename="test.ui" line="215"/>
-        <source>internationaliSDNNumber</source>
-        <translation>ISDN-Nummer</translation>
-    </message>
-    <message>
-        <location filename="test.ui" line="225"/>
-        <source>destinationIndicator</source>
-        <translation>Ziel-Indikator</translation>
+        <location filename="../user.ui" line="316"/>
+        <source>Homepage</source>
+        <translation>Internetseite</translation>
     </message>
 </context>
 </TS>
