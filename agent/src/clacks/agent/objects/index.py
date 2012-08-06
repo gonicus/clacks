@@ -276,7 +276,7 @@ class ObjectIndex(Plugin):
 
         # Move extensions
         if len(self.db.xquery("collection('objects')/*/.[o:UUID = '%s']/o:Extensions" % obj.uuid)) != 0:
-            if current.findall("Extensions"):
+            if len(current.findall("Extensions")) > 0:
               self.db.xquery("""
               replace node
                   collection('objects')/*/.[o:UUID = '%s']/o:Extensions
