@@ -79,7 +79,7 @@ class BinaryHandler(JSONDataHandler):
 
     @staticmethod
     def decode(data):
-        return Binary(data['object'])
+        return Binary(base64.b64decode(data['object']))
 
     @staticmethod
     def isinstance(data):
