@@ -293,19 +293,12 @@ class ObjectIndex(Plugin):
 
         # Move attributes
         if len(self.db.xquery("collection('objects')/*/.[o:UUID = '%s']/o:Attributes" % obj.uuid)) != 0:
-            if current.findall("Attributes"):
-              self.db.xquery("""
-              replace node
-                  collection('objects')/*/.[o:UUID = '%s']/o:Attributes
-              with
-                  %s
-              """ % (obj.uuid, self.escape(etree.tostring(current.Attributes))))
-            else:
-              # Remove extension entry
-              self.db.xquery("""
-                delete nodes
-                   collection('objects')/*/.[o:UUID = '%s']/o:Attributes
-                """ % obj.uuid)
+          self.db.xquery("""
+          replace node
+              collection('objects')/*/.[o:UUID = '%s']/o:Attributes
+          with
+              %s
+          """ % (obj.uuid, self.escape(etree.tostring(current.Attributes))))
 
         # Set LastChanged
         self.db.xquery("""
