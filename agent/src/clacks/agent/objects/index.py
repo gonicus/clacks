@@ -276,21 +276,36 @@ class ObjectIndex(Plugin):
 
         # Move extensions
         if len(self.db.xquery("collection('objects')/*/.[o:UUID = '%s']/o:Extensions" % obj.uuid)) != 0:
-            self.db.xquery("""
-            replace node
-                collection('objects')/*/.[o:UUID = '%s']/o:Extensions
-            with
-                %s
-            """ % (obj.uuid, self.escape(etree.tostring(current.Extensions))))
+            if current.findall("Extensions"):
+              self.db.xquery("""
+              replace node
+                  collection('objects')/*/.[o:UUID = '%s']/o:Extensions
+              with
+                  %s
+              """ % (obj.uuid, self.escape(etree.tostring(current.Extensions))))
+
+            else:
+              # Remove extension entry
+              self.db.xquery("""
+                delete nodes
+                   collection('objects')/*/.[o:UUID = '%s']/o:Extensions
+                """ % obj.uuid)
 
         # Move attributes
         if len(self.db.xquery("collection('objects')/*/.[o:UUID = '%s']/o:Attributes" % obj.uuid)) != 0:
-            self.db.xquery("""
-            replace node
-                collection('objects')/*/.[o:UUID = '%s']/o:Attributes
-            with
-                %s
-            """ % (obj.uuid, self.escape(etree.tostring(current.Attributes))))
+            if current.findall("Attributes"):
+              self.db.xquery("""
+              replace node
+                  collection('objects')/*/.[o:UUID = '%s']/o:Attributes
+              with
+                  %s
+              """ % (obj.uuid, self.escape(etree.tostring(current.Attributes))))
+            else:
+              # Remove extension entry
+              self.db.xquery("""
+                delete nodes
+                   collection('objects')/*/.[o:UUID = '%s']/o:Attributes
+                """ % obj.uuid)
 
         # Set LastChanged
         self.db.xquery("""
