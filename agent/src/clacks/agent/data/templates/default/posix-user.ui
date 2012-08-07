@@ -220,7 +220,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QSpinBox" name="shadowLastChangeEdit"/>
+           <widget class="QDateEdit" name="shadowLastChangeEdit"/>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="shadowMinLabel">
@@ -301,12 +301,12 @@
           <item row="2" column="0">
            <widget class="QLabel" name="shadowExpireLabel">
             <property name="text">
-             <string>shadowExpire</string>
+             <string>Password expires on</string>
             </property>
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QSpinBox" name="shadowExpireEdit"/>
+           <widget class="QDateEdit" name="shadowExpireEdit"/>
           </item>
           <item row="3" column="0">
            <widget class="QLabel" name="shadowFlagLabel">
