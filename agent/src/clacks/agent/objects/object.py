@@ -98,8 +98,10 @@ class Object(object):
         # (Defaults will be passed to in-filters too, if they are not overwritten by _read())
         for key in self.myProperties:
             if not(self.myProperties[key]['value']) and self.myProperties[key]['default'] != None and \
-                    len(self.myProperties[key]['default']) and self.myProperties[key]['mandatory']:
-                self.myProperties[key]['status'] = STATUS_CHANGED
+                len(self.myProperties[key]['default']):
+                self.myProperties[key]['value'] = copy.deepcopy(self.myProperties[key]['default']);
+                if self.myProperties[key]['mandatory']:
+                    self.myProperties[key]['status'] = STATUS_CHANGED
 
     def listProperties(self):
         return(self.myProperties.keys())
@@ -341,14 +343,9 @@ class Object(object):
             value = None
             if self.myProperties[name]['multivalue']:
                 value = self.myProperties[name]['value']
-                if not len(value) and self.myProperties[name]['default']:
-                    value = self.myProperties[name]['default']
             else:
                 if len(self.myProperties[name]['value']):
                     value = self.myProperties[name]['value'][0]
-                elif self.myProperties[name]['default'] and len(self.myProperties[name]['default']):
-                    value = self.myProperties[name]['default'][0]
-
             return(value)
 
         # The requested property-name seems to be a method, return the method reference.
@@ -537,15 +534,10 @@ class Object(object):
 
         self.log.debug("saving object modifications for [%s|%s]" % (type(self).__name__, self.uuid))
 
-        # Ensure that mandatory values are set, use default if possible
+        # Ensure that mandatory values are set
         for key in props:
             props[key]['commit_status'] = props[key]['status']
             if props[key]['mandatory'] and not len(props[key]['value']):
-                if props[key]['default']:
-                    props[key]['commit_status'] |= STATUS_CHANGED
-                    props[key]['value'] = props[key]['default']
-                    self.log.debug("used default for: %s <%s>" % (key, props[key]['value']))
-                else:
                     raise ObjectException("<%s> This value is required!" % key)
 
         # Collect values by store and process the property filters
@@ -557,11 +549,6 @@ class Object(object):
             is_blocked = False
             for bb in  props[key]['blocked_by']:
                 if bb['value'] in props[bb['name']]['value']:
-                    if props[key]['default']:
-                        props[key]['value'] = copy.deepcopy(props[key]['default'])
-                    else:
-                        props[key]['value'] = props[key]['default']
-
                     is_blocked = True
                     break
 
