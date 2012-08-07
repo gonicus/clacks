@@ -221,15 +221,15 @@ class Object(object):
             # Check if this attribute is blocked by another attribute and its value.
             for bb in  self.myProperties[name]['blocked_by']:
                 if bb['value'] in self.myProperties[bb['name']]['value']:
-                    raise AttributeError("[%s] Attribute is blocked by %s = '%s'!" % (name, bb['name'], bb['value']))
+                    raise AttributeError("<%s> Attribute is blocked by %s = '%s'!" % (name, bb['name'], bb['value']))
 
             # Do not allow to write to read-only attributes.
             if self.myProperties[name]['readonly']:
-                raise AttributeError("[%s] Cannot write to readonly attribute!" % name)
+                raise AttributeError("<%s> Cannot write to readonly attribute!" % name)
 
             # Do not allow remove mandatory attributes
             if self.myProperties[name]['mandatory']:
-                raise AttributeError("[%s] Cannot remove mandatory attribute!" % name)
+                raise AttributeError("<%s> Cannot remove mandatory attribute!" % name)
 
             self.myProperties[name]['status'] = STATUS_CHANGED
             self.myProperties[name]['last_value'] = copy.deepcopy(self.myProperties[name]['value'])
@@ -263,23 +263,23 @@ class Object(object):
             # Check if this attribute is blocked by another attribute and its value.
             for bb in  self.myProperties[name]['blocked_by']:
                 if bb['value'] in self.myProperties[bb['name']]['value']:
-                    raise AttributeError("[%s] Attribute is blocked by %s = '%s'!" % (name, bb['name'], bb['value']))
+                    raise AttributeError("<%s> Attribute is blocked by %s = '%s'!" % (name, bb['name'], bb['value']))
 
 
             # Do not allow to write to read-only attributes.
             if self.myProperties[name]['readonly']:
-                raise AttributeError("[%s] Cannot write to readonly attribute!" % name)
+                raise AttributeError("<%s> Cannot write to readonly attribute!" % name)
 
             # Check if the given value has to match one out of a given list.
             if len(self.myProperties[name]['values']) and value not in self.myProperties[name]['values']:
-                raise TypeError("[%s] Invalid value: expected is %s" % (name, str(self.myProperties[name]['values'])))
+                raise TypeError("<%s> Invalid value: expected is %s" % (name, str(self.myProperties[name]['values'])))
 
             # Set the new value
             if self.myProperties[name]['multivalue']:
 
                 # Check if the new value is s list.
                 if type(value) != list:
-                    raise TypeError("[%s] Invalid value: expected is a list for multi-value properties!" % name)
+                    raise TypeError("<%s> Invalid value: expected is a list for multi-value properties!" % name)
                 new_value = value
             else:
                 new_value = [value]
@@ -289,21 +289,21 @@ class Object(object):
             try:
                 new_value = self._objectFactory.getAttributeTypes()[s_type].fixup(new_value)
             except Exception:
-                raise TypeError("[%s] Invalid value: %s expected!" % (name, s_type))
+                raise TypeError("<%s> Invalid value: %s expected!" % (name, s_type))
 
             # Check if the new value is valid
             #pylint: disable=E1101
             if not self._objectFactory.getAttributeTypes()[s_type].is_valid_value(new_value):
-                raise TypeError("[%s] Invalid value: %s expected!" % (name, s_type))
+                raise TypeError("<%s> Invalid value: %s expected!" % (name, s_type))
 
             # Validate value
             if self.myProperties[name]['validator']:
                 res, error = self.__processValidator(self.myProperties[name]['validator'], name, new_value)
                 if not res:
                     if len(error):
-                        raise ValueError("[%s] Property validation failed: %s" % (name, error[0]))
+                        raise ValueError("<%s> Property validation failed: %s" % (name, error[0]))
                     else:
-                        raise ValueError("[%s] Property validation failed!" % (name,))
+                        raise ValueError("<%s> Property validation failed!" % (name,))
 
             # Ensure that unique values stay unique. Let the backend test this.
             #if self.myProperties[name]['unique']:
@@ -324,7 +324,7 @@ class Object(object):
                 self.myProperties[name]['last_value'] = current
 
         else:
-            raise AttributeError("[%s] no such property!" % name)
+            raise AttributeError("<%s> no such property!" % name)
 
     def _getattr_(self, name):
         """
@@ -359,7 +359,7 @@ class Object(object):
             return m_call
 
         else:
-            raise AttributeError("[%s] no such property!" % name)
+            raise AttributeError("<%s> no such property!" % name)
 
     def getTemplate(self, theme="default"):
         """
@@ -510,7 +510,7 @@ class Object(object):
         if name in self.myProperties:
             return self.myProperties[name]['type']
 
-        raise AttributeError("[%s] No such property!" % name)
+        raise AttributeError("<%s> No such property!" % name)
 
     def commit(self):
         """
@@ -546,7 +546,7 @@ class Object(object):
                     props[key]['value'] = props[key]['default']
                     self.log.debug("used default for: %s <%s>" % (key, props[key]['value']))
                 else:
-                    raise ObjectException("[%s] This value is required!" % key)
+                    raise ObjectException("<%s> This value is required!" % key)
 
         # Collect values by store and process the property filters
         toStore = {}
@@ -567,7 +567,7 @@ class Object(object):
 
             # Check if all required attributes are set. (Skip blocked once, they cannot be set!)
             if not is_blocked and props[key]['mandatory'] and not len(props[key]['value']):
-                raise ObjectException("[%s] This value is required!" % key)
+                raise ObjectException("<%s> This value is required!" % key)
 
             # Adapt status from dependent properties.
             for propname in props[key]['depends_on']:
