@@ -14,7 +14,7 @@
    <string>Organizational</string>
   </property>
   <property name="windowIcon">
-    <iconset resource="resources/user.qrc">
+   <iconset resource="resources/user.qrc">
     <normaloff>:/images/orga.png</normaloff>:/images/orga.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
@@ -34,6 +34,9 @@
           <property name="text">
            <string>Employee no.</string>
           </property>
+          <property name="buddy">
+           <cstring>employeeNumberEdit</cstring>
+          </property>
          </widget>
         </item>
         <item row="0" column="1">
@@ -43,6 +46,9 @@
          <widget class="QLabel" name="employeeTypeLabel">
           <property name="text">
            <string>Employee type</string>
+          </property>
+          <property name="buddy">
+           <cstring>employeeTypeEdit</cstring>
           </property>
          </widget>
         </item>
@@ -73,6 +79,9 @@
          <widget class="QLabel" name="managerLabel">
           <property name="text">
            <string>Manager</string>
+          </property>
+          <property name="buddy">
+           <cstring>managerEdit</cstring>
           </property>
          </widget>
         </item>
@@ -120,6 +129,9 @@
           <property name="text">
            <string>Organization</string>
           </property>
+          <property name="buddy">
+           <cstring>oEdit</cstring>
+          </property>
          </widget>
         </item>
         <item row="0" column="1">
@@ -129,6 +141,9 @@
          <widget class="QLabel" name="ouLabel">
           <property name="text">
            <string>Unit</string>
+          </property>
+          <property name="buddy">
+           <cstring>ouEdit</cstring>
           </property>
          </widget>
         </item>
@@ -140,6 +155,9 @@
           <property name="text">
            <string>Department no.</string>
           </property>
+          <property name="buddy">
+           <cstring>departmentNumberEdit</cstring>
+          </property>
          </widget>
         </item>
         <item row="2" column="1">
@@ -150,6 +168,9 @@
           <property name="text">
            <string>Room no.</string>
           </property>
+          <property name="buddy">
+           <cstring>roomNumberEdit</cstring>
+          </property>
          </widget>
         </item>
         <item row="3" column="1">
@@ -158,12 +179,6 @@
        </layout>
       </item>
      </layout>
-     <zorder>employeeTypeEdit</zorder>
-     <zorder>employeeNumberLabel</zorder>
-     <zorder>employeeNumberEdit</zorder>
-     <zorder>employeeTypeLabel</zorder>
-     <zorder>departmentNumberEdit</zorder>
-     <zorder>departmentNumberLabel</zorder>
      <zorder></zorder>
      <zorder>horizontalSpacer_6</zorder>
      <zorder></zorder>
@@ -185,6 +200,9 @@
           <property name="text">
            <string>Phone</string>
           </property>
+          <property name="buddy">
+           <cstring>telephoneNumberEdit</cstring>
+          </property>
          </widget>
         </item>
         <item row="0" column="1">
@@ -194,6 +212,9 @@
          <widget class="QLabel" name="mobileLabel">
           <property name="text">
            <string>Mobile phone</string>
+          </property>
+          <property name="buddy">
+           <cstring>mobileEdit</cstring>
           </property>
          </widget>
         </item>
@@ -221,6 +242,9 @@
           <property name="text">
            <string>Pager</string>
           </property>
+          <property name="buddy">
+           <cstring>pagerEdit</cstring>
+          </property>
          </widget>
         </item>
         <item row="3" column="1">
@@ -230,6 +254,9 @@
          <widget class="QLabel" name="label_3">
           <property name="text">
            <string>Fax</string>
+          </property>
+          <property name="buddy">
+           <cstring>facsimileTelephoneNumberEdit</cstring>
           </property>
          </widget>
         </item>
@@ -277,6 +304,9 @@
           <property name="text">
            <string>Location</string>
           </property>
+          <property name="buddy">
+           <cstring>lEdit</cstring>
+          </property>
          </widget>
         </item>
         <item row="0" column="1">
@@ -287,6 +317,9 @@
           <property name="text">
            <string>State</string>
           </property>
+          <property name="buddy">
+           <cstring>stEdit</cstring>
+          </property>
          </widget>
         </item>
         <item row="1" column="1">
@@ -296,6 +329,9 @@
          <widget class="QLabel" name="postalAddressLabel">
           <property name="text">
            <string>Address</string>
+          </property>
+          <property name="buddy">
+           <cstring>postalAddressEdit</cstring>
           </property>
          </widget>
         </item>
@@ -318,23 +354,14 @@
        </layout>
       </item>
      </layout>
-     <zorder>postalAddressEdit</zorder>
-     <zorder>lLabel</zorder>
-     <zorder>postalAddressLabel</zorder>
-     <zorder>stEdit</zorder>
-     <zorder>stLabel</zorder>
-     <zorder>lEdit</zorder>
      <zorder></zorder>
      <zorder>horizontalSpacer_5</zorder>
      <zorder></zorder>
     </widget>
    </item>
   </layout>
-  <zorder></zorder>
   <zorder>groupBox</zorder>
-  <zorder>verticalSpacer</zorder>
   <zorder>groupBox_2</zorder>
-  <zorder>verticalSpacer_2</zorder>
  </widget>
  <resources>
   <include location="resources/user.qrc"/>

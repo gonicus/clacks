@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>615</width>
-    <height>360</height>
+    <height>402</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,13 +28,16 @@
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <layout class="QFormLayout" name="formLayout_3">
-        <property name="labelAlignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-        </property>
+          <property name="labelAlignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="homeDirectoryLabel">
             <property name="text">
              <string>Home directory</string>
+            </property>
+            <property name="buddy">
+             <cstring>homeDirectoryEdit</cstring>
             </property>
            </widget>
           </item>
@@ -46,6 +49,9 @@
             <property name="text">
              <string>Login shell</string>
             </property>
+            <property name="buddy">
+             <cstring>loginShellEdit</cstring>
+            </property>
            </widget>
           </item>
           <item row="1" column="1">
@@ -55,6 +61,9 @@
            <widget class="QLabel" name="gecosLabel">
             <property name="text">
              <string>GECOS</string>
+            </property>
+            <property name="buddy">
+             <cstring>gecosEdit</cstring>
             </property>
            </widget>
           </item>
@@ -89,6 +98,9 @@
             <property name="text">
              <string>User ID</string>
             </property>
+            <property name="buddy">
+             <cstring>uidNumberEdit</cstring>
+            </property>
            </widget>
           </item>
           <item row="7" column="1">
@@ -105,6 +117,9 @@
            <widget class="QLabel" name="gidNumberLabel">
             <property name="text">
              <string>Group ID</string>
+            </property>
+            <property name="buddy">
+             <cstring>gidNumberEdit</cstring>
             </property>
            </widget>
           </item>
@@ -168,30 +183,6 @@
             </property>
            </widget>
           </item>
-	  <!-- Wait for availibility
-          <item>
-           <widget class="QListWidget" name="memberUidEdit">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-         -->
          </layout>
         </item>
        </layout>
@@ -209,13 +200,16 @@
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <layout class="QFormLayout" name="formLayout_2">
-        <property name="labelAlignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-        </property>
+          <property name="labelAlignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="shadowLastChangeLabel">
             <property name="text">
              <string>shadowLastChange</string>
+            </property>
+            <property name="buddy">
+             <cstring>shadowLastChangeEdit</cstring>
             </property>
            </widget>
           </item>
@@ -227,6 +221,9 @@
             <property name="text">
              <string>shadowMin</string>
             </property>
+            <property name="buddy">
+             <cstring>shadowMinEdit</cstring>
+            </property>
            </widget>
           </item>
           <item row="1" column="1">
@@ -236,6 +233,9 @@
            <widget class="QLabel" name="shadowMaxLabel">
             <property name="text">
              <string>shadowMax</string>
+            </property>
+            <property name="buddy">
+             <cstring>shadowMaxEdit</cstring>
             </property>
            </widget>
           </item>
@@ -275,13 +275,16 @@
         </item>
         <item>
          <layout class="QFormLayout" name="formLayout">
-        <property name="labelAlignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-        </property>
+          <property name="labelAlignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="shadowWarningLabel">
             <property name="text">
              <string>shadowWarning</string>
+            </property>
+            <property name="buddy">
+             <cstring>shadowWarningEdit</cstring>
             </property>
            </widget>
           </item>
@@ -293,6 +296,9 @@
             <property name="text">
              <string>shadowInactive</string>
             </property>
+            <property name="buddy">
+             <cstring>shadowInactiveEdit</cstring>
+            </property>
            </widget>
           </item>
           <item row="1" column="1">
@@ -302,6 +308,9 @@
            <widget class="QLabel" name="shadowExpireLabel">
             <property name="text">
              <string>Password expires on</string>
+            </property>
+            <property name="buddy">
+             <cstring>shadowExpireEdit</cstring>
             </property>
            </widget>
           </item>
@@ -313,6 +322,9 @@
             <property name="text">
              <string>shadowFlag</string>
             </property>
+            <property name="buddy">
+             <cstring>shadowFlagEdit</cstring>
+            </property>
            </widget>
           </item>
           <item row="3" column="1">
@@ -320,11 +332,11 @@
           </item>
           <item row="4" column="1">
            <spacer name="verticalSpacer_14">
-            <property name="sizeType">
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
             <property name="orientation">
              <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Expanding</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -496,22 +508,6 @@
    <signal>textChanged(QString)</signal>
    <receiver>posixAccount</receiver>
    <slot>property_shadowFlag()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>memberUidEdit</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>posixAccount</receiver>
-   <slot>property_memberUid()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>20</x>
