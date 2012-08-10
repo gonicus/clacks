@@ -20,13 +20,13 @@
       <Attribute>
         <Name>shadowLastChange</Name>
         <Description>The dat of the last password change.</Description>
-        <Type>Date</Type>
+        <Type>Timestamp</Type>
         <BackendType>Integer</BackendType>
         <InFilter>
           <FilterChain>
             <FilterEntry>
               <Filter>
-                <Name>ShadowDaysToDate</Name>
+                <Name>ShadowDaysToDatetime</Name>
               </Filter>
             </FilterEntry>
           </FilterChain>
@@ -35,7 +35,7 @@
           <FilterChain>
             <FilterEntry>
               <Filter>
-                <Name>DateToShadowDays</Name>
+                <Name>DatetimeToShadowDays</Name>
               </Filter>
             </FilterEntry>
           </FilterChain>
@@ -69,13 +69,13 @@
       <Attribute>
         <Name>shadowExpire</Name>
         <Description>The date of expiration of the account.</Description>
-        <Type>Date</Type>
+        <Type>Timestamp</Type>
         <BackendType>Integer</BackendType>
         <InFilter>
           <FilterChain>
             <FilterEntry>
               <Filter>
-                <Name>ShadowDaysToDate</Name>
+                <Name>ShadowDaysToDatetime</Name>
               </Filter>
             </FilterEntry>
           </FilterChain>
@@ -84,7 +84,7 @@
           <FilterChain>
             <FilterEntry>
               <Filter>
-                <Name>DateToShadowDays</Name>
+                <Name>DatetimeToShadowDays</Name>
               </Filter>
             </FilterEntry>
           </FilterChain>

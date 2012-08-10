@@ -4,7 +4,7 @@ import datetime
 from clacks.agent.objects.filter import ElementFilter
 
 
-class ShadowDaysToDate(ElementFilter):
+class ShadowDaysToDatetime(ElementFilter):
     """
     Converts an integer of days (since 01.01.1970) into a datetime.date object...
 
@@ -18,29 +18,30 @@ class ShadowDaysToDate(ElementFilter):
     """
 
     def __init__(self, obj):
-        super(ShadowDaysToDate, self).__init__(obj)
+        super(ShadowDaysToDatetime, self).__init__(obj)
 
     def process(self, obj, key, valDict):
-        valDict[key]['value'] = map(lambda x: datetime.date.fromtimestamp(x * 60 * 60 * 24), valDict[key]['value'])
+        valDict[key]['value'] = map(lambda x: datetime.datetime.fromtimestamp(x * 60 * 60 * 24), valDict[key]['value'])
+        valDict[key]['backend_type'] = 'Integer'
         return key, valDict
 
 
-class DateToShadowDays(ElementFilter):
+class DatetimeToShadowDays(ElementFilter):
     """
     Converts a date object into an a shadow date value. Number of days since 01.01.1970
 
     e.g.:
     >>> <FilterEntry>
     >>>  <Filter>
-    >>>   <Name>DateToShadowDays</Name>
+    >>>   <Name>DatetimeToShadowDays</Name>
     >>>  </Filter>
     >>> </FilterEntry>
     >>>  ...
     """
 
     def __init__(self, obj):
-        super(DateToShadowDays, self).__init__(obj)
+        super(DatetimeToShadowDays, self).__init__(obj)
 
     def process(self, obj, key, valDict):
-        valDict[key]['value'] = map(lambda x: int(time.mktime(x.timetuple()) / (60*60*24)), valDict[key]['value'])
+        valDict[key]['value'] = map(lambda x: int(time.mktime(x.timetuple()) / (60*60*24)) + 1, valDict[key]['value'])
         return key, valDict

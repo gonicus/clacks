@@ -96,7 +96,7 @@ setup(
         jsonrpc_om = clacks.agent.jsonrpc_objects:JSONRPCObjectMapper
         transliterate = clacks.agent.plugins.misc.transliterate:Transliterate
         locales = clacks.agent.plugins.misc.locales:Locales
-        shells = clacks.agent.plugins.misc.shells:ShellSupport
+        shells = clacks.agent.plugins.posix.shells:ShellSupport
         gravatar = clacks.agent.plugins.misc.gravatar:Gravatar
         goto.network = clacks.agent.plugins.goto.network:NetworkUtils
         goto.client_service = clacks.agent.plugins.goto.client_service:ClientService
@@ -162,8 +162,8 @@ setup(
         sambamungedialout = clacks.agent.plugins.samba.munged:SambaMungedDialOut
         generatesambasid = clacks.agent.plugins.samba.sid:GenerateSambaSid
         posixgetnextid = clacks.agent.plugins.posix.id:GetNextID
-        datetoshadowdays = clacks.agent.plugins.posix.shadow:DateToShadowDays
-        shadowdaystodate = clacks.agent.plugins.posix.shadow:ShadowDaysToDate
+        datetoshadowdays = clacks.agent.plugins.posix.shadow:DatetimeToShadowDays
+        shadowdaystodate = clacks.agent.plugins.posix.shadow:ShadowDaysToDatetime
         detect_pwd_method = clacks.agent.plugins.password.filter.detect_method:DetectPasswordMethod
         password_lock = clacks.agent.plugins.password.filter.detect_locking:DetectAccountLockStatus
         addbackend = clacks.agent.objects.filter.basic:AddBackend
