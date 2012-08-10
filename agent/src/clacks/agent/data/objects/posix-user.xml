@@ -140,6 +140,7 @@
         <Name>loginShell</Name>
         <Description>The path to the login shell</Description>
         <Type>String</Type>
+	<Values populate="getShellList"/>
       </Attribute>
 
       <Attribute>
