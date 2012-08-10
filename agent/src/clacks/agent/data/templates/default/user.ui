@@ -329,9 +329,6 @@
         </item>
         <item row="1" column="0">
          <widget class="QLabel" name="homePhoneLabel">
-          <property name="placeholderText">
-           <string>Please provide your phone number here</string>
-          </property>
           <property name="text">
            <string>Phone</string>
           </property>
@@ -345,6 +342,9 @@
         </item>
         <item row="2" column="0">
          <widget class="QLabel" name="labeledURILabel">
+          <property name="placeholderText">
+           <string>Please provide your web page here</string>
+          </property>
           <property name="text">
            <string>Homepage</string>
           </property>
