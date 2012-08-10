@@ -54,6 +54,8 @@ class ObjectProxy(object):
     __base = None
     __base_type = None
     __extensions = None
+    __initial_extension_state = None
+    __retractions = None
     __factory = None
     __attribute_map = None
     __method_map = None
@@ -71,6 +73,8 @@ class ObjectProxy(object):
         self.__factory = ObjectFactory.getInstance()
         self.__base = None
         self.__extensions = {}
+        self.__initial_extension_state = {}
+        self.__retractions = {}
         self.__attribute_map = {}
         self.__method_map = {}
         self.__current_user = user
@@ -107,9 +111,11 @@ class ObjectProxy(object):
         for extension in extensions:
             self.__log.debug("loading %s extension for %s" % (extension, dn_or_base))
             self.__extensions[extension] = self.__factory.getObject(extension, self.__base.uuid)
+            self.__initial_extension_state[extension] = True
         for extension in all_extensions:
             if extension not in self.__extensions:
                 self.__extensions[extension] = None
+                self.__initial_extension_state[extension] = False
 
         # Generate method mapping
         for obj in [base] + extensions:
@@ -289,7 +295,11 @@ class ObjectProxy(object):
                 raise ACLException("you've no permission to extend %s with %s" % (self.__base.dn, extension))
 
         # Create extension
-        self.__extensions[extension] = self.__factory.getObject(extension,
+        if extension in self.__retractions:
+            self.__extensions[extension] = self.__retractions[extension]
+            del self.__retractions[extension]
+        else:
+            self.__extensions[extension] = self.__factory.getObject(extension,
                 self.__base.uuid, mode="extend")
 
     def retract(self, extension):
@@ -318,8 +328,8 @@ class ObjectProxy(object):
                 self.__current_user, extension, self.__base.dn, topic, "d", self.__base.dn))
                 raise ACLException("you've no permission to retract %s from %s" % (extension, self.__base.dn))
 
-        # Immediately remove extension
-        self.__extensions[extension].retract()
+        # Move the extension to retractions
+        self.__retractions[extension] = self.__extensions[extension]
         self.__extensions[extension] = None
 
     def move(self, new_base, recursive=False):
@@ -523,8 +533,14 @@ class ObjectProxy(object):
             fdns.sort(key=len)
             root_elements[fbe] = fdns[0]
 
-        self.__base.commit()
+        # Handle retracts
+        for idx in self.__retractions.keys():
+            if self.__initial_extension_state[idx]:
+                self.__retractions[idx].retract()
+            del self.__retractions[idx]
 
+        # Handle commits
+        self.__base.commit()
         for extension in [ext for tmp, ext in self.__extensions.iteritems() if ext]:
             extension.commit()
 
