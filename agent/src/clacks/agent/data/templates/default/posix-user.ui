@@ -578,7 +578,7 @@
    <slot>property_homeDirectory()</slot>
   </connection>
   <connection>
-   <sender>memberList</sender>
+   <sender>memberUidList</sender>
    <signal>textChanged(QString)</signal>
    <receiver>posixAccount</receiver>
    <slot>property_memberUid()</slot>
