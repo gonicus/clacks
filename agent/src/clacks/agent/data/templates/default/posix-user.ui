@@ -184,7 +184,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QTableWidget" name="tableWidget">
+           <widget class="QTableWidget" name="memberUidList">
             <property name="maximumSize">
              <size>
               <width>16777215</width>
@@ -576,16 +576,12 @@
    <signal>textChanged(QString)</signal>
    <receiver>posixAccount</receiver>
    <slot>property_homeDirectory()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
+  </connection>
+  <connection>
+   <sender>memberList</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>posixAccount</receiver>
+   <slot>property_memberUid()</slot>
   </connection>
  </connections>
 </ui>
