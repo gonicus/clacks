@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
+import re 
 from itertools import permutations
 from logging import getLogger
 from clacks.common import Environment
 from clacks.agent.objects.backend import ObjectBackend, EntryNotFound, EntryNotUnique
 from clacks.agent.objects.index import ObjectIndex
 from clacks.common.components import PluginRegistry
+from clacks.agent.objects import ObjectProxy
 
 
 class ObjectHandler(ObjectBackend):
@@ -48,7 +50,6 @@ class ObjectHandler(ObjectBackend):
         else:
             for targetAttr in back_attrs:
                 result[targetAttr] = []
-                import re 
                 res = re.match("^([^:]*):([^,]*),([^=]*)=(.*)", back_attrs[targetAttr])
                 if res:
                     #PosixGroup:cn,memberUid=uid
@@ -64,6 +65,70 @@ class ObjectHandler(ObjectBackend):
                             result[targetAttr] = results
 
         return result
+
+    def __extractBackAttrs(self, back_attrs):
+        result = {}
+        for targetAttr in back_attrs:
+            result[targetAttr] = []
+            res = re.match("^([^:]*):([^,]*),([^=]*)=(.*)", back_attrs[targetAttr])
+            if res:
+                result[targetAttr] = res.groups()
+        return result
+
+    def update(self, uuid, data, back_attrs):
+        mapping = self.__extractBackAttrs(back_attrs)
+        object_mapping = {}
+        oi = PluginRegistry.getInstance("ObjectIndex")
+        for targetAttr in mapping:
+            foreignObject, foreignAttr, foreignMatchAttr, matchAttr = mapping[targetAttr]
+
+            if not targetAttr in data:
+                raise Exception("No such attribute!")
+
+            # Get the matching attribute for the current object
+            xq = "collection('objects')/*/.[o:UUID = '%s']/o:Attributes/o:%s/string()" % (uuid, matchAttr)
+            res = oi.xquery(xq)
+            if not res:
+                raise Exception("No such attribute!")
+            matchValue = res[0]
+
+            # Collect all objects that match the given value 
+            allvalues = data[targetAttr]['orig'] + data[targetAttr]['value']
+            for value in allvalues:
+                xq = "collection('objects')/o:%s[o:Attributes/o:%s = '%s']/o:DN/string()" % \
+                        (foreignObject, foreignAttr, value)
+                res = oi.xquery(xq)
+                if not res:
+                    object_mapping[value] = None
+                else:
+                    object_mapping[value] = ObjectProxy(res[0])
+
+            remove = list(set(data[targetAttr]['orig']) - set(data[targetAttr]['value']))
+            add = list(set(data[targetAttr]['value']) - set(data[targetAttr]['orig']))
+
+            # Remove ourselves from the foreign object
+            for item in remove:
+                if object_mapping[item]:
+                    current_state = getattr(object_mapping[item], foreignMatchAttr)
+                    new_state = [x for x in current_state if x != matchValue]
+                    setattr(object_mapping[item], foreignMatchAttr, new_state)
+                else:
+                    print "Wassss?"
+
+            # Add ourselves to the foreign object
+            for item in add:
+                if object_mapping[item]:
+                    current_state = getattr(object_mapping[item], foreignMatchAttr)
+                    current_state.append(matchValue)
+                    setattr(object_mapping[item], foreignMatchAttr, current_state)
+                else:
+                    print "Wassss?"
+
+            # Save changes
+            for item in object_mapping:
+                if object_mapping[item]:
+                    print getattr(object_mapping[item], foreignAttr), getattr(object_mapping[item], foreignMatchAttr)
+                    object_mapping[item].commit()
 
     def identify_by_uuid(self, uuid, params):
         return False
@@ -102,8 +167,6 @@ class ObjectHandler(ObjectBackend):
         print "create", base, data, params
         return None
 
-    def update(self, uuid, data, params):
-        print "update", uuid
         return False
 
     def uuid2dn(self, uuid):
