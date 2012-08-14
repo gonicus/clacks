@@ -50,6 +50,8 @@ class ObjectIndex(Plugin):
     _priority_ = 20
     _target_ = 'core'
     _indexed = False
+    first_run = False
+    to_be_updated = []
 
     def __init__(self):
         self.env = Environment.getInstance()
@@ -111,6 +113,9 @@ class ObjectIndex(Plugin):
             return
 
         GlobalLock.acquire()
+
+        ObjectIndex.first_run = True
+
         try:
             self._indexed = True
 
@@ -179,6 +184,19 @@ class ObjectIndex(Plugin):
             self.log.info("processed %d objects in %ds" % (len(res), t1 - t0))
 
         finally:
+            ObjectIndex.first_run = False
+
+            # Second processing of objects.
+            # Some object may have queued themselves to be re-indexed, process them now.
+            # (This is necessary to prepare for exmaple the User->groupMembership attribute)
+            self.log.info("need to re-run indexing for %d objects" % (len(ObjectIndex.to_be_updated)))
+            for uuid in ObjectIndex.to_be_updated:
+                dn = self.db.xquery("collection('objects')/*/.[o:UUID = '%s']/o:DN/string()" % uuid)
+                if dn:
+                    obj = ObjectProxy(dn[0])
+                    self.update(obj)
+            self.log.info("index re-run finished")
+
             zope.event.notify(IndexScanFinished())
             GlobalLock.release()
 
