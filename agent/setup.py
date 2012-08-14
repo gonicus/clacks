@@ -137,6 +137,7 @@ setup(
         isvalidsambadomainname = clacks.agent.plugins.samba.domain:IsValidSambaDomainName
         isvalidhostname = clacks.agent.plugins.misc.filter_validators:IsValidHostName
         isexistingdn = clacks.agent.plugins.misc.filter_validators:IsExistingDN
+        objectwithpropertyexists = clacks.agent.plugins.misc.filter_validators:ObjectWithPropertyExists
         isexistingdnoftype = clacks.agent.plugins.misc.filter_validators:IsExistingDnOfType
         is_acl_role = clacks.agent.objects.comparator.acl_roles:IsAclRole
         is_acl_set = clacks.agent.objects.comparator.acl_set:IsAclSet

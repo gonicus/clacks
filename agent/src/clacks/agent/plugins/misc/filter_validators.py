@@ -60,3 +60,21 @@ class IsExistingDnOfType(ElementComparator):
 
         return len(errors) == 0
 
+
+class ObjectWithPropertyExists(ElementComparator):
+    """
+    Validates a given domain name.
+    """
+
+    def __init__(self, obj):
+        super(ObjectWithPropertyExists, self).__init__()
+
+    def process(self, key, value, objectType, attribute, errors):
+
+        index = PluginRegistry.getInstance("ObjectIndex")
+        for val in value:
+            if not index.xquery("collection('objects')/o:%s/o:Attributes[o:%s='%s']/o:%s/string()" % (objectType, attribute, val, attribute)):
+                errors.append(_("There is no '%s' with '%s=%s'!") % (objectType, attribute, val))
+
+        return len(errors) == 0
+

@@ -25,6 +25,13 @@
         <Type>String</Type>
         <Backend>ObjectHandler</Backend>
         <MultiValue>true</MultiValue>
+        <Validators>
+          <Condition>
+            <Name>ObjectWithPropertyExists</Name>
+            <Param>PosixGroup</Param>
+            <Param>cn</Param>
+          </Condition>
+        </Validators>
       </Attribute>
 
       <Attribute>
