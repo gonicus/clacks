@@ -581,7 +581,7 @@
    <sender>memberUidList</sender>
    <signal>textChanged(QString)</signal>
    <receiver>posixAccount</receiver>
-   <slot>property_memberUid()</slot>
+   <slot>property_groupMembership()</slot>
   </connection>
  </connections>
 </ui>
