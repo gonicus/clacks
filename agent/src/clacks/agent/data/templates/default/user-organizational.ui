@@ -179,9 +179,6 @@
        </layout>
       </item>
      </layout>
-     <zorder></zorder>
-     <zorder>horizontalSpacer_6</zorder>
-     <zorder></zorder>
     </widget>
    </item>
    <item row="1" column="0">
@@ -354,14 +351,9 @@
        </layout>
       </item>
      </layout>
-     <zorder></zorder>
-     <zorder>horizontalSpacer_5</zorder>
-     <zorder></zorder>
     </widget>
    </item>
   </layout>
-  <zorder>groupBox</zorder>
-  <zorder>groupBox_2</zorder>
  </widget>
  <resources>
   <include location="resources/user.qrc"/>
