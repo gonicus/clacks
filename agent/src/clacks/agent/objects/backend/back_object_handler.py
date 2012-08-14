@@ -19,12 +19,6 @@ class NoBackendParametersFound(Exception):
 
 class ObjectHandler(ObjectBackend):
 
-    def __init__(self):
-        pass
-
-    def __del__(self):
-        self.lh.free_connection(self.con)
-
     def load(self, uuid, info, back_attrs=None):
         """
         Load attributes for the given object-uuid.
@@ -74,7 +68,6 @@ class ObjectHandler(ObjectBackend):
                     result[targetAttr]  = oi.xquery(xq);
 
         return result
-
 
     def update(self, uuid, data, back_attrs):
         """
@@ -156,6 +149,12 @@ class ObjectHandler(ObjectBackend):
             if res:
                 result[targetAttr] = res.groups()
         return result
+
+    def __init__(self):
+        pass
+
+    def __del__(self):
+        self.lh.free_connection(self.con)
 
     def identify_by_uuid(self, uuid, params):
         return False
