@@ -32,7 +32,7 @@ class ObjectBackend(object):
         """
         return (None, None)
 
-    def load(self, uuid, keys):
+    def load(self, uuid, keys, back_attrs=None):
         """
         Load given keys from entry with uuid.
         """

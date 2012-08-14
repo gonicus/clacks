@@ -84,7 +84,7 @@ class SQL(ObjectBackend):
         # Create table on demand
         self.metadata.create_all(self.engine)
 
-    def load(self, item_uuid, info):
+    def load(self, item_uuid, info, back_attrs=None):
         """
         Load object properties for the given uuid
         """

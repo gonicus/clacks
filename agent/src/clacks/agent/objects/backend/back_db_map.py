@@ -57,7 +57,7 @@ class DBMAP(ObjectBackend):
                             raise DBMapBackendError("failed to execute SQL statement '%s' on database '%s': %s" % (str(action), database, str(e)))
 
 
-    def load(self, uuid, info):
+    def load(self, uuid, info, back_attrs=None):
         return {}
 
     def identify(self, dn, params, fixed_rdn=None):

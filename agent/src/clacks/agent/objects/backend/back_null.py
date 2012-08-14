@@ -7,7 +7,7 @@ class NULL(ObjectBackend):
     def __init__(self):
         pass
 
-    def load(self, uuid, info):
+    def load(self, uuid, info, back_attrs=None):
         return {}
 
     def identify(self, dn, params, fixed_rdn=None):

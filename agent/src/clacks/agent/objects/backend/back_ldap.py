@@ -42,7 +42,7 @@ class LDAP(ObjectBackend):
     def __del__(self):
         self.lh.free_connection(self.con)
 
-    def load(self, uuid, info):
+    def load(self, uuid, info, back_attrs=None):
         keys = info.keys()
         fltr_tpl = "%s=%%s" % self.uuid_entry
         fltr = ldap.filter.filter_format(fltr_tpl, [uuid])

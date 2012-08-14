@@ -75,7 +75,7 @@ class JSON(ObjectBackend):
         """
         open(self._file_path, "w").write(dumps(json, indent=2))
 
-    def load(self, item_uuid, info):
+    def load(self, item_uuid, info, back_attrs=None):
         """
         Load object properties for the given uuid
         """

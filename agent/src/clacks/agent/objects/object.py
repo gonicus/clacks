@@ -155,7 +155,9 @@ class Object(object):
                 info = dict([(k, self.myProperties[k]['backend_type']) for k in self._propsByBackend[backend]])
                 self.log.debug("loading attributes for backend '%s': %s" % (backend, str(info)))
                 be = ObjectBackendRegistry.getBackend(backend)
-                attrs = be.load(self.uuid, info)
+                be_attrs =  self._backendAttrs[backend] if backend in self._backendAttrs else None
+                attrs = be.load(self.uuid, info, be_attrs)
+
 
             except ValueError as e:
                 #raise ObjectException("Error reading properties for backend '%s'!" % (backend,))
