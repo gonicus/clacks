@@ -57,14 +57,12 @@ class ObjectHandler(ObjectBackend):
                     results = oi.xquery("collection('objects')/*/.[o:UUID = '%s']/o:Attributes/o:%s/string()" % (uuid, matchAttr))
                     if results:
                         matchValue = results[0]
-
                         xq = "collection('objects')/o:%s/o:Attributes[o:%s = '%s']/o:%s/string()" % \
                                 (foreignObject, foreignMatchAttr, matchValue, foreignAttr)
                         results = oi.xquery(xq);
                         if results:
-                            result[targetAttr].append(results[0])
+                            result[targetAttr] = results
 
-        print result
         return result
 
     def identify_by_uuid(self, uuid, params):
