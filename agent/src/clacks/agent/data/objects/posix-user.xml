@@ -10,6 +10,7 @@
     <BaseObject>false</BaseObject>
     <BackendParameters>
       <Backend objectClasses="posixAccount,shadowAccount">LDAP</Backend>
+      <Backend groupMembership="PosixGroup:cn,memberUid=uid">ObjectHandler</Backend>
     </BackendParameters>
     <Backend>LDAP</Backend>
 
@@ -17,6 +18,15 @@
       <ForeignAttribute>
         <Name>uid</Name>
       </ForeignAttribute>
+
+      <Attribute>
+        <Name>groupMembership</Name>
+        <Description>A list on posix-group names this user is member of</Description>
+        <Type>String</Type>
+        <Backend>ObjectHandler</Backend>
+        <MultiValue>true</MultiValue>
+      </Attribute>
+
       <Attribute>
         <Name>shadowLastChange</Name>
         <Description>The dat of the last password change.</Description>
