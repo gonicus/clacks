@@ -9,6 +9,14 @@ from clacks.common.components import PluginRegistry
 from clacks.agent.objects import ObjectProxy
 
 
+class NoSuchObject(Exception):
+    pass
+
+
+class NoBackendParametersFound(Exception):
+    pass
+
+
 class ObjectHandler(ObjectBackend):
 
     def __init__(self):
@@ -48,61 +56,71 @@ class ObjectHandler(ObjectBackend):
         if ObjectIndex.first_run:
             ObjectIndex.to_be_updated.append(uuid)
         else:
-            for targetAttr in back_attrs:
+
+            # Extract backend attrs
+            mapping = self.__extractBackAttrs(back_attrs)
+
+            # Load related objects from the index and add the required attribute-values
+            # as values for 'targetAttr'
+            for targetAttr in mapping:
                 result[targetAttr] = []
-                res = re.match("^([^:]*):([^,]*),([^=]*)=(.*)", back_attrs[targetAttr])
-                if res:
-                    #PosixGroup:cn,memberUid=uid
-                    foreignObject, foreignAttr, foreignMatchAttr, matchAttr = res.groups()
-                    oi = PluginRegistry.getInstance("ObjectIndex")
-                    results = oi.xquery("collection('objects')/*/.[o:UUID = '%s']/o:Attributes/o:%s/string()" % (uuid, matchAttr))
-                    if results:
-                        matchValue = results[0]
-                        xq = "collection('objects')/o:%s/o:Attributes[o:%s = '%s']/o:%s/string()" % \
-                                (foreignObject, foreignMatchAttr, matchValue, foreignAttr)
-                        results = oi.xquery(xq);
-                        if results:
-                            result[targetAttr] = results
+                foreignObject, foreignAttr, foreignMatchAttr, matchAttr = mapping[targetAttr]
+                oi = PluginRegistry.getInstance("ObjectIndex")
+                results = oi.xquery("collection('objects')/*/.[o:UUID = '%s']/o:Attributes/o:%s/string()" % (uuid, matchAttr))
+                if results:
+                    matchValue = results[0]
+                    xq = "collection('objects')/o:%s/o:Attributes[o:%s = '%s']/o:%s/string()" % \
+                            (foreignObject, foreignMatchAttr, matchValue, foreignAttr)
+                    result[targetAttr]  = oi.xquery(xq);
 
         return result
 
-    def __extractBackAttrs(self, back_attrs):
-        result = {}
-        for targetAttr in back_attrs:
-            result[targetAttr] = []
-            res = re.match("^([^:]*):([^,]*),([^=]*)=(.*)", back_attrs[targetAttr])
-            if res:
-                result[targetAttr] = res.groups()
-        return result
 
     def update(self, uuid, data, back_attrs):
-        mapping = self.__extractBackAttrs(back_attrs)
-        object_mapping = {}
-        oi = PluginRegistry.getInstance("ObjectIndex")
-        for targetAttr in mapping:
-            foreignObject, foreignAttr, foreignMatchAttr, matchAttr = mapping[targetAttr]
+        """
+        Write back changes collected for foreign objects relations.
 
+        E.g. If group memberships where modified from the user plugin
+        we will forward the changes to the group objects.
+        """
+
+        # Extract usable information out og the backend attributes
+        mapping = self.__extractBackAttrs(back_attrs)
+        oi = PluginRegistry.getInstance("ObjectIndex")
+
+        # Ensure that we have a configuration for all attributes
+        for attr in data.keys():
+            if attr not in mapping:
+                raise NoBackendParametersFound("attribute %s uses the ObjectHandler backend but there is no config for it!" % attr)
+        for targetAttr in mapping:
             if not targetAttr in data:
-                raise Exception("No such attribute!")
+                raise NoBackendParametersFound("an attribute named %s is configured for the ObjectHandler backend but there" \
+                                               " is no such attribute in the object" % attr)
+
+        # Walk through each mapped foreign-object-attribute
+        for targetAttr in mapping:
 
             # Get the matching attribute for the current object
+            foreignObject, foreignAttr, foreignMatchAttr, matchAttr = mapping[targetAttr]
             xq = "collection('objects')/*/.[o:UUID = '%s']/o:Attributes/o:%s/string()" % (uuid, matchAttr)
             res = oi.xquery(xq)
             if not res:
-                raise Exception("No such attribute!")
+                raise Exception("source object could not be found" % targetAttr)
             matchValue = res[0]
 
             # Collect all objects that match the given value 
             allvalues = data[targetAttr]['orig'] + data[targetAttr]['value']
+            object_mapping = {}
             for value in allvalues:
                 xq = "collection('objects')/o:%s[o:Attributes/o:%s = '%s']/o:DN/string()" % \
                         (foreignObject, foreignAttr, value)
                 res = oi.xquery(xq)
                 if not res:
-                    object_mapping[value] = None
+                    raise NoSuchObject("Could not find any '%s' with '%s=%s'!" % (foreignObject, foreignAttr, value))
                 else:
                     object_mapping[value] = ObjectProxy(res[0])
 
+            # Calculate value that have to be removed/added
             remove = list(set(data[targetAttr]['orig']) - set(data[targetAttr]['value']))
             add = list(set(data[targetAttr]['value']) - set(data[targetAttr]['orig']))
 
@@ -112,8 +130,6 @@ class ObjectHandler(ObjectBackend):
                     current_state = getattr(object_mapping[item], foreignMatchAttr)
                     new_state = [x for x in current_state if x != matchValue]
                     setattr(object_mapping[item], foreignMatchAttr, new_state)
-                else:
-                    print "Wassss?"
 
             # Add ourselves to the foreign object
             for item in add:
@@ -121,14 +137,25 @@ class ObjectHandler(ObjectBackend):
                     current_state = getattr(object_mapping[item], foreignMatchAttr)
                     current_state.append(matchValue)
                     setattr(object_mapping[item], foreignMatchAttr, current_state)
-                else:
-                    print "Wassss?"
 
             # Save changes
             for item in object_mapping:
                 if object_mapping[item]:
                     print getattr(object_mapping[item], foreignAttr), getattr(object_mapping[item], foreignMatchAttr)
                     object_mapping[item].commit()
+
+
+    def __extractBackAttrs(self, back_attrs):
+        """
+        Helper method to extract backendParameter infos
+        """
+        result = {}
+        for targetAttr in back_attrs:
+            result[targetAttr] = []
+            res = re.match("^([^:]*):([^,]*),([^=]*)=(.*)", back_attrs[targetAttr])
+            if res:
+                result[targetAttr] = res.groups()
+        return result
 
     def identify_by_uuid(self, uuid, params):
         return False
