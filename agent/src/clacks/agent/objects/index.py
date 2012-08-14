@@ -193,7 +193,7 @@ class ObjectIndex(Plugin):
             for uuid in ObjectIndex.to_be_updated:
                 dn = self.db.xquery("collection('objects')/*/.[o:UUID = '%s']/o:DN/string()" % uuid)
                 if dn:
-                    obj = ObjectProxy(dn[0])
+                    obj = ObjectProxy(dn[0].decode("utf-8"))
                     self.update(obj)
             self.log.info("index re-run finished")
 
