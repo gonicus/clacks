@@ -199,22 +199,12 @@
             </property>
             <column>
              <property name="text">
-              <string comment="sn">Name</string>
+              <string comment="cn">Name</string>
              </property>
             </column>
             <column>
              <property name="text">
-              <string comment="givenName">Given name</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string comment="uid">Login ID</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string comment="dateOfBirth">Date of birth</string>
+              <string comment="description">Description</string>
              </property>
             </column>
            </widget>
