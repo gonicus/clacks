@@ -32,6 +32,8 @@ class GuiMethods(Plugin):
 
         # Create list of conditional statements
         l = []
+        if not oattr in names:
+            names.append(oattr)
         names = ['"%s"' % n for n in names]
         condition = '(%s.%s = %s)'  % (otype, oattr, "(%s)" % (", ".join(names)))
 
@@ -52,6 +54,7 @@ class GuiMethods(Plugin):
         search = PluginRegistry.getInstance("SearchWrapper")
         res =  search.execute(query)
         result = []
+        mapping = {}
         for entry in res:
             item = {}
             for attr in attributes:
@@ -59,7 +62,8 @@ class GuiMethods(Plugin):
                     item[attr] = entry[otype][attr][0]
                 else:
                     item[attr] = ""
+            mapping[item[oattr]] = len(result)
             result.append(item)
-        return result
+        return {"result": result, "map": mapping}
 
 
