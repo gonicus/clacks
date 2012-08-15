@@ -34,7 +34,8 @@ class GuiMethods(Plugin):
         l = []
         for item in names:
             l.append('(%s.%s = "%s")' % (otype, oattr, item))
-        condition = " OR ".join(l)
+            condition = '(%s.%s = %s)'  % (otype, oattr, "(\"acltest\", \"grp1\")")
+        print condition
 
         # Create a list of attributes that will be requested
         a = []
