@@ -128,6 +128,12 @@ class ObjectFactory(object):
     def getAttributeTypes(self):
         return(self.__attribute_type)
 
+    def getObjectBackendProperties(self, name):
+        if not name in self.__classes:
+            self.__classes[name] = self.__build_class(name)
+
+        return getattr(self.__classes[name], "_backendAttrs")
+
     def getObjectProperties(self, name):
         if not name in self.__classes:
             self.__classes[name] = self.__build_class(name)

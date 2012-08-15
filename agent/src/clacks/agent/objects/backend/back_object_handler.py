@@ -52,7 +52,7 @@ class ObjectHandler(ObjectBackend):
         else:
 
             # Extract backend attrs
-            mapping = self.__extractBackAttrs(back_attrs)
+            mapping = ObjectHandler.extractBackAttrs(back_attrs)
 
             # Load related objects from the index and add the required attribute-values
             # as values for 'targetAttr'
@@ -78,7 +78,7 @@ class ObjectHandler(ObjectBackend):
         """
 
         # Extract usable information out og the backend attributes
-        mapping = self.__extractBackAttrs(back_attrs)
+        mapping = ObjectHandler.extractBackAttrs(back_attrs)
         oi = PluginRegistry.getInstance("ObjectIndex")
 
         # Ensure that we have a configuration for all attributes
@@ -138,7 +138,8 @@ class ObjectHandler(ObjectBackend):
                     object_mapping[item].commit()
 
 
-    def __extractBackAttrs(self, back_attrs):
+    @staticmethod
+    def extractBackAttrs(back_attrs):
         """
         Helper method to extract backendParameter infos
         """
