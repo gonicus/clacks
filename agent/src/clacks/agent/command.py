@@ -651,6 +651,10 @@ class CommandRegistry(Plugin):
         announce = e.Event(e.NodeAnnounce(e.Id(self.env.id)))
         amqp.sendEvent(announce)
 
+    @Command(needsUser=True, __help__=N_("Return the current session's user ID."))
+    def getSessionUser(self, user):
+        return user
+
     @Command(needsUser=True, __help__=N_("Send event to the bus."))
     def sendEvent(self, user, data):
         """
