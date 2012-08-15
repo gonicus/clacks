@@ -47,7 +47,7 @@ from zope.interface import implements
 from clacks.agent.xmldb.handler import XMLDBHandler
 from clacks.agent.objects.factory import ObjectFactory
 from clacks.agent.acl import ACLResolver
-from lepl import Literal, Node, Regexp, UnsignedReal, Space, Separator, Delayed, Optional, String
+from lepl import Literal, Node, Regexp, UnsignedReal, Space, Separator, Delayed, Optional, String, Star
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import Plugin
 from clacks.common.components import PluginRegistry
@@ -235,6 +235,7 @@ class Query(MyNode):
         s_index = PluginRegistry.getInstance("ObjectIndex")
         xquery =  self.get_xquery()
         self.__env.log.debug("xquery statement:", xquery)
+
         q_res = s_index.xquery(xquery)
 
         # The list we return later
@@ -442,6 +443,8 @@ class Match(MyNode):
 
             if(comp == "like"):
                 match = ("contains(%s, %s)" % (attr1, attr2))
+            elif(comp == "in"):
+                match = ("(%s = %s)" % (attr1, attr2))
             else:
                 match = ("(%s %s %s)" % (attr1, comp, attr2))
 
@@ -462,6 +465,23 @@ class Operator(MyNode):
         Returns the operator.
         """
         return (self[0])
+
+
+class AttributeList(MyNode):
+    """
+    This node represents an attribute-list.
+
+    e.g.
+
+        User.uid in ("admin", "peter", "herman")
+    """
+    def compile_for_match(self):
+        """
+        Returns the value of this attribute-list.node so we can use it in
+        xquery where statements.
+        """
+        items = ['"%s"' % x for x in self]
+        return '(%s)' % (", ".join(items))
 
 
 class Attribute(MyNode):
@@ -653,6 +673,10 @@ class SearchWrapper(Plugin):
 
         with Separator(spaces):
 
+            string_list = Delayed()
+            string_list+= String() & Optional(~Literal(',') & string_list)
+            in_list = (~Literal("(") & string_list & ~Literal(")")) > AttributeList
+
             ################
             ### Select
             ################
@@ -674,8 +698,8 @@ class SearchWrapper(Plugin):
             ### WHERE
             ################
 
-            statement = (attribute | (String() > StringValue))
-            operator = (Literal('=') | Literal('!=') | Literal('like')) > Operator
+            statement = (attribute | in_list | (String() > StringValue))
+            operator = (Literal('=') | Literal('!=') | Literal('like') | Literal('in')) > Operator
             condition_tmp = statement & operator & statement
 
             # Allow to have brakets in condition statements
