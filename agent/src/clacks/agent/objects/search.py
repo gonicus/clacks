@@ -291,7 +291,10 @@ class Query(MyNode):
                     if path:
                         if path in tmp[suffix]:
                             if self.__has_access_to(user, object_dn, suffix, name):
-                                res[suffix][name] = (tmp[suffix][path][0][name])
+                                if name in tmp[suffix][path][0]:
+                                    res[suffix][name] = (tmp[suffix][path][0][name])
+                                else:
+                                    res[suffix][name] = []
                     elif self.__has_access_to(user, object_dn, suffix, name):
                         res[suffix][name] = (tmp[suffix][name])
 

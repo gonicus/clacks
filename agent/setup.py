@@ -97,6 +97,7 @@ setup(
         transliterate = clacks.agent.plugins.misc.transliterate:Transliterate
         locales = clacks.agent.plugins.misc.locales:Locales
         shells = clacks.agent.plugins.posix.shells:ShellSupport
+        posixguimethods = clacks.agent.plugins.posix.gui_methods:GuiMethods
         gravatar = clacks.agent.plugins.misc.gravatar:Gravatar
         goto.network = clacks.agent.plugins.goto.network:NetworkUtils
         goto.client_service = clacks.agent.plugins.goto.client_service:ClientService

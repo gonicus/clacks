@@ -327,6 +327,21 @@ class ObjectIndex(Plugin):
         """ % (obj.uuid, current.LastChanged.text))
 
     @Command(__help__=N_("Perform a raw xquery on the collections"))
+    def xquery_dict(self, query):
+        """
+        Perform a xquery on the object database.
+
+        ========== ==================
+        Parameter  Description
+        ========== ==================
+        xquery     Definition of the search/action
+        ========== ==================
+
+        ``Return``: dict
+        """
+        return self.db.xquery_dict(query, 'objects', True)
+
+    @Command(__help__=N_("Perform a raw xquery on the collections"))
     def xquery(self, query):
         """
         Perform a raw xquery on the object database.
@@ -337,7 +352,7 @@ class ObjectIndex(Plugin):
         xquery     Definition of the search/action
         ========== ==================
 
-        ``Return``: True/False
+        ``Return``: array
         """
         return self.db.xquery(query)
 
