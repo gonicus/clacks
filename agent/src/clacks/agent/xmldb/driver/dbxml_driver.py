@@ -583,7 +583,7 @@ class DBXml(XMLDBInterface):
         """
         res = {}
         for item in element:
-            tag = self.ns_strip.sub(item.tag) if strip_namespaces else item.tag
+            tag = self.ns_strip.sub(item.tag, "") if strip_namespaces else item.tag
             if not  tag in res:
                 res[tag] = []
             if len(item):
