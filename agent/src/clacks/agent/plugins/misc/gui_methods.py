@@ -32,10 +32,8 @@ class GuiMethods(Plugin):
 
         # Create list of conditional statements
         l = []
-        for item in names:
-            l.append('(%s.%s = "%s")' % (otype, oattr, item))
-            condition = '(%s.%s = %s)'  % (otype, oattr, "(\"acltest\", \"grp1\")")
-        print condition
+        names = ['"%s"' % n for n in names]
+        condition = '(%s.%s = %s)'  % (otype, oattr, "(%s)" % (", ".join(names)))
 
         # Create a list of attributes that will be requested
         a = []
