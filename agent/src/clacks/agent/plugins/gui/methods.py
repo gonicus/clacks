@@ -4,11 +4,51 @@ from clacks.common.components import Plugin
 from clacks.common.utils import N_
 from clacks.common import Environment
 from clacks.common.components import PluginRegistry
+from clacks.agent.objects import ObjectProxy
 from clacks.agent.objects.factory import ObjectFactory
 from clacks.agent.objects.backend.back_object_handler import ObjectHandler
+from json import loads, dumps
 
 class GuiMethods(Plugin):
     _target_ = 'misc'
+
+    @Command(__help__=N_("Save user preferences"))
+    def saveUserPreferences(self, userid, name, value):
+        index = PluginRegistry.getInstance("ObjectIndex")
+        dn = index.xquery("collection('objects')/o:User[o:Attributes/o:uid='%s']/o:DN/string()" % (userid));
+        if not dn:
+            raise Exception("No such user %s" % (userid))
+
+        print name, value, type(value)
+        user = ObjectProxy(dn[0])
+        prefs = user.guiPreferences
+
+        if not prefs:
+            prefs = {}
+        else: 
+            prefs = loads(prefs)
+        print type(prefs), prefs
+        prefs[name] = value
+        user.guiPreferences = dumps(prefs)
+        user.commit()
+        return True
+
+    @Command(__help__=N_("Load user preferences"))
+    def loadUserPreferences(self, userid, name):
+        index = PluginRegistry.getInstance("ObjectIndex")
+        dn = index.xquery("collection('objects')/o:User[o:Attributes/o:uid='%s']/o:DN/string()" % (userid));
+        if not dn:
+            raise Exception("No such user %s" % (userid))
+
+        user = ObjectProxy(dn[0])
+        prefs = user.guiPreferences
+        if not prefs:
+            prefs = {}
+        else: 
+            prefs = loads(prefs)
+        if name in prefs:
+            return prefs[name]
+        return None
 
     @Command(__help__=N_("Search for object informations"))
     def searchForObjectDetails(self, extension, attribute, filter, attributes, skip_values):
