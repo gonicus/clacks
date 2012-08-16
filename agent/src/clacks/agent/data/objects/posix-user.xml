@@ -39,6 +39,7 @@
         <Description>The dat of the last password change.</Description>
         <Type>Timestamp</Type>
         <BackendType>Integer</BackendType>
+	<ReadOnly>true</ReadOnly>
         <InFilter>
           <FilterChain>
             <FilterEntry>

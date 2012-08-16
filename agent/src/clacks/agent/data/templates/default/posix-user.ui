@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>615</width>
-    <height>402</height>
+    <width>652</width>
+    <height>450</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -168,7 +168,7 @@
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>5</width>
+            <width>10</width>
             <height>20</height>
            </size>
           </property>
@@ -179,7 +179,7 @@
           <item>
            <widget class="QLabel" name="memberUidLabel">
             <property name="text">
-             <string>Members</string>
+             <string>Group membership</string>
             </property>
            </widget>
           </item>
@@ -195,7 +195,7 @@
              <number>0</number>
             </property>
             <property name="columnCount">
-             <number>4</number>
+             <number>2</number>
             </property>
             <column>
              <property name="text">
@@ -226,13 +226,16 @@
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <layout class="QFormLayout" name="formLayout_2">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::ExpandingFieldsGrow</enum>
+          </property>
           <property name="labelAlignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
           </property>
           <item row="0" column="0">
            <widget class="QLabel" name="shadowLastChangeLabel">
             <property name="text">
-             <string>shadowLastChange</string>
+             <string>Last password modification</string>
             </property>
             <property name="buddy">
              <cstring>shadowLastChangeEdit</cstring>
@@ -244,8 +247,11 @@
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="shadowMinLabel">
+            <property name="toolTip">
+             <string>Specifies the minimum number of days required between password changes.</string>
+            </property>
             <property name="text">
-             <string>shadowMin</string>
+             <string>Minimum password age</string>
             </property>
             <property name="buddy">
              <cstring>shadowMinEdit</cstring>
@@ -253,12 +259,19 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QSpinBox" name="shadowMinEdit"/>
+           <widget class="QSpinBox" name="shadowMinEdit">
+            <property name="toolTip">
+             <string>Specifies the minimum number of days required between password changes.</string>
+            </property>
+           </widget>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="shadowMaxLabel">
+            <property name="toolTip">
+             <string>Specifies the maximum number of days the password is valid.</string>
+            </property>
             <property name="text">
-             <string>shadowMax</string>
+             <string>Maximum password age</string>
             </property>
             <property name="buddy">
              <cstring>shadowMaxEdit</cstring>
@@ -266,20 +279,11 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QSpinBox" name="shadowMaxEdit"/>
-          </item>
-          <item row="3" column="1">
-           <spacer name="verticalSpacer_4">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
+           <widget class="QSpinBox" name="shadowMaxEdit">
+            <property name="toolTip">
+             <string>Specifies the maximum number of days the password is valid.</string>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>120</height>
-             </size>
-            </property>
-           </spacer>
+           </widget>
           </item>
          </layout>
         </item>
@@ -301,13 +305,19 @@
         </item>
         <item>
          <layout class="QFormLayout" name="formLayout">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::ExpandingFieldsGrow</enum>
+          </property>
           <property name="labelAlignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
           </property>
           <item row="0" column="0">
            <widget class="QLabel" name="shadowWarningLabel">
+            <property name="toolTip">
+             <string>Specifies the number of days before the password expires that the user is warned.</string>
+            </property>
             <property name="text">
-             <string>shadowWarning</string>
+             <string>Warn before password expires</string>
             </property>
             <property name="buddy">
              <cstring>shadowWarningEdit</cstring>
@@ -315,12 +325,19 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QSpinBox" name="shadowWarningEdit"/>
+           <widget class="QSpinBox" name="shadowWarningEdit">
+            <property name="toolTip">
+             <string>Specifies the number of days before the password expires that the user is warned.</string>
+            </property>
+           </widget>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="shadowInactiveLabel">
+            <property name="toolTip">
+             <string>Specifies the number of days of inactivity allowed for the specified user.</string>
+            </property>
             <property name="text">
-             <string>shadowInactive</string>
+             <string>Inactivity before account is disabled</string>
             </property>
             <property name="buddy">
              <cstring>shadowInactiveEdit</cstring>
@@ -328,7 +345,11 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QSpinBox" name="shadowInactiveEdit"/>
+           <widget class="QSpinBox" name="shadowInactiveEdit">
+            <property name="toolTip">
+             <string>Specifies the number of days of inactivity allowed for the specified user.</string>
+            </property>
+           </widget>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="shadowExpireLabel">
@@ -342,35 +363,6 @@
           </item>
           <item row="2" column="1">
            <widget class="QDateEdit" name="shadowExpireEdit"/>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="shadowFlagLabel">
-            <property name="text">
-             <string>shadowFlag</string>
-            </property>
-            <property name="buddy">
-             <cstring>shadowFlagEdit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QLineEdit" name="shadowFlagEdit"/>
-          </item>
-          <item row="4" column="1">
-           <spacer name="verticalSpacer_14">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>50</height>
-             </size>
-            </property>
-           </spacer>
           </item>
          </layout>
         </item>
@@ -530,22 +522,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>shadowFlagEdit</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>posixAccount</receiver>
-   <slot>property_shadowFlag()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>gecosEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>posixAccount</receiver>
@@ -566,12 +542,32 @@
    <signal>textChanged(QString)</signal>
    <receiver>posixAccount</receiver>
    <slot>property_homeDirectory()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>memberUidList</sender>
    <signal>textChanged(QString)</signal>
    <receiver>posixAccount</receiver>
    <slot>property_groupMembership()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
  </connections>
 </ui>
