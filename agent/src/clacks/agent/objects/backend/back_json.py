@@ -340,13 +340,17 @@ class JSON(ObjectBackend):
         """
         o_type = params['type']
         json = self.__load()
-        if item_uuid in json:
-            if o_type in json[item_uuid]:
-                for item in data:
-                    json[item_uuid][o_type][item] = data[item]['value']
-            self.__save(json)
-            return True
-        return False
+        if not item_uuid in json:
+            json[item_uuid] = {}
+        if not o_type in json[item_uuid]:
+            json[item_uuid][o_type] = {}
+            json[item_uuid][o_type]['type'] = o_type
+
+
+        for item in data:
+            json[item_uuid][o_type][item] = data[item]['value']
+        self.__save(json)
+        return True
 
     def move_extension(self, item_uuid, new_base):
         """
