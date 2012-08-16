@@ -13,6 +13,9 @@ class GuiMethods(Plugin):
     @Command(__help__=N_("Search for object informations"))
     def searchForObjectDetails(self, extension, attribute, filter, attributes, skip_values):
         """
+        Search selectable items valid for the attribute "extension.attribute".
+
+        This is used to add new groups to the users groupMemeberhip attribute.
         """
         env = Environment.getInstance()
 
@@ -70,6 +73,9 @@ class GuiMethods(Plugin):
     @Command(__help__=N_("Resolves object information"))
     def getObjectDetails(self, extension, attribute, names, attributes):
         """
+        This method is used to complete object information shown in the gui.
+        e.g. The groupMembership table just knows the groups cn attribute.
+             To be able to show the description too, it uses this method.
         """
         env = Environment.getInstance()
 
