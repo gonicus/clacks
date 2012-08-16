@@ -134,7 +134,6 @@ class ObjectHandler(ObjectBackend):
             # Save changes
             for item in object_mapping:
                 if object_mapping[item]:
-                    print getattr(object_mapping[item], foreignAttr), getattr(object_mapping[item], foreignMatchAttr)
                     object_mapping[item].commit()
 
 

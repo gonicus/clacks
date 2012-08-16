@@ -34,8 +34,8 @@ class GuiMethods(Plugin):
         l = []
         if not oattr in names:
             names.append(oattr)
-        names = ['"%s"' % n for n in names]
-        condition = '(%s.%s = %s)'  % (otype, oattr, "(%s)" % (", ".join(names)))
+        snames = ['"%s"' % n for n in names]
+        condition = '(%s.%s = %s)'  % (otype, oattr, "(%s)" % (", ".join(snames)))
 
         # Create a list of attributes that will be requested
         a = []
@@ -53,8 +53,14 @@ class GuiMethods(Plugin):
         # Start the query and brind the result in a usable form
         search = PluginRegistry.getInstance("SearchWrapper")
         res =  search.execute(query)
-        result = []
+        result = {}
         mapping = {}
+
+        for entry in names:
+            id = len(result)
+            mapping[entry] = id
+            result[id] = None
+
         for entry in res:
             item = {}
             for attr in attributes:
@@ -62,8 +68,9 @@ class GuiMethods(Plugin):
                     item[attr] = entry[otype][attr][0]
                 else:
                     item[attr] = ""
-            mapping[item[oattr]] = len(result)
-            result.append(item)
+
+            id = mapping[item[oattr]]
+            result[id] = item
         return {"result": result, "map": mapping}
 
 
