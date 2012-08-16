@@ -11,6 +11,7 @@
     <BackendParameters>
       <Backend objectClasses="posixAccount,shadowAccount">LDAP</Backend>
       <Backend groupMembership="PosixGroup:cn,memberUid=uid">ObjectHandler</Backend>
+      <Backend type="PosixUser">JSON</Backend>
     </BackendParameters>
     <Backend>LDAP</Backend>
 
@@ -18,6 +19,13 @@
       <ForeignAttribute>
         <Name>uid</Name>
       </ForeignAttribute>
+
+      <Attribute>
+        <Name>test</Name>
+        <Description>The Audio attribute type allows the storing of sounds in the Directory. The attribute uses a u-law encoded sound file as used by the "play" utility on a Sun 4. This is an interim format</Description>
+        <Type>String</Type>
+        <Backend>JSON</Backend>
+      </Attribute>
 
       <Attribute>
         <Name>groupMembership</Name>
