@@ -19,77 +19,89 @@
         <translation>Benutzerverzeichnis</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="47"/>
+        <location filename="../posix-user.ui" line="50"/>
         <source>Login shell</source>
         <translation>Anmelde-Interpreter</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="57"/>
+        <location filename="../posix-user.ui" line="63"/>
         <source>GECOS</source>
         <translation>GECOS</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="83"/>
+        <location filename="../posix-user.ui" line="92"/>
         <source>Automatic UID/GID numbers</source>
         <translation>Automatische UID-/GID-Nummern</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="90"/>
+        <location filename="../posix-user.ui" line="99"/>
         <source>User ID</source>
         <translation>Benutzer-ID</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="107"/>
+        <location filename="../posix-user.ui" line="119"/>
         <source>Group ID</source>
         <translation>Gruppen-ID</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="124"/>
+        <location filename="../posix-user.ui" line="139"/>
         <source>Automatic GECOS</source>
         <translation>Automatischer GECOS</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="167"/>
+        <location filename="../posix-user.ui" line="182"/>
         <source>Members</source>
-        <translation type="unfinished"></translation>
+        <translation>Mitglieder</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="205"/>
+        <location filename="../posix-user.ui" line="202"/>
+        <source>Name</source>
+        <comment>cn</comment>
+        <translation>Name</translation>
+    </message>
+    <message>
+        <location filename="../posix-user.ui" line="207"/>
+        <source>Description</source>
+        <comment>description</comment>
+        <translation>Beschreibung</translation>
+    </message>
+    <message>
+        <location filename="../posix-user.ui" line="222"/>
         <source>Shadow settings</source>
         <translation>Shadow-Einstellungen</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="218"/>
-        <source>shadowLastChange</source>
-        <translation type="unfinished"></translation>
+        <location filename="../posix-user.ui" line="235"/>
+        <source>Last password modification</source>
+        <translation>Letzte Passwortänderung</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="228"/>
+        <location filename="../posix-user.ui" line="248"/>
         <source>shadowMin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="238"/>
+        <location filename="../posix-user.ui" line="261"/>
         <source>shadowMax</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="284"/>
+        <location filename="../posix-user.ui" line="310"/>
         <source>shadowWarning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="294"/>
+        <location filename="../posix-user.ui" line="323"/>
         <source>shadowInactive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="304"/>
-        <source>shadowExpire</source>
-        <translation type="unfinished"></translation>
+        <location filename="../posix-user.ui" line="336"/>
+        <source>Password expires on</source>
+        <translation>Passwort läuft ab am</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="314"/>
+        <location filename="../posix-user.ui" line="349"/>
         <source>shadowFlag</source>
         <translation type="unfinished"></translation>
     </message>
