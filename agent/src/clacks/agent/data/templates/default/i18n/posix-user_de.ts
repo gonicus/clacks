@@ -58,73 +58,78 @@
         <translation>Gruppenmitgliedschaft</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="202"/>
+        <location filename="../posix-user.ui" line="201"/>
+        <source>Edit group membership</source>
+        <translation>Gruppenmitgliedschaft bearbeiten</translation>
+    </message>
+    <message>
+        <location filename="../posix-user.ui" line="205"/>
         <source>Name</source>
         <comment>cn</comment>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="207"/>
+        <location filename="../posix-user.ui" line="210"/>
         <source>Description</source>
         <comment>description</comment>
         <translation>Beschreibung</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="222"/>
+        <location filename="../posix-user.ui" line="225"/>
         <source>Shadow settings</source>
         <translation>Shadow-Einstellungen</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="235"/>
+        <location filename="../posix-user.ui" line="241"/>
         <source>Last password modification</source>
         <translation>Letzte Passwortänderung</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="248"/>
-        <location filename="../posix-user.ui" line="261"/>
+        <location filename="../posix-user.ui" line="254"/>
+        <location filename="../posix-user.ui" line="267"/>
         <source>Specifies the minimum number of days required between password changes.</source>
         <translation>Gibt die minimale Anzahl von Tagen an, die zwischen Passwortänderungen vergehen müssen.</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="251"/>
+        <location filename="../posix-user.ui" line="257"/>
         <source>Minimum password age</source>
         <translation>Minimales Passwort-Alter</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="268"/>
-        <location filename="../posix-user.ui" line="281"/>
+        <location filename="../posix-user.ui" line="274"/>
+        <location filename="../posix-user.ui" line="287"/>
         <source>Specifies the maximum number of days the password is valid.</source>
         <translation>Gibt an wie viele Tage ein Passwort maximal gültig ist.</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="271"/>
+        <location filename="../posix-user.ui" line="277"/>
         <source>Maximum password age</source>
         <translation>Maximales Passwort-Alter</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="327"/>
-        <location filename="../posix-user.ui" line="340"/>
+        <location filename="../posix-user.ui" line="320"/>
+        <location filename="../posix-user.ui" line="333"/>
         <source>Specifies the number of days before the password expires that the user is warned.</source>
         <translation>Gibt die Anzahl der Tage an, vor denen ein Benutzer vor dem Ablauf seines Kennwortes gewarnt werden soll.</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="330"/>
+        <location filename="../posix-user.ui" line="323"/>
         <source>Warn before password expires</source>
         <translation>Warnen vor Ablauf des Passwortes</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="347"/>
-        <location filename="../posix-user.ui" line="360"/>
+        <location filename="../posix-user.ui" line="340"/>
+        <location filename="../posix-user.ui" line="353"/>
         <source>Specifies the number of days of inactivity allowed for the specified user.</source>
         <translation>Gibt die Anzahl der Tage an, die ein Benutzer inaktiv sein darf.</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="350"/>
+        <location filename="../posix-user.ui" line="343"/>
         <source>Inactivity before account is disabled</source>
         <translation>Inaktivität bevor das Konto deaktiviert wird</translation>
     </message>
     <message>
-        <location filename="../posix-user.ui" line="367"/>
+        <location filename="../posix-user.ui" line="360"/>
         <source>Password expires on</source>
         <translation>Passwort läuft ab am</translation>
     </message>

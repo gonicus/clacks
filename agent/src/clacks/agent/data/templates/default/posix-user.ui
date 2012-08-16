@@ -197,6 +197,9 @@
             <property name="columnCount">
              <number>2</number>
             </property>
+            <property name="editTitle">
+              <string>Edit group membership</string>
+            </property>
             <column>
              <property name="text">
               <string comment="cn">Name</string>
