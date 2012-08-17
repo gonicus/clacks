@@ -17,7 +17,6 @@ from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, 
 from sqlalchemy.sql import and_
 
 
-
 class RDNNotSpecified(Exception):
     """
     Exception thrown for missing rdn property in object definitions
@@ -90,7 +89,7 @@ class SQL(ObjectBackend):
         """
 
         # Search for all entries with the given uuid and combine found attributes
-        search = self.objects.select(self.objects.c.uuid==item_uuid).execute()
+        search = self.objects.select(self.objects.c.uuid == item_uuid).execute()
         data = {}
         for entry in search:
 
@@ -112,7 +111,7 @@ class SQL(ObjectBackend):
         """
 
         # Try to find an entry with the given uuid and type
-        search = self.objects.select(and_(self.objects.c.uuid==item_uuid, self.objects.c.type == params['type'])).execute()
+        search = self.objects.select(and_(self.objects.c.uuid == item_uuid, self.objects.c.type == params['type'])).execute()
         entry = search.first()
         if entry:
             return True
@@ -124,7 +123,7 @@ class SQL(ObjectBackend):
         """
 
         # Remove the entry with the given uuid and type
-        self.objects.delete().where(and_(self.objects.c.uuid==item_uuid, self.objects.c.type == params['type'])).execute()
+        self.objects.delete().where(and_(self.objects.c.uuid == item_uuid, self.objects.c.type == params['type'])).execute()
 
     def extend(self, item_uuid, data, params, foreign_keys):
         """
@@ -150,7 +149,7 @@ class SQL(ObjectBackend):
         """
 
         # Try to find an entry with the given dn and return its uuid on success
-        search = self.objects.select(self.objects.c.dn==object_dn).execute()
+        search = self.objects.select(self.objects.c.dn == object_dn).execute()
         entry = search.first()
         if entry:
             return entry.uuid
@@ -163,7 +162,7 @@ class SQL(ObjectBackend):
         """
 
         # Try to find an entry with the uuid and return its dn
-        search = self.objects.select(and_(self.objects.c.dn != None, self.objects.c.uuid==item_uuid)).execute()
+        search = self.objects.select(and_(self.objects.c.dn != None, self.objects.c.uuid == item_uuid)).execute()
         entry = search.first()
         if entry:
             return entry.dn
@@ -178,13 +177,13 @@ class SQL(ObjectBackend):
         # For one-level scope the parentDN must be equal with the reqeusted base.
         found = []
         if self.scope_map[scope] == "one":
-            search = self.objects.select(self.objects.c.parentDN==base).execute()
+            search = self.objects.select(self.objects.c.parentDN == base).execute()
             for item in search:
                 found.append(item.dn)
 
         # For base searches the base has the dn has to match the requested base
         if self.scope_map[scope] == "base":
-            search = self.objects.select(self.objects.c.dn==base).execute()
+            search = self.objects.select(self.objects.c.dn == base).execute()
             for item in search:
                 found.append(item.dn)
 
@@ -239,13 +238,12 @@ class SQL(ObjectBackend):
         """
         Returns the create- and modify-timestamps for the given dn
         """
-        search = self.objects.select(self.objects.c.dn==object_dn).execute().first()
+        search = self.objects.select(self.objects.c.dn == object_dn).execute().first()
         if search:
             ctime = search.createTimestamp
             mtime = search.modifyTimestamp
             return (ctime, mtime)
         return None, None
-
 
     def get_uniq_dn(self, rdns, base, data, fixed_rdn):
         """
@@ -291,11 +289,11 @@ class SQL(ObjectBackend):
 
         return sorted(dn_list, key=len)
 
-    def remove(self, item_uuid, recursive=False):
+    def remove(self, uuid, data, params):
         """
         Removes the entry with the given uuid from the database
         """
-        self.objects.delete().where(self.objects.c.uuid==item_uuid).execute()
+        self.objects.delete().where(self.objects.c.uuid == uuid).execute()
 
     def exists(self, misc):
         """
@@ -303,16 +301,16 @@ class SQL(ObjectBackend):
         """
 
         if self.is_uuid(misc):
-            search = self.objects.select(self.objects.c.uuid==misc).execute().first()
+            search = self.objects.select(self.objects.c.uuid == misc).execute().first()
         else:
-            search = self.objects.select(self.objects.c.dn==misc).execute().first()
+            search = self.objects.select(self.objects.c.dn == misc).execute().first()
         return True if search else False
 
     def is_uniq(self, attr, value, at_type):
         """
         Check whether the given attribute is not used yet.
         """
-        search = self.objects.select(getattr(self.objects.c, attr)==value).execute().first()
+        search = self.objects.select(getattr(self.objects.c, attr) == value).execute().first()
         return False if search else True
 
     def update(self, item_uuid, data, params):
@@ -323,14 +321,14 @@ class SQL(ObjectBackend):
         # Try to find an entry with the given uuid and type (params['type']) and
         # update the objects attributes.
         o_type = params['type']
-        entry = self.objects.select(and_(self.objects.c.uuid==item_uuid, self.objects.c.type==o_type)).execute().first()
+        entry = self.objects.select(and_(self.objects.c.uuid == item_uuid, self.objects.c.type == o_type)).execute().first()
         if entry:
             attrs = loads(entry.attributes)
             for item in data:
                 attrs[item] = data[item]['value']
 
             # Update the database entry
-            self.objects.update().where(self.objects.c.uuid==item_uuid).values(modifyTimestamp=datetime.datetime.now(), attributes=dumps(attrs)).execute()
+            self.objects.update().where(self.objects.c.uuid == item_uuid).values(modifyTimestamp=datetime.datetime.now(), attributes=dumps(attrs)).execute()
             return True
         return False
 
@@ -345,13 +343,13 @@ class SQL(ObjectBackend):
         """
         Moves an entry to antoher base
         """
-        entry = self.objects.select(self.objects.c.uuid==item_uuid).execute().first()
+        entry = self.objects.select(self.objects.c.uuid == item_uuid).execute().first()
         if entry:
-            dn = re.sub(re.escape(entry['parentDN'])+"$", new_base, entry['dn'])
+            dn = re.sub(re.escape(entry['parentDN']) + "$", new_base, entry['dn'])
             parentDN = new_base
             if self.exists(dn):
                 raise BackendError("cannot move entry, the target DN '%s' already exists!" % dn)
 
-            self.objects.update().where(self.objects.c.uuid==item_uuid).values(modifyTimestamp=datetime.datetime.now(), dn=dn, parentDN=parentDN).execute()
+            self.objects.update().where(self.objects.c.uuid == item_uuid).values(modifyTimestamp=datetime.datetime.now(), dn=dn, parentDN=parentDN).execute()
             return True
         return False

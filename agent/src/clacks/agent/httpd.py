@@ -7,16 +7,14 @@ is redirecting a path to a module.
 
 -------
 """
-import os
 import thread
 import logging
 import tornado.wsgi
 import tornado.web
-import tornado.websocket
 from tornado.ioloop import IOLoop
 from tornado.httpserver import HTTPServer
 from zope.interface import implements
-from webob import exc
+from webob import exc #@UnresolvedImport
 
 from clacks.common import Environment
 from clacks.common.handler import IInterfaceHandler
@@ -149,7 +147,7 @@ class HTTPService(object):
 
         # Make statics registerable
         for pth, local_pth in self.__register_static.items():
-            apps.append((pth , tornado.web.StaticFileHandler, {"path": local_pth}))
+            apps.append((pth, tornado.web.StaticFileHandler, {"path": local_pth}))
 
         # Make websockets available if registered
         for pth, ws_app in self.__register_ws.items():

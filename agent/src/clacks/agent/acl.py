@@ -21,8 +21,6 @@ How an ACL assigment could look like
 --------
 """
 import re
-import os
-import json
 import ldap
 import logging
 import zope.event
@@ -141,7 +139,6 @@ class ACLSet(list):
 
         # Raise an exception about the unknown ID
         raise ACLException("There is no such acl")
-
 
     def add(self, item):
         """
@@ -780,7 +777,10 @@ class ACLResolver(Plugin):
     _target_ = 'core'
 
     def __init__(self):
-        ACLResolver.instance = self
+        if not ACLResolver.instance:
+            ACLResolver.instance = self
+        else:
+            raise Exception("ACLResolver is a singleton - please use PluginRegistry.getInstance(\"ACLResolver\")")
         self.env = Environment.getInstance()
         self.log = logging.getLogger(__name__)
         self.log.debug("initializing ACL resolver")
@@ -797,7 +797,7 @@ class ACLResolver(Plugin):
         Return an instance of the ACLResolver
         """
         if not ACLResolver.instance:
-            ACLResolver.instance = ACLResolver()
+            raise Exception("ACLResolver not yet instantiated by the plugin registry!")
 
         return ACLResolver.instance
 
@@ -886,8 +886,12 @@ class ACLResolver(Plugin):
         unresolved = []
 
         # Read all AclRole objects.
+        dns = []
         index = PluginRegistry.getInstance("ObjectIndex")
-        dns = index.xquery("collection('objects')/o:AclRole/o:DN/text()")
+        res = index.raw_search({'_type': 'AclRole'}, {'dn': 1})
+        if res.count():
+            dns = [x['dn'] for x in res]
+
         for entry_dn in dns:
 
             self.log.info("found acl-role %s" % (entry_dn))
@@ -947,8 +951,13 @@ class ACLResolver(Plugin):
             self.add_acl_role(roles[role_name])
 
         # Load all Objects that have the Acl exntension enabled
+        dns = []
         index = PluginRegistry.getInstance("ObjectIndex")
-        dns = index.xquery("collection('objects')/*[o:Attributes/o:AclSets]/o:DN/text()")
+
+        res = index.raw_search({'AclSets': {'$exists': True, '$not': {'$size': 0}}}, {'dn': 1})
+        if res.count():
+            dns = [x['dn'] for x in res]
+
         for entry_dn in dns:
             self.log.info("found acl for object %s" % (entry_dn))
 
@@ -1640,7 +1649,6 @@ class ACLResolver(Plugin):
         if scope:
             acl.set_scope(scope_int)
 
-
     @Command(needsUser=True, __help__=N_("List defined roles."))
     def getACLRoles(self, user):
         """
@@ -1893,7 +1901,7 @@ class ACLResolver(Plugin):
                 if _acl.id == acl_id:
                     acl = _acl
                     role = self.acl_roles[_aclrole]
-                    break;
+                    break
 
         if acl:
 

@@ -24,11 +24,11 @@ class ClacksNumberResolver(PhoneNumberResolver):
         number = self.replaceNumber(number)
 
         index = PluginRegistry.getInstance("ObjectIndex")
-        #TODO: escaping of number
-        res = index.xquery("collection('objects')/o:User[*/o:telephoneNumber = '%s']/o:DN/string()" % str(number))
+        res = index.raw_search({'_type': 'User', 'telephoneNumber': str(number)},
+            {'dn': 1})
 
-        if len(res) == 1:
-            obj = ObjectProxy(res[0].decode('utf-8'))
+        if res.count() == 1:
+            obj = ObjectProxy(res[0]['dn'])
             result = {
                     'company_id': '',
                     'company_name': 'Intern',

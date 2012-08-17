@@ -5,10 +5,10 @@ import logging
 from clacks.common.components.zeroconf_client import ZeroconfClient
 from clacks.client import __version__ as VERSION
 from clacks.client.plugins.join.methods import join_method
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename #@UnresolvedImport
 
 try:
-    from snack import *
+    from snack import * #@UnusedWildImport
     available = True
 except ImportError:
     available = False
@@ -28,7 +28,7 @@ class NewtGUI(join_method):
         super(NewtGUI, self).__init__()
 
     def start_gui(self):
-	pass
+        pass
 
     @staticmethod
     def available():
@@ -39,9 +39,9 @@ class NewtGUI(join_method):
         t = TextboxReflowed(width, text)
 
         g = GridForm(self.screen, title, 1, 1)
-        g.add(t, 0, 0, padding = (0, 0, 0, 0))
+        g.add(t, 0, 0, padding=(0, 0, 0, 0))
         g.setTimer(1)
-        result = g.run()
+        g.run()
 
         # Just show us some seconds
         if sleep:
@@ -50,29 +50,28 @@ class NewtGUI(join_method):
 
         # Else someone else needs to call "popWindow"...
 
-
     def JoinWindow(self, title, text, allowCancel=0, width=50,
-            entryWidth=37, buttons=['Join'], help=None):
-        bb = ButtonBar(self.screen, buttons);
+            entryWidth=37, buttons=['Join'], hlp=None):
+        bb = ButtonBar(self.screen, buttons)
         t = TextboxReflowed(width, text)
 
         sg = Grid(2, 2)
 
         entryList = []
         e = Entry(entryWidth)
-        sg.setField(Label("User name"), 0, 0, padding = (0, 0, 1, 0), anchorLeft = 1)
-        sg.setField(e, 1, 0, anchorLeft = 1)
+        sg.setField(Label("User name"), 0, 0, padding=(0, 0, 1, 0), anchorLeft=1)
+        sg.setField(e, 1, 0, anchorLeft=1)
         entryList.append(e)
         e = Entry(entryWidth, password=1)
-        sg.setField(Label("Password"), 0, 1, padding = (0, 0, 1, 0), anchorLeft = 1)
-        sg.setField(e, 1, 1, anchorLeft = 1)
+        sg.setField(Label("Password"), 0, 1, padding=(0, 0, 1, 0), anchorLeft=1)
+        sg.setField(e, 1, 1, anchorLeft=1)
         entryList.append(e)
 
         g = GridForm(self.screen, title, 1, 3)
 
-        g.add(t, 0, 0, padding = (0, 0, 0, 1))
-        g.add(sg, 0, 1, padding = (0, 0, 0, 1))
-        g.add(bb, 0, 2, growx = 1)
+        g.add(t, 0, 0, padding=(0, 0, 0, 1))
+        g.add(sg, 0, 1, padding=(0, 0, 0, 1))
+        g.add(bb, 0, 2, growx=1)
 
         result = g.runOnce()
 
@@ -83,13 +82,13 @@ class NewtGUI(join_method):
         return (bb.buttonPressed(result), tuple(entryValues))
 
     def discover(self):
-        aw = self.PopupWindow(_("Clacks Infrastructure") + " v%s" % VERSION, _("Searching service provider..."))
+        self.PopupWindow(_("Clacks Infrastructure") + " v%s" % VERSION, _("Searching service provider..."))
         self.url = ZeroconfClient.discover(['_amqps._tcp', '_amqp._tcp'], domain=self.domain)[0]
         self.screen.popWindow()
         return self.url
 
     def join_dialog(self):
-	logging.disable(logging.ERROR)
+        logging.disable(logging.ERROR)
         key = None
 
         while not key:
@@ -104,4 +103,4 @@ class NewtGUI(join_method):
         self.screen.finish()
 
     def show_error(self, error):
-        aw = self.PopupWindow(_("Error"), error, sleep=3)
+        self.PopupWindow(_("Error"), error, sleep=3)

@@ -5,9 +5,6 @@ It starts a Thread and uses inotify to register itself to the kernel to receive
 events about changes made in the shelld directory.
 
 """
-
-import re
-import os
 import pyinotify
 import logging
 from clacks.common import Environment
@@ -45,8 +42,7 @@ class ShellDNotifier(pyinotify.ProcessEvent):
         Starts the survailance. This is automatically called in the constructor.
         """
         wm = pyinotify.WatchManager()
-        res = wm.add_watch(self.path, pyinotify.IN_MOVED_FROM | pyinotify.IN_ATTRIB | \
-                pyinotify.IN_MODIFY | pyinotify.IN_DELETE | pyinotify.IN_MOVED_TO, rec=True, auto_add=True)
+        res = wm.add_watch(self.path, pyinotify.IN_MOVED_FROM | pyinotify.IN_ATTRIB | pyinotify.IN_MODIFY | pyinotify.IN_DELETE | pyinotify.IN_MOVED_TO, rec=True, auto_add=True) #@UndefinedVariable
         if self.path not in res or res[self.path] != 1:
             raise Exception("failed to add watch to '%s'" % (self.path,))
 

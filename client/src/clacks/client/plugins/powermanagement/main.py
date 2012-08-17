@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
 from clacks.common.components import Plugin
-from clacks.common.components import Command
 from clacks.common.components import PluginRegistry
 from clacks.common.components.dbus_runner import DBusRunner
 from clacks.common import Environment

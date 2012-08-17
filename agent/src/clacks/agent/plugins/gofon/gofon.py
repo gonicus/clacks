@@ -40,21 +40,17 @@ class goFonAccount(Plugin):
         from the realtime database.
         """
 
-        # Get the user object by its uuid and extract relevant values.
-        s_wrapper = PluginRegistry.getInstance("SearchWrapper")
-        query = """
-        SELECT User.*
-        BASE User SUB "dc=example,dc=net"
-        WHERE User.UUID = "%s"
-        ORDER BY User.UUID
-        """ % (uuid)
-
         # Query the index database and check if we've found a user with the given uuid
-        result = s_wrapper.execute(query)
-        if result and len(result) == 1:
+        index = PluginRegistry.getInstance("ObjectIndex")
+        result = index.raw_search({'_type': 'User', '_uuid': uuid}, {
+            'uid': 1,
+            'goFonHomeServer': 1,
+            'telephoneNumber': 1})
+
+        if result.count() == 1:
 
             # Extract required attribute values.
-            entry = result[0]["User"]
+            entry = result[0]
 
             # Nothing to do here, no account found...
             if "goFonHomeServer" not in entry:
@@ -65,22 +61,21 @@ class goFonAccount(Plugin):
                 home_server = entry["goFonHomeServer"][0]
                 phone_numbers = entry["telephoneNumber"]
 
-
                 # Remove entries from the old home server
                 actions = {}
                 actions[home_server] = []
 
                 # Query for the used callerid of the given uid, to be able to remove its voicemail entries
-                callerid_s = select([sip_users_table.c.callerid]).where(sip_users_table.c.name == uid)
-                actions[home_server].append(voicemail_users_table.delete().where(voicemail_users_table.c.customer_id == callerid_s))
+                callerid_s = select([sip_users_table.c.callerid]).where(sip_users_table.c.name == uid) #@UndefinedVariable
+                actions[home_server].append(voicemail_users_table.delete().where(voicemail_users_table.c.customer_id == callerid_s)) #@UndefinedVariable
 
                 # Remove sip_users and enxtensions entries
-                actions[home_server].append(sip_users_table.delete().where(sip_users_table.c.name == uid))
-                actions[home_server].append(extensions_table.delete().where(extensions_table.c.exten == uid))
+                actions[home_server].append(sip_users_table.delete().where(sip_users_table.c.name == uid)) #@UndefinedVariable
+                actions[home_server].append(extensions_table.delete().where(extensions_table.c.exten == uid)) #@UndefinedVariable
 
                 # Delete old used phone numbers from the extension
                 for item in phone_numbers:
-                    actions[home_server].append(extensions_table.delete().where(extensions_table.c.exten == item))
+                    actions[home_server].append(extensions_table.delete().where(extensions_table.c.exten == item)) #@UndefinedVariable
 
                 self.execute_actions(actions)
 
@@ -91,17 +86,21 @@ class goFonAccount(Plugin):
         from an existing goFonAccount.
         """
 
-        s_wrapper = PluginRegistry.getInstance("SearchWrapper")
         index = PluginRegistry.getInstance("ObjectIndex")
-        query = """
-        SELECT User.*
-        BASE User SUB "dc=example,dc=net"
-        WHERE User.UUID = "%s"
-        ORDER BY User.UUID
-        """ % (uuid)
-        result = s_wrapper.execute(query)
-        if result and len(result) == 1:
-            entry = result[0]["User"]
+        result = index.raw_search({'_type': 'User', '_uuid': uuid}, {
+            'uid': 1,
+            'goFonHomeServer': 1,
+            'goFonPin': 1,
+            'sn': 1,
+            'givenName': 1,
+            'goFonVoicemailPIN': 1,
+            'mail': 1,
+            'goFonMacro': 1,
+            'goFonHardware': 1,
+            'telephoneNumber': 1})
+
+        if result.count() == 1:
+            entry = result[0]
 
             # Extract required attribute values.
             uid = entry["uid"][0]
@@ -125,12 +124,11 @@ class goFonAccount(Plugin):
                 raise Exception("please define gofon.sip_context in your config!")
 
             # Read phone-hardware settings from the index
-            res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonDmtfMode/string()" % hardware)
-            dtmf_mode = res[0] if len(res) and res[0] else "rfc2833"
-            res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonQualify/string()" % hardware)
-            qualify = res[0] if len(res) and res[0] else "yes"
-            res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonType/string()" % hardware)
-            hardware_type = res[0] if len(res) and res[0] else "friend"
+            res = index.raw_search({'_type': 'goFonHardware', 'cn': hardware},
+                    {'goFonDmtfMode': 1, 'goFonQualify': 1, 'goFonType': 1})
+            dtmf_mode = res[0]['goFonDmtfMode'][0] if len(res) and 'goFonDmtfMode' in res[0] else "rfc2833"
+            qualify = res[0]['goFonQualify'][0] if len(res) and 'goFonQualify' in res[0] else "yes"
+            hardware_type = res[0]['goFonType'][0] if len(res) and 'goFonType' in res[0] else "friend"
 
             # Now create the new entries
             sip_entry = {}
@@ -163,18 +161,18 @@ class goFonAccount(Plugin):
 
             # Create extensions entries (uid -> number)
             ext_entry = {}
-            ext_entry['context'] = 'GOsa';
+            ext_entry['context'] = 'GOsa'
             ext_entry['exten'] = uid
-            ext_entry['priority'] = 1;
-            ext_entry['app'] = "Goto";
+            ext_entry['priority'] = 1
+            ext_entry['app'] = "Goto"
             ext_entry['appdata'] = primary_number + delimiter + "1"
             actions[home_server].append(extensions_table.insert().values(**ext_entry))
 
             # Create extensions entries (primary -> number)
             ext_entry = {}
-            ext_entry['context'] = 'GOsa';
+            ext_entry['context'] = 'GOsa'
             ext_entry['exten'] = primary_number
-            ext_entry['priority'] = 0;
+            ext_entry['priority'] = 0
             ext_entry['app'] = 'SIP/' + uid
             actions[home_server].append(extensions_table.insert().values(**ext_entry))
 
@@ -195,7 +193,6 @@ class goFonAccount(Plugin):
                 ext_entry['appdata'] = s_par
                 actions[home_server].append(extensions_table.insert().values(**ext_entry))
             self.execute_actions(actions)
-
 
     def execute_actions(self, data):
 
@@ -229,5 +226,3 @@ class goFonAccount(Plugin):
                         print "*", action
                     except Exception as error:
                         raise Exception("failed to execute SQL statement '%s' on database '%s': %s" % (str(action), database, str(error)))
-
-

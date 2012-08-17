@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
-import Levenshtein
+import difflib
 from clacks.agent.objects.comparator import ElementComparator
 
 
@@ -19,16 +19,18 @@ class Like(ElementComparator):
     def __init__(self, obj):
         super(Like, self).__init__()
 
-    def process(self, key, value, match, errors=[]):
+    def process(self, all_props, key, value, match):
+
+        errors = []
 
         # All items of value have to match.
         cnt = 0
         for item in value:
-            if Levenshtein.distance(unicode(item), unicode(match)) >= 4:
+            if difflib.SequenceMatcher(None, unicode(item), unicode(match)).ratio() < 0.75:
                 errors.append("Item %s (%s) is not like '%s'!" % (cnt, item, match))
-                return False
+                return False, errors
             cnt += 1
-        return True
+        return True, errors
 
 
 class RegEx(ElementComparator):
@@ -46,16 +48,18 @@ class RegEx(ElementComparator):
     def __init__(self, obj):
         super(RegEx, self).__init__()
 
-    def process(self, key, value, match, errors=[]):
+    def process(self, all_props, key, value, match):
+
+        errors = []
 
         # All items of value have to match.
         cnt = 0
         for item in value:
             if not re.match(match, item):
                 errors.append("Item %s (%s) does not match the regular expression '%s'!" % (cnt, item, match))
-                return False
+                return False, errors
             cnt += 1
-        return True
+        return True, errors
 
 
 class stringLength(ElementComparator):
@@ -73,7 +77,9 @@ class stringLength(ElementComparator):
     def __init__(self, obj):
         super(stringLength, self).__init__()
 
-    def process(self, key, value, minSize, maxSize, errors=[]):
+    def process(self, all_props, key, value, minSize, maxSize):
+
+        errors = []
 
         # Convert limits to integer values.
         minSize = int(minSize)
@@ -81,10 +87,11 @@ class stringLength(ElementComparator):
 
         # Each item of value has to match the given length-rules
         for entry in value:
-            if minSize >= 0 and len(entry) < minSize:
-                errors.append("Item %s (%s) is to small, at least %s characters are required!" % (cnt, item, minSize))
-                return False
-            elif maxSize >=0 and len(entry) > maxSize:
-                errors.append("Item %s (%s) is to great, at max %s characters are allowed!" % (cnt, item, maxSize))
-                return False
-        return True
+            cnt = len(entry)
+            if minSize >= 0 and cnt < minSize:
+                errors.append("Item %s (%s) is to small, at least %s characters are required!" % (cnt, entry, minSize))
+                return False, errors
+            elif maxSize >= 0 and cnt > maxSize:
+                errors.append("Item %s (%s) is to great, at max %s characters are allowed!" % (cnt, entry, maxSize))
+                return False, errors
+        return True, errors

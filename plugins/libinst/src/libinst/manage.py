@@ -8,7 +8,7 @@ to be used from your frontend - shell, GUI or whatever you tend to use.
 """
 
 # pylint: disable=E0611
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename #@UnresolvedImport
 
 import os
 import shutil
@@ -28,7 +28,6 @@ import logging
 from base64 import encodestring as encode
 from types import StringTypes, DictType, ListType
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy.orm import sessionmaker, scoped_session
 
 from libinst.entities import Base
 from libinst.entities.architecture import Architecture
@@ -68,6 +67,7 @@ pp = pprint.PrettyPrinter()
 #TODO: ATM a host must have a dedicated database, path is not specific enough
 #      to identify hosts. What about other plugins?
 
+
 class LibinstManager(Plugin):
     """
     Manage repositories, base install and configuration of clients.
@@ -84,7 +84,7 @@ class LibinstManager(Plugin):
         self.env = env
         self.log = logging.getLogger(__name__)
         engine = env.getDatabaseEngine("repository")
-        Session = scoped_session(sessionmaker(autoflush=True, bind=engine))
+
         self.path = env.config.get('repository.path')
         if not os.path.exists(self.path):
             try:
@@ -272,7 +272,7 @@ class LibinstManager(Plugin):
         session = None
         try:
             session = self.getSession()
-            result = dict([(type.name, type.description) for type in session.query(Type).all()])
+            result = dict([(t.name, t.description) for t in session.query(Type).all()])
             session.commit()
         except:
             session.rollback()
@@ -672,7 +672,7 @@ class LibinstManager(Plugin):
         return result
 
     @Command(__help__=N_("Create a new distribution based on type, mirror and installation method"))
-    def createDistribution(self, name, type, install_method=None, mirror=None):
+    def createDistribution(self, name, tpe, install_method=None, mirror=None):
         """
         Create a new distribution based on type, mirror and installation method. This
         is the first step to be done before creating releases - because releases depend
@@ -682,7 +682,7 @@ class LibinstManager(Plugin):
         Parameter       Description
         =============== ============
         name            The distribution name
-        type            Repository type
+        tpe             Repository type
         install_method  Method to be used for this distribution
         mirror          Optional source for this distribution
         =============== ============
@@ -708,20 +708,20 @@ class LibinstManager(Plugin):
         if name == "master":
             raise ValueError("master is a reserved keyword!")
         if install_method is not None:
-            if not type in self.install_method_reg[install_method]._supportedTypes:
-                raise ValueError("Distribution Type %s is not supported by installation method %s" % (type, install_method))
+            if not tpe in self.install_method_reg[install_method]._supportedTypes:
+                raise ValueError("Distribution Type %s is not supported by installation method %s" % (tpe, install_method))
 
         if not self._getDistribution(name):
             try:
                 session = self.getSession()
-                if isinstance(type, StringTypes):
-                    type = self._getType(type, add=True)
-                session.add(type)
-                if type is not None and type.name in self.type_reg:
-                    result = self.type_reg[type.name].createDistribution(session, name, mirror=mirror)
+                if isinstance(tpe, StringTypes):
+                    tpe = self._getType(tpe, add=True)
+                session.add(tpe)
+                if tpe is not None and tpe.name in self.type_reg:
+                    result = self.type_reg[tpe.name].createDistribution(session, name, mirror=mirror)
                     if result is not None:
                         session.add(result)
-                        result.type = type
+                        result.type = tpe
                         result.installation_method = install_method
                         repository = self._getRepository(path=self.path)
                         session.add(repository)
@@ -774,7 +774,7 @@ class LibinstManager(Plugin):
                 for release in distribution.releases[:]:
                     # We only remove top-level releases
                     if not '/' in release.name:
-                        self.log.debug("Removing release %s/%s" % (distribution.name,  release.name))
+                        self.log.debug("Removing release %s/%s" % (distribution.name, release.name))
                         self.removeRelease(release, recursive=recursive)
                 session.expire(distribution)
 
@@ -1230,7 +1230,7 @@ class LibinstManager(Plugin):
                         components=components,
                         architectures=architectures,
                         sections=sections)
-                    distribution.last_updated=datetime.datetime.utcnow()
+                    distribution.last_updated = datetime.datetime.utcnow()
                 else:
                     raise ValueError(N_("Distribution %s has no releases", distribution.name))
             else:
@@ -1255,7 +1255,7 @@ class LibinstManager(Plugin):
         #TODO
         pass
 
-    def removeChannel(self, id, recursive=None):
+    def removeChannel(self, _id, recursive=None):
         #TODO
         pass
 
@@ -1320,7 +1320,7 @@ class LibinstManager(Plugin):
             if section and not package.section.name == section:
                 return False
             if custom_filter:
-                if custom_filter.has_key('name'):
+                if 'name' in custom_filter:
                     if package.name.startswith(custom_filter['name']):
                         return True
                     else:
@@ -1438,10 +1438,10 @@ class LibinstManager(Plugin):
                 download_dir = tempfile.mkdtemp()
                 request = urllib2.Request(url)
                 try:
-                    file = urllib2.urlopen(request)
+                    fle = urllib2.urlopen(request)
                     file_name = url.split('/')[-1]
                     local_file = open(download_dir + os.sep + file_name, "w")
-                    local_file.write(file.read())
+                    local_file.write(fle.read())
                     local_file.close()
                     local_url = download_dir + os.sep + file_name
                 except urllib2.HTTPError, e:
@@ -2299,8 +2299,6 @@ class LibinstManager(Plugin):
 
         ``Return:`` dict of properties
         """
-
-
         sys_data = load_system(device_uuid, None, False)
         method = self.systemGetConfigMethod(device_uuid)
 
@@ -2930,7 +2928,6 @@ class LibinstManager(Plugin):
     def getSession(self):
         return self.env.getDatabaseSession("repository")
 
-
     def _addRepositoryKeyring(self, repository=None, keyring=None):
         result = None
         session = None
@@ -2947,7 +2944,6 @@ class LibinstManager(Plugin):
             session.close()
 
         return result
-
 
     def _getGPGEnvironment(self):
         result = None

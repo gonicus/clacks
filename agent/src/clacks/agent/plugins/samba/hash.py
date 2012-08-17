@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import smbpasswd
 from clacks.agent.objects.filter import ElementFilter
+from clacks.agent.objects.factory import ObjectFactory
 
 
 class SambaHash(ElementFilter):
@@ -13,8 +14,8 @@ class SambaHash(ElementFilter):
     def process(self, obj, key, valDict):
         if len(valDict[key]['value']) and type(valDict[key]['value'][0]) in [str, unicode]:
             lm, nt = smbpasswd.hash(valDict[key]['value'][0])
-            valDict['sambaNTPassword'] = ObjectFactory.createNewProperty(valDict[key]['backend'], 'String', value=[nt])
-            valDict['sambaLMPassword'] = ObjectFactory.createNewProperty(valDict[key]['backend'], 'String', value=[lm])
+            valDict['sambaNTPassword']['value'] = [nt]
+            valDict['sambaLMPassword']['value'] = [lm]
         else:
             raise ValueError("Unknown input type for filter %s. Type is '%s'!" % (
                 self.__class__.__name__, type(valDict[key]['value'])))

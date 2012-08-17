@@ -16,7 +16,7 @@ from clacks.common.components.registry import PluginRegistry
 # Import pythoncom for win32com / threads
 if platform.system() == "Windows":
     #pylint: disable=F0401
-    import pythoncom
+    import pythoncom #@UnresolvedImport
 
 
 class AMQPHandler(object):

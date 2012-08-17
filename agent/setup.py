@@ -67,10 +67,10 @@ setup(
         'pycrypto',
         'unidecode',
         'sqlalchemy',
-        'lepl',
         'setproctitle',
         'tornado',
-        'python-Levenshtein',
+        'pymongo',
+        'pil',
         ],
     dependency_links = [
         'http://oss.gonicus.de/pub/gosa/eggs',
@@ -90,7 +90,6 @@ setup(
         scheduler = clacks.agent.scheduler:SchedulerService
         acl = clacks.agent.acl:ACLResolver
         objects = clacks.agent.objects.index:ObjectIndex
-        search = clacks.agent.objects.index:SearchWrapper
         xmldb = clacks.agent.xmldb.handler:XMLDBHandler
         jsonrpc_service = clacks.agent.jsonrpc_service:JSONRPCService
         jsonrpc_om = clacks.agent.jsonrpc_objects:JSONRPCObjectMapper
@@ -98,6 +97,7 @@ setup(
         locales = clacks.agent.plugins.misc.locales:Locales
         shells = clacks.agent.plugins.posix.shells:ShellSupport
         guimethods = clacks.agent.plugins.gui.methods:GuiMethods
+        sambaguimethods = clacks.agent.plugins.samba.gui_methods:SambaGuiMethods
         gravatar = clacks.agent.plugins.misc.gravatar:Gravatar
         goto.network = clacks.agent.plugins.goto.network:NetworkUtils
         goto.client_service = clacks.agent.plugins.goto.client_service:ClientService
@@ -122,9 +122,10 @@ setup(
 
         [object.backend]
         ldap = clacks.agent.objects.backend.back_ldap:LDAP
-        Object_handler = clacks.agent.objects.backend.back_object_handler:ObjectHandler
+        Object_handler = clacks.agent.objects.backend.back_object:ObjectHandler
         null = clacks.agent.objects.backend.back_null:NULL
         json = clacks.agent.objects.backend.back_json:JSON
+        mongo = clacks.agent.objects.backend.back_mongodb:MongoDB
         sql = clacks.agent.objects.backend.back_sql:SQL
         dbmap = clacks.agent.objects.backend.back_db_map:DBMAP
 
@@ -142,6 +143,7 @@ setup(
         isexistingdnoftype = clacks.agent.plugins.misc.filter_validators:IsExistingDnOfType
         is_acl_role = clacks.agent.objects.comparator.acl_roles:IsAclRole
         is_acl_set = clacks.agent.objects.comparator.acl_set:IsAclSet
+        checksambasidlist = clacks.agent.plugins.samba.sid:CheckSambaSIDList
 
         [object.filter]
         concatstring = clacks.agent.objects.filter.strings:ConcatString
@@ -163,8 +165,15 @@ setup(
         sambaacctflagsout = clacks.agent.plugins.samba.flags:SambaAcctFlagsOut
         sambamungedialin = clacks.agent.plugins.samba.munged:SambaMungedDialIn
         sambamungedialout = clacks.agent.plugins.samba.munged:SambaMungedDialOut
+        detectsambadomainnamefromsid = clacks.agent.plugins.samba.sid:DetectSambaDomainFromSID
         generatesambasid = clacks.agent.plugins.samba.sid:GenerateSambaSid
-        posixgetnextid = clacks.agent.plugins.posix.id:GetNextID
+        posixgetnextid = clacks.agent.plugins.posix.filters:GetNextID
+        generategecos = clacks.agent.plugins.posix.filters:GenerateGecos
+        loadgecosstate = clacks.agent.plugins.posix.filters:LoadGecosState
+        imagefilter = clacks.agent.plugins.user.filters:ImageProcessor
+        generatedn = clacks.agent.plugins.user.filters:GenerateDisplayName
+        loaddnstate = clacks.agent.plugins.user.filters:LoadDisplayNameState
+        generateids = clacks.agent.plugins.posix.filters:GenerateIDs
         datetoshadowdays = clacks.agent.plugins.posix.shadow:DatetimeToShadowDays
         shadowdaystodate = clacks.agent.plugins.posix.shadow:ShadowDaysToDatetime
         detect_pwd_method = clacks.agent.plugins.password.filter.detect_method:DetectPasswordMethod
@@ -177,6 +186,9 @@ setup(
         and = clacks.agent.objects.operator.bool:And
         or = clacks.agent.objects.operator.bool:Or
         not = clacks.agent.objects.operator.bool:Not
+
+        [object.renderer]
+        extensions = clacks.agent.objects.renderer.extensions:ExtensionRenderer
 
         [xmldb.driver]
         berkleydb = clacks.agent.xmldb.driver.dbxml_driver:DBXml

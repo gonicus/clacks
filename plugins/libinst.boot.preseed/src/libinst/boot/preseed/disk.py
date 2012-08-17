@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from clacks.common.components import PluginRegistry
 from libinst.interface import DiskDefinition
 
 

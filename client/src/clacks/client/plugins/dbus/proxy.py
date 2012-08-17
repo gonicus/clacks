@@ -51,7 +51,7 @@ import logging
 from lxml import etree
 from zope.interface import implements
 from clacks.common.handler import IInterfaceHandler
-from clacks.common.components import Plugin, PluginRegistry, Command
+from clacks.common.components import Plugin, PluginRegistry
 from clacks.common.components.dbus_runner import DBusRunner
 
 
@@ -193,7 +193,7 @@ class DBUSProxy(Plugin):
         amcs = PluginRegistry.getInstance('AMQPClientService')
         amcs.reAnnounce()
 
-    def _call_introspection(self, service, path, methods = None):
+    def _call_introspection(self, service, path, methods=None):
         """
         Introspects the dbus service with the given service and path.
 
@@ -399,4 +399,4 @@ class DBUSProxy(Plugin):
 
         # We received more arguments than required by the dbus method...
         if len(args):
-            raise TypeError("%s() takes exactly %s arguments (%s given)" % (method, len(m_args), cnt+len(args)))
+            raise TypeError("%s() takes exactly %s arguments (%s given)" % (method, len(m_args), cnt + len(args)))

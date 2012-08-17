@@ -2,6 +2,7 @@
 import inspect
 __import__('pkg_resources').declare_namespace(__name__)
 
+
 class ConversationNotSupported(Exception):
     pass
 

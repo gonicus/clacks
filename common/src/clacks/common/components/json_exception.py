@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class JSONRPCException(Exception):
     """
     Exception raises if there's an error when processing JSONRPC related

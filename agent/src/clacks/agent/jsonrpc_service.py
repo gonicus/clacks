@@ -14,7 +14,7 @@ import traceback
 import logging
 from zope.interface import implements
 from clacks.common.gjson import loads, dumps
-from webob import exc, Request, Response
+from webob import exc, Request, Response #@UnresolvedImport
 from paste.auth.cookie import AuthCookieHandler
 from clacks.common.utils import repr2json, f_print
 from clacks.common.handler import IInterfaceHandler
@@ -97,6 +97,7 @@ class JSONRPCService(object):
 
     def user_sessions_available(self, user=None):
         return self.__app.user_sessions_available(user)
+
 
 class JsonRpcApp(object):
     """
@@ -250,7 +251,7 @@ class JsonRpcApp(object):
 
             # Automatically prepend queue option for current
             if self.dispatcher.capabilities[method]['needsQueue']:
-                queue= '%s.command.%s.%s' % (self.env.domain,
+                queue = '%s.command.%s.%s' % (self.env.domain,
                     self.dispatcher.capabilities[method]['target'],
                     self.env.id)
                 if isinstance(params, dict):

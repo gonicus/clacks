@@ -14,7 +14,7 @@
    <string>Organizational</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources/user.qrc">
+   <iconset>
     <normaloff>:/images/orga.png</normaloff>:/images/orga.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
@@ -86,7 +86,21 @@
          </widget>
         </item>
         <item row="3" column="1">
-         <widget class="QLineEdit" name="managerEdit"/>
+         <widget class="QTableWidget" name="managerEdit">
+          <property name="editTitle" stdset="0">
+           <string>Choose a manager</string>
+          </property>
+          <column>
+           <property name="text">
+            <string comment="cn">Name</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string comment="uid">Login ID</string>
+           </property>
+          </column>
+         </widget>
         </item>
         <item row="4" column="0">
          <spacer name="verticalSpacer_4">
@@ -540,6 +554,22 @@
    <signal>textChanged(QString)</signal>
    <receiver>Organizational</receiver>
    <slot>property_facsimileTelephoneNumber()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>managerEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>Organizational</receiver>
+   <slot>property_manager()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>20</x>

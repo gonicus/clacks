@@ -8,7 +8,7 @@ except ImportError:
     sys.exit(1)
 
 import gobject
-gobject.threads_init()
+gobject.threads_init() #@UndefinedVariable
 import time
 from threading import Thread
 from dbus.mainloop.glib import DBusGMainLoop

@@ -40,11 +40,11 @@ class InventoryConsumer(Plugin):
         # Try to establish the database connections
         self.db = PluginRegistry.getInstance("XMLDBHandler")
         if not self.db.collectionExists("inventory"):
-            sf = pkg_resources.resource_filename('clacks.agent', 'plugins/goto/data/events/Inventory.xsd')
+            sf = pkg_resources.resource_filename('clacks.agent', 'plugins/goto/data/events/Inventory.xsd') #@UndefinedVariable
             self.__factory = ObjectFactory.getInstance()
             self.db.createCollection("inventory",
                     {"e": "http://www.gonicus.de/Events"},
-                    {"inventory.xsd":  open(sf).read()})
+                    {"inventory.xsd": open(sf).read()})
 
         # Create event consumer
         amqp = PluginRegistry.getInstance('AMQPHandler')
@@ -95,7 +95,7 @@ class InventoryConsumer(Plugin):
             raise InventoryException(msg)
 
         # Get the Inventory part of the event only
-        inv_only =  etree.tostring(data.xpath('/e:Event/e:Inventory', \
+        inv_only = etree.tostring(data.xpath('/e:Event/e:Inventory', \
                 namespaces={'e': 'http://www.gonicus.de/Events'})[0], pretty_print=True)
 
         # The given hardware-uuid is already part of our inventory database
@@ -148,8 +148,7 @@ class InventoryConsumer(Plugin):
         if len(results) == 1:
             return(results[0])
         else:
-            print results
-            raise InventoryException("No or more than one checksums found for ClientUUID=%s" % (uuid))
+            raise InventoryException("No or more than one checksums found for ClientUUID=%s" % huuid)
 
     def hardwareUUIDExists(self, huuid):
         """
@@ -175,5 +174,3 @@ class InventoryConsumer(Plugin):
         else:
             raise InventoryException("No or more than one document found, removal aborted!")
         return None
-
-

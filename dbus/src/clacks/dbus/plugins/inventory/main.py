@@ -4,19 +4,19 @@ import re
 import shutil
 import subprocess
 import dbus.service
-import random
-import string
 import hashlib
 import logging
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename #@UnresolvedImport
 from lxml import etree, objectify
 from clacks.common import Environment
 from clacks.common.components import Plugin
 from clacks.dbus import get_system_bus
 from base64 import b64encode
 
+
 class InventoryException(Exception):
     pass
+
 
 class DBusInventoryHandler(dbus.service.Object, Plugin):
     """ This handler collect client inventory data """
@@ -54,7 +54,7 @@ class DBusInventoryHandler(dbus.service.Object, Plugin):
 
         # Execute the inventory agent.
         try:
-            process = subprocess.Popen(["fusioninventory-agent","--local="+path], \
+            process = subprocess.Popen(["fusioninventory-agent", "--local=" + path], \
                     shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             process.communicate()
 
@@ -66,23 +66,23 @@ class DBusInventoryHandler(dbus.service.Object, Plugin):
         # Try to read the generated xml result.
         flist = os.listdir(path)
         result = None
-        checksum = None
+
         if flist:
 
             # Try to extract HardwareUUID
-            tmp = objectify.fromstring(open(os.path.join('/tmp/fusion_tmp',flist[0])).read())
+            tmp = objectify.fromstring(open(os.path.join('/tmp/fusion_tmp', flist[0])).read())
             huuid = tmp.xpath('/REQUEST/CONTENT/HARDWARE/UUID/text()')[0]
 
             # Open the first found result file and transform it into a clacks usable
             # event-style xml.
             try:
-                xml_doc = etree.parse(os.path.join('/tmp/fusion_tmp',flist[0]))
+                xml_doc = etree.parse(os.path.join('/tmp/fusion_tmp', flist[0]))
                 xslt_doc = etree.parse(resource_filename("clacks.dbus.plugins.inventory", "data/fusionToClacks.xsl"))
                 transform = etree.XSLT(xslt_doc)
                 result = etree.tostring(transform(xml_doc))
             except Exception as e:
                 raise InventoryException("Failed to read and transform fusion-inventory-agent results (%s)!" % (
-                    os.path.join('/tmp/fusion_tmp',flist[0])))
+                    os.path.join('/tmp/fusion_tmp', flist[0])))
 
         else:
             raise InventoryException("No report files could be found in '%s'" % (path,))

@@ -37,9 +37,7 @@ import pkg_resources
 import os
 import re
 import logging
-import zope.event
 import ldap
-import StringIO
 from lxml import etree, objectify
 from clacks.common import Environment
 from clacks.common.components import PluginRegistry
@@ -47,7 +45,12 @@ from clacks.agent.objects.filter import get_filter
 from clacks.agent.objects.backend.registry import ObjectBackendRegistry
 from clacks.agent.objects.comparator import get_comparator
 from clacks.agent.objects.operator import get_operator
-from clacks.agent.objects.object import Object, ObjectChanged
+from clacks.agent.objects.object import Object
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
 
 # Status
 STATUS_OK = 0
@@ -103,8 +106,7 @@ class ObjectFactory(object):
             self.__attribute_type[module.__alias__] = module()
 
         # Initialize parser
-        #pylint: disable=E1101
-        schema_path = pkg_resources.resource_filename('clacks.agent', 'data/object.xsd')
+        schema_path = pkg_resources.resource_filename('clacks.agent', 'data/object.xsd') #@UndefinedVariable
         schema_doc = open(schema_path).read()
 
         # Prepare list of object types
@@ -113,7 +115,15 @@ class ObjectFactory(object):
             object_types += "<enumeration value=\"%s\"></enumeration>" % (o_type,)
 
         # Insert available object types into the xsd schema
-        schema_doc = schema_doc % {'object_types': object_types}
+        schema_doc = re.sub(r"<simpleType name=\"AttributeTypes\">\n?\s*<restriction base=\"string\"></restriction>\n?\s*</simpleType>",
+            """
+            <simpleType name="AttributeTypes">
+              <restriction base="string">
+                %(object_types)s
+              </restriction>
+            </simpleType>
+            """ % {'object_types': object_types},
+            schema_doc)
 
         schema_root = etree.XML(schema_doc)
         schema = etree.XMLSchema(schema_root)
@@ -153,13 +163,92 @@ class ObjectFactory(object):
         res = []
         for element in self.__xml_defs.values():
 
-            # Get all <Attribute> tags and check if the property NotIndexed exists
-            # and isn't set to 'true'
+            # Get all <Attribute> tags
             find = objectify.ObjectPath("Object.Attributes.Attribute")
             if find.hasattr(element):
                 for attr in find(element):
-                    if bool(load(attr, "NotIndexed", True)):
+                    res.append(attr.Name.text)
+
+        return list(set(res))
+
+    def getBinaryAttributes(self):
+        """
+        Returns a list of binary attributes
+        """
+        res = []
+        for element in self.__xml_defs.values():
+
+            # Get all <Attribute> tags
+            find = objectify.ObjectPath("Object.Attributes.Attribute")
+            if find.hasattr(element):
+                for attr in find(element):
+                    if attr.Type.text == "Binary":
                         res.append(attr.Name.text)
+
+        return list(set(res))
+
+    def getAvailableObjectNames(self):
+        """
+        Retuns a list with all available object names
+        """
+        return self.__xml_defs.keys()
+
+    def getObjectTemplates(self, objectType, theme="default"):
+        """
+        Returns a list of templates for this object.
+        """
+        names = self.getObjectTemplateNames(objectType)
+        return Object.getNamedTemplate(self.env, names, theme) 
+
+    def getObjectTemplateNames(self, objectType):
+        """
+        Returns a list of template filenames for this object.
+        """
+        if not objectType in self.__xml_defs:
+            raise Exception("cannot get templates - object %s does not exist!" % objectType)
+
+        res = []
+        find = objectify.ObjectPath("Object.Templates.Template")
+        if find.hasattr(self.__xml_defs[objectType]):
+            for attr in find(self.__xml_defs[objectType]):
+                res.append(attr.text)
+
+        return res
+
+    def getObjectSearchAid(self, objectType):
+        """
+        Returns a hash containing information about how to search for this
+        object.
+        """
+        if not objectType in self.__xml_defs:
+            raise Exception("cannot create search aid, object %s does not exist!" % objectType)
+
+        res = {}
+        find = objectify.ObjectPath("Object.Find.Aspect")
+        if find.hasattr(self.__xml_defs[objectType]):
+            for attr in find(self.__xml_defs[objectType]):
+                res['type'] = objectType
+                res['tag'] = attr['Tag']
+
+                res['search'] = []
+                for s in attr['Search']:
+                    res['search'].append(s.text)
+
+                res['keyword'] = []
+                for s in attr['Keyword']:
+                    res['keyword'].append(s.text)
+
+                res['resolve'] = []
+                for r in attr['Resolve']:
+                    res['resolve'].append(dict(attribute=r.text,
+                        filter=r.attrib['filter'] if 'filter' in r.attrib else None,
+                        type=r.attrib['type'] if 'type' in r.attrib else None))
+
+                res['map'] = {}
+                for r in attr['Result']:
+                    for m in r['Map']:
+                        res['map'][m['Destination'].text] = m['Source'].text
+
         return res
 
     def getAllowedSubElementsForObject(self, objectType):
@@ -190,7 +279,6 @@ class ObjectFactory(object):
 
         if not self.__xml_defs[objectType]['BaseObject']:
             raise Exception("cannot create attribute map, %s is not a base-object!" % objectType)
-
 
         # Collect all object-types that can extend this class.
         find = objectify.ObjectPath("Object.Extends.Value")
@@ -328,7 +416,7 @@ class ObjectFactory(object):
         res = {}
         if object_name in self.__xml_defs:
             if not bool(load(self.__xml_defs[object_name], "BaseObject", False)):
-                raise Exception("object %s is no base-object" %s (object_name))
+                raise Exception("object %s is no base-object" % object_name)
 
             res = extract_attrs(res, self.__xml_defs[object_name])
         else:
@@ -450,7 +538,7 @@ class ObjectFactory(object):
 
             if info['base']:
                 if be.identify(dn, info['backend_attrs'], fixed_rdn):
-                    uuid = be.dn2uuid(dn);
+                    uuid = be.dn2uuid(dn)
 
                     if info['base']:
                         if fixed_rdn:
@@ -533,8 +621,7 @@ class ObjectFactory(object):
 
         This meta-classes can then be used to instantiate those objects.
         """
-        #pylint: disable=E1101
-        path = pkg_resources.resource_filename('clacks.agent', 'data/objects')
+        path = pkg_resources.resource_filename('clacks.agent', 'data/objects') #@UndefinedVariable
 
         # Include built in schema
         schema_paths = []
@@ -548,14 +635,14 @@ class ObjectFactory(object):
                 schema_paths.append(os.path.join(path, f))
 
         # Combine all object definition file into one single doc
-        xstr = "<Paths xmlns=\"http://www.gonicus.de/Objects\">";
+        xstr = "<Paths xmlns=\"http://www.gonicus.de/Objects\">"
         for path in schema_paths:
             xstr += "<Path>%s</Path>" % path
-        xstr += "</Paths>";
+        xstr += "</Paths>"
 
         # Now combine all files into one single xml construct
-        xml_doc = etree.parse(StringIO.StringIO(xstr))
-        xslt_doc = etree.parse(pkg_resources.resource_filename('clacks.agent', 'data/combine_objects.xsl'))
+        xml_doc = etree.parse(StringIO(xstr))
+        xslt_doc = etree.parse(pkg_resources.resource_filename('clacks.agent', 'data/combine_objects.xsl')) #@UndefinedVariable
         transform = etree.XSLT(xslt_doc)
         self.__xml_objects_combined = transform(xml_doc)
         self.__parse_schema(etree.tostring(self.__xml_objects_combined))
@@ -593,22 +680,17 @@ class ObjectFactory(object):
 
         class klass(Object):
 
-            #pylint: disable=E0213
-            def __init__(me, *args, **kwargs):
+            def __init__(me, *args, **kwargs): #@NoSelf
                 Object.__init__(me, *args, **kwargs)
 
-            #pylint: disable=E0213
-            def __setattr__(me, name, value):
+            def __setattr__(me, name, value): #@NoSelf
                 me._setattr_(name, value)
 
-            #pylint: disable=E0213
-            def __getattr__(me, name):
+            def __getattr__(me, name): #@NoSelf
                 return me._getattr_(name)
 
-            #pylint: disable=E0213
-            def __delattr__(me, name):
+            def __delattr__(me, name): #@NoSelf
                 me._delattr_(name)
-
 
         # Collect Backend attributes per Backend
         classr = self.__xml_defs[name]
@@ -658,7 +740,7 @@ class ObjectFactory(object):
         if 'Templates' in classr.__dict__:
             templates = []
             for template in classr.Templates.iterchildren():
-                templates.append(template.text);
+                templates.append(template.text)
 
             setattr(klass, '_templates', templates)
         else:
@@ -695,11 +777,11 @@ class ObjectFactory(object):
                 if "Backend" in prop.__dict__:
                     backend = prop.Backend.text
 
-
                 # Prepare initial values
                 out_f = []
-                in_f =  []
+                in_f = []
                 blocked_by = []
+                depends_on = []
                 default = None
                 validator = None
                 backend_syntax = syntax = prop['Type'].text
@@ -712,7 +794,8 @@ class ObjectFactory(object):
                 # Foreign attributes do not need any filters, validation or block settings
                 # All this is done by its primary backend.
                 if foreign:
-                    backend = "NULL"
+                    #backend = "NULL"
+                    mandatory = False
                 else:
 
                     # Do we have an output filter definition?
@@ -747,12 +830,10 @@ class ObjectFactory(object):
                     if "Default" in prop.__dict__:
                         default = self.__attribute_type[syntax].convert_from('String', [prop.Default.text])
 
-
-                # Check for property dependencies
-                depends_on = []
-                if "DependsOn" in prop.__dict__:
-                    for d in prop.__dict__['DependsOn'].iterchildren():
-                        depends_on.append(d.text)
+                    # Check for property dependencies
+                    if "DependsOn" in prop.__dict__:
+                        for d in prop.__dict__['DependsOn'].iterchildren():
+                            depends_on.append(d.text)
 
                 # Check for valid value list
                 values = []
@@ -771,7 +852,7 @@ class ObjectFactory(object):
                     else:
                         for d in prop.__dict__['Values'].iterchildren():
                             if 'key' in d.attrib:
-                                dvalues[d.attrib['key']] = self.__attribute_type['String'].convert_to(syntax, [d.text])[0]
+                                dvalues[self.__attribute_type['String'].convert_to(syntax, [d.attrib['key']])[0]] = d.text
                             else:
                                 avalues.append(d.text)
 
@@ -783,7 +864,7 @@ class ObjectFactory(object):
                     #values = self.__attribute_type['String'].convert_to(syntax, values)
 
                 # Create a new property with the given information
-                props[prop['Name'].text] =  {
+                props[prop['Name'].text] = {
                     'value': [],
                     'values': values,
                     'status': STATUS_OK,
@@ -848,7 +929,7 @@ class ObjectFactory(object):
                         pType = param['Type'].text
                         pRequired = bool(load(param, "Required", False))
                         pDefault = str(load(param, "Default"))
-                        mParams.append( (pName, pType, pRequired, pDefault), )
+                        mParams.append((pName, pType, pRequired, pDefault))
 
                 # Get the list of command parameters
                 cParams = []
@@ -940,7 +1021,7 @@ class ObjectFactory(object):
             cnt = 0
             arguments = {}
             for mParam in mParams:
-                mName, mType, mRequired, mDefault = mParam
+                mName, mType, mRequired, mDefault = mParam #@UnusedVariable
                 if mName in kwargs:
                     arguments[mName] = kwargs[mName]
                 elif cnt < len(args):
@@ -951,7 +1032,7 @@ class ObjectFactory(object):
                     raise FactoryException("Missing parameter '%s'!" % mName)
 
                 # Convert value to its required type.
-                arguments[mName] = self.__attribute_type['String'].convert_to(mType,[arguments[mName]])[0]
+                arguments[mName] = self.__attribute_type['String'].convert_to(mType, [arguments[mName]])[0]
                 cnt = cnt + 1
 
             # Build the command-parameter list.
@@ -1257,10 +1338,100 @@ class ObjectFactory(object):
         """
         # Transform xml-combination into a useable xml-class representation
         xmldefs = self.getXMLDefinitionsCombined()
-        xslt_doc = etree.parse(pkg_resources.resource_filename('clacks.agent', 'data/xml_object_schema.xsl'))
+        xslt_doc = etree.parse(pkg_resources.resource_filename('clacks.agent', 'data/xml_object_schema.xsl')) #@UndefinedVariable
         transform = etree.XSLT(xslt_doc)
         if not asString:
             return transform(xmldefs)
         else:
             return etree.tostring(transform(xmldefs))
 
+    def getNamedI18N(self, templates, language=None, theme="default"):
+        if not language:
+            return {}
+
+        env = Environment.getInstance()
+        i18n = None
+        locales = []
+        if "-" in language:
+            tmp = language.split("-")
+            locales.append(tmp[0].lower() + "_" + tmp[0].upper())
+            locales.append(tmp[0].lower())
+        else:
+            locales.append(language)
+
+        # If there's a i18n file, try to find it
+        res = {}
+
+        if templates:
+            for template in templates:
+                paths = []
+
+                # Absolute path
+                if template.startswith(os.path.sep):
+                    tp = os.path.dirname(template)
+                    tn = os.path.basename(template)[:-3]
+                    for loc in locales:
+                        paths.append(os.path.join(tp, "i18n", "%s_%s.ts" % (tn, loc)))
+
+                # Relative path
+                else:
+                    tn = os.path.basename(template)[:-3]
+
+                    # Find path
+                    for loc in locales:
+                        paths.append(pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', theme, "i18n", "%s_%s.ts" % (tn, loc)))) #@UndefinedVariable
+                        paths.append(os.path.join(env.config.getBaseDir(), 'templates', theme, "%s_%s.ts" % (tn, loc)))
+                        paths.append(pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', "default", "i18n", "%s_%s.ts" % (tn, loc)))) #@UndefinedVariable
+                        paths.append(os.path.join(env.config.getBaseDir(), 'templates', "default", "%s_%s.ts" % (tn, loc)))
+
+                for path in paths:
+                    if os.path.exists(path):
+                        with open(path, "r") as f:
+                            i18n = f.read()
+                        break
+
+                if i18n:
+                    # Reading the XML file will ignore extra tags, because they're not supported
+                    # for ordinary GUI rendering (i.e. plural needs a 'count').
+                    root = etree.fromstring(i18n)
+                    contexts = root.findall("context")
+
+                    for context in contexts:
+                        for message in context.findall("message"):
+                            if "numerus" in message.keys():
+                                continue
+
+                            translation = message.find("translation")
+
+                            # With length variants?
+                            if "variants" in translation.keys() and translation.get("variants") == "yes":
+                                res[unicode(message.find("source").text)] = [unicode(m.text) for m in translation.findall("lengthvariant")][0]
+
+                            # Ordinary?
+                            else:
+                                if translation.text:
+                                    res[unicode(message.find("source").text)] = unicode(translation.text)
+
+        return res
+
+    def getObjectBackendParameters(self, backend, attribute):
+        """
+        Helper method to extract backendParameter infos
+        """
+        attrs = self.getObjectBackendProperties(backend)
+
+        for be in attrs:
+            if attribute in attrs[be]:
+                result = {}
+                for targetAttr in attrs[be]:
+                    res = re.match("^([^:]*):([^,]*)(,([^=]*)=([^,]*))?", attrs[be][targetAttr])
+                    if res:
+                        result[targetAttr] = []
+                        result[targetAttr].append(res.groups()[0])
+                        result[targetAttr].append(res.groups()[1])
+                        result[targetAttr].append(res.groups()[3])
+                        result[targetAttr].append(res.groups()[4])
+
+                return result
+
+        return None

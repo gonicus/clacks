@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from clacks.agent.objects.types import AttributeType
-from clacks.common.components import PluginRegistry, ObjectRegistry
-from clacks.agent.jsonrpc_objects import JSONRPCObjectMapper
+from clacks.common.components import PluginRegistry
 
 
 class DevicePartitionTableType(AttributeType):

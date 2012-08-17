@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Table, Column, Integer, String, ForeignKey, Sequence
-from sqlalchemy.orm import relationship, backref
-
-from libinst.entities import Base, UseInnoDB
+from sqlalchemy import Column, String
+from libinst.entities import UseInnoDB
 from libinst.entities.release import Release
 
 
@@ -49,13 +46,11 @@ class DebianRelease(Release, UseInnoDB):
                     if not os.path.exists(os.sep.join((self_path, component.name, "binary-" + architecture.name))) and os.access(path, os.W_OK):
                         os.mkdir(os.sep.join((self_path, component.name, "binary-" + architecture.name)))
 
-
     def _rename(self, target_name):
         self.name = target_name
         # pylint: disable-msg=E1101
         for child in self.children:
             child._rename(self.name + "/" + child.name.rsplit('/', 1)[1])
-
 
     def _sync(self):
         # pylint: disable-msg=E1101
@@ -66,7 +61,7 @@ class DebianRelease(Release, UseInnoDB):
                 # pylint: disable-msg=E1101
                 pkg_path = os.sep.join((pool_path, package.component.name, package.name[:3] if package.name.startswith('lib') else package.name[0], package.name))
                 # pylint: disable-msg=E1101
-                path = os.sep.join((self.distribution.path, "dists",  self.name.replace('/', os.sep), package.component.name))
+                path = os.sep.join((self.distribution.path, "dists", self.name.replace('/', os.sep), package.component.name))
                 # pylint: disable-msg=E1101
                 if package.type.name == 'deb':
                     # pylint: disable-msg=E1101

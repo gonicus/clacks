@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 import os
-import StringIO
 import logging
 from inspect import isclass
 from lxml import etree
-#pylint: disable=E0611
-from pkg_resources import resource_filename, resource_listdir, iter_entry_points, resource_isdir
+from pkg_resources import resource_filename, resource_listdir, iter_entry_points, resource_isdir #@UnresolvedImport
 from clacks.common.handler import IInterfaceHandler
 from clacks.common import Environment
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
 
 
 class PluginRegistry(object):
@@ -139,7 +142,7 @@ class PluginRegistry(object):
         eventsxml += '</events>'
 
         # Parse the string with all event paths
-        eventsxml = StringIO.StringIO(eventsxml)
+        eventsxml = StringIO(eventsxml)
         xml_doc = etree.parse(eventsxml)
 
         # Parse XSLT stylesheet and create a transform object

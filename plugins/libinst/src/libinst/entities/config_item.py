@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Table, Column, Integer, String, ForeignKey, Sequence, UniqueConstraint, Boolean
+from sqlalchemy import Column, Integer, String, ForeignKey, Sequence, UniqueConstraint, Boolean
 from sqlalchemy.orm import relationship, backref
-
 from libinst.entities import Base, UseInnoDB
 from libinst.entities.release import Release
 

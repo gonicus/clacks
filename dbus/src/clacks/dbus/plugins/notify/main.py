@@ -84,5 +84,6 @@ class DBusNotifyHandler(dbus.service.Object, Plugin):
 
             ret = subprocess.call(cmd)
             return int(ret)
-        except Exception as e:
+
+        except Exception:
             traceback.print_exc(file=sys.stdout)

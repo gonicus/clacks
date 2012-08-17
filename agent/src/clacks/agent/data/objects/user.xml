@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Objects xmlns="http://www.gonicus.de/Objects">
+<Objects xmlns="http://www.gonicus.de/Objects" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gonicus.de/Objects ../object.xsd ">
   <Object>
     <Name>User</Name>
     <Description>A generic user</Description>
@@ -9,8 +9,7 @@
       <Template>user-organizational.ui</Template>
     </Templates>
     <BackendParameters>
-      <Backend objectClasses="inetOrgPerson"
-        RDN="cn,uid">LDAP</Backend>
+      <Backend objectClasses="inetOrgPerson" manager="User:dn" RDN="cn,uid">LDAP</Backend>
       <Backend type="User">JSON</Backend>
     </BackendParameters>
     <Backend>LDAP</Backend>
@@ -124,17 +123,55 @@
       <Attribute>
         <Name>departmentNumber</Name>
         <Description>Identifies a department within an organization</Description>
-        <Type>Integer</Type>
+        <Type>String</Type>
       </Attribute>
       <Attribute>
         <Name>displayName</Name>
         <Description>preferred name of a person to be used when displaying entries</Description>
         <Type>UnicodeString</Type>
+        <BlockedBy>
+          <Name>autoDisplayName</Name>
+          <Value>true</Value>
+        </BlockedBy>
+        <DependsOn>
+          <Attribute>autoDisplayName</Attribute>
+        </DependsOn>
       </Attribute>
+
+      <Attribute>
+        <Name>autoDisplayName</Name>
+        <Default>true</Default>
+        <Mandatory>true</Mandatory>
+        <Backend>NULL</Backend>
+        <Type>Boolean</Type>
+        <OutFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>GenerateDisplayName</Name>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </OutFilter>
+        <InFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>LoadDisplayNameState</Name>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </InFilter>
+        <DependsOn>
+          <Attribute>givenName</Attribute>
+          <Attribute>sn</Attribute>
+        </DependsOn>
+      </Attribute>
+
       <Attribute>
         <Name>employeeNumber</Name>
         <Description>numerically identifies an employee within an organization'</Description>
-        <Type>Integer</Type>
+        <Type>String</Type>
       </Attribute>
       <Attribute>
         <Name>employeeType</Name>
@@ -198,10 +235,35 @@
         <Type>String</Type>
       </Attribute>
       <Attribute>
-        <NotIndexed>true</NotIndexed>
         <Name>jpegPhoto</Name>
         <Description>Used to store one or more images of a person using the JPEG File Interchange Format [JFIF].</Description>
         <Type>Binary</Type>
+        <InFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>ImageProcessor</Name>
+                <Param>22</Param>
+                <Param>32</Param>
+                <Param>48</Param>
+                <Param>64</Param>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </InFilter>
+        <OutFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>ImageProcessor</Name>
+                <Param>22</Param>
+                <Param>32</Param>
+                <Param>48</Param>
+                <Param>64</Param>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </OutFilter>
       </Attribute>
       <Attribute>
         <Name>labeledURI</Name>
@@ -265,7 +327,7 @@
         <Name>preferredLanguage</Name>
         <Description>Preferred written or spoken language for a person</Description>
         <Type>String</Type>
-	<Values populate="getLanguageList"/>
+        <Values populate="getLanguageList"/>
       </Attribute>
       <Attribute>
         <Name>userSMIMECertificate</Name>
@@ -482,6 +544,33 @@
       </Attribute>
     </Attributes>
     <BaseObject>true</BaseObject>
+
+	<Find>
+		<Aspect>
+			<Tag>User</Tag>
+			<Keyword>User</Keyword>
+			<Search>givenName</Search>
+			<Search>sn</Search>
+			<Search>cn</Search>
+			<Search>uid</Search>
+			<Resolve type="PosixGroup" filter="cn">groupMembership</Resolve>
+			<Resolve filter="DN">manager</Resolve>
+			<Result>
+				<Map>
+					<Source>cn</Source>
+					<Destination>title</Destination>
+				</Map>
+				<Map>
+					<Source><![CDATA[%(description)s%(phoneRenderer)s%(mailRenderer)s<br>%(extensions)s]]></Source>
+					<Destination>description</Destination>
+				</Map>
+				<Map>
+					<Source>jpegPhoto</Source>
+					<Destination>icon</Destination>
+				</Map>
+			</Result>
+		</Aspect>
+	</Find>
+
   </Object>
 </Objects>
-

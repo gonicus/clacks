@@ -3,17 +3,17 @@ from clacks.agent.objects.filter import ElementFilter
 
 
 # SambaAcctFlags mapping.
-mapping = { 'D': 'acct_accountDisabled',
-            'H': 'acct_homeDirectoryRequired',
-            'I': 'acct_interDomainTrust',
-            'L': 'acct_isAutoLocked',
-            'M': 'acct_MNSLogonAccount',
-            'N': 'acct_passwordNotRequired',
-            'S': 'acct_serverTrustAccount',
-            'T': 'acct_temporaryDuplicateAccount',
-            'U': 'acct_normalUserAccount',
-            'W': 'acct_worktstationTrustAccount',
-            'X': 'acct_passwordDoesNotExpire'}
+mapping = {'D': 'acct_accountDisabled',
+           'H': 'acct_homeDirectoryRequired',
+           'I': 'acct_interDomainTrust',
+           'L': 'acct_isAutoLocked',
+           'M': 'acct_MNSLogonAccount',
+           'N': 'acct_passwordNotRequired',
+           'S': 'acct_serverTrustAccount',
+           'T': 'acct_temporaryDuplicateAccount',
+           'U': 'acct_normalUserAccount',
+           'W': 'acct_worktstationTrustAccount',
+           'X': 'acct_passwordDoesNotExpire'}
 
 
 class SambaAcctFlagsOut(ElementFilter):

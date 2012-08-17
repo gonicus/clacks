@@ -6,16 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>568</width>
-    <height>399</height>
+    <width>723</width>
+    <height>566</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Personal</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources/user.qrc">
+   <iconset>
     <normaloff>:/images/user.png</normaloff>:/images/user.png</iconset>
+  </property>
+  <property name="categoryTitle" stdset="0">
+   <string>User</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0">
@@ -23,39 +26,25 @@
      <property name="title">
       <string>Login information</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
+     <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QGraphicsView" name="jpegPhotoEdit">
-          <property name="minimumSize">
-           <size>
-            <width>128</width>
-            <height>128</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>128</width>
-            <height>128</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="verticalSpacer_4">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
+       <widget class="QGraphicsView" name="jpegPhotoEdit">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>200</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>200</width>
+          <height>200</height>
+         </size>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        </property>
+       </widget>
       </item>
       <item row="0" column="1">
        <spacer name="horizontalSpacer">
@@ -67,14 +56,17 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>10</width>
-          <height>20</height>
+          <width>13</width>
+          <height>17</height>
          </size>
         </property>
        </spacer>
       </item>
       <item row="0" column="2">
        <layout class="QFormLayout" name="formLayout">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::ExpandingFieldsGrow</enum>
+        </property>
         <property name="labelAlignment">
          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
         </property>
@@ -185,195 +177,200 @@
      <property name="title">
       <string>Contact information</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2">
+     <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
-       <layout class="QFormLayout" name="formLayout_2">
-        <property name="labelAlignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-        </property>
-        <item row="0" column="0">
-         <widget class="QLabel" name="personalTitleLabel">
-          <property name="text">
-           <string>Title</string>
-          </property>
-          <property name="buddy">
-           <cstring>titleEdit</cstring>
-          </property>
-         </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <layout class="QFormLayout" name="formLayout_2">
+          <item row="0" column="0" colspan="2">
+           <widget class="QCheckBox" name="autoDisplayName">
+            <property name="text">
+             <string>Automatic display name</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="displayNameLabel">
+            <property name="text">
+             <string>Display name</string>
+            </property>
+            <property name="buddy">
+             <cstring>displayNameEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="displayNameEdit"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="personalTitleLabel">
+            <property name="text">
+             <string>Title</string>
+            </property>
+            <property name="buddy">
+             <cstring>titleEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="titleEdit"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="academicTitleLabel">
+            <property name="text">
+             <string>Academic title</string>
+            </property>
+            <property name="buddy">
+             <cstring>academicTitleEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="academicTitleEdit"/>
+          </item>
+          <item row="4" column="1">
+           <spacer name="verticalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>13</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="dateOfBirthLabel">
+            <property name="text">
+             <string>Date of birth</string>
+            </property>
+            <property name="buddy">
+             <cstring>dateOfBirthEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QDateEdit" name="dateOfBirthEdit"/>
+          </item>
+          <item row="6" column="1">
+           <spacer name="verticalSpacer_6">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>13</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="genderLabel">
+            <property name="text">
+             <string>Gender</string>
+            </property>
+            <property name="buddy">
+             <cstring>genderEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1">
+           <widget class="QComboBox" name="genderEdit"/>
+          </item>
+         </layout>
         </item>
-        <item row="0" column="1">
-         <widget class="QLineEdit" name="titleEdit"/>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="academicTitleLabel">
-          <property name="text">
-           <string>Academic title</string>
-          </property>
-          <property name="buddy">
-           <cstring>academicTitleEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="academicTitleEdit"/>
-        </item>
-        <item row="2" column="1">
-         <spacer name="verticalSpacer_5">
+        <item>
+         <spacer name="horizontalSpacer_2">
           <property name="orientation">
-           <enum>Qt::Vertical</enum>
+           <enum>Qt::Horizontal</enum>
           </property>
           <property name="sizeType">
            <enum>QSizePolicy::Fixed</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>20</width>
-            <height>5</height>
+            <width>13</width>
+            <height>20</height>
            </size>
           </property>
          </spacer>
         </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="dateOfBirthLabel">
-          <property name="text">
-           <string>Date of birth</string>
-          </property>
-          <property name="buddy">
-           <cstring>dateOfBirthEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QDateEdit" name="dateOfBirthEdit"/>
-        </item>
-        <item row="4" column="1">
-         <spacer name="verticalSpacer_6">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>5</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="5" column="0">
-         <widget class="QLabel" name="genderLabel">
-          <property name="text">
-           <string>Gender</string>
-          </property>
-          <property name="buddy">
-           <cstring>genderEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="1">
-         <widget class="QComboBox" name="genderEdit"/>
-        </item>
-        <item row="6" column="1">
-         <spacer name="verticalSpacer_7">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
+        <item>
+         <layout class="QFormLayout" name="formLayout_3">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Address</string>
+            </property>
+            <property name="buddy">
+             <cstring>homePostalAddressEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPlainTextEdit" name="homePostalAddressEdit">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>60</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>120</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="homePhoneLabel">
+            <property name="text">
+             <string>Phone</string>
+            </property>
+            <property name="buddy">
+             <cstring>homePhoneEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="homePhoneEdit"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="labeledURILabel">
+            <property name="text">
+             <string>Homepage</string>
+            </property>
+            <property name="buddy">
+             <cstring>labeledURIEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="labeledURIEdit">
+            <property name="placeholderText">
+             <string>Please provide your web page here</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
-      </item>
-      <item row="0" column="2">
-       <layout class="QFormLayout" name="formLayout_3">
-        <property name="labelAlignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-        </property>
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>Address</string>
-          </property>
-          <property name="buddy">
-           <cstring>homePostalAddressEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QPlainTextEdit" name="homePostalAddressEdit">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>60</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>120</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="homePhoneLabel">
-          <property name="text">
-           <string>Phone</string>
-          </property>
-          <property name="buddy">
-           <cstring>homePhoneEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="homePhoneEdit"/>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="labeledURILabel">
-          <property name="text">
-           <string>Homepage</string>
-          </property>
-          <property name="buddy">
-           <cstring>labeledURIEdit</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QLineEdit" name="labeledURIEdit">
-          <property name="placeholderText">
-           <string>Please provide your web page here</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="0" column="1">
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>10</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
       </item>
      </layout>
     </widget>
@@ -381,7 +378,7 @@
   </layout>
   <action name="actionChange_password">
    <property name="icon">
-    <iconset resource="resources/user.qrc">
+    <iconset>
      <normaloff>:/images/password.png</normaloff>:/images/password.png</iconset>
    </property>
    <property name="text">
@@ -399,7 +396,7 @@
   </action>
   <action name="actionLock_account">
    <property name="icon">
-    <iconset resource="resources/user.qrc">
+    <iconset>
      <normaloff>:/images/lock.png</normaloff>:/images/lock.png</iconset>
    </property>
    <property name="text">
@@ -414,7 +411,7 @@
   </action>
   <action name="actionUnlock_account">
    <property name="icon">
-    <iconset resource="resources/user.qrc">
+    <iconset>
      <normaloff>:/images/unlock.png</normaloff>:/images/unlock.png</iconset>
    </property>
    <property name="text">
@@ -429,7 +426,7 @@
   </action>
   <action name="actionSend_message">
    <property name="icon">
-    <iconset resource="resources/user.qrc">
+    <iconset>
      <normaloff>:/images/notify.png</normaloff>:/images/notify.png</iconset>
    </property>
    <property name="text">
@@ -440,6 +437,21 @@
    </property>
   </action>
  </widget>
+ <tabstops>
+  <tabstop>uidEdit</tabstop>
+  <tabstop>snEdit</tabstop>
+  <tabstop>givenNameEdit</tabstop>
+  <tabstop>preferredLanguageEdit</tabstop>
+  <tabstop>autoDisplayName</tabstop>
+  <tabstop>displayNameEdit</tabstop>
+  <tabstop>titleEdit</tabstop>
+  <tabstop>academicTitleEdit</tabstop>
+  <tabstop>dateOfBirthEdit</tabstop>
+  <tabstop>genderEdit</tabstop>
+  <tabstop>homePostalAddressEdit</tabstop>
+  <tabstop>homePhoneEdit</tabstop>
+  <tabstop>labeledURIEdit</tabstop>
+ </tabstops>
  <resources>
   <include location="resources/user.qrc"/>
  </resources>
@@ -493,22 +505,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>jpegPhotoEdit</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>User</receiver>
-   <slot>property_jpegPhoto()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>32</x>
-     <y>55</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>homePhoneEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>User</receiver>
@@ -517,6 +513,22 @@
     <hint type="sourcelabel">
      <x>335</x>
      <y>358</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>displayNameEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>User</receiver>
+   <slot>property_displayName()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>335</x>
+     <y>385</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -621,6 +633,22 @@
    </hints>
   </connection>
   <connection>
+   <sender>autoDisplayName</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>User</receiver>
+   <slot>property_autoDisplayName()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>335</x>
+     <y>252</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>homePostalAddressEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>User</receiver>
@@ -629,6 +657,22 @@
     <hint type="sourcelabel">
      <x>335</x>
      <y>252</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>jpegPhotoEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>User</receiver>
+   <slot>property_jpegPhoto()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>32</x>
+     <y>55</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>

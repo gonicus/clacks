@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Objects xmlns="http://www.gonicus.de/Objects" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gonicus.de/Objects ../object.xsd ">
+    <Object>
+        <Name>AsteriskGroup</Name>
+        <Description>An asterisl extension for a group</Description>
+        <DisplayName>Asterisk group extension</DisplayName>
+        <BackendParameters>
+            <Backend objectClasses="goFonPickupGroup">LDAP</Backend>
+        </BackendParameters>
+        <Backend>LDAP</Backend>
+        <Extends>
+            <Value>PosixGroup</Value>
+        </Extends>
+        <BaseObject>false</BaseObject>
+    </Object>
+</Objects>
+
+
+

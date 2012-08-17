@@ -1,5 +1,5 @@
 import os
-import gobject
+import gobject #@UnusedImport
 import dbus.service
 import ConfigParser
 import logging
@@ -99,7 +99,7 @@ reports=store_clacks
         - critical
       time: %(time)s
       version: &id001 2.6.0
-""" % {'hostname':hostname, 'message':msg, 'time':ftime})
+""" % {'hostname': hostname, 'message': msg, 'time': ftime})
 
             self.log.error("running puppet failed, see '%s' for more information" % output_file)
             return False

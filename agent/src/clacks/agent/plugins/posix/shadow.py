@@ -43,5 +43,5 @@ class DatetimeToShadowDays(ElementFilter):
         super(DatetimeToShadowDays, self).__init__(obj)
 
     def process(self, obj, key, valDict):
-        valDict[key]['value'] = map(lambda x: int(time.mktime(x.timetuple()) / (60*60*24)) + 1, valDict[key]['value'])
+        valDict[key]['value'] = map(lambda x: int(time.mktime(x.timetuple()) / (60 * 60 * 24)) + 1, valDict[key]['value'])
         return key, valDict

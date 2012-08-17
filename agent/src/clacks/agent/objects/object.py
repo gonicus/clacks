@@ -2,12 +2,10 @@
 import copy
 import re
 import zope.event
-import ldap
 import pkg_resources
 import os
 from lxml import etree
 from lxml.builder import E
-from StringIO import StringIO
 from logging import getLogger
 from zope.interface import Interface, implements
 from clacks.common import Environment
@@ -53,9 +51,8 @@ class Object(object):
     myProperties = None
     env = None
 
-
     def __init__(self, where=None, mode="update"):
-        self.env = Environment.getInstance();
+        self.env = Environment.getInstance()
 
         # Instantiate Backend-Registry
         self._reg = ObjectBackendRegistry.getInstance()
@@ -99,9 +96,14 @@ class Object(object):
         for key in self.myProperties:
             if not(self.myProperties[key]['value']) and self.myProperties[key]['default'] != None and \
                 len(self.myProperties[key]['default']):
-                self.myProperties[key]['value'] = copy.deepcopy(self.myProperties[key]['default']);
+                self.myProperties[key]['value'] = copy.deepcopy(self.myProperties[key]['default'])
                 if self.myProperties[key]['mandatory']:
                     self.myProperties[key]['status'] = STATUS_CHANGED
+
+    def set_foreign_value(self, attr, original):
+        self.myProperties[attr]['value'] = original['value']
+        self.myProperties[attr]['in_value'] = original['in_value']
+        self.myProperties[attr]['orig_value'] = original['orig_value']
 
     def listProperties(self):
         return(self.myProperties.keys())
@@ -155,9 +157,8 @@ class Object(object):
                 info = dict([(k, self.myProperties[k]['backend_type']) for k in self._propsByBackend[backend]])
                 self.log.debug("loading attributes for backend '%s': %s" % (backend, str(info)))
                 be = ObjectBackendRegistry.getBackend(backend)
-                be_attrs =  self._backendAttrs[backend] if backend in self._backendAttrs else None
+                be_attrs = self._backendAttrs[backend] if backend in self._backendAttrs else None
                 attrs = be.load(self.uuid, info, be_attrs)
-
 
             except ValueError as e:
                 #raise ObjectException("Error reading properties for backend '%s'!" % (backend,))
@@ -188,7 +189,7 @@ class Object(object):
 
             # Execute defined in-filters.
             if len(self.myProperties[key]['in_filter']):
-                self.log.debug("found %s in-filter(s)  for attribute '%s'" % (str(len(self.myProperties[key]['in_filter'])),key))
+                self.log.debug("found %s in-filter(s)  for attribute '%s'" % (str(len(self.myProperties[key]['in_filter'])), key))
 
                 # Execute each in-filter
                 for in_f in self.myProperties[key]['in_filter']:
@@ -269,7 +270,6 @@ class Object(object):
                 if bb['value'] in self.myProperties[bb['name']]['value']:
                     raise AttributeError("<%s> Attribute is blocked by %s = '%s'!" % (name, bb['name'], bb['value']))
 
-
             # Do not allow to write to read-only attributes.
             if self.myProperties[name]['readonly']:
                 raise AttributeError("<%s> Cannot write to readonly attribute!" % name)
@@ -302,7 +302,10 @@ class Object(object):
 
             # Validate value
             if self.myProperties[name]['validator']:
-                res, error = self.__processValidator(self.myProperties[name]['validator'], name, new_value)
+
+                props_copy = copy.deepcopy(self.myProperties)
+
+                res, error = self.__processValidator(self.myProperties[name]['validator'], name, new_value, props_copy)
                 if not res:
                     if len(error):
                         raise ValueError("<%s> Property validation failed: %s" % (name, error[0]))
@@ -364,9 +367,10 @@ class Object(object):
         """
         Return the template data - if any. Else None.
         """
-        return self.getNamedTemplate(self._templates, theme)
+        return Object.getNamedTemplate(self.env, self._templates, theme)
 
-    def getNamedTemplate(self, templates, theme="default"):
+    @staticmethod
+    def getNamedTemplate(env, templates, theme="default"):
         """
         Return the template data - if any. Else None.
         """
@@ -384,14 +388,13 @@ class Object(object):
                 # Relative path
                 else:
                     # Find path
-                    #pylint: disable=E1101
-                    path = pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', theme, template))
+                    path = pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', theme, template)) #@UndefinedVariable
                     if not os.path.exists(path):
-                        path = os.path.join(self.env.config.getBaseDir(), 'templates', theme, template)
+                        path = os.path.join(env.config.getBaseDir(), 'templates', theme, template)
                         if not os.path.exists(path):
-                            path = pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', "default", template))
+                            path = pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', "default", template)) #@UndefinedVariable
                             if not os.path.exists(path):
-                                path = os.path.join(self.env.config.getBaseDir(), 'templates', "default", template)
+                                path = os.path.join(env.config.getBaseDir(), 'templates', "default", template)
                                 if not os.path.exists(path):
                                     return None
 
@@ -415,8 +418,8 @@ class Object(object):
                     for resource in etree.fromstring(res).findall("qresource"):
                         files = []
                         prefix = resource.get("prefix")
-                        for file in resource.findall("file"):
-                            files.append(E.file(os.path.join(prefix, unicode(file.text))))
+                        for f in resource.findall("file"):
+                            files.append(E.file(os.path.join(prefix, unicode(f.text))))
 
                         new_resources.append(E.resource(*files, location=rc))
 
@@ -424,82 +427,6 @@ class Object(object):
                 ui.append(etree.tostring(root))
 
         return ui
-
-    def getI18N(self, language=None, theme="default"):
-        """
-        Return the i18n data - if any. Else None.
-        """
-        return self.getNamedI18N(self._templates, language, theme)
-
-    def getNamedI18N(self, templates, language=None, theme="default"):
-        if not language:
-            return {}
-
-        i18n = None
-        locales = []
-        if "-" in language:
-            tmp = language.split("-")
-            locales.append(tmp[0].lower() + "_" + tmp[0].upper())
-            locales.append(tmp[0].lower())
-        else:
-            locales.append(language)
-
-        # If there's a i18n file, try to find it
-        res = {}
-
-        if templates:
-            for template in templates:
-                paths = []
-
-                # Absolute path
-                if template.startswith(os.path.sep):
-                    tp = os.path.dirname(template)
-                    tn = os.path.basename(template)[:-3]
-                    for loc in locales:
-                        paths.append(os.path.join(tp, "i18n", "%s_%s.ts" % (tn, loc)))
-
-                # Relative path
-                else:
-                    tn = os.path.basename(template)[:-3]
-
-                    # Find path
-                    for loc in locales:
-                        #pylint: disable=E1101
-                        paths.append(pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', theme, "i18n", "%s_%s.ts" % (tn, loc))))
-                        paths.append(os.path.join(self.env.config.getBaseDir(), 'templates', theme, "%s_%s.ts" % (tn, loc)))
-                        #pylint: disable=E1101
-                        paths.append(pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', "default", "i18n", "%s_%s.ts" % (tn, loc))))
-                        paths.append(os.path.join(self.env.config.getBaseDir(), 'templates', "default", "%s_%s.ts" % (tn, loc)))
-
-                for path in paths:
-                    if os.path.exists(path):
-                        with open(path, "r") as f:
-                            i18n = f.read()
-                        break
-
-                if i18n:
-                    # Reading the XML file will ignore extra tags, because they're not supported
-                    # for ordinary GUI rendering (i.e. plural needs a 'count').
-                    root = etree.fromstring(i18n)
-                    contexts = root.findall("context");
-
-                    for context in contexts:
-                        for message in context.findall("message"):
-                            if "numerus" in message.keys():
-                                continue
-
-                            translation = message.find("translation")
-
-                            # With length variants?
-                            if "variants" in translation.keys() and translation.get("variants") == "yes":
-                                 res[unicode(message.find("source").text)] = [unicode(m.text) for m in translation.findall("lengthvariant")][0]
-
-                            # Ordinary?
-                            else:
-                                if translation.text:
-                                    res[unicode(message.find("source").text)] = unicode(translation.text)
-
-        return res
 
     def getAttrType(self, name):
         """
@@ -511,9 +438,9 @@ class Object(object):
 
         raise AttributeError("<%s> No such property!" % name)
 
-    def commit(self):
+    def check(self):
         """
-        Commits changes of an object to the corresponding backends.
+        Checks whether everything is fine with the extension and its given values or not.
         """
         # Create a copy to avoid touching the original values
         props = copy.deepcopy(self.myProperties)
@@ -534,18 +461,17 @@ class Object(object):
             if self.__class__.__name__ not in self._objectFactory.getAllowedSubElementsForObject(base_type):
                 raise ObjectException("objects of type '%s' cannot be added as sub-objects to '%s'" % (self.__class__.__name__, base_type))
 
-        self.log.debug("saving object modifications for [%s|%s]" % (type(self).__name__, self.uuid))
-
-        # Ensure that mandatory values are set
+        # Transfer status into commit status
         for key in props:
             props[key]['commit_status'] = props[key]['status']
-            if props[key]['mandatory'] and not len(props[key]['value']):
-                    raise ObjectException("<%s> This value is required!" % key)
 
         # Collect values by store and process the property filters
-        toStore = {}
         collectedAttrs = {}
         for key in props:
+
+            # Skip foreign properties
+            if props[key]['foreign']:
+                continue
 
             # Check if this attribute is blocked by another attribute and its value.
             is_blocked = False
@@ -558,9 +484,64 @@ class Object(object):
             if not is_blocked and props[key]['mandatory'] and not len(props[key]['value']):
                 raise ObjectException("<%s> This value is required!" % key)
 
-            # Adapt status from dependent properties.
-            for propname in props[key]['depends_on']:
-                props[key]['commit_status'] |= props[propname]['status'] & STATUS_CHANGED
+        # Collect properties by backend
+        for prop_key in props:
+
+            # Skip foreign properties
+            if props[prop_key]['foreign']:
+                continue
+
+            # Ensure that mandatory values are set
+            if props[prop_key]['mandatory'] and not len(props[prop_key]['value']):
+                raise ObjectException("<%s> This value is required!" % prop_key)
+
+            # Do not save untouched values
+            if not props[prop_key]['commit_status'] & STATUS_CHANGED:
+                continue
+
+    def commit(self):
+        """
+        Commits changes of an object to the corresponding backends.
+        """
+
+        self.check()
+
+        self.log.debug("saving object modifications for [%s|%s]" % (type(self).__name__, self.uuid))
+
+        # Create a copy to avoid touching the original values
+        props = copy.deepcopy(self.myProperties)
+
+        # Transfer status into commit status
+        for key in props:
+            props[key]['commit_status'] = props[key]['status']
+
+        # Adapt property states
+        # Run this once - If any state was adapted, then run again to ensure
+        # that all dependencies are processed.
+        first = True
+        _max = 5
+        required = False
+        while (first or required) and _max:
+            first = False
+            required = False
+            _max -= 1
+            for key in props:
+
+                # Adapt status from dependent properties.
+                for propname in props[key]['depends_on']:
+                    old = props[key]['commit_status']
+                    props[key]['commit_status'] |= props[propname]['status'] & STATUS_CHANGED
+                    props[key]['commit_status'] |= props[propname]['commit_status'] & STATUS_CHANGED
+                    if props[key]['commit_status'] != old:
+                        required = True
+
+        # Collect values by store and process the property filters
+        collectedAttrs = {}
+        for key in props:
+
+            # Skip foreign properties
+            if props[key]['foreign']:
+                continue
 
             # Do not save untouched values
             if not props[key]['commit_status'] & STATUS_CHANGED:
@@ -579,6 +560,10 @@ class Object(object):
 
         # Collect properties by backend
         for prop_key in props:
+
+            # Skip foreign properties
+            if props[prop_key]['foreign']:
+                continue
 
             # Do not save untouched values
             if not props[prop_key]['commit_status'] & STATUS_CHANGED:
@@ -711,7 +696,7 @@ class Object(object):
     def getForeignProperties(self):
         return [x for x, y in self.myProperties.items() if y['foreign']]
 
-    def __processValidator(self, fltr, key, value):
+    def __processValidator(self, fltr, key, value, props_copy):
         """
         This method processes a given process-list (fltr) for a given property (prop).
         And return TRUE if the value matches the validator set and FALSE if
@@ -741,13 +726,11 @@ class Object(object):
             if 'condition' in curline:
 
                 # Build up argument list
-                args = [key, value] + curline['params']
+                args = [props_copy, key, value] + curline['params']
 
                 # Process condition and keep results
-                errors = []
-                named = {'errors': errors}
                 fname = type(curline['condition']).__name__
-                v = (curline['condition']).process(*args, **named)
+                v, errors = (curline['condition']).process(*args)
 
                 # Log what happend!
                 self.log.debug("  %s: [Filter]  %s(%s) called and returned: %s" % (
@@ -757,7 +740,7 @@ class Object(object):
                 stack.append(v)
                 if not v:
                     if len(errors):
-                        lasterrmsg =  errors.pop()
+                        lasterrmsg = errors.pop()
 
             # A comparator compares two values from the stack and then returns a single
             #  boolean value.
@@ -805,8 +788,6 @@ class Object(object):
 
         # Log values
         self.log.debug(" -> FILTER STARTED (%s)" % (key))
-        #for pkey in prop:
-        #    self.log.debug("  %s: %s: %s" % (lptr, pkey, prop[pkey]['value']))
 
         # Process the list till we reach the end..
         while (lptr + 1) in fltr:
@@ -929,8 +910,8 @@ class Object(object):
         Returns the objectType for a given DN
         """
         index = PluginRegistry.getInstance("ObjectIndex")
-        res = index.xquery("collection('objects')/*/.[o:DN = '%s']/o:Type/text()" % dn)
-        return res[0] if len(res) else None
+        res = index.raw_search({'dn': dn}, {'_type': 1})
+        return res[0]['_type'] if res.count() == 1 else None
 
     def get_references(self, override=None):
         res = []
@@ -940,20 +921,24 @@ class Object(object):
 
             for ref_attribute, dsc in info.items():
                 for idsc in dsc:
-                    oval = self.myProperties[idsc[1]]['orig_value'][0]
+                    if self.myProperties[idsc[1]]['orig_value'] and len(self.myProperties[idsc[1]]['orig_value']):
+                        oval = self.myProperties[idsc[1]]['orig_value'][0]
+                    else:
+                        oval = None
+                    dns = index.raw_search({'_type': ref, ref_attribute: oval}, {'dn': 1})
+                    if dns.count():
+                        dns = [x['dn'] for x in dns]
                     res.append((
                         ref_attribute,
                         idsc[1],
                         getattr(self, idsc[1]),
-                        map(lambda s: s.decode('utf-8'),
-                            index.xquery("collection('objects')/*/.[o:Type = '%s' and ./*/o:%s = '%s']/o:DN/string()" % (ref, ref_attribute, oval))),
-                        self.myProperties[idsc[1]]['multivalue']
-                            ))
+                        dns or [],
+                        self.myProperties[idsc[1]]['multivalue']))
 
         return res
 
     def update_refs(self, data):
-        for ref_attr, self_attr, value, refs, multivalue in self.get_references():
+        for ref_attr, self_attr, value, refs, multivalue in self.get_references(): #@UnusedVariable
 
             for ref in refs:
 
@@ -986,7 +971,7 @@ class Object(object):
                 c_obj.commit()
 
     def remove_refs(self):
-        for ref_attr, self_attr, value, refs, multivalue in self.get_references():
+        for ref_attr, self_attr, value, refs, multivalue in self.get_references(): #@UnusedVariable
 
             for ref in refs:
                 c_obj = ObjectProxy(ref)
@@ -1009,12 +994,14 @@ class Object(object):
         res = []
         index = PluginRegistry.getInstance("ObjectIndex")
 
-        for ref, info in self._objectFactory.getReferences("*", "dn").items():
-            for ref_attribute, dsc in info.items():
+        for info in self._objectFactory.getReferences("*", "dn").values():
+            for ref_attribute in info.keys():
+                dns = index.raw_search({ref_attribute: self.dn}, {'dn': 1})
+                if dns.count():
+                    dns = [x['dn'] for x in dns]
                 res.append((
                     ref_attribute,
-                    map(lambda s: s.decode('utf-8'),
-                        index.xquery("collection('objects')/*/.[./*/o:%s = '%s']/o:DN/string()" % (ref_attribute, self.dn)))
+                    map(lambda s: s.decode('utf-8'), dns if dns else [])
                 ))
 
         return res
@@ -1063,12 +1050,21 @@ class Object(object):
 
         # Collect backends
         backends = [getattr(self, '_backend')]
+        be_attrs = {getattr(self, '_backend'): {}}
 
-        # Collect all used backends
-        for info in self.myProperties.values():
-            for be in info['backend']:
-                if not be in backends:
-                   backends.append(be)
+        for prop, info in self.myProperties.items():
+            for backend in info['backend']:
+                if not backend in backends:
+                    backends.append(backend)
+
+                if not backend in be_attrs:
+                    be_attrs[backend] = {}
+
+                if self.is_attr_set(prop):
+                    be_attrs[backend][prop] = {'foreign': info['foreign'],
+                                               'orig': info['in_value'],
+                                               'value': info['value'],
+                                               'type': info['backend_type']}
 
         # Remove for all backends, removing the primary one as the last one
         backends.reverse()
@@ -1080,7 +1076,20 @@ class Object(object):
 
         for backend in backends:
             be = ObjectBackendRegistry.getBackend(backend)
-            be.remove(obj.uuid)
+            r_attrs = self.getExclusiveProperties()
+
+            # Remove all non exclusive properties
+            remove_attrs = {}
+            for attr in be_attrs[backend]:
+                if attr in r_attrs:
+                    remove_attrs[attr] = be_attrs[backend][attr]
+
+            self.remove_refs()
+            self.remove_dn_refs()
+
+            #pylint: disable=E1101
+            be.remove(self.uuid, remove_attrs, self._backendAttrs[backend] \
+                    if backend in self._backendAttrs else None)
 
         zope.event.notify(ObjectChanged("post remove", obj))
 
@@ -1095,15 +1104,10 @@ class Object(object):
         if not self._base_object:
             raise ObjectException("cannot move non base objects")
 
-        # Collect backends
-        backends = [getattr(self, '_backend')]
-
         obj = self
         zope.event.notify(ObjectChanged("pre move", obj, dn=self.dn, orig_dn=orig_dn))
 
         # Update the DN refs which have most probably changed
-        p_backend = getattr(self, '_backend')
-        be = ObjectBackendRegistry.getBackend(p_backend)
         self.update_dn_refs(self.dn)
 
         zope.event.notify(ObjectChanged("post move", obj, dn=self.dn, orig_dn=orig_dn))
@@ -1123,7 +1127,7 @@ class Object(object):
         for info in self.myProperties.values():
             for be in info['backend']:
                 if not be in backends:
-                   backends.append(be)
+                    backends.append(be)
 
         obj = self
         zope.event.notify(ObjectChanged("pre move", obj))
@@ -1156,7 +1160,7 @@ class Object(object):
 
         # Collect backends
         backends = [getattr(self, '_backend')]
-        be_attrs = {getattr(self, '_backend'): []}
+        be_attrs = {getattr(self, '_backend'): {}}
 
         for prop, info in self.myProperties.items():
             for backend in info['backend']:
@@ -1164,8 +1168,13 @@ class Object(object):
                     backends.append(backend)
 
                 if not backend in be_attrs:
-                    be_attrs[backend] = []
-                be_attrs[backend].append(prop)
+                    be_attrs[backend] = {}
+
+                if self.is_attr_set(prop):
+                    be_attrs[backend][prop] = {'foreign': info['foreign'],
+                                               'orig': info['in_value'],
+                                               'value': info['value'],
+                                               'type': info['backend_type']}
 
         # Retract for all backends, removing the primary one as the last one
         backends.reverse()
@@ -1177,16 +1186,16 @@ class Object(object):
             r_attrs = self.getExclusiveProperties()
 
             # Remove all non exclusive properties
-            remove_attrs = []
+            remove_attrs = {}
             for attr in be_attrs[backend]:
                 if attr in r_attrs:
-                    remove_attrs.append(attr)
+                    remove_attrs[attr] = be_attrs[backend][attr]
 
             self.remove_refs()
             self.remove_dn_refs()
 
             #pylint: disable=E1101
-            be.retract(self.uuid, [a for a in remove_attrs if self.is_attr_set(a)], self._backendAttrs[backend] \
+            be.retract(self.uuid, remove_attrs, self._backendAttrs[backend] \
                     if backend in self._backendAttrs else None)
 
         zope.event.notify(ObjectChanged("post retract", obj))
@@ -1195,7 +1204,7 @@ class Object(object):
         self.__execute_hook("PostRemove")
 
     def is_attr_set(self, name):
-        return len(self.myProperties[name]['value'])
+        return len(self.myProperties[name]['in_value'])
 
     def is_attr_using_default(self, name):
         return not self.is_attr_set(name) and self.myProperties[name]['default']

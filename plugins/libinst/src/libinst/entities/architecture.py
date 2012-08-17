@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Table, Column, Integer, String, ForeignKey, Sequence
-from sqlalchemy.orm import relationship, backref
-
+from sqlalchemy import Column, Integer, String, Sequence
 from libinst.entities import Base, UseInnoDB
+
 
 class Architecture(Base, UseInnoDB):
     __tablename__ = 'arch'

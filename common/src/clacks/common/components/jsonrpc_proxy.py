@@ -3,10 +3,8 @@ import urllib2
 import cookielib
 from urllib import quote
 from urlparse import urlparse
-from types import DictType
 from clacks.common.gjson import dumps, loads
 from clacks.common.components.json_exception import JSONRPCException
-
 
 
 class JSONObjectFactory(object):
@@ -142,7 +140,6 @@ class JSONServiceProxy(object):
         return JSONServiceProxy(self.__serviceURL, None, self.__opener, self.__mode)
 
     def __call__(self, *args, **kwargs):
-        url = self.__serviceURL
         if len(kwargs) > 0 and len(args) > 0:
             raise JSONRPCException("JSON-RPC does not support positional and keyword arguments at the same time")
 

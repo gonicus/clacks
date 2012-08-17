@@ -8,6 +8,7 @@ from clacks.common.handler import IInterfaceHandler
 from clacks.agent.objects.proxy import ObjectProxy
 from clacks.common.components import PluginRegistry
 
+
 class PasswordManager(Plugin):
     """
     Manager password changes
@@ -81,46 +82,43 @@ class PasswordManager(Plugin):
         index = PluginRegistry.getInstance("ObjectIndex")
 
         # Get password hash
-        hash = index.xquery("collection('objects')/*[o:DN='%s']/o:Attributes/o:userPassword/string()" % \
-                            (object_dn))
-        if len(hash):
-            hash = hash[0]
-        else:
+        res = index.raw_search({'dn': object_dn, 'userPassword': {'$size': 1}}, {'userPassword': 1})
+        if res.count():
+            hsh = res[0]['userPassword'][0]
 
+        else:
             # No password hash -> cannot lock/unlock account
             return False
 
         # Try to detect the responsible password method-class
-        pwd_o = self.detect_method_by_hash(hash)
+        pwd_o = self.detect_method_by_hash(hsh)
         if not pwd_o:
 
             # Could not identify password method
             return False
 
-        return pwd_o.isLockable(hash)
+        return pwd_o.isLockable(hsh)
 
     @Command(__help__=N_("Check whether the account can be unlocked or not"))
     def accountUnlockable(self, object_dn):
         index = PluginRegistry.getInstance("ObjectIndex")
+        res = index.raw_search({'dn': object_dn, 'userPassword': {'$size': 1}}, {'userPassword': 1})
 
-        # Get password hash
-        hash = index.xquery("collection('objects')/*[o:DN='%s']/o:Attributes/o:userPassword/string()" % \
-                            (object_dn))
-        if len(hash):
-            hash = hash[0]
+        if res.count():
+            hsh = res[0]['userPassword'][0]
+
         else:
-
             # No password hash -> cannot lock/unlock account
             return False
 
         # Try to detect the responsible password method-class
-        pwd_o = self.detect_method_by_hash(hash)
+        pwd_o = self.detect_method_by_hash(hsh)
         if not pwd_o:
 
             # Could not identify password method
             return False
 
-        return pwd_o.isUnlockable(hash)
+        return pwd_o.isUnlockable(hsh)
 
     @Command(__help__=N_("Changes the used password enryption method"))
     def setUserPasswordMethod(self, object_dn, method, password):

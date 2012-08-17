@@ -1,6 +1,7 @@
 import time
 import functools
 
+
 class cache(object):
     """
     Caching decorator basically taken from the
@@ -22,7 +23,7 @@ class cache(object):
     ========= ============
     """
 
-    def __init__(self,  ttl=None):
+    def __init__(self, ttl=None):
         self.ttl = ttl
         self.cache = {}
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 __import__('pkg_resources').declare_namespace(__name__)
 # pylint: disable-msg=E0611
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename #@UnresolvedImport
 import gettext
 
 # Include locales

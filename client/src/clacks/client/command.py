@@ -47,7 +47,7 @@ class ClientCommandRegistry(object):
                     func = method.__name__
                     if not method.__doc__:
                         raise Exception("method '%s' has no documentation" % func)
-                    doc = re.sub("(\s|\n)+" , " ", method.__doc__).strip()
+                    doc = re.sub("(\s|\n)+", " ", method.__doc__).strip()
 
                     log.debug("registering %s" % func)
                     info = {

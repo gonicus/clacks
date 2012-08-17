@@ -25,11 +25,16 @@ If no configuration is present, the system will raise a
 import os
 import re
 import platform
-import StringIO
 import ConfigParser
 import logging.config
 from argparse import ArgumentParser
 from clacks.common import __version__ as VERSION
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+
 
 # Only import pwd/grp stuff if we're not on windows
 if platform.system() != "Windows":
@@ -66,7 +71,7 @@ class Config(object):
             }
     __configKeys = None
 
-    def __init__(self,  config=None,  noargs=False):
+    def __init__(self, config=None, noargs=False):
         if not config:
             config = os.environ.get('CLACKS_CONFIG_DIR') or "/etc/clacks"
 
@@ -221,9 +226,9 @@ class Config(object):
 
         # Initialize the logging module on the fly
         try:
-            tmp = StringIO.StringIO()
+            tmp = StringIO()
             config.write(tmp)
-            tmp2 = StringIO.StringIO(tmp.getvalue())
+            tmp2 = StringIO(tmp.getvalue())
             logging.config.fileConfig(tmp2)
 
         except ConfigParser.NoSectionError:

@@ -15,7 +15,6 @@ from itertools import permutations
 import ldap
 
 
-
 class RDNNotSpecified(Exception):
     """
     Exception thrown for missing rdn property in object definitions
@@ -94,7 +93,7 @@ class JSON(ObjectBackend):
         if not item_uuid:
             return False
 
-        res =  self.identify_by_uuid(item_uuid, params)
+        res = self.identify_by_uuid(item_uuid, params)
         return res
 
     def identify_by_uuid(self, item_uuid, params):
@@ -184,7 +183,7 @@ class JSON(ObjectBackend):
             for uuid in json:
                 for obj in json[uuid]:
                     if "parentDN" in json[uuid][obj] and re.match(re.escape(base) + "$", json[uuid][obj]['parentDN']):
-                        found.append(json['objects'][item]['dn'])
+                        found.append(json['objects'][uuid]['dn'])
         return found
 
     def create(self, base, data, params, foreign_keys=None):
@@ -262,40 +261,7 @@ class JSON(ObjectBackend):
 
         return None
 
-    def build_dn_list(self, rdns, base, data, FixedRDN):
-        """
-        Build a list of possible DNs for the given properties
-        """
-
-        fix = rdns[0]
-        var = rdns[1:] if len(rdns) > 1 else []
-        dns = [fix]
-
-        # Check if we've have to use a fixed RDN.
-        if FixedRDN:
-            return(["%s,%s" % (FixedRDN, base)])
-
-        # Bail out if fix part is not in data
-        if not fix in data:
-            raise DNGeneratorError("fix attribute '%s' is not in the entry" % fix)
-
-        # Append possible variations of RDN attributes
-        if var:
-            for rdn in permutations(var + [None] * (len(var) - 1), len(var)):
-                dns.append("%s,%s" % (fix, ",".join(filter(lambda x: x and x in data and data[x], list(rdn)))))
-        dns = list(set(dns))
-
-        # Assemble DN of RDN combinations
-        dn_list = []
-        for t in [tuple(d.split(",")) for d in dns]:
-            ndn = []
-            for k in t:
-                ndn.append("%s=%s" % (k, ldap.dn.escape_dn_chars(data[k]['value'][0])))
-            dn_list.append("+".join(ndn) + "," + base)
-
-        return sorted(dn_list, key=len)
-
-    def remove(self, item_uuid, recursive=False):
+    def remove(self, item_uuid, data, params):
         """
         Removes the entry with the given uuid from the database
         """
@@ -312,7 +278,7 @@ class JSON(ObjectBackend):
         """
         json = self.__load()
         if self.is_uuid(misc):
-            return item_uuid in json['objects']
+            return misc in json['objects']
         else:
             for uuid in json:
                 for obj in json[uuid]:
@@ -346,7 +312,6 @@ class JSON(ObjectBackend):
             json[item_uuid][o_type] = {}
             json[item_uuid][o_type]['type'] = o_type
 
-
         for item in data:
             json[item_uuid][o_type][item] = data[item]['value']
         self.__save(json)
@@ -370,7 +335,7 @@ class JSON(ObjectBackend):
 
                     # Update the source entry
                     entry = json[item_uuid][obj]
-                    entry['dn'] = re.sub(re.escape(entry['parentDN'])+"$", new_base, entry['dn'])
+                    entry['dn'] = re.sub(re.escape(entry['parentDN']) + "$", new_base, entry['dn'])
                     entry['parentDN'] = new_base
 
                     # Check if we can move the entry

@@ -7,7 +7,7 @@
 		<Event  xmlns="http://www.gonicus.de/Events" 
 			xmlns:e="http://www.gonicus.de/Events"
 			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			xsi:schemaLocation="http://www.gonicus.de/Events inventory.xsd ">
+			xsi:schemaLocation="http://www.gonicus.de/Events ../../../../../../../agent/src/clacks/agent/plugins/goto/data/events/Inventory.xsd ">
 
 			<Inventory>
 				<Checksum>%%CHECKSUM%%</Checksum>

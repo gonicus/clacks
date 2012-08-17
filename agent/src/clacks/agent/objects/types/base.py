@@ -39,7 +39,12 @@ class StringAttribute(AttributeType):
     __alias__ = "String"
 
     def _convert_from_string(self, value):
-        return(value)
+        new_value = []
+        for item in value:
+            if not item and type(item) != str:
+                item = ""
+            new_value.append(item)
+        return new_value
 
     def is_valid_value(self, value):
         return(not len(value) or all(map(lambda x: type(x) == str, value)))
@@ -141,10 +146,8 @@ class BinaryAttribute(AttributeType):
 class UnicodeStringAttribute(AttributeType):
     __alias__ = "UnicodeString"
 
-    def _convert_to_unicodestring(self, value):
-        return(value)
-
     def _convert_from_unicodestring(self, value):
+        #TODO: is this enough?
         return(value)
 
     def is_valid_value(self, value):
@@ -160,7 +163,12 @@ class UnicodeStringAttribute(AttributeType):
         return(map(lambda x: unicode(x), value))
 
     def _convert_from_string(self, value):
-        return(map(lambda x: unicode(x), value))
+        new_value = []
+        for item in value:
+            if not item and type(item) not in [str, unicode]:
+                item = u""
+            new_value.append(unicode(item))
+        return new_value
 
 
 class DateAttribute(AttributeType):

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from clacks.agent.objects.filter import ElementFilter, ElementFilterException
+from clacks.agent.objects.filter import ElementFilter
 from clacks.agent.objects import ObjectFactory
-import copy
 import time
 import datetime
+
 
 class Target(ElementFilter):
     """
@@ -159,8 +159,8 @@ class StringToDatetime(ElementFilter):
     def __init__(self, obj):
         super(StringToDatetime, self).__init__(obj)
 
-    def process(self, obj, key, valDict, format):
-        valDict[key]['value'] = map(lambda x: datetime.datetime.strptime(x, format), valDict[key]['value'])
+    def process(self, obj, key, valDict, fmt):
+        valDict[key]['value'] = map(lambda x: datetime.datetime.strptime(x, fmt), valDict[key]['value'])
         valDict[key]['backend_type'] = 'Timestamp'
         return key, valDict
 
@@ -182,7 +182,7 @@ class DatetimeToString(ElementFilter):
     def __init__(self, obj):
         super(DatetimeToString, self).__init__(obj)
 
-    def process(self, obj, key, valDict, format):
-        valDict[key]['value'] = map(lambda x: x.strftime(format), valDict[key]['value'])
+    def process(self, obj, key, valDict, fmt):
+        valDict[key]['value'] = map(lambda x: x.strftime(fmt), valDict[key]['value'])
         valDict[key]['backend_type'] = 'String'
         return key, valDict

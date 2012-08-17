@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Table, Column, Integer, String, ForeignKey, Sequence
+from sqlalchemy import Column, Integer, String, ForeignKey, Sequence
 from sqlalchemy.orm import relationship, backref
 
 from libinst.entities.architecture import Architecture
@@ -52,7 +51,7 @@ class Package(Base, UseInnoDB):
             "component": self.component.name,
             "arch": self.arch.name,
             "type": self.type.name,
-            "files": None if not self.files else [file.getInfo() for file in self.files],
+            "files": None if not self.files else [f.getInfo() for f in self.files],
             "version": self.version,
             "origin": self.origin,
         }

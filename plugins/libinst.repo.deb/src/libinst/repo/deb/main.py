@@ -47,11 +47,12 @@ from libinst.repo.deb.entities.distribution import DebianDistribution
 from libinst.repo.deb.entities.release import DebianRelease
 
 # pylint: disable-msg=E0611
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename #@UnresolvedImport
 
 # Include locales
 t = gettext.translation('messages', resource_filename("libinst.repo.deb", "locale"), fallback=True)
 _ = t.ugettext
+
 
 class DebianHandler(DistributionHandler):
 
@@ -93,7 +94,7 @@ class DebianHandler(DistributionHandler):
                 if instance is None:
                     raise ValueError(N_("Parent release {parent} was not found").format(parent=parent))
                 else:
-                    parent=instance
+                    parent = instance
             result = DebianRelease(name=name, parent=parent)
         return result
 
@@ -101,7 +102,7 @@ class DebianHandler(DistributionHandler):
         result = None
         if isinstance(release, StringTypes):
             release = self._getRelease(session, release)
-        dists_path = os.sep.join((release.distribution.repository.path, release.distribution.name, "dists",  release.name.replace('/', os.sep)))
+        dists_path = os.sep.join((release.distribution.repository.path, release.distribution.name, "dists", release.name.replace('/', os.sep)))
         try:
             if os.path.exists(dists_path):
                 shutil.rmtree(dists_path)
@@ -119,17 +120,17 @@ class DebianHandler(DistributionHandler):
         if distribution is not None and distribution.releases is None:
             raise ValueError(N_("Given distribution %s contains no Releases"), distribution.name)
 
-        for release in releases if releases is not None else distribution.releases:
+        for release in releases if releases else distribution.releases:
             if isinstance(release, StringTypes):
                 release = self._getRelease(session, release)
-            for component in components if components is not None else distribution.components:
+            for component in components if components else distribution.components:
                 if isinstance(component, StringTypes):
                     component = self._getComponent(session, component)
                 packages = self.manager.getPackages(release=release, component=component)
                 self.log.info(N_("Searching for updates for release '{distribution}/{release}'").format(distribution=release.distribution.name, release=release.name))
 
                 # Binary
-                for architecture in architectures if architectures is not None else distribution.architectures:
+                for architecture in architectures if architectures else distribution.architectures:
                     if isinstance(architecture, StringTypes):
                         architecture = self._getArchitecture(architecture)
                     if architecture.name in ('all', 'source'):
@@ -138,8 +139,8 @@ class DebianHandler(DistributionHandler):
                     packagelist = self.getMirrorPackageList(session, release, component, architecture)
                     with file(packagelist) as packages_file:
                         for package in deb822.Packages.iter_paragraphs(packages_file):
-                            if package.has_key('Package'):
-                                if sections and package.has_key('Section') and package['Section'] not in sections:
+                            if 'Package' in package:
+                                if sections and 'Section' in package and package['Section'] not in sections:
                                     continue
                                 if not package['Package'] in [p['name'] for p in packages]:
                                     self.log.debug("Adding package '%s' from URL '%s'" % (package['Package'], distribution.origin + "/" + package['Filename']))
@@ -158,7 +159,7 @@ class DebianHandler(DistributionHandler):
                                         session.rollback()
                                         raise
                                 else:
-                                    existing_packages = [p for p in packages if p['name']==package['Package']]
+                                    existing_packages = [p for p in packages if p['name'] == package['Package']]
                                     if package['Architecture'] not in [p['arch'] for p in existing_packages]:
                                         self.log.debug("Adding package '%s' from URL '%s'" % (package['Package'], distribution.origin + "/" + package['Filename']))
                                         self.addPackage(
@@ -201,8 +202,8 @@ class DebianHandler(DistributionHandler):
                 if release.distribution.mirror_sources:
                     sourcelist = self.getMirrorSourceList(session, release, component)
                     for source in deb822.Sources.iter_paragraphs(file(sourcelist)):
-                        if source.has_key('Package'):
-                            if sections and source.has_key('Section') and source['Section'] not in sections:
+                        if 'Package' in source:
+                            if sections and 'Section' in source and source['Section'] not in sections:
                                 continue
                             if not source['Package'] in [s['name'] for s in packages]:
                                 self.log.debug("Adding source package '%s' from URL '%s'" % (source['Package'], '/'.join((distribution.origin, source['Directory'], [f['name'] for f in source['Files']][0]))))
@@ -221,7 +222,7 @@ class DebianHandler(DistributionHandler):
                                     session.rollback()
                                     raise
                             else:
-                                existing_packages = [s for s in packages if s['name']==source['Package']]
+                                existing_packages = [s for s in packages if s['name'] == source['Package']]
                                 if source['Version'] not in [p['version'] for p in existing_packages]:
                                     self.log.debug("Upgrading source package '%s' from URL '%s'" % (source['Package'], distribution.origin + "/" + [f['name'] for f in source['Files']][0]))
                                     self.addPackage(
@@ -282,7 +283,7 @@ class DebianHandler(DistributionHandler):
                 result = None
             else:
                 if upgrade: # upgrade also means downgrade
-                    if not self.removePackage(session, result.name, arch = result.arch, release = release):
+                    if not self.removePackage(session, result.name, arch=result.arch, release=release):
                         result = None
 
                 if result is not None:
@@ -305,11 +306,11 @@ class DebianHandler(DistributionHandler):
                         os.makedirs(pool_path)
 
                     basedir = os.path.dirname(url)
-                    for file in result.files:
-                        if not os.path.exists(pool_path + os.sep + file.name):
-                            shutil.move(basedir + os.sep + file.name, pool_path + os.sep + file.name)
-                        if os.path.exists(basedir + os.sep + file.name):
-                            os.unlink(basedir + os.sep + file.name)
+                    for fle in result.files:
+                        if not os.path.exists(pool_path + os.sep + fle.name):
+                            shutil.move(basedir + os.sep + fle.name, pool_path + os.sep + fle.name)
+                        if os.path.exists(basedir + os.sep + fle.name):
+                            os.unlink(basedir + os.sep + fle.name)
                     os.removedirs(basedir)
 
                     # Manage DB content, update associative properties
@@ -322,7 +323,7 @@ class DebianHandler(DistributionHandler):
                         release.distribution.sections.append(result.section)
 
                     # Create symlink
-                    dists_path = os.sep.join((release.distribution.path, "dists",  release.name.replace('/', os.sep), result.component.name))
+                    dists_path = os.sep.join((release.distribution.path, "dists", release.name.replace('/', os.sep), result.component.name))
                     if result.type.name == 'deb':
                         dists_path += os.sep + "binary-" + result.arch.name
                     elif result.type.name == 'dsc':
@@ -331,10 +332,10 @@ class DebianHandler(DistributionHandler):
                         os.makedirs(dists_path)
                     current_dir = os.getcwd()
                     os.chdir(dists_path)
-                    for file in result.files:
-                        if os.path.exists(file.name):
-                            os.unlink(file.name)
-                        os.symlink(os.path.relpath(pool_path + os.sep + file.name), file.name)
+                    for fle in result.files:
+                        if os.path.exists(fle.name):
+                            os.unlink(fle.name)
+                        os.symlink(os.path.relpath(pool_path + os.sep + fle.name), fle.name)
                     os.chdir(current_dir)
 
                     if updateInventory:
@@ -350,7 +351,7 @@ class DebianHandler(DistributionHandler):
         if isinstance(package, StringTypes) and arch is None:
             for p in self._getPackages(session, package):
                 self.log.debug("Removing package %s/%s/%s/%s" % (distribution, release, package if isinstance(package, StringTypes) else package.name), p.arch.name)
-                self.removePackage(session, p, arch = p.arch, release=release, distribution=distribution)
+                self.removePackage(session, p, arch=p.arch, release=release, distribution=distribution)
         elif isinstance(package, StringTypes):
             self.log.debug("Removing package %s/%s/%s/%s" % (distribution, release, package if isinstance(package, StringTypes) else package.name), arch.name)
             package = self._getPackage(session, package, arch=arch)
@@ -366,29 +367,29 @@ class DebianHandler(DistributionHandler):
         if package is not None:
             if release is not None:
                 if package in release.packages[:]:
-                    dists_path = os.sep.join((release.distribution.path, "dists",  release.name.replace('/', os.sep), package.component.name))
+                    dists_path = os.sep.join((release.distribution.path, "dists", release.name.replace('/', os.sep), package.component.name))
                     if package.type.name == 'deb':
                         dists_path += os.sep + "binary-" + package.arch.name
                     elif package.type.name == 'dsc':
                         dists_path += os.sep + "source"
                     else:
                         raise ValueError(N_("Unknown package type {type}").format(type=package.type.name))
-                    for file in package.files:
-                        if os.path.exists(dists_path + os.sep + file.name):
+                    for fle in package.files:
+                        if os.path.exists(dists_path + os.sep + fle.name):
                             try:
-                                os.unlink(dists_path + os.sep + file.name)
+                                os.unlink(dists_path + os.sep + fle.name)
                             except:
-                                self.log.error("Could not remove file %s" % dists_path + os.sep + file.name)
+                                self.log.error("Could not remove file %s" % dists_path + os.sep + fle.name)
                                 raise
                         else:
-                            self.log.error("Strange: %s does not exist!" % dists_path + os.sep + file.name)
+                            self.log.error("Strange: %s does not exist!" % dists_path + os.sep + fle.name)
                     release.packages.remove(package)
                     self._updateInventory(session, release=release)
                     result = True
 
                     pool_path = os.sep.join((release.distribution.repository.path, "pool", release.distribution.type.name, package.component.name))
                     rollback_path = os.sep.join((release.distribution.repository.path, "rollback", release.distribution.type.name, package.component.name))
-                    if not self.env.config.get('repository.rollback')==False and not os.path.exists(rollback_path):
+                    if not self.env.config.get('repository.rollback') == False and not os.path.exists(rollback_path):
                         os.makedirs(rollback_path)
                     try:
                         # Move package to rollback pool, remove row if no release is linked
@@ -408,14 +409,14 @@ class DebianHandler(DistributionHandler):
                                     pool_path += os.sep + str(package.name).lower()[0]
                                     pool_path += os.sep + package.name.lower()
 
-                            for file in package.files:
-                                package_path = pool_path + os.sep + file.name
+                            for fle in package.files:
+                                package_path = pool_path + os.sep + fle.name
                                 if os.path.exists(package_path):
-                                    if not self.env.config.get('repository.rollback')==False:
-                                        shutil.move(package_path, rollback_path + os.sep + file.name)
+                                    if not self.env.config.get('repository.rollback') == False:
+                                        shutil.move(package_path, rollback_path + os.sep + fle.name)
                                     else:
                                         os.unlink(package_path)  # Remove package file
-                                session.delete(file)
+                                session.delete(fle)
                             session.delete(package)
                     except:
                         self.log.error("Could not remove file %s" % package_path)
@@ -446,7 +447,6 @@ class DebianHandler(DistributionHandler):
                     result &= self.removePackage(session, package, distribution=distribution, release=release, arch=arch)
 
         return result
-
 
     def _getDistribution(self, session, name):
         try:
@@ -519,7 +519,7 @@ class DebianHandler(DistributionHandler):
         result = None
         local_file = None
 
-        if architecture.name=="all":
+        if architecture.name == "all":
             raise ValueError(N_("Refusing to download Packages for architecture {architecture}").format(architecture=architecture.name))
 
         for extension in (".bz2", ".gz", ""):
@@ -559,7 +559,7 @@ class DebianHandler(DistributionHandler):
         if o.scheme in ("http", "https", "ftp"):
             # Need to download file first
             url = downloadFile(o.geturl(), use_filename=True)
-        elif o.scheme=="":
+        elif o.scheme == "":
             # Local file
             pass
         else:
@@ -577,7 +577,7 @@ class DebianHandler(DistributionHandler):
                 result.maintainer = control.get("Maintainer")
                 if section:
                     result.section = self._getSection(session, section, add=True)
-                elif control.has_key('section'):
+                elif 'Section' in control:
                     result.section = self._getSection(session, control.get("Section"), add=True)
                 else:
                     raise ValueError(N_("Package %s has no section!"), control.get("Package"))
@@ -612,7 +612,7 @@ class DebianHandler(DistributionHandler):
                 result.maintainer = c['Maintainer']
                 result.build_depends = c['Build-Depends']
                 result.standards_version = c['Standards-Version']
-                if c.has_key('Priority'):
+                if 'Priority' in c:
                     result.priority = self._getPriority(session, c['Priority'], add=True)
                 result.files.append(self._getFile(session, url, add=True))
                 result.type = self._getType(session, "dsc", add=True)
@@ -626,14 +626,14 @@ class DebianHandler(DistributionHandler):
                 # Download additional files
                 if origin.startswith(('http', 'ftp')):
                     result.origin = origin
-                    if c.has_key('Files'):
+                    if 'Files' in c:
                         for source_file in c['Files']:
                             self.log.debug("Downloading additional file '%s'" % (base_url + source_file['name']))
                             request = urllib2.Request(base_url + source_file['name'])
                             try:
-                                file = urllib2.urlopen(request)
+                                fle = urllib2.urlopen(request)
                                 local_file = open(download_dir + os.sep + source_file['name'], "w")
-                                local_file.write(file.read())
+                                local_file.write(fle.read())
                                 local_file.close()
                                 local_url = download_dir + os.sep + source_file['name']
                                 checksum = str(source_file['md5sum'])
@@ -648,7 +648,7 @@ class DebianHandler(DistributionHandler):
                                 raise
                 else:
                     download_dir = os.path.dirname(origin)
-                    if c.has_key('Files'):
+                    if 'Files' in c:
                         for source_file in c['Files']:
                             local_url = download_dir + os.sep + source_file['name']
                             if os.path.exists(local_url):
@@ -658,10 +658,10 @@ class DebianHandler(DistributionHandler):
                                 result.files.append(self._getFile(session, local_url, add=True))
 
                 # We need to extract the source package to get the target section
-                for file in result.files:
-                    if file.name.endswith('.dsc'):
+                for fle in result.files:
+                    if fle.name.endswith('.dsc'):
                         p = subprocess.Popen(
-                        "LANG=C dpkg-source -x --no-check '%s'" % file.name,
+                        "LANG=C dpkg-source -x --no-check '%s'" % fle.name,
                         shell=True,
                         stderr=subprocess.PIPE,
                         stdout=subprocess.PIPE,
@@ -673,7 +673,7 @@ class DebianHandler(DistributionHandler):
                         dir_name = None
                         for line in p.stdout:
                             if line.startswith("dpkg-source: info: extracting %s" % result.name):
-                                dir_name = line[line.rfind(" ")+1:].strip()
+                                dir_name = line[line.rfind(" ") + 1:].strip()
                         p.stdout.close()
                         if os.path.exists(download_dir + os.sep + dir_name):
                             try:
@@ -693,7 +693,7 @@ class DebianHandler(DistributionHandler):
                                 raise
         return result, url
 
-    def _get_md5_for_file(self, filename, block_size=2**20):
+    def _get_md5_for_file(self, filename, block_size=2 ** 20):
         md5 = hashlib.md5()
         f = open(filename)
         while True:
@@ -773,7 +773,6 @@ class DebianHandler(DistributionHandler):
         return result
 
     def _getGPGEnvironment(self, session):
-        result = None
         work_dir = tempfile.mkdtemp()
         repository = session.query(Repository).filter_by(path=self.env.config.get('repository.path')).one()
         gpg = gnupg.GPG(gnupghome=work_dir)
@@ -799,7 +798,7 @@ class DebianHandler(DistributionHandler):
                 signed_ascii_data = str(gpg.sign_file(stream))
                 stream.close()
 
-                sign_file = open(filename+".gpg", 'wb')
+                sign_file = open(filename + ".gpg", 'wb')
                 sign_file.write(signed_ascii_data)
                 sign_file.close()
 
@@ -824,7 +823,7 @@ class DebianHandler(DistributionHandler):
                             "dpkg-scansources . > Sources",
                             shell=True,
                             stderr=subprocess.PIPE,
-                            cwd=os.sep.join((release.distribution.path, "dists",  release.name.replace('/', os.sep), component.name, architecture.name)))
+                            cwd=os.sep.join((release.distribution.path, "dists", release.name.replace('/', os.sep), component.name, architecture.name)))
                         packages_result = os.waitpid(p.pid, 0)[1]
                         if packages_result > 0:
                             self.log.error(p.stderr)
@@ -833,7 +832,7 @@ class DebianHandler(DistributionHandler):
                             "gzip -c Sources > Sources.gz",
                             shell=True,
                             stderr=subprocess.PIPE,
-                            cwd=os.sep.join((release.distribution.path, "dists",  release.name.replace('/', os.sep), component.name, architecture.name)))
+                            cwd=os.sep.join((release.distribution.path, "dists", release.name.replace('/', os.sep), component.name, architecture.name)))
                         packages_result = os.waitpid(p.pid, 0)[1]
                         if packages_result > 0:
                             self.log.error(p.stderr)
@@ -842,7 +841,7 @@ class DebianHandler(DistributionHandler):
                             "bzip2 -c Sources > Sources.bz2",
                             shell=True,
                             stderr=subprocess.PIPE,
-                            cwd=os.sep.join((release.distribution.path, "dists",  release.name.replace('/', os.sep), component.name, architecture.name)))
+                            cwd=os.sep.join((release.distribution.path, "dists", release.name.replace('/', os.sep), component.name, architecture.name)))
                         packages_result = os.waitpid(p.pid, 0)[1]
                         if packages_result > 0:
                             self.log.error(p.stderr)
@@ -852,7 +851,7 @@ class DebianHandler(DistributionHandler):
                             "dpkg-scanpackages . > Packages",
                             shell=True,
                             stderr=subprocess.PIPE,
-                            cwd=os.sep.join((release.distribution.path, "dists",  release.name.replace('/', os.sep), component.name, 'binary-' + architecture.name)))
+                            cwd=os.sep.join((release.distribution.path, "dists", release.name.replace('/', os.sep), component.name, 'binary-' + architecture.name)))
                         packages_result = os.waitpid(p.pid, 0)[1]
                         if packages_result > 0:
                             self.log.error(p.stderr)
@@ -862,7 +861,7 @@ class DebianHandler(DistributionHandler):
                             "gzip -c Packages > Packages.gz",
                             shell=True,
                             stderr=subprocess.PIPE,
-                            cwd=os.sep.join((release.distribution.path, "dists",  release.name.replace('/', os.sep), component.name, 'binary-' + architecture.name)))
+                            cwd=os.sep.join((release.distribution.path, "dists", release.name.replace('/', os.sep), component.name, 'binary-' + architecture.name)))
                         gzip_result = os.waitpid(p.pid, 0)[1]
                         if gzip_result > 0:
                             self.log.error(p.stderr)
@@ -872,7 +871,7 @@ class DebianHandler(DistributionHandler):
                             "bzip2 -c Packages > Packages.bz2",
                             shell=True,
                             stderr=subprocess.PIPE,
-                            cwd=os.sep.join((release.distribution.path, "dists",  release.name.replace('/', os.sep), component.name, 'binary-' + architecture.name)))
+                            cwd=os.sep.join((release.distribution.path, "dists", release.name.replace('/', os.sep), component.name, 'binary-' + architecture.name)))
                         bzip_result = os.waitpid(p.pid, 0)[1]
                         if bzip_result > 0:
                             self.log.error(p.stderr)
@@ -883,23 +882,23 @@ class DebianHandler(DistributionHandler):
                 "apt-ftparchive -qq -o 'APT::FTPArchive::Release::Suite=%s' -o 'APT::FTPArchive::Release::Codename=%s' release . > Release" % (release.name, release.codename if release.codename is not None else release.name),
                 shell=True,
                 stderr=subprocess.PIPE,
-                cwd = os.sep.join((release.distribution.path, "dists",  release.name.replace('/', os.sep))))
+                cwd=os.sep.join((release.distribution.path, "dists", release.name.replace('/', os.sep))))
             release_result = os.waitpid(p.pid, 0)[1]
             if release_result > 0:
                 self.log.error(p.stderr)
                 result = False
 
-            if os.path.exists(os.sep.join((release.distribution.path, "dists",  release.name.replace('/', os.sep), "Release"))):
-                signature = self._signFile(session, os.sep.join((release.distribution.path, "dists",  release.name.replace('/', os.sep), "Release")))
+            if os.path.exists(os.sep.join((release.distribution.path, "dists", release.name.replace('/', os.sep), "Release"))):
+                self._signFile(session, os.sep.join((release.distribution.path, "dists", release.name.replace('/', os.sep), "Release")))
 
             for child in release.children:
-                result = result and self._updateInventory(session, release = child.name)
+                result = result and self._updateInventory(session, release=child.name)
         elif distribution:
             if isinstance(distribution, (str, unicode)):
                 distribution = self._getDistribution(session, distribution)
 
             for release in distribution.releases:
-                result = result and self._updateInventory(session, release = release)
+                result = result and self._updateInventory(session, release=release)
 
         return result
 

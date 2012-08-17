@@ -40,7 +40,7 @@ import time
 import logging
 import datetime
 import gettext
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename #@UnresolvedImport
 from threading import Event
 from inspect import getargspec, getmembers, ismethod
 from zope.interface import implements
@@ -111,7 +111,7 @@ class CommandRegistry(Plugin):
         """
         return self.nodes
 
-    @Command(needsQueue=False, __help__=N_("List available methods "+
+    @Command(needsQueue=False, __help__=N_("List available methods " +
         "that are registered on the bus."))
     def getMethods(self, queue=None, locale=None):
         """
@@ -159,9 +159,7 @@ class CommandRegistry(Plugin):
 
         return res
 
-    @Command(needsQueue=True, __help__=N_("Shut down the service belonging to "+
-        "the supplied queue. In case of HTTP connections, this command will shut"+
-        " down the node you're currently logged in."))
+    @Command(needsQueue=True, __help__=N_("Shut down the service belonging to the supplied queue. In case of HTTP connections, this command will shut down the node you're currently logged in."))
     def shutdown(self, queue, force=False):
         """
         Shut down the service belonging to the supplied queue. In case of HTTP
@@ -452,8 +450,7 @@ class CommandRegistry(Plugin):
         if not func in self.commands:
             raise CommandInvalid("no function '%s' defined" % func)
 
-        #pylint: disable=W0612
-        (clazz, method) = self.path2method(self.commands[func]['path'])
+        (clazz, method) = self.path2method(self.commands[func]['path']) #@UnusedVariable
         p = re.compile(r'\.' + self.env.id + '$')
         p.sub('', queue)
         return self.env.domain + '.command.%s' % PluginRegistry.modules[clazz].get_target() == p.sub('', queue)
@@ -549,7 +546,6 @@ class CommandRegistry(Plugin):
         if not self.processing.is_set():
             self.processing.set()
 
-
     def _handleNodeStatus(self, data):
         data = data.NodeStatus
         self.log.debug("received status of node %s" % data.Id)
@@ -631,7 +627,6 @@ class CommandRegistry(Plugin):
                         info['sig'].remove('self')
 
                     self.commands[func] = info
-
 
         # Add event processor
         EventConsumer(self.env,

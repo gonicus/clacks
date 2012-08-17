@@ -1,25 +1,14 @@
 # -*- coding: utf-8 -*-
 import gettext
-import os
-import select
-import subprocess
-
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Table, Column, Integer, String, ForeignKey, Sequence
-from sqlalchemy.orm import relationship, backref
-
-from libinst.entities import Base, UseInnoDB
+from sqlalchemy import Column, Integer, String, ForeignKey, Sequence
+from libinst.entities import UseInnoDB
 from libinst.entities.distribution import Distribution
-
-from clacks.common import Environment
-from clacks.common.utils import N_, locate
-
-# pylint: disable-msg=E0611
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename #@UnresolvedImport
 
 # Include locales
 t = gettext.translation('messages', resource_filename("libinst.repo.deb", "locale"), fallback=True)
 _ = t.ugettext
+
 
 class DebianDistribution(Distribution, UseInnoDB):
     __tablename__ = 'debian_distribution'

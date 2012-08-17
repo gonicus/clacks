@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from clacks.agent.objects.backend import ObjectBackend
-from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, BLOB, DateTime
+from sqlalchemy import create_engine
 from clacks.common import Environment
 from logging import getLogger
 
@@ -56,7 +56,6 @@ class DBMAP(ObjectBackend):
                         except Exception as e:
                             raise DBMapBackendError("failed to execute SQL statement '%s' on database '%s': %s" % (str(action), database, str(e)))
 
-
     def load(self, uuid, info, back_attrs=None):
         return {}
 
@@ -69,7 +68,7 @@ class DBMAP(ObjectBackend):
     def exists(self, misc):
         return False
 
-    def remove(self, uuid, recursive=False):
+    def remove(self, uuid, data, params):
         return True
 
     def retract(self, uuid, data, params):

@@ -19,7 +19,7 @@ import base64
 import hashlib
 from clacks.common import Environment
 from clacks.common.components.dbus_runner import DBusRunner
-from clacks.common.components import PluginRegistry, Plugin, Command
+from clacks.common.components import PluginRegistry, Plugin
 
 
 class Notify(Plugin):

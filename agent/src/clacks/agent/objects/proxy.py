@@ -28,17 +28,20 @@ This fragment will add the *PosixUser* extension to the object, while
 will list the available extension types for that specific object.
 ----
 """
-import StringIO
 import pkg_resources
 import re
-from itertools import izip
+import time
 from lxml import etree
-from base64 import b64encode
 from ldap.dn import str2dn, dn2str
 from logging import getLogger
 from clacks.common import Environment
 from clacks.common.components import PluginRegistry
-from clacks.agent.objects.backend.registry import ObjectBackendRegistry
+from bson.binary import Binary
+
+try:
+        from cStringIO import StringIO
+except ImportError:
+        from StringIO import StringIO
 
 
 class ProxyException(Exception):
@@ -66,6 +69,7 @@ class ObjectProxy(object):
     __attributes = None
     __base_mode = None
     __property_map = None
+    __foreign_attrs = None
 
     def __init__(self, dn_or_base, what=None, user=None):
         self.__env = Environment.getInstance()
@@ -83,6 +87,7 @@ class ObjectProxy(object):
         self.__attributes = []
         self.__method_type_map = {}
         self.__property_map = {}
+        self.__foreign_attrs = []
 
         # Load available object types
         object_types = self.__factory.getObjectTypes()
@@ -111,6 +116,7 @@ class ObjectProxy(object):
         for extension in extensions:
             self.__log.debug("loading %s extension for %s" % (extension, dn_or_base))
             self.__extensions[extension] = self.__factory.getObject(extension, self.__base.uuid)
+            self.__extensions[extension].dn = self.__base.dn
             self.__initial_extension_state[extension] = True
         for extension in all_extensions:
             if extension not in self.__extensions:
@@ -141,15 +147,57 @@ class ObjectProxy(object):
             else:
                 props = self.__factory.getObjectProperties(ext)
 
-            self.__property_map = dict(self.__property_map.items() + props.items())
+            for attr in props:
+                if not props[attr]['foreign']:
+                    self.__attributes.append(attr)
+                    self.__property_map[attr] = props[attr]
+                else:
 
-            for attr in [n for n, o in props.items() if not o['foreign']]:
-                self.__attributes.append(attr)
+                    # Remember foreign properties to be able to the correct
+                    # values to them after we have finished building up all classes
+                    self.__foreign_attrs.append((attr, ext))
 
         # Get attribute to object-type mapping
         self.__attribute_type_map = self.__factory.getAttributeTypeMap(self.__base_type)
         self.uuid = self.__base.uuid
         self.dn = self.__base.dn
+
+        self.populate_to_foreign_properties()
+
+    def populate_to_foreign_properties(self, extension=None):
+        """
+        Populate values to foreign attributes.
+        After creating an extension we've to tell it which values
+        have to be used for its foreign properties.
+
+        This is only necessary initially. If we modified a property
+        that is used as foreign property somewhere else, then the setter
+        method of this proxy will forward the value to all classes.
+        """
+        for attr, ext in self.__foreign_attrs:
+
+            # Only populate value for the given extension
+            if extension != None and extension != ext:
+                continue
+
+            # Tell the class that own the foreign property that it
+            # has to use the source property data.
+            cur = self.__property_map[attr]
+            if ext in self.__extensions and self.__extensions[ext]:
+                self.__extensions[ext].set_foreign_value(attr, cur)
+
+    def get_extension_dependencies(self, extension):
+        required = []
+        oTypes = self.__factory.getObjectTypes()
+
+        def _resolve(ext):
+            for r_ext in oTypes[ext]['requires']:
+                required.append(r_ext)
+                _resolve(r_ext)
+
+        _resolve(extension)
+
+        return required
 
     def get_attributes(self, detail=False):
         """
@@ -224,46 +272,34 @@ class ObjectProxy(object):
             res[name] = ext.getTemplate(theme) if ext else self._get_template(name, theme)
         return res
 
-    def get_translations(self, locale, theme="default"):
-
-        # Merge translations
-        res = self.__base.getI18N(locale, theme)
-        for name, ext in self.__extensions.items():
-            if ext:
-                res.update(ext.getI18N(locale, theme))
-            else:
-                res.update(self._get_translation(name, locale, theme))
-        return res
-
     def _get_object_templates(self, obj):
         templates = []
         schema = self.__factory.getXMLSchema(obj)
         if "Templates" in schema.__dict__:
             for template in schema.Templates.iterchildren():
-                templates.append(template.text);
+                templates.append(template.text)
 
         return templates
 
     def _get_template(self, obj, theme):
-        templates = self._get_object_templates(obj);
+        templates = self._get_object_templates(obj)
         if templates:
-            return self.__base.getNamedTemplate(templates, theme)
+            return self.__base.__class__.getNamedTemplate(self.__env, templates, theme)
 
         return None
 
-    def _get_translation(self, obj, locale=None, theme="default"):
-        templates = self._get_object_templates(obj);
-        if templates:
-            return self.__base.getNamedI18N(templates, locale, theme)
-
-        return {}
-
     def get_object_info(self, locale=None, theme="default"):
         res = {}
+
         res['base'] = self.get_base_type()
         res['extensions'] = self.get_extension_types()
-        res['templates'] = self.get_templates(theme)
-        res['i18n'] = self.get_translations(locale, theme)
+
+        # Resolve all available extensions for their dependencies
+        ei = {}
+        for e in res['extensions'].keys():
+            ei[e] = self.get_extension_dependencies(e)
+        res['extension_deps'] = ei
+
         return res
 
     def extend(self, extension):
@@ -283,7 +319,7 @@ class ObjectProxy(object):
         oTypes = self.__factory.getObjectTypes()
         for r_ext in oTypes[extension]['requires']:
             if not r_ext in self.__extensions or self.__extensions[r_ext] == None:
-              raise ProxyException("extension '%s' is required to to extend %s" % (r_ext, extension))
+                raise ProxyException("extension '%s' is required to to extend %s" % (r_ext, extension))
 
         # Check Acls
         # Required is the 'c' (create) right for the extension on the current object.
@@ -301,6 +337,9 @@ class ObjectProxy(object):
         else:
             self.__extensions[extension] = self.__factory.getObject(extension,
                 self.__base.uuid, mode="extend")
+
+        # Set initial values for foreign properties
+        self.populate_to_foreign_properties(extension)
 
     def retract(self, extension):
         """
@@ -379,23 +418,18 @@ class ObjectProxy(object):
                 # Traverse tree and find different backends
                 foreign_backends = {}
                 index = PluginRegistry.getInstance("ObjectIndex")
-                children = index.xquery("""xquery version '1.0';
-                    let $doc := collection('objects')
-                    for $x in $doc/node()
-                    where ends-with($x/o:ParentDN, '%s')
-                    return
-                      ($x/o:DN/string(), $x/o:Type/string())""" % self.__base.dn)
+                children = index.raw_search({"dn": re.compile("^(.*,)?" + re.escape(self.__base.dn) + "$")},
+                    {'dn': 1, '_type': 1})
 
                 # Note all elements with different backends
-                i = iter(children)
-                children = dict(izip(i, i))
-                children = dict(map(lambda x: (x[0].decode("utf-8"), x[1]), children.items()))
-                for cdn, ctype in children.items():
+                for v in children:
+                    cdn = v['dn']
+                    ctype = v['_type']
                     cback = self.__factory.getObjectTypes()[ctype]['backend']
                     if cback != p_backend:
                         if not cback in foreign_backends:
                             foreign_backends = []
-                        foreign_backends[cback].append(cdn)
+                        foreign_backends[cback].append(cdn.decode('utf-8'))
 
                 # Only keep the first per backend that is close to the root
                 root_elements = {}
@@ -438,7 +472,7 @@ class ObjectProxy(object):
 
             except Exception as e:
                 from traceback import print_exc
-                print_exc();
+                print_exc()
                 self.__log.error("moving object '%s' from '%s' to '%s' failed: %s" % (self.__base.uuid, old_base, new_base, str(e)))
                 return False
 
@@ -470,7 +504,9 @@ class ObjectProxy(object):
             # Load all children and remove them, starting from the most
             # nested ones.
             index = PluginRegistry.getInstance("ObjectIndex")
-            children = index.xquery("collection('objects')/*/.[ends-with(o:ParentDN, '%s')]/o:DN/string()" % self.__base.dn)
+            children = index.raw_search({"dn": re.compile("^(.*,)?" + re.escape(self.__base.dn) + "$")}, {'dn': 1})
+            children = [c['dn'] for c in children]
+
             children.sort(key=len, reverse=True)
 
             for child in children:
@@ -480,10 +516,10 @@ class ObjectProxy(object):
         else:
             # Test if we've children
             index = PluginRegistry.getInstance("ObjectIndex")
-            if len(index.xquery("collection('objects')/*/.[ends-with(o:ParentDN, '%s')]/o:DN/string()" % self.__base.dn)):
+            if index.raw_search({"dn": re.compile("^(.*,)" + re.escape(self.__base.dn) + "$")}, {'dn': 1}).count():
                 raise ProxyException("specified object has children - use the recursive flag to remove them")
 
-        for extension in [e for x, e in self.__extensions.iteritems() if e]:
+        for extension in [e for e in self.__extensions.values() if e]:
             extension.remove_refs()
             extension.retract()
 
@@ -509,18 +545,14 @@ class ObjectProxy(object):
         # Traverse tree and find different backends
         foreign_backends = {}
         index = PluginRegistry.getInstance("ObjectIndex")
-        children = index.xquery("""xquery version '1.0';
-                    let $doc := collection('objects')
-                    for $x in $doc/node()
-                    where ends-with($x/o:ParentDN, '%s')
-                    return
-                      ($x/o:DN/string(), $x/o:Type/string())""" % self.__base.dn)
+        children = index.raw_search({"dn": re.compile("^(.*,)?" + re.escape(self.__base.dn) + "$")},
+            {'dn': 1, '_type': 1})
 
         # Note all elements with different backends
-        i = iter(children)
-        children = dict(izip(i, i))
-        children = dict(map(lambda x: (x[0].decode("utf-8"), x[1]), children.items()))
-        for cdn, ctype in children.items():
+        for v in children:
+            cdn = v['dn']
+            ctype = v['_type']
+
             cback = self.__factory.getObjectTypes()[ctype]['backend']
             if cback != p_backend:
                 if not cback in foreign_backends:
@@ -539,9 +571,20 @@ class ObjectProxy(object):
                 self.__retractions[idx].retract()
             del self.__retractions[idx]
 
+        # Check each extension before trying to save them
+        self.__base.check()
+        for extension in [ext for ext in self.__extensions.values() if ext]:
+            extension.check()
+
         # Handle commits
         self.__base.commit()
-        for extension in [ext for tmp, ext in self.__extensions.iteritems() if ext]:
+        for extension in [ext for ext in self.__extensions.values() if ext]:
+
+            # Populate the base uuid to the extensions
+            if(extension.uuid and extension.uuid != self.__base.uuid):
+                raise Exception("Base and extension have different uuids! Please check!")
+            if not extension.uuid:
+                extension.uuid = self.__base.uuid
             extension.commit()
 
         # Skip further actions if we're in create mode
@@ -567,7 +610,9 @@ class ObjectProxy(object):
 
                 # Update all DN references
                 # Emit 'post move' events
-                for cdn, ctype in children.items():
+                for entry in children:
+                    cdn = entry['dn']
+                    ctype = entry['_type']
 
                     # Don't handle objects that already have been moved
                     if cdn in root_elements.values():
@@ -670,6 +715,46 @@ class ObjectProxy(object):
         if not found:
             raise AttributeError("no such attribute '%s'" % name)
 
+    def asJSON(self, only_indexed=False):
+        """
+        Returns JSON representations for the base-object and all its extensions.
+        """
+        atypes = self.__factory.getAttributeTypes()
+
+        # Check permissions
+        topic = "%s.objects.%s" % (self.__env.domain, self.__base_type)
+        if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
+            self.__log.debug("user '%s' has insufficient permissions for asXML on %s, required is %s:%s" % (
+                self.__current_user, self.dn, topic, "r"))
+            raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
+
+        res = {}
+
+        # Create non object pseudo attributes
+        res['dn'] = self.__base.dn
+        res['_type'] = self.__base.__class__.__name__
+        res['_parent_dn'] = re.sub("^[^,]*,", "", self.__base.dn)
+        res['_uuid'] = self.__base.uuid
+
+        if self.__base.modifyTimestamp:
+            res['_last_changed'] = time.mktime(self.__base.modifyTimestamp.timetuple())
+
+        res['_extensions'] = self.__extensions.keys()
+
+        props = self.__property_map
+        for propname in self.__property_map:
+
+            # Use the object-type conversion method to get valid item string-representations.
+            prop_value = props[propname]['value']
+            if props[propname]['type'] == "Binary":
+                res[propname] = map(lambda x: Binary(str(x.get())), prop_value)
+
+            # Make remaining values unicode
+            else:
+                res[propname] = atypes[props[propname]['type']].convert_to("UnicodeString", prop_value)
+
+        return res
+
     def asXML(self, only_indexed=False):
         """
         Returns XML representations for the base-object and all its extensions.
@@ -702,19 +787,6 @@ class ObjectProxy(object):
         if self.__base.modifyTimestamp:
             attrs['modify-date'] = atypes['Timestamp'].convert_to("UnicodeString", [self.__base.modifyTimestamp])
 
-        # Add base class properties
-        props = self.__base.getProperties()
-        for propname in props:
-
-            # Use the object-type conversion method to get valid item string-representations.
-            # This does not work for boolean values, due to the fact that xml requires
-            # lowercase (true/false)
-            prop_value = props[propname]['value']
-            if props[propname]['type'] == "Boolean":
-                attrs[propname] = map(lambda x: 'true' if x == True else 'false', prop_value)
-            else:
-                attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString", prop_value)
-
         # Create a list of extensions and their properties
         exttag = etree.Element("extensions")
         for name in self.__extensions.keys():
@@ -723,25 +795,23 @@ class ObjectProxy(object):
                 ext.text = name
                 exttag.append(ext)
 
-                # Append extension properties to the list of attributes
-                # passed to the xsl
-                props = self.__extensions[name].getProperties()
-                for propname in props:
+        props = self.__property_map
+        for propname in self.__property_map:
 
-                    # Use the object-type conversion method to get valid item string-representations.
-                    # This does not work for boolean values, due to the fact that xml requires
-                    # lowercase (true/false)
-                    prop_value = props[propname]['value']
-                    if props[propname]['type'] == "Boolean":
-                        attrs[propname] = map(lambda x: 'true' if x == True else 'false', prop_value)
+            # Use the object-type conversion method to get valid item string-representations.
+            # This does not work for boolean values, due to the fact that xml requires
+            # lowercase (true/false)
+            prop_value = props[propname]['value']
+            if props[propname]['type'] == "Boolean":
+                attrs[propname] = map(lambda x: 'true' if x == True else 'false', prop_value)
 
-                    # Skip binary ones
-                    elif props[propname]['type'] == "Binary":
-                        attrs[propname] = map(lambda x: x.encode(), prop_value)
+            # Skip binary ones
+            elif props[propname]['type'] == "Binary":
+                attrs[propname] = map(lambda x: x.encode(), prop_value)
 
-                    # Make remaining values unicode
-                    else:
-                        attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString", prop_value)
+            # Make remaining values unicode
+            else:
+                attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString", prop_value)
 
         # Build a xml represention of the collected properties
         for key in attrs:
@@ -769,13 +839,12 @@ class ObjectProxy(object):
                 xmldefs, etree.tostring(propertiestag), etree.tostring(exttag), use_index)
 
         # Transform xml-combination into a useable xml-class representation
-        xml_doc = etree.parse(StringIO.StringIO(xml))
-        xslt_doc = etree.parse(pkg_resources.resource_filename('clacks.agent', 'data/object_to_xml.xsl'))
+        xml_doc = etree.parse(StringIO(xml))
+        xslt_doc = etree.parse(pkg_resources.resource_filename('clacks.agent', 'data/object_to_xml.xsl')) #@UndefinedVariable
         transform = etree.XSLT(xslt_doc)
         res = transform(xml_doc)
         return etree.tostring(res)
 
 
 from .factory import ObjectFactory
-from .object import Object
 from clacks.agent.acl import ACLResolver, ACLException

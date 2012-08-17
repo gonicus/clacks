@@ -2,18 +2,18 @@
 from setuptools import setup, find_packages
 
 setup(
-    name = "libinst.boot.preseed",
-    version = "1.0",
-    author = "Jan Wenzel",
-    author_email = "wenzel@gonicus.de",
-    description = "Repository and installation abstraction library",
-    long_description = """
+    name="libinst.boot.preseed",
+    version="1.0",
+    author="Jan Wenzel",
+    author_email="wenzel@gonicus.de",
+    description="Repository and installation abstraction library",
+    long_description="""
 This library handles the installation, configuration and repositories
 for various systems in your setup.
 """,
-    license = "LGPL",
-    url = "http://www.gosa-project.org",
-    classifiers = [
+    license="LGPL",
+    url="http://www.gosa-project.org",
+    classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Environment :: Console',
         'Intended Audience :: System Administrators',
@@ -25,23 +25,23 @@ for various systems in your setup.
         'Topic :: System :: Monitoring',
     ],
 
-    download_url = "http://oss.gonicus.de/pub/gosa",
-    namespace_packages = ['libinst'],
-    packages = find_packages('src', exclude=['examples', 'tests']),
+    download_url="http://oss.gonicus.de/pub/gosa",
+    namespace_packages=['libinst'],
+    packages=find_packages('src', exclude=['examples', 'tests']),
     package_dir={'': 'src'},
 
-    include_package_data = False,
+    include_package_data=False,
 
-    test_suite = "nose.collector",
-    zip_safe = False,
+    test_suite="nose.collector",
+    zip_safe=False,
 
-    setup_requires = ['pylint'],
-    install_requires = [
+    setup_requires=['pylint'],
+    install_requires=[
         'libinst',
     ],
 
 
-    entry_points = """
+    entry_points="""
         [libinst.base_methods]
         libinst.preseed = libinst.boot.preseed.methods:DebianPreseed
 

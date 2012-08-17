@@ -2,6 +2,7 @@
 from clacks.agent.objects.filter import ElementFilter
 from clacks.agent.plugins.password.manager import PasswordManager
 
+
 class DetectPasswordMethod(ElementFilter):
     """
     Detects the used password method of a given passwordHash

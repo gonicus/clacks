@@ -1,4 +1,5 @@
 
+
 class PasswordMethod(object):
     """
     The interface all password-methods should use.
@@ -7,13 +8,13 @@ class PasswordMethod(object):
 
     def isLockable(self, hash_value):
         """
-        Tells whether the password hash can be locked or not 
+        Tells whether the password hash can be locked or not
         """
         return False
 
     def isUnlockable(self, hash_value):
         """
-        Tells whether the password hash can be unlocked or not 
+        Tells whether the password hash can be unlocked or not
         """
         return False
 

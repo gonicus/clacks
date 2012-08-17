@@ -10,10 +10,10 @@ import os
 import sys
 import inspect
 
-from clacks.common.components.scheduler.util import *
+from clacks.common.components.scheduler.util import * #@UnusedWildImport
 from clacks.common.components.scheduler.triggers import SimpleTrigger, IntervalTrigger, CronTrigger
 from clacks.common.components.scheduler.jobstores.ram_store import RAMJobStore
-from clacks.common.components.scheduler.job import Job, MaxInstancesReachedError, JOB_RUNNING, JOB_ERROR, JOB_DONE, JOB_WAITING
+from clacks.common.components.scheduler.job import Job, MaxInstancesReachedError, JOB_RUNNING, JOB_ERROR, JOB_DONE
 from clacks.common.components.scheduler.events import *
 from clacks.common.components.scheduler.threadpool import ThreadPool
 
@@ -105,7 +105,7 @@ class Scheduler(object):
         self._thread.setDaemon(self.daemonic)
         self._thread.start()
 
-    def shutdown(self, wait=True, shutdown_threadpool=True):
+    def shutdown(self, wait=True, shutdown_threadpool=True, close_jobstores=True):
         """
         Shuts down the scheduler and terminates the thread.
         Does not interrupt any currently running jobs.
@@ -113,6 +113,7 @@ class Scheduler(object):
         :param wait: ``True`` to wait until all currently executing jobs have
                      finished (if ``shutdown_threadpool`` is also ``True``)
         :param shutdown_threadpool: ``True`` to shut down the thread pool
+        :param close_jobstores: ``True`` to close all job stores after shutdown
         """
         if not self.running:
             return
@@ -126,6 +127,11 @@ class Scheduler(object):
 
         # Wait until the scheduler thread terminates
         self._thread.join()
+
+        # Close all job stores
+        if close_jobstores:
+            for jobstore in itervalues(self._jobstores):
+                jobstore.close()
 
     @property
     def running(self):
@@ -167,7 +173,7 @@ class Scheduler(object):
 
         self._wakeup.set()
 
-    def remove_jobstore(self, alias):
+    def remove_jobstore(self, alias, close=True):
         """
         Removes the job store by the given alias from this scheduler.
 
@@ -175,14 +181,16 @@ class Scheduler(object):
         """
         self._jobstores_lock.acquire()
         try:
-            try:
-                del self._jobstores[alias]
-
-            except KeyError:
-                raise ValueError('No such job store: %s' % alias)
+            jobstore = self._jobstores.pop(alias)
+            if not jobstore:
+                raise KeyError('No such job store: %s' % alias)
 
         finally:
             self._jobstores_lock.release()
+
+        # Close the job store if requested
+        if close:
+            jobstore.close()
 
         # Notify listeners that a job store has been removed
         self._notify_listeners(JobStoreEvent(EVENT_JOBSTORE_REMOVED, alias))
@@ -260,7 +268,7 @@ class Scheduler(object):
         """
         Adds the given job to the job list and notifies the scheduler thread.
 
-        :param trigger: alias of the job store to store the job in
+        :param trigger: trigger that determines when ``func`` is called
         :param func: callable to run at the given time
         :param args: list of positional arguments to call func with
         :param kwargs: dict of keyword arguments to call func with
@@ -439,7 +447,7 @@ class Scheduler(object):
 
         self._jobstores_lock.acquire()
         try:
-            for alias, jobstore in iteritems(self._jobstores):
+            for jobstore in iteritems(self._jobstores).values():
                 if jobstore.jobs:
                     for job in jobstore.jobs:
                         if job.uuid == job_id:
@@ -545,7 +553,7 @@ class Scheduler(object):
                     break
 
     def migrate_job(self, job):
-        for alias, jobstore in iteritems(self._jobstores):
+        for jobstore in iteritems(self._jobstores).values():
             if jobstore.jobs and job in jobstore.jobs:
                 jobstore.migrate_job(job, self.origin)
                 break

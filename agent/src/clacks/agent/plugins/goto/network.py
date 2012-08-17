@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import socket
-import dumbnet
+import dumbnet #@UnresolvedImport
 from netaddr import EUI, NotRegisteredError
 from telnetlib import Telnet
 
@@ -24,7 +24,7 @@ class NetworkUtils(Plugin):
         """
         protocolAddress = socket.gethostbyname(name)
         networkAddress = self.getMacFromIP(protocolAddress)
-        return {'ip': protocolAddress, 'mac': networkAddress }
+        return {'ip': protocolAddress, 'mac': networkAddress}
 
     def __sendPacket(self, protocolAddress):
         try:
@@ -44,8 +44,7 @@ class NetworkUtils(Plugin):
             result = self.getMacFromARP(protocolAddress)
         return str(result)
 
-    @Command(__help__=N_("Resolve mac address to the producer of the"+
-        " network card if possible."))
+    @Command(__help__=N_("Resolve MAC address to the producer of the network card if possible."))
     def getMacManufacturer(self, mac):
         """
         This function uses the ieee file provided at

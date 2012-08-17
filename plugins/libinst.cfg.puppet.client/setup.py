@@ -34,10 +34,10 @@ for various systems in your setup.
     package_data = {
     },
 
-    test_suite = "nose.collector",
+    #test_suite = "nose.collector",
     zip_safe = False,
 
-    setup_requires = ['nose==0.11.1', 'NoseXUnit', 'pylint'],
+    #setup_requires = ['nose==0.11.1', 'NoseXUnit', 'pylint'],
     install_requires = [
         'clacks.client',
         'clacks.dbus',

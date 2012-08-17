@@ -23,18 +23,21 @@ can call the dbus method directly:
 """
 
 # -*- coding: utf-8 -*-
-import StringIO
 import hashlib
 import re
 import logging
 from threading import Thread
 from lxml import etree
 from dbus import DBusException
-from clacks.common.event import EventMaker
 from clacks.common import Environment
-from clacks.common.components import PluginRegistry, AMQPServiceProxy, Command, Plugin
+from clacks.common.components import PluginRegistry, Plugin
 from clacks.common.components.dbus_runner import DBusRunner
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename #@UnresolvedImport
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
 
 
 class Inventory(Plugin):
@@ -103,7 +106,7 @@ class Inventory(Plugin):
         # Remove time base or frequently changing values (like processes) from the
         # result to generate a useable checksum.
         # We use a XSL file which reads the result and skips some tags.
-        xml_doc = etree.parse(StringIO.StringIO(result))
+        xml_doc = etree.parse(StringIO(result))
 
         checksum_doc = etree.parse(resource_filename("clacks.client.plugins.inventory", "data/xmlToChecksumXml.xsl"))
         check_trans = etree.XSLT(checksum_doc)
