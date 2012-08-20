@@ -390,7 +390,7 @@
     <string>ChangePasswordDialog</string>
    </property>
    <property name="condition" stdset="0">
-    <string>!isLocked()</string>
+    <string>!isLocked</string>
    </property>
    <property name="icon">
     <iconset resource="resources/user.qrc">
@@ -405,7 +405,7 @@
     <string>lock(%(dn)s)</string>
    </property>
    <property name="condition" stdset="0">
-    <string>!isLocked()</string>
+    <string>!isLocked</string>
    </property>
    <property name="icon">
     <iconset resource="resources/user.qrc">
@@ -420,7 +420,7 @@
     <string>unlock(%(dn)s)</string>
    </property>
    <property name="condition" stdset="0">
-    <string>isLocked()</string>
+    <string>isLocked</string>
    </property>
    <property name="icon">
     <iconset resource="resources/user.qrc">
