@@ -558,6 +558,9 @@ class StringValue(MyNode):
         """
         Return a xquery valid string
         """
+        print "---hier---"
+        print self
+        print "---ende---"
         ret = self[0].replace("(", "\\(").replace(")", "\\)").replace(" ", "\\ ")
         return ("\"%s\"" % (ret))
 
