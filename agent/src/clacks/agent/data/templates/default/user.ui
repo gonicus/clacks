@@ -10,6 +10,20 @@
     <height>399</height>
    </rect>
   </property>
+  <property name="actions">
+   <action dialog="PasswordDialog" condition="!isLocked()">
+    <string>Change password...</string>
+   </action>
+   <action target="lock(%(dn)s)" condition="!isLocked()">
+    <string>Lock access</string>
+   </action>
+   <action target="unlock(%(dn)s)" condition="isLocked()">
+    <string>Unlock access</string>
+   </action>
+   <action dialog="SendMessageDialog">
+    <string>Notify user...</string>
+   </action>
+  </property>
   <property name="windowTitle">
    <string>Personal</string>
   </property>
