@@ -14,7 +14,7 @@
    <string>Personal</string>
   </property>
   <property name="windowIcon">
-    <iconset resource="resources/user.qrc">
+   <iconset resource="resources/user.qrc">
     <normaloff>:/images/user.png</normaloff>:/images/user.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
@@ -355,7 +355,7 @@
           <property name="placeholderText">
            <string>Please provide your web page here</string>
           </property>
-	 </widget>
+         </widget>
         </item>
        </layout>
       </item>
@@ -379,6 +379,50 @@
     </widget>
    </item>
   </layout>
+  <action name="actionChange_password">
+   <property name="text">
+    <string>Change password...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+   <property name="dialog" stdset="0">
+    <string>ChangePasswordDialog</string>
+   </property>
+   <property name="condition" stdset="0">
+    <string>!isLocked()</string>
+   </property>
+  </action>
+  <action name="actionLock_account">
+   <property name="text">
+    <string>Lock account</string>
+   </property>
+   <property name="target" stdset="0">
+    <string>lock(%(dn)s)</string>
+   </property>
+   <property name="condition" stdset="0">
+    <string>!isLocked()</string>
+   </property>
+  </action>
+  <action name="actionUnlock_account">
+   <property name="text">
+    <string>Unlock account</string>
+   </property>
+   <property name="target" stdset="0">
+    <string>unlock(%(dn)s)</string>
+   </property>
+   <property name="condition" stdset="0">
+    <string>isLocked()</string>
+   </property>
+  </action>
+  <action name="actionSend_message">
+   <property name="text">
+    <string>Send message...</string>
+   </property>
+   <property name="dialog" stdset="0">
+    <string>SendMessageDialog</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="resources/user.qrc"/>
