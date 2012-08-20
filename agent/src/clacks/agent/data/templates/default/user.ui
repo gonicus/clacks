@@ -392,6 +392,10 @@
    <property name="condition" stdset="0">
     <string>!isLocked()</string>
    </property>
+   <property name="icon">
+    <iconset resource="resources/user.qrc">
+     <normaloff>:/images/password.png</normaloff>:/images/password.png</iconset>
+   </property>
   </action>
   <action name="actionLock_account">
    <property name="text">
@@ -402,6 +406,10 @@
    </property>
    <property name="condition" stdset="0">
     <string>!isLocked()</string>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/user.qrc">
+     <normaloff>:/images/lock.png</normaloff>:/images/lock.png</iconset>
    </property>
   </action>
   <action name="actionUnlock_account">
@@ -414,6 +422,10 @@
    <property name="condition" stdset="0">
     <string>isLocked()</string>
    </property>
+   <property name="icon">
+    <iconset resource="resources/user.qrc">
+     <normaloff>:/images/unlock.png</normaloff>:/images/unlock.png</iconset>
+   </property>
   </action>
   <action name="actionSend_message">
    <property name="text">
@@ -421,6 +433,10 @@
    </property>
    <property name="dialog" stdset="0">
     <string>SendMessageDialog</string>
+   </property>
+   <property name="icon">
+    <iconset resource="resources/user.qrc">
+     <normaloff>:/images/notify.png</normaloff>:/images/notify.png</iconset>
    </property>
   </action>
  </widget>
