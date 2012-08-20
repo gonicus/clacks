@@ -9,6 +9,7 @@ from clacks.agent.objects.factory import ObjectFactory
 from clacks.agent.objects.backend.back_object_handler import ObjectHandler
 from json import loads, dumps
 
+
 class GuiMethods(Plugin):
     _target_ = 'misc'
 
@@ -174,6 +175,5 @@ class GuiMethods(Plugin):
 
             id = mapping[item[oattr]]
             result[id] = item
+
         return {"result": result, "map": mapping}
-
-
