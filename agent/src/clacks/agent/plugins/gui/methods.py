@@ -90,10 +90,6 @@ class GuiMethods(Plugin):
             WHERE %(condition)s
             """ % {"attrs": attrs, "condition": condition, "type": otype, "base": base}
 
-        print "--"
-        print query
-        print
-
         # Start the query and brind the result in a usable form
         search = PluginRegistry.getInstance("SearchWrapper")
         res =  search.execute(query)
