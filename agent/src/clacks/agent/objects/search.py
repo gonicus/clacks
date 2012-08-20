@@ -508,10 +508,33 @@ class Collection(MyNode):
         """
         Returns the compiled xquery for collection-match.
         """
-        left = self[0].compile()
-        right = self[2].compile()
-        con = self[1].lower()
+        if len(self) == 1:
+            return self[0].compile()
+        else:
+            left = self[0].compile()
+            right = self[2].compile()
+            con = self[1].lower()
         return("(%s %s %s)" % (left, con, right))
+
+
+class And(MyNode):
+    def compile(self):
+        """
+        Returns the compiled xquery for collection-match.
+        """
+        left = self[0].compile()
+        right = self[1].compile()
+        return("(%s and %s)" % (left, right))
+
+
+class Or(MyNode):
+    def compile(self):
+        """
+        Returns the compiled xquery for collection-match.
+        """
+        left = self[0].compile()
+        right = self[1].compile()
+        return("(%s or %s)" % (left, right))
 
 
 class Where(MyNode):
@@ -707,17 +730,20 @@ class SearchWrapper(Plugin):
             negator = Literal('NOT')
             condition += condition_tmp | Optional(negator) & ~Literal('(') & condition & ~Literal(')') > Match
 
-            # Allow to connect conditions (called collection below)
-            collection_operator = (Literal('AND') | Literal('OR'))
+            # Allow to have joined condition in any possible variation
+            group2, group3 = Delayed(), Delayed()
+            parens = ~Literal('(') & group3 & ~Literal(')') > Collection
+            group1 = parens | condition
 
-            # Create a collection which supports nested conditions
-            collection = Delayed()
-            collection += (condition & collection_operator & (condition | collection)) > Collection
+            or_ = group1 & ~Literal('OR') & group2 > Or
+            and_ = group1 & ~Literal('AND') & group2 > And
+            group2 += or_ | and_ | group1
 
-            joined_collections  = Delayed()
-            joined_collections += collection | condition |  ~Literal('(') & joined_collections  & ~Literal(')')
+            add = group2 & ~Literal('OR') & group3 > Or
+            sub = group2 & ~Literal('AND') & group3 > And
+            group3 += add | sub | group2
 
-            where = ~Literal('WHERE') & joined_collections  > Where
+            where = ~Literal('WHERE') & group3 > Where
 
             ################
             ### Limit
