@@ -406,7 +406,7 @@
     <string>Lock account</string>
    </property>
    <property name="target" stdset="0">
-    <string notr="true">lock(%(dn)s)</string>
+    <string notr="true">lock()</string>
    </property>
    <property name="condition" stdset="0">
     <string notr="true">!isLocked</string>
@@ -421,7 +421,7 @@
     <string>Unlock account</string>
    </property>
    <property name="target" stdset="0">
-    <string notr="true">unlock(%(dn)s)</string>
+    <string notr="true">unlock()</string>
    </property>
    <property name="condition" stdset="0">
     <string notr="true">isLocked</string>
