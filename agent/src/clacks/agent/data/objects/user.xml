@@ -52,6 +52,7 @@
         </MethodParameters>
         <Command>notifyUser</Command>
         <CommandParameters>
+          <Value>uid</Value>
           <Value>notify_title</Value>
           <Value>notify_message</Value>
           <Value>notify_duration</Value>
