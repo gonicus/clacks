@@ -380,6 +380,10 @@
    </item>
   </layout>
   <action name="actionChange_password">
+   <property name="icon">
+    <iconset resource="resources/user.qrc">
+     <normaloff>:/images/password.png</normaloff>:/images/password.png</iconset>
+   </property>
    <property name="text">
     <string>Change password...</string>
    </property>
@@ -387,56 +391,52 @@
     <string>Ctrl+P</string>
    </property>
    <property name="dialog" stdset="0">
-    <string>ChangePasswordDialog</string>
+    <string notr="true">ChangePasswordDialog</string>
    </property>
    <property name="condition" stdset="0">
-    <string>!isLocked</string>
-   </property>
-   <property name="icon">
-    <iconset resource="resources/user.qrc">
-     <normaloff>:/images/password.png</normaloff>:/images/password.png</iconset>
+    <string notr="true">!isLocked</string>
    </property>
   </action>
   <action name="actionLock_account">
-   <property name="text">
-    <string>Lock account</string>
-   </property>
-   <property name="target" stdset="0">
-    <string>lock(%(dn)s)</string>
-   </property>
-   <property name="condition" stdset="0">
-    <string>!isLocked</string>
-   </property>
    <property name="icon">
     <iconset resource="resources/user.qrc">
      <normaloff>:/images/lock.png</normaloff>:/images/lock.png</iconset>
    </property>
-  </action>
-  <action name="actionUnlock_account">
    <property name="text">
-    <string>Unlock account</string>
+    <string>Lock account</string>
    </property>
    <property name="target" stdset="0">
-    <string>unlock(%(dn)s)</string>
+    <string notr="true">lock(%(dn)s)</string>
    </property>
    <property name="condition" stdset="0">
-    <string>isLocked</string>
+    <string notr="true">!isLocked</string>
    </property>
+  </action>
+  <action name="actionUnlock_account">
    <property name="icon">
     <iconset resource="resources/user.qrc">
      <normaloff>:/images/unlock.png</normaloff>:/images/unlock.png</iconset>
    </property>
+   <property name="text">
+    <string>Unlock account</string>
+   </property>
+   <property name="target" stdset="0">
+    <string notr="true">unlock(%(dn)s)</string>
+   </property>
+   <property name="condition" stdset="0">
+    <string notr="true">isLocked</string>
+   </property>
   </action>
   <action name="actionSend_message">
+   <property name="icon">
+    <iconset resource="resources/user.qrc">
+     <normaloff>:/images/notify.png</normaloff>:/images/notify.png</iconset>
+   </property>
    <property name="text">
     <string>Send message...</string>
    </property>
    <property name="dialog" stdset="0">
-    <string>SendMessageDialog</string>
-   </property>
-   <property name="icon">
-    <iconset resource="resources/user.qrc">
-     <normaloff>:/images/notify.png</normaloff>:/images/notify.png</iconset>
+    <string notr="true">SendMessageDialog</string>
    </property>
   </action>
  </widget>

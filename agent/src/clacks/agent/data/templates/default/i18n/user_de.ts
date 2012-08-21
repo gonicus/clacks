@@ -20,7 +20,7 @@
     <message>
         <location filename="../user.ui" line="84"/>
         <source>Login &amp;ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Anmelde &amp;ID</translation>
     </message>
     <message>
         <location filename="../user.ui" line="113"/>
@@ -80,7 +80,32 @@
     <message>
         <location filename="../user.ui" line="356"/>
         <source>Please provide your web page here</source>
-        <translation type="unfinished"></translation>
+        <translation>Bitte geben Sie hier ihre Webseite ein</translation>
+    </message>
+    <message>
+        <location filename="../user.ui" line="388"/>
+        <source>Change password...</source>
+        <translation>Passwort ändern...</translation>
+    </message>
+    <message>
+        <location filename="../user.ui" line="391"/>
+        <source>Ctrl+P</source>
+        <translation>Ctrl+P</translation>
+    </message>
+    <message>
+        <location filename="../user.ui" line="406"/>
+        <source>Lock account</source>
+        <translation>Konto sperren</translation>
+    </message>
+    <message>
+        <location filename="../user.ui" line="421"/>
+        <source>Unlock account</source>
+        <translation>Konto freigeben</translation>
+    </message>
+    <message>
+        <location filename="../user.ui" line="436"/>
+        <source>Send message...</source>
+        <translation>Nachricht senden...</translation>
     </message>
 </context>
 </TS>
