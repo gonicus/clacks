@@ -850,7 +850,7 @@ class ObjectFactory(object):
                 # Append the method to the list of registered methods for this
                 # object
                 self.log.debug("adding method: '%s'" % (methodName, ))
-                methods[methodName] = {'ref': self.__create_class_method(klass, methodName, command, mParams, cParams, props)}
+                methods[methodName] = {'ref': self.__create_class_method(klass, methodName, command, mParams, cParams)}
 
         # Build list of hooks
         if 'Hooks' in classr.__dict__:
@@ -871,7 +871,7 @@ class ObjectFactory(object):
                 self.log.debug("adding %s-hook with command '%s'" % (m_type, command))
                 if not m_type in hooks:
                     hooks[m_type] = []
-                hooks[m_type].append({'ref': self.__create_hook(klass, m_type, command, cParams, props)})
+                hooks[m_type].append({'ref': self.__create_hook(klass, m_type, command, cParams)})
 
         # Set properties and methods for this object.
         setattr(klass, '__properties', props)
@@ -879,13 +879,16 @@ class ObjectFactory(object):
         setattr(klass, '__hooks', hooks)
         return klass
 
-    def __create_hook(self, klass, m_type, command, cParams, props):
+    def __create_hook(self, klass, m_type, command, cParams):
         """
         Creates a new executeable hook-method for the current objekt.
         """
 
         # Now add the method to the object
         def funk(caller_object, *args, **kwargs):
+
+            # Load the objects actual property set
+            props = caller_object.myProperties
 
             # Build the command-parameter list.
             # Collect all property values of this object to be able to fill in
@@ -912,13 +915,16 @@ class ObjectFactory(object):
             return cr.call(command, *parmList)
         return funk
 
-    def __create_class_method(self, klass, methodName, command, mParams, cParams, props):
+    def __create_class_method(self, klass, methodName, command, mParams, cParams):
         """
         Creates a new klass-method for the current objekt.
         """
 
         # Now add the method to the object
         def funk(caller_object, *args, **kwargs):
+
+            # Load the objects actual property set
+            props = caller_object.myProperties
 
             # Convert all given parameters into named arguments
             # The eases up things a lot.
