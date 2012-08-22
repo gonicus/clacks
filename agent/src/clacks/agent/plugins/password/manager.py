@@ -81,14 +81,14 @@ class PasswordManager(Plugin):
         index = PluginRegistry.getInstance("ObjectIndex")
         return len(index.xquery("collection('objects')/o:User[o:DN='%s' and "  \
                                 "o:Attributes/o:userPassword and "             \
-                                "o:Attributes/o:isLocked != 'true']/o:DN" % (object_dn))) != 0
+                                "o:Attributes/o:isLocked='false']/o:DN" % (object_dn))) != 0
 
     @Command(__help__=N_("Check whether the account can be unlocked or not"))
     def accountUnlockable(self, object_dn):
         index = PluginRegistry.getInstance("ObjectIndex")
         return len(index.xquery("collection('objects')/o:User[o:DN='%s' and "   \
                                 "o:Attributes/o:userPassword and "              \
-                                "o:Attributes/o:isLocked != 'false']/o:DN" % (object_dn))) != 0
+                                "o:Attributes/o:isLocked='true']/o:DN" % (object_dn))) != 0
 
     @Command(__help__=N_("Changes the used password enryption method"))
     def setUserPasswordMethod(self, object_dn, method, password):

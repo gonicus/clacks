@@ -409,7 +409,7 @@
     <string notr="true">lock()</string>
    </property>
    <property name="condition" stdset="0">
-    <string notr="true">!isLocked</string>
+    <string notr="true">accountLockable(dn)</string>
    </property>
   </action>
   <action name="actionUnlock_account">
@@ -424,7 +424,7 @@
     <string notr="true">unlock()</string>
    </property>
    <property name="condition" stdset="0">
-    <string notr="true">isLocked</string>
+    <string notr="true">accountUnlockable(dn)</string>
    </property>
   </action>
   <action name="actionSend_message">
