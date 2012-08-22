@@ -11,9 +11,11 @@ from clacks.common.components.json_exception import JSONRPCException
 
 class JSONObjectFactory(object):
 
-    def __init__(self, proxy, ref, oid, methods, properties, data):
+    def __init__(self, proxy, ref, dn, oid, methods, properties, data):
         object.__setattr__(self, "proxy", proxy)
         object.__setattr__(self, "ref", ref)
+        object.__setattr__(self, "uuid", ref)
+        object.__setattr__(self, "dn", dn)
         object.__setattr__(self, "oid", oid)
         object.__setattr__(self, "methods", methods)
         object.__setattr__(self, "properties", properties)
@@ -27,6 +29,10 @@ class JSONObjectFactory(object):
                 name, *args, **kwargs)
 
     def __getattribute__(self, name):
+
+        if name in ['uuid', 'dn']:
+            return object.__getattribute__(self, name)
+
         if name in object.__getattribute__(self, "methods"):
             return lambda *f: object.__getattribute__(self, "_call")(*[name] + list(f))
 
@@ -49,10 +55,10 @@ class JSONObjectFactory(object):
         return object.__getattribute__(self, "ref")
 
     @staticmethod
-    def get_instance(proxy, obj_type, ref, oid, methods, properties, data=None):
+    def get_instance(proxy, obj_type, ref, dn, oid, methods, properties, data=None):
         return type(str(obj_type),
                 (JSONObjectFactory, object),
-                JSONObjectFactory.__dict__.copy())(proxy, ref, oid, methods, properties, data)
+                JSONObjectFactory.__dict__.copy())(proxy, ref, dn, oid, methods, properties, data)
 
 
 class JSONServiceProxy(object):
