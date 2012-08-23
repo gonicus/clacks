@@ -94,6 +94,7 @@
         <Description></Description>
         <Type>UnicodeString</Type>
       </Attribute>
+    </Attributes>
 
     <Extends>
       <Value>PosixUser</Value>
