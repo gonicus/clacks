@@ -173,6 +173,16 @@
         <Name>gecos</Name>
         <Description>The GECOS field; the common name</Description>
         <Type>UnicodeString</Type>
+        <BlockedBy>
+          <Name>autoGECOS</Name>
+          <Value>true</Value>
+        </BlockedBy>
+      </Attribute>
+      <Attribute>
+        <Name>autoGECOS</Name>
+        <Default>true</Default>
+        <Backend>NULL</Backend>
+        <Type>Boolean</Type>
       </Attribute>
     </Attributes>
 
