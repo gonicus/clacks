@@ -14,10 +14,6 @@
         <translation>Anmelde-Information</translation>
     </message>
     <message>
-        <source>Login ID</source>
-        <translation type="obsolete">Anmelde-ID</translation>
-    </message>
-    <message>
         <location filename="../user.ui" line="84"/>
         <source>Login &amp;ID</source>
         <translation>Anmelde &amp;ID</translation>
