@@ -695,51 +695,58 @@ class ObjectFactory(object):
                 if "Backend" in prop.__dict__:
                     backend = prop.Backend.text
 
-                # Do we have an output filter definition?
+
+                # Prepare initial values
                 out_f = []
-                if "OutFilter" in prop.__dict__:
-                    for entry in  prop['OutFilter'].iterchildren():
-                        self.log.debug(" appending out-filter")
-                        of = self.__handleFilterChain(entry)
-                        out_f.append(of)
-
-                # Do we have a input filter definition?
                 in_f =  []
-                if "InFilter" in prop.__dict__:
-                    for entry in  prop['InFilter'].iterchildren():
-                        self.log.debug(" appending in-filter")
-                        in_f.append(self.__handleFilterChain(entry))
-
-                # Read and build up validators
-                validator =  None
-                if "Validators" in prop.__dict__:
-                    self.log.debug(" appending property validator")
-                    validator = self.__build_filter(prop['Validators'])
-
-                # Read the properties syntax
-                syntax = prop['Type'].text
-                backend_syntax = syntax
-                if "BackendType" in prop.__dict__:
-                    backend_syntax = prop['BackendType'].text
-
-                # Read blocked by settings - When they are fullfilled, these property cannot be changed.
                 blocked_by = []
-                if "BlockedBy" in prop.__dict__:
-                    bname = prop['BlockedBy'].Name.text
-                    bvalue = prop['BlockedBy'].Value.text
-                    blocked_by.append({'name': bname, 'value': bvalue})
-
-                # Convert the default to the corresponding type.
                 default = None
-                if "Default" in prop.__dict__:
-                    default = self.__attribute_type[syntax].convert_from('String', [prop.Default.text])
-
-                # check for multivalue, mandatory and unique definition
-                multivalue = bool(load(prop, "MultiValue", False))
+                validator = None
+                backend_syntax = syntax = prop['Type'].text
                 unique = bool(load(prop, "Unique", False))
-                mandatory = bool(load(prop, "Mandatory", False))
                 readonly = bool(load(prop, "ReadOnly", False))
+                mandatory = bool(load(prop, "Mandatory", False))
+                multivalue = bool(load(prop, "MultiValue", False))
                 case_sensitive = bool(load(prop, "CaseSensitive", False))
+
+                # Foreign attributes do not need any filters, validation or block settings
+                # All this is done by its primary backend.
+                if foreign:
+                    backend = "NULL"
+                else:
+
+                    # Do we have an output filter definition?
+                    if "OutFilter" in prop.__dict__:
+                        for entry in  prop['OutFilter'].iterchildren():
+                            self.log.debug(" appending out-filter")
+                            of = self.__handleFilterChain(entry)
+                            out_f.append(of)
+
+                    # Do we have a input filter definition?
+                    if "InFilter" in prop.__dict__:
+                        for entry in  prop['InFilter'].iterchildren():
+                            self.log.debug(" appending in-filter")
+                            in_f.append(self.__handleFilterChain(entry))
+
+                    # Read and build up validators
+                    if "Validators" in prop.__dict__:
+                        self.log.debug(" appending property validator")
+                        validator = self.__build_filter(prop['Validators'])
+
+                    # Read the properties syntax
+                    if "BackendType" in prop.__dict__:
+                        backend_syntax = prop['BackendType'].text
+
+                    # Read blocked by settings - When they are fullfilled, these property cannot be changed.
+                    if "BlockedBy" in prop.__dict__:
+                        bname = prop['BlockedBy'].Name.text
+                        bvalue = prop['BlockedBy'].Value.text
+                        blocked_by.append({'name': bname, 'value': bvalue})
+
+                    # Convert the default to the corresponding type.
+                    if "Default" in prop.__dict__:
+                        default = self.__attribute_type[syntax].convert_from('String', [prop.Default.text])
+
 
                 # Check for property dependencies
                 depends_on = []
