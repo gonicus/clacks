@@ -2,16 +2,15 @@
 <Objects xmlns="http://www.gonicus.de/Objects">
   <Object>
     <Name>PosixUser</Name>
-    <DisplayName>Posix extension</DisplayName>
+    <DisplayName>POSIX extension</DisplayName>
     <Templates>
-      <Template>posix-user.ui</Template>
+      <Template>user-posix.ui</Template>
     </Templates>
     <Description>A posix extension for a generic user</Description>
     <BaseObject>false</BaseObject>
     <BackendParameters>
-      <Backend objectClasses="posixAccount,shadowAccount">LDAP</Backend>
+      <Backend objectClasses="posixAccount">LDAP</Backend>
       <Backend groupMembership="PosixGroup:cn,memberUid=uid">ObjectHandler</Backend>
-      <Backend type="PosixUser">JSON</Backend>
     </BackendParameters>
     <Backend>LDAP</Backend>
 
@@ -19,13 +18,6 @@
       <ForeignAttribute>
         <Name>uid</Name>
       </ForeignAttribute>
-
-      <Attribute>
-        <Name>test</Name>
-        <Description>The Audio attribute type allows the storing of sounds in the Directory. The attribute uses a u-law encoded sound file as used by the "play" utility on a Sun 4. This is an interim format</Description>
-        <Type>String</Type>
-        <Backend>JSON</Backend>
-      </Attribute>
 
       <Attribute>
         <Name>groupMembership</Name>
@@ -40,87 +32,6 @@
             <Param>cn</Param>
           </Condition>
         </Validators>
-      </Attribute>
-
-      <Attribute>
-        <Name>shadowLastChange</Name>
-        <Description>The dat of the last password change.</Description>
-        <Type>Timestamp</Type>
-        <BackendType>Integer</BackendType>
-	<ReadOnly>true</ReadOnly>
-        <InFilter>
-          <FilterChain>
-            <FilterEntry>
-              <Filter>
-                <Name>ShadowDaysToDatetime</Name>
-              </Filter>
-            </FilterEntry>
-          </FilterChain>
-        </InFilter>
-        <OutFilter>
-          <FilterChain>
-            <FilterEntry>
-              <Filter>
-                <Name>DatetimeToShadowDays</Name>
-              </Filter>
-            </FilterEntry>
-          </FilterChain>
-        </OutFilter>
-      </Attribute>
-
-      <Attribute>
-        <Name>shadowMin</Name>
-        <Description>The minimum password age is the number of days the user will have to wait before she will be allowed to change her password again.</Description>
-        <Type>Integer</Type>
-      </Attribute>
-
-      <Attribute>
-        <Name>shadowMax</Name>
-        <Description>The maximum password age is the number of days after which the user will have to change her password.</Description>
-        <Type>Integer</Type>
-      </Attribute>
-
-      <Attribute>
-        <Name>shadowWarning</Name>
-        <Description>The number of days before a password is going to expire (see the shadowMax) during which the user should be warned.</Description>
-        <Type>Integer</Type>
-      </Attribute>
-
-      <Attribute>
-        <Name>shadowInactive</Name>
-        <Description>The number of days after a password has expired (see the shadowMax) during which the password should still be accepted (and the user should update her password during the next login).</Description>
-        <Type>Integer</Type>
-      </Attribute>
-
-      <Attribute>
-        <Name>shadowExpire</Name>
-        <Description>The date of expiration of the account.</Description>
-        <Type>Timestamp</Type>
-        <BackendType>Integer</BackendType>
-        <InFilter>
-          <FilterChain>
-            <FilterEntry>
-              <Filter>
-                <Name>ShadowDaysToDatetime</Name>
-              </Filter>
-            </FilterEntry>
-          </FilterChain>
-        </InFilter>
-        <OutFilter>
-          <FilterChain>
-            <FilterEntry>
-              <Filter>
-                <Name>DatetimeToShadowDays</Name>
-              </Filter>
-            </FilterEntry>
-          </FilterChain>
-        </OutFilter>
-      </Attribute>
-
-      <Attribute>
-        <Name>shadowFlag</Name>
-        <Description></Description>
-        <Type>UnicodeString</Type>
       </Attribute>
 
       <Attribute>
