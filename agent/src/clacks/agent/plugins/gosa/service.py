@@ -3,6 +3,7 @@ import pkg_resources
 import tornado.websocket
 import logging
 import re
+import os
 import hmac, base64, time
 from clacks.common.gjson import dumps
 from hashlib import sha1
@@ -24,7 +25,10 @@ class GOsaService(object):
         self.env = env
         self.log = logging.getLogger(__name__)
         self.log.info("initializing GOsa static HTTP and WebSocket service")
-        self.path = self.env.config.get('gosa.path', default=r"/admin/(.*)")
+        self.path = self.env.config.get('gosa.path', default="/admin")
+        self.static_path = self.env.config.get('gosa.static_path', default="/static")
+        #pylint: disable=E1101
+        self.resource_path = pkg_resources.resource_filename('clacks.agent', 'data/templates')
         self.ws_path = self.env.config.get('gosa.websocket', default="/ws")
 
         #pylint: disable=E1101
@@ -38,7 +42,8 @@ class GOsaService(object):
         self.__http = PluginRegistry.getInstance('HTTPService')
 
         # Register ourselves
-        self.__http.register_static(self.path, self.local_path)
+        self.__http.register_static(os.path.join(self.path, "(.*)"), self.local_path)
+        self.__http.register_static(os.path.join(self.static_path, "(.*)"), self.resource_path)
         self.__http.register_ws(self.ws_path, WSHandler)
 
         # Register a redirector for the static handler
@@ -52,7 +57,7 @@ class Redirector(object):
         self.location = location
 
     def __call__(self, environ, start_response):
-        return exc.HTTPFound(location=self.location)(environ, start_response)
+        return exc.HTTPFound(location=os.path.join(self.location, "index.html"))(environ, start_response)
 
 
 class WSHandler(tornado.websocket.WebSocketHandler):
