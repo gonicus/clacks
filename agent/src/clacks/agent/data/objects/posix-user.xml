@@ -175,7 +175,7 @@
         <Type>UnicodeString</Type>
         <BlockedBy>
           <Name>autoGECOS</Name>
-          <Value>True</Value>
+          <Value>true</Value>
         </BlockedBy>
       </Attribute>
       <Attribute>
