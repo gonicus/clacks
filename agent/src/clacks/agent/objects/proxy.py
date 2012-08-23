@@ -141,10 +141,10 @@ class ObjectProxy(object):
             else:
                 props = self.__factory.getObjectProperties(ext)
 
-            self.__property_map = dict(self.__property_map.items() + props.items())
 
             for attr in [n for n, o in props.items() if not o['foreign']]:
                 self.__attributes.append(attr)
+                self.__property_map[attr] = props[attr]
 
         # Get attribute to object-type mapping
         self.__attribute_type_map = self.__factory.getAttributeTypeMap(self.__base_type)
