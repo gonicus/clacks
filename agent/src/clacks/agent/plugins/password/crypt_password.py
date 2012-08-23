@@ -17,6 +17,24 @@ class PasswordMethodCrypt(PasswordMethod):
 
     hash_name = "CRYPT"
 
+    def isLockable(self, hash_value):
+        """
+        See PasswordMethod Interface for details
+        """
+        if not(hash_value):
+            return False
+
+        return not(self.is_locked(hash_value))
+
+    def isUnlockable(self, hash_value):
+        """
+        See PasswordMethod Interface for details
+        """
+        if not(hash_value):
+            return False
+
+        return self.is_locked(hash_value)
+
     def is_responsible_for_password_hash(self, password_hash):
         """
         See PasswordMethod Interface for details

@@ -5,6 +5,18 @@ class PasswordMethod(object):
     """
     hash_name = None
 
+    def isLockable(self, hash_value):
+        """
+        Tells whether the password hash can be locked or not 
+        """
+        return False
+
+    def isUnlockable(self, hash_value):
+        """
+        Tells whether the password hash can be unlocked or not 
+        """
+        return False
+
     def is_locked(self, hash_value):
         """
         Checks whether the account is locked or not.

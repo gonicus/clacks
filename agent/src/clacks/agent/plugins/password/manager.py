@@ -79,16 +79,48 @@ class PasswordManager(Plugin):
     @Command(__help__=N_("Check whether the account can be locked or not"))
     def accountLockable(self, object_dn):
         index = PluginRegistry.getInstance("ObjectIndex")
-        return len(index.xquery("collection('objects')/o:User[o:DN='%s' and "  \
-                                "o:Attributes/o:userPassword and "             \
-                                "o:Attributes/o:isLocked='false']/o:DN" % (object_dn))) != 0
+
+        # Get password hash
+        hash = index.xquery("collection('objects')/*[o:DN='%s']/o:Attributes/o:userPassword/string()" % \
+                            (object_dn))
+        if len(hash):
+            hash = hash[0]
+        else:
+
+            # No password hash -> cannot lock/unlock account
+            return False
+
+        # Try to detect the responsible password method-class
+        pwd_o = self.detect_method_by_hash(hash)
+        if not pwd_o:
+
+            # Could not identify password method
+            return False
+
+        return pwd_o.isLockable(hash)
 
     @Command(__help__=N_("Check whether the account can be unlocked or not"))
     def accountUnlockable(self, object_dn):
         index = PluginRegistry.getInstance("ObjectIndex")
-        return len(index.xquery("collection('objects')/o:User[o:DN='%s' and "   \
-                                "o:Attributes/o:userPassword and "              \
-                                "o:Attributes/o:isLocked='true']/o:DN" % (object_dn))) != 0
+
+        # Get password hash
+        hash = index.xquery("collection('objects')/*[o:DN='%s']/o:Attributes/o:userPassword/string()" % \
+                            (object_dn))
+        if len(hash):
+            hash = hash[0]
+        else:
+
+            # No password hash -> cannot lock/unlock account
+            return False
+
+        # Try to detect the responsible password method-class
+        pwd_o = self.detect_method_by_hash(hash)
+        if not pwd_o:
+
+            # Could not identify password method
+            return False
+
+        return pwd_o.isUnlockable(hash)
 
     @Command(__help__=N_("Changes the used password enryption method"))
     def setUserPasswordMethod(self, object_dn, method, password):
