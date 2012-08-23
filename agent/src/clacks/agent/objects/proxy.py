@@ -141,7 +141,6 @@ class ObjectProxy(object):
             else:
                 props = self.__factory.getObjectProperties(ext)
 
-
             for attr in [n for n, o in props.items() if not o['foreign']]:
                 self.__attributes.append(attr)
                 self.__property_map[attr] = props[attr]
