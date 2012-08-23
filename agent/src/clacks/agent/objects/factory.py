@@ -806,8 +806,9 @@ class ObjectFactory(object):
 
                 # Does the blocking property exists?
                 if bentry['name'] not in props:
-                    raise FactoryException("Property '%s' cannot be blocked by a non existing property '%s', please check the XML definition!" % (
-                            pname, bentry['name']))
+                    raise FactoryException("Property '%s' cannot be blocked by a non existing" \
+                                           " property '%s', please check the XML definition!" % (
+                                               pname, bentry['name']))
 
                 # Convert the blocking condition to its expected value-type
                 syntax = props[bentry['name']]['type']
@@ -816,8 +817,9 @@ class ObjectFactory(object):
             # Depends on
             for dentry in props[pname]['depends_on']:
                 if dentry not in props:
-                    raise FactoryException("Property '%s' cannot depend on non existing property '%s', please check the XML definition!" % (
-                            pname, dentry))
+                    raise FactoryException("Property '%s' cannot depend on non existing property" \
+                                           " '%s', please check the XML definition!" % (
+                                               pname, dentry))
 
         # Build up a list of callable methods
         if 'Methods' in classr.__dict__:
