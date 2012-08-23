@@ -97,7 +97,7 @@
     </Attributes>
 
     <Extends>
-      <Value>PosixUser</Value>
+      <Value>User</Value>
     </Extends>
   </Object>
 </Objects>
