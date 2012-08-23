@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>posixAccount</class>
- <widget class="QWidget" name="posixAccount">
+ <class>shadowAccount</class>
+ <widget class="QWidget" name="shadowAccount">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -175,7 +175,7 @@
   <connection>
    <sender>shadowLastChangeEdit</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>posixAccount</receiver>
+   <receiver>shadowAccount</receiver>
    <slot>property_shadowLastChange()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -191,7 +191,7 @@
   <connection>
    <sender>shadowMinEdit</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>posixAccount</receiver>
+   <receiver>shadowAccount</receiver>
    <slot>property_shadowMin()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -207,7 +207,7 @@
   <connection>
    <sender>shadowMaxEdit</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>posixAccount</receiver>
+   <receiver>shadowAccount</receiver>
    <slot>property_shadowMax()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -223,7 +223,7 @@
   <connection>
    <sender>shadowWarningEdit</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>posixAccount</receiver>
+   <receiver>shadowAccount</receiver>
    <slot>property_shadowWarning()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -239,7 +239,7 @@
   <connection>
    <sender>shadowInactiveEdit</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>posixAccount</receiver>
+   <receiver>shadowAccount</receiver>
    <slot>property_shadowInactive()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -255,7 +255,7 @@
   <connection>
    <sender>shadowExpireEdit</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>posixAccount</receiver>
+   <receiver>shadowAccount</receiver>
    <slot>property_shadowExpire()</slot>
    <hints>
     <hint type="sourcelabel">
