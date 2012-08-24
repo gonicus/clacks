@@ -103,6 +103,11 @@ class Object(object):
                 if self.myProperties[key]['mandatory']:
                     self.myProperties[key]['status'] = STATUS_CHANGED
 
+    def set_foreign_value(self, attr, original):
+        self.myProperties[attr]['value'] = original['value']
+        self.myProperties[attr]['in_value'] = original['in_value']
+        self.myProperties[attr]['orig_value'] = original['orig_value']
+
     def listProperties(self):
         return(self.myProperties.keys())
 

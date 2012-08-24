@@ -66,6 +66,7 @@ class ObjectProxy(object):
     __attributes = None
     __base_mode = None
     __property_map = None
+    __foreign_attrs = None
 
     def __init__(self, dn_or_base, what=None, user=None):
         self.__env = Environment.getInstance()
@@ -83,6 +84,7 @@ class ObjectProxy(object):
         self.__attributes = []
         self.__method_type_map = {}
         self.__property_map = {}
+        self.__foreign_attrs = []
 
         # Load available object types
         object_types = self.__factory.getObjectTypes()
@@ -141,14 +143,44 @@ class ObjectProxy(object):
             else:
                 props = self.__factory.getObjectProperties(ext)
 
-            for attr in [n for n, o in props.items() if not o['foreign']]:
-                self.__attributes.append(attr)
-                self.__property_map[attr] = props[attr]
+            for attr in props:
+                if not props[attr]['foreign']:
+                    self.__attributes.append(attr)
+                    self.__property_map[attr] = props[attr]
+                else:
+
+                    # Remember foreign properties to be able to the correct
+                    # values to them after we have finished building up all classes
+                    self.__foreign_attrs.append( (attr, ext))
 
         # Get attribute to object-type mapping
         self.__attribute_type_map = self.__factory.getAttributeTypeMap(self.__base_type)
         self.uuid = self.__base.uuid
         self.dn = self.__base.dn
+
+        self.populate_to_foreign_properties()
+
+    def populate_to_foreign_properties(self, extension=None):
+        """
+        Populate values to foreign attributes.
+        After creating an extension we've to tell it which values
+        have to be used for its foreign properties.
+
+        This is only necessary initially. If we modified a property
+        that is used as foreign property somewhere else, then the setter
+        method of this proxy will forward the value to all classes.
+        """
+        for attr, ext in self.__foreign_attrs:
+
+            # Only populate value for the given extension
+            if extension != None and extension != ext:
+                continue
+
+            # Tell the class that own the foreign property that it 
+            # has to use the source property data.
+            cur = self.__property_map[attr]
+            if ext in self.__extensions and self.__extensions[ext]:
+                self.__extensions[ext].set_foreign_value(attr, cur)
 
     def get_attributes(self, detail=False):
         """
@@ -300,6 +332,9 @@ class ObjectProxy(object):
         else:
             self.__extensions[extension] = self.__factory.getObject(extension,
                 self.__base.uuid, mode="extend")
+
+        # Set initial values for foreign properties
+        self.populate_to_foreign_properties(extension)
 
     def retract(self, extension):
         """

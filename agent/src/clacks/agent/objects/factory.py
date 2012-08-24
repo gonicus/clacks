@@ -712,6 +712,7 @@ class ObjectFactory(object):
                 # All this is done by its primary backend.
                 if foreign:
                     backend = "NULL"
+                    mandatory = False
                 else:
 
                     # Do we have an output filter definition?
