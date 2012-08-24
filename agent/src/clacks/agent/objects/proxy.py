@@ -66,6 +66,7 @@ class ObjectProxy(object):
     __attributes = None
     __base_mode = None
     __property_map = None
+    __foreign_attrs = None
 
     def __init__(self, dn_or_base, what=None, user=None):
         self.__env = Environment.getInstance()
@@ -83,6 +84,7 @@ class ObjectProxy(object):
         self.__attributes = []
         self.__method_type_map = {}
         self.__property_map = {}
+        self.__foreign_attrs = []
 
         # Load available object types
         object_types = self.__factory.getObjectTypes()
@@ -141,14 +143,44 @@ class ObjectProxy(object):
             else:
                 props = self.__factory.getObjectProperties(ext)
 
-            for attr in [n for n, o in props.items() if not o['foreign']]:
-                self.__attributes.append(attr)
-                self.__property_map[attr] = props[attr]
+            for attr in props:
+                if not props[attr]['foreign']:
+                    self.__attributes.append(attr)
+                    self.__property_map[attr] = props[attr]
+                else:
+
+                    # Remember foreign properties to be able to the correct
+                    # values to them after we have finished building up all classes
+                    self.__foreign_attrs.append( (attr, ext))
 
         # Get attribute to object-type mapping
         self.__attribute_type_map = self.__factory.getAttributeTypeMap(self.__base_type)
         self.uuid = self.__base.uuid
         self.dn = self.__base.dn
+
+        self.populate_to_foreign_properties()
+
+    def populate_to_foreign_properties(self, extension=None):
+        """
+        Populate values to foreign attributes.
+        After creating an extension we've to tell it which values
+        have to be used for its foreign properties.
+
+        This is only necessary initially. If we modified a property
+        that is used as foreign property somewhere else, then the setter
+        method of this proxy will forward the value to all classes.
+        """
+        for attr, ext in self.__foreign_attrs:
+
+            # Only populate value for the given extension
+            if extension != None and extension != ext:
+                continue
+
+            # Tell the class that own the foreign property that it 
+            # has to use the source property data.
+            cur = self.__property_map[attr]
+            if ext in self.__extensions and self.__extensions[ext]:
+                self.__extensions[ext].set_foreign_value(attr, cur)
 
     def get_attributes(self, detail=False):
         """
@@ -300,6 +332,9 @@ class ObjectProxy(object):
         else:
             self.__extensions[extension] = self.__factory.getObject(extension,
                 self.__base.uuid, mode="extend")
+
+        # Set initial values for foreign properties
+        self.populate_to_foreign_properties(extension)
 
     def retract(self, extension):
         """
@@ -701,19 +736,6 @@ class ObjectProxy(object):
         if self.__base.modifyTimestamp:
             attrs['modify-date'] = atypes['Timestamp'].convert_to("UnicodeString", [self.__base.modifyTimestamp])
 
-        # Add base class properties
-        props = self.__base.getProperties()
-        for propname in props:
-
-            # Use the object-type conversion method to get valid item string-representations.
-            # This does not work for boolean values, due to the fact that xml requires
-            # lowercase (true/false)
-            prop_value = props[propname]['value']
-            if props[propname]['type'] == "Boolean":
-                attrs[propname] = map(lambda x: 'true' if x == True else 'false', prop_value)
-            else:
-                attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString", prop_value)
-
         # Create a list of extensions and their properties
         exttag = etree.Element("extensions")
         for name in self.__extensions.keys():
@@ -722,25 +744,23 @@ class ObjectProxy(object):
                 ext.text = name
                 exttag.append(ext)
 
-                # Append extension properties to the list of attributes
-                # passed to the xsl
-                props = self.__extensions[name].getProperties()
-                for propname in props:
+        props = self.__property_map
+        for propname in self.__property_map:
 
-                    # Use the object-type conversion method to get valid item string-representations.
-                    # This does not work for boolean values, due to the fact that xml requires
-                    # lowercase (true/false)
-                    prop_value = props[propname]['value']
-                    if props[propname]['type'] == "Boolean":
-                        attrs[propname] = map(lambda x: 'true' if x == True else 'false', prop_value)
+            # Use the object-type conversion method to get valid item string-representations.
+            # This does not work for boolean values, due to the fact that xml requires
+            # lowercase (true/false)
+            prop_value = props[propname]['value']
+            if props[propname]['type'] == "Boolean":
+                attrs[propname] = map(lambda x: 'true' if x == True else 'false', prop_value)
 
-                    # Skip binary ones
-                    elif props[propname]['type'] == "Binary":
-                        attrs[propname] = map(lambda x: x.encode(), prop_value)
+            # Skip binary ones
+            elif props[propname]['type'] == "Binary":
+                attrs[propname] = map(lambda x: x.encode(), prop_value)
 
-                    # Make remaining values unicode
-                    else:
-                        attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString", prop_value)
+            # Make remaining values unicode
+            else:
+                attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString", prop_value)
 
         # Build a xml represention of the collected properties
         for key in attrs:
