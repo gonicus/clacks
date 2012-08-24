@@ -57,12 +57,10 @@
             <Param>65500</Param>
           </Condition>
         </Validators>
-        <!--
         <BlockedBy>
           <Name>autoIDs</Name>
           <Value>true</Value>
         </BlockedBy>
-        -->
       </Attribute>
 
       <Attribute>
@@ -70,12 +68,10 @@
         <Description>An integer uniquely identifying a group in an administrative domain</Description>
         <Type>Integer</Type>
         <Mandatory>true</Mandatory>
-        <!--
         <BlockedBy>
           <Name>autoIDs</Name>
           <Value>true</Value>
         </BlockedBy>
-        -->
       </Attribute>
 
       <Attribute>

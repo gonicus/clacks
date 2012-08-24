@@ -705,6 +705,10 @@ class ObjectProxy(object):
         props = self.__base.getProperties()
         for propname in props:
 
+            # Do not include foreign attributes, they will be set by their primary class
+            if props[propname]['foreign']:
+                continue
+
             # Use the object-type conversion method to get valid item string-representations.
             # This does not work for boolean values, due to the fact that xml requires
             # lowercase (true/false)
@@ -726,6 +730,10 @@ class ObjectProxy(object):
                 # passed to the xsl
                 props = self.__extensions[name].getProperties()
                 for propname in props:
+
+                    # Do not include foreign attributes, they will be set by their primary class
+                    if props[propname]['foreign']:
+                        continue
 
                     # Use the object-type conversion method to get valid item string-representations.
                     # This does not work for boolean values, due to the fact that xml requires

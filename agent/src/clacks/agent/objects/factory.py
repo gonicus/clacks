@@ -695,7 +695,6 @@ class ObjectFactory(object):
                 if "Backend" in prop.__dict__:
                     backend = prop.Backend.text
 
-
                 # Prepare initial values
                 out_f = []
                 in_f =  []
@@ -711,7 +710,9 @@ class ObjectFactory(object):
 
                 # Foreign attributes do not need any filters, validation or block settings
                 # All this is done by its primary backend.
-                if True:
+                if foreign:
+                    backend = "NULL"
+                else:
 
                     # Do we have an output filter definition?
                     if "OutFilter" in prop.__dict__:
