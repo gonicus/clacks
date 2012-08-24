@@ -183,6 +183,11 @@ class ObjectIndex(Plugin):
             t1 = time()
             self.log.info("processed %d objects in %ds" % (len(res), t1 - t0))
 
+        except Exception as e:
+            self.log.critical("building the index failed: %s" % str(e))
+            import traceback
+            traceback.print_exc()
+
         finally:
             ObjectIndex.first_run = False
 

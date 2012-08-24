@@ -36,12 +36,24 @@
           <xsl:for-each select="g:Attributes/g:Attribute">
             <xsl:copy-of select="." />
           </xsl:for-each>
-          <xsl:for-each select="/g:Objects/g:Object[g:Extends/g:Value=$classname]/g:Attributes/g:Attribute">
-            <xsl:copy-of select="." />
+          <xsl:for-each select="/g:Objects/g:Object[g:Extends/g:Value=$classname]">
+            <xsl:for-each select="g:Attributes/g:Attribute">
+              <xsl:copy-of select="." />
+            </xsl:for-each>
+
+            <!-- Support extension level 1 -->
+            <xsl:variable name="classname1" select="g:Name" />
+
+	    <xsl:for-each select="/g:Objects/g:Object[g:Extends/g:Value=$classname1]">
+              <xsl:for-each select="g:Attributes/g:Attribute">
+                <xsl:copy-of select="." />
+              </xsl:for-each>
+            </xsl:for-each>
+
           </xsl:for-each>
         </xsl:variable>
 
-        <!-- Creat the complex type definition for the current class -->
+        <!-- Create the complex type definition for the current class -->
         <xsd:complexType name="{$classname}">
           <xsd:sequence>
 
