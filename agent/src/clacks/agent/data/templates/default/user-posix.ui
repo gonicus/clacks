@@ -210,7 +210,7 @@
   <tabstop>memberUidList</tabstop>
  </tabstops>
  <resources>
-  <include location="resources/user-shadow.qrc"/>
+  <include location="resources/user-posix.qrc"/>
  </resources>
  <connections>
   <connection>
