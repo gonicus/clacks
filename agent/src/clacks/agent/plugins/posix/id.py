@@ -19,7 +19,6 @@ class GetNextID(ElementFilter):
         super(GetNextID, self).__init__(obj)
 
     def process(self, obj, key, valDict, attributeName="uidNumber", maxValue=65500):
-        print valDict["uid"]['value']
         if len(valDict[key]['value']) and (valDict[key]['value'][0] == -1):
             maxValue = int(maxValue)
 
