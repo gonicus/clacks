@@ -701,23 +701,6 @@ class ObjectProxy(object):
         if self.__base.modifyTimestamp:
             attrs['modify-date'] = atypes['Timestamp'].convert_to("UnicodeString", [self.__base.modifyTimestamp])
 
-        # Add base class properties
-        props = self.__base.getProperties()
-        for propname in props:
-
-            # Do not include foreign attributes, they will be set by their primary class
-            if props[propname]['foreign']:
-                continue
-
-            # Use the object-type conversion method to get valid item string-representations.
-            # This does not work for boolean values, due to the fact that xml requires
-            # lowercase (true/false)
-            prop_value = props[propname]['value']
-            if props[propname]['type'] == "Boolean":
-                attrs[propname] = map(lambda x: 'true' if x == True else 'false', prop_value)
-            else:
-                attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString", prop_value)
-
         # Create a list of extensions and their properties
         exttag = etree.Element("extensions")
         for name in self.__extensions.keys():
@@ -726,29 +709,23 @@ class ObjectProxy(object):
                 ext.text = name
                 exttag.append(ext)
 
-                # Append extension properties to the list of attributes
-                # passed to the xsl
-                props = self.__extensions[name].getProperties()
-                for propname in props:
+        props = self.__property_map
+        for propname in self.__property_map:
 
-                    # Do not include foreign attributes, they will be set by their primary class
-                    if props[propname]['foreign']:
-                        continue
+            # Use the object-type conversion method to get valid item string-representations.
+            # This does not work for boolean values, due to the fact that xml requires
+            # lowercase (true/false)
+            prop_value = props[propname]['value']
+            if props[propname]['type'] == "Boolean":
+                attrs[propname] = map(lambda x: 'true' if x == True else 'false', prop_value)
 
-                    # Use the object-type conversion method to get valid item string-representations.
-                    # This does not work for boolean values, due to the fact that xml requires
-                    # lowercase (true/false)
-                    prop_value = props[propname]['value']
-                    if props[propname]['type'] == "Boolean":
-                        attrs[propname] = map(lambda x: 'true' if x == True else 'false', prop_value)
+            # Skip binary ones
+            elif props[propname]['type'] == "Binary":
+                attrs[propname] = map(lambda x: x.encode(), prop_value)
 
-                    # Skip binary ones
-                    elif props[propname]['type'] == "Binary":
-                        attrs[propname] = map(lambda x: x.encode(), prop_value)
-
-                    # Make remaining values unicode
-                    else:
-                        attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString", prop_value)
+            # Make remaining values unicode
+            else:
+                attrs[propname] = atypes[props[propname]['type']].convert_to("UnicodeString", prop_value)
 
         # Build a xml represention of the collected properties
         for key in attrs:
