@@ -176,11 +176,24 @@ class ObjectProxy(object):
             if extension != None and extension != ext:
                 continue
 
-            # Tell the class that own the foreign property that it 
+            # Tell the class that own the foreign property that it
             # has to use the source property data.
             cur = self.__property_map[attr]
             if ext in self.__extensions and self.__extensions[ext]:
                 self.__extensions[ext].set_foreign_value(attr, cur)
+
+    def get_extension_dependencies(self, extension):
+        required = []
+        oTypes = self.__factory.getObjectTypes()
+
+        def _resolve(ext):
+            for r_ext in oTypes[ext]['requires']:
+                required.append(r_ext)
+                _resolve(r_ext)
+
+        _resolve(extension)
+
+        return required
 
     def get_attributes(self, detail=False):
         """
@@ -291,10 +304,18 @@ class ObjectProxy(object):
 
     def get_object_info(self, locale=None, theme="default"):
         res = {}
+
         res['base'] = self.get_base_type()
         res['extensions'] = self.get_extension_types()
         res['templates'] = self.get_templates(theme)
         res['i18n'] = self.get_translations(locale, theme)
+
+        # Resolve all available extensions for their dependencies
+        ei =  {}
+        for e in res['extensions'].keys():
+            ei[e] = self.get_extension_dependencies(e)
+        res['extension_deps'] = ei
+
         return res
 
     def extend(self, extension):
