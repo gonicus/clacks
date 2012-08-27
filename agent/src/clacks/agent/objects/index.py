@@ -378,6 +378,29 @@ class ObjectIndex(Plugin):
         return self.db.documentExists('objects', uuid)
 
     @Command(needsUser=True, __help__=N_("Filter for indexed attributes and return the matches."))
+    def simple_search(self, user, base, scope, qstring, fltr=None):
+        """
+        Query the database using the given query string and an optional filter
+        dict - and return the result set.
+
+        ========== ==================
+        Parameter  Description
+        ========== ==================
+        base       Query base
+        scope      Query scope
+        qstring    Query string
+        filter     Hash for extra parameters
+        ========== ==================
+
+        ``Return``: List of dicts
+        """
+
+        if GlobalLock.exists("scan_index"):
+            raise FilterException("index rebuild in progress - try again later")
+
+        return self.__sw.simple_search(base, scope, qstring, fltr=fltr, user=user)
+
+    @Command(needsUser=True, __help__=N_("Filter for indexed attributes and return the matches."))
     def search(self, user, qstring):
         """
         Query the database using the given filter and return the
