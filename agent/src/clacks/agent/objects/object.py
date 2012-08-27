@@ -541,11 +541,29 @@ class Object(object):
 
         self.log.debug("saving object modifications for [%s|%s]" % (type(self).__name__, self.uuid))
 
-        # Ensure that mandatory values are set
+        # Transfer status into commit status
         for key in props:
             props[key]['commit_status'] = props[key]['status']
-            if props[key]['mandatory'] and not len(props[key]['value']):
-                    raise ObjectException("<%s> This value is required!" % key)
+
+        # Adapt property states
+        # Run this once - If any state was adapted, then run again to ensure
+        # that all dependencies are processed.
+        first = True
+        max = 5
+        required = False
+        while (first or required) and max:
+            first = False
+            required = False
+            max -= 1
+            for key in props:
+
+                # Adapt status from dependent properties.
+                for propname in props[key]['depends_on']:
+                    old = props[key]['commit_status']
+                    props[key]['commit_status'] |= props[propname]['status'] & STATUS_CHANGED
+                    props[key]['commit_status'] |= props[propname]['commit_status'] & STATUS_CHANGED
+                    if props[key]['commit_status'] != old:
+                        required = True
 
         # Collect values by store and process the property filters
         toStore = {}
@@ -563,10 +581,6 @@ class Object(object):
             if not is_blocked and props[key]['mandatory'] and not len(props[key]['value']):
                 raise ObjectException("<%s> This value is required!" % key)
 
-            # Adapt status from dependent properties.
-            for propname in props[key]['depends_on']:
-                props[key]['commit_status'] |= props[propname]['status'] & STATUS_CHANGED
-
             # Do not save untouched values
             if not props[key]['commit_status'] & STATUS_CHANGED:
                 continue
@@ -582,8 +596,13 @@ class Object(object):
                 for out_f in props[key]['out_filter']:
                     self.__processFilter(out_f, key, props)
 
+
         # Collect properties by backend
         for prop_key in props:
+
+            # Ensure that mandatory values are set
+            if props[prop_key]['mandatory'] and not len(props[prop_key]['value']):
+                    raise ObjectException("<%s> This value is required!" % prop_key)
 
             # Do not save untouched values
             if not props[prop_key]['commit_status'] & STATUS_CHANGED:

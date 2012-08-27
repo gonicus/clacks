@@ -22,16 +22,18 @@ class GenerateGecos(ElementFilter):
             telephoneNumber = ""
             homePhone = ""
 
+            print sn, givenName, ou, telephoneNumber, homePhone
+
             if len(valDict["sn"]['value']) and (valDict["sn"]['value'][0]):
                 sn = valDict["sn"]['value'][0]
             if len(valDict["givenName"]['value']) and (valDict["givenName"]['value'][0]):
                 givenName = valDict["givenName"]['value'][0]
             if len(valDict["homePhone"]['value']) and (valDict["homePhone"]['value'][0]):
-                givenName = valDict["homePhone"]['value'][0]
+                homePhone = valDict["homePhone"]['value'][0]
             if len(valDict["telephoneNumber"]['value']) and (valDict["telephoneNumber"]['value'][0]):
-                givenName = valDict["telephoneNumber"]['value'][0]
+                telephoneNumber = valDict["telephoneNumber"]['value'][0]
             if len(valDict["ou"]['value']) and (valDict["ou"]['value'][0]):
-                givenName = valDict["ou"]['value'][0]
+                ou = valDict["ou"]['value'][0]
 
             gecos = "%s %s,%s,%s,%s" % (sn, givenName, ou, telephoneNumber, homePhone)
             valDict["gecos"]['value'] = [gecos]
