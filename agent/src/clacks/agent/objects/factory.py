@@ -711,7 +711,7 @@ class ObjectFactory(object):
                 # Foreign attributes do not need any filters, validation or block settings
                 # All this is done by its primary backend.
                 if foreign:
-                    backend = "NULL"
+                    #backend = "NULL"
                     mandatory = False
                 else:
 

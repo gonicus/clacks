@@ -3,6 +3,41 @@ from clacks.agent.objects.filter import ElementFilter
 from clacks.agent.objects.backend.registry import ObjectBackendRegistry
 
 
+class LoadGecosState(ElementFilter):
+    """
+    Detects the state of the autoGECOS attribute
+    """
+    def __init__(self, obj):
+        super(LoadGecosState, self).__init__(obj)
+
+    def process(self, obj, key, valDict):
+
+        # Only generate gecos if the the autoGECOS field is True.
+        if len(valDict["gecos"]['in_value']) and (valDict["gecos"]['in_value'][0]):
+             valDict["gecos"]['in_value'][0]
+
+
+        sn = ""
+        givenName = ""
+        ou = ""
+        telephoneNumber = ""
+        homePhone = ""
+
+        if len(valDict["sn"]['in_value']) and (valDict["sn"]['in_value'][0]):
+            sn = valDict["sn"]['in_value'][0]
+        if len(valDict["givenName"]['in_value']) and (valDict["givenName"]['in_value'][0]):
+            givenName = valDict["givenName"]['in_value'][0]
+        if len(valDict["homePhone"]['in_value']) and (valDict["homePhone"]['in_value'][0]):
+            homePhone = valDict["homePhone"]['in_value'][0]
+        if len(valDict["telephoneNumber"]['in_value']) and (valDict["telephoneNumber"]['in_value'][0]):
+            telephoneNumber = valDict["telephoneNumber"]['in_value'][0]
+        if len(valDict["ou"]['in_value']) and (valDict["ou"]['in_value'][0]):
+            ou = valDict["ou"]['in_value'][0]
+        print ">>>",sn, givenName, ou, telephoneNumber, homePhone
+
+        return key, valDict
+
+
 class GenerateGecos(ElementFilter):
     """
     An object filter which automatically generates the posix-gecos
@@ -21,8 +56,6 @@ class GenerateGecos(ElementFilter):
             ou = ""
             telephoneNumber = ""
             homePhone = ""
-
-            print sn, givenName, ou, telephoneNumber, homePhone
 
             if len(valDict["sn"]['value']) and (valDict["sn"]['value'][0]):
                 sn = valDict["sn"]['value'][0]

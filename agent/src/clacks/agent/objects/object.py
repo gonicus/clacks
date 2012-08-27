@@ -163,7 +163,6 @@ class Object(object):
                 be_attrs =  self._backendAttrs[backend] if backend in self._backendAttrs else None
                 attrs = be.load(self.uuid, info, be_attrs)
 
-
             except ValueError as e:
                 #raise ObjectException("Error reading properties for backend '%s'!" % (backend,))
                 import traceback
@@ -570,6 +569,10 @@ class Object(object):
         collectedAttrs = {}
         for key in props:
 
+            # Skip foreign properties
+            if props[key]['foreign']:
+                continue
+
             # Check if this attribute is blocked by another attribute and its value.
             is_blocked = False
             for bb in  props[key]['blocked_by']:
@@ -599,6 +602,10 @@ class Object(object):
 
         # Collect properties by backend
         for prop_key in props:
+
+            # Skip foreign properties
+            if props[prop_key]['foreign']:
+                continue
 
             # Ensure that mandatory values are set
             if props[prop_key]['mandatory'] and not len(props[prop_key]['value']):
