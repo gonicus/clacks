@@ -64,5 +64,21 @@
       </Attribute>
     </Attributes>
     <BaseObject>true</BaseObject>
+
+    <Find>
+      <Aspect>
+        <Tag>Group</Tag>
+        <Search>Group.cn LIKE "%(__search__)s"</Search>
+        <Search>Group.description LIKE "%(__search__)s"</Search>
+        <Resolve filter="User.uid = %(uid)s">memberUid</Resolve>
+        <Result>
+          <Map>
+            <Source>cn</Source>
+            <Destination>title</Destination>
+          </Map>
+        </Result>
+      </Aspect>
+    </Find>
+
   </Object>
 </Objects>

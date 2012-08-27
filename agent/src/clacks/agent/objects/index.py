@@ -398,7 +398,21 @@ class ObjectIndex(Plugin):
         if GlobalLock.exists("scan_index"):
             raise FilterException("index rebuild in progress - try again later")
 
-        return self.__sw.simple_search(base, scope, qstring, fltr=fltr, user=user)
+    @Command(needsUser=True, __help__=N_("Filter for indexed attributes and return the matches."))
+    def simple_search(self, user, base, scope, query, fltr=None):
+        """
+        Performs a query based on a simple search string consisting of keywords.
+        """
+        squery = 'SELECT User.* BASE User SUB "%s" WHERE User.uid like "%s" ORDER BY User.sn' % (base, query)
+
+        res = []
+        for item in self.__sw.execute(squery, user=user):
+            for category, info in item.items():
+                res.append(dict(tag=category, dn=info['DN'][0], title=info['cn'][0],
+                    description="This is a multiline <i>description</i> featuring rich text.",
+                    icon=("data:image/jpeg;base64," + info['jpegPhoto'][0]) if 'jpegPhoto' in info else None))
+
+        return res
 
     @Command(needsUser=True, __help__=N_("Filter for indexed attributes and return the matches."))
     def search(self, user, qstring):

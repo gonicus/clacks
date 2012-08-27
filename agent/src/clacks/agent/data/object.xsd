@@ -32,6 +32,7 @@
       <element name="Hooks" type="o:Hooks" maxOccurs="1" minOccurs="0"></element>
       <element name="FixedRDN" type="string" maxOccurs="1" minOccurs="0"></element>
       <element name="RequiresExtension" type="o:RequiresExtension" maxOccurs="1" minOccurs="0"></element>
+      <element name="Find" type="o:Find" maxOccurs="1" minOccurs="0"></element>
     </all>
   </complexType>
 
@@ -261,6 +262,42 @@
     <sequence>
       <element name="Extension" type="string" maxOccurs="unbounded" minOccurs="1"></element>
     </sequence>
+  </complexType>
+
+  <complexType name="Find">
+    <sequence>
+      <element name="Aspect" type="o:Aspect" maxOccurs="unbounded" minOccurs="1"></element>
+    </sequence>
+  </complexType>
+
+  <complexType name="Result">
+    <sequence>
+      <element name="Map" type="o:Map" maxOccurs="unbounded" minOccurs="0"></element>
+    </sequence>
+  </complexType>
+
+  <complexType name="Map">
+    <sequence>
+      <element name="Source" type="string" maxOccurs="unbounded" minOccurs="1"></element>
+      <element name="Destination" type="string" maxOccurs="unbounded" minOccurs="1"></element>
+    </sequence>
+  </complexType>
+
+  <complexType name="Aspect">
+    <sequence>
+      <element name="Tag" type="string" maxOccurs="1" minOccurs="1"></element>
+      <element name="Search" type="string" maxOccurs="unbounded" minOccurs="1"></element>
+      <element name="Resolve" type="o:Resolve" maxOccurs="unbounded" minOccurs="0"></element>
+      <element name="Result" type="o:Result" maxOccurs="unbounded" minOccurs="0"></element>
+    </sequence>
+  </complexType>
+
+  <complexType name="Resolve">
+    <simpleContent>
+      <extension base="string">
+        <attribute name="filter" type="string" use="optional"/>
+      </extension>
+    </simpleContent>
   </complexType>
 
   <simpleType name="NewType">
