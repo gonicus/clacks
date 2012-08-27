@@ -164,7 +164,8 @@ setup(
         sambamungedialin = clacks.agent.plugins.samba.munged:SambaMungedDialIn
         sambamungedialout = clacks.agent.plugins.samba.munged:SambaMungedDialOut
         generatesambasid = clacks.agent.plugins.samba.sid:GenerateSambaSid
-        posixgetnextid = clacks.agent.plugins.posix.id:GetNextID
+        posixgetnextid = clacks.agent.plugins.posix.filters:GetNextID
+        generategecos = clacks.agent.plugins.posix.filters:GenerateGecos
         datetoshadowdays = clacks.agent.plugins.posix.shadow:DatetimeToShadowDays
         shadowdaystodate = clacks.agent.plugins.posix.shadow:ShadowDaysToDatetime
         detect_pwd_method = clacks.agent.plugins.password.filter.detect_method:DetectPasswordMethod

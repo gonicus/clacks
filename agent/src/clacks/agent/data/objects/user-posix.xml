@@ -18,6 +18,21 @@
       <ForeignAttribute>
         <Name>uid</Name>
       </ForeignAttribute>
+      <ForeignAttribute>
+        <Name>sn</Name>
+      </ForeignAttribute>
+      <ForeignAttribute>
+        <Name>givenName</Name>
+      </ForeignAttribute>
+      <ForeignAttribute>
+        <Name>ou</Name>
+      </ForeignAttribute>
+      <ForeignAttribute>
+        <Name>homePhone</Name>
+      </ForeignAttribute>
+      <ForeignAttribute>
+        <Name>telephoneNumber</Name>
+      </ForeignAttribute>
 
       <Attribute>
         <Name>groupMembership</Name>
@@ -96,12 +111,31 @@
           <Name>autoGECOS</Name>
           <Value>true</Value>
         </BlockedBy>
+        <DependsOn>
+          <Attribute>autoGECOS</Attribute>
+        </DependsOn>
       </Attribute>
       <Attribute>
         <Name>autoGECOS</Name>
         <Default>true</Default>
         <Backend>NULL</Backend>
         <Type>Boolean</Type>
+        <OutFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>GenerateGecos</Name>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </OutFilter>
+        <DependsOn>
+          <Attribute>givenName</Attribute>
+          <Attribute>sn</Attribute>
+          <Attribute>homePhone</Attribute>
+          <Attribute>telephoneNumber</Attribute>
+          <Attribute>ou</Attribute>
+        </DependsOn>
       </Attribute>
       <Attribute>
         <Name>autoIDs</Name>
