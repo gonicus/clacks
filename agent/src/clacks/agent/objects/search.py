@@ -774,6 +774,13 @@ class SearchWrapper(Plugin):
         self.env.log.debug("query took %ds" % q_o.time)
         return res
 
+    def simple_search(self, base, scope, query, fltr=None, user=None):
+        """
+        Performs a query based on a simple search string consisting of keywords.
+        """
+        squery = 'SELECT User.* BASE User SUB "%s" WHERE User.uid like "%s" ORDER BY User.sn' % (base, query)
+        return self.execute(squery)
+
     @staticmethod
     def get_instance():
         """
