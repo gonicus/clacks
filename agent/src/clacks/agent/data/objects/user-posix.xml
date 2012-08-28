@@ -79,6 +79,12 @@
           <Name>autoIDs</Name>
           <Value>true</Value>
         </BlockedBy>
+        <Validators>
+          <Condition>
+            <Name>Smaller</Name>
+            <Param>65500</Param>
+          </Condition>
+        </Validators>
         <DependsOn>
           <Attribute>autoIDs</Attribute>
         </DependsOn>
