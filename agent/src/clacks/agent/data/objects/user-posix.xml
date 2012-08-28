@@ -129,6 +129,15 @@
             </FilterEntry>
           </FilterChain>
         </OutFilter>
+        <InFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>LoadGecosState</Name>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </InFilter>
         <DependsOn>
           <Attribute>givenName</Attribute>
           <Attribute>sn</Attribute>

@@ -3,6 +3,32 @@ from clacks.agent.objects.filter import ElementFilter
 from clacks.agent.objects.backend.registry import ObjectBackendRegistry
 
 
+class LoadGecosState(ElementFilter):
+    """
+    Detects the state of the autoGECOS attribute
+    """
+    def __init__(self, obj):
+        super(LoadGecosState, self).__init__(obj)
+
+    def process(self, obj, key, valDict):
+
+        # No gecos set right now
+        if not(len(valDict['gecos']['value'])):
+            valDict[key]['value'] = [True]
+            return key, valDict
+
+        # Check if current gecos value would match the generated one
+        # We will then assume that this user wants to auto update his gecos entry.
+        gecos = GenerateGecos.generateGECOS(valDict)
+        if gecos == valDict['gecos']['value'][0]:
+            valDict[key]['value'] = [True]
+            return key, valDict
+
+        # No auto gecos
+        valDict[key]['value'] = [False]
+        return key, valDict
+
+
 class GenerateGecos(ElementFilter):
     """
     An object filter which automatically generates the posix-gecos
@@ -12,33 +38,41 @@ class GenerateGecos(ElementFilter):
         super(GenerateGecos, self).__init__(obj)
 
     def process(self, obj, key, valDict):
-
+        """
+        The out-filter that generates the new gecos value
+        """
         # Only generate gecos if the the autoGECOS field is True.
-        if len(valDict[key]['value']) and (valDict[key]['value'][0]):
-
-            sn = ""
-            givenName = ""
-            ou = ""
-            telephoneNumber = ""
-            homePhone = ""
-
-            print sn, givenName, ou, telephoneNumber, homePhone
-
-            if len(valDict["sn"]['value']) and (valDict["sn"]['value'][0]):
-                sn = valDict["sn"]['value'][0]
-            if len(valDict["givenName"]['value']) and (valDict["givenName"]['value'][0]):
-                givenName = valDict["givenName"]['value'][0]
-            if len(valDict["homePhone"]['value']) and (valDict["homePhone"]['value'][0]):
-                homePhone = valDict["homePhone"]['value'][0]
-            if len(valDict["telephoneNumber"]['value']) and (valDict["telephoneNumber"]['value'][0]):
-                telephoneNumber = valDict["telephoneNumber"]['value'][0]
-            if len(valDict["ou"]['value']) and (valDict["ou"]['value'][0]):
-                ou = valDict["ou"]['value'][0]
-
-            gecos = "%s %s,%s,%s,%s" % (sn, givenName, ou, telephoneNumber, homePhone)
+        if len(valDict["autoGECOS"]['value']) and (valDict["autoGECOS"]['value'][0]):
+            gecos = GenerateGecos.generateGECOS(valDict)
             valDict["gecos"]['value'] = [gecos]
 
         return key, valDict
+
+    @staticmethod
+    def generateGECOS(valDict):
+        """
+        This method genereates a new gecos value out of the given properties list.
+        """
+
+        sn = ""
+        givenName = ""
+        ou = ""
+        telephoneNumber = ""
+        homePhone = ""
+
+        if len(valDict["sn"]['value']) and (valDict["sn"]['value'][0]):
+            sn = valDict["sn"]['value'][0]
+        if len(valDict["givenName"]['value']) and (valDict["givenName"]['value'][0]):
+            givenName = valDict["givenName"]['value'][0]
+        if len(valDict["homePhone"]['value']) and (valDict["homePhone"]['value'][0]):
+            homePhone = valDict["homePhone"]['value'][0]
+        if len(valDict["telephoneNumber"]['value']) and (valDict["telephoneNumber"]['value'][0]):
+            telephoneNumber = valDict["telephoneNumber"]['value'][0]
+        if len(valDict["ou"]['value']) and (valDict["ou"]['value'][0]):
+            ou = valDict["ou"]['value'][0]
+
+        return "%s %s,%s,%s,%s" % (sn, givenName, ou, telephoneNumber, homePhone)
+
 
 class GetNextID(ElementFilter):
     """
