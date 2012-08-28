@@ -55,18 +55,6 @@
         <Description>An integer uniquely identifying a user in an administrative domain</Description>
         <Type>Integer</Type>
         <Mandatory>true</Mandatory>
-        <!--
-        <OutFilter>
-          <FilterChain>
-            <FilterEntry>
-              <Filter>
-                <Name>GetNextID</Name>
-                <Param>uidNumber</Param>
-              </Filter>
-            </FilterEntry>
-          </FilterChain>
-        </OutFilter>
-        -->
         <Validators>
           <Condition>
             <Name>Smaller</Name>
@@ -163,6 +151,8 @@
             <FilterEntry>
               <Filter>
                 <Name>GenerateIDs</Name>
+                <Param>65500</Param>
+                <Param>65500</Param>
               </Filter>
             </FilterEntry>
           </FilterChain>

@@ -11,7 +11,14 @@ class GenerateIDs(ElementFilter):
     def __init__(self, obj):
         super(GenerateIDs, self).__init__(obj)
 
-    def process(self, obj, key, valDict, maxValue=65500):
+    def process(self, obj, key, valDict, maxUidValue=65500, maxGidValue=65500):
+
+        try:
+            maxUidValue = int(maxUidValue)
+            maxGidValue = int(maxGidValue)
+        except ValueError:
+            raise Exception("Parameters to filter GenerateIDs have to be numeric")
+
 
         if not(len(valDict['uidNumber']['value'])):
             if len(valDict["uidNumber"]['backend']) > 1:
@@ -19,8 +26,8 @@ class GenerateIDs(ElementFilter):
 
             be = ObjectBackendRegistry.getBackend(valDict["uidNumber"]['backend'][0])
             uid = be.get_next_id("uidNumber")
-            if uid > maxValue:
-                raise Exception("ID generation for %s exceeded limitation of %s!" % ("uidNumber", maxValue,))
+            if uid > maxUidValue:
+                raise Exception("ID generation for %s exceeded limitation of %s!" % ("uidNumber", maxUidValue,))
 
             valDict["uidNumber"]['value'] = [uid]
 
@@ -30,8 +37,8 @@ class GenerateIDs(ElementFilter):
 
             be = ObjectBackendRegistry.getBackend(valDict["gidNumber"]['backend'][0])
             gid = be.get_next_id("gidNumber")
-            if gid > maxValue:
-                raise Exception("ID generation for %s exceeded limitation of %s!" % ("gidNumber", maxValue,))
+            if gid > maxGidValue:
+                raise Exception("ID generation for %s exceeded limitation of %s!" % ("gidNumber", maxGidValue,))
 
             valDict["gidNumber"]['value'] = [gid]
 
