@@ -45,7 +45,7 @@ class GuiMethods(Plugin):
         prefs = user.guiPreferences
         if not prefs:
             prefs = {}
-        else: 
+        else:
             prefs = loads(prefs)
         if name in prefs:
             return prefs[name]
@@ -75,7 +75,7 @@ class GuiMethods(Plugin):
         base = env.base
 
         # Create list of conditional statements
-        condition = '(%s.%s like "%s")'  % (otype, oattr, filter)
+        condition = '(%s.%s LIKE "%s")'  % (otype, oattr, filter)
 
         # Create a list of attributes that will be requested
         a = []

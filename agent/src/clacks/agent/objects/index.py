@@ -404,7 +404,8 @@ class ObjectIndex(Plugin):
         ``Return``: List of dicts
         """
 
-        if not scope.lower() in ["sub", "base", "one"]:
+        scope = scope.upper()
+        if not scope in ["SUB", "BASE", "ONE"]:
             raise Exception("invalid scope - needs to be one of SUB, BASE or ONE")
 
         # Assemble search filter
@@ -415,7 +416,7 @@ class ObjectIndex(Plugin):
             queries += item['search']
 
         #TODO: escape for base and qstring
-        squery = "SELECT " + ",".join(["%s.*" % t for t in tags]) + " BASE " + " ".join(['%s %s "%s"' % (t, scope, base) for t in tags]) + " WHERE " + " OR ".join(queries) % {'__search__': qstring}
+        squery = "SELECT " + ",".join(["%s.*" % t for t in tags]) + " BASE " + " BASE ".join(['%s %s "%s"' % (t, scope, base) for t in tags]) + " WHERE " + " OR ".join(queries) % {'__search__': qstring}
 
         print "-"*80
         print squery

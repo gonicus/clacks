@@ -67,9 +67,9 @@
 
     <Find>
       <Aspect>
-        <Tag>Group</Tag>
-        <Search>Group.cn LIKE "%(__search__)s"</Search>
-        <Search>Group.description LIKE "%(__search__)s"</Search>
+        <Tag>PosixGroup</Tag>
+        <Search>PosixGroup.cn LIKE "%(__search__)s"</Search>
+        <Search>PosixGroup.description LIKE "%(__search__)s"</Search>
         <Resolve filter="User.uid = %(uid)s">memberUid</Resolve>
         <Result>
           <Map>
