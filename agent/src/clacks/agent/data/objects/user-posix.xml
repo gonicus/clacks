@@ -119,6 +119,7 @@
       <Attribute>
         <Name>autoGECOS</Name>
         <Default>true</Default>
+        <Mandatory>true</Mandatory>
         <Backend>NULL</Backend>
         <Type>Boolean</Type>
         <OutFilter>
@@ -150,6 +151,7 @@
       <Attribute>
         <Name>autoIDs</Name>
         <Default>true</Default>
+        <Mandatory>true</Mandatory>
         <Backend>NULL</Backend>
         <Type>Boolean</Type>
         <OutFilter>
