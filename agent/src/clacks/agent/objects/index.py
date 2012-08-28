@@ -403,37 +403,37 @@ class ObjectIndex(Plugin):
 
         ``Return``: List of dicts
         """
+        res = []
 
         scope = scope.upper()
         if not scope in ["SUB", "BASE", "ONE"]:
             raise Exception("invalid scope - needs to be one of SUB, BASE or ONE")
 
-        # Assemble search filter
-        tags = []
-        queries = []
+        # Collect queries, grouped by tag
+        queries = {}
         for item in self.__search_aid:
-            tags.append(item['tag'])
-            queries += item['search']
+            tag = item['tag']
+
+            if not tag in queries:
+                queries[tag] = []
+
+            queries[tag] += item['search']
 
         #TODO: escape for base and qstring
-        squery = "SELECT " + ",".join(["%s.*" % t for t in tags]) + " BASE " + " BASE ".join(['%s %s "%s"' % (t, scope, base) for t in tags]) + " WHERE " + " OR ".join(queries) % {'__search__': qstring}
+        for tag, query in queries.items():
+            squery = "SELECT " + tag + ".* BASE " + tag + " " + scope + (' "%s"' % base) + " WHERE " + " OR ".join(query) % {'__search__': qstring}
+            for item in self.__sw.execute(squery, user=user):
+                for category, info in item.items():
+                    res.append(dict(tag=category, dn=info['DN'][0], title=info['cn'][0],
+                        description="This is a multiline <i>description</i> featuring rich text.",
+                        icon=("data:image/jpeg;base64," + info['jpegPhoto'][0]) if 'jpegPhoto' in info else None))
 
-        print "-"*80
-        print squery
-        print "-"*80
 
 # Information
 #        [
 #         {'map': {'cn': 'title'}, 'search': ['Group.cn LIKE "%(__search__)s"', 'Group.description LIKE "%(__search__)s"'], 'tag': 'Group', 'resolve': [{'filter': 'User.uid = %(uid)s', 'attribute': 'memberUid'}]},
 #         {'map': {'jpegPhoto': 'icon', 'cn': 'title'}, 'search': ['User.givenName LIKE "%(__search__)s"', 'User.sn LIKE "%(__search__)s"', 'User.cn LIKE "%(__search__)s"', 'User.uid LIKE "%(__search__)s"'], 'tag': 'User', 'resolve': [{'filter': "Group.dn = '%(dn)s'", 'attribute': 'member'}, {'filter': "User.dn = '%(dn)s'", 'attribute': 'manager'}]}
 #        ]
-
-        res = []
-        for item in self.__sw.execute(squery, user=user):
-            for category, info in item.items():
-                res.append(dict(tag=category, dn=info['DN'][0], title=info['cn'][0],
-                    description="This is a multiline <i>description</i> featuring rich text.",
-                    icon=("data:image/jpeg;base64," + info['jpegPhoto'][0]) if 'jpegPhoto' in info else None))
 
         # Run one level resolve for "Resolve" definitions and add the results
         #TODO
