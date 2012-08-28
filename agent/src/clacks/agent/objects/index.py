@@ -310,29 +310,29 @@ class ObjectIndex(Plugin):
 
             path = objectify.ObjectPath(".Extensions")
             if path.hasattr(current):
-              self.db.xquery("""
-              replace node
-                  collection('objects')/*/.[o:UUID = '%s']/o:Extensions
-              with
-                  %s
-              """ % (obj.uuid, self.escape(etree.tostring(current.Extensions))))
+                self.db.xquery("""
+                replace node
+                    collection('objects')/*/.[o:UUID = '%s']/o:Extensions
+                with
+                    %s
+                """ % (obj.uuid, self.escape(etree.tostring(current.Extensions))))
 
             else:
 
-              # Remove extension entry
-              self.db.xquery("""
-                delete nodes
-                   collection('objects')/*/.[o:UUID = '%s']/o:Extensions
-                """ % obj.uuid)
+                # Remove extension entry
+                self.db.xquery("""
+                  delete nodes
+                     collection('objects')/*/.[o:UUID = '%s']/o:Extensions
+                  """ % obj.uuid)
 
         # Move attributes
         if len(self.db.xquery("collection('objects')/*/.[o:UUID = '%s']/o:Attributes" % obj.uuid)) != 0:
-          self.db.xquery("""
-          replace node
-              collection('objects')/*/.[o:UUID = '%s']/o:Attributes
-          with
-              %s
-          """ % (obj.uuid, self.escape(etree.tostring(current.Attributes))))
+            self.db.xquery("""
+            replace node
+                collection('objects')/*/.[o:UUID = '%s']/o:Attributes
+            with
+                %s
+            """ % (obj.uuid, self.escape(etree.tostring(current.Attributes))))
 
         # Set LastChanged
         self.db.xquery("""
@@ -434,37 +434,32 @@ class ObjectIndex(Plugin):
                 resolve[typ] += item['resolve']
 
         #TODO: escape for base and qstring
+        #TODO: React on tags in search field
         for typ, query in queries.items():
             squery = "SELECT " + typ + ".* BASE " + typ + " " + scope + (' "%s"' % base) + " WHERE " + " OR ".join(query) % {'__search__': qstring}
+            squery += " ORDER BY %s.DN" % typ
             for item in self.__sw.execute(squery, user=user):
-                self.__update_res(mapping, typ, res, item)
+                self.__update_res(mapping, typ, res, item, 1)
 
                 # Run one level resolve for "Resolve" definitions and add the results
                 for r in resolve[typ]:
-                    print "--> resolve", r
-                    print typ
-                    print r['attribute']
-                    print item[typ]
                     if r['attribute'] in item[typ]:
                         tag = r['type'] if r['type'] else typ
                         squery = "SELECT %s.* BASE %s %s \"%s\" WHERE " % (tag, tag, scope, base)
                         squery += "%s.%s IN (%s)" % (tag, r['filter'], ",".join(['"%s"' % i for i in item[typ][r['attribute']]]))
-                        print squery
+                        squery += " ORDER BY %s.DN" % tag
+
                         for r_item in self.__sw.execute(squery, user=user):
-                            self.__update_res(mapping, tag, res, r_item)
-
-
-        # Sort by relevance by inspecting potential tags
-        #TODO
+                            self.__update_res(mapping, tag, res, r_item, 4)
 
         return res.values()
 
-    def __update_res(self, mapping, typ, res, item):
+    def __update_res(self, mapping, typ, res, item, relevance):
        for category, info in item.items():
            if info['DN'][0] in res:
                continue
 
-           entry = {'tag': typ}
+           entry = {'tag': typ, 'relevance': relevance}
            for k, v in mapping[typ].items():
                if k:
                    entry[k] = info[v][0] if v in info else self.__build_value(v, info)
