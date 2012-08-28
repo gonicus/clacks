@@ -52,20 +52,9 @@
       <Attribute>
         <Name>uidNumber</Name>
         <Unique>true</Unique>
-        <Default>-1</Default>
         <Description>An integer uniquely identifying a user in an administrative domain</Description>
         <Type>Integer</Type>
         <Mandatory>true</Mandatory>
-        <OutFilter>
-          <FilterChain>
-            <FilterEntry>
-              <Filter>
-                <Name>GetNextID</Name>
-                <Param>uidNumber</Param>
-              </Filter>
-            </FilterEntry>
-          </FilterChain>
-        </OutFilter>
         <Validators>
           <Condition>
             <Name>Smaller</Name>
@@ -76,6 +65,9 @@
           <Name>autoIDs</Name>
           <Value>true</Value>
         </BlockedBy>
+        <DependsOn>
+          <Attribute>autoIDs</Attribute>
+        </DependsOn>
       </Attribute>
 
       <Attribute>
@@ -87,6 +79,15 @@
           <Name>autoIDs</Name>
           <Value>true</Value>
         </BlockedBy>
+        <Validators>
+          <Condition>
+            <Name>Smaller</Name>
+            <Param>65500</Param>
+          </Condition>
+        </Validators>
+        <DependsOn>
+          <Attribute>autoIDs</Attribute>
+        </DependsOn>
       </Attribute>
 
       <Attribute>
@@ -151,6 +152,17 @@
         <Default>true</Default>
         <Backend>NULL</Backend>
         <Type>Boolean</Type>
+        <OutFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>GenerateIDs</Name>
+                <Param>65500</Param>
+                <Param>65500</Param>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </OutFilter>
       </Attribute>
     </Attributes>
 

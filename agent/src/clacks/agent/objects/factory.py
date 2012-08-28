@@ -728,6 +728,7 @@ class ObjectFactory(object):
                 out_f = []
                 in_f =  []
                 blocked_by = []
+                depends_on = []
                 default = None
                 validator = None
                 backend_syntax = syntax = prop['Type'].text
@@ -776,12 +777,10 @@ class ObjectFactory(object):
                     if "Default" in prop.__dict__:
                         default = self.__attribute_type[syntax].convert_from('String', [prop.Default.text])
 
-
-                # Check for property dependencies
-                depends_on = []
-                if "DependsOn" in prop.__dict__:
-                    for d in prop.__dict__['DependsOn'].iterchildren():
-                        depends_on.append(d.text)
+                    # Check for property dependencies
+                    if "DependsOn" in prop.__dict__:
+                        for d in prop.__dict__['DependsOn'].iterchildren():
+                            depends_on.append(d.text)
 
                 # Check for valid value list
                 values = []
