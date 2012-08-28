@@ -162,6 +162,35 @@ class ObjectFactory(object):
                         res.append(attr.Name.text)
         return res
 
+    def getObjectSearchAid(self, objectType):
+        """
+        Returns a hash containing information about how to search for this
+        object.
+        """
+        if not objectType in self.__xml_defs:
+            raise Exception("cannot create search aid, object %s does not exist!" % objectType)
+
+        res = {}
+        find = objectify.ObjectPath("Object.Find.Aspect")
+        if find.hasattr(self.__xml_defs[objectType]):
+            for attr in find(self.__xml_defs[objectType]):
+                res['tag'] = attr['Tag']
+
+                res['search'] = []
+                for s in attr['Search']:
+                    res['search'].append(s.text)
+
+                res['resolve'] = []
+                for r in attr['Resolve']:
+                    res['resolve'].append(dict(attribute=r.text, filter=r.attrib['filter'] if 'filter' in r.attrib else None))
+
+                res['map'] = {}
+                for r in attr['Result']:
+                    for m in r['Map']:
+                        res['map'][m['Source'].text] = m['Destination'].text
+
+        return res
+
     def getAllowedSubElementsForObject(self, objectType):
         """
         Returns a list of objects that can be stored as sub-objects for the given object.

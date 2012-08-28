@@ -87,6 +87,13 @@ class ObjectIndex(Plugin):
                     datetime.datetime.now() + datetime.timedelta(seconds=30),
                     tag='_internal', jobstore='ram')
 
+        # Extract search aid
+        self.__search_aid = []
+        for otype in self.factory.getObjectTypes():
+            si = self.factory.getObjectSearchAid(otype)
+            if si:
+                self.__search_aid.append(si)
+
     def stop(self):
         self.db.shutdown()
 
@@ -380,6 +387,8 @@ class ObjectIndex(Plugin):
     @Command(needsUser=True, __help__=N_("Filter for indexed attributes and return the matches."))
     def simple_search(self, user, base, scope, qstring, fltr=None):
         """
+        Performs a query based on a simple search string consisting of keywords.
+
         Query the database using the given query string and an optional filter
         dict - and return the result set.
 
@@ -387,7 +396,7 @@ class ObjectIndex(Plugin):
         Parameter  Description
         ========== ==================
         base       Query base
-        scope      Query scope
+        scope      Query scope (SUB, BASE, ONE)
         qstring    Query string
         filter     Hash for extra parameters
         ========== ==================
@@ -395,15 +404,28 @@ class ObjectIndex(Plugin):
         ``Return``: List of dicts
         """
 
-        if GlobalLock.exists("scan_index"):
-            raise FilterException("index rebuild in progress - try again later")
+        if not scope.lower() in ["sub", "base", "one"]:
+            raise Exception("invalid scope - needs to be one of SUB, BASE or ONE")
 
-    @Command(needsUser=True, __help__=N_("Filter for indexed attributes and return the matches."))
-    def simple_search(self, user, base, scope, query, fltr=None):
-        """
-        Performs a query based on a simple search string consisting of keywords.
-        """
-        squery = 'SELECT User.* BASE User SUB "%s" WHERE User.uid like "%s" ORDER BY User.sn' % (base, query)
+        # Assemble search filter
+        tags = []
+        queries = []
+        for item in self.__search_aid:
+            tags.append(item['tag'])
+            queries += item['search']
+
+        #TODO: escape for base and qstring
+        squery = "SELECT " + ",".join(["%s.*" % t for t in tags]) + " BASE " + " ".join(['%s %s "%s"' % (t, scope, base) for t in tags]) + " WHERE " + " OR ".join(queries) % {'__search__': qstring}
+
+        print "-"*80
+        print squery
+        print "-"*80
+
+# Information
+#        [
+#         {'map': {'cn': 'title'}, 'search': ['Group.cn LIKE "%(__search__)s"', 'Group.description LIKE "%(__search__)s"'], 'tag': 'Group', 'resolve': [{'filter': 'User.uid = %(uid)s', 'attribute': 'memberUid'}]},
+#         {'map': {'jpegPhoto': 'icon', 'cn': 'title'}, 'search': ['User.givenName LIKE "%(__search__)s"', 'User.sn LIKE "%(__search__)s"', 'User.cn LIKE "%(__search__)s"', 'User.uid LIKE "%(__search__)s"'], 'tag': 'User', 'resolve': [{'filter': "Group.dn = '%(dn)s'", 'attribute': 'member'}, {'filter': "User.dn = '%(dn)s'", 'attribute': 'manager'}]}
+#        ]
 
         res = []
         for item in self.__sw.execute(squery, user=user):
@@ -411,6 +433,12 @@ class ObjectIndex(Plugin):
                 res.append(dict(tag=category, dn=info['DN'][0], title=info['cn'][0],
                     description="This is a multiline <i>description</i> featuring rich text.",
                     icon=("data:image/jpeg;base64," + info['jpegPhoto'][0]) if 'jpegPhoto' in info else None))
+
+        # Run one level resolve for "Resolve" definitions and add the results
+        #TODO
+
+        # Sort by relevance
+        #TODO
 
         return res
 
