@@ -52,6 +52,11 @@ from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import Plugin
 from clacks.common.components import PluginRegistry
 
+
+def CLiteral(text):
+    return Regexp(''.join('[{0}{1}]'.format(c.lower(), c.upper()) for c in text))
+
+
 class MyNode(Node):
     """
     LEPL allows to link parser statements directly to classes which are
@@ -441,9 +446,9 @@ class Match(MyNode):
             comp  = self[1].compile_for_match()
             attr2 = self[2].compile_for_match()
 
-            if(comp == "like"):
+            if(comp == "LIKE"):
                 match = ("contains(%s, %s)" % (attr1, attr2))
-            elif(comp == "in"):
+            elif(comp == "IN"):
                 match = ("(%s = %s)" % (attr1, attr2))
             else:
                 match = ("(%s %s %s)" % (attr1, comp, attr2))
@@ -706,15 +711,15 @@ class SearchWrapper(Plugin):
             ################
             attribute_list = Delayed()
             attribute_list += attribute & Optional(~Literal(',') & attribute_list)
-            select = ~Literal('SELECT') & attribute_list > Attributes
+            select = ~CLiteral('SELECT') & attribute_list > Attributes
 
             ################
             ### BASE
             ################
-            scope_option = Literal('SUB') | Literal('BASE') | Literal('ONE')
+            scope_option = CLiteral('SUB') | CLiteral('BASE') | CLiteral('ONE')
             base_type = attr_type
             base_value = String()
-            base = ~Literal('BASE') & base_type & scope_option & base_value > Base
+            base = ~CLiteral('BASE') & base_type & scope_option & base_value > Base
             bases = Delayed()
             bases += base & Optional (~spaces & bases)
 
@@ -723,12 +728,12 @@ class SearchWrapper(Plugin):
             ################
 
             statement = (attribute | in_list | (String() > StringValue))
-            operator = (Literal('=') | Literal('!=') | Literal('like') | Literal('in')) > Operator
+            operator = (Literal('=') | Literal('!=') | CLiteral('LIKE') | CLiteral('IN')) > Operator
             condition_tmp = statement & operator & statement
 
             # Allow to have brakets in condition statements
             condition = Delayed()
-            negator = Literal('NOT')
+            negator = CLiteral('NOT')
             condition += condition_tmp | Optional(negator) & ~Literal('(') & condition & ~Literal(')') > Match
 
             # Allow to have joined condition in any possible variation
@@ -736,31 +741,31 @@ class SearchWrapper(Plugin):
             parens = ~Literal('(') & group3 & ~Literal(')') > Collection
             group1 = parens | condition
 
-            or_ = group1 & ~Literal('OR') & group2 > Or
-            and_ = group1 & ~Literal('AND') & group2 > And
+            or_ = group1 & ~CLiteral('OR') & group2 > Or
+            and_ = group1 & ~CLiteral('AND') & group2 > And
             group2 += or_ | and_ | group1
 
-            add = group2 & ~Literal('OR') & group3 > Or
-            sub = group2 & ~Literal('AND') & group3 > And
+            add = group2 & ~CLiteral('OR') & group3 > Or
+            sub = group2 & ~CLiteral('AND') & group3 > And
             group3 += add | sub | group2
 
-            where = ~Literal('WHERE') & group3 > Where
+            where = ~CLiteral('WHERE') & group3 > Where
 
             ################
             ### Limit
             ################
 
-            limit = (~Literal('LIMIT') & number & Optional(~Literal(',') & number)) > Limit
+            limit = (~CLiteral('LIMIT') & number & Optional(~Literal(',') & number)) > Limit
 
             ################
             ### Order By
             ################
 
-            direction = Literal('ASC') | Literal('DESC') > Direction
+            direction = CLiteral('ASC') | CLiteral('DESC') > Direction
             odered_attr = attribute & Optional(direction) > OrderedAttribute
             odered_attr_list = Delayed()
             odered_attr_list += odered_attr & Optional(~Literal(',') & odered_attr_list)
-            order_by = ~Literal('ORDER BY') & odered_attr_list > OrderBy
+            order_by = ~CLiteral('ORDER BY') & odered_attr_list > OrderBy
 
             self.query_parser = ~spaces & select & bases & Optional(where) & Optional(order_by) & Optional(limit) & ~spaces > Query
 
