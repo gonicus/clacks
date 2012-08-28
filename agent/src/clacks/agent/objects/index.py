@@ -307,7 +307,9 @@ class ObjectIndex(Plugin):
 
         # Move extensions
         if len(self.db.xquery("collection('objects')/*/.[o:UUID = '%s']/o:Extensions" % obj.uuid)) != 0:
-            if len(current.findall("Extensions")) > 0:
+
+            path = objectify.ObjectPath(".Extensions")
+            if path.hasattr(current):
               self.db.xquery("""
               replace node
                   collection('objects')/*/.[o:UUID = '%s']/o:Extensions
@@ -316,6 +318,7 @@ class ObjectIndex(Plugin):
               """ % (obj.uuid, self.escape(etree.tostring(current.Extensions))))
 
             else:
+
               # Remove extension entry
               self.db.xquery("""
                 delete nodes
