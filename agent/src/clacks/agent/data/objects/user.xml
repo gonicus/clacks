@@ -124,7 +124,7 @@
       <Attribute>
         <Name>departmentNumber</Name>
         <Description>Identifies a department within an organization</Description>
-        <Type>Integer</Type>
+        <Type>String</Type>
       </Attribute>
       <Attribute>
         <Name>displayName</Name>
@@ -134,7 +134,7 @@
       <Attribute>
         <Name>employeeNumber</Name>
         <Description>numerically identifies an employee within an organization'</Description>
-        <Type>Integer</Type>
+        <Type>String</Type>
       </Attribute>
       <Attribute>
         <Name>employeeType</Name>
