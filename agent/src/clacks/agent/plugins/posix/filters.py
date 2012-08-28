@@ -3,6 +3,23 @@ from clacks.agent.objects.filter import ElementFilter
 from clacks.agent.objects.backend.registry import ObjectBackendRegistry
 
 
+
+class GenerateIDs(ElementFilter):
+    """
+    Generate gid/uidNumbers on demand
+    """
+    def __init__(self, obj):
+        super(GenerateIDs, self).__init__(obj)
+
+    def process(self, obj, key, valDict):
+
+        if not(len(valDict['gidNumber']['value'])):
+            valDict['gidNumber']['value'] = [123]
+        if not(len(valDict['uidNumber']['value'])):
+            valDict['uidNumber']['value'] = [123]
+        return key, valDict
+
+
 class LoadGecosState(ElementFilter):
     """
     Detects the state of the autoGECOS attribute

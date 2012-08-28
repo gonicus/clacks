@@ -167,6 +167,7 @@ setup(
         posixgetnextid = clacks.agent.plugins.posix.filters:GetNextID
         generategecos = clacks.agent.plugins.posix.filters:GenerateGecos
         loadgecosstate = clacks.agent.plugins.posix.filters:LoadGecosState
+        generateids = clacks.agent.plugins.posix.filters:GenerateIDs
         datetoshadowdays = clacks.agent.plugins.posix.shadow:DatetimeToShadowDays
         shadowdaystodate = clacks.agent.plugins.posix.shadow:ShadowDaysToDatetime
         detect_pwd_method = clacks.agent.plugins.password.filter.detect_method:DetectPasswordMethod
