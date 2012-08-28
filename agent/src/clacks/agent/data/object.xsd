@@ -295,7 +295,8 @@
   <complexType name="Resolve">
     <simpleContent>
       <extension base="string">
-        <attribute name="filter" type="string" use="optional"/>
+        <attribute name="filter" type="string"/>
+        <attribute name="type" type="string" use="optional"/>
       </extension>
     </simpleContent>
   </complexType>

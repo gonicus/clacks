@@ -183,7 +183,9 @@ class ObjectFactory(object):
 
                 res['resolve'] = []
                 for r in attr['Resolve']:
-                    res['resolve'].append(dict(attribute=r.text, filter=r.attrib['filter'] if 'filter' in r.attrib else None))
+                    res['resolve'].append(dict(attribute=r.text,
+                        filter=r.attrib['filter'] if 'filter' in r.attrib else None,
+                        type=r.attrib['type'] if 'type' in r.attrib else None))
 
                 res['map'] = {}
                 for r in attr['Result']:

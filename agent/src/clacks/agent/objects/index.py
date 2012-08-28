@@ -404,7 +404,7 @@ class ObjectIndex(Plugin):
 
         ``Return``: List of dicts
         """
-        res = []
+        res = {}
 
         scope = scope.upper()
         if not scope in ["SUB", "BASE", "ONE"]:
@@ -413,45 +413,64 @@ class ObjectIndex(Plugin):
         # Collect queries, grouped by type
         queries = {}
         mapping = {}
+        resolve = {}
         for item in self.__search_aid:
             typ = item['type']
 
             if not typ in queries:
                 queries[typ] = []
+            if not typ in resolve:
+                resolve[typ] = []
             if not typ in mapping:
                 mapping[typ] = dict(dn="DN", title="title", description="description", icon=None)
 
             queries[typ] += item['search']
             if 'map' in item:
                 mapping[typ].update(item['map'])
+            if 'resolve' in item:
+                resolve[typ] += item['resolve']
 
         #TODO: escape for base and qstring
         for typ, query in queries.items():
             squery = "SELECT " + typ + ".* BASE " + typ + " " + scope + (' "%s"' % base) + " WHERE " + " OR ".join(query) % {'__search__': qstring}
             for item in self.__sw.execute(squery, user=user):
-                for category, info in item.items():
-                    entry = {'tag': typ}
-                    for k, v in mapping[typ].items():
-                        if k:
-                            entry[k] = info[v][0] if v in info else self.__build_value(v, info)
-                    entry['icon'] = ("data:image/jpeg;base64," + info[mapping[typ]['icon']][0]) if mapping[typ]['icon'] in info else None
-                    res.append(entry)
+                self.__update_res(mapping, typ, res, item)
 
-# Information
-#        [
-#         {'map': {'cn': 'title'}, 'search': ['Group.cn LIKE "%(__search__)s"', 'Group.description LIKE "%(__search__)s"'], 'tag': 'Group', 'resolve': [{'filter': 'User.uid = %(uid)s', 'attribute': 'memberUid'}]},
-#         {'map': {'jpegPhoto': 'icon', 'cn': 'title'}, 'search': ['User.givenName LIKE "%(__search__)s"', 'User.sn LIKE "%(__search__)s"', 'User.cn LIKE "%(__search__)s"', 'User.uid LIKE "%(__search__)s"'], 'tag': 'User', 'resolve': [{'filter': "Group.dn = '%(dn)s'", 'attribute': 'member'}, {'filter': "User.dn = '%(dn)s'", 'attribute': 'manager'}]}
-#        ]
+                # Run one level resolve for "Resolve" definitions and add the results
+                for r in resolve[typ]:
+                    print "--> resolve", r
+                    print typ
+                    print r['attribute']
+                    print item[typ]
+                    if r['attribute'] in item[typ]:
+                        tag = r['type'] if r['type'] else typ
+                        squery = "SELECT %s.* BASE %s %s \"%s\" WHERE " % (tag, tag, scope, base)
+                        squery += "%s.%s IN (%s)" % (tag, r['filter'], ",".join(['"%s"' % i for i in item[typ][r['attribute']]]))
+                        print squery
+                        for r_item in self.__sw.execute(squery, user=user):
+                            self.__update_res(mapping, tag, res, r_item)
 
-        # Run one level resolve for "Resolve" definitions and add the results
+
+        # Sort by relevance by inspecting potential tags
         #TODO
 
-        # Sort by relevance
-        #TODO
+        return res.values()
 
-        return res
+    def __update_res(self, mapping, typ, res, item):
+       for category, info in item.items():
+           if info['DN'][0] in res:
+               continue
+
+           entry = {'tag': typ}
+           for k, v in mapping[typ].items():
+               if k:
+                   entry[k] = info[v][0] if v in info else self.__build_value(v, info)
+           entry['icon'] = ("data:image/jpeg;base64," + info[mapping[typ]['icon']][0]) if mapping[typ]['icon'] in info else None
+           res[info['DN'][0]] = entry
 
     def __build_value(self, v, info):
+        # This needs to be more modular so that one can hook in several
+        # modules, displaying information about managers, extensions, etc.
         #TODO: i18n
 
         if not v:
@@ -459,9 +478,9 @@ class ObjectIndex(Plugin):
 
         attrs = {}
         for attr in re.findall(r"%\(([^)]+)\)s", v):
-            attrs[attr] = info[attr][0] if attr in info else "unknown" 
+            attrs[attr] = ", ".join(info[attr]) if attr in info else "unknown"
 
-        attrs['extensions'] = "Extensions: " + (", ".join(["<a href='clacks://%s/%s?edit'>%s</a>" % (i, info['DN'][0], i) for i in info['Extension']]) if "Extension" in info else "none")
+        attrs['extensions'] = "Extensions: " + (", ".join(["<a href='clacks://%s/%s?edit'>%s</a>" % (info['DN'][0], i, i) for i in info['Extension']]) if "Extension" in info else "none")
 
         return v % attrs
 

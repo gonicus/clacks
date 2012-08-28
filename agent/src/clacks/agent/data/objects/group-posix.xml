@@ -70,7 +70,7 @@
         <Tag>PosixGroup</Tag>
         <Search>PosixGroup.cn LIKE "%(__search__)s"</Search>
         <Search>PosixGroup.description LIKE "%(__search__)s"</Search>
-        <Resolve filter="User.uid = %(uid)s">memberUid</Resolve>
+        <Resolve type="User" filter="uid">memberUid</Resolve>
         <Result>
           <Map>
             <Source>cn</Source>
