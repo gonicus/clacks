@@ -136,6 +136,7 @@ class Query(MyNode):
         This block will create entries like this:
             >>> let $User_base := collection('objects')/User[ParentDN =  'dc=gonicus,dc=de')]
         """
+        result.append("let $base := collection('%s')" % (self._collection))
         for entry in self.Base:
             base_object, base_type, base = entry
 
@@ -149,7 +150,7 @@ class Query(MyNode):
             else:
                 raise Exception("Unknown scope value '%s'" % (base_type))
 
-            result.append("let $%s_base := collection('%s')/o:%s[%s]" % (base_object, self._collection, base_object, match))
+            result.append("let $%s_base := $base/o:%s[%s]" % (base_object, base_object, match))
 
         result.append('')
 
@@ -239,6 +240,11 @@ class Query(MyNode):
         # Start the given query
         s_index = PluginRegistry.getInstance("ObjectIndex")
         xquery =  self.get_xquery()
+
+        print "---"
+        print xquery
+        print "---"
+
         self.__env.log.debug("xquery statement:", xquery)
 
         q_res = s_index.xquery(xquery)
