@@ -11,12 +11,30 @@ class GenerateIDs(ElementFilter):
     def __init__(self, obj):
         super(GenerateIDs, self).__init__(obj)
 
-    def process(self, obj, key, valDict):
+    def process(self, obj, key, valDict, maxValue=65500):
+
+        if not(len(valDict['uidNumber']['value'])):
+            if len(valDict["uidNumber"]['backend']) > 1:
+                raise Exception("GetNextID filter does not support multiple backends!")
+
+            be = ObjectBackendRegistry.getBackend(valDict["uidNumber"]['backend'][0])
+            uid = be.get_next_id("uidNumber")
+            if uid > maxValue:
+                raise Exception("ID generation for %s exceeded limitation of %s!" % ("uidNumber", maxValue,))
+
+            valDict["uidNumber"]['value'] = [uid]
 
         if not(len(valDict['gidNumber']['value'])):
-            valDict['gidNumber']['value'] = [123]
-        if not(len(valDict['uidNumber']['value'])):
-            valDict['uidNumber']['value'] = [123]
+            if len(valDict["gidNumber"]['backend']) > 1:
+                raise Exception("GetNextID filter does not support multiple backends!")
+
+            be = ObjectBackendRegistry.getBackend(valDict["gidNumber"]['backend'][0])
+            gid = be.get_next_id("gidNumber")
+            if gid > maxValue:
+                raise Exception("ID generation for %s exceeded limitation of %s!" % ("gidNumber", maxValue,))
+
+            valDict["gidNumber"]['value'] = [gid]
+
         return key, valDict
 
 
