@@ -241,10 +241,6 @@ class Query(MyNode):
         s_index = PluginRegistry.getInstance("ObjectIndex")
         xquery =  self.get_xquery()
 
-        print "---"
-        print xquery
-        print "---"
-
         self.__env.log.debug("xquery statement:", xquery)
 
         q_res = s_index.xquery(xquery)

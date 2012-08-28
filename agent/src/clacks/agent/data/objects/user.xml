@@ -497,6 +497,10 @@
             <Destination>title</Destination>
           </Map>
           <Map>
+            <Source><![CDATA[Phone number: %(telephoneNumber)s<br>%(extensions)s]]></Source>
+            <Destination>description</Destination>
+          </Map>
+          <Map>
             <Source>jpegPhoto</Source>
             <Destination>icon</Destination>
           </Map>

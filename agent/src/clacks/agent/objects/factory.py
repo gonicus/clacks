@@ -174,6 +174,7 @@ class ObjectFactory(object):
         find = objectify.ObjectPath("Object.Find.Aspect")
         if find.hasattr(self.__xml_defs[objectType]):
             for attr in find(self.__xml_defs[objectType]):
+                res['type'] = objectType
                 res['tag'] = attr['Tag']
 
                 res['search'] = []
@@ -187,7 +188,7 @@ class ObjectFactory(object):
                 res['map'] = {}
                 for r in attr['Result']:
                     for m in r['Map']:
-                        res['map'][m['Source'].text] = m['Destination'].text
+                        res['map'][m['Destination'].text] = m['Source'].text
 
         return res
 

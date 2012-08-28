@@ -12,6 +12,7 @@ local index database
 import logging
 import zope.event
 import datetime
+import re
 from itertools import izip
 from lxml import etree, objectify
 from zope.interface import Interface, implements
@@ -409,25 +410,32 @@ class ObjectIndex(Plugin):
         if not scope in ["SUB", "BASE", "ONE"]:
             raise Exception("invalid scope - needs to be one of SUB, BASE or ONE")
 
-        # Collect queries, grouped by tag
+        # Collect queries, grouped by type
         queries = {}
+        mapping = {}
         for item in self.__search_aid:
-            tag = item['tag']
+            typ = item['type']
 
-            if not tag in queries:
-                queries[tag] = []
+            if not typ in queries:
+                queries[typ] = []
+            if not typ in mapping:
+                mapping[typ] = dict(dn="DN", title="title", description="description", icon=None)
 
-            queries[tag] += item['search']
+            queries[typ] += item['search']
+            if 'map' in item:
+                mapping[typ].update(item['map'])
 
         #TODO: escape for base and qstring
-        for tag, query in queries.items():
-            squery = "SELECT " + tag + ".* BASE " + tag + " " + scope + (' "%s"' % base) + " WHERE " + " OR ".join(query) % {'__search__': qstring}
+        for typ, query in queries.items():
+            squery = "SELECT " + typ + ".* BASE " + typ + " " + scope + (' "%s"' % base) + " WHERE " + " OR ".join(query) % {'__search__': qstring}
             for item in self.__sw.execute(squery, user=user):
                 for category, info in item.items():
-                    res.append(dict(tag=category, dn=info['DN'][0], title=info['cn'][0],
-                        description="This is a multiline <i>description</i> featuring rich text.",
-                        icon=("data:image/jpeg;base64," + info['jpegPhoto'][0]) if 'jpegPhoto' in info else None))
-
+                    entry = {'tag': typ}
+                    for k, v in mapping[typ].items():
+                        if k:
+                            entry[k] = info[v][0] if v in info else self.__build_value(v, info)
+                    entry['icon'] = ("data:image/jpeg;base64," + info[mapping[typ]['icon']][0]) if mapping[typ]['icon'] in info else None
+                    res.append(entry)
 
 # Information
 #        [
@@ -442,6 +450,20 @@ class ObjectIndex(Plugin):
         #TODO
 
         return res
+
+    def __build_value(self, v, info):
+        #TODO: i18n
+
+        if not v:
+            return ""
+
+        attrs = {}
+        for attr in re.findall(r"%\(([^)]+)\)s", v):
+            attrs[attr] = info[attr][0] if attr in info else "unknown" 
+
+        attrs['extensions'] = "Extensions: " + (", ".join(["<a href='clacks://%s/%s?edit'>%s</a>" % (i, info['DN'][0], i) for i in info['Extension']]) if "Extension" in info else "none")
+
+        return v % attrs
 
     @Command(needsUser=True, __help__=N_("Filter for indexed attributes and return the matches."))
     def search(self, user, qstring):
