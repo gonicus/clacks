@@ -457,6 +457,9 @@ class ObjectIndex(Plugin):
     def __update_res(self, mapping, typ, res, item, relevance):
        for category, info in item.items():
            if info['DN'][0] in res:
+               dn = info['DN'][0]
+               if res[dn]['relevance'] > relevance:
+                   res[dn]['relevance'] = relevance
                continue
 
            entry = {'tag': typ, 'relevance': relevance}
