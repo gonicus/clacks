@@ -185,7 +185,7 @@ class LDAP(ObjectBackend):
             mod_attrs.append((ldap.MOD_DELETE, 'objectClass', ocs))
 
         # Remove all other keys related to this object
-        for key in data:
+        for key in data.keys():
             mod_attrs.append((ldap.MOD_DELETE, key, None))
 
         self.con.modify_s(dn, mod_attrs)

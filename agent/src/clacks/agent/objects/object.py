@@ -1187,7 +1187,7 @@ class Object(object):
 
         # Collect backends
         backends = [getattr(self, '_backend')]
-        be_attrs = {getattr(self, '_backend'): []}
+        be_attrs = {getattr(self, '_backend'): {}}
 
         for prop, info in self.myProperties.items():
             for backend in info['backend']:
@@ -1195,8 +1195,13 @@ class Object(object):
                     backends.append(backend)
 
                 if not backend in be_attrs:
-                    be_attrs[backend] = []
-                be_attrs[backend].append(prop)
+                    be_attrs[backend] = {}
+
+                if self.is_attr_set(prop):
+                    be_attrs[backend][prop] = {'foreign': info['foreign'],
+                                               'orig': info['in_value'],
+                                               'value': info['value'],
+                                               'type': info['backend_type']}
 
         # Retract for all backends, removing the primary one as the last one
         backends.reverse()
@@ -1208,16 +1213,16 @@ class Object(object):
             r_attrs = self.getExclusiveProperties()
 
             # Remove all non exclusive properties
-            remove_attrs = []
+            remove_attrs = {}
             for attr in be_attrs[backend]:
                 if attr in r_attrs:
-                    remove_attrs.append(attr)
+                    remove_attrs[attr] = be_attrs[backend][attr]
 
             self.remove_refs()
             self.remove_dn_refs()
 
             #pylint: disable=E1101
-            be.retract(self.uuid, [a for a in remove_attrs if self.is_attr_set(a)], self._backendAttrs[backend] \
+            be.retract(self.uuid, remove_attrs, self._backendAttrs[backend] \
                     if backend in self._backendAttrs else None)
 
         zope.event.notify(ObjectChanged("post retract", obj))

@@ -72,6 +72,12 @@ class ObjectHandler(ObjectBackend):
     def extend(self, uuid, data, params, foreign_keys):
         return self.update(uuid, data, params)
 
+    def retract(self, uuid, data, params):
+        # Set values to an emtpy state, to enforce property removal
+        for prop in data:
+            data[prop]["value"] = []
+        return self.update(uuid, data, params)
+
     def update(self, uuid, data, back_attrs):
         """
         Write back changes collected for foreign objects relations.
@@ -176,10 +182,6 @@ class ObjectHandler(ObjectBackend):
     def remove(self, uuid):
         print "remove", uuid
         return False
-
-    def retract(self, uuid, data, params):
-        print "retract", uuid, data, params
-        pass
 
     def move_extension(self, uuid, new_base):
         pass
