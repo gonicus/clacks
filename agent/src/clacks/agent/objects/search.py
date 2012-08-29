@@ -442,7 +442,7 @@ class Match(MyNode):
         # to keep the originally used braces.
         match = ""
         if self.Match:
-            match = ("(%s)" % self.Match[0].compile())
+            match = ("%s" % self.Match[0].compile())
         else:
             attr1 = self[0].compile_for_match()
             comp  = self[1].compile_for_match()
@@ -451,13 +451,13 @@ class Match(MyNode):
             if(comp == "LIKE"):
                 match = ("contains(%s, %s)" % (attr1, attr2))
             elif(comp == "IN"):
-                match = ("(%s = %s)" % (attr1, attr2))
+                match = ("%s = %s" % (attr1, attr2))
             else:
-                match = ("(%s %s %s)" % (attr1, comp, attr2))
+                match = ("%s %s %s" % (attr1, comp, attr2))
 
         # Negate the match if a 'NOT' was placed in from of it.
         if 'NOT' in self:
-            match = 'not%s' % match
+            match = 'not(%s)' % match
         return match
 
 
@@ -515,13 +515,19 @@ class Collection(MyNode):
         """
         Returns the compiled xquery for collection-match.
         """
-        if len(self) == 1:
-            return self[0].compile()
+        braces = "(" in self
+        items = [item for item in self if str(item) not in ["(", ")"]]
+
+        if len(items) == 1:
+            ret = items[0].compile()
         else:
-            left = self[0].compile()
-            right = self[2].compile()
-            con = self[1].lower()
-        return("(%s %s %s)" % (left, con, right))
+            left = items[0].compile()
+            right = items[2].compile()
+            con = items[1].lower()
+            ret = "%s %s %s" % (left, con, right)
+        if braces:
+            ret = "(%s)" % ret
+        return ret
 
 
 class And(MyNode):
@@ -531,7 +537,7 @@ class And(MyNode):
         """
         left = self[0].compile()
         right = self[1].compile()
-        return("(%s and %s)" % (left, right))
+        return("%s and %s" % (left, right))
 
 
 class Or(MyNode):
@@ -541,7 +547,7 @@ class Or(MyNode):
         """
         left = self[0].compile()
         right = self[1].compile()
-        return("(%s or %s)" % (left, right))
+        return("%s or %s" % (left, right))
 
 
 class Where(MyNode):
@@ -740,7 +746,7 @@ class SearchWrapper(Plugin):
 
             # Allow to have joined condition in any possible variation
             group2, group3 = Delayed(), Delayed()
-            parens = ~Literal('(') & group3 & ~Literal(')') > Collection
+            parens = Literal('(') & group3 & Literal(')') > Collection
             group1 = parens | condition
 
             or_ = group1 & ~CLiteral('OR') & group2 > Or
