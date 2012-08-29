@@ -413,7 +413,9 @@ class ObjectIndex(Plugin):
         ``Return``: List of dicts
         """
         res = {}
+        done_searches = {}
         keywords = None
+        fallback = fltr and "fallback" in fltr and fltr["fallback"]
 
         try:
             keywords = shlex.split(qstring)
@@ -421,8 +423,6 @@ class ObjectIndex(Plugin):
             keywords = qstring.split(" ")
         keywords.append(qstring)
         qstring = qstring.strip("'").strip('"')
-
-        #TODO: escape for base, qstring and all keywords
 
         scope = scope.upper()
         if not scope in ["SUB", "BASE", "ONE"]:
@@ -444,7 +444,11 @@ class ObjectIndex(Plugin):
             if not typ in mapping:
                 mapping[typ] = dict(dn="DN", title="title", description="description", icon=None)
 
-            queries[typ] += item['search']
+            if fallback:
+                queries[typ] += item['fallback-search']
+            else:
+                queries[typ] += item['search']
+
             if 'keyword' in item:
                 aliases[typ] += item['keyword']
             if 'map' in item:
@@ -457,6 +461,12 @@ class ObjectIndex(Plugin):
             for typ, query in queries.items():
                 squery = "SELECT " + typ + ".* BASE " + typ + " " + scope + (' "%s"' % base) + " WHERE " + " OR ".join(query) % {'__search__': SearchWrapper.quote(kw)}
                 squery += " ORDER BY %s.DN" % typ
+
+                # Skip the search if it has already done
+                if squery in done_searches:
+                    continue
+                done_searches[squery] = None
+
                 for item in self.__sw.execute(squery, user=user):
                     self.__update_res(mapping, typ, res, item, self.__make_relevance(aliases[typ], kw, qstring, keywords))
 
@@ -468,12 +478,17 @@ class ObjectIndex(Plugin):
                             squery += "%s.%s IN (%s)" % (tag, r['filter'], ",".join(['"%s"' % i for i in item[typ][r['attribute']]]))
                             squery += " ORDER BY %s.DN" % tag
 
+                            # Skip the search if it has already done
+                            if squery in done_searches:
+                                continue
+                            done_searches[squery] = None
+
                             for r_item in self.__sw.execute(squery, user=user):
                                 self.__update_res(mapping, tag, res, r_item, self.__make_relevance(aliases[tag], kw, qstring, keywords, True))
 
         return res.values()
 
-    def __make_relevance(self, tag, qstring, o_qstring, keywords, secondary=False):
+    def __make_relevance(self, tag, qstring, o_qstring, keywords, secondary=False, fuzzy=False):
         relevance = 1
 
         # Penalty for not having an exact match
@@ -490,6 +505,10 @@ class ObjectIndex(Plugin):
 
         # Penalty for secondary
         if secondary:
+            relevance *= 10
+
+        # Penalty for fuzzynes
+        if fuzzy:
             relevance *= 10
 
         return relevance
