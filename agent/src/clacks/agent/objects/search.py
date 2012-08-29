@@ -40,6 +40,7 @@ about whats done here)
 
 """
 import re
+from xml.sax.saxutils import escape
 from lxml import etree
 from time import time
 from clacks.common import Environment
@@ -571,9 +572,7 @@ class StringValue(MyNode):
         """
         Return a xquery valid string
         """
-        ret = str(self[0]).replace("\"", "&quot;")
-
-        return ("\"%s\"" % (ret))
+        return "\"" + unicode(self[0]) + "\""
 
 
 class Attributes(MyNode):
@@ -789,6 +788,7 @@ class SearchWrapper(Plugin):
 
     @staticmethod
     def quote(value):
+        value = escape(value, {"\"": "&quot;"})
         return value
 
     @staticmethod
