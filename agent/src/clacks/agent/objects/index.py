@@ -13,6 +13,7 @@ import logging
 import zope.event
 import datetime
 import re
+import shlex
 from itertools import izip
 from lxml import etree, objectify
 from zope.interface import Interface, implements
@@ -409,6 +410,11 @@ class ObjectIndex(Plugin):
         """
         res = {}
 
+        #TODO: escape for base and qstring
+        keywords = shlex.split(qstring)
+        keywords.append(qstring)
+        qstring = qstring.strip("'").strip('"')
+
         scope = scope.upper()
         if not scope in ["SUB", "BASE", "ONE"]:
             raise Exception("invalid scope - needs to be one of SUB, BASE or ONE")
@@ -433,26 +439,44 @@ class ObjectIndex(Plugin):
             if 'resolve' in item:
                 resolve[typ] += item['resolve']
 
-        #TODO: escape for base and qstring
-        #TODO: React on tags in search field
-        for typ, query in queries.items():
-            squery = "SELECT " + typ + ".* BASE " + typ + " " + scope + (' "%s"' % base) + " WHERE " + " OR ".join(query) % {'__search__': qstring}
-            squery += " ORDER BY %s.DN" % typ
-            for item in self.__sw.execute(squery, user=user):
-                self.__update_res(mapping, typ, res, item, 1)
+        for kw in keywords:
+            kw = kw.strip("'").strip('"')
+            for typ, query in queries.items():
+                squery = "SELECT " + typ + ".* BASE " + typ + " " + scope + (' "%s"' % base) + " WHERE " + " OR ".join(query) % {'__search__': kw}
+                squery += " ORDER BY %s.DN" % typ
+                for item in self.__sw.execute(squery, user=user):
+                    self.__update_res(mapping, typ, res, item, self.__make_relevance(typ, kw, qstring, keywords))
 
-                # Run one level resolve for "Resolve" definitions and add the results
-                for r in resolve[typ]:
-                    if r['attribute'] in item[typ]:
-                        tag = r['type'] if r['type'] else typ
-                        squery = "SELECT %s.* BASE %s %s \"%s\" WHERE " % (tag, tag, scope, base)
-                        squery += "%s.%s IN (%s)" % (tag, r['filter'], ",".join(['"%s"' % i for i in item[typ][r['attribute']]]))
-                        squery += " ORDER BY %s.DN" % tag
+                    # Run one level resolve for "Resolve" definitions and add the results
+                    for r in resolve[typ]:
+                        if r['attribute'] in item[typ]:
+                            tag = r['type'] if r['type'] else typ
+                            squery = "SELECT %s.* BASE %s %s \"%s\" WHERE " % (tag, tag, scope, base)
+                            squery += "%s.%s IN (%s)" % (tag, r['filter'], ",".join(['"%s"' % i for i in item[typ][r['attribute']]]))
+                            squery += " ORDER BY %s.DN" % tag
 
-                        for r_item in self.__sw.execute(squery, user=user):
-                            self.__update_res(mapping, tag, res, r_item, 4)
+                            for r_item in self.__sw.execute(squery, user=user):
+                                self.__update_res(mapping, tag, res, r_item, self.__make_relevance(tag, kw, qstring, keywords, True))
 
         return res.values()
+
+    def __make_relevance(self, tag, qstring, o_qstring, keywords, secondary=False):
+        relevance = 1
+
+        # Penalty for not having tag in keywords
+        #TODO: map tag to multiple keywords
+        if not tag in keywords:
+            relevance *= 2
+
+        # Penalty for not having qstring in keywords
+        if qstring != o_qstring:
+            relevance *= 4
+
+        # Penalty for secondary
+        if secondary:
+            relevance *= 10
+
+        return relevance
 
     def __update_res(self, mapping, typ, res, item, relevance):
        for category, info in item.items():
