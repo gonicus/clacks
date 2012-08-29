@@ -1094,12 +1094,21 @@ class Object(object):
 
         # Collect backends
         backends = [getattr(self, '_backend')]
+        be_attrs = {getattr(self, '_backend'): {}}
 
-        # Collect all used backends
-        for info in self.myProperties.values():
-            for be in info['backend']:
-                if not be in backends:
-                   backends.append(be)
+        for prop, info in self.myProperties.items():
+            for backend in info['backend']:
+                if not backend in backends:
+                    backends.append(backend)
+
+                if not backend in be_attrs:
+                    be_attrs[backend] = {}
+
+                if self.is_attr_set(prop):
+                    be_attrs[backend][prop] = {'foreign': info['foreign'],
+                                               'orig': info['in_value'],
+                                               'value': info['value'],
+                                               'type': info['backend_type']}
 
         # Remove for all backends, removing the primary one as the last one
         backends.reverse()
@@ -1111,7 +1120,20 @@ class Object(object):
 
         for backend in backends:
             be = ObjectBackendRegistry.getBackend(backend)
-            be.remove(obj.uuid)
+            r_attrs = self.getExclusiveProperties()
+
+            # Remove all non exclusive properties
+            remove_attrs = {}
+            for attr in be_attrs[backend]:
+                if attr in r_attrs:
+                    remove_attrs[attr] = be_attrs[backend][attr]
+
+            self.remove_refs()
+            self.remove_dn_refs()
+
+            #pylint: disable=E1101
+            be.remove(self.uuid, remove_attrs, self._backendAttrs[backend] \
+                    if backend in self._backendAttrs else None)
 
         zope.event.notify(ObjectChanged("post remove", obj))
 
@@ -1231,7 +1253,7 @@ class Object(object):
         self.__execute_hook("PostRemove")
 
     def is_attr_set(self, name):
-        return len(self.myProperties[name]['value'])
+        return len(self.myProperties[name]['in_value'])
 
     def is_attr_using_default(self, name):
         return not self.is_attr_set(name) and self.myProperties[name]['default']
