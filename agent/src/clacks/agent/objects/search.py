@@ -40,6 +40,7 @@ about whats done here)
 
 """
 import re
+from xml.sax.saxutils import escape
 from lxml import etree
 from time import time
 from clacks.common import Environment
@@ -240,7 +241,6 @@ class Query(MyNode):
         # Start the given query
         s_index = PluginRegistry.getInstance("ObjectIndex")
         xquery =  self.get_xquery()
-        print xquery
 
         self.__env.log.debug("xquery statement:", xquery)
 
@@ -572,9 +572,7 @@ class StringValue(MyNode):
         """
         Return a xquery valid string
         """
-        ret = str(self[0]).replace("\"", "&quot;")
-
-        return ("\"%s\"" % (ret))
+        return "\"" + unicode(self[0]) + "\""
 
 
 class Attributes(MyNode):
@@ -790,8 +788,7 @@ class SearchWrapper(Plugin):
 
     @staticmethod
     def quote(value):
-        value = value.replace("\"", "&quot;")
-        print value
+        value = escape(value, {"\"": "&quot;"})
         return value
 
     @staticmethod
