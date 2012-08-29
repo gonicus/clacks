@@ -69,6 +69,9 @@ class ObjectHandler(ObjectBackend):
 
         return result
 
+    def extend(self, uuid, data, params, foreign_keys):
+        return self.update(uuid, data, params)
+
     def update(self, uuid, data, back_attrs):
         """
         Write back changes collected for foreign objects relations.
@@ -177,10 +180,6 @@ class ObjectHandler(ObjectBackend):
     def retract(self, uuid, data, params):
         print "retract", uuid, data, params
         pass
-
-    def extend(self, uuid, data, params, foreign_keys):
-        print "extend", uuid, data, params
-        return False
 
     def move_extension(self, uuid, new_base):
         pass
