@@ -2,8 +2,12 @@
 <Objects xmlns="http://www.gonicus.de/Objects">
   <Object>
     <Name>SambaUser</Name>
-    <Description>A samba extension for a generic user</Description>
-    <DisplayName>Samba extension</DisplayName>
+    <Description>A samba extension for a POSIX user</Description>
+    <DisplayName>Samba</DisplayName>
+    <Templates>
+      <Template>user-samba.ui</Template>
+      <!--      <Template>user-samba-ts.ui</Template>-->
+    </Templates>
     <BackendParameters>
       <Backend objectClasses="sambaSamAccount">LDAP</Backend>
     </BackendParameters>
@@ -37,6 +41,7 @@
             </FilterEntry>
           </FilterChain>
         </OutFilter>
+        <ReadOnly>true</ReadOnly>
       </Attribute>
 
       <Attribute>

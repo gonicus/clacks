@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>sambaSamAccount</class>
+ <widget class="QWidget" name="sambaSamAccount">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>503</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Samba</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="resources/user.qrc">
+    <normaloff>:/images/user-samba.png</normaloff>:/images/user-samba.png</iconset>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="sambaSIDLabel">
+       <property name="text">
+        <string>sambaSID</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="sambaSIDEdit"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="sambaHomeDriveLabel">
+       <property name="text">
+        <string>sambaHomeDrive</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="sambaHomeDriveEdit"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="sambaPwdLastSetLabel">
+       <property name="text">
+        <string>sambaPwdLastSet</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QSpinBox" name="sambaPwdLastSetEdit"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="sambaLogonTimeLabel">
+       <property name="text">
+        <string>sambaLogonTime</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QSpinBox" name="sambaLogonTimeEdit"/>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="sambaLogoffTimeLabel">
+       <property name="text">
+        <string>sambaLogoffTime</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QSpinBox" name="sambaLogoffTimeEdit"/>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="sambaKickoffTimeLabel">
+       <property name="text">
+        <string>sambaKickoffTime</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QSpinBox" name="sambaKickoffTimeEdit"/>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="sambaPwdCanChangeLabel">
+       <property name="text">
+        <string>sambaPwdCanChange</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QSpinBox" name="sambaPwdCanChangeEdit"/>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="sambaPwdMustChangeLabel">
+       <property name="text">
+        <string>sambaPwdMustChange</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QSpinBox" name="sambaPwdMustChangeEdit"/>
+     </item>
+     <item row="8" column="0">
+      <widget class="QLabel" name="displayNameLabel">
+       <property name="text">
+        <string>displayName</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1">
+      <widget class="QLineEdit" name="displayNameEdit"/>
+     </item>
+     <item row="9" column="0">
+      <widget class="QLabel" name="sambaHomePathLabel">
+       <property name="text">
+        <string>sambaHomePath</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1">
+      <widget class="QLineEdit" name="sambaHomePathEdit"/>
+     </item>
+     <item row="10" column="0">
+      <widget class="QLabel" name="sambaLogonScriptLabel">
+       <property name="text">
+        <string>sambaLogonScript</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="1">
+      <widget class="QLineEdit" name="sambaLogonScriptEdit"/>
+     </item>
+     <item row="11" column="0">
+      <widget class="QLabel" name="sambaProfilePathLabel">
+       <property name="text">
+        <string>sambaProfilePath</string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="1">
+      <widget class="QLineEdit" name="sambaProfilePathEdit"/>
+     </item>
+     <item row="12" column="0">
+      <widget class="QLabel" name="descriptionLabel">
+       <property name="text">
+        <string>description</string>
+       </property>
+      </widget>
+     </item>
+     <item row="12" column="1">
+      <widget class="QLineEdit" name="descriptionEdit"/>
+     </item>
+     <item row="13" column="0">
+      <widget class="QLabel" name="sambaUserWorkstationsLabel">
+       <property name="text">
+        <string>sambaUserWorkstations</string>
+       </property>
+      </widget>
+     </item>
+     <item row="13" column="1">
+      <widget class="QLineEdit" name="sambaUserWorkstationsEdit"/>
+     </item>
+     <item row="14" column="0">
+      <widget class="QLabel" name="sambaDomainNameLabel">
+       <property name="text">
+        <string>sambaDomainName</string>
+       </property>
+      </widget>
+     </item>
+     <item row="14" column="1">
+      <widget class="QLineEdit" name="sambaDomainNameEdit"/>
+     </item>
+     <item row="15" column="0">
+      <widget class="QLabel" name="sambaBadPasswordCountLabel">
+       <property name="text">
+        <string>sambaBadPasswordCount</string>
+       </property>
+      </widget>
+     </item>
+     <item row="15" column="1">
+      <widget class="QSpinBox" name="sambaBadPasswordCountEdit"/>
+     </item>
+     <item row="16" column="0">
+      <widget class="QLabel" name="sambaBadPasswordTimeLabel">
+       <property name="text">
+        <string>sambaBadPasswordTime</string>
+       </property>
+      </widget>
+     </item>
+     <item row="16" column="1">
+      <widget class="QSpinBox" name="sambaBadPasswordTimeEdit"/>
+     </item>
+     <item row="17" column="0">
+      <widget class="QLabel" name="sambaPrimaryGroupSIDLabel">
+       <property name="text">
+        <string>sambaPrimaryGroupSID</string>
+       </property>
+      </widget>
+     </item>
+     <item row="17" column="1">
+      <widget class="QSpinBox" name="sambaPrimaryGroupSIDEdit"/>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="resources/user-samba.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>sambaPwdLastSetEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaPwdLastSet()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sambaDomainNameEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaDomainName()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sambaHomePathEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaHomePath()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sambaLogonTimeEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaLogonTime()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sambaKickoffTimeEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaKickoffTime()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sambaUserWorkstationsEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaUserWorkstations()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sambaProfilePathEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaProfilePath()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sambaBadPasswordTimeEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaBadPasswordTime()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>displayNameEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_displayName()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sambaPwdCanChangeEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaPwdCanChange()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sambaSIDEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaSID()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sambaLogonScriptEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaLogonScript()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sambaLogoffTimeEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaLogoffTime()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sambaPwdMustChangeEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaPwdMustChange()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sambaHomeDriveEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaHomeDrive()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sambaBadPasswordCountEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaBadPasswordCount()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>descriptionEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_description()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

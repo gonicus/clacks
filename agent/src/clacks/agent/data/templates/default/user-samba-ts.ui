@@ -1,0 +1,968 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>sambaSamAccount</class>
+ <widget class="QWidget" name="sambaSamAccount">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>911</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Samba-Terminalserver</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="resources/user.qrc">
+    <normaloff>:/images/user-samba.png</normaloff>:/images/user-samba.png</iconset>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="CtxCallbackLabel">
+       <property name="text">
+        <string>CtxCallback</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QCheckBox" name="CtxCallbackEdit"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="CtxCallbackNumberLabel">
+       <property name="text">
+        <string>CtxCallbackNumber</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QCheckBox" name="CtxCallbackNumberEdit"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="CtxCfgFlags1Label">
+       <property name="text">
+        <string>CtxCfgFlags1</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="CtxCfgFlags1Edit"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="CtxCfgPresentLabel">
+       <property name="text">
+        <string>CtxCfgPresent</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QCheckBox" name="CtxCfgPresentEdit"/>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="CtxInitialProgramLabel">
+       <property name="text">
+        <string>CtxInitialProgram</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QCheckBox" name="CtxInitialProgramEdit"/>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="CtxKeyboardLayoutLabel">
+       <property name="text">
+        <string>CtxKeyboardLayout</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QCheckBox" name="CtxKeyboardLayoutEdit"/>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="CtxMaxConnectionTimeLabel">
+       <property name="text">
+        <string>CtxMaxConnectionTime</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QCheckBox" name="CtxMaxConnectionTimeEdit"/>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="CtxMaxDisconnectionTimeLabel">
+       <property name="text">
+        <string>CtxMaxDisconnectionTime</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QCheckBox" name="CtxMaxDisconnectionTimeEdit"/>
+     </item>
+     <item row="8" column="0">
+      <widget class="QLabel" name="CtxMaxIdleTimeLabel">
+       <property name="text">
+        <string>CtxMaxIdleTime</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1">
+      <widget class="QCheckBox" name="CtxMaxIdleTimeEdit"/>
+     </item>
+     <item row="9" column="0">
+      <widget class="QLabel" name="CtxMinEncryptionLevelLabel">
+       <property name="text">
+        <string>CtxMinEncryptionLevel</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1">
+      <widget class="QCheckBox" name="CtxMinEncryptionLevelEdit"/>
+     </item>
+     <item row="10" column="0">
+      <widget class="QLabel" name="CtxNWLogonServerLabel">
+       <property name="text">
+        <string>CtxNWLogonServer</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="1">
+      <widget class="QCheckBox" name="CtxNWLogonServerEdit"/>
+     </item>
+     <item row="11" column="0">
+      <widget class="QLabel" name="CtxShadowLabel">
+       <property name="text">
+        <string>CtxShadow</string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="1">
+      <widget class="QCheckBox" name="CtxShadowEdit"/>
+     </item>
+     <item row="12" column="0">
+      <widget class="QLabel" name="CtxWFHomeDirLabel">
+       <property name="text">
+        <string>CtxWFHomeDir</string>
+       </property>
+      </widget>
+     </item>
+     <item row="12" column="1">
+      <widget class="QLineEdit" name="CtxWFHomeDirEdit"/>
+     </item>
+     <item row="13" column="0">
+      <widget class="QLabel" name="CtxWFHomeDirDriveLabel">
+       <property name="text">
+        <string>CtxWFHomeDirDrive</string>
+       </property>
+      </widget>
+     </item>
+     <item row="13" column="1">
+      <widget class="QLineEdit" name="CtxWFHomeDirDriveEdit"/>
+     </item>
+     <item row="14" column="0">
+      <widget class="QLabel" name="CtxWFProfilePathLabel">
+       <property name="text">
+        <string>CtxWFProfilePath</string>
+       </property>
+      </widget>
+     </item>
+     <item row="14" column="1">
+      <widget class="QLineEdit" name="CtxWFProfilePathEdit"/>
+     </item>
+     <item row="15" column="0">
+      <widget class="QLabel" name="CtxWorkDirectoryLabel">
+       <property name="text">
+        <string>CtxWorkDirectory</string>
+       </property>
+      </widget>
+     </item>
+     <item row="15" column="1">
+      <widget class="QLineEdit" name="CtxWorkDirectoryEdit"/>
+     </item>
+     <item row="16" column="0">
+      <widget class="QLabel" name="Ctx_flag_brokenConnLabel">
+       <property name="text">
+        <string>Ctx_flag_brokenConn</string>
+       </property>
+      </widget>
+     </item>
+     <item row="16" column="1">
+      <widget class="QCheckBox" name="Ctx_flag_brokenConnEdit"/>
+     </item>
+     <item row="17" column="0">
+      <widget class="QLabel" name="Ctx_flag_connectClientDrivesLabel">
+       <property name="text">
+        <string>Ctx_flag_connectClientDrives</string>
+       </property>
+      </widget>
+     </item>
+     <item row="17" column="1">
+      <widget class="QCheckBox" name="Ctx_flag_connectClientDrivesEdit"/>
+     </item>
+     <item row="18" column="0">
+      <widget class="QLabel" name="Ctx_flag_connectClientPrintersLabel">
+       <property name="text">
+        <string>Ctx_flag_connectClientPrinters</string>
+       </property>
+      </widget>
+     </item>
+     <item row="18" column="1">
+      <widget class="QCheckBox" name="Ctx_flag_connectClientPrintersEdit"/>
+     </item>
+     <item row="19" column="0">
+      <widget class="QLabel" name="Ctx_flag_defaultPrinterLabel">
+       <property name="text">
+        <string>Ctx_flag_defaultPrinter</string>
+       </property>
+      </widget>
+     </item>
+     <item row="19" column="1">
+      <widget class="QCheckBox" name="Ctx_flag_defaultPrinterEdit"/>
+     </item>
+     <item row="20" column="0">
+      <widget class="QLabel" name="Ctx_flag_inheritModeLabel">
+       <property name="text">
+        <string>Ctx_flag_inheritMode</string>
+       </property>
+      </widget>
+     </item>
+     <item row="20" column="1">
+      <widget class="QCheckBox" name="Ctx_flag_inheritModeEdit"/>
+     </item>
+     <item row="21" column="0">
+      <widget class="QLabel" name="Ctx_flag_reConnLabel">
+       <property name="text">
+        <string>Ctx_flag_reConn</string>
+       </property>
+      </widget>
+     </item>
+     <item row="21" column="1">
+      <widget class="QCheckBox" name="Ctx_flag_reConnEdit"/>
+     </item>
+     <item row="22" column="0">
+      <widget class="QLabel" name="Ctx_shadowLabel">
+       <property name="text">
+        <string>Ctx_shadow</string>
+       </property>
+      </widget>
+     </item>
+     <item row="22" column="1">
+      <widget class="QCheckBox" name="Ctx_shadowEdit"/>
+     </item>
+     <item row="23" column="0">
+      <widget class="QLabel" name="Ctx_flag_tsLoginLabel">
+       <property name="text">
+        <string>Ctx_flag_tsLogin</string>
+       </property>
+      </widget>
+     </item>
+     <item row="23" column="1">
+      <widget class="QCheckBox" name="Ctx_flag_tsLoginEdit"/>
+     </item>
+     <item row="24" column="0">
+      <widget class="QLabel" name="acct_accountDisabledLabel">
+       <property name="text">
+        <string>acct_accountDisabled</string>
+       </property>
+      </widget>
+     </item>
+     <item row="24" column="1">
+      <widget class="QCheckBox" name="acct_accountDisabledEdit"/>
+     </item>
+     <item row="25" column="0">
+      <widget class="QLabel" name="acct_homeDirectoryRequiredLabel">
+       <property name="text">
+        <string>acct_homeDirectoryRequired</string>
+       </property>
+      </widget>
+     </item>
+     <item row="25" column="1">
+      <widget class="QCheckBox" name="acct_homeDirectoryRequiredEdit"/>
+     </item>
+     <item row="26" column="0">
+      <widget class="QLabel" name="acct_interDomainTrustLabel">
+       <property name="text">
+        <string>acct_interDomainTrust</string>
+       </property>
+      </widget>
+     </item>
+     <item row="26" column="1">
+      <widget class="QCheckBox" name="acct_interDomainTrustEdit"/>
+     </item>
+     <item row="27" column="0">
+      <widget class="QLabel" name="acct_isAutoLockedLabel">
+       <property name="text">
+        <string>acct_isAutoLocked</string>
+       </property>
+      </widget>
+     </item>
+     <item row="27" column="1">
+      <widget class="QCheckBox" name="acct_isAutoLockedEdit"/>
+     </item>
+     <item row="28" column="0">
+      <widget class="QLabel" name="acct_MNSLogonAccountLabel">
+       <property name="text">
+        <string>acct_MNSLogonAccount</string>
+       </property>
+      </widget>
+     </item>
+     <item row="28" column="1">
+      <widget class="QCheckBox" name="acct_MNSLogonAccountEdit"/>
+     </item>
+     <item row="29" column="0">
+      <widget class="QLabel" name="acct_passwordNotRequiredLabel">
+       <property name="text">
+        <string>acct_passwordNotRequired</string>
+       </property>
+      </widget>
+     </item>
+     <item row="29" column="1">
+      <widget class="QCheckBox" name="acct_passwordNotRequiredEdit"/>
+     </item>
+     <item row="30" column="0">
+      <widget class="QLabel" name="acct_serverTrustAccountLabel">
+       <property name="text">
+        <string>acct_serverTrustAccount</string>
+       </property>
+      </widget>
+     </item>
+     <item row="30" column="1">
+      <widget class="QCheckBox" name="acct_serverTrustAccountEdit"/>
+     </item>
+     <item row="31" column="0">
+      <widget class="QLabel" name="acct_temporaryDuplicateAccountLabel">
+       <property name="text">
+        <string>acct_temporaryDuplicateAccount</string>
+       </property>
+      </widget>
+     </item>
+     <item row="31" column="1">
+      <widget class="QCheckBox" name="acct_temporaryDuplicateAccountEdit"/>
+     </item>
+     <item row="32" column="0">
+      <widget class="QLabel" name="acct_normalUserAccountLabel">
+       <property name="text">
+        <string>acct_normalUserAccount</string>
+       </property>
+      </widget>
+     </item>
+     <item row="32" column="1">
+      <widget class="QCheckBox" name="acct_normalUserAccountEdit"/>
+     </item>
+     <item row="33" column="0">
+      <widget class="QLabel" name="acct_worktstationTrustAccountLabel">
+       <property name="text">
+        <string>acct_worktstationTrustAccount</string>
+       </property>
+      </widget>
+     </item>
+     <item row="33" column="1">
+      <widget class="QCheckBox" name="acct_worktstationTrustAccountEdit"/>
+     </item>
+     <item row="34" column="0">
+      <widget class="QLabel" name="acct_passwordDoesNotExpireLabel">
+       <property name="text">
+        <string>acct_passwordDoesNotExpire</string>
+       </property>
+      </widget>
+     </item>
+     <item row="34" column="1">
+      <widget class="QCheckBox" name="acct_passwordDoesNotExpireEdit"/>
+     </item>
+     <item row="35" column="0">
+      <widget class="QLabel" name="sambaLogonHoursLabel">
+       <property name="text">
+        <string>sambaLogonHours</string>
+       </property>
+      </widget>
+     </item>
+     <item row="35" column="1">
+      <widget class="QLineEdit" name="sambaLogonHoursEdit"/>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="resources/user-samba.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>CtxCallbackEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_CtxCallback()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CtxCallbackNumberEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_CtxCallbackNumber()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CtxCfgFlags1Edit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_CtxCfgFlags1()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CtxCfgPresentEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_CtxCfgPresent()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CtxInitialProgramEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_CtxInitialProgram()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CtxKeyboardLayoutEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_CtxKeyboardLayout()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CtxMaxConnectionTimeEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_CtxMaxConnectionTime()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CtxMaxDisconnectionTimeEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_CtxMaxDisconnectionTime()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CtxMaxIdleTimeEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_CtxMaxIdleTime()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CtxMinEncryptionLevelEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_CtxMinEncryptionLevel()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CtxNWLogonServerEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_CtxNWLogonServer()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CtxShadowEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_CtxShadow()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CtxWFHomeDirEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_CtxWFHomeDir()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CtxWFHomeDirDriveEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_CtxWFHomeDirDrive()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CtxWFProfilePathEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_CtxWFProfilePath()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CtxWorkDirectoryEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_CtxWorkDirectory()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Ctx_flag_brokenConnEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_Ctx_flag_brokenConn()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Ctx_flag_connectClientDrivesEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_Ctx_flag_connectClientDrives()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Ctx_flag_connectClientPrintersEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_Ctx_flag_connectClientPrinters()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Ctx_flag_defaultPrinterEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_Ctx_flag_defaultPrinter()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Ctx_flag_inheritModeEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_Ctx_flag_inheritMode()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Ctx_flag_reConnEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_Ctx_flag_reConn()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Ctx_shadowEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_Ctx_shadow()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Ctx_flag_tsLoginEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_Ctx_flag_tsLogin()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>acct_accountDisabledEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_acct_accountDisabled()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>acct_homeDirectoryRequiredEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_acct_homeDirectoryRequired()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>acct_interDomainTrustEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_acct_interDomainTrust()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>acct_isAutoLockedEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_acct_isAutoLocked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>acct_MNSLogonAccountEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_acct_MNSLogonAccount()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>acct_passwordNotRequiredEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_acct_passwordNotRequired()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>acct_serverTrustAccountEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_acct_serverTrustAccount()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>acct_temporaryDuplicateAccountEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_acct_temporaryDuplicateAccount()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>acct_normalUserAccountEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_acct_normalUserAccount()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>acct_worktstationTrustAccountEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_acct_worktstationTrustAccount()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>acct_passwordDoesNotExpireEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_acct_passwordDoesNotExpire()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sambaLogonHoursEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaLogonHours()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
