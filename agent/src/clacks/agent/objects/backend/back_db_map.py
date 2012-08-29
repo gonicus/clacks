@@ -69,7 +69,7 @@ class DBMAP(ObjectBackend):
     def exists(self, misc):
         return False
 
-    def remove(self, uuid, recursive=False):
+    def remove(self, uuid, data, params):
         return True
 
     def retract(self, uuid, data, params):

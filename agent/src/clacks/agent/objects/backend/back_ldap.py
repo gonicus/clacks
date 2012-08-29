@@ -157,7 +157,7 @@ class LDAP(ObjectBackend):
 
         return len(res) == 1
 
-    def remove(self, uuid):
+    def remove(self, uuid, data, params):
         dn = self.uuid2dn(uuid)
 
         self.log.debug("removing entry '%s'" % dn)

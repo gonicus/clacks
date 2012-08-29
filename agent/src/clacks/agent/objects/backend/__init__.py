@@ -74,13 +74,13 @@ class ObjectBackend(object):
         """
         raise NotImplementedError("object backend is missing exists()")
 
-    def remove(self, uuid):
+    def remove(self, uuid, data, params):
         """
         Remove base object specified by UUID.
         """
         raise NotImplementedError("object backend is missing remove()")
 
-    def retract(self, uuid):
+    def retract(self, uuid, data, params):
         """
         Retract extension from base object specified by UUID.
         """

@@ -295,7 +295,7 @@ class JSON(ObjectBackend):
 
         return sorted(dn_list, key=len)
 
-    def remove(self, item_uuid, recursive=False):
+    def remove(self, item_uuid, data, params):
         """
         Removes the entry with the given uuid from the database
         """

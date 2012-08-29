@@ -47,7 +47,7 @@ class ObjectBackendRegistry(object):
     def exists(self, misc):
         raise NotImplementedError("no way to find new DN implemented")
 
-    def remove(self, uuid, recursive=False):
+    def remove(self, uuid, data, params):
         raise NotImplementedError("no way to find new DN implemented")
 
     def retract(self, uuid, data, params):

@@ -78,6 +78,9 @@ class ObjectHandler(ObjectBackend):
             data[prop]["value"] = []
         return self.update(uuid, data, params)
 
+    def remove(self, uuid, data, params):
+        return self.retract(uuid, data, params)
+
     def update(self, uuid, data, back_attrs):
         """
         Write back changes collected for foreign objects relations.
@@ -94,13 +97,16 @@ class ObjectHandler(ObjectBackend):
         for attr in data.keys():
             if attr not in mapping:
                 raise NoBackendParametersFound("attribute %s uses the ObjectHandler backend but there is no config for it!" % attr)
-        for targetAttr in mapping:
-            if not targetAttr in data:
-                raise NoBackendParametersFound("an attribute named %s is configured for the ObjectHandler backend but there" \
-                                               " is no such attribute in the object" % attr)
+        #for targetAttr in mapping:
+        #    if not targetAttr in data:
+        #        raise NoBackendParametersFound("an attribute named %s is configured for the ObjectHandler backend but there" \
+        #                                       " is no such attribute in the object" % targetAttr)
 
         # Walk through each mapped foreign-object-attribute
         for targetAttr in mapping:
+
+            if not targetAttr in data:
+                continue
 
             # Get the matching attribute for the current object
             foreignObject, foreignAttr, foreignMatchAttr, matchAttr = mapping[targetAttr]
@@ -177,10 +183,6 @@ class ObjectHandler(ObjectBackend):
 
     def exists(self, misc):
         print "exists", misc
-        return False
-
-    def remove(self, uuid):
-        print "remove", uuid
         return False
 
     def move_extension(self, uuid, new_base):
