@@ -181,6 +181,9 @@ setup(
         or = clacks.agent.objects.operator.bool:Or
         not = clacks.agent.objects.operator.bool:Not
 
+        [object.renderer]
+        extensions = clacks.agent.objects.renderer.extensions:ExtensionRenderer
+
         [xmldb.driver]
         berkleydb = clacks.agent.xmldb.driver.dbxml_driver:DBXml
 

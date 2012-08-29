@@ -14,6 +14,7 @@ import zope.event
 import datetime
 import re
 import shlex
+import clacks.agent.objects.renderer
 from itertools import izip
 from lxml import etree, objectify
 from zope.interface import Interface, implements
@@ -66,16 +67,7 @@ class ObjectIndex(Plugin):
         zope.event.subscribers.append(self.__handle_events)
 
         # Collect value extenders
-        #TODO: modularize ---------------------------------
-        #HIER
-        class ExtensionDetail(object):
-            @staticmethod
-            def render(data):
-                return "Extensions: " + (", ".join(["<a href='clacks://%s/%s?edit'>%s</a>" % (data['DN'][0], i, i) for i in data['Extension']]) if "Extension" in data else "none")
-
-        self.__value_extender = {}
-        self.__value_extender['extensions'] = ExtensionDetail
-        # modularize ------------------------------------->|
+        self.__value_extender = clacks.agent.objects.renderer.get_renderers()
 
     def serve(self):
         # Load db instance
@@ -421,8 +413,12 @@ class ObjectIndex(Plugin):
         ``Return``: List of dicts
         """
         res = {}
+        keywords = None
 
-        keywords = shlex.split(qstring)
+        try:
+            keywords = shlex.split(qstring)
+        except ValueError:
+            keywords = qstring.split(" ")
         keywords.append(qstring)
         qstring = qstring.strip("'").strip('"')
 
@@ -531,13 +527,18 @@ class ObjectIndex(Plugin):
 
             # Check for result renderers
             elif attr in self.__value_extender:
-                attrs[attr] = self.__value_extender[attr].render(info)
+                attrs[attr] = self.__value_extender[attr](info)
 
             # Fallback - just set nothing
             else:
                 attrs[attr] = ""
 
-        return v % attrs
+        # Assemble and remove empty lines and multiple whitespaces
+        res = v % attrs
+        res = re.sub(r"(<br>)+", "<br>", res)
+        res = re.sub(r"^<br>", "", res)
+        res = re.sub(r"<br>$", "", res)
+        return "<br>".join([s.strip() for s in res.split("<br>")])
 
     @Command(needsUser=True, __help__=N_("Filter for indexed attributes and return the matches."))
     def search(self, user, qstring):
