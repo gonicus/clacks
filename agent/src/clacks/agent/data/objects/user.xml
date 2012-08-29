@@ -485,6 +485,7 @@
     <Find>
       <Aspect>
 	<Tag>User</Tag>
+	<Keyword>User</Keyword>
 	<Search>User.givenName LIKE "%(__search__)s"</Search>
 	<Search>User.sn LIKE "%(__search__)s"</Search>
 	<Search>User.cn LIKE "%(__search__)s"</Search>
