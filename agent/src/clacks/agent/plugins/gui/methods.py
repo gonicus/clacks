@@ -20,7 +20,6 @@ class GuiMethods(Plugin):
         if not dn:
             raise Exception("No such user %s" % (userid))
 
-        print name, value, type(value)
         user = ObjectProxy(dn[0])
         prefs = user.guiPreferences
 
@@ -28,7 +27,6 @@ class GuiMethods(Plugin):
             prefs = {}
         else: 
             prefs = loads(prefs)
-        print type(prefs), prefs
         prefs[name] = value
         user.guiPreferences = dumps(prefs)
         user.commit()
