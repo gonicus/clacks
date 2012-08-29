@@ -65,6 +65,18 @@ class ObjectIndex(Plugin):
         # Listen for object events
         zope.event.subscribers.append(self.__handle_events)
 
+        # Collect value extenders
+        #TODO: modularize ---------------------------------
+        #HIER
+        class ExtensionDetail(object):
+            @staticmethod
+            def render(data):
+                return "Extensions: " + (", ".join(["<a href='clacks://%s/%s?edit'>%s</a>" % (data['DN'][0], i, i) for i in data['Extension']]) if "Extension" in data else "none")
+
+        self.__value_extender = {}
+        self.__value_extender['extensions'] = ExtensionDetail
+        # modularize ------------------------------------->|
+
     def serve(self):
         # Load db instance
         self.db = PluginRegistry.getInstance("XMLDBHandler")
@@ -410,10 +422,11 @@ class ObjectIndex(Plugin):
         """
         res = {}
 
-        #TODO: escape for base and qstring
         keywords = shlex.split(qstring)
         keywords.append(qstring)
         qstring = qstring.strip("'").strip('"')
+
+        #TODO: escape for base, qstring and all keywords
 
         scope = scope.upper()
         if not scope in ["SUB", "BASE", "ONE"]:
@@ -446,7 +459,7 @@ class ObjectIndex(Plugin):
         for kw in keywords:
             kw = kw.strip("'").strip('"')
             for typ, query in queries.items():
-                squery = "SELECT " + typ + ".* BASE " + typ + " " + scope + (' "%s"' % base) + " WHERE " + " OR ".join(query) % {'__search__': kw}
+                squery = "SELECT " + typ + ".* BASE " + typ + " " + scope + (' "%s"' % base) + " WHERE " + " OR ".join(query) % {'__search__': SearchWrapper.quote(kw)}
                 squery += " ORDER BY %s.DN" % typ
                 for item in self.__sw.execute(squery, user=user):
                     self.__update_res(mapping, typ, res, item, self.__make_relevance(aliases[typ], kw, qstring, keywords))
@@ -501,18 +514,28 @@ class ObjectIndex(Plugin):
            res[info['DN'][0]] = entry
 
     def __build_value(self, v, info):
-        # This needs to be more modular so that one can hook in several
-        # modules, displaying information about managers, extensions, etc.
-        #TODO: i18n
+        """
+        Fill placeholders in the value to be displayed as "description".
+        """
 
         if not v:
             return ""
 
+        # Find all placeholders
         attrs = {}
         for attr in re.findall(r"%\(([^)]+)\)s", v):
-            attrs[attr] = ", ".join(info[attr]) if attr in info else "unknown"
 
-        attrs['extensions'] = "Extensions: " + (", ".join(["<a href='clacks://%s/%s?edit'>%s</a>" % (info['DN'][0], i, i) for i in info['Extension']]) if "Extension" in info else "none")
+            # Extract ordinary attributes
+            if attr in info:
+                attrs[attr] = ", ".join(info[attr])
+
+            # Check for result renderers
+            elif attr in self.__value_extender:
+                attrs[attr] = self.__value_extender[attr].render(info)
+
+            # Fallback - just set nothing
+            else:
+                attrs[attr] = ""
 
         return v % attrs
 

@@ -788,6 +788,10 @@ class SearchWrapper(Plugin):
         return res
 
     @staticmethod
+    def quote(value):
+        return value
+
+    @staticmethod
     def get_instance():
         """
         Returns an instance of this class. This avoids instantiating this class everytime.
