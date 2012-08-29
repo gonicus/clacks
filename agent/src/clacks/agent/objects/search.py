@@ -240,6 +240,7 @@ class Query(MyNode):
         # Start the given query
         s_index = PluginRegistry.getInstance("ObjectIndex")
         xquery =  self.get_xquery()
+        print xquery
 
         self.__env.log.debug("xquery statement:", xquery)
 
@@ -789,6 +790,8 @@ class SearchWrapper(Plugin):
 
     @staticmethod
     def quote(value):
+        value = value.replace("\"", "&quot;")
+        print value
         return value
 
     @staticmethod

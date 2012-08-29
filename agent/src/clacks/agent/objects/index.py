@@ -422,6 +422,7 @@ class ObjectIndex(Plugin):
         """
         res = {}
 
+        print qstring
         keywords = shlex.split(qstring)
         keywords.append(qstring)
         qstring = qstring.strip("'").strip('"')
@@ -472,6 +473,7 @@ class ObjectIndex(Plugin):
                             squery += "%s.%s IN (%s)" % (tag, r['filter'], ",".join(['"%s"' % i for i in item[typ][r['attribute']]]))
                             squery += " ORDER BY %s.DN" % tag
 
+                            print squery
                             for r_item in self.__sw.execute(squery, user=user):
                                 self.__update_res(mapping, tag, res, r_item, self.__make_relevance(aliases[tag], kw, qstring, keywords, True))
 
