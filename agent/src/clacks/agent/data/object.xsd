@@ -286,6 +286,7 @@
   <complexType name="Aspect">
     <sequence>
       <element name="Tag" type="string" maxOccurs="1" minOccurs="1"></element>
+      <element name="Keyword" type="string" maxOccurs="unbounded" minOccurs="0"></element>
       <element name="Search" type="string" maxOccurs="unbounded" minOccurs="1"></element>
       <element name="Resolve" type="o:Resolve" maxOccurs="unbounded" minOccurs="0"></element>
       <element name="Result" type="o:Result" maxOccurs="unbounded" minOccurs="0"></element>

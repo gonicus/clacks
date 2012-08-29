@@ -68,6 +68,9 @@
     <Find>
       <Aspect>
         <Tag>PosixGroup</Tag>
+	<Keyword>Group</Keyword>
+	<Keyword>Member</Keyword>
+	<Keyword>Membership</Keyword>
         <Search>PosixGroup.cn LIKE "%(__search__)s"</Search>
         <Search>PosixGroup.description LIKE "%(__search__)s"</Search>
         <Resolve type="User" filter="uid">memberUid</Resolve>

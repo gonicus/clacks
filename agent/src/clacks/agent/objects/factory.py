@@ -181,6 +181,10 @@ class ObjectFactory(object):
                 for s in attr['Search']:
                     res['search'].append(s.text)
 
+                res['keyword'] = []
+                for s in attr['Keyword']:
+                    res['keyword'].append(s.text)
+
                 res['resolve'] = []
                 for r in attr['Resolve']:
                     res['resolve'].append(dict(attribute=r.text,

@@ -419,12 +419,14 @@ class ObjectIndex(Plugin):
         if not scope in ["SUB", "BASE", "ONE"]:
             raise Exception("invalid scope - needs to be one of SUB, BASE or ONE")
 
-        # Collect queries, grouped by type
+        # Order search aid information by tag/type
         queries = {}
         mapping = {}
         resolve = {}
+        aliases = {}
         for item in self.__search_aid:
             typ = item['type']
+            aliases[typ] = [typ]
 
             if not typ in queries:
                 queries[typ] = []
@@ -434,6 +436,8 @@ class ObjectIndex(Plugin):
                 mapping[typ] = dict(dn="DN", title="title", description="description", icon=None)
 
             queries[typ] += item['search']
+            if 'keyword' in item:
+                aliases[typ] += item['keyword']
             if 'map' in item:
                 mapping[typ].update(item['map'])
             if 'resolve' in item:
@@ -445,7 +449,7 @@ class ObjectIndex(Plugin):
                 squery = "SELECT " + typ + ".* BASE " + typ + " " + scope + (' "%s"' % base) + " WHERE " + " OR ".join(query) % {'__search__': kw}
                 squery += " ORDER BY %s.DN" % typ
                 for item in self.__sw.execute(squery, user=user):
-                    self.__update_res(mapping, typ, res, item, self.__make_relevance(typ, kw, qstring, keywords))
+                    self.__update_res(mapping, typ, res, item, self.__make_relevance(aliases[typ], kw, qstring, keywords))
 
                     # Run one level resolve for "Resolve" definitions and add the results
                     for r in resolve[typ]:
@@ -456,21 +460,24 @@ class ObjectIndex(Plugin):
                             squery += " ORDER BY %s.DN" % tag
 
                             for r_item in self.__sw.execute(squery, user=user):
-                                self.__update_res(mapping, tag, res, r_item, self.__make_relevance(tag, kw, qstring, keywords, True))
+                                self.__update_res(mapping, tag, res, r_item, self.__make_relevance(aliases[tag], kw, qstring, keywords, True))
 
         return res.values()
 
     def __make_relevance(self, tag, qstring, o_qstring, keywords, secondary=False):
         relevance = 1
 
-        # Penalty for not having tag in keywords
-        #TODO: map tag to multiple keywords
-        if not tag in keywords:
+        # Penalty for not having an exact match
+        if qstring != o_qstring:
             relevance *= 2
 
-        # Penalty for not having qstring in keywords
-        if qstring != o_qstring:
+        # Penalty for not having an case insensitive match
+        if qstring.lower() != o_qstring.lower():
             relevance *= 4
+
+        # Penalty for not having tag in keywords
+        if not set([t.lower() for t in tag]).intersection(set([k.lower() for k in keywords])):
+            relevance *= 6
 
         # Penalty for secondary
         if secondary:
