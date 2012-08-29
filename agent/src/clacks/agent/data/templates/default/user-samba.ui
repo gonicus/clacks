@@ -14,7 +14,7 @@
    <string>Samba</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources/user.qrc">
+   <iconset resource="resources/user-samba.qrc">
     <normaloff>:/images/user-samba.png</normaloff>:/images/user-samba.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
