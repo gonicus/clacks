@@ -7,14 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>503</height>
+    <height>572</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Samba</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources/user-samba.qrc">
+    <iconset resource="resources/user-samba.qrc">
     <normaloff>:/images/user-samba.png</normaloff>:/images/user-samba.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -47,18 +47,12 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QSpinBox" name="sambaPwdLastSetEdit"/>
-     </item>
      <item row="3" column="0">
       <widget class="QLabel" name="sambaLogonTimeLabel">
        <property name="text">
         <string>sambaLogonTime</string>
        </property>
       </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QSpinBox" name="sambaLogonTimeEdit"/>
      </item>
      <item row="4" column="0">
       <widget class="QLabel" name="sambaLogoffTimeLabel">
@@ -67,18 +61,12 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
-      <widget class="QSpinBox" name="sambaLogoffTimeEdit"/>
-     </item>
      <item row="5" column="0">
       <widget class="QLabel" name="sambaKickoffTimeLabel">
        <property name="text">
         <string>sambaKickoffTime</string>
        </property>
       </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QSpinBox" name="sambaKickoffTimeEdit"/>
      </item>
      <item row="6" column="0">
       <widget class="QLabel" name="sambaPwdCanChangeLabel">
@@ -87,18 +75,12 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="1">
-      <widget class="QSpinBox" name="sambaPwdCanChangeEdit"/>
-     </item>
      <item row="7" column="0">
       <widget class="QLabel" name="sambaPwdMustChangeLabel">
        <property name="text">
         <string>sambaPwdMustChange</string>
        </property>
       </widget>
-     </item>
-     <item row="7" column="1">
-      <widget class="QSpinBox" name="sambaPwdMustChangeEdit"/>
      </item>
      <item row="8" column="0">
       <widget class="QLabel" name="displayNameLabel">
@@ -200,6 +182,24 @@
      <item row="17" column="1">
       <widget class="QSpinBox" name="sambaPrimaryGroupSIDEdit"/>
      </item>
+     <item row="2" column="1">
+      <widget class="QDateEdit" name="sambaPwdLastSetEdit"/>
+     </item>
+     <item row="3" column="1">
+      <widget class="QDateEdit" name="sambaLogonTimeEdit"/>
+     </item>
+     <item row="4" column="1">
+      <widget class="QDateEdit" name="sambaLogoffTimeEdit"/>
+     </item>
+     <item row="5" column="1">
+      <widget class="QDateEdit" name="sambaKickoffTimeEdit"/>
+     </item>
+     <item row="6" column="1">
+      <widget class="QDateEdit" name="sambaPwdCanChangeEdit"/>
+     </item>
+     <item row="7" column="1">
+      <widget class="QDateEdit" name="sambaPwdMustChangeEdit"/>
+     </item>
     </layout>
    </item>
   </layout>
@@ -208,22 +208,6 @@
   <include location="resources/user-samba.qrc"/>
  </resources>
  <connections>
-  <connection>
-   <sender>sambaPwdLastSetEdit</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>sambaSamAccount</receiver>
-   <slot>property_sambaPwdLastSet()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>sambaDomainNameEdit</sender>
    <signal>textChanged(QString)</signal>
@@ -245,38 +229,6 @@
    <signal>textChanged(QString)</signal>
    <receiver>sambaSamAccount</receiver>
    <slot>property_sambaHomePath()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>sambaLogonTimeEdit</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>sambaSamAccount</receiver>
-   <slot>property_sambaLogonTime()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>sambaKickoffTimeEdit</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>sambaSamAccount</receiver>
-   <slot>property_sambaKickoffTime()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>20</x>
@@ -353,22 +305,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>sambaPwdCanChangeEdit</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>sambaSamAccount</receiver>
-   <slot>property_sambaPwdCanChange()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>sambaSIDEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>sambaSamAccount</receiver>
@@ -389,38 +325,6 @@
    <signal>textChanged(QString)</signal>
    <receiver>sambaSamAccount</receiver>
    <slot>property_sambaLogonScript()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>sambaLogoffTimeEdit</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>sambaSamAccount</receiver>
-   <slot>property_sambaLogoffTime()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>sambaPwdMustChangeEdit</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>sambaSamAccount</receiver>
-   <slot>property_sambaPwdMustChange()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>20</x>
@@ -480,5 +384,109 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>sambaPwdLastSetEdit</sender>
+   <signal>dateChanged(QDate)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaPwdLastSet()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>285</x>
+     <y>84</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>285</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sambaLogonTimeEdit</sender>
+   <signal>dateTimeChanged(QDateTime)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaLogonTime()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>285</x>
+     <y>115</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>285</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sambaLogoffTimeEdit</sender>
+   <signal>dateTimeChanged(QDateTime)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaLogoffTime()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>285</x>
+     <y>146</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>285</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sambaKickoffTimeEdit</sender>
+   <signal>dateTimeChanged(QDateTime)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaKickoffTime()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>285</x>
+     <y>177</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>285</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sambaPwdCanChangeEdit</sender>
+   <signal>dateTimeChanged(QDateTime)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaPwdCanChange()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>285</x>
+     <y>208</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>285</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sambaPwdMustChangeEdit</sender>
+   <signal>dateTimeChanged(QDateTime)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaPwdMustChange()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>285</x>
+     <y>239</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>285</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <slots>
+  <slot>property_sambaPwdLastSet()</slot>
+  <slot>property_sambaLogonTime()</slot>
+  <slot>property_sambaLogoffTime()</slot>
+  <slot>property_sambaKickoffTime()</slot>
+  <slot>property_sambaPwdCanChange()</slot>
+  <slot>property_sambaPwdMustChange()</slot>
+ </slots>
 </ui>
