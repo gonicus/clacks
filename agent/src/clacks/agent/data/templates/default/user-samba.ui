@@ -264,6 +264,9 @@
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="0" column="0">
        <widget class="QTableWidget" name="sambaUserWorkstationsEdit">
+        <property name="editTitle" stdset="0">
+         <string>Edit group membership</string>
+        </property>
         <column>
          <property name="text">
           <string extracomment="cn">Name</string>
