@@ -35,6 +35,9 @@
               <property name="text">
                <string>SID</string>
               </property>
+              <property name="buddy">
+               <cstring>sambaSIDEdit</cstring>
+              </property>
              </widget>
             </item>
             <item row="0" column="1">
@@ -45,6 +48,9 @@
               <property name="text">
                <string>Domain</string>
               </property>
+              <property name="buddy">
+               <cstring>sambaDomainNameEdit</cstring>
+              </property>
              </widget>
             </item>
             <item row="1" column="1">
@@ -54,6 +60,9 @@
              <widget class="QLabel" name="sambaPrimaryGroupSIDLabel">
               <property name="text">
                <string>Primary group</string>
+              </property>
+              <property name="buddy">
+               <cstring>sambaPrimaryGroupSIDEdit</cstring>
               </property>
              </widget>
             </item>
@@ -68,6 +77,9 @@
              <widget class="QLabel" name="descriptionLabel">
               <property name="text">
                <string>Description</string>
+              </property>
+              <property name="buddy">
+               <cstring>descriptionEdit</cstring>
               </property>
              </widget>
             </item>
@@ -85,6 +97,9 @@
              <widget class="QLabel" name="displayNameLabel">
               <property name="text">
                <string>Display name</string>
+              </property>
+              <property name="buddy">
+               <cstring>displayNameEdit</cstring>
               </property>
              </widget>
             </item>
@@ -108,6 +123,9 @@
            <widget class="QLabel" name="sambaHomePathLabel">
             <property name="text">
              <string>Home directory</string>
+            </property>
+            <property name="buddy">
+             <cstring>sambaHomePathEdit</cstring>
             </property>
            </widget>
           </item>
@@ -133,6 +151,9 @@
             <property name="text">
              <string>Logon script</string>
             </property>
+            <property name="buddy">
+             <cstring>sambaLogonScriptEdit</cstring>
+            </property>
            </widget>
           </item>
           <item row="1" column="1">
@@ -142,6 +163,9 @@
            <widget class="QLabel" name="sambaProfilePathLabel">
             <property name="text">
              <string>Profile path</string>
+            </property>
+            <property name="buddy">
+             <cstring>sambaProfilePathEdit</cstring>
             </property>
            </widget>
           </item>
@@ -170,6 +194,9 @@
             <property name="text">
              <string>sambaPwdLastSet</string>
             </property>
+            <property name="buddy">
+             <cstring>sambaPwdLastSetEdit</cstring>
+            </property>
            </widget>
           </item>
           <item row="0" column="1">
@@ -179,6 +206,9 @@
            <widget class="QLabel" name="sambaLogonTimeLabel">
             <property name="text">
              <string>sambaLogonTime</string>
+            </property>
+            <property name="buddy">
+             <cstring>sambaLogonTimeEdit</cstring>
             </property>
            </widget>
           </item>
@@ -190,6 +220,9 @@
             <property name="text">
              <string>sambaLogoffTime</string>
             </property>
+            <property name="buddy">
+             <cstring>sambaLogoffTimeEdit</cstring>
+            </property>
            </widget>
           </item>
           <item row="2" column="1">
@@ -199,6 +232,9 @@
            <widget class="QLabel" name="sambaBadPasswordCountLabel">
             <property name="text">
              <string>sambaBadPasswordCount</string>
+            </property>
+            <property name="buddy">
+             <cstring>sambaBadPasswordCountEdit</cstring>
             </property>
            </widget>
           </item>
@@ -214,6 +250,9 @@
             <property name="text">
              <string>sambaKickoffTime</string>
             </property>
+            <property name="buddy">
+             <cstring>sambaKickoffTimeEdit</cstring>
+            </property>
            </widget>
           </item>
           <item row="0" column="1">
@@ -224,6 +263,9 @@
             <property name="text">
              <string>sambaPwdCanChange</string>
             </property>
+            <property name="buddy">
+             <cstring>sambaPwdCanChangeEdit</cstring>
+            </property>
            </widget>
           </item>
           <item row="1" column="1">
@@ -233,6 +275,9 @@
            <widget class="QLabel" name="sambaPwdMustChangeLabel">
             <property name="text">
              <string>sambaPwdMustChange</string>
+            </property>
+            <property name="buddy">
+             <cstring>sambaPwdMustChangeEdit</cstring>
             </property>
            </widget>
           </item>
@@ -246,6 +291,9 @@
            <widget class="QLabel" name="sambaBadPasswordTimeLabel">
             <property name="text">
              <string>sambaBadPasswordTime</string>
+            </property>
+            <property name="buddy">
+             <cstring>sambaBadPasswordTimeEdit</cstring>
             </property>
            </widget>
           </item>
@@ -284,6 +332,27 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>sambaSIDEdit</tabstop>
+  <tabstop>sambaDomainNameEdit</tabstop>
+  <tabstop>sambaPrimaryGroupSIDEdit</tabstop>
+  <tabstop>descriptionEdit</tabstop>
+  <tabstop>checkBox</tabstop>
+  <tabstop>displayNameEdit</tabstop>
+  <tabstop>sambaHomePathEdit</tabstop>
+  <tabstop>sambaHomeDriveEdit</tabstop>
+  <tabstop>sambaLogonScriptEdit</tabstop>
+  <tabstop>sambaProfilePathEdit</tabstop>
+  <tabstop>sambaPwdLastSetEdit</tabstop>
+  <tabstop>sambaLogonTimeEdit</tabstop>
+  <tabstop>sambaLogoffTimeEdit</tabstop>
+  <tabstop>sambaBadPasswordCountEdit</tabstop>
+  <tabstop>sambaKickoffTimeEdit</tabstop>
+  <tabstop>sambaPwdCanChangeEdit</tabstop>
+  <tabstop>sambaPwdMustChangeEdit</tabstop>
+  <tabstop>sambaBadPasswordTimeEdit</tabstop>
+  <tabstop>sambaUserWorkstationsEdit</tabstop>
+ </tabstops>
  <resources>
   <include location="resources/user-samba.qrc"/>
  </resources>
@@ -295,8 +364,8 @@
    <slot>property_sambaDomainName()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>128</x>
+     <y>84</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -311,8 +380,8 @@
    <slot>property_sambaHomePath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>139</x>
+     <y>149</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -327,8 +396,8 @@
    <slot>property_sambaUserWorkstations()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>31</x>
+     <y>420</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -343,8 +412,8 @@
    <slot>property_sambaProfilePath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>138</x>
+     <y>205</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -359,8 +428,8 @@
    <slot>property_sambaBadPasswordTime()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>464</x>
+     <y>354</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -375,8 +444,8 @@
    <slot>property_displayName()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>389</x>
+     <y>109</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -391,8 +460,8 @@
    <slot>property_sambaSID()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>128</x>
+     <y>57</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -407,8 +476,8 @@
    <slot>property_sambaLogonScript()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>138</x>
+     <y>178</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -423,8 +492,8 @@
    <slot>property_sambaHomeDrive()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>495</x>
+     <y>149</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -439,8 +508,8 @@
    <slot>property_sambaBadPasswordCount()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>203</x>
+     <y>354</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -455,8 +524,8 @@
    <slot>property_description()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>389</x>
+     <y>57</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -471,8 +540,8 @@
    <slot>property_sambaPwdLastSet()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>285</x>
-     <y>84</y>
+     <x>274</x>
+     <y>275</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -487,8 +556,8 @@
    <slot>property_sambaLogonTime()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>285</x>
-     <y>115</y>
+     <x>274</x>
+     <y>302</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -503,8 +572,8 @@
    <slot>property_sambaLogoffTime()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>285</x>
-     <y>146</y>
+     <x>274</x>
+     <y>329</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -519,8 +588,8 @@
    <slot>property_sambaKickoffTime()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>285</x>
-     <y>177</y>
+     <x>535</x>
+     <y>275</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -535,8 +604,8 @@
    <slot>property_sambaPwdCanChange()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>285</x>
-     <y>208</y>
+     <x>535</x>
+     <y>302</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -551,8 +620,8 @@
    <slot>property_sambaPwdMustChange()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>285</x>
-     <y>239</y>
+     <x>535</x>
+     <y>329</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
