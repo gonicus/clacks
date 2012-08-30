@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>549</width>
-    <height>527</height>
+    <width>558</width>
+    <height>582</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,91 +25,107 @@
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
-       <layout class="QVBoxLayout" name="verticalLayout">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <layout class="QFormLayout" name="formLayout_2">
-            <item row="0" column="0">
-             <widget class="QLabel" name="sambaSIDLabel">
-              <property name="text">
-               <string>SID</string>
-              </property>
-              <property name="buddy">
-               <cstring>sambaSIDEdit</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="sambaSIDEdit"/>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="sambaDomainNameLabel">
-              <property name="text">
-               <string>Domain</string>
-              </property>
-              <property name="buddy">
-               <cstring>sambaDomainNameEdit</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLineEdit" name="sambaDomainNameEdit"/>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="sambaPrimaryGroupSIDLabel">
-              <property name="text">
-               <string>Primary group</string>
-              </property>
-              <property name="buddy">
-               <cstring>sambaPrimaryGroupSIDEdit</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QSpinBox" name="sambaPrimaryGroupSIDEdit"/>
-            </item>
-           </layout>
+         <layout class="QFormLayout" name="formLayout_2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="sambaSIDLabel">
+            <property name="text">
+             <string>SID</string>
+            </property>
+            <property name="buddy">
+             <cstring>sambaSIDEdit</cstring>
+            </property>
+           </widget>
           </item>
-          <item>
-           <layout class="QFormLayout" name="formLayout_3">
-            <item row="0" column="0">
-             <widget class="QLabel" name="descriptionLabel">
-              <property name="text">
-               <string>Description</string>
-              </property>
-              <property name="buddy">
-               <cstring>descriptionEdit</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="descriptionEdit"/>
-            </item>
-            <item row="1" column="0" colspan="2">
-             <widget class="QCheckBox" name="checkBox">
-              <property name="text">
-               <string>Automatic display name</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="displayNameLabel">
-              <property name="text">
-               <string>Display name</string>
-              </property>
-              <property name="buddy">
-               <cstring>displayNameEdit</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QLineEdit" name="displayNameEdit"/>
-            </item>
-           </layout>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="sambaSIDEdit"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="sambaDomainNameLabel">
+            <property name="text">
+             <string>Domain</string>
+            </property>
+            <property name="buddy">
+             <cstring>sambaDomainNameEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="sambaDomainNameEdit"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="sambaPrimaryGroupSIDLabel">
+            <property name="text">
+             <string>Primary group</string>
+            </property>
+            <property name="buddy">
+             <cstring>sambaPrimaryGroupSIDEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QSpinBox" name="sambaPrimaryGroupSIDEdit"/>
           </item>
          </layout>
         </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>5</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <layout class="QFormLayout" name="formLayout_3">
+          <item row="0" column="0">
+           <widget class="QLabel" name="descriptionLabel">
+            <property name="text">
+             <string>Description</string>
+            </property>
+            <property name="buddy">
+             <cstring>descriptionEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="descriptionEdit"/>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="checkBox">
+            <property name="text">
+             <string>Automatic display name</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="displayNameLabel">
+            <property name="text">
+             <string>Display name</string>
+            </property>
+            <property name="buddy">
+             <cstring>displayNameEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="displayNameEdit"/>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <widget class="Line" name="line">
           <property name="orientation">
@@ -119,6 +135,9 @@
         </item>
         <item>
          <layout class="QFormLayout" name="formLayout">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::ExpandingFieldsGrow</enum>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="sambaHomePathLabel">
             <property name="text">
@@ -242,6 +261,22 @@
            <widget class="QSpinBox" name="sambaBadPasswordCountEdit"/>
           </item>
          </layout>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>5</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
         <item>
          <layout class="QFormLayout" name="formLayout_4">
