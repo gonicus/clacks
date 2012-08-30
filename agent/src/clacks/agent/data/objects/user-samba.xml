@@ -27,7 +27,6 @@
         <Name>sambaSID</Name>
         <Description>Security ID</Description>
         <Type>String</Type>
-        <Mandatory>true</Mandatory>
         <OutFilter>
           <FilterChain>
             <FilterEntry>
@@ -41,6 +40,10 @@
           </FilterChain>
         </OutFilter>
         <ReadOnly>true</ReadOnly>
+        <DependsOn>
+          <Attribute>sambaDomainName</Attribute>
+          <Attribute>uidNumber</Attribute>
+        </DependsOn>
       </Attribute>
 
       <Attribute>
