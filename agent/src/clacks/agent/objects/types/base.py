@@ -39,7 +39,12 @@ class StringAttribute(AttributeType):
     __alias__ = "String"
 
     def _convert_from_string(self, value):
-        return(value)
+        new_value = []
+        for item in value:
+            if not item and type(item) != str:
+                item = ""
+            new_value.append(item)
+        return new_value
 
     def is_valid_value(self, value):
         return(not len(value) or all(map(lambda x: type(x) == str, value)))
