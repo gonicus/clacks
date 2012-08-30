@@ -6,201 +6,278 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>572</height>
+    <width>549</width>
+    <height>527</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Samba</string>
   </property>
   <property name="windowIcon">
-    <iconset resource="resources/user-samba.qrc">
+   <iconset resource="resources/user-samba.qrc">
     <normaloff>:/images/user-samba.png</normaloff>:/images/user-samba.png</iconset>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0">
-    <layout class="QFormLayout" name="formLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="sambaSIDLabel">
-       <property name="text">
-        <string>sambaSID</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="sambaSIDEdit"/>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="sambaHomeDriveLabel">
-       <property name="text">
-        <string>sambaHomeDrive</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="sambaHomeDriveEdit"/>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="sambaPwdLastSetLabel">
-       <property name="text">
-        <string>sambaPwdLastSet</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="sambaLogonTimeLabel">
-       <property name="text">
-        <string>sambaLogonTime</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="sambaLogoffTimeLabel">
-       <property name="text">
-        <string>sambaLogoffTime</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="sambaKickoffTimeLabel">
-       <property name="text">
-        <string>sambaKickoffTime</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="sambaPwdCanChangeLabel">
-       <property name="text">
-        <string>sambaPwdCanChange</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="sambaPwdMustChangeLabel">
-       <property name="text">
-        <string>sambaPwdMustChange</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="0">
-      <widget class="QLabel" name="displayNameLabel">
-       <property name="text">
-        <string>displayName</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="1">
-      <widget class="QLineEdit" name="displayNameEdit"/>
-     </item>
-     <item row="9" column="0">
-      <widget class="QLabel" name="sambaHomePathLabel">
-       <property name="text">
-        <string>sambaHomePath</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="1">
-      <widget class="QLineEdit" name="sambaHomePathEdit"/>
-     </item>
-     <item row="10" column="0">
-      <widget class="QLabel" name="sambaLogonScriptLabel">
-       <property name="text">
-        <string>sambaLogonScript</string>
-       </property>
-      </widget>
-     </item>
-     <item row="10" column="1">
-      <widget class="QLineEdit" name="sambaLogonScriptEdit"/>
-     </item>
-     <item row="11" column="0">
-      <widget class="QLabel" name="sambaProfilePathLabel">
-       <property name="text">
-        <string>sambaProfilePath</string>
-       </property>
-      </widget>
-     </item>
-     <item row="11" column="1">
-      <widget class="QLineEdit" name="sambaProfilePathEdit"/>
-     </item>
-     <item row="12" column="0">
-      <widget class="QLabel" name="descriptionLabel">
-       <property name="text">
-        <string>description</string>
-       </property>
-      </widget>
-     </item>
-     <item row="12" column="1">
-      <widget class="QLineEdit" name="descriptionEdit"/>
-     </item>
-     <item row="13" column="0">
-      <widget class="QLabel" name="sambaUserWorkstationsLabel">
-       <property name="text">
-        <string>sambaUserWorkstations</string>
-       </property>
-      </widget>
-     </item>
-     <item row="13" column="1">
-      <widget class="QLineEdit" name="sambaUserWorkstationsEdit"/>
-     </item>
-     <item row="14" column="0">
-      <widget class="QLabel" name="sambaDomainNameLabel">
-       <property name="text">
-        <string>sambaDomainName</string>
-       </property>
-      </widget>
-     </item>
-     <item row="14" column="1">
-      <widget class="QLineEdit" name="sambaDomainNameEdit"/>
-     </item>
-     <item row="15" column="0">
-      <widget class="QLabel" name="sambaBadPasswordCountLabel">
-       <property name="text">
-        <string>sambaBadPasswordCount</string>
-       </property>
-      </widget>
-     </item>
-     <item row="15" column="1">
-      <widget class="QSpinBox" name="sambaBadPasswordCountEdit"/>
-     </item>
-     <item row="16" column="0">
-      <widget class="QLabel" name="sambaBadPasswordTimeLabel">
-       <property name="text">
-        <string>sambaBadPasswordTime</string>
-       </property>
-      </widget>
-     </item>
-     <item row="16" column="1">
-      <widget class="QSpinBox" name="sambaBadPasswordTimeEdit"/>
-     </item>
-     <item row="17" column="0">
-      <widget class="QLabel" name="sambaPrimaryGroupSIDLabel">
-       <property name="text">
-        <string>sambaPrimaryGroupSID</string>
-       </property>
-      </widget>
-     </item>
-     <item row="17" column="1">
-      <widget class="QSpinBox" name="sambaPrimaryGroupSIDEdit"/>
-     </item>
-     <item row="2" column="1">
-      <widget class="QDateEdit" name="sambaPwdLastSetEdit"/>
-     </item>
-     <item row="3" column="1">
-      <widget class="QDateEdit" name="sambaLogonTimeEdit"/>
-     </item>
-     <item row="4" column="1">
-      <widget class="QDateEdit" name="sambaLogoffTimeEdit"/>
-     </item>
-     <item row="5" column="1">
-      <widget class="QDateEdit" name="sambaKickoffTimeEdit"/>
-     </item>
-     <item row="6" column="1">
-      <widget class="QDateEdit" name="sambaPwdCanChangeEdit"/>
-     </item>
-     <item row="7" column="1">
-      <widget class="QDateEdit" name="sambaPwdMustChangeEdit"/>
-     </item>
-    </layout>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Common</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <layout class="QFormLayout" name="formLayout_2">
+            <item row="0" column="0">
+             <widget class="QLabel" name="sambaSIDLabel">
+              <property name="text">
+               <string>SID</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="sambaSIDEdit"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="sambaDomainNameLabel">
+              <property name="text">
+               <string>Domain</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="sambaDomainNameEdit"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="sambaPrimaryGroupSIDLabel">
+              <property name="text">
+               <string>Primary group</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QSpinBox" name="sambaPrimaryGroupSIDEdit"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QFormLayout" name="formLayout_3">
+            <item row="0" column="0">
+             <widget class="QLabel" name="descriptionLabel">
+              <property name="text">
+               <string>Description</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="descriptionEdit"/>
+            </item>
+            <item row="1" column="0" colspan="2">
+             <widget class="QCheckBox" name="checkBox">
+              <property name="text">
+               <string>Automatic display name</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="displayNameLabel">
+              <property name="text">
+               <string>Display name</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="displayNameEdit"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="Line" name="line">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QFormLayout" name="formLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="sambaHomePathLabel">
+            <property name="text">
+             <string>Home directory</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLineEdit" name="sambaHomePathEdit"/>
+            </item>
+            <item>
+             <widget class="QComboBox" name="sambaHomeDriveEdit">
+              <property name="maximumSize">
+               <size>
+                <width>60</width>
+                <height>16777215</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="sambaLogonScriptLabel">
+            <property name="text">
+             <string>Logon script</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="sambaLogonScriptEdit"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="sambaProfilePathLabel">
+            <property name="text">
+             <string>Profile path</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="sambaProfilePathEdit"/>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Access options</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <layout class="QFormLayout" name="formLayout_5">
+          <item row="0" column="0">
+           <widget class="QLabel" name="sambaPwdLastSetLabel">
+            <property name="text">
+             <string>sambaPwdLastSet</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QDateEdit" name="sambaPwdLastSetEdit"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="sambaLogonTimeLabel">
+            <property name="text">
+             <string>sambaLogonTime</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDateEdit" name="sambaLogonTimeEdit"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="sambaLogoffTimeLabel">
+            <property name="text">
+             <string>sambaLogoffTime</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QDateEdit" name="sambaLogoffTimeEdit"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="sambaBadPasswordCountLabel">
+            <property name="text">
+             <string>sambaBadPasswordCount</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QSpinBox" name="sambaBadPasswordCountEdit"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QFormLayout" name="formLayout_4">
+          <item row="0" column="0">
+           <widget class="QLabel" name="sambaKickoffTimeLabel">
+            <property name="text">
+             <string>sambaKickoffTime</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QDateEdit" name="sambaKickoffTimeEdit"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="sambaPwdCanChangeLabel">
+            <property name="text">
+             <string>sambaPwdCanChange</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDateEdit" name="sambaPwdCanChangeEdit"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="sambaPwdMustChangeLabel">
+            <property name="text">
+             <string>sambaPwdMustChange</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QDateEdit" name="sambaPwdMustChangeEdit"/>
+          </item>
+          <item row="3" column="1">
+           <widget class="QSpinBox" name="sambaBadPasswordTimeEdit"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="sambaBadPasswordTimeLabel">
+            <property name="text">
+             <string>sambaBadPasswordTime</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Allow login for these workstations only</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0">
+       <widget class="QTableWidget" name="sambaUserWorkstationsEdit">
+        <column>
+         <property name="text">
+          <string extracomment="cn">Name</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string extracomment="description">Description</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
   </layout>
  </widget>
