@@ -265,7 +265,7 @@
       <item row="0" column="0">
        <widget class="QTableWidget" name="sambaUserWorkstationsEdit">
         <property name="editTitle" stdset="0">
-         <string>Edit group membership</string>
+         <string>Edit list of workstations</string>
         </property>
         <column>
          <property name="text">
