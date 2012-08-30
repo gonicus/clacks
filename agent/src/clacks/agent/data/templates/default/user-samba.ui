@@ -201,7 +201,7 @@
    <item row="1" column="0">
     <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
-      <string>Access options</string>
+      <string>Password options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
