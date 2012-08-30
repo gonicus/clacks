@@ -165,7 +165,12 @@ class UnicodeStringAttribute(AttributeType):
         return(map(lambda x: unicode(x), value))
 
     def _convert_from_string(self, value):
-        return(map(lambda x: unicode(x), value))
+        new_value = []
+        for item in value:
+            if not item and type(item) not in [str, unicode]:
+                item = u""
+            new_value.append(unicode(item))
+        return new_value
 
 
 class DateAttribute(AttributeType):
