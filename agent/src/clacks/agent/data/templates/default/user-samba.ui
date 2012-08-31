@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>558</width>
-    <height>582</height>
+    <width>568</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -220,136 +220,177 @@
    <item row="1" column="0">
     <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
-      <string>Password options</string>
+      <string>Login options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <layout class="QFormLayout" name="formLayout_5">
-          <item row="0" column="0">
-           <widget class="QLabel" name="sambaPwdLastSetLabel">
-            <property name="text">
-             <string>sambaPwdLastSet</string>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <layout class="QFormLayout" name="formLayout_5">
+            <property name="fieldGrowthPolicy">
+             <enum>QFormLayout::ExpandingFieldsGrow</enum>
             </property>
-            <property name="buddy">
-             <cstring>sambaPwdLastSetEdit</cstring>
-            </property>
-           </widget>
+            <item row="0" column="0">
+             <widget class="QLabel" name="sambaPwdLastSetLabel">
+              <property name="text">
+               <string>sambaPwdLastSet</string>
+              </property>
+              <property name="buddy">
+               <cstring>sambaPwdLastSetEdit</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QDateEdit" name="sambaPwdLastSetEdit"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="sambaLogonTimeLabel">
+              <property name="text">
+               <string>sambaLogonTime</string>
+              </property>
+              <property name="buddy">
+               <cstring>sambaLogonTimeEdit</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QDateEdit" name="sambaLogonTimeEdit"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="sambaLogoffTimeLabel">
+              <property name="text">
+               <string>sambaLogoffTime</string>
+              </property>
+              <property name="buddy">
+               <cstring>sambaLogoffTimeEdit</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QDateEdit" name="sambaLogoffTimeEdit"/>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="sambaBadPasswordCountLabel">
+              <property name="text">
+               <string>sambaBadPasswordCount</string>
+              </property>
+              <property name="buddy">
+               <cstring>sambaBadPasswordCountEdit</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QSpinBox" name="sambaBadPasswordCountEdit"/>
+            </item>
+           </layout>
           </item>
-          <item row="0" column="1">
-           <widget class="QDateEdit" name="sambaPwdLastSetEdit"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="sambaLogonTimeLabel">
-            <property name="text">
-             <string>sambaLogonTime</string>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
-            <property name="buddy">
-             <cstring>sambaLogonTimeEdit</cstring>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
             </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QDateEdit" name="sambaLogonTimeEdit"/>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="sambaLogoffTimeLabel">
-            <property name="text">
-             <string>sambaLogoffTime</string>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>13</width>
+              <height>20</height>
+             </size>
             </property>
-            <property name="buddy">
-             <cstring>sambaLogoffTimeEdit</cstring>
-            </property>
-           </widget>
+           </spacer>
           </item>
-          <item row="2" column="1">
-           <widget class="QDateEdit" name="sambaLogoffTimeEdit"/>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="sambaBadPasswordCountLabel">
-            <property name="text">
-             <string>sambaBadPasswordCount</string>
+          <item>
+           <layout class="QFormLayout" name="formLayout_4">
+            <property name="fieldGrowthPolicy">
+             <enum>QFormLayout::ExpandingFieldsGrow</enum>
             </property>
-            <property name="buddy">
-             <cstring>sambaBadPasswordCountEdit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QSpinBox" name="sambaBadPasswordCountEdit"/>
+            <item row="0" column="0">
+             <widget class="QLabel" name="sambaKickoffTimeLabel">
+              <property name="text">
+               <string>sambaKickoffTime</string>
+              </property>
+              <property name="buddy">
+               <cstring>sambaKickoffTimeEdit</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QDateEdit" name="sambaKickoffTimeEdit"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="sambaPwdCanChangeLabel">
+              <property name="text">
+               <string>sambaPwdCanChange</string>
+              </property>
+              <property name="buddy">
+               <cstring>sambaPwdCanChangeEdit</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QDateEdit" name="sambaPwdCanChangeEdit"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="sambaPwdMustChangeLabel">
+              <property name="text">
+               <string>sambaPwdMustChange</string>
+              </property>
+              <property name="buddy">
+               <cstring>sambaPwdMustChangeEdit</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QDateEdit" name="sambaPwdMustChangeEdit"/>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="sambaBadPasswordTimeLabel">
+              <property name="text">
+               <string>sambaBadPasswordTime</string>
+              </property>
+              <property name="buddy">
+               <cstring>sambaBadPasswordTimeEdit</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QSpinBox" name="sambaBadPasswordTimeEdit"/>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
         <item>
-         <spacer name="horizontalSpacer_2">
+         <widget class="Line" name="line_2">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>5</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
+         </widget>
         </item>
         <item>
-         <layout class="QFormLayout" name="formLayout_4">
-          <item row="0" column="0">
-           <widget class="QLabel" name="sambaKickoffTimeLabel">
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <widget class="QPushButton" name="pushButton">
             <property name="text">
-             <string>sambaKickoffTime</string>
-            </property>
-            <property name="buddy">
-             <cstring>sambaKickoffTimeEdit</cstring>
+             <string>Edit logon hours</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QDateEdit" name="sambaKickoffTimeEdit"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="sambaPwdCanChangeLabel">
-            <property name="text">
-             <string>sambaPwdCanChange</string>
+          <item>
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
-            <property name="buddy">
-             <cstring>sambaPwdCanChangeEdit</cstring>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
             </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QDateEdit" name="sambaPwdCanChangeEdit"/>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="sambaPwdMustChangeLabel">
-            <property name="text">
-             <string>sambaPwdMustChange</string>
-            </property>
-            <property name="buddy">
-             <cstring>sambaPwdMustChangeEdit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QDateEdit" name="sambaPwdMustChangeEdit"/>
-          </item>
-          <item row="3" column="1">
-           <widget class="QSpinBox" name="sambaBadPasswordTimeEdit"/>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="sambaBadPasswordTimeLabel">
-            <property name="text">
-             <string>sambaBadPasswordTime</string>
-            </property>
-            <property name="buddy">
-             <cstring>sambaBadPasswordTimeEdit</cstring>
-            </property>
-           </widget>
+           </spacer>
           </item>
          </layout>
         </item>
@@ -361,7 +402,7 @@
    <item row="2" column="0">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Allow login for these workstations only</string>
+      <string>Allowed workstations</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="0" column="0">
