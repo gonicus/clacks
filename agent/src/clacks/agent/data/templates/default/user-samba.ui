@@ -441,6 +441,22 @@
    </hints>
   </connection>
   <connection>
+   <sender>sambaPrimaryGroupSIDEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaPrimaryGroupSID()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>139</x>
+     <y>149</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>sambaUserWorkstationsEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>sambaSamAccount</receiver>
