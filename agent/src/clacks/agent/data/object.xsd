@@ -89,9 +89,7 @@
   </complexType>
 
   <simpleType name="AttributeTypes">
-    <restriction base="string">
-      %(object_types)s
-    </restriction>
+    <restriction base="string">%(object_types)s</restriction>
   </simpleType>
 
   <simpleType name="AttributeBackendTypes">

@@ -14,7 +14,7 @@
    <string>Samba</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources/user-samba.qrc">
+    <iconset resource="resources/user-samba.qrc">
     <normaloff>:/images/user-samba.png</normaloff>:/images/user-samba.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
@@ -65,7 +65,23 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QSpinBox" name="sambaPrimaryGroupSIDEdit"/>
+           <widget class="QTableWidget" name="sambaPrimaryGroupSIDEdit">
+            <column>
+             <property name="text">
+              <string extracomment="cn">Name</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string extracomment="description">Description</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string extracomment="sambaSID">SID</string>
+             </property>
+            </column>
+           </widget>
           </item>
          </layout>
         </item>
