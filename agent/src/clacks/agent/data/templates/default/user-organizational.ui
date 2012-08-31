@@ -92,12 +92,12 @@
           </property>
           <column>
            <property name="text">
-            <string extracomment="cn">Name</string>
+            <string comment="cn">Name</string>
            </property>
           </column>
           <column>
            <property name="text">
-            <string extracomment="uid">Login ID</string>
+            <string comment="uid">Login ID</string>
            </property>
           </column>
          </widget>
