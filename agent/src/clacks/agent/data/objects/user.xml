@@ -264,7 +264,7 @@
         <Name>preferredLanguage</Name>
         <Description>Preferred written or spoken language for a person</Description>
         <Type>String</Type>
-	<Values populate="getLanguageList"/>
+        <Values populate="getLanguageList"/>
       </Attribute>
       <Attribute>
         <Name>userSMIMECertificate</Name>
