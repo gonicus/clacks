@@ -6,64 +6,64 @@
     <message>
         <location filename="../user-samba.ui" line="14"/>
         <source>Samba</source>
-        <translation type="unfinished"></translation>
+        <translation>Samba</translation>
     </message>
     <message>
         <location filename="../user-samba.ui" line="24"/>
         <source>Common</source>
-        <translation type="unfinished"></translation>
+        <translation>Allgemein</translation>
     </message>
     <message>
         <location filename="../user-samba.ui" line="34"/>
         <source>SID</source>
-        <translation type="unfinished"></translation>
+        <translation>SID</translation>
     </message>
     <message>
         <location filename="../user-samba.ui" line="47"/>
         <source>Domain</source>
-        <translation type="unfinished"></translation>
+        <translation>Domäne</translation>
     </message>
     <message>
         <location filename="../user-samba.ui" line="60"/>
         <source>Primary group</source>
-        <translation type="unfinished"></translation>
+        <translation>Primäre Gruppe</translation>
     </message>
     <message>
         <location filename="../user-samba.ui" line="93"/>
         <location filename="../user-samba.ui" line="360"/>
         <source>Description</source>
         <extracomment>description</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Beschreibung</translation>
     </message>
     <message>
         <location filename="../user-samba.ui" line="106"/>
         <source>Automatic display name</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatischer angezeigter Name</translation>
     </message>
     <message>
         <location filename="../user-samba.ui" line="113"/>
         <source>Display name</source>
-        <translation type="unfinished"></translation>
+        <translation>Angezeigter Name</translation>
     </message>
     <message>
         <location filename="../user-samba.ui" line="144"/>
         <source>Home directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Basisverzeichnis</translation>
     </message>
     <message>
         <location filename="../user-samba.ui" line="171"/>
         <source>Logon script</source>
-        <translation type="unfinished"></translation>
+        <translation>Anmeldeskript</translation>
     </message>
     <message>
         <location filename="../user-samba.ui" line="184"/>
         <source>Profile path</source>
-        <translation type="unfinished"></translation>
+        <translation>Profil-Pfad</translation>
     </message>
     <message>
         <location filename="../user-samba.ui" line="204"/>
         <source>Password options</source>
-        <translation type="unfinished"></translation>
+        <translation>Passwort-Optionen</translation>
     </message>
     <message>
         <location filename="../user-samba.ui" line="214"/>
@@ -108,18 +108,18 @@
     <message>
         <location filename="../user-samba.ui" line="345"/>
         <source>Allow login for these workstations only</source>
-        <translation type="unfinished"></translation>
+        <translation>Anmeldung nur von diesen Arbeitsstationen erlauben</translation>
     </message>
     <message>
         <location filename="../user-samba.ui" line="351"/>
         <source>Edit list of workstations</source>
-        <translation type="unfinished"></translation>
+        <translation>Liste der Arbeitsstationen</translation>
     </message>
     <message>
         <location filename="../user-samba.ui" line="355"/>
         <source>Name</source>
         <extracomment>cn</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
 </context>
 </TS>
