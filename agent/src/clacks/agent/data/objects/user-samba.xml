@@ -6,7 +6,6 @@
     <DisplayName>Samba</DisplayName>
     <Templates>
       <Template>user-samba.ui</Template>
-      <Template>user-samba-ts.ui</Template>
     </Templates>
     <BackendParameters>
       <Backend objectClasses="sambaSamAccount">LDAP</Backend>
@@ -265,6 +264,7 @@
         <Description>Windows NT domain to which the user belongs</Description>
         <Type>UnicodeString</Type>
         <Mandatory>true</Mandatory>
+        <Values populate="getSambaDomainNames" />
       </Attribute>
 
       <Attribute>
