@@ -58,7 +58,7 @@ class ObjectHandler(ObjectBackend):
             # as values for 'targetAttr'
             for targetAttr in mapping:
                 result[targetAttr] = []
-                foreignObject, foreignAttr, foreignMatchAttr, matchAttr = mapping[targetAttr]
+                foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = mapping[targetAttr]
                 oi = PluginRegistry.getInstance("ObjectIndex")
                 results = oi.xquery("collection('objects')/*/.[o:UUID = '%s']/o:Attributes/o:%s/string()" % (uuid, matchAttr))
                 if results:
@@ -109,7 +109,7 @@ class ObjectHandler(ObjectBackend):
                 continue
 
             # Get the matching attribute for the current object
-            foreignObject, foreignAttr, foreignMatchAttr, matchAttr = mapping[targetAttr]
+            foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = mapping[targetAttr]
             xq = "collection('objects')/*/.[o:UUID = '%s']/o:Attributes/o:%s/string()" % (uuid, matchAttr)
             res = oi.xquery(xq)
             if not res:
@@ -159,10 +159,15 @@ class ObjectHandler(ObjectBackend):
         """
         result = {}
         for targetAttr in back_attrs:
-            result[targetAttr] = []
-            res = re.match("^([^:]*):([^,]*),([^=]*)=(.*)", back_attrs[targetAttr])
+            res = re.match("^([^:]*):([^,]*),(([^=]*)=([^,]*),|,)(.*)", back_attrs[targetAttr])
             if res:
-                result[targetAttr] = res.groups()
+                result[targetAttr] = []
+                result[targetAttr].append(res.groups()[0])
+                result[targetAttr].append(res.groups()[1])
+                result[targetAttr].append(res.groups()[3])
+                result[targetAttr].append(res.groups()[4])
+                result[targetAttr].append(res.groups()[5])
+
         return result
 
     def __init__(self):
