@@ -10,7 +10,7 @@
     </Templates>
     <BackendParameters>
       <Backend objectClasses="inetOrgPerson"
-        manager="User:uid,,"
+        manager="User:DN,,"
         RDN="cn,uid">LDAP</Backend>
       <Backend type="User">JSON</Backend>
     </BackendParameters>

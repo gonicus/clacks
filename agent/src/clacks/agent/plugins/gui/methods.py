@@ -84,6 +84,8 @@ class GuiMethods(Plugin):
 
         # Create a list of attributes that will be requested
         a = []
+        if oattr not in attributes:
+            attributes.append(oattr)
         for attr in attributes:
             a.append("%s.%s" % (otype, attr))
         attrs = ", ".join(a)
@@ -153,6 +155,8 @@ class GuiMethods(Plugin):
 
         # Create a list of attributes that will be requested
         a = []
+        if oattr not in attributes:
+            attributes.append(oattr)
         for attr in attributes:
             a.append("%s.%s" % (otype, attr))
         attrs = ", ".join(a)
