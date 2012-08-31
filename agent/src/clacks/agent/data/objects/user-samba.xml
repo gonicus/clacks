@@ -8,7 +8,9 @@
       <Template>user-samba.ui</Template>
     </Templates>
     <BackendParameters>
-      <Backend objectClasses="sambaSamAccount">LDAP</Backend>
+      <Backend 
+        sambaPrimaryGroupSid="PosixGroup:cn,sambaSID=*" 
+        objectClasses="sambaSamAccount">LDAP</Backend>
     </BackendParameters>
     <Backend>LDAP</Backend>
 

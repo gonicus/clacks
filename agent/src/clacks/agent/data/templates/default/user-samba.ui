@@ -68,17 +68,17 @@
            <widget class="QTableWidget" name="sambaPrimaryGroupSIDEdit">
             <column>
              <property name="text">
-              <string extracomment="cn">Name</string>
+              <string comment="cn">Name</string>
              </property>
             </column>
             <column>
              <property name="text">
-              <string extracomment="description">Description</string>
+              <string comment="description">Description</string>
              </property>
             </column>
             <column>
              <property name="text">
-              <string extracomment="sambaSID">SID</string>
+              <string comment="sambaSID">SID</string>
              </property>
             </column>
            </widget>
@@ -368,12 +368,12 @@
         </property>
         <column>
          <property name="text">
-          <string extracomment="cn">Name</string>
+          <string comment="cn">Name</string>
          </property>
         </column>
         <column>
          <property name="text">
-          <string extracomment="description">Description</string>
+          <string comment="description">Description</string>
          </property>
         </column>
        </widget>
