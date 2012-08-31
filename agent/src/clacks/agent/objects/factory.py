@@ -112,8 +112,17 @@ class ObjectFactory(object):
         for o_type in self.__attribute_type.keys():
             object_types += "<enumeration value=\"%s\"></enumeration>" % (o_type,)
 
+
         # Insert available object types into the xsd schema
-        schema_doc = schema_doc % {'object_types': object_types}
+        schema_doc = re.sub(r"<simpleType name=\"AttributeTypes\">\n?\s*<restriction base=\"string\"></restriction>\n?\s*</simpleType>",
+            """
+            <simpleType name="AttributeTypes">
+              <restriction base="string">
+                %(object_types)s
+              </restriction>
+            </simpleType>
+            """ % {'object_types': object_types},
+            schema_doc)
 
         schema_root = etree.XML(schema_doc)
         schema = etree.XMLSchema(schema_root)
