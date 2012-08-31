@@ -2,21 +2,21 @@
 <?eclipse-pydev version="1.0"?>
 
 <pydev_project>
-<pydev_property name="org.python.pydev.PYTHON_PROJECT_INTERPRETER">2.6</pydev_property>
-<pydev_property name="org.python.pydev.PYTHON_PROJECT_VERSION">python 2.6</pydev_property>
+<pydev_property name="org.python.pydev.PYTHON_PROJECT_INTERPRETER">pythonv</pydev_property>
+<pydev_property name="org.python.pydev.PYTHON_PROJECT_VERSION">python 2.7</pydev_property>
 <pydev_pathproperty name="org.python.pydev.PROJECT_SOURCE_PATH">
-<path>/gosa-ng/gosa.common/src</path>
-<path>/gosa-ng/gosa.agent/src</path>
-<path>/gosa-ng/gosa.client/src</path>
-<path>/gosa-ng/gosa.dbus/src</path>
-<path>/gosa-ng/gosa.shell/src</path>
-<path>/gosa-ng/plugins/libinst/src</path>
-<path>/gosa-ng/plugins/libinst.boot.preseed</path>
-<path>/gosa-ng/plugins/libinst.cfg.puppet.client</path>
-<path>/gosa-ng/plugins/libinst.repo.deb</path>
-<path>/gosa-ng/plugins/libinst.cfg.puppet</path>
+<path>/clacks/plugins/libinst/src</path>
+<path>/clacks/plugins/libinst.boot.preseed</path>
+<path>/clacks/plugins/libinst.cfg.puppet.client</path>
+<path>/clacks/plugins/libinst.repo.deb</path>
+<path>/clacks/plugins/libinst.cfg.puppet</path>
+<path>/clacks/common/src</path>
+<path>/clacks/agent/src</path>
+<path>/clacks/client/src</path>
+<path>/clacks/dbus/src</path>
+<path>/clacks/shell/src</path>
 </pydev_pathproperty>
 <pydev_pathproperty name="org.python.pydev.PROJECT_EXTERNAL_SOURCE_PATH">
-<path>/usr/lib/python2.6/dist-packages</path>
+<path>/usr/lib/python2.7</path>
 </pydev_pathproperty>
 </pydev_project>
