@@ -29,97 +29,118 @@
         <translation>Primäre Gruppe</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="93"/>
-        <location filename="../user-samba.ui" line="360"/>
+        <location filename="../user-samba.ui" line="71"/>
+        <location filename="../user-samba.ui" line="371"/>
+        <source>Name</source>
+        <comment>cn</comment>
+        <translation>Name</translation>
+    </message>
+    <message>
+        <location filename="../user-samba.ui" line="76"/>
+        <location filename="../user-samba.ui" line="376"/>
         <source>Description</source>
-        <extracomment>description</extracomment>
+        <comment>description</comment>
         <translation>Beschreibung</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="106"/>
+        <location filename="../user-samba.ui" line="81"/>
+        <source>SID</source>
+        <comment>sambaSID</comment>
+        <translation>SID</translation>
+    </message>
+    <message>
+        <location filename="../user-samba.ui" line="109"/>
+        <source>Description</source>
+        <translation>Beschreibung</translation>
+    </message>
+    <message>
+        <location filename="../user-samba.ui" line="122"/>
         <source>Automatic display name</source>
         <translation>Automatischer angezeigter Name</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="113"/>
+        <location filename="../user-samba.ui" line="129"/>
         <source>Display name</source>
         <translation>Angezeigter Name</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="144"/>
+        <location filename="../user-samba.ui" line="160"/>
         <source>Home directory</source>
         <translation>Basisverzeichnis</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="171"/>
+        <location filename="../user-samba.ui" line="187"/>
         <source>Logon script</source>
         <translation>Anmeldeskript</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="184"/>
+        <location filename="../user-samba.ui" line="200"/>
         <source>Profile path</source>
         <translation>Profil-Pfad</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="204"/>
+        <location filename="../user-samba.ui" line="220"/>
         <source>Password options</source>
         <translation>Passwort-Optionen</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="214"/>
+        <location filename="../user-samba.ui" line="230"/>
         <source>sambaPwdLastSet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="227"/>
+        <location filename="../user-samba.ui" line="243"/>
         <source>sambaLogonTime</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="240"/>
+        <location filename="../user-samba.ui" line="256"/>
         <source>sambaLogoffTime</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="253"/>
+        <location filename="../user-samba.ui" line="269"/>
         <source>sambaBadPasswordCount</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="286"/>
+        <location filename="../user-samba.ui" line="302"/>
         <source>sambaKickoffTime</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="299"/>
+        <location filename="../user-samba.ui" line="315"/>
         <source>sambaPwdCanChange</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="312"/>
+        <location filename="../user-samba.ui" line="328"/>
         <source>sambaPwdMustChange</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="328"/>
+        <location filename="../user-samba.ui" line="344"/>
         <source>sambaBadPasswordTime</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="345"/>
+        <location filename="../user-samba.ui" line="361"/>
         <source>Allow login for these workstations only</source>
         <translation>Anmeldung nur von diesen Arbeitsstationen erlauben</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="351"/>
-        <source>Edit list of workstations</source>
+        <location filename="../user-samba.ui" line="367"/>
+        <source>List of workstations</source>
         <translation>Liste der Arbeitsstationen</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="355"/>
+        <source>Edit list of workstations</source>
+        <translation type="obsolete">Liste der Arbeitsstationen</translation>
+    </message>
+    <message>
         <source>Name</source>
         <extracomment>cn</extracomment>
-        <translation>Name</translation>
+        <translation type="obsolete">Name</translation>
     </message>
 </context>
 </TS>
