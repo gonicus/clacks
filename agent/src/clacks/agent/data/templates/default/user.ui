@@ -14,7 +14,7 @@
    <string>Personal</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources/user.qrc">
+   <iconset>
     <normaloff>:/images/user.png</normaloff>:/images/user.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
@@ -381,7 +381,7 @@
   </layout>
   <action name="actionChange_password">
    <property name="icon">
-    <iconset resource="resources/user.qrc">
+    <iconset>
      <normaloff>:/images/password.png</normaloff>:/images/password.png</iconset>
    </property>
    <property name="text">
@@ -399,7 +399,7 @@
   </action>
   <action name="actionLock_account">
    <property name="icon">
-    <iconset resource="resources/user.qrc">
+    <iconset>
      <normaloff>:/images/lock.png</normaloff>:/images/lock.png</iconset>
    </property>
    <property name="text">
@@ -414,7 +414,7 @@
   </action>
   <action name="actionUnlock_account">
    <property name="icon">
-    <iconset resource="resources/user.qrc">
+    <iconset>
      <normaloff>:/images/unlock.png</normaloff>:/images/unlock.png</iconset>
    </property>
    <property name="text">
@@ -429,7 +429,7 @@
   </action>
   <action name="actionSend_message">
    <property name="icon">
-    <iconset resource="resources/user.qrc">
+    <iconset>
      <normaloff>:/images/notify.png</normaloff>:/images/notify.png</iconset>
    </property>
    <property name="text">
