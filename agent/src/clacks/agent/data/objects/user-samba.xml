@@ -9,7 +9,7 @@
     </Templates>
     <BackendParameters>
       <Backend 
-        sambaPrimaryGroupSID="PosixGroup:cn,,PosixGroup.sambaSID LIKE &quot;&quot;" 
+        sambaPrimaryGroupSID="PosixGroup:sambaSID,,PosixGroup.sambaSID LIKE &quot;&quot;" 
         objectClasses="sambaSamAccount">LDAP</Backend>
     </BackendParameters>
     <Backend>LDAP</Backend>

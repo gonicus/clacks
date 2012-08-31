@@ -107,10 +107,10 @@ class GuiMethods(Plugin):
                     item[attr] = entry[otype][attr][0]
                 else:
                     item[attr] = ""
-            item['__indentifier__'] = item[foreignAttr]
+            item['__identifier__'] = item[foreignAttr]
 
             # Skip values that are in the skip list
-            if skip_values and item['__indentifier__'] in skip_values:
+            if skip_values and item['__identifier__'] in skip_values:
                 continue
 
             result.append(item)
