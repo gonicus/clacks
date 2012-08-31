@@ -21,8 +21,6 @@ How an ACL assigment could look like
 --------
 """
 import re
-import os
-import json
 import ldap
 import logging
 import zope.event

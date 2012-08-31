@@ -1,4 +1,5 @@
 eclipse.preferences.version=1
+encoding//agent/src/clacks/agent/acl.py=utf-8
 encoding//agent/src/clacks/agent/objects/index.py=utf-8
 encoding//gosa.agent/src/gosa/agent/amqp_service.py=utf-8
 encoding//gosa.agent/src/gosa/agent/plugins/goto/client_service.py=utf-8
