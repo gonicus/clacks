@@ -62,18 +62,25 @@ class GuiMethods(Plugin):
         # relation out of the BackendParameters for the given extension.
         of = ObjectFactory.getInstance()
         be_attrs = of.getObjectBackendProperties(extension);
-        if not attribute in be_attrs['ObjectHandler']:
+        be_data = None
+        for be_name in be_attrs:
+            if attribute in be_attrs[be_name]:
+                be_data = ObjectHandler.extractBackAttrs(be_attrs[be_name])
+
+        if not be_data:
             raise Exception("no backend parameter found for %s.%s" % (extension, attribute))
 
         # Collection basic information
-        be_data = ObjectHandler.extractBackAttrs(be_attrs['ObjectHandler'])
-        foreignObject, foreignAttr, foreignMatchAttr, matchAttr = be_data[attribute]
+        foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = be_data[attribute]
         otype = foreignObject
         oattr = foreignAttr
         base = env.base
 
         # Create list of conditional statements
         condition = '(%s.%s LIKE "%s")'  % (otype, oattr, filter)
+
+        if additionalFilter:
+            additionalFilter = " AND " + additionalFilter
 
         # Create a list of attributes that will be requested
         a = []
@@ -85,8 +92,8 @@ class GuiMethods(Plugin):
         query = """
             SELECT %(attrs)s
             BASE %(type)s SUB "%(base)s"
-            WHERE %(condition)s
-            """ % {"attrs": attrs, "condition": condition, "type": otype, "base": base}
+            WHERE %(condition)s %(filter)s
+            """ % {"attrs": attrs, "condition": condition, "type": otype, "base": base, "filter": additionalFilter}
 
         # Start the query and brind the result in a usable form
         search = PluginRegistry.getInstance("SearchWrapper")
@@ -100,13 +107,14 @@ class GuiMethods(Plugin):
                     item[attr] = entry[otype][attr][0]
                 else:
                     item[attr] = ""
-            item['__indentifier__'] = item[foreignAttr]
+            item['__identifier__'] = item[foreignAttr]
 
             # Skip values that are in the skip list
-            if skip_values and item['__indentifier__'] in skip_values:
+            if skip_values and item['__identifier__'] in skip_values:
                 continue
 
             result.append(item)
+
         return result
 
     @Command(__help__=N_("Resolves object information"))
@@ -122,12 +130,16 @@ class GuiMethods(Plugin):
         # relation out of the BackendParameters for the given extension.
         of = ObjectFactory.getInstance()
         be_attrs = of.getObjectBackendProperties(extension);
-        if not attribute in be_attrs['ObjectHandler']:
+        be_data = None
+        for be_name in be_attrs:
+            if attribute in be_attrs[be_name]:
+                be_data = ObjectHandler.extractBackAttrs(be_attrs[be_name])
+
+        if not be_data:
             raise Exception("no backend parameter found for %s.%s" % (extension, attribute))
 
         # Collection basic information
-        be_data = ObjectHandler.extractBackAttrs(be_attrs['ObjectHandler'])
-        foreignObject, foreignAttr, foreignMatchAttr, matchAttr = be_data[attribute]
+        foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = be_data[attribute]
         otype = foreignObject
         oattr = foreignAttr
         base = env.base
@@ -145,12 +157,15 @@ class GuiMethods(Plugin):
             a.append("%s.%s" % (otype, attr))
         attrs = ", ".join(a)
 
+        if additionalFilter:
+            additionalFilter = " AND " + additionalFilter
+
         # Prepare the query
         query = """
             SELECT %(attrs)s
             BASE %(type)s SUB "%(base)s"
-            WHERE %(condition)s
-            """ % {"attrs": attrs, "condition": condition, "type": otype, "base": base}
+            WHERE %(condition)s %(filter)s
+            """ % {"attrs": attrs, "condition": condition, "type": otype, "base": base, "filter": additionalFilter}
 
         # Start the query and brind the result in a usable form
         search = PluginRegistry.getInstance("SearchWrapper")

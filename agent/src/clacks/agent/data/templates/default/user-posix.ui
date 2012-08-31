@@ -14,7 +14,7 @@
    <string>POSIX</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources/user-posix.qrc">
+   <iconset>
     <normaloff>:/images/user-posix.png</normaloff>:/images/user-posix.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">

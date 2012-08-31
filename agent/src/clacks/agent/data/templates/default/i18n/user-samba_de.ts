@@ -29,109 +29,131 @@
         <translation>Primäre Gruppe</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="71"/>
-        <location filename="../user-samba.ui" line="371"/>
+        <location filename="../user-samba.ui" line="70"/>
+        <source>Choose the primary group</source>
+        <translation>Primäre Gruppe auswählen</translation>
+    </message>
+    <message>
+        <location filename="../user-samba.ui" line="74"/>
+        <location filename="../user-samba.ui" line="415"/>
         <source>Name</source>
         <comment>cn</comment>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="76"/>
-        <location filename="../user-samba.ui" line="376"/>
+        <location filename="../user-samba.ui" line="79"/>
+        <location filename="../user-samba.ui" line="420"/>
         <source>Description</source>
         <comment>description</comment>
         <translation>Beschreibung</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="81"/>
+        <location filename="../user-samba.ui" line="84"/>
         <source>SID</source>
         <comment>sambaSID</comment>
         <translation>SID</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="109"/>
+        <location filename="../user-samba.ui" line="112"/>
         <source>Description</source>
         <translation>Beschreibung</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="122"/>
+        <location filename="../user-samba.ui" line="125"/>
         <source>Automatic display name</source>
         <translation>Automatischer angezeigter Name</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="129"/>
+        <location filename="../user-samba.ui" line="132"/>
         <source>Display name</source>
         <translation>Angezeigter Name</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="160"/>
+        <location filename="../user-samba.ui" line="163"/>
         <source>Home directory</source>
         <translation>Basisverzeichnis</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="187"/>
+        <location filename="../user-samba.ui" line="190"/>
         <source>Logon script</source>
         <translation>Anmeldeskript</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="200"/>
+        <location filename="../user-samba.ui" line="203"/>
         <source>Profile path</source>
         <translation>Profil-Pfad</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="220"/>
-        <source>Password options</source>
-        <translation>Passwort-Optionen</translation>
+        <location filename="../user-samba.ui" line="223"/>
+        <source>Login options</source>
+        <translation>Anmeldeoptionen</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="230"/>
+        <location filename="../user-samba.ui" line="378"/>
+        <source>Edit logon hours</source>
+        <translation>Anmeldezeiten bearbeiten</translation>
+    </message>
+    <message>
+        <location filename="../user-samba.ui" line="405"/>
+        <source>Allowed workstations</source>
+        <translation>Zugelassene Arbeitsstationen</translation>
+    </message>
+    <message>
+        <source>Password options</source>
+        <translation type="obsolete">Passwort-Optionen</translation>
+    </message>
+    <message>
+        <location filename="../user-samba.ui" line="238"/>
         <source>sambaPwdLastSet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="243"/>
+        <location filename="../user-samba.ui" line="251"/>
         <source>sambaLogonTime</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="256"/>
+        <location filename="../user-samba.ui" line="264"/>
         <source>sambaLogoffTime</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="269"/>
+        <location filename="../user-samba.ui" line="277"/>
         <source>sambaBadPasswordCount</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="302"/>
+        <location filename="../user-samba.ui" line="313"/>
         <source>sambaKickoffTime</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="315"/>
+        <location filename="../user-samba.ui" line="326"/>
         <source>sambaPwdCanChange</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="328"/>
+        <location filename="../user-samba.ui" line="339"/>
         <source>sambaPwdMustChange</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="344"/>
+        <location filename="../user-samba.ui" line="352"/>
         <source>sambaBadPasswordTime</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="361"/>
         <source>Allow login for these workstations only</source>
-        <translation>Anmeldung nur von diesen Arbeitsstationen erlauben</translation>
+        <translation type="obsolete">Anmeldung nur von diesen Arbeitsstationen erlauben</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="367"/>
+        <location filename="../user-samba.ui" line="411"/>
+        <source>Choose workstations</source>
+        <translation>Arbeitsstationen auswählen</translation>
+    </message>
+    <message>
         <source>List of workstations</source>
-        <translation>Liste der Arbeitsstationen</translation>
+        <translation type="obsolete">Liste der Arbeitsstationen</translation>
     </message>
     <message>
         <source>Edit list of workstations</source>

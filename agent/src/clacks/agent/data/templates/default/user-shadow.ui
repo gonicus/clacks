@@ -14,7 +14,7 @@
    <string>Shadow</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources/user-shadow.qrc">
+   <iconset>
     <normaloff>:/images/user-shadow.png</normaloff>:/images/user-shadow.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">

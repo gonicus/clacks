@@ -449,9 +449,9 @@ class Match(MyNode):
             comp  = self[1].compile_for_match()
             attr2 = self[2].compile_for_match()
 
-            if(comp == "LIKE"):
+            if(comp.upper() == "LIKE"):
                 match = ("contains(%s, %s)" % (attr1, attr2))
-            elif(comp == "IN"):
+            elif(comp.upper() == "IN"):
                 match = ("%s = %s" % (attr1, attr2))
             else:
                 match = ("%s %s %s" % (attr1, comp, attr2))
