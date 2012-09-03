@@ -312,7 +312,7 @@
                <string>Date and time when the user should be logged off the workstation</string>
               </property>
               <property name="text">
-               <string>User kickoff time</string>
+               <string>Forced logoff time</string>
               </property>
               <property name="buddy">
                <cstring>sambaKickoffTimeEdit</cstring>

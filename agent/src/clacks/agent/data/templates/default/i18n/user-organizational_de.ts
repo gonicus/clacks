@@ -34,15 +34,25 @@
         <translation>Verwalter auswählen</translation>
     </message>
     <message>
-        <location filename="../user-organizational.ui" line="95"/>
         <source>Name</source>
         <extracomment>cn</extracomment>
+        <translation type="obsolete">Name</translation>
+    </message>
+    <message>
+        <source>Login ID</source>
+        <extracomment>uid</extracomment>
+        <translation type="obsolete">Anmelde-ID</translation>
+    </message>
+    <message>
+        <location filename="../user-organizational.ui" line="95"/>
+        <source>Name</source>
+        <comment>cn</comment>
         <translation>Name</translation>
     </message>
     <message>
         <location filename="../user-organizational.ui" line="100"/>
         <source>Login ID</source>
-        <extracomment>uid</extracomment>
+        <comment>uid</comment>
         <translation>Anmelde-ID</translation>
     </message>
     <message>
