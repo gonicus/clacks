@@ -612,6 +612,30 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>sambaBadPasswordCountEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaBadPasswordCount()</slot>
+  </connection>
+  <connection>
+   <sender>sambaPwdLastSetEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaPwdLastSet()</slot>
+  </connection>
+  <connection>
+   <sender>sambaLogoffTimeEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaLogoffTime()</slot>
+  </connection>
+  <connection>
+   <sender>sambaLogonTimeEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaLogonTime()</slot>
+  </connection>
  </connections>
  <slots>
   <slot>property_sambaPwdLastSet()</slot>
