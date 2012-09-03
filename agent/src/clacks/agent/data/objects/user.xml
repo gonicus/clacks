@@ -131,7 +131,45 @@
         <Name>displayName</Name>
         <Description>preferred name of a person to be used when displaying entries</Description>
         <Type>UnicodeString</Type>
+        <BlockedBy>
+          <Name>autoDisplayName</Name>
+          <Value>true</Value>
+        </BlockedBy>
+        <DependsOn>
+          <Attribute>autoDisplayName</Attribute>
+        </DependsOn>
       </Attribute>
+
+      <Attribute>
+        <Name>autoDisplayName</Name>
+        <Default>true</Default>
+        <Mandatory>true</Mandatory>
+        <Backend>NULL</Backend>
+        <Type>Boolean</Type>
+        <OutFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>GenerateDisplayName</Name>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </OutFilter>
+        <InFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>LoadDisplayNameState</Name>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </InFilter>
+        <DependsOn>
+          <Attribute>givenName</Attribute>
+          <Attribute>sn</Attribute>
+        </DependsOn>
+      </Attribute>
+
       <Attribute>
         <Name>employeeNumber</Name>
         <Description>numerically identifies an employee within an organization'</Description>

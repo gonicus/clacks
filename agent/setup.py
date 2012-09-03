@@ -168,6 +168,8 @@ setup(
         posixgetnextid = clacks.agent.plugins.posix.filters:GetNextID
         generategecos = clacks.agent.plugins.posix.filters:GenerateGecos
         loadgecosstate = clacks.agent.plugins.posix.filters:LoadGecosState
+        generatedn = clacks.agent.plugins.user.filters:GenerateDisplayName
+        loaddnstate = clacks.agent.plugins.user.filters:LoadDisplayNameState
         generateids = clacks.agent.plugins.posix.filters:GenerateIDs
         datetoshadowdays = clacks.agent.plugins.posix.shadow:DatetimeToShadowDays
         shadowdaystodate = clacks.agent.plugins.posix.shadow:ShadowDaysToDatetime
