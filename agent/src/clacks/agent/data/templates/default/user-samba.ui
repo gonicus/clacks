@@ -636,13 +636,23 @@
    <receiver>sambaSamAccount</receiver>
    <slot>property_sambaLogonTime()</slot>
   </connection>
+  <connection>
+   <sender>sambaKickoffTimeEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaKickoffTime()</slot>
+  </connection>
+  <connection>
+   <sender>sambaPwdCanChangeEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaPwdCanChange()</slot>
+  </connection>
+  <connection>
+   <sender>sambaPwdMustChangeEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaPwdMustChange()</slot>
+  </connection>
  </connections>
- <slots>
-  <slot>property_sambaPwdLastSet()</slot>
-  <slot>property_sambaLogonTime()</slot>
-  <slot>property_sambaLogoffTime()</slot>
-  <slot>property_sambaKickoffTime()</slot>
-  <slot>property_sambaPwdCanChange()</slot>
-  <slot>property_sambaPwdMustChange()</slot>
- </slots>
 </ui>
