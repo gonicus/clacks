@@ -613,10 +613,10 @@
    </hints>
   </connection>
   <connection>
-   <sender>sambaBadPasswordCountEdit</sender>
+   <sender>sambaBadPasswordTimeEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>sambaSamAccount</receiver>
-   <slot>property_sambaBadPasswordCount()</slot>
+   <slot>property_sambaBadPasswordTime()</slot>
   </connection>
   <connection>
    <sender>sambaPwdLastSetEdit</sender>
