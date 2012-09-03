@@ -41,19 +41,6 @@
           <item row="0" column="1">
            <widget class="QLineEdit" name="sambaSIDEdit"/>
           </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="sambaDomainNameLabel">
-            <property name="text">
-             <string>Domain</string>
-            </property>
-            <property name="buddy">
-             <cstring>sambaDomainNameEdit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QComboBox" name="sambaDomainNameEdit"/>
-          </item>
           <item row="2" column="0">
            <widget class="QLabel" name="sambaPrimaryGroupSIDLabel">
             <property name="text">
@@ -106,7 +93,23 @@
         </item>
         <item>
          <layout class="QFormLayout" name="formLayout_3">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::ExpandingFieldsGrow</enum>
+          </property>
           <item row="0" column="0">
+           <widget class="QLabel" name="sambaDomainNameLabel">
+            <property name="text">
+             <string>Domain</string>
+            </property>
+            <property name="buddy">
+             <cstring>sambaDomainNameEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="sambaDomainNameEdit"/>
+          </item>
+          <item row="1" column="0">
            <widget class="QLabel" name="descriptionLabel">
             <property name="text">
              <string>Description</string>
@@ -116,28 +119,8 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="1" column="1">
            <widget class="QLineEdit" name="descriptionEdit"/>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QCheckBox" name="checkBox">
-            <property name="text">
-             <string>Automatic display name</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="displayNameLabel">
-            <property name="text">
-             <string>Display name</string>
-            </property>
-            <property name="buddy">
-             <cstring>displayNameEdit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="displayNameEdit"/>
           </item>
          </layout>
         </item>
@@ -429,11 +412,8 @@
  </widget>
  <tabstops>
   <tabstop>sambaSIDEdit</tabstop>
-  <tabstop>sambaDomainNameEdit</tabstop>
   <tabstop>sambaPrimaryGroupSIDEdit</tabstop>
   <tabstop>descriptionEdit</tabstop>
-  <tabstop>checkBox</tabstop>
-  <tabstop>displayNameEdit</tabstop>
   <tabstop>sambaHomePathEdit</tabstop>
   <tabstop>sambaHomeDriveEdit</tabstop>
   <tabstop>sambaLogonScriptEdit</tabstop>
@@ -541,22 +521,6 @@
     <hint type="sourcelabel">
      <x>464</x>
      <y>354</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>displayNameEdit</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>sambaSamAccount</receiver>
-   <slot>property_displayName()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>389</x>
-     <y>109</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
