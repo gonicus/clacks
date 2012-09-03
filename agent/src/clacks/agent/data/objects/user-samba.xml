@@ -111,6 +111,7 @@
             </FilterEntry>
           </FilterChain>
         </OutFilter>
+        <ReadOnly>true</ReadOnly>
       </Attribute>
 
       <Attribute>
@@ -136,6 +137,7 @@
             </FilterEntry>
           </FilterChain>
         </OutFilter>
+        <ReadOnly>true</ReadOnly>
       </Attribute>
 
       <Attribute>
@@ -229,12 +231,7 @@
         <Name>sambaHomeDrive</Name>
         <Description>Driver letter of home directory mapping</Description>
         <Type>String</Type>
-        <Validators>
-          <Condition>
-            <Name>RegEx</Name>
-            <Param>[A-Z]:</Param>
-          </Condition>
-        </Validators>
+        <Values populate="getSambaDriveLetters"/>
       </Attribute>
 
       <Attribute>
@@ -273,6 +270,7 @@
         <Name>sambaBadPasswordCount</Name>
         <Description>Bad password attempt count</Description>
         <Type>Integer</Type>
+	<ReadOnly>true</ReadOnly>
       </Attribute>
 
       <Attribute>
@@ -298,6 +296,7 @@
             </FilterEntry>
           </FilterChain>
         </OutFilter>
+	<ReadOnly>true</ReadOnly>
       </Attribute>
 
       <Attribute>

@@ -12,3 +12,11 @@ class SambaGuiMethods(Plugin):
     def getSambaDomainNames(self):
         index = PluginRegistry.getInstance("ObjectIndex")
         return index.xquery("collection('objects')/o:SambaDomain/o:Attributes/o:sambaDomainName/string()")
+
+    @Command(__help__=N_("Returns a list of DOS/Windows drive letters"))
+    def getSambaDriveLetters(self):
+        return ["%s:" % c for c in self.letterizer('C', 'Z')]
+
+    def letterizer(self, start='A', stop='Z'):
+        for number in xrange(ord(start), ord(stop) + 1):
+            yield chr(number)
