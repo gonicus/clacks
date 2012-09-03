@@ -1,0 +1,23 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>groupbox.png</file>
+        <file>label.png</file>
+        <file>table.png</file>
+        <file>editform.png</file>
+        <file>spinbox.png</file>
+        <file>vspacer.png</file>
+        <file>checkbox.png</file>
+        <file>spacer.png</file>
+        <file>widget.png</file>
+        <file>dateedit.png</file>
+        <file>edithlayout.png</file>
+        <file>graphicsview.png</file>
+        <file>editgrid.png</file>
+        <file>textedit.png</file>
+        <file>plaintextedit.png</file>
+        <file>editvlayout.png</file>
+        <file>lineedit.png</file>
+        <file>combobox.png</file>
+
+    </qresource>
+</RCC>
