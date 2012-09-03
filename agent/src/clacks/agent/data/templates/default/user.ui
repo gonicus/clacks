@@ -546,6 +546,22 @@
    </hints>
   </connection>
   <connection>
+   <sender>displayNameEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>User</receiver>
+   <slot>property_displayName()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>335</x>
+     <y>385</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>labeledURIEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>User</receiver>
