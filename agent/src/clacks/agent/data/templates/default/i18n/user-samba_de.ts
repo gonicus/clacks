@@ -129,7 +129,7 @@
     <message>
         <location filename="../user-samba.ui" line="325"/>
         <source>Password change allowed after</source>
-        <translation>Passwortänderung erlaubten nach</translation>
+        <translation>Passwortänderung erlaubt nach</translation>
     </message>
     <message>
         <location filename="../user-samba.ui" line="335"/>
