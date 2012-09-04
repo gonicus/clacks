@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
-import datetime
-from time import mktime
-from clacks.agent.objects.filter import ElementFilter, ElementFilterException
+from clacks.agent.objects.filter import ElementFilter
 import datetime
 
 

@@ -184,7 +184,7 @@ class JSON(ObjectBackend):
             for uuid in json:
                 for obj in json[uuid]:
                     if "parentDN" in json[uuid][obj] and re.match(re.escape(base) + "$", json[uuid][obj]['parentDN']):
-                        found.append(json['objects'][item]['dn'])
+                        found.append(json['objects'][uuid]['dn'])
         return found
 
     def create(self, base, data, params, foreign_keys=None):
@@ -312,7 +312,7 @@ class JSON(ObjectBackend):
         """
         json = self.__load()
         if self.is_uuid(misc):
-            return item_uuid in json['objects']
+            return misc in json['objects']
         else:
             for uuid in json:
                 for obj in json[uuid]:

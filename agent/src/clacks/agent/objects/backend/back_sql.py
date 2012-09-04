@@ -295,7 +295,7 @@ class SQL(ObjectBackend):
         """
         Removes the entry with the given uuid from the database
         """
-        self.objects.delete().where(self.objects.c.uuid==item_uuid).execute()
+        self.objects.delete().where(self.objects.c.uuid==uuid).execute()
 
     def exists(self, misc):
         """

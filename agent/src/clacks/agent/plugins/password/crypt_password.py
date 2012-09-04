@@ -1,9 +1,9 @@
 from clacks.agent.plugins.password.interface import PasswordMethod
-import re
 import crypt
 import random
 import string
 import re
+
 
 class PasswordMethodCrypt(PasswordMethod):
     """
@@ -96,24 +96,24 @@ class PasswordMethodCrypt(PasswordMethod):
 
         salt = ""
         if method == "crypt/standard-des":
-            for i in range(2):
+            for i in range(2): #@UnusedVariable
                 salt += random.choice(string.letters + string.digits)
 
         if method == "crypt/enhanced-des":
             salt = "_"
-            for i in range(8):
+            for i in range(8): #@UnusedVariable
                 salt += random.choice(string.letters + string.digits)
 
         if method == "crypt/md5":
             salt = "$1$"
-            for i in range(8):
+            for i in range(8): #@UnusedVariable
                 salt += random.choice(string.letters + string.digits)
             salt += "$"
 
         if method == "crypt/blowfish":
             salt = "$2a$07$"
             CRYPT_SALT_LENGTH = 22 #TODO: ??
-            for i in range(CRYPT_SALT_LENGTH):
+            for i in range(CRYPT_SALT_LENGTH): #@UnusedVariable
                 salt += random.choice(string.letters + string.digits)
             salt += "$"
 

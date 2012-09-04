@@ -45,10 +45,9 @@ from lxml import etree
 from time import time
 from clacks.common import Environment
 from zope.interface import implements
-from clacks.agent.xmldb.handler import XMLDBHandler
 from clacks.agent.objects.factory import ObjectFactory
 from clacks.agent.acl import ACLResolver
-from lepl import Literal, Node, Regexp, UnsignedReal, Space, Separator, Delayed, Optional, String, Star
+from lepl import Literal, Node, Regexp, UnsignedReal, Space, Separator, Delayed, Optional, String
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import Plugin
 from clacks.common.components import PluginRegistry

@@ -65,22 +65,21 @@ class goFonAccount(Plugin):
                 home_server = entry["goFonHomeServer"][0]
                 phone_numbers = entry["telephoneNumber"]
 
-
                 # Remove entries from the old home server
                 actions = {}
                 actions[home_server] = []
 
                 # Query for the used callerid of the given uid, to be able to remove its voicemail entries
-                callerid_s = select([sip_users_table.c.callerid]).where(sip_users_table.c.name == uid)
-                actions[home_server].append(voicemail_users_table.delete().where(voicemail_users_table.c.customer_id == callerid_s))
+                callerid_s = select([sip_users_table.c.callerid]).where(sip_users_table.c.name == uid) #@UndefinedVariable
+                actions[home_server].append(voicemail_users_table.delete().where(voicemail_users_table.c.customer_id == callerid_s)) #@UndefinedVariable
 
                 # Remove sip_users and enxtensions entries
-                actions[home_server].append(sip_users_table.delete().where(sip_users_table.c.name == uid))
-                actions[home_server].append(extensions_table.delete().where(extensions_table.c.exten == uid))
+                actions[home_server].append(sip_users_table.delete().where(sip_users_table.c.name == uid)) #@UndefinedVariable
+                actions[home_server].append(extensions_table.delete().where(extensions_table.c.exten == uid)) #@UndefinedVariable
 
                 # Delete old used phone numbers from the extension
                 for item in phone_numbers:
-                    actions[home_server].append(extensions_table.delete().where(extensions_table.c.exten == item))
+                    actions[home_server].append(extensions_table.delete().where(extensions_table.c.exten == item)) #@UndefinedVariable
 
                 self.execute_actions(actions)
 
@@ -163,18 +162,18 @@ class goFonAccount(Plugin):
 
             # Create extensions entries (uid -> number)
             ext_entry = {}
-            ext_entry['context'] = 'GOsa';
+            ext_entry['context'] = 'GOsa'
             ext_entry['exten'] = uid
-            ext_entry['priority'] = 1;
-            ext_entry['app'] = "Goto";
+            ext_entry['priority'] = 1
+            ext_entry['app'] = "Goto"
             ext_entry['appdata'] = primary_number + delimiter + "1"
             actions[home_server].append(extensions_table.insert().values(**ext_entry))
 
             # Create extensions entries (primary -> number)
             ext_entry = {}
-            ext_entry['context'] = 'GOsa';
+            ext_entry['context'] = 'GOsa'
             ext_entry['exten'] = primary_number
-            ext_entry['priority'] = 0;
+            ext_entry['priority'] = 0
             ext_entry['app'] = 'SIP/' + uid
             actions[home_server].append(extensions_table.insert().values(**ext_entry))
 
@@ -195,7 +194,6 @@ class goFonAccount(Plugin):
                 ext_entry['appdata'] = s_par
                 actions[home_server].append(extensions_table.insert().values(**ext_entry))
             self.execute_actions(actions)
-
 
     def execute_actions(self, data):
 
@@ -229,5 +227,3 @@ class goFonAccount(Plugin):
                         print "*", action
                     except Exception as error:
                         raise Exception("failed to execute SQL statement '%s' on database '%s': %s" % (str(action), database, str(error)))
-
-

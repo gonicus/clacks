@@ -7,16 +7,14 @@ is redirecting a path to a module.
 
 -------
 """
-import os
 import thread
 import logging
 import tornado.wsgi
 import tornado.web
-import tornado.websocket
 from tornado.ioloop import IOLoop
 from tornado.httpserver import HTTPServer
 from zope.interface import implements
-from webob import exc
+from webob import exc #@UnresolvedImport
 
 from clacks.common import Environment
 from clacks.common.handler import IInterfaceHandler

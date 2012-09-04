@@ -37,7 +37,6 @@ import pkg_resources
 import os
 import re
 import logging
-import zope.event
 import ldap
 import StringIO
 from lxml import etree, objectify
@@ -47,7 +46,7 @@ from clacks.agent.objects.filter import get_filter
 from clacks.agent.objects.backend.registry import ObjectBackendRegistry
 from clacks.agent.objects.comparator import get_comparator
 from clacks.agent.objects.operator import get_operator
-from clacks.agent.objects.object import Object, ObjectChanged
+from clacks.agent.objects.object import Object
 
 # Status
 STATUS_OK = 0
@@ -103,8 +102,7 @@ class ObjectFactory(object):
             self.__attribute_type[module.__alias__] = module()
 
         # Initialize parser
-        #pylint: disable=E1101
-        schema_path = pkg_resources.resource_filename('clacks.agent', 'data/object.xsd')
+        schema_path = pkg_resources.resource_filename('clacks.agent', 'data/object.xsd') #@UndefinedVariable
         schema_doc = open(schema_path).read()
 
         # Prepare list of object types
@@ -377,7 +375,7 @@ class ObjectFactory(object):
         res = {}
         if object_name in self.__xml_defs:
             if not bool(load(self.__xml_defs[object_name], "BaseObject", False)):
-                raise Exception("object %s is no base-object" %s (object_name))
+                raise Exception("object %s is no base-object" % object_name)
 
             res = extract_attrs(res, self.__xml_defs[object_name])
         else:
@@ -582,8 +580,7 @@ class ObjectFactory(object):
 
         This meta-classes can then be used to instantiate those objects.
         """
-        #pylint: disable=E1101
-        path = pkg_resources.resource_filename('clacks.agent', 'data/objects')
+        path = pkg_resources.resource_filename('clacks.agent', 'data/objects') #@UndefinedVariable
 
         # Include built in schema
         schema_paths = []
@@ -604,7 +601,7 @@ class ObjectFactory(object):
 
         # Now combine all files into one single xml construct
         xml_doc = etree.parse(StringIO.StringIO(xstr))
-        xslt_doc = etree.parse(pkg_resources.resource_filename('clacks.agent', 'data/combine_objects.xsl'))
+        xslt_doc = etree.parse(pkg_resources.resource_filename('clacks.agent', 'data/combine_objects.xsl')) #@UndefinedVariable
         transform = etree.XSLT(xslt_doc)
         self.__xml_objects_combined = transform(xml_doc)
         self.__parse_schema(etree.tostring(self.__xml_objects_combined))
@@ -642,20 +639,16 @@ class ObjectFactory(object):
 
         class klass(Object):
 
-            #pylint: disable=E0213
-            def __init__(me, *args, **kwargs):
+            def __init__(me, *args, **kwargs): #@NoSelf
                 Object.__init__(me, *args, **kwargs)
 
-            #pylint: disable=E0213
-            def __setattr__(me, name, value):
+            def __setattr__(me, name, value): #@NoSelf
                 me._setattr_(name, value)
 
-            #pylint: disable=E0213
-            def __getattr__(me, name):
+            def __getattr__(me, name): #@NoSelf
                 return me._getattr_(name)
 
-            #pylint: disable=E0213
-            def __delattr__(me, name):
+            def __delattr__(me, name): #@NoSelf
                 me._delattr_(name)
 
 
@@ -1305,7 +1298,7 @@ class ObjectFactory(object):
         """
         # Transform xml-combination into a useable xml-class representation
         xmldefs = self.getXMLDefinitionsCombined()
-        xslt_doc = etree.parse(pkg_resources.resource_filename('clacks.agent', 'data/xml_object_schema.xsl'))
+        xslt_doc = etree.parse(pkg_resources.resource_filename('clacks.agent', 'data/xml_object_schema.xsl')) #@UndefinedVariable
         transform = etree.XSLT(xslt_doc)
         if not asString:
             return transform(xmldefs)

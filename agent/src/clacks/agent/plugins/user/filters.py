@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from clacks.agent.objects.filter import ElementFilter
-from clacks.agent.objects.backend.registry import ObjectBackendRegistry
-
 
 
 class LoadDisplayNameState(ElementFilter):

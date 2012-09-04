@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 from clacks.agent.objects.filter import ElementFilter
 
-mapping = { 'O': 'status_Online',
-            'o': 'status_Offline',
-            'u': 'status_UpdateAvailable',
-            'U': 'status_UpdateInProgress',
-            'i': 'status_InventoryInProgress',
-            'C': 'status_ConfigurationInProgress',
-            'I': 'status_InstallationInProgress',
-            'V': 'status_VirtualMachineCreationInProgress',
-            'W': 'status_Warning',
-            'E': 'status_Error',
-            'B': 'status_SystemHasActiveUserSessions',
-            'A': 'status_SystemActivated',
-            'a': 'status_SystemLocked'}
+mapping = {'O': 'status_Online',
+           'o': 'status_Offline',
+           'u': 'status_UpdateAvailable',
+           'U': 'status_UpdateInProgress',
+           'i': 'status_InventoryInProgress',
+           'C': 'status_ConfigurationInProgress',
+           'I': 'status_InstallationInProgress',
+           'V': 'status_VirtualMachineCreationInProgress',
+           'W': 'status_Warning',
+           'E': 'status_Error',
+           'B': 'status_SystemHasActiveUserSessions',
+           'A': 'status_SystemActivated',
+           'a': 'status_SystemLocked'}
 
 
 class registeredDeviceStatusOut(ElementFilter):

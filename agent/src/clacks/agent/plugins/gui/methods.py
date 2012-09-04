@@ -16,7 +16,7 @@ class GuiMethods(Plugin):
     @Command(__help__=N_("Save user preferences"))
     def saveUserPreferences(self, userid, name, value):
         index = PluginRegistry.getInstance("ObjectIndex")
-        dn = index.xquery("collection('objects')/o:User[o:Attributes/o:uid='%s']/o:DN/string()" % (userid));
+        dn = index.xquery("collection('objects')/o:User[o:Attributes/o:uid='%s']/o:DN/string()" % (userid))
         if not dn:
             raise Exception("No such user %s" % (userid))
 
@@ -25,7 +25,7 @@ class GuiMethods(Plugin):
 
         if not prefs:
             prefs = {}
-        else: 
+        else:
             prefs = loads(prefs)
         prefs[name] = value
         user.guiPreferences = dumps(prefs)
@@ -35,7 +35,7 @@ class GuiMethods(Plugin):
     @Command(__help__=N_("Load user preferences"))
     def loadUserPreferences(self, userid, name):
         index = PluginRegistry.getInstance("ObjectIndex")
-        dn = index.xquery("collection('objects')/o:User[o:Attributes/o:uid='%s']/o:DN/string()" % (userid));
+        dn = index.xquery("collection('objects')/o:User[o:Attributes/o:uid='%s']/o:DN/string()" % (userid))
         if not dn:
             raise Exception("No such user %s" % (userid))
 
@@ -50,7 +50,7 @@ class GuiMethods(Plugin):
         return None
 
     @Command(__help__=N_("Search for object informations"))
-    def searchForObjectDetails(self, extension, attribute, filter, attributes, skip_values):
+    def searchForObjectDetails(self, extension, attribute, fltr, attributes, skip_values):
         """
         Search selectable items valid for the attribute "extension.attribute".
 
@@ -61,7 +61,7 @@ class GuiMethods(Plugin):
         # Extract the the required information about the object
         # relation out of the BackendParameters for the given extension.
         of = ObjectFactory.getInstance()
-        be_attrs = of.getObjectBackendProperties(extension);
+        be_attrs = of.getObjectBackendProperties(extension)
         be_data = None
         for be_name in be_attrs:
             if attribute in be_attrs[be_name]:
@@ -71,13 +71,13 @@ class GuiMethods(Plugin):
             raise Exception("no backend parameter found for %s.%s" % (extension, attribute))
 
         # Collection basic information
-        foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = be_data[attribute]
+        foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = be_data[attribute] #@UnusedVariable
         otype = foreignObject
         oattr = foreignAttr
         base = env.base
 
         # Create list of conditional statements
-        condition = '(%s.%s LIKE "%s")'  % (otype, oattr, filter)
+        condition = '(%s.%s LIKE "%s")' % (otype, oattr, fltr)
 
         if additionalFilter:
             additionalFilter = " AND " + additionalFilter
@@ -99,7 +99,7 @@ class GuiMethods(Plugin):
 
         # Start the query and brind the result in a usable form
         search = PluginRegistry.getInstance("SearchWrapper")
-        res =  search.execute(query)
+        res = search.execute(query)
         result = []
 
         for entry in res:
@@ -131,7 +131,7 @@ class GuiMethods(Plugin):
         # Extract the the required information about the object
         # relation out of the BackendParameters for the given extension.
         of = ObjectFactory.getInstance()
-        be_attrs = of.getObjectBackendProperties(extension);
+        be_attrs = of.getObjectBackendProperties(extension)
         be_data = None
         for be_name in be_attrs:
             if attribute in be_attrs[be_name]:
@@ -141,17 +141,16 @@ class GuiMethods(Plugin):
             raise Exception("no backend parameter found for %s.%s" % (extension, attribute))
 
         # Collection basic information
-        foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = be_data[attribute]
+        foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = be_data[attribute] #@UnusedVariable
         otype = foreignObject
         oattr = foreignAttr
         base = env.base
 
         # Create list of conditional statements
-        l = []
         if not oattr in names:
             names.append(oattr)
         snames = ['"%s"' % n for n in names]
-        condition = '(%s.%s = %s)'  % (otype, oattr, "(%s)" % (", ".join(snames)))
+        condition = '(%s.%s = %s)' % (otype, oattr, "(%s)" % (", ".join(snames)))
 
         # Create a list of attributes that will be requested
         a = []
@@ -173,14 +172,14 @@ class GuiMethods(Plugin):
 
         # Start the query and brind the result in a usable form
         search = PluginRegistry.getInstance("SearchWrapper")
-        res =  search.execute(query)
+        res = search.execute(query)
         result = {}
         mapping = {}
 
         for entry in names:
-            id = len(result)
-            mapping[entry] = id
-            result[id] = None
+            _id = len(result)
+            mapping[entry] = _id
+            result[_id] = None
 
         for entry in res:
             item = {}
@@ -190,7 +189,7 @@ class GuiMethods(Plugin):
                 else:
                     item[attr] = ""
 
-            id = mapping[item[oattr]]
-            result[id] = item
+            _id = mapping[item[oattr]]
+            result[_id] = item
 
         return {"result": result, "map": mapping}

@@ -3,7 +3,6 @@ from clacks.agent.objects.filter import ElementFilter
 from clacks.agent.objects.backend.registry import ObjectBackendRegistry
 
 
-
 class GenerateIDs(ElementFilter):
     """
     Generate gid/uidNumbers on demand
@@ -18,7 +17,6 @@ class GenerateIDs(ElementFilter):
             maxGidValue = int(maxGidValue)
         except ValueError:
             raise Exception("Parameters to filter GenerateIDs have to be numeric")
-
 
         if not(len(valDict['uidNumber']['value'])):
             if len(valDict["uidNumber"]['backend']) > 1:

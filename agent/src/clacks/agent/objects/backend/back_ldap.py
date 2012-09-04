@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-import ldap
+import ldap #@UnusedImport
 import ldap.dn
 import ldap.filter
-import ldap.schema
-import ldap.modlist
 import time
 import datetime
 from itertools import permutations
@@ -57,7 +55,7 @@ class LDAP(ObjectBackend):
 
         # Do value conversation
         items = dict((k,v) for k, v in res[0][1].iteritems() if k in keys)
-        for key, value in items.items():
+        for key in items.keys():
             cnv = getattr(self, "_convert_from_%s" % info[key].lower())
             lcnv = []
             for lvalue in items[key]:
@@ -74,7 +72,7 @@ class LDAP(ObjectBackend):
             rdns = [o.strip() for o in params['RDN'].split(",")]
             rdn_parts = ldap.dn.str2dn(dn.encode('utf-8'), flags=ldap.DN_FORMAT_LDAPV3)[0]
             found = False
-            for rdn_a, rdn_v, dummy in rdn_parts:
+            for rdn_a, rdn_v, dummy in rdn_parts: #@UnusedVariable
                 if rdn_a in rdns:
                     found = True
 
@@ -92,7 +90,7 @@ class LDAP(ObjectBackend):
         fixed_rdn_filter = ""
         attr = None
         if fixed_rdn:
-            attr, value, nocare = ldap.dn.str2dn(fixed_rdn.encode('utf-8'), flags=ldap.DN_FORMAT_LDAPV3)[0][0]
+            attr, value, nocare = ldap.dn.str2dn(fixed_rdn.encode('utf-8'), flags=ldap.DN_FORMAT_LDAPV3)[0][0] #@UnusedVariable
             fixed_rdn_filter = ldap.filter.filter_format("(%s=*)", [attr])
 
         # If we just query for an objectClass, try to get the
@@ -167,7 +165,7 @@ class LDAP(ObjectBackend):
         res = self.con.search_s(dn, ldap.SCOPE_ONELEVEL, '(objectClass=*)',
                 [self.uuid_entry])
 
-        for c_dn, entry in res:
+        for c_dn in res.keys():
             self.__delete_children(c_dn)
 
         # Delete ourselves
@@ -364,7 +362,7 @@ class LDAP(ObjectBackend):
 
         try:
             for dn in self.build_dn_list(rdns, base, data, FixedRDN):
-                res = self.con.search_s(dn.encode('utf-8'), ldap.SCOPE_BASE, '(objectClass=*)',
+                self.con.search_s(dn.encode('utf-8'), ldap.SCOPE_BASE, '(objectClass=*)',
                     [self.uuid_entry])
 
         except ldap.NO_SUCH_OBJECT:

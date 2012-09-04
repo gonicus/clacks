@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from clacks.agent.objects.backend import ObjectBackend
-from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, BLOB, DateTime
+from sqlalchemy import create_engine
 from clacks.common import Environment
 from logging import getLogger
 

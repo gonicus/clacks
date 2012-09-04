@@ -33,12 +33,10 @@ import pkg_resources
 import re
 from itertools import izip
 from lxml import etree
-from base64 import b64encode
 from ldap.dn import str2dn, dn2str
 from logging import getLogger
 from clacks.common import Environment
 from clacks.common.components import PluginRegistry
-from clacks.agent.objects.backend.registry import ObjectBackendRegistry
 
 
 class ProxyException(Exception):
@@ -335,7 +333,7 @@ class ObjectProxy(object):
         oTypes = self.__factory.getObjectTypes()
         for r_ext in oTypes[extension]['requires']:
             if not r_ext in self.__extensions or self.__extensions[r_ext] == None:
-              raise ProxyException("extension '%s' is required to to extend %s" % (r_ext, extension))
+                raise ProxyException("extension '%s' is required to to extend %s" % (r_ext, extension))
 
         # Check Acls
         # Required is the 'c' (create) right for the extension on the current object.
@@ -538,7 +536,7 @@ class ObjectProxy(object):
             if len(index.xquery("collection('objects')/*/.[ends-with(o:ParentDN, '%s')]/o:DN/string()" % self.__base.dn)):
                 raise ProxyException("specified object has children - use the recursive flag to remove them")
 
-        for extension in [e for x, e in self.__extensions.iteritems() if e]:
+        for extension in [e for e in self.__extensions.values() if e]:
             extension.remove_refs()
             extension.retract()
 
@@ -596,7 +594,7 @@ class ObjectProxy(object):
 
         # Handle commits
         self.__base.commit()
-        for extension in [ext for tmp, ext in self.__extensions.iteritems() if ext]:
+        for extension in [ext for ext in self.__extensions.values() if ext]:
             extension.commit()
 
         # Skip further actions if we're in create mode
@@ -810,12 +808,11 @@ class ObjectProxy(object):
 
         # Transform xml-combination into a useable xml-class representation
         xml_doc = etree.parse(StringIO.StringIO(xml))
-        xslt_doc = etree.parse(pkg_resources.resource_filename('clacks.agent', 'data/object_to_xml.xsl'))
+        xslt_doc = etree.parse(pkg_resources.resource_filename('clacks.agent', 'data/object_to_xml.xsl')) #@UndefinedVariable
         transform = etree.XSLT(xslt_doc)
         res = transform(xml_doc)
         return etree.tostring(res)
 
 
 from .factory import ObjectFactory
-from .object import Object
 from clacks.agent.acl import ACLResolver, ACLException

@@ -14,7 +14,7 @@ import traceback
 import logging
 from zope.interface import implements
 from clacks.common.gjson import loads, dumps
-from webob import exc, Request, Response
+from webob import exc, Request, Response #@UnresolvedImport
 from paste.auth.cookie import AuthCookieHandler
 from clacks.common.utils import repr2json, f_print
 from clacks.common.handler import IInterfaceHandler

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import gettext
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename #@UnresolvedImport
 from clacks.agent.objects.comparator import ElementComparator
 from clacks.common.components import PluginRegistry
 import re
@@ -77,4 +77,3 @@ class ObjectWithPropertyExists(ElementComparator):
                 errors.append(_("There is no '%s' with '%s=%s'!") % (objectType, attribute, val))
 
         return len(errors) == 0
-

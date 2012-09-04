@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import pkg_resources
-import logging
 
 
 class ObjectBackendRegistry(object):
@@ -9,7 +8,6 @@ class ObjectBackendRegistry(object):
     uuidAttr = "entryUUID"
 
     def __init__(self):
-        log = logging.getLogger("object.backend")
         # Load available backends
         for entry in pkg_resources.iter_entry_points("object.backend"):
             clazz = entry.load()

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import gettext
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename #@UnresolvedImport
 from clacks.common.components import PluginRegistry
 from clacks.agent.objects.comparator import ElementComparator
 

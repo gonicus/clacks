@@ -77,7 +77,7 @@ class AclRole(AttributeType):
 
                 # Load base info
                 data = item.split("\n")
-                scope, priority, members_str, rolename = data[:4]
+                scope, priority, members_str, rolename = data[:4] #@UnusedVariable
                 actions = data[4::]
 
                 # Build entry list

@@ -13,7 +13,7 @@ class GenerateSambaSid(ElementFilter):
         super(GenerateSambaSid, self).__init__(obj)
         self.env = Environment.getInstance()
 
-    def process(self, obj, key, valDict, method, number, domain, group_type = 0):
+    def process(self, obj, key, valDict, method, number, domain, group_type=0):
 
         if number == "None":
             raise Exception("No gidNumber available")

@@ -2,12 +2,10 @@
 import copy
 import re
 import zope.event
-import ldap
 import pkg_resources
 import os
 from lxml import etree
 from lxml.builder import E
-from StringIO import StringIO
 from logging import getLogger
 from zope.interface import Interface, implements
 from clacks.common import Environment
@@ -388,12 +386,11 @@ class Object(object):
                 # Relative path
                 else:
                     # Find path
-                    #pylint: disable=E1101
-                    path = pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', theme, template))
+                    path = pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', theme, template)) #@UndefinedVariable
                     if not os.path.exists(path):
                         path = os.path.join(self.env.config.getBaseDir(), 'templates', theme, template)
                         if not os.path.exists(path):
-                            path = pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', "default", template))
+                            path = pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', "default", template)) #@UndefinedVariable
                             if not os.path.exists(path):
                                 path = os.path.join(self.env.config.getBaseDir(), 'templates', "default", template)
                                 if not os.path.exists(path):
@@ -419,8 +416,8 @@ class Object(object):
                     for resource in etree.fromstring(res).findall("qresource"):
                         files = []
                         prefix = resource.get("prefix")
-                        for file in resource.findall("file"):
-                            files.append(E.file(os.path.join(prefix, unicode(file.text))))
+                        for f in resource.findall("file"):
+                            files.append(E.file(os.path.join(prefix, unicode(f.text))))
 
                         new_resources.append(E.resource(*files, location=rc))
 
@@ -468,11 +465,9 @@ class Object(object):
 
                     # Find path
                     for loc in locales:
-                        #pylint: disable=E1101
-                        paths.append(pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', theme, "i18n", "%s_%s.ts" % (tn, loc))))
+                        paths.append(pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', theme, "i18n", "%s_%s.ts" % (tn, loc)))) #@UndefinedVariable
                         paths.append(os.path.join(self.env.config.getBaseDir(), 'templates', theme, "%s_%s.ts" % (tn, loc)))
-                        #pylint: disable=E1101
-                        paths.append(pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', "default", "i18n", "%s_%s.ts" % (tn, loc))))
+                        paths.append(pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', "default", "i18n", "%s_%s.ts" % (tn, loc)))) #@UndefinedVariable
                         paths.append(os.path.join(self.env.config.getBaseDir(), 'templates', "default", "%s_%s.ts" % (tn, loc)))
 
                 for path in paths:
@@ -496,7 +491,7 @@ class Object(object):
 
                             # With length variants?
                             if "variants" in translation.keys() and translation.get("variants") == "yes":
-                                 res[unicode(message.find("source").text)] = [unicode(m.text) for m in translation.findall("lengthvariant")][0]
+                                res[unicode(message.find("source").text)] = [unicode(m.text) for m in translation.findall("lengthvariant")][0]
 
                             # Ordinary?
                             else:
@@ -548,12 +543,12 @@ class Object(object):
         # Run this once - If any state was adapted, then run again to ensure
         # that all dependencies are processed.
         first = True
-        max = 5
+        _max = 5
         required = False
-        while (first or required) and max:
+        while (first or required) and _max:
             first = False
             required = False
-            max -= 1
+            _max -= 1
             for key in props:
 
                 # Adapt status from dependent properties.
@@ -565,7 +560,6 @@ class Object(object):
                         required = True
 
         # Collect values by store and process the property filters
-        toStore = {}
         collectedAttrs = {}
         for key in props:
 
@@ -984,7 +978,7 @@ class Object(object):
         return res
 
     def update_refs(self, data):
-        for ref_attr, self_attr, value, refs, multivalue in self.get_references():
+        for ref_attr, self_attr, value, refs, multivalue in self.get_references(): #@UnusedVariable
 
             for ref in refs:
 
@@ -1017,7 +1011,7 @@ class Object(object):
                 c_obj.commit()
 
     def remove_refs(self):
-        for ref_attr, self_attr, value, refs, multivalue in self.get_references():
+        for ref_attr, self_attr, value, refs, multivalue in self.get_references(): #@UnusedVariable
 
             for ref in refs:
                 c_obj = ObjectProxy(ref)
@@ -1040,8 +1034,8 @@ class Object(object):
         res = []
         index = PluginRegistry.getInstance("ObjectIndex")
 
-        for ref, info in self._objectFactory.getReferences("*", "dn").items():
-            for ref_attribute, dsc in info.items():
+        for info in self._objectFactory.getReferences("*", "dn").values():
+            for ref_attribute in info.keys():
                 res.append((
                     ref_attribute,
                     map(lambda s: s.decode('utf-8'),
@@ -1148,15 +1142,10 @@ class Object(object):
         if not self._base_object:
             raise ObjectException("cannot move non base objects")
 
-        # Collect backends
-        backends = [getattr(self, '_backend')]
-
         obj = self
         zope.event.notify(ObjectChanged("pre move", obj, dn=self.dn, orig_dn=orig_dn))
 
         # Update the DN refs which have most probably changed
-        p_backend = getattr(self, '_backend')
-        be = ObjectBackendRegistry.getBackend(p_backend)
         self.update_dn_refs(self.dn)
 
         zope.event.notify(ObjectChanged("post move", obj, dn=self.dn, orig_dn=orig_dn))
@@ -1176,7 +1165,7 @@ class Object(object):
         for info in self.myProperties.values():
             for be in info['backend']:
                 if not be in backends:
-                   backends.append(be)
+                    backends.append(be)
 
         obj = self
         zope.event.notify(ObjectChanged("pre move", obj))

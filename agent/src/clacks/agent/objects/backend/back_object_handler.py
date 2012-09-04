@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 import re 
-from itertools import permutations
-from logging import getLogger
-from clacks.common import Environment
-from clacks.agent.objects.backend import ObjectBackend, EntryNotFound, EntryNotUnique
+from clacks.agent.objects.backend import ObjectBackend, EntryNotFound
 from clacks.agent.objects.index import ObjectIndex
 from clacks.common.components import PluginRegistry
 from clacks.agent.objects import ObjectProxy
@@ -58,7 +55,7 @@ class ObjectHandler(ObjectBackend):
             # as values for 'targetAttr'
             for targetAttr in mapping:
                 result[targetAttr] = []
-                foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = mapping[targetAttr]
+                foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = mapping[targetAttr] #@UnusedVariable
                 oi = PluginRegistry.getInstance("ObjectIndex")
                 results = oi.xquery("collection('objects')/*/.[o:UUID = '%s']/o:Attributes/o:%s/string()" % (uuid, matchAttr))
                 if results:
@@ -109,7 +106,7 @@ class ObjectHandler(ObjectBackend):
                 continue
 
             # Get the matching attribute for the current object
-            foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = mapping[targetAttr]
+            foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = mapping[targetAttr] #@UnusedVariable
             xq = "collection('objects')/*/.[o:UUID = '%s']/o:Attributes/o:%s/string()" % (uuid, matchAttr)
             res = oi.xquery(xq)
             if not res:

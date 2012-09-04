@@ -19,7 +19,6 @@ def shutdown(a=None, b=None):
     global dr
 
     """ Function to shut down the agent. Do some clean up and close sockets."""
-    env = Environment.getInstance()
     amqp = PluginRegistry.getInstance("AMQPHandler")
 
     # Tell others that we're away now
@@ -59,8 +58,8 @@ def mainLoop(env):
 
         while True:
                 # Load plugins
-                oreg = ObjectRegistry.getInstance()
-                pr = PluginRegistry()
+                oreg = ObjectRegistry.getInstance() #@UnusedVariable
+                pr = PluginRegistry() #@UnusedVariable
                 cr = PluginRegistry.getInstance("CommandRegistry")
                 amqp = PluginRegistry.getInstance("AMQPHandler")
                 index = PluginRegistry.getInstance("ObjectIndex")
@@ -123,7 +122,7 @@ def mainLoop(env):
                 for t in env.threads:
                     t.join(wait)
                     if hasattr(t, 'stop'):
-                         t.stop()
+                        t.stop()
 
                 # Lets do an environment reset now
                 PluginRegistry.shutdown()

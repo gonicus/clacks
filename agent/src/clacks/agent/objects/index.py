@@ -17,14 +17,13 @@ import shlex
 import clacks.agent.objects.renderer
 from itertools import izip
 from lxml import etree, objectify
-from zope.interface import Interface, implements
+from zope.interface import implements
 from time import time
-from ldap import DN_FORMAT_LDAPV3
 from clacks.common import Environment
 from clacks.common.utils import N_
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import Command, Plugin, PluginRegistry
-from clacks.agent.objects import ObjectFactory, ObjectProxy, ObjectChanged, SCOPE_BASE, SCOPE_ONE, SCOPE_SUB, ProxyException, ObjectException, SearchWrapper
+from clacks.agent.objects import ObjectFactory, ObjectProxy, ObjectChanged, ProxyException, ObjectException, SearchWrapper
 from clacks.agent.lock import GlobalLock
 
 
@@ -514,19 +513,19 @@ class ObjectIndex(Plugin):
         return relevance
 
     def __update_res(self, mapping, typ, res, item, relevance):
-       for category, info in item.items():
-           if info['DN'][0] in res:
-               dn = info['DN'][0]
-               if res[dn]['relevance'] > relevance:
-                   res[dn]['relevance'] = relevance
-               continue
+        for info in item.values():
+            if info['DN'][0] in res:
+                dn = info['DN'][0]
+                if res[dn]['relevance'] > relevance:
+                    res[dn]['relevance'] = relevance
+                continue
 
-           entry = {'tag': typ, 'relevance': relevance}
-           for k, v in mapping[typ].items():
-               if k:
-                   entry[k] = info[v][0] if v in info else self.__build_value(v, info)
-           entry['icon'] = ("data:image/jpeg;base64," + info[mapping[typ]['icon']][0]) if mapping[typ]['icon'] in info else None
-           res[info['DN'][0]] = entry
+            entry = {'tag': typ, 'relevance': relevance}
+            for k, v in mapping[typ].items():
+                if k:
+                    entry[k] = info[v][0] if v in info else self.__build_value(v, info)
+            entry['icon'] = ("data:image/jpeg;base64," + info[mapping[typ]['icon']][0]) if mapping[typ]['icon'] in info else None
+            res[info['DN'][0]] = entry
 
     def __build_value(self, v, info):
         """

@@ -5,7 +5,6 @@ import string
 import random
 import hashlib
 import ldap
-import time
 import datetime
 import types
 import logging
@@ -56,7 +55,6 @@ class ClientService(Plugin):
     __proxy = {}
     __user_session = {}
     __listeners = {}
-
 
     def __init__(self):
         """
@@ -132,7 +130,7 @@ class ClientService(Plugin):
         res = {}
         for uuid, info in self.__client.iteritems():
             if info['online']:
-                res[uuid] = {'name':info['name'], 'last-seen':info['last-seen']}
+                res[uuid] = {'name': info['name'], 'last-seen': info['last-seen']}
         return res
 
     @Command(__help__=N_("Call method exposed by client."))
@@ -441,9 +439,9 @@ class ClientService(Plugin):
                 ('objectclass', ['device', 'ieee802Device', 'simpleSecurityObject', 'registeredDevice']),
                 ('deviceUUID', cn),
                 ('deviceKey', [device_key]),
-                ('cn', [cn] ),
-                ('manager', [manager] ),
-                ('macAddress', [mac.encode("ascii", "ignore")] ),
+                ('cn', [cn]),
+                ('manager', [manager]),
+                ('macAddress', [mac.encode("ascii", "ignore")]),
                 ('userPassword', ["{SSHA}" + encode(h.digest() + salt)])
             ]
             record += more_info
@@ -624,6 +622,6 @@ class ClientService(Plugin):
             if not info['online']:
                 continue
 
-            if info['last-seen'] < datetime.datetime.utcnow() - datetime.timedelta(seconds=2*interval):
+            if info['last-seen'] < datetime.datetime.utcnow() - datetime.timedelta(seconds=2 * interval):
                 self.log.info("client '%s' looks dead - setting to 'offline'" % client)
                 self.__set_client_offline(client)

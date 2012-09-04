@@ -4,15 +4,17 @@ import tornado.websocket
 import logging
 import re
 import os
-import hmac, base64, time
+import hmac
+import base64
+import time
 from clacks.common.gjson import dumps
 from hashlib import sha1
-from webob import exc
+from webob import exc #@UnresolvedImport
 from zope.interface import implements
 from clacks.common.utils import stripNs, N_
 from clacks.common.handler import IInterfaceHandler
 from clacks.common import Environment
-from clacks.common.components import PluginRegistry, ZeroconfService, JSONRPCException
+from clacks.common.components import PluginRegistry
 from clacks.common.components.amqp import EventConsumer
 
 
@@ -27,12 +29,10 @@ class GOsaService(object):
         self.log.info("initializing GOsa static HTTP and WebSocket service")
         self.path = self.env.config.get('gosa.path', default="/admin")
         self.static_path = self.env.config.get('gosa.static_path', default="/static")
-        #pylint: disable=E1101
-        self.resource_path = pkg_resources.resource_filename('clacks.agent', 'data/templates')
+        self.resource_path = pkg_resources.resource_filename('clacks.agent', 'data/templates') #@UndefinedVariable
         self.ws_path = self.env.config.get('gosa.websocket', default="/ws")
 
-        #pylint: disable=E1101
-        spath = pkg_resources.resource_filename('clacks.agent', 'data/gosa')
+        spath = pkg_resources.resource_filename('clacks.agent', 'data/gosa') #@UndefinedVariable
         self.local_path = self.env.config.get('gosa.local', default=spath)
 
         self.__http = None
@@ -143,7 +143,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             """,
             callback=self.__eventProcessor)
 
-        self.send_message("notification", { "title": N_("Server information"), "body": N_("Websockets enabled"), "icon": "dialog-information"})
+        self.send_message("notification", {"title": N_("Server information"), "body": N_("Websockets enabled"), "icon": "dialog-information"})
 
     def on_message(self, message):
         if not self.check_cookie():

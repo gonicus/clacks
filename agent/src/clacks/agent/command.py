@@ -40,7 +40,7 @@ import time
 import logging
 import datetime
 import gettext
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename #@UnresolvedImport
 from threading import Event
 from inspect import getargspec, getmembers, ismethod
 from zope.interface import implements
@@ -452,8 +452,7 @@ class CommandRegistry(Plugin):
         if not func in self.commands:
             raise CommandInvalid("no function '%s' defined" % func)
 
-        #pylint: disable=W0612
-        (clazz, method) = self.path2method(self.commands[func]['path'])
+        (clazz, method) = self.path2method(self.commands[func]['path']) #@UnusedVariable
         p = re.compile(r'\.' + self.env.id + '$')
         p.sub('', queue)
         return self.env.domain + '.command.%s' % PluginRegistry.modules[clazz].get_target() == p.sub('', queue)

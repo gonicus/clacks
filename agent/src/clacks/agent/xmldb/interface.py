@@ -56,7 +56,7 @@ class XMLDBInterface(object):
         contents    The XML content of the document as string
         =========== ======================
         """
-        raise NotImplementedErrorError("addDocument")
+        raise NotImplementedError("addDocument")
 
     def documentExists(self, collection, name):
         """
@@ -69,7 +69,7 @@ class XMLDBInterface(object):
         name        The name of the document to check for.
         =========== ======================
         """
-        raise NotImplementedErrorError("documentExists")
+        raise NotImplementedError("documentExists")
 
     def getDocuments(self, collection):
         """
@@ -81,7 +81,7 @@ class XMLDBInterface(object):
         collection  The collection this document belongs to
         =========== ======================
         """
-        raise NotImplementedErrorError("getDocuments")
+        raise NotImplementedError("getDocuments")
 
     def xquery_dict(self, query, collection=None, strip_namespaces=False):
         """
@@ -98,7 +98,7 @@ class XMLDBInterface(object):
 
         Returns a list of dictionaries
         """
-        raise NotImplementedErrorError("xquery_dict")
+        raise NotImplementedError("xquery_dict")
 
     def xquery(self, query, collection=None):
         """
@@ -114,10 +114,10 @@ class XMLDBInterface(object):
 
         Returns an interable result set.
         """
-        raise NotImplementedErrorError("xquery")
+        raise NotImplementedError("xquery")
 
     def setSchema(self, collection, filename, content):
-        raise NotImplementedErrorError("setSchema")
+        raise NotImplementedError("setSchema")
 
     def validateSchema (self, collection, name, md5sum=None, schemaString=None):
         """
@@ -135,7 +135,7 @@ class XMLDBInterface(object):
         schemaString   Can be used to match against a given schema string.
         ============== ======================
         """
-        raise NotImplementedErrorError("validateSchema")
+        raise NotImplementedError("validateSchema")
 
     def setNamespace(self, collection, alias, namespace):
 
@@ -150,7 +150,7 @@ class XMLDBInterface(object):
         namespace   The namespace uri
         =========== ======================
         """
-        raise NotImplementedErrorError("setNamespace")
+        raise NotImplementedError("setNamespace")
 
     def dropCollection(self, name):
         """
@@ -175,7 +175,7 @@ class XMLDBInterface(object):
         name        The name of the document to delete
         =========== ======================
         """
-        raise NotImplementedErrorError("deleteDocument")
+        raise NotImplementedError("deleteDocument")
 
     def shutdown(self):
         pass

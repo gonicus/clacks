@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import smbpasswd
 from clacks.agent.objects.filter import ElementFilter
+from clacks.agent.objects.factory import ObjectFactory
 
 
 class SambaHash(ElementFilter):

@@ -146,10 +146,8 @@ class BinaryAttribute(AttributeType):
 class UnicodeStringAttribute(AttributeType):
     __alias__ = "UnicodeString"
 
-    def _convert_to_unicodestring(self, value):
-        return(value)
-
     def _convert_from_unicodestring(self, value):
+        #TODO: is this enough?
         return(value)
 
     def is_valid_value(self, value):

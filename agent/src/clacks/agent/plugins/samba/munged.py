@@ -26,7 +26,7 @@ class SambaMungedDialOut(ElementFilter):
         # Build up a list of values to encode.
         res = {}
         for entry in alist:
-            res[entry]=valDict[entry]['value'][0]
+            res[entry] = valDict[entry]['value'][0]
 
         # Encode the sambaMungedDial attribute.
         result = SambaMungedDial.encode(res)
@@ -183,7 +183,7 @@ class SambaMungedDial(object):
 
         # Add shadow handling.
         if values['oldStorageBehavior']:
-            flags[1] =  '%1X' % values['Ctx_shadow']
+            flags[1] = '%1X' % values['Ctx_shadow']
         values['CtxCfgFlags1'] = ''.join(flags)
         values['CtxShadow'] = '0%1X000000' % (values['Ctx_shadow'])
 
@@ -283,11 +283,11 @@ class SambaMungedDial(object):
 
         # check if we've to use the old or new munged dial storage behavior
         test = b64decode(mstr)
-        old_behavior  = hexlify(test)[0:2] == "6d"
+        old_behavior = hexlify(test)[0:2] == "6d"
         if old_behavior:
             ctxField = test[len(unhexlify(SambaMungedDial.old_header))::]
         else:
-            ctxField = test[len(unhexlify(SambaMungedDial.new_header))+2::]
+            ctxField = test[len(unhexlify(SambaMungedDial.new_header)) + 2::]
 
         # Decode parameters
         result = {}
@@ -316,11 +316,11 @@ class SambaMungedDial(object):
             if ctxParmName in SambaMungedDial.timeParams:
                 lo = ctxParm[0:4]
                 hi = ctxParm[4:8] * 256
-                usecs = (int(lo[2:4],16) * 256) + (int(lo[0:2], 16)) + (int(hi[2:4], 16) * 256) + (int(hi[0:2], 16) * 256 * 256)
+                usecs = (int(lo[2:4], 16) * 256) + (int(lo[0:2], 16)) + (int(hi[2:4], 16) * 256) + (int(hi[0:2], 16) * 256 * 256)
                 ctxParm = usecs / (60 * 1000)
 
             # Assign in result array
-            result[ctxParmName]= ctxParm
+            result[ctxParmName] = ctxParm
 
             # Reposition ctxField on end of parameter and continue
             ctxField = ctxField[ctxParmLength::]
@@ -328,8 +328,8 @@ class SambaMungedDial(object):
         # Detect TS Login Flag
         flags = ord(result['CtxCfgFlags1'][5:6])
         result[u'Ctx_flag_tsLogin'] = bool(flags & 1)
-        result[u'Ctx_flag_reConn'] =  bool(flags & 2)
-        result[u'Ctx_flag_brokenConn'] =  bool(flags & 4)
+        result[u'Ctx_flag_reConn'] = bool(flags & 2)
+        result[u'Ctx_flag_brokenConn'] = bool(flags & 4)
         result[u'Ctx_flag_inheritMode'] = bool(result['CtxCfgFlags1'][6:7] == 1)
 
         # convert the shadow value into integer.
