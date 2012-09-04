@@ -98,6 +98,7 @@ class JSONRPCService(object):
     def user_sessions_available(self, user=None):
         return self.__app.user_sessions_available(user)
 
+
 class JsonRpcApp(object):
     """
     This is the WSGI application wich is responsible for serving the
@@ -250,7 +251,7 @@ class JsonRpcApp(object):
 
             # Automatically prepend queue option for current
             if self.dispatcher.capabilities[method]['needsQueue']:
-                queue= '%s.command.%s.%s' % (self.env.domain,
+                queue = '%s.command.%s.%s' % (self.env.domain,
                     self.dispatcher.capabilities[method]['target'],
                     self.env.id)
                 if isinstance(params, dict):

@@ -140,7 +140,6 @@ class ACLSet(list):
         # Raise an exception about the unknown ID
         raise ACLException("There is no such acl")
 
-
     def add(self, item):
         """
         Adds a new ``ACL`` object to this ``ACLSet``.
@@ -1638,7 +1637,6 @@ class ACLResolver(Plugin):
         if scope:
             acl.set_scope(scope_int)
 
-
     @Command(needsUser=True, __help__=N_("List defined roles."))
     def getACLRoles(self, user):
         """
@@ -1891,7 +1889,7 @@ class ACLResolver(Plugin):
                 if _acl.id == acl_id:
                     acl = _acl
                     role = self.acl_roles[_aclrole]
-                    break;
+                    break
 
         if acl:
 

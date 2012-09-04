@@ -147,7 +147,7 @@ class HTTPService(object):
 
         # Make statics registerable
         for pth, local_pth in self.__register_static.items():
-            apps.append((pth , tornado.web.StaticFileHandler, {"path": local_pth}))
+            apps.append((pth, tornado.web.StaticFileHandler, {"path": local_pth}))
 
         # Make websockets available if registered
         for pth, ws_app in self.__register_ws.items():

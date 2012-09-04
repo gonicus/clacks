@@ -111,7 +111,7 @@ class CommandRegistry(Plugin):
         """
         return self.nodes
 
-    @Command(needsQueue=False, __help__=N_("List available methods "+
+    @Command(needsQueue=False, __help__=N_("List available methods " +
         "that are registered on the bus."))
     def getMethods(self, queue=None, locale=None):
         """
@@ -159,9 +159,7 @@ class CommandRegistry(Plugin):
 
         return res
 
-    @Command(needsQueue=True, __help__=N_("Shut down the service belonging to "+
-        "the supplied queue. In case of HTTP connections, this command will shut"+
-        " down the node you're currently logged in."))
+    @Command(needsQueue=True, __help__=N_("Shut down the service belonging to the supplied queue. In case of HTTP connections, this command will shut down the node you're currently logged in."))
     def shutdown(self, queue, force=False):
         """
         Shut down the service belonging to the supplied queue. In case of HTTP
@@ -548,7 +546,6 @@ class CommandRegistry(Plugin):
         if not self.processing.is_set():
             self.processing.set()
 
-
     def _handleNodeStatus(self, data):
         data = data.NodeStatus
         self.log.debug("received status of node %s" % data.Id)
@@ -630,7 +627,6 @@ class CommandRegistry(Plugin):
                         info['sig'].remove('self')
 
                     self.commands[func] = info
-
 
         # Add event processor
         EventConsumer(self.env,

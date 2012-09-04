@@ -38,9 +38,8 @@ class JSONRPCObjectMapper(Plugin):
     __proxy = {}
     __object = {}
 
-
     def __init__(self):
-        self.env= Environment.getInstance()
+        self.env = Environment.getInstance()
         obj = self.env.config.get("index.pool", default="objectpool")
         self.__engine = self.env.getDatabaseEngine('core')
 
@@ -58,7 +57,7 @@ class JSONRPCObjectMapper(Plugin):
         self.__session = self.env.getDatabaseSession('core')
 
     def serve(self):
-        sched= PluginRegistry.getInstance("SchedulerService").getScheduler()
+        sched = PluginRegistry.getInstance("SchedulerService").getScheduler()
         sched.add_interval_job(self.__gc, minutes=10, tag='_internal', jobstore="ram")
 
     @Command(__help__=N_("List available object OIDs"))
@@ -229,14 +228,13 @@ class JSONRPCObjectMapper(Plugin):
             'created': datetime.datetime.now(),
             })
 
-
         # Build property dict
         propvals = {}
         if properties:
             propvals = dict([(p, getattr(obj, p)) for p in properties])
 
         # Build result
-        result = {"__jsonclass__":["json.JSONObjectFactory", [obj_type.__name__, ref, obj.dn, oid, methods, properties]]}
+        result = {"__jsonclass__": ["json.JSONObjectFactory", [obj_type.__name__, ref, obj.dn, oid, methods, properties]]}
         result.update(propvals)
 
         return result
