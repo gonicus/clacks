@@ -11,7 +11,7 @@
     <message>
         <location filename="../user.ui" line="21"/>
         <source>User</source>
-        <translation type="unfinished">Benutzer</translation>
+        <translation>Benutzer</translation>
     </message>
     <message>
         <location filename="../user.ui" line="27"/>
