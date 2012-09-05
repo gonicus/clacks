@@ -449,7 +449,7 @@ class Match(MyNode):
             attr2 = self[2].compile_for_match()
 
             if(comp.upper() == "LIKE"):
-                match = ("contains(%s, %s)" % (attr1, attr2))
+                match = ("contains(upper-case(%s), upper-case(%s))" % (attr1, attr2))
             elif(comp.upper() == "IN"):
                 match = ("%s = %s" % (attr1, attr2))
             else:
