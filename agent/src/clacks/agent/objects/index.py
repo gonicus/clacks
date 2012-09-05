@@ -455,11 +455,30 @@ class ObjectIndex(Plugin):
             if 'resolve' in item:
                 resolve[typ] += item['resolve']
 
+        # Limit search according to fltr
+        limits = ""
+        if not 'category' in fltr:
+            fltr['category'] = "all"
+        if not 'secondary' in fltr:
+            fltr['secondary'] = "enabled"
+        #TODO: Comparing with generic attributes does not work yet
+        #if 'mod-time' in fltr:
+        #    if fltr['mod-time'] == 'hour':
+        #        limit = " AND *.LastChanged > %d" % 0
+        #    elif fltr['mod-time'] == 'day':
+        #        limit = " AND *.LastChanged > %d" % 0
+        #    elif fltr['mod-time'] == 'week':
+        #        limit = " AND *.LastChanged > %d" % 0
+        #    elif fltr['mod-time'] == 'month':
+        #        limit = " AND *.LastChanged > %d" % 0
+        #    elif fltr['mod-time'] == 'year':
+        #        limit = " AND *.LastChanged > %d" % 0
+
         for kw in keywords:
             kw = kw.strip("'").strip('"')
             for typ, query in queries.items():
-                squery = "SELECT " + typ + ".* BASE " + typ + " " + scope + (' "%s"' % base) + " WHERE " + " OR ".join(query) % {'__search__': SearchWrapper.quote(kw)}
-                squery += " ORDER BY %s.DN" % typ
+                squery = "SELECT " + typ + ".* BASE " + typ + " " + scope + (' "%s"' % base) + " WHERE (" + " OR ".join(query) % {'__search__': SearchWrapper.quote(kw)}
+                squery += ") %s ORDER BY %s.DN" % (limits, typ)
 
                 # Skip the search if it has already done
                 if squery in done_searches:
@@ -467,7 +486,13 @@ class ObjectIndex(Plugin):
                 done_searches[squery] = None
 
                 for item in self.__sw.execute(squery, user=user):
-                    self.__update_res(mapping, typ, res, item, self.__make_relevance(aliases[typ], kw, qstring, keywords))
+                    # Check category
+                    if fltr['category'] == "all" or fltr['category'] == typ:
+                        self.__update_res(mapping, typ, res, item, self.__make_relevance(aliases[typ], kw, qstring, keywords))
+
+                    # Continue if we don't want secondaries
+                    if fltr['secondary'] != "enabled":
+                        continue
 
                     # Run one level resolve for "Resolve" definitions and add the results
                     for r in resolve[typ]:
@@ -475,7 +500,7 @@ class ObjectIndex(Plugin):
                             tag = r['type'] if r['type'] else typ
                             squery = "SELECT %s.* BASE %s %s \"%s\" WHERE " % (tag, tag, scope, base)
                             squery += "%s.%s IN (%s)" % (tag, r['filter'], ",".join(['"%s"' % i for i in item[typ][r['attribute']]]))
-                            squery += " ORDER BY %s.DN" % tag
+                            squery += " %s ORDER BY %s.DN" % (limits, tag)
 
                             # Skip the search if it has already done
                             if squery in done_searches:
@@ -483,7 +508,9 @@ class ObjectIndex(Plugin):
                             done_searches[squery] = None
 
                             for r_item in self.__sw.execute(squery, user=user):
-                                self.__update_res(mapping, tag, res, r_item, self.__make_relevance(aliases[tag], kw, qstring, keywords, True))
+                                # Check category
+                                if fltr['category'] == "all" or fltr['category'] == tag:
+                                    self.__update_res(mapping, tag, res, r_item, self.__make_relevance(aliases[tag], kw, qstring, keywords, True))
 
         return res.values()
 
