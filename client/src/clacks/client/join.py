@@ -8,7 +8,7 @@ import gettext
 import grp
 import pkg_resources
 from os.path import isdir, exists
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename #@UnresolvedImport
 from clacks.common import Environment
 from clacks.common.config import ConfigNoFile
 from operator import itemgetter
@@ -59,7 +59,7 @@ def main():
                 continue
 
             if arg == "--config" or arg == "-c":
-                config_file = sys.argv[i+1]
+                config_file = sys.argv[i + 1]
                 continue
 
             r = re.match(r"--url=(.*)", arg)
@@ -68,7 +68,7 @@ def main():
                 continue
 
             if arg == "--url":
-                service = sys.argv[i+1]
+                service = sys.argv[i + 1]
                 continue
 
         # Check if config path exists

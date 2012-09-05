@@ -110,7 +110,6 @@ class ObjectFactory(object):
         for o_type in self.__attribute_type.keys():
             object_types += "<enumeration value=\"%s\"></enumeration>" % (o_type,)
 
-
         # Insert available object types into the xsd schema
         schema_doc = re.sub(r"<simpleType name=\"AttributeTypes\">\n?\s*<restriction base=\"string\"></restriction>\n?\s*</simpleType>",
             """
@@ -237,7 +236,6 @@ class ObjectFactory(object):
 
         if not self.__xml_defs[objectType]['BaseObject']:
             raise Exception("cannot create attribute map, %s is not a base-object!" % objectType)
-
 
         # Collect all object-types that can extend this class.
         find = objectify.ObjectPath("Object.Extends.Value")
@@ -497,7 +495,7 @@ class ObjectFactory(object):
 
             if info['base']:
                 if be.identify(dn, info['backend_attrs'], fixed_rdn):
-                    uuid = be.dn2uuid(dn);
+                    uuid = be.dn2uuid(dn)
 
                     if info['base']:
                         if fixed_rdn:
@@ -594,10 +592,10 @@ class ObjectFactory(object):
                 schema_paths.append(os.path.join(path, f))
 
         # Combine all object definition file into one single doc
-        xstr = "<Paths xmlns=\"http://www.gonicus.de/Objects\">";
+        xstr = "<Paths xmlns=\"http://www.gonicus.de/Objects\">"
         for path in schema_paths:
             xstr += "<Path>%s</Path>" % path
-        xstr += "</Paths>";
+        xstr += "</Paths>"
 
         # Now combine all files into one single xml construct
         xml_doc = etree.parse(StringIO.StringIO(xstr))
@@ -651,7 +649,6 @@ class ObjectFactory(object):
             def __delattr__(me, name): #@NoSelf
                 me._delattr_(name)
 
-
         # Collect Backend attributes per Backend
         classr = self.__xml_defs[name]
         back_attrs = {classr.Backend.text: {}}
@@ -700,7 +697,7 @@ class ObjectFactory(object):
         if 'Templates' in classr.__dict__:
             templates = []
             for template in classr.Templates.iterchildren():
-                templates.append(template.text);
+                templates.append(template.text)
 
             setattr(klass, '_templates', templates)
         else:
@@ -739,7 +736,7 @@ class ObjectFactory(object):
 
                 # Prepare initial values
                 out_f = []
-                in_f =  []
+                in_f = []
                 blocked_by = []
                 depends_on = []
                 default = None
@@ -824,7 +821,7 @@ class ObjectFactory(object):
                     #values = self.__attribute_type['String'].convert_to(syntax, values)
 
                 # Create a new property with the given information
-                props[prop['Name'].text] =  {
+                props[prop['Name'].text] = {
                     'value': [],
                     'values': values,
                     'status': STATUS_OK,
@@ -889,7 +886,7 @@ class ObjectFactory(object):
                         pType = param['Type'].text
                         pRequired = bool(load(param, "Required", False))
                         pDefault = str(load(param, "Default"))
-                        mParams.append( (pName, pType, pRequired, pDefault), )
+                        mParams.append((pName, pType, pRequired, pDefault))
 
                 # Get the list of command parameters
                 cParams = []
@@ -981,7 +978,7 @@ class ObjectFactory(object):
             cnt = 0
             arguments = {}
             for mParam in mParams:
-                mName, mType, mRequired, mDefault = mParam
+                mName, mType, mRequired, mDefault = mParam #@UnusedVariable
                 if mName in kwargs:
                     arguments[mName] = kwargs[mName]
                 elif cnt < len(args):
@@ -992,7 +989,7 @@ class ObjectFactory(object):
                     raise FactoryException("Missing parameter '%s'!" % mName)
 
                 # Convert value to its required type.
-                arguments[mName] = self.__attribute_type['String'].convert_to(mType,[arguments[mName]])[0]
+                arguments[mName] = self.__attribute_type['String'].convert_to(mType, [arguments[mName]])[0]
                 cnt = cnt + 1
 
             # Build the command-parameter list.
@@ -1304,4 +1301,3 @@ class ObjectFactory(object):
             return transform(xmldefs)
         else:
             return etree.tostring(transform(xmldefs))
-

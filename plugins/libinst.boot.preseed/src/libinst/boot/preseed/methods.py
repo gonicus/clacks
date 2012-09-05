@@ -55,7 +55,7 @@ class DebianPreseed(BaseInstallMethod):
             # Try to find a device uuid for the device
             data = self.getBootConfiguration(None,
                  mac=req.path.split("/")[-1].replace("-", ":"))
-            res = Response(data, "200 OK", [("Content-type", "text/plain; charset='utf-8'"),])
+            res = Response(data, "200 OK", [("Content-type", "text/plain; charset='utf-8'")])
             return res
 
         except Exception as e:

@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
-import re
 import os
-import sys
-import time
 import gettext
-from threading import Thread
 from clacks.client import __version__ as VERSION
 from clacks.client.plugins.join.methods import join_method
 from clacks.common.components.zeroconf_client import ZeroconfClient
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename #@UnresolvedImport
 
 # Include locales
 t = gettext.translation('messages', resource_filename("clacks.client", "locale"), fallback=True)
@@ -21,16 +17,16 @@ if os.getenv("DISPLAY"):
         from PySide.QtCore import *
         from PySide.QtGui import *
         supported = True
-    
+
     except Exception as e:
         pass
-    
+
     if not supported:
         try:
             from PyQt4.QtCore import *
             from PyQt4.QtGui import *
             supported = True
-    
+
         except Exception as e:
             pass
 
@@ -129,7 +125,7 @@ class MainWindow(QWidget):
         hbox.setContentsMargins(0, 0, 0, 0)
 
         header = QFrame()
-        header.setFrameStyle(QFrame.Panel | QFrame.Sunken);
+        header.setFrameStyle(QFrame.Panel | QFrame.Sunken)
         header.setStyleSheet("QWidget { background-color: white; color: black;}")
 
         header_text = QLabel("<b>" + _("Clacks Infrastructure") + "</b><br>" + "v%s" % VERSION)
@@ -156,8 +152,8 @@ class MainWindow(QWidget):
 
         # Separator
         line = QFrame()
-        line.setFrameShape(QFrame.HLine);
-        line.setFrameShadow(QFrame.Sunken);
+        line.setFrameShape(QFrame.HLine)
+        line.setFrameShadow(QFrame.Sunken)
         form.addRow(line)
 
         # Input fields for user and password
@@ -184,8 +180,8 @@ class MainWindow(QWidget):
 
         # Separator
         line2 = QFrame()
-        line2.setFrameShape(QFrame.HLine);
-        line2.setFrameShadow(QFrame.Sunken);
+        line2.setFrameShape(QFrame.HLine)
+        line2.setFrameShadow(QFrame.Sunken)
         form.addRow(line2)
 
         # OK button
@@ -204,7 +200,6 @@ class MainWindow(QWidget):
 
         # Disable close
         self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.CustomizeWindowHint | Qt.Window | Qt.WindowTitleHint)
-
 
     def accept(self):
         if self.userEdit.text() == "" or self.passwordEdit.text() == "":
@@ -229,7 +224,7 @@ class WaitForServiceProvider(QFrame):
 
     def __init__(self, parent=None):
         super(WaitForServiceProvider, self).__init__(parent)
-        self.setFrameStyle(QFrame.Panel | QFrame.Raised);
+        self.setFrameStyle(QFrame.Panel | QFrame.Raised)
 
         # Global horizontal layout
         vbox = QVBoxLayout()

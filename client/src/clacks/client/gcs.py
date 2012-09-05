@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-import win32serviceutil
-import win32service
-import win32event
-import win32api
-import servicemanager
-import pythoncom
+import win32serviceutil #@UnresolvedImport
+import win32service #@UnresolvedImport
+import win32event #@UnresolvedImport
+import win32api #@UnresolvedImport
+import servicemanager #@UnresolvedImport
+import pythoncom #@UnresolvedImport
 import traceback
 
 from clacks.common import Environment
@@ -49,7 +49,7 @@ class ClacksClientService(win32serviceutil.ServiceFramework):
         try:
             # Load plugins
             PluginRegistry(component='client.module')
-            amqp = PluginRegistry.getInstance("AMQPClientHandler")
+            amqp = PluginRegistry.getInstance("AMQPClientHandler") #@UnusedVariable
 
             #TODO:
             # Check if we're a client
@@ -101,8 +101,8 @@ class ClacksClientService(win32serviceutil.ServiceFramework):
         servicemanager.LogMsg(
                 servicemanager.EVENTLOG_INFORMATION_TYPE,
                 servicemanager.PYS_SERVICE_STOPPED,
-                (self._svc_name_, '' ))
+                (self._svc_name_, ''))
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     win32serviceutil.HandleCommandLine(ClacksClientService)

@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import sys
-import time
 import re
 import os
 import gettext
@@ -9,7 +7,7 @@ import ConfigParser
 import socket
 import logging
 from urlparse import urlparse
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename #@UnresolvedImport
 from urllib import quote_plus as quote
 from clacks.common.components.zeroconf_client import ZeroconfClient
 from clacks.common.components import AMQPServiceProxy
@@ -70,7 +68,7 @@ class join_method(object):
 
         # Try to log in with provided credentials
         try:
-            proxy = AMQPServiceProxy(url)
+            AMQPServiceProxy(url)
             self.log.debug("machine key is valid")
             return True
         except ConnectionError:

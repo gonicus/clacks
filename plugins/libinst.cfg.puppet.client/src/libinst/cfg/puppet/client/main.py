@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
 import os
-import dbus
 import pyinotify
 import ConfigParser
 import yaml
@@ -18,6 +17,7 @@ from clacks.common.components import Plugin
 from clacks.common.components import Command
 from clacks.common import Environment
 from clacks.common.components.registry import PluginRegistry
+
 
 # Add constructor to parse ruby data type
 def rubysym(loader, node):
@@ -63,7 +63,7 @@ class PuppetClient(Plugin):
         # Start log listener
         wm = pyinotify.WatchManager()
         # pylint: disable-msg=E1101
-        wm.add_watch(self.__report_dir, pyinotify.IN_CREATE, rec=True, auto_add=True)
+        wm.add_watch(self.__report_dir, pyinotify.IN_CREATE, rec=True, auto_add=True) #@UndefinedVariable
 
         notifier = pyinotify.ThreadedNotifier(wm, PuppetLogWatcher())
         env.threads.append(notifier)
@@ -110,19 +110,19 @@ class PuppetClient(Plugin):
         self.__write_keys(keys)
 
     @Command()
-    def puppetDelKey(self, id):
+    def puppetDelKey(self, _id):
         """ Delete SSH key from the list of puppet keys """
         if not self.puppetIsInitialized():
             raise ValueError("No keys available")
 
         # Load keys
         keys = self.puppetListKeys()
-        if not id in keys:
-            raise ValueError("Key id '%s' does not exist" % id)
+        if not _id in keys:
+            raise ValueError("Key id '%s' does not exist" % _id)
 
         # Del key
-        self.log.info("removing puppet key '%s'" % id)
-        del keys[id]
+        self.log.info("removing puppet key '%s'" % _id)
+        del keys[_id]
         self.__write_keys(keys)
 
     @Command()
@@ -163,7 +163,7 @@ class PuppetClient(Plugin):
         if not os.path.exists(git_path):
             # Initialize a bare git repository
             self.log.debug("creating bare git repository at '%s'" % git_path)
-            repo = Repo.init_bare(git_path)
+            Repo.init_bare(git_path)
             os.chmod(git_path, 0770)
 
             # Create post-update hook

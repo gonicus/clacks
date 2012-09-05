@@ -8,7 +8,7 @@ from time import time
 from lxml import etree
 from clacks.common import Environment
 from clacks.agent.xmldb.interface import XMLDBInterface, XMLDBException
-from dbxml import XmlManager, XmlResolver, DBXML_LAZY_DOCS, DBXML_ALLOW_VALIDATION, XmlQueryParserError
+from dbxml import XmlManager, XmlResolver, DBXML_LAZY_DOCS, DBXML_ALLOW_VALIDATION, XmlQueryParserError #@UnresolvedImport
 from threading import Timer, Lock
 
 
@@ -242,7 +242,7 @@ class DBXml(XMLDBInterface):
         f.write(json.dumps(data, indent=2))
         f.close()
 
-    def validateSchema (self, collection, name, md5sum=None, schemaString=None):
+    def validateSchema(self, collection, name, md5sum=None, schemaString=None):
         """
         See :class:`clacks.agent.xmldb.interface.XMLDBInterface` for details.
         """

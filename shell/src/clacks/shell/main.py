@@ -41,15 +41,14 @@ import getopt
 import socket
 import getpass
 import logging
-#pylint: disable=W0611
-import readline
+import readline #@UnusedImport
 import gettext
 import textwrap
 import locale
 import thread
 from types import ListType
 from urllib2 import HTTPError
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename #@UnresolvedImport
 from dbus.exceptions import DBusException
 
 from clacks.common.components import AMQPServiceProxy
@@ -125,8 +124,7 @@ class MyConsole(code.InteractiveConsole):
             if softspace(sys.stdout, 0):
                 print()
         except Exception as e:
-            #pylint: disable=W0612
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info() #@UnusedVariable
             self.showtraceback()
         else:
             if softspace(sys.stdout, 0):
@@ -358,7 +356,7 @@ atexit.register(readline.write_history_file, histfile)
 del os, histfile, readline, rlcompleter
 
 for i in clacks.getMethods().keys():
-	globals()[i] = getattr(clacks, i)
+    globals()[i] = getattr(clacks, i)
 """
 
     # Use script mode:

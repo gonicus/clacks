@@ -13,7 +13,6 @@ import tempfile
 from subprocess import Popen, PIPE
 from qpid.messaging.constants import AMQP_PORT, AMQPS_PORT
 from urlparse import urlparse
-from urllib import quote
 from datetime import datetime
 
 
@@ -98,15 +97,15 @@ def parseURL(url):
         url = '%s://%s:%s@%s:%s/%s' % (scheme, user, password, host, port, path)
         ssl = 'tcp+ssl' if scheme[-1] == 's' else 'tcp'
 
-    return {'source':source,
-        'scheme':scheme,
-        'user':user,
-        'password':password,
-        'host':host,
-        'port':int(port),
-        'path':path,
-        'transport':ssl,
-        'url':url}
+    return {'source': source,
+        'scheme': scheme,
+        'user': user,
+        'password': password,
+        'host': host,
+        'port': int(port),
+        'path': path,
+        'transport': ssl,
+        'url': url}
 
 
 def N_(message):
@@ -132,9 +131,9 @@ def get_timezone_delta():
     ``Return``: String in the format [+-]hours:minutes
     """
     timestamp = time.mktime(datetime.now().timetuple())
-    timeDelta = datetime.fromtimestamp(timestamp) - datetime.utcfromtimestamp( timestamp )
+    timeDelta = datetime.fromtimestamp(timestamp) - datetime.utcfromtimestamp(timestamp)
     seconds = timeDelta.seconds
-    return "%s%02d:%02d" % ("-" if seconds < 0 else "+", abs(seconds//3600), abs(seconds%60))
+    return "%s%02d:%02d" % ("-" if seconds < 0 else "+", abs(seconds // 3600), abs(seconds % 60))
 
 
 def locate(program):
@@ -183,14 +182,12 @@ def dmi_system(item, data=None):
 # Re-define dmi_system depending on capabilites
 try:
     import dmidecode
-    #pylint: disable=E1101
-    dmidecode.clear_warnings()
+    dmidecode.clear_warnings() #@UndefinedVariable
 
-    #pylint: disable=E0102
     def dmi_system(item, data=None):
         if not data:
-            data = dmidecode.system()
-            dmidecode.clear_warnings()
+            data = dmidecode.system() #@UndefinedVariable
+            dmidecode.clear_warnings() #@UndefinedVariable
 
         item = item.lower()
 
@@ -212,7 +209,7 @@ except ImportError:
             def dmi_system(item, data=None):
                 cmd = [ext, '-s', 'system-uuid']
                 p = Popen(cmd, stdout=PIPE, stderr=PIPE)
-                (stdout, stderr) = p.communicate()
+                stdout = p.communicate()[0]
                 return "".join(stdout).strip()
 
             break

@@ -8,7 +8,7 @@ to be used from your frontend - shell, GUI or whatever you tend to use.
 """
 
 # pylint: disable=E0611
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename #@UnresolvedImport
 
 import os
 import shutil

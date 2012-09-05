@@ -166,16 +166,14 @@ class ZeroconfClient(object):
 
         for line in output.split('\n'):
             if line.startswith("="):
-                flag, device, wproto, dsc, proto, loc, address, ip, port, txt = line.split(";")
+                flag, device, wproto, dsc, proto, loc, address, ip, port, txt = line.split(";") #@UnusedVariable
                 txt = re.findall(r'"([^"]+)"', txt)
                 if txt:
-                    info = dict([ v.split("=")[0:2] for v in txt ])
+                    info = dict([v.split("=")[0:2] for v in txt])
                     if 'service' in info and info['service'] == 'clacks':
                         service.append("%s://%s:%s%s" % (proto.split(".")[0][1:], address, port, info['path'] if info['path'].startswith("/") else "/" + info["path"]))
 
         return list(set(service))
-
-
 
     def stopDirect(self):
         self.active = False
@@ -184,7 +182,7 @@ class ZeroconfClient(object):
     def startAvahi(self):
         self.__runner = DBusRunner.get_instance()
         bus = self.__runner.get_system_bus()
-	bus.add_signal_receiver(self.__dbus_connect, "NameOwnerChanged", "org.freedesktop.DBus", arg0="org.freedesktop.Avahi")
+        bus.add_signal_receiver(self.__dbus_connect, "NameOwnerChanged", "org.freedesktop.DBus", arg0="org.freedesktop.Avahi")
         self.__avahi_start()
 
     def __avahi_start(self):
@@ -267,8 +265,7 @@ class ZeroconfClient(object):
         browse_sdRefs = []
 
         # Start the bonjour event processing.
-        #pylint: disable=W0612
-        for reg_type in self.__regtypes:
+        for reg_type in self.__regtypes: #@UnusedVariable
             browse_sdRefs.append(pybonjour.DNSServiceBrowse(regtype=self.__regtypes,
                 callBack=self.__browseCallback))
 

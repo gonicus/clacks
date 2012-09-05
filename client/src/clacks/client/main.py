@@ -125,9 +125,9 @@ def mainLoop(env):
             # Wait for threads to shut down
             for t in env.threads:
                 if hasattr(t, 'stop'):
-                     t.stop()
+                    t.stop()
                 if hasattr(t, 'cancel'):
-                     t.cancel()
+                    t.cancel()
                 t.join(wait)
 
                 #TODO: remove me

@@ -5,7 +5,6 @@ import re
 import sys
 from datetime import date, datetime, timedelta
 from time import mktime
-from types import MethodType
 from clacks.common.components import PluginRegistry
 
 __all__ = ('asint', 'asbool', 'convert_to_datetime', 'timedelta_seconds',
@@ -48,7 +47,7 @@ _DATE_REGEX = re.compile(
     r'(?:\.(?P<microsecond>\d{1,6}))?)?')
 
 
-def convert_to_datetime(input):
+def convert_to_datetime(value):
     """
     Converts the given object to a datetime object, if possible.
     If an actual datetime object is passed, it is returned unmodified.
@@ -60,18 +59,18 @@ def convert_to_datetime(input):
 
     :rtype: datetime
     """
-    if isinstance(input, datetime):
-        return input
-    elif isinstance(input, date):
-        return datetime.fromordinal(input.toordinal())
-    elif isinstance(input, str):
-        m = _DATE_REGEX.match(input)
+    if isinstance(value, datetime):
+        return value
+    elif isinstance(value, date):
+        return datetime.fromordinal(value.toordinal())
+    elif isinstance(value, str):
+        m = _DATE_REGEX.match(value)
         if not m:
             raise ValueError('Invalid date string')
         values = [(k, int(v or 0)) for k, v in m.groupdict().items()]
         values = dict(values)
         return datetime(**values)
-    raise TypeError('Unsupported input type: %s' % type(input))
+    raise TypeError('Unsupported input type: %s' % type(value))
 
 
 def timedelta_seconds(delta):
@@ -108,8 +107,7 @@ def datetime_ceil(dateval):
     :type dateval: datetime
     """
     if dateval.microsecond > 0:
-        return dateval + timedelta(seconds=1,
-                                   microseconds= -dateval.microsecond)
+        return dateval + timedelta(seconds=1, microseconds=-dateval.microsecond)
     return dateval
 
 

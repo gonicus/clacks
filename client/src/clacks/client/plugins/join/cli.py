@@ -3,7 +3,7 @@ import time
 import gettext
 import getpass
 from clacks.client.plugins.join.methods import join_method
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename #@UnresolvedImport
 
 # Include locales
 t = gettext.translation('messages', resource_filename("clacks.client", "locale"), fallback=True)

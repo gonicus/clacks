@@ -102,6 +102,6 @@ class SessionKeeper(Plugin):
         info = e.Event(
             e.UserSession(
                 e.Id(self.env.uuid),
-		e.User(*more)))
+                e.User(*more)))
 
         amqp.sendEvent(info)

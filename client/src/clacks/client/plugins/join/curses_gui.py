@@ -3,7 +3,7 @@ import curses
 import time
 import gettext
 from clacks.client.plugins.join.methods import join_method
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename #@UnresolvedImport
 
 # Include locales
 t = gettext.translation('messages', resource_filename("clacks.client", "locale"), fallback=True)
@@ -34,8 +34,8 @@ class CursesGUI(join_method):
     def get_pw(self):
         curses.noecho()
         curses.cbreak()
-        password=""
-        pos=0
+        password = ""
+        pos = 0
         self.screen.move(self.start_y + 4, self.start_x + 11 + pos)
 
         while 1:
@@ -51,7 +51,7 @@ class CursesGUI(join_method):
                 self.screen.addch(" ")
                 self.screen.move(self.start_y + 4, self.start_x + 11 + pos)
                 self.screen.refresh()
-                password = password[0:len(password)-1]
+                password = password[0:len(password) - 1]
             else:
                 self.screen.move(self.start_y + 4, self.start_x + 11 + pos)
                 pos = pos + 1

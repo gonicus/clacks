@@ -4,8 +4,7 @@ import StringIO
 import logging
 from inspect import isclass
 from lxml import etree
-#pylint: disable=E0611
-from pkg_resources import resource_filename, resource_listdir, iter_entry_points, resource_isdir
+from pkg_resources import resource_filename, resource_listdir, iter_entry_points, resource_isdir #@UnresolvedImport
 from clacks.common.handler import IInterfaceHandler
 from clacks.common import Environment
 
