@@ -113,7 +113,7 @@ class ObjectHandler(ObjectBackend):
                 raise Exception("source object could not be found" % targetAttr)
             matchValue = res[0]
 
-            # Collect all objects that match the given value 
+            # Collect all objects that match the given value
             allvalues = data[targetAttr]['orig'] + data[targetAttr]['value']
             object_mapping = {}
             for value in allvalues:
@@ -123,7 +123,7 @@ class ObjectHandler(ObjectBackend):
                 if not res:
                     raise NoSuchObject("Could not find any '%s' with '%s=%s'!" % (foreignObject, foreignAttr, value))
                 else:
-                    object_mapping[value] = ObjectProxy(res[0])
+                    object_mapping[value] = ObjectProxy(res[0].decode("utf-8"))
 
             # Calculate value that have to be removed/added
             remove = list(set(data[targetAttr]['orig']) - set(data[targetAttr]['value']))
