@@ -1321,7 +1321,7 @@ class ObjectFactory(object):
         if not language:
             return {}
 
-        env = Environment.getInstance();
+        env = Environment.getInstance()
         i18n = None
         locales = []
         if "-" in language:
@@ -1366,7 +1366,7 @@ class ObjectFactory(object):
                     # Reading the XML file will ignore extra tags, because they're not supported
                     # for ordinary GUI rendering (i.e. plural needs a 'count').
                     root = etree.fromstring(i18n)
-                    contexts = root.findall("context");
+                    contexts = root.findall("context")
 
                     for context in contexts:
                         for message in context.findall("message"):

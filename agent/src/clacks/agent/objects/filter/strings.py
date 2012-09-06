@@ -31,9 +31,9 @@ class ConcatString(ElementFilter):
     def process(self, obj, key, valDict, appstr, position):
         if type(valDict[key]['value'] != None):
             if position == "right":
-                new_val = map(lambda x: x + appstr, valDict[key]['value'] )
+                new_val = map(lambda x: x + appstr, valDict[key]['value'])
             else:
-                new_val = map(lambda x: appstr + x, valDict[key]['value'] )
+                new_val = map(lambda x: appstr + x, valDict[key]['value'])
             valDict[key]['value'] = new_val
         return key, valDict
 

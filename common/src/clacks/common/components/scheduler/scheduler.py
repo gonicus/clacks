@@ -10,10 +10,10 @@ import os
 import sys
 import inspect
 
-from clacks.common.components.scheduler.util import *
+from clacks.common.components.scheduler.util import * #@UnusedWildImport
 from clacks.common.components.scheduler.triggers import SimpleTrigger, IntervalTrigger, CronTrigger
 from clacks.common.components.scheduler.jobstores.ram_store import RAMJobStore
-from clacks.common.components.scheduler.job import Job, MaxInstancesReachedError, JOB_RUNNING, JOB_ERROR, JOB_DONE, JOB_WAITING
+from clacks.common.components.scheduler.job import Job, MaxInstancesReachedError, JOB_RUNNING, JOB_ERROR, JOB_DONE
 from clacks.common.components.scheduler.events import *
 from clacks.common.components.scheduler.threadpool import ThreadPool
 
@@ -439,7 +439,7 @@ class Scheduler(object):
 
         self._jobstores_lock.acquire()
         try:
-            for alias, jobstore in iteritems(self._jobstores):
+            for jobstore in iteritems(self._jobstores).values():
                 if jobstore.jobs:
                     for job in jobstore.jobs:
                         if job.uuid == job_id:
@@ -545,7 +545,7 @@ class Scheduler(object):
                     break
 
     def migrate_job(self, job):
-        for alias, jobstore in iteritems(self._jobstores):
+        for jobstore in iteritems(self._jobstores).values():
             if jobstore.jobs and job in jobstore.jobs:
                 jobstore.migrate_job(job, self.origin)
                 break

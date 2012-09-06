@@ -5,7 +5,6 @@ import shutil
 import pkg_resources
 import StringIO
 import ConfigParser
-import ldap
 import ldap.filter
 import logging
 from datetime import datetime
@@ -45,7 +44,7 @@ class PuppetInstallMethod(InstallMethod):
             module = entry.load()
             self.log.info("repository handler %s included" % module.__name__)
             self._supportedItems.update({
-                module.__name__ : {
+                module.__name__: {
                         'name': module._name,
                         'description': module._description,
                         'container': module._container,
@@ -184,7 +183,7 @@ reportdir=$logdir
 
                 # Remove all but .git
                 for f in files:
-                    if f== ".git":
+                    if f == ".git":
                         continue
                     if os.path.isdir(os.path.join(current_dir, f)):
                         shutil.rmtree(os.path.join(current_dir, f))
@@ -464,7 +463,7 @@ reportdir=$logdir
         session = None
         path, target_name = path.rsplit("/", 1)
         try:
-            session  = self._manager.getSession()
+            session = self._manager.getSession()
             path = self._get_relative_path(release, path)
             release = release.replace("/", "@")
             target_path = os.path.join(self.__work_path, release, path.strip("/"))
@@ -526,7 +525,7 @@ reportdir=$logdir
         variables = {}
         if 'configVariable' in data:
             for var in data['configVariable']:
-                key, value =  var.split('=', 1)
+                key, value = var.split('=', 1)
                 variables[key] = value
 
         # Get FQDN / Release
@@ -534,7 +533,7 @@ reportdir=$logdir
         release = "/".join(data['installRelease'][0].split("/")[1:])
 
         # Open nodes.pp and maintain it
-        target_path, target_name = self.__get_target(release, "/")
+        target_path = self.__get_target(release, "/")[0]
         nodes_file = os.path.join(target_path, "manifests", "nodes.pp")
 
         #TODO: resolve recipe chain
@@ -546,7 +545,7 @@ reportdir=$logdir
         #  include openldap
         #  include resolv
         #}
-        inherit = None
+        #inherit = None
 
         nm = PuppetNodeManager(nodes_file)
         if remove:

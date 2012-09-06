@@ -210,8 +210,8 @@ class PuppetClient(Plugin):
         self.log.debug("writing authorized_keys")
         with open(self.__base_dir + "/.ssh/authorized_keys", "w") as f:
             lockf(f, LOCK_EX)
-            for id, key in keys.iteritems():
-                f.write("command=\"git-shell -c \\\"$SSH_ORIGINAL_COMMAND\\\"\" %s %s %s" % (key['type'], key['data'], id))
+            for _id, key in keys.iteritems():
+                f.write("command=\"git-shell -c \\\"$SSH_ORIGINAL_COMMAND\\\"\" %s %s %s" % (key['type'], key['data'], _id))
             lockf(f, LOCK_UN)
 
 
@@ -231,7 +231,7 @@ class PuppetLogWatcher(pyinotify.ProcessEvent):
 
     def report_to_event(self, file_name):
         e = EventMaker()
-        amqp_service = PluginRegistry.getInstance("AMQPClientService")
+        PluginRegistry.getInstance("AMQPClientService")
 
         with open(file_name, "r") as f:
             yml = yaml.load(f)

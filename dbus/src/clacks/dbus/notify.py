@@ -8,10 +8,7 @@ import re
 import sys
 import grp
 import dbus
-import gobject
-import dbus.mainloop.glib
-import time
-from optparse import OptionParser, OptionValueError
+from optparse import OptionParser
 import pwd
 import getpass
 import signal
@@ -175,7 +172,7 @@ class Notify(object):
 
                 try:
                     # Get the cild process return code.
-                    (cpid, ret_code) = os.waitpid(-1, 0)
+                    ret_code = os.waitpid(-1, 0)[1]
 
                     # Dont know why, but we receive an 16 Bit long return code,
                     # but only send an 8 Bit value.

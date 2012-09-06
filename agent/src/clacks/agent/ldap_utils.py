@@ -66,7 +66,7 @@ class LDAPHandler(object):
         See `Object abstraction <objects>`_.
     """
     connection_handle = []
-    connection_usage  = []
+    connection_usage = []
     instance = None
 
     def __init__(self):

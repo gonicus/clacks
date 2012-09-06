@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-import gobject
+import gobject #@UnusedImport
 import pwd
-import time
 import zope.event
-from threading import Thread
 from dateutil.parser import parse
 from clacks.common.components import Plugin
 from clacks.common.components import Command
@@ -50,7 +48,7 @@ class SessionKeeper(Plugin):
 
         # register a signal receiver
         self.__bus.add_signal_receiver(self.event_handler,
-            dbus_interface = "org.freedesktop.ConsoleKit.Seat",
+            dbus_interface="org.freedesktop.ConsoleKit.Seat",
             message_keyword='dbus_message')
 
         # Trigger session update
@@ -59,7 +57,7 @@ class SessionKeeper(Plugin):
     def stop(self):
         if self.__bus:
             self.__bus.remove_signal_receiver(self.event_handler,
-                dbus_interface = "org.freedesktop.ConsoleKit.Seat",
+                dbus_interface="org.freedesktop.ConsoleKit.Seat",
                 message_keyword='dbus_message')
 
     def __handle_events(self, event):

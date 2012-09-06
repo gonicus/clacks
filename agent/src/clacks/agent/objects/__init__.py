@@ -280,7 +280,7 @@ Writing attribute validators
 
 You can use validators to check the value of an attribute.
 
-Validators are defined in an ``<Validators>`` tag using either the ``<Condition>`` or the ``<ConditionOperator>`` tag. 
+Validators are defined in an ``<Validators>`` tag using either the ``<Condition>`` or the ``<ConditionOperator>`` tag.
 The ``<Condition>`` tag is a single check like shown below, where ``<ConditionOperator>`` are combined conditions:
 
 A simple single condition:
@@ -327,7 +327,7 @@ The above example is valid, when the value has a length of 5-10 characters OR th
 
 Instead of ``or`` can also ``and`` be used.
 
-And you can even stack ``<ConditionOperator>`` as deep as you want: 
+And you can even stack ``<ConditionOperator>`` as deep as you want:
 
 .. code-block:: xml
 
@@ -490,7 +490,7 @@ If the value is smaller then 6 chars it will be cleared, if it is greater then 6
 
 Another example could be to convert a list of flags into different boolean values, like this.
 
-Lets say we've a given flag list which looks like this: 
+Lets say we've a given flag list which looks like this:
 
 >>>  flagList = [LVM]
 

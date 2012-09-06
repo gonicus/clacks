@@ -100,4 +100,3 @@ class IsAclSet(ElementComparator):
                         return False
 
         return True
-

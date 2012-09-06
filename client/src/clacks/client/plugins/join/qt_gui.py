@@ -14,8 +14,8 @@ supported = False
 if os.getenv("DISPLAY"):
     # Import PySide classes if available
     try:
-        from PySide.QtCore import *
-        from PySide.QtGui import *
+        from PySide.QtCore import * #@UnusedWildImport
+        from PySide.QtGui import * #@UnusedWildImport
         supported = True
 
     except Exception as e:
@@ -23,8 +23,8 @@ if os.getenv("DISPLAY"):
 
     if not supported:
         try:
-            from PyQt4.QtCore import *
-            from PyQt4.QtGui import *
+            from PyQt4.QtCore import * #@UnusedWildImport
+            from PyQt4.QtGui import * #@UnusedWildImport
             supported = True
 
         except Exception as e:

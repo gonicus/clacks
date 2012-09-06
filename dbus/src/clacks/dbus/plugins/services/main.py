@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 
 Clacks D-Bus System Service Plugin
@@ -6,9 +7,6 @@ Clacks D-Bus System Service Plugin
 Allows to manage client services and the runlevel.
 
 """
-
-
-# -*- coding: utf-8 -*-
 import dbus.service
 import logging
 from os.path import basename
@@ -25,11 +23,13 @@ class ServiceException(Exception):
     """
     pass
 
+
 class NoSuchServiceException(ServiceException):
     """
     Exception thrown for unknown services
     """
     pass
+
 
 class DBusUnixServiceHandler(dbus.service.Object, Plugin):
     """
@@ -81,8 +81,8 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
 
         # Call 'who -r' and parse the return value to get the run-level
         # run-level 2  Dec 19 01:21                   last=S
-        process = subprocess.Popen(["who","-r"], env={'LC_ALL': 'C'}, \
-                shell=False, stdout=subprocess.PIPE,  stderr=subprocess.PIPE)
+        process = subprocess.Popen(["who", "-r"], env={'LC_ALL': 'C'}, \
+                shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         ret = process.communicate()
         runlevel = re.sub("^run-level[ ]*([0-9]*).*$", "\\1", ret[0].strip())
         return int(runlevel)
@@ -93,8 +93,8 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         Sets a new runlevel for the clacks-client
         """
         self.log.debug("client runlevel set toggled to: %s" % (str(level)))
-        process = subprocess.Popen(["telinit","%s" % (str(level))], shell=False, stdout=subprocess.PIPE,  stderr=subprocess.PIPE)
-        ret = process.communicate()
+        process = subprocess.Popen(["telinit", "%s" % (str(level))], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process.communicate()
         return process.returncode
 
     @dbus.service.method('org.clacks', in_signature='ss', out_signature='i')
@@ -105,8 +105,8 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         self._validate(service, action)
         self.log.debug("%s service %s" % (action, service))
 
-        process = subprocess.Popen([self.svc_command, service, action], shell=False, stdout=subprocess.PIPE,  stderr=subprocess.PIPE)
-        ret = process.communicate()
+        process = subprocess.Popen([self.svc_command, service, action], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process.communicate()
         return process.returncode == 0
 
     @dbus.service.method('org.clacks', in_signature='s', out_signature='a{sv}')
@@ -130,7 +130,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         #  run-parts --test --regex=^S* /etc/rc<level>.d
         level = self.service_get_runlevel()
         process = subprocess.Popen(["run-parts", "--test", "--regex=^S*", "/etc/rc%s.d" % (str(level))],
-                shell=False, stdout=subprocess.PIPE,  stderr=subprocess.PIPE, env={'LC_ALL': 'C'})
+                shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env={'LC_ALL': 'C'})
         ret = process.communicate()
 
         # Parse results and strip out path infos and S[0-9] prefix
@@ -164,7 +164,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
                 # Search for a string which tells us that the service is running
                 # Be careful some infos return values like this:
                 #  * isn't running | is not running | not running | failed (running) ...
-                state = re.search('is running', _svcs[0]+_svcs[1], flags=re.IGNORECASE) != None
+                state = re.search('is running', _svcs[0] + _svcs[1], flags=re.IGNORECASE) != None
                 services[sname]['running'] = ["True"] if(state) else ["False"]
 
         return services

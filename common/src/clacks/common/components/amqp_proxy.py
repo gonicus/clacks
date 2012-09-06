@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from qpid.messaging import Connection, Message, uuid4
-from qpid.messaging.util import auto_fetch_reconnect_urls
-from types import DictType
 from clacks.common.components.json_exception import JSONRPCException
 from clacks.common.gjson import dumps, loads
 from clacks.common.components.amqp import AMQPProcessor
@@ -121,7 +119,6 @@ class AMQPServiceProxy(object):
                                 'receiver': ssn.receiver('reply-%s; {create:always, delete:always, node: { type: queue, durable: False, x-declare: { exclusive: False, auto-delete: True } }}' % ssn.name),
                                 'locked': False}
 
-
     def close(self):
         """
         Close the AMQP connection established by the proxy.
@@ -161,17 +158,17 @@ class AMQPServiceProxy(object):
         if len(kwargs) > 0 and len(args) > 0:
             raise JSONRPCException("JSON-RPC does not support positional and keyword arguments at the same time")
 
-        # Default to 'core' queue, pylint: disable=W0612
-        queue = "core"
+        # Default to 'core' queue
+        queue = "core" #@UnusedVariable
 
         if self.__methods:
             if not self.__serviceName in self.__methods:
                 raise NameError("name '%s' not defined" % self.__serviceName)
 
             if self.__domain:
-                queue = self.__methods[self.__serviceName]['target']
+                queue = self.__methods[self.__serviceName]['target'] #@UnusedVariable
             else:
-                queue = self.__serviceAddress
+                queue = self.__serviceAddress #@UnusedVariable
 
         # Find free session for requested queue
         found = False
@@ -353,7 +350,7 @@ class AMQPStandaloneWorker(object):
         # ... start receive workers
         else:
             #pylint: disable=W0612
-            for i in range(workers):
+            for i in range(workers): #@UnusedVariable
                 ssn.receiver(r_address, capacity=100)
                 proc = AMQPProcessor(ssn, self.callback)
                 proc.start()

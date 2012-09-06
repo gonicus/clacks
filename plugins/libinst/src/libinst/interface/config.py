@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-import re
 import os
 import ldap
 import sys
 import logging
 from copy import copy
-from inspect import stack
 from types import StringTypes
 from clacks.common import Environment
 from clacks.agent.ldap_utils import LDAPHandler, unicode2utf8, normalize_ldap
@@ -33,7 +31,7 @@ class InstallMethod(object):
         self.env = Environment.getInstance()
         self.log = logging.getLogger(__name__)
         self._manager = manager
-        self.rev_attributes = dict((v,k) for k, v in self.attributes.iteritems())
+        self.rev_attributes = dict((v, k) for k, v in self.attributes.iteritems())
 
     @staticmethod
     def getInfo():
@@ -345,7 +343,7 @@ class InstallMethod(object):
                 newPath = os.path.dirname(path)
                 if newPath != "/":
                     newPath = newPath + "/"
-                newPath= newPath + data['name']
+                newPath = newPath + data['name']
 
                 if newPath != path:
 

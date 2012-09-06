@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import re 
+import re
 from clacks.agent.objects.backend import ObjectBackend, EntryNotFound
 from clacks.agent.objects.index import ObjectIndex
 from clacks.common.components import PluginRegistry
@@ -36,8 +36,8 @@ class ObjectHandler(ObjectBackend):
 
             User->groupMembership = ['admins', 'support', '..,', 'and', 'maybe', 'others']
 
-        Due to the fact that not all groups may already be loaded during indexing, 
-        we have to postpone this process after the index-process has finished and 
+        Due to the fact that not all groups may already be loaded during indexing,
+        we have to postpone this process after the index-process has finished and
         all objects were inserted to the index.
 
         Take a look at the 'ObjectIndex' and its static variable 'first_run' for details.
@@ -62,7 +62,7 @@ class ObjectHandler(ObjectBackend):
                     matchValue = results[0]
                     xq = "collection('objects')/o:%s/o:Attributes[o:%s = '%s']/o:%s/string()" % \
                             (foreignObject, foreignMatchAttr, matchValue, foreignAttr)
-                    result[targetAttr]  = oi.xquery(xq);
+                    result[targetAttr] = oi.xquery(xq)
 
         return result
 
@@ -148,7 +148,6 @@ class ObjectHandler(ObjectBackend):
                 if object_mapping[item]:
                     object_mapping[item].commit()
 
-
     @staticmethod
     def extractBackAttrs(back_attrs):
         """
@@ -217,4 +216,3 @@ class ObjectHandler(ObjectBackend):
 
     def get_next_id(self, attr):
         raise EntryNotFound("cannot generate IDs")
-

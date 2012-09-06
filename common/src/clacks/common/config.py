@@ -66,7 +66,7 @@ class Config(object):
             }
     __configKeys = None
 
-    def __init__(self,  config=None,  noargs=False):
+    def __init__(self, config=None, noargs=False):
         if not config:
             config = os.environ.get('CLACKS_CONFIG_DIR') or "/etc/clacks"
 

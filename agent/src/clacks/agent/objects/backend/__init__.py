@@ -2,6 +2,7 @@
 __import__('pkg_resources').declare_namespace(__name__)
 import re
 
+
 class EntryNotUnique(Exception):
     pass
 
@@ -24,7 +25,6 @@ class ObjectBackend(object):
         Convert uuid to DN.
         """
         raise NotImplementedError("object backend is not capable of mapping UUID to DN")
-
 
     def get_timestamps(self, dn):
         """

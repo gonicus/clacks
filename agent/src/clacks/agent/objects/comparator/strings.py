@@ -85,7 +85,7 @@ class stringLength(ElementComparator):
             if minSize >= 0 and cnt < minSize:
                 errors.append("Item %s (%s) is to small, at least %s characters are required!" % (cnt, entry, minSize))
                 return False
-            elif maxSize >=0 and cnt > maxSize:
+            elif maxSize >= 0 and cnt > maxSize:
                 errors.append("Item %s (%s) is to great, at max %s characters are allowed!" % (cnt, entry, maxSize))
                 return False
         return True

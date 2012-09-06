@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
 import os
 import logging
-
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Table, Column, Integer, String, ForeignKey, Sequence, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, Sequence, Boolean, DateTime
 from sqlalchemy.orm import relationship, backref
-
 from libinst.entities import Base, UseInnoDB
 from libinst.entities.architecture import Architecture
 from libinst.entities.component import Component
 from libinst.entities.release import Release
 from libinst.entities.section import Section
 from libinst.entities.type import Type
+
 
 class DistributionReleases(Base, UseInnoDB):
     __tablename__ = 'distribution_releases'

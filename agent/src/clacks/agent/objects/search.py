@@ -179,7 +179,7 @@ class Query(MyNode):
 
         # Create loop for each required object type
         where_result = []
-        where_result.append("for " + ", ".join(map(lambda x: "$%s in $%s_base" %(x, x) , self.object_types.keys())))
+        where_result.append("for " + ", ".join(map(lambda x: "$%s in $%s_base" % (x, x), self.object_types.keys())))
 
         # Add optional where statement
         if self.Where:
@@ -239,7 +239,7 @@ class Query(MyNode):
 
         # Start the given query
         s_index = PluginRegistry.getInstance("ObjectIndex")
-        xquery =  self.get_xquery()
+        xquery = self.get_xquery()
 
         self.__env.log.debug("xquery statement:", xquery)
 
@@ -252,8 +252,8 @@ class Query(MyNode):
             # The first item tells us how many items are part of one result.
             # e.g.     2, User, Group, 2, User, Group
             length = int(q_res[0])
-            items_data = q_res[1:1+length]
-            q_res = q_res[1+length::]
+            items_data = q_res[1:1 + length]
+            q_res = q_res[1 + length::]
 
             tmp = {}
             res = {}
@@ -313,7 +313,7 @@ class Query(MyNode):
         # Limitate resulting entries manually, due to the fact that we cannot filter by acls in the xquery
         if self.Limit:
             start, stop = self.Limit[0].get_range()
-            result =  result[start:stop]
+            result = result[start:stop]
         return result
 
     def __has_access_to(self, user, object_dn, object_type, attr):
@@ -375,9 +375,9 @@ class Query(MyNode):
         else:
             path = self._get_attribute_location(attribute)
             if path:
-                self._attributes[complete] =  "%s/o:%s" % (path, attribute)
+                self._attributes[complete] = "%s/o:%s" % (path, attribute)
             else:
-                self._attributes[complete] =  "o:%s" % (attribute)
+                self._attributes[complete] = "o:%s" % (attribute)
 
     def _get_attribute_location(self, attribute, use_ns_prefix=True):
         """
@@ -445,7 +445,7 @@ class Match(MyNode):
             match = ("%s" % self.Match[0].compile())
         else:
             attr1 = self[0].compile_for_match()
-            comp  = self[1].compile_for_match()
+            comp = self[1].compile_for_match()
             attr2 = self[2].compile_for_match()
 
             if(comp.upper() == "LIKE"):
@@ -701,15 +701,15 @@ class SearchWrapper(Plugin):
         attr_type = Regexp('[a-zA-Z]+')
         attr_name = Regexp('[a-zA-Z]+') | Literal('*')
         number = UnsignedReal()
-        attribute = attr_type & ~Literal('.') & attr_name >  Attribute
+        attribute = attr_type & ~Literal('.') & attr_name > Attribute
 
         # A definition for space characters including newline and tab
-        spaces = (~Space() | ~Literal('\n') | ~Literal('\t')) [:]
+        spaces = (~Space() | ~Literal('\n') | ~Literal('\t'))[:]
 
         with Separator(spaces):
 
             string_list = Delayed()
-            string_list+= String() & Optional(~Literal(',') & string_list)
+            string_list += String() & Optional(~Literal(',') & string_list)
             in_list = (~Literal("(") & string_list & ~Literal(")")) > AttributeList
 
             ################
@@ -727,12 +727,11 @@ class SearchWrapper(Plugin):
             base_value = String()
             base = ~CLiteral('BASE') & base_type & scope_option & base_value > Base
             bases = Delayed()
-            bases += base & Optional (~spaces & bases)
+            bases += base & Optional(~spaces & bases)
 
             ################
             ### WHERE
             ################
-
             statement = (attribute | in_list | (String() > StringValue))
             operator = (Literal('=') | Literal('!=') | CLiteral('LIKE') | CLiteral('IN')) > Operator
             condition_tmp = statement & operator & statement
@@ -798,4 +797,3 @@ class SearchWrapper(Plugin):
         if not SearchWrapper.instance:
             SearchWrapper.instance = SearchWrapper()
         return SearchWrapper.instance
-

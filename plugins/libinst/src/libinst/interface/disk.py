@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import itertools
-from lxml import etree, objectify
+from lxml import objectify
 from clacks.common.components.registry import PluginRegistry
 
 LINUX = 2 ** 0
@@ -162,7 +162,6 @@ class DiskDefinition(object):
 
             # If we got here, there's something wrong
             raise ValueError("unknown descriptor %s" % entryType)
-
 
     def dump(self):
         """
@@ -889,7 +888,7 @@ class DiskDefinition(object):
                 size = min([info['part'][device]['size'] for device in raid['devices']])
             if int(raid['level']) == 5:
                 size = min([info['part'][device]['size'] for device in raid['devices']])
-                size = (len(raid['devices']) -1) * size
+                size = (len(raid['devices']) - 1) * size
 
             info['raid'][raid['target']] = {"size": size}
 

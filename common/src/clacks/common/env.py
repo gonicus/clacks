@@ -42,7 +42,7 @@ class Environment:
 
     def __init__(self):
         # Load configuration
-        self.config = Config(config=Environment.config,  noargs=Environment.noargs)
+        self.config = Config(config=Environment.config, noargs=Environment.noargs)
         self.log = logging.getLogger(__name__)
 
         self.id = platform.node()

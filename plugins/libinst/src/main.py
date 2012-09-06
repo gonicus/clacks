@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os, shutil
+import os
+import shutil
 from clacks.common import Environment
 from libinst import LibinstManager
 
+
 def main():
-    Environment.config="tests/test-libinst.conf"
-    Environment.noargs=True
+    Environment.config = "tests/test-libinst.conf"
+    Environment.noargs = True
     env = Environment.getInstance()
     repo_path = env.config.get('repository.path')
     if os.path.exists(repo_path):
@@ -37,7 +39,6 @@ kEhidYX1IRzgyhhLjrPDcB0RTcnjlXm9xOXJb3tcuyKWxi2CHMstdgTMHt6xb37o
 LcWMU6gayNYj7eMgCOFM6ywySRS81FC+PPnr147xbp5FwgmoPRK52MURsHJ+
 =RwlJ
 -----END PGP PRIVATE KEY BLOCK-----"""
-
 
     # Begin: New stuff
     manager = LibinstManager()
@@ -155,7 +156,6 @@ LcWMU6gayNYj7eMgCOFM6ywySRS81FC+PPnr147xbp5FwgmoPRK52MURsHJ+
     #print("getDistributions", manager.getDistributions())
 
     # End:   New stuff
-
 
     exit(0)
     # session = Session()

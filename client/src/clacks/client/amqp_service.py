@@ -122,6 +122,7 @@ class AMQPClientService(object):
         # Send a ping on a regular base
         uuid = self.env.uuid
         timeout = float(self.env.config.get('client.ping-interval', default=600))
+
         def ping():
             while self.env.active:
                 e = EventMaker()
@@ -256,7 +257,7 @@ class AMQPClientService(object):
             # Assemble ipv6 information
             ip6 = ""
             if netifaces.AF_INET6 in i_info:
-                ip = IPNetwork("%s/%s" % (i_info[netifaces.AF_INET6][0]['addr'].split("%",1)[0],
+                ip = IPNetwork("%s/%s" % (i_info[netifaces.AF_INET6][0]['addr'].split("%", 1)[0],
                                         i_info[netifaces.AF_INET6][0]['netmask']))
                 ip6 = str(ip)
 

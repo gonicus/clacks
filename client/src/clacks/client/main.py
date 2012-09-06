@@ -187,6 +187,7 @@ def netactivity(online):
         env.reset_requested = True
         env.active = False
 
+
 def main():
     """
     Main programm which is called when the clacks agent process gets started.

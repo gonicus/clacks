@@ -51,9 +51,8 @@ class Object(object):
     myProperties = None
     env = None
 
-
     def __init__(self, where=None, mode="update"):
-        self.env = Environment.getInstance();
+        self.env = Environment.getInstance()
 
         # Instantiate Backend-Registry
         self._reg = ObjectBackendRegistry.getInstance()
@@ -97,7 +96,7 @@ class Object(object):
         for key in self.myProperties:
             if not(self.myProperties[key]['value']) and self.myProperties[key]['default'] != None and \
                 len(self.myProperties[key]['default']):
-                self.myProperties[key]['value'] = copy.deepcopy(self.myProperties[key]['default']);
+                self.myProperties[key]['value'] = copy.deepcopy(self.myProperties[key]['default'])
                 if self.myProperties[key]['mandatory']:
                     self.myProperties[key]['status'] = STATUS_CHANGED
 
@@ -158,7 +157,7 @@ class Object(object):
                 info = dict([(k, self.myProperties[k]['backend_type']) for k in self._propsByBackend[backend]])
                 self.log.debug("loading attributes for backend '%s': %s" % (backend, str(info)))
                 be = ObjectBackendRegistry.getBackend(backend)
-                be_attrs =  self._backendAttrs[backend] if backend in self._backendAttrs else None
+                be_attrs = self._backendAttrs[backend] if backend in self._backendAttrs else None
                 attrs = be.load(self.uuid, info, be_attrs)
 
             except ValueError as e:
@@ -190,7 +189,7 @@ class Object(object):
 
             # Execute defined in-filters.
             if len(self.myProperties[key]['in_filter']):
-                self.log.debug("found %s in-filter(s)  for attribute '%s'" % (str(len(self.myProperties[key]['in_filter'])),key))
+                self.log.debug("found %s in-filter(s)  for attribute '%s'" % (str(len(self.myProperties[key]['in_filter'])), key))
 
                 # Execute each in-filter
                 for in_f in self.myProperties[key]['in_filter']:
@@ -270,7 +269,6 @@ class Object(object):
             for bb in  self.myProperties[name]['blocked_by']:
                 if bb['value'] in self.myProperties[bb['name']]['value']:
                     raise AttributeError("<%s> Attribute is blocked by %s = '%s'!" % (name, bb['name'], bb['value']))
-
 
             # Do not allow to write to read-only attributes.
             if self.myProperties[name]['readonly']:
@@ -519,7 +517,6 @@ class Object(object):
                 for out_f in props[key]['out_filter']:
                     self.__processFilter(out_f, key, props)
 
-
         # Collect properties by backend
         for prop_key in props:
 
@@ -708,7 +705,7 @@ class Object(object):
                 stack.append(v)
                 if not v:
                     if len(errors):
-                        lasterrmsg =  errors.pop()
+                        lasterrmsg = errors.pop()
 
             # A comparator compares two values from the stack and then returns a single
             #  boolean value.

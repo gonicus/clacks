@@ -16,7 +16,7 @@ class GlobalLock(object):
     instance = None
 
     def __init__(self):
-        self.env= Environment.getInstance()
+        self.env = Environment.getInstance()
         lck = self.env.config.get("locking.table", default="locks")
         self.__engine = self.env.getDatabaseEngine('core')
 

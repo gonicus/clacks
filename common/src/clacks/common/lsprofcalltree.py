@@ -1,10 +1,12 @@
 from __future__ import print_function
 
+
 def label(code):
     if isinstance(code, str):
         return ('~', 0, code)    # built-in functions ('~' sorts at the end)
     else:
         return '%s %s:%d' % (code.co_name, code.co_filename, code.co_firstlineno)
+
 
 class KCacheGrind(object):
     def __init__(self, profiler):

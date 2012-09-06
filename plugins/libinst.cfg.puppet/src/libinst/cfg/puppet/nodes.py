@@ -26,7 +26,7 @@ class PuppetNodeManager(object):
             if line.startswith("node "):
                 name, dummy, inherit = self.__node.match(line).groups()
                 if not name in self.__nodes:
-                    self.__nodes[name] = {'var':{}, 'inherit':inherit, 'include':[]}
+                    self.__nodes[name] = {'var': {}, 'inherit': inherit, 'include': []}
 
                 trigger = True
                 continue
@@ -49,7 +49,7 @@ class PuppetNodeManager(object):
                     self.__nodes[name]['include'].append(self.__include.match(line).groups()[0])
 
     def add(self, name, variables={}, includes=[], inherit=None):
-        self.__nodes[name] = {'var':variables, 'inherit':inherit, 'include':includes}
+        self.__nodes[name] = {'var': variables, 'inherit': inherit, 'include': includes}
 
     def remove(self, name):
         del self.__nodes[name]

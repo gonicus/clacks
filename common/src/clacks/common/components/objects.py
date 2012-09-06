@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import pkg_resources
 import logging
-from clacks.common import Environment
 
 
 class ObjectRegistry(object):

@@ -26,7 +26,7 @@ class BaseInstallMethod(object):
         }
 
     def __init__(self):
-        self.rev_attributes = dict((v,k) for k, v in self.attributes.iteritems())
+        self.rev_attributes = dict((v, k) for k, v in self.attributes.iteritems())
         self.env = Environment.getInstance()
 
     @staticmethod
@@ -227,7 +227,7 @@ class BaseInstallMethod(object):
                 mods.append((ldap.MOD_DELETE, self.rev_attributes[key], None))
 
         # Do LDAP operations to add the system
-        res = None
+        res = None #@UnusedVariable
         lh = LDAPHandler.get_instance()
         with lh.get_handle() as conn:
             res = conn.search_s(",".join([self.env.config.get("libinst.template-rdn",

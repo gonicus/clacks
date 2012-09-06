@@ -8,7 +8,7 @@ from clacks.client.plugins.join.methods import join_method
 from pkg_resources import resource_filename #@UnresolvedImport
 
 try:
-    from snack import *
+    from snack import * #@UnusedWildImport
     available = True
 except ImportError:
     available = False
@@ -51,7 +51,7 @@ class NewtGUI(join_method):
         # Else someone else needs to call "popWindow"...
 
     def JoinWindow(self, title, text, allowCancel=0, width=50,
-            entryWidth=37, buttons=['Join'], help=None):
+            entryWidth=37, buttons=['Join'], hlp=None):
         bb = ButtonBar(self.screen, buttons)
         t = TextboxReflowed(width, text)
 

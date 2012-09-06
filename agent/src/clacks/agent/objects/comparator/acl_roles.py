@@ -96,4 +96,3 @@ class IsAclRole(ElementComparator):
                         return False
 
         return True
-

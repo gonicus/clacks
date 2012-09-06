@@ -160,7 +160,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
 
             # Intitially load all signatures
             self.__notifier_callback()
-        except Exception as error:
+        except Exception:
             self.log.error("failed to start monitoring of '%s'" % (self.script_path))
 
     @dbus.service.signal('org.clacks', signature='s')
@@ -171,7 +171,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         """
         pass
 
-    def __notifier_callback(self, fullpath = None):
+    def __notifier_callback(self, fullpath=None):
         """
         This method reads scripts found in the 'dbus.script_path' and
         exports them as callable dbus-method.
@@ -399,4 +399,3 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         except Exception as error:
             self._dbus_class_table[cname]['org.clacks'] = old_list
             raise DBusShellException("failed to manually register dbus method: %s" % (str(error),))
-

@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 import json
-import datetime
-import pkg_resources
 
 
 def dumps(obj, encoding='utf-8'):

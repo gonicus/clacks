@@ -4,6 +4,7 @@ from clacks.agent.objects import ObjectFactory
 import time
 import datetime
 
+
 class Target(ElementFilter):
     """
     This filter renames the attribute.

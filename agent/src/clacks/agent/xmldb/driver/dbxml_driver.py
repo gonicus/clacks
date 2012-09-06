@@ -648,4 +648,3 @@ class DBXml(XMLDBInterface):
         else:
             self.compact_timer[name] = Timer(self.compact_timeout, self.compactCollection, [name])
             self.compact_timer[name].start()
-

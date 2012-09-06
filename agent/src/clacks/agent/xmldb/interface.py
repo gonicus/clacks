@@ -5,7 +5,6 @@ class XMLDBException(Exception):
     pass
 
 
-
 class XMLDBInterface(object):
 
     def __init__(self):
@@ -119,7 +118,7 @@ class XMLDBInterface(object):
     def setSchema(self, collection, filename, content):
         raise NotImplementedError("setSchema")
 
-    def validateSchema (self, collection, name, md5sum=None, schemaString=None):
+    def validateSchema(self, collection, name, md5sum=None, schemaString=None):
         """
         This method can be used to check whether a schema has changed or not.
 

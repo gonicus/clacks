@@ -15,7 +15,6 @@ from itertools import permutations
 import ldap
 
 
-
 class RDNNotSpecified(Exception):
     """
     Exception thrown for missing rdn property in object definitions
@@ -94,7 +93,7 @@ class JSON(ObjectBackend):
         if not item_uuid:
             return False
 
-        res =  self.identify_by_uuid(item_uuid, params)
+        res = self.identify_by_uuid(item_uuid, params)
         return res
 
     def identify_by_uuid(self, item_uuid, params):
@@ -346,7 +345,6 @@ class JSON(ObjectBackend):
             json[item_uuid][o_type] = {}
             json[item_uuid][o_type]['type'] = o_type
 
-
         for item in data:
             json[item_uuid][o_type][item] = data[item]['value']
         self.__save(json)
@@ -370,7 +368,7 @@ class JSON(ObjectBackend):
 
                     # Update the source entry
                     entry = json[item_uuid][obj]
-                    entry['dn'] = re.sub(re.escape(entry['parentDN'])+"$", new_base, entry['dn'])
+                    entry['dn'] = re.sub(re.escape(entry['parentDN']) + "$", new_base, entry['dn'])
                     entry['parentDN'] = new_base
 
                     # Check if we can move the entry

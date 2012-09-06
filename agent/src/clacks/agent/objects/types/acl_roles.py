@@ -2,6 +2,7 @@
 from clacks.agent.objects.types import AttributeType
 from json import loads, dumps
 
+
 class AclRole(AttributeType):
     """
     This is a special object-attribute-type for AclAction.

@@ -149,7 +149,7 @@ class ObjectProxy(object):
 
                     # Remember foreign properties to be able to the correct
                     # values to them after we have finished building up all classes
-                    self.__foreign_attrs.append( (attr, ext))
+                    self.__foreign_attrs.append((attr, ext))
 
         # Get attribute to object-type mapping
         self.__attribute_type_map = self.__factory.getAttributeTypeMap(self.__base_type)
@@ -271,12 +271,12 @@ class ObjectProxy(object):
         schema = self.__factory.getXMLSchema(obj)
         if "Templates" in schema.__dict__:
             for template in schema.Templates.iterchildren():
-                templates.append(template.text);
+                templates.append(template.text)
 
         return templates
 
     def _get_template(self, obj, theme):
-        templates = self._get_object_templates(obj);
+        templates = self._get_object_templates(obj)
         if templates:
             return self.__base.getNamedTemplate(templates, theme)
 
@@ -290,7 +290,7 @@ class ObjectProxy(object):
         res['templates'] = self.get_templates(theme)
 
         # Resolve all available extensions for their dependencies
-        ei =  {}
+        ei = {}
         for e in res['extensions'].keys():
             ei[e] = self.get_extension_dependencies(e)
         res['extension_deps'] = ei
@@ -472,7 +472,7 @@ class ObjectProxy(object):
 
             except Exception as e:
                 from traceback import print_exc
-                print_exc();
+                print_exc()
                 self.__log.error("moving object '%s' from '%s' to '%s' failed: %s" % (self.__base.uuid, old_base, new_base, str(e)))
                 return False
 

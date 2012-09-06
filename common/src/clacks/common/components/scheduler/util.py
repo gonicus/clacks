@@ -222,10 +222,10 @@ def to_unicode(string, encoding='ascii'):
 if sys.version_info < (3, 0):  # pragma: nocover
     iteritems = lambda d: d.iteritems()
     itervalues = lambda d: d.itervalues()
-    xrange = xrange
-    basestring = basestring
+    xrange = xrange #@ReservedAssignment
+    basestring = basestring #@ReservedAssignment
 else:  # pragma: nocover
     iteritems = lambda d: d.items()
     itervalues = lambda d: d.values()
-    xrange = range
-    basestring = str
+    xrange = range #@ReservedAssignment
+    basestring = str #@ReservedAssignment

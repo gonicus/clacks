@@ -57,7 +57,7 @@ class TestACLResolver(unittest.TestCase):
                 "Resolving acl-roles using the exported clacks.agent commands does not work! The user should not be able to read, but he can!")
 
         # Drop the actions and fall back to use a role.
-        self.resolver.updateACL('acl_tester', lid, rolename = 'rolle2')
+        self.resolver.updateACL('acl_tester', lid, rolename='rolle2')
         self.assertTrue(self.resolver.check('peter', 'com.wurstpelle.de', 'r', {}, 'dc=1,dc=gonicus,dc=de'),
                 "Resolving acl-roles using the exported clacks.agent commands does not work! The user should be able to read, but he cannot!")
 
@@ -110,7 +110,7 @@ class TestACLResolver(unittest.TestCase):
         self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "ACLRoles are not resolved correctly! The user should be able to read, but he cannot!")
 
-        self.assertRaises(ACLException, self.resolver.remove_role , 'role1')
+        self.assertRaises(ACLException, self.resolver.remove_role, 'role1')
 
         self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "ACLRoles are not resolved correctly! The user should be able to read, but he cannot!")
@@ -378,7 +378,6 @@ class TestACLResolver(unittest.TestCase):
         self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "ACL scope RESET is not resolved correclty! The user should be able to read, but he cannot!")
 
-
         # ------
         # Now add the ACL.RESET
         # ------
@@ -396,7 +395,6 @@ class TestACLResolver(unittest.TestCase):
         base = "dc=a," + self.ldap_base
         self.assertTrue(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "ACL scope RESET is not resolved correclty! The user should be able to read, but he cannot!")
-
 
         # Check for acls for one level above the acl definition
         # Should return False
@@ -483,7 +481,6 @@ class TestACLResolver(unittest.TestCase):
         base = "dc=b,dc=a," + self.ldap_base
         self.assertFalse(self.resolver.check('tester1', 'org.clacks.factory', 'r', base=base),
                 "ACL scope ONE is not resolved correclty! The user should not be able to read, but he can!")
-
 
         # Check for permissions one level below the base we've created acls for.
         base = self.ldap_base

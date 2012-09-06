@@ -26,7 +26,7 @@ class ElementComparator(object):
         Do not make copies of ourselves.
         """
         return self
-    
+
     def __deepcopy__(self, memo):
         """
         Do not make copies of ourselves.

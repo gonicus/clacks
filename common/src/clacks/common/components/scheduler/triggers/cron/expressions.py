@@ -29,13 +29,13 @@ class AllExpression(object):
         start = max(start, minval)
 
         if not self.step:
-            next = start
+            nxt = start
         else:
             distance_to_next = (self.step - (start - minval)) % self.step
-            next = start + distance_to_next
+            nxt = start + distance_to_next
 
-        if next <= maxval:
-            return next
+        if nxt <= maxval:
+            return nxt
 
     def __str__(self):
         if self.step:
@@ -74,23 +74,23 @@ class RangeExpression(AllExpression):
         start = max(start, minval)
 
         if not self.step:
-            next = start
+            nxt = start
         else:
             distance_to_next = (self.step - (start - minval)) % self.step
-            next = start + distance_to_next
+            nxt = start + distance_to_next
 
-        if next <= maxval:
-            return next
+        if nxt <= maxval:
+            return nxt
 
     def __str__(self):
         if self.last != self.first and self.last is not None:
-            range = '%d-%d' % (self.first, self.last)
+            rnge = '%d-%d' % (self.first, self.last)
         else:
-            range = str(self.first)
+            rnge = str(self.first)
 
         if self.step:
-            return '%s/%d' % (range, self.step)
-        return range
+            return '%s/%d' % (rnge, self.step)
+        return rnge
 
     def __repr__(self):
         args = [str(self.first)]

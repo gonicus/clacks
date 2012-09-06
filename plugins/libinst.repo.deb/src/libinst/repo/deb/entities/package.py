@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Table, Column, Integer, String, ForeignKey, Sequence, Text
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy import Column, Integer, String, ForeignKey, Sequence, Text
+from sqlalchemy.orm import relationship
 
 from libinst.entities.package import Package
 
-from libinst.entities import Base, UseInnoDB
+from libinst.entities import UseInnoDB
 from libinst.repo.deb.entities.priority import DebianPriority
 
 

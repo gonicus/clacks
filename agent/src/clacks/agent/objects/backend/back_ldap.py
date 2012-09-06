@@ -54,7 +54,7 @@ class LDAP(ObjectBackend):
         self.__check_res(uuid, res)
 
         # Do value conversation
-        items = dict((k,v) for k, v in res[0][1].iteritems() if k in keys)
+        items = dict((k, v) for k, v in res[0][1].iteritems() if k in keys)
         for key in items.keys():
             cnv = getattr(self, "_convert_from_%s" % info[key].lower())
             lcnv = []
@@ -100,7 +100,7 @@ class LDAP(ObjectBackend):
             if fixed_rdn:
                 if dn in self.__i_cache and attr in self.__i_cache[dn]:
                     self.__i_cache_ttl[dn] = time.time()
-                    return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0 and len(set([value])- set(self.__i_cache[dn][attr])) == 0
+                    return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0 and len(set([value]) - set(self.__i_cache[dn][attr])) == 0
 
             else:
                 self.__i_cache_ttl[dn] = time.time()
@@ -125,7 +125,7 @@ class LDAP(ObjectBackend):
                     self.__i_cache[dn][attr] = [x.decode('utf-8') for x in res[0][1][attr]]
                 else:
                     self.__i_cache[dn][attr] = []
-                return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0 and len(set([value])- set(self.__i_cache[dn][attr])) == 0
+                return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0 and len(set([value]) - set(self.__i_cache[dn][attr])) == 0
             else:
                 return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0
 
@@ -270,7 +270,6 @@ class LDAP(ObjectBackend):
 
         # Return automatic uuid
         return self.dn2uuid(dn)
-
 
     def update(self, uuid, data, params):
 

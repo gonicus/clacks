@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-import logging
 import pkg_resources
 import codecs
 import traceback
@@ -17,6 +16,7 @@ from clacks.common.components.registry import PluginRegistry
 from clacks.dbus import get_system_bus
 
 loop = None
+
 
 def shutdown(a=None, b=None):
     """ Function to shut down the client. """
@@ -33,6 +33,7 @@ def shutdown(a=None, b=None):
     logging.shutdown()
     exit(0)
 
+
 def mainLoop(env):
     global loop
 
@@ -41,10 +42,10 @@ def mainLoop(env):
     try:
         # connect to dbus and setup loop
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-        system_bus = get_system_bus()
+        get_system_bus()
 
         # Instanciate dbus objects
-        pr = PluginRegistry(component='dbus.module')
+        PluginRegistry(component='dbus.module')
 
         # Enter main loop
         loop = gobject.MainLoop()
