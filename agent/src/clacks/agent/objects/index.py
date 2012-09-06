@@ -469,24 +469,31 @@ class ObjectIndex(Plugin):
             fltr['category'] = "all"
         if not 'secondary' in fltr:
             fltr['secondary'] = "enabled"
-        #TODO: Comparing with generic attributes does not work yet
-        #if 'mod-time' in fltr:
-        #    if fltr['mod-time'] == 'hour':
-        #        limit = " AND *.LastChanged > %d" % 0
-        #    elif fltr['mod-time'] == 'day':
-        #        limit = " AND *.LastChanged > %d" % 0
-        #    elif fltr['mod-time'] == 'week':
-        #        limit = " AND *.LastChanged > %d" % 0
-        #    elif fltr['mod-time'] == 'month':
-        #        limit = " AND *.LastChanged > %d" % 0
-        #    elif fltr['mod-time'] == 'year':
-        #        limit = " AND *.LastChanged > %d" % 0
+
+        if 'mod-time' in fltr:
+            now = datetime.datetime.now()
+            if fltr['mod-time'] == 'hour':
+                td = (now - datetime.timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%S")
+                limits = " AND (%%s.LastChanged >= \"%s\")" % td
+            elif fltr['mod-time'] == 'day':
+                td = (now - datetime.timedelta(days=1)).strftime("%Y-%m-%dT00:00:00")
+                limits = " AND (%%s.LastChanged >= \"%s\")" % td
+            elif fltr['mod-time'] == 'week':
+                td = (now - datetime.timedelta(weeks=1)).strftime("%Y-%m-%dT00:00:00")
+                limits = " AND (%%s.LastChanged >= \"%s\")" % td
+            elif fltr['mod-time'] == 'month':
+                td = (now - datetime.timedelta(days=31)).strftime("%Y-%m-%dT00:00:00")
+                limits = " AND (%%s.LastChanged >= \"%s\")" % td
+            elif fltr['mod-time'] == 'year':
+                td = (now - datetime.timedelta(days=365)).strftime("%Y-%m-%dT00:00:00")
+                limits = " AND (%%s.LastChanged >= \"%s\"" % td
 
         for kw in keywords:
             kw = kw.strip("'").strip('"')
             for typ, query in queries.items():
+                limit = (limits % typ) if "%s" in limits else limits
                 squery = "SELECT " + typ + ".* BASE " + typ + " " + scope + (' "%s"' % base) + " WHERE (" + " OR ".join(query) % {'__search__': SearchWrapper.quote(kw)}
-                squery += ") %s ORDER BY %s.DN" % (limits, typ)
+                squery += ") %s ORDER BY %s.DN" % (limit, typ)
 
                 # Skip the search if it has already done
                 if squery in done_searches:
@@ -506,6 +513,7 @@ class ObjectIndex(Plugin):
                     for r in resolve[typ]:
                         if r['attribute'] in item[typ]:
                             tag = r['type'] if r['type'] else typ
+                            limit = (limits % tag) if "%s" in limits else limits
                             squery = "SELECT %s.* BASE %s %s \"%s\" WHERE " % (tag, tag, scope, base)
                             squery += "%s.%s IN (%s)" % (tag, r['filter'], ",".join(['"%s"' % i for i in item[typ][r['attribute']]]))
                             squery += " %s ORDER BY %s.DN" % (limits, tag)
