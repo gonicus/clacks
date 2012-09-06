@@ -346,6 +346,14 @@ class ObjectIndex(Plugin):
             <o:LastChanged>%s</o:LastChanged>
         """ % (obj.uuid, current.LastChanged.text))
 
+    @Command(__help__=N_("Get all translations bound to templates."))
+    def getTemplateI18N(self, language, theme="default"):
+        templates = []
+        for otype in self.factory.getObjectTypes():
+            templates += self.factory.getObjectTemplates(otype)
+
+        return self.factory.getNamedI18N(list(set(templates)), language=language, theme=theme)
+
     @Command(__help__=N_("Perform a raw xquery on the collections"))
     def xquery_dict(self, query):
         """

@@ -168,6 +168,21 @@ class ObjectFactory(object):
                         res.append(attr.Name.text)
         return res
 
+    def getObjectTemplates(self, objectType):
+        """
+        Returns a list of template filenames for this object.
+        """
+        if not objectType in self.__xml_defs:
+            raise Exception("cannot get templates - object %s does not exist!" % objectType)
+
+        res = []
+        find = objectify.ObjectPath("Object.Templates.Template")
+        if find.hasattr(self.__xml_defs[objectType]):
+            for attr in find(self.__xml_defs[objectType]):
+                res.append(attr.text)
+
+        return res
+
     def getObjectSearchAid(self, objectType):
         """
         Returns a hash containing information about how to search for this
@@ -1301,3 +1316,72 @@ class ObjectFactory(object):
             return transform(xmldefs)
         else:
             return etree.tostring(transform(xmldefs))
+
+    def getNamedI18N(self, templates, language=None, theme="default"):
+        if not language:
+            return {}
+
+        env = Environment.getInstance();
+        i18n = None
+        locales = []
+        if "-" in language:
+            tmp = language.split("-")
+            locales.append(tmp[0].lower() + "_" + tmp[0].upper())
+            locales.append(tmp[0].lower())
+        else:
+            locales.append(language)
+
+        # If there's a i18n file, try to find it
+        res = {}
+
+        if templates:
+            for template in templates:
+                paths = []
+
+                # Absolute path
+                if template.startswith(os.path.sep):
+                    tp = os.path.dirname(template)
+                    tn = os.path.basename(template)[:-3]
+                    for loc in locales:
+                        paths.append(os.path.join(tp, "i18n", "%s_%s.ts" % (tn, loc)))
+
+                # Relative path
+                else:
+                    tn = os.path.basename(template)[:-3]
+
+                    # Find path
+                    for loc in locales:
+                        paths.append(pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', theme, "i18n", "%s_%s.ts" % (tn, loc)))) #@UndefinedVariable
+                        paths.append(os.path.join(env.config.getBaseDir(), 'templates', theme, "%s_%s.ts" % (tn, loc)))
+                        paths.append(pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', "default", "i18n", "%s_%s.ts" % (tn, loc)))) #@UndefinedVariable
+                        paths.append(os.path.join(env.config.getBaseDir(), 'templates', "default", "%s_%s.ts" % (tn, loc)))
+
+                for path in paths:
+                    if os.path.exists(path):
+                        with open(path, "r") as f:
+                            i18n = f.read()
+                        break
+
+                if i18n:
+                    # Reading the XML file will ignore extra tags, because they're not supported
+                    # for ordinary GUI rendering (i.e. plural needs a 'count').
+                    root = etree.fromstring(i18n)
+                    contexts = root.findall("context");
+
+                    for context in contexts:
+                        for message in context.findall("message"):
+                            if "numerus" in message.keys():
+                                continue
+
+                            translation = message.find("translation")
+
+                            # With length variants?
+                            if "variants" in translation.keys() and translation.get("variants") == "yes":
+                                res[unicode(message.find("source").text)] = [unicode(m.text) for m in translation.findall("lengthvariant")][0]
+
+                            # Ordinary?
+                            else:
+                                if translation.text:
+                                    res[unicode(message.find("source").text)] = unicode(translation.text)
+
+        return res

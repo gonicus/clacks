@@ -266,17 +266,6 @@ class ObjectProxy(object):
             res[name] = ext.getTemplate(theme) if ext else self._get_template(name, theme)
         return res
 
-    def get_translations(self, locale, theme="default"):
-
-        # Merge translations
-        res = self.__base.getI18N(locale, theme)
-        for name, ext in self.__extensions.items():
-            if ext:
-                res.update(ext.getI18N(locale, theme))
-            else:
-                res.update(self._get_translation(name, locale, theme))
-        return res
-
     def _get_object_templates(self, obj):
         templates = []
         schema = self.__factory.getXMLSchema(obj)
@@ -293,20 +282,12 @@ class ObjectProxy(object):
 
         return None
 
-    def _get_translation(self, obj, locale=None, theme="default"):
-        templates = self._get_object_templates(obj);
-        if templates:
-            return self.__base.getNamedI18N(templates, locale, theme)
-
-        return {}
-
     def get_object_info(self, locale=None, theme="default"):
         res = {}
 
         res['base'] = self.get_base_type()
         res['extensions'] = self.get_extension_types()
         res['templates'] = self.get_templates(theme)
-        res['i18n'] = self.get_translations(locale, theme)
 
         # Resolve all available extensions for their dependencies
         ei =  {}
