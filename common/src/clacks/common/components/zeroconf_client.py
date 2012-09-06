@@ -13,8 +13,7 @@ if platform.system() != "Windows":
     import dbus
     import avahi
 else:
-    #pylint: disable=F0401
-    import pybonjour
+    import pybonjour #@UnresolvedImport
 
 
 class ZeroconfException(Exception):
