@@ -367,7 +367,7 @@
    <sender>CtxShadowEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>sambaSamAccount</receiver>
-   <slot>property_CtxShadow()</slot>
+   <slot>property_Ctx_shadow()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>422</x>
