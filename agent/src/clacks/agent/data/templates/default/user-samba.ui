@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>568</width>
+    <width>671</width>
     <height>600</height>
    </rect>
   </property>
@@ -435,17 +435,21 @@
  <tabstops>
   <tabstop>sambaSIDEdit</tabstop>
   <tabstop>sambaPrimaryGroupSIDEdit</tabstop>
+  <tabstop>sambaDomainNameEdit</tabstop>
   <tabstop>descriptionEdit</tabstop>
   <tabstop>sambaHomePathEdit</tabstop>
   <tabstop>sambaHomeDriveEdit</tabstop>
   <tabstop>sambaLogonScriptEdit</tabstop>
   <tabstop>sambaProfilePathEdit</tabstop>
   <tabstop>sambaPwdLastSetEdit</tabstop>
+  <tabstop>sambaBadPasswordCountEdit</tabstop>
+  <tabstop>sambaBadPasswordTimeEdit</tabstop>
   <tabstop>sambaLogonTimeEdit</tabstop>
   <tabstop>sambaLogoffTimeEdit</tabstop>
   <tabstop>sambaKickoffTimeEdit</tabstop>
   <tabstop>sambaPwdCanChangeEdit</tabstop>
   <tabstop>sambaPwdMustChangeEdit</tabstop>
+  <tabstop>pushButton</tabstop>
   <tabstop>sambaUserWorkstationsEdit</tabstop>
  </tabstops>
  <resources>
@@ -617,42 +621,112 @@
    <signal>textChanged(QString)</signal>
    <receiver>sambaSamAccount</receiver>
    <slot>property_sambaBadPasswordTime()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>sambaPwdLastSetEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>sambaSamAccount</receiver>
    <slot>property_sambaPwdLastSet()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>sambaLogoffTimeEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>sambaSamAccount</receiver>
    <slot>property_sambaLogoffTime()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>sambaLogonTimeEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>sambaSamAccount</receiver>
    <slot>property_sambaLogonTime()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>sambaKickoffTimeEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>sambaSamAccount</receiver>
    <slot>property_sambaKickoffTime()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>sambaPwdCanChangeEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>sambaSamAccount</receiver>
    <slot>property_sambaPwdCanChange()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>sambaPwdMustChangeEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>sambaSamAccount</receiver>
    <slot>property_sambaPwdMustChange()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
  </connections>
 </ui>
