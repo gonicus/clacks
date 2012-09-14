@@ -22,21 +22,15 @@ class GenerateSambaSid(ElementFilter):
             raise Exception("No sambaDomainName available")
 
         index = PluginRegistry.getInstance("ObjectIndex")
+        sid = index.raw_search({'_type': 'SambaDomain', 'sambaDomainName': domain},
+            {'sambaSID': 1, 'sambaAlgorithmicRidBase': 1})
 
-        #TODO: escape domain
-        query = "collection('objects')/o:SambaDomain/o:Attributes" + \
-                "[o:sambaDomainName/matches(string(), '%s', 'i')]/o:sambaSID/string()" % domain
-        sid = index.xquery(query)
-        if len(sid) != 1:
+        if sid.count() != 1:
             raise Exception("No SID found for domain '%s'" % domain)
-        dsid = sid[0]
+        dsid = sid[0]['sambaSID'][0]
 
-        #TODO: escape domain
-        query = "collection('objects')/o:SambaDomain/o:Attributes" + \
-                "[o:sambaDomainName/matches(string(), '%s', 'i')]/o:sambaAlgorithmicRidBase/string()" % domain
-        ridbase = index.xquery(query)
-        if len(ridbase):
-            ridbase = int(ridbase[0])
+        if 'sambaAlgorithmicRidBase' in sid[0]:
+            ridbase = int(sid[0]['sambaAlgorithmicRidBase'][0])
         else:
             ridbase = int(self.env.config.get('samba.ridbase', default=1000))
 

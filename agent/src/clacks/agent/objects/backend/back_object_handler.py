@@ -53,16 +53,16 @@ class ObjectHandler(ObjectBackend):
 
             # Load related objects from the index and add the required attribute-values
             # as values for 'targetAttr'
+            index = PluginRegistry.getInstance("ObjectIndex")
             for targetAttr in mapping:
                 result[targetAttr] = []
                 foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = mapping[targetAttr] #@UnusedVariable
-                oi = PluginRegistry.getInstance("ObjectIndex")
-                results = oi.xquery("collection('objects')/*/.[o:UUID = '%s']/o:Attributes/o:%s/string()" % (uuid, matchAttr))
-                if results:
-                    matchValue = results[0]
-                    xq = "collection('objects')/o:%s/o:Attributes[o:%s = '%s']/o:%s/string()" % \
-                            (foreignObject, foreignMatchAttr, matchValue, foreignAttr)
-                    result[targetAttr] = oi.xquery(xq)
+                results = index.raw_search({'_uuid': uuid, matchAttr: {'$exists': True}}, {matchAttr: 1})
+                if results.count() == 1:
+                    matchValue = results[0][matchAttr][0]
+                    xq = index.raw_search({'_type': foreignObject, foreignMatchAttr: matchValue}, {foreignAttr: 1})
+                    if xq.count() == 1:
+                        result[targetAttr] = xq[0][foreignAttr][0]
 
         return result
 
@@ -88,7 +88,7 @@ class ObjectHandler(ObjectBackend):
 
         # Extract usable information out og the backend attributes
         mapping = ObjectHandler.extractBackAttrs(back_attrs)
-        oi = PluginRegistry.getInstance("ObjectIndex")
+        index = PluginRegistry.getInstance("ObjectIndex")
 
         # Ensure that we have a configuration for all attributes
         for attr in data.keys():
@@ -107,23 +107,20 @@ class ObjectHandler(ObjectBackend):
 
             # Get the matching attribute for the current object
             foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = mapping[targetAttr] #@UnusedVariable
-            xq = "collection('objects')/*/.[o:UUID = '%s']/o:Attributes/o:%s/string()" % (uuid, matchAttr)
-            res = oi.xquery(xq)
-            if not res:
+            res = index.raw_search({'_uuid': uuid}, {matchAttr: 1})
+            if not res.count():
                 raise Exception("source object could not be found" % targetAttr)
-            matchValue = res[0]
+            matchValue = res[0][matchAttr][0]
 
             # Collect all objects that match the given value
             allvalues = data[targetAttr]['orig'] + data[targetAttr]['value']
             object_mapping = {}
             for value in allvalues:
-                xq = "collection('objects')/o:%s[o:Attributes/o:%s = '%s']/o:DN/string()" % \
-                        (foreignObject, foreignAttr, value)
-                res = oi.xquery(xq)
-                if not res:
-                    raise NoSuchObject("Could not find any '%s' with '%s=%s'!" % (foreignObject, foreignAttr, value))
+                res = index.raw_search({'_type': foreignObject, foreignAttr: value}, {'dn': 1})
+                if res.count() != 1:
+                    raise NoSuchObject("Could not find any unique '%s' with '%s=%s'!" % (foreignObject, foreignAttr, value))
                 else:
-                    object_mapping[value] = ObjectProxy(res[0].decode("utf-8"))
+                    object_mapping[value] = ObjectProxy(res[0]['dn'])
 
             # Calculate value that have to be removed/added
             remove = list(set(data[targetAttr]['orig']) - set(data[targetAttr]['value']))

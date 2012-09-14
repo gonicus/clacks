@@ -13,40 +13,55 @@ from json import loads, dumps
 class GuiMethods(Plugin):
     _target_ = 'misc'
 
+    @Command(__help__=N_("Get all translations bound to templates."))
+    def getTemplateI18N(self, language, theme="default"):
+        templates = []
+        factory = ObjectFactory.getInstance()
+
+        for otype in factory.getObjectTypes():
+            templates += factory.getObjectTemplates(otype)
+
+        return factory.getNamedI18N(list(set(templates)), language=language, theme=theme)
+
     @Command(__help__=N_("Save user preferences"))
     def saveUserPreferences(self, userid, name, value):
         index = PluginRegistry.getInstance("ObjectIndex")
-        dn = index.xquery("collection('objects')/o:User[o:Attributes/o:uid='%s']/o:DN/string()" % (userid))
-        if not dn:
+        res = index.raw_search({'_type': 'User', 'uid': userid}, {'dn': 1})
+        if not res.count():
             raise Exception("No such user %s" % (userid))
 
-        user = ObjectProxy(dn[0])
+        user = ObjectProxy(res[0]['dn'])
         prefs = user.guiPreferences
 
         if not prefs:
             prefs = {}
         else:
             prefs = loads(prefs)
+
         prefs[name] = value
         user.guiPreferences = dumps(prefs)
         user.commit()
+
         return True
 
     @Command(__help__=N_("Load user preferences"))
     def loadUserPreferences(self, userid, name):
         index = PluginRegistry.getInstance("ObjectIndex")
-        dn = index.xquery("collection('objects')/o:User[o:Attributes/o:uid='%s']/o:DN/string()" % (userid))
-        if not dn:
+        res = index.raw_search({'_type': 'User', 'uid': userid}, {'dn': 1})
+        if not res.count():
             raise Exception("No such user %s" % (userid))
 
-        user = ObjectProxy(dn[0])
+        user = ObjectProxy(res[0]['dn'])
         prefs = user.guiPreferences
+
         if not prefs:
             prefs = {}
         else:
             prefs = loads(prefs)
+
         if name in prefs:
             return prefs[name]
+
         return None
 
     @Command(__help__=N_("Search for object informations"))
@@ -71,7 +86,7 @@ class GuiMethods(Plugin):
             raise Exception("no backend parameter found for %s.%s" % (extension, attribute))
 
         # Collection basic information
-        foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = be_data[attribute] #@UnusedVariable
+        foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = be_data[attribute]  #@UnusedVariable
         otype = foreignObject
         oattr = foreignAttr
         base = env.base
@@ -141,7 +156,7 @@ class GuiMethods(Plugin):
             raise Exception("no backend parameter found for %s.%s" % (extension, attribute))
 
         # Collection basic information
-        foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = be_data[attribute] #@UnusedVariable
+        foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = be_data[attribute]  #@UnusedVariable
         otype = foreignObject
         oattr = foreignAttr
         base = env.base

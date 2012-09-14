@@ -877,8 +877,8 @@ class Object(object):
         Returns the objectType for a given DN
         """
         index = PluginRegistry.getInstance("ObjectIndex")
-        res = index.xquery("collection('objects')/*/.[o:DN = '%s']/o:Type/text()" % dn)
-        return res[0] if len(res) else None
+        res = index.raw_search({'dn': dn}, {'_type': 1})
+        return res[0]['_type'] if res.count() == 1 else None
 
     def get_references(self, override=None):
         res = []
@@ -889,14 +889,15 @@ class Object(object):
             for ref_attribute, dsc in info.items():
                 for idsc in dsc:
                     oval = self.myProperties[idsc[1]]['orig_value'][0]
+                    dns = index.raw_search({'_type': ref, ref_attribute: oval}, {'dn': 1})
+                    if dns.count():
+                        dns = [x['dn'] for x in dns]
                     res.append((
                         ref_attribute,
                         idsc[1],
                         getattr(self, idsc[1]),
-                        map(lambda s: s.decode('utf-8'),
-                            index.xquery("collection('objects')/*/.[o:Type = '%s' and ./*/o:%s = '%s']/o:DN/string()" % (ref, ref_attribute, oval))),
-                        self.myProperties[idsc[1]]['multivalue']
-                            ))
+                        map(lambda s: s.decode('utf-8'), dns if dns else []),
+                        self.myProperties[idsc[1]]['multivalue']))
 
         return res
 
@@ -959,10 +960,12 @@ class Object(object):
 
         for info in self._objectFactory.getReferences("*", "dn").values():
             for ref_attribute in info.keys():
+                dns = index.raw_search({ref_attribute: self.dn}, {'dn': 1})
+                if dns.count():
+                    dns = [x['dn'] for x in dns]
                 res.append((
                     ref_attribute,
-                    map(lambda s: s.decode('utf-8'),
-                        index.xquery("collection('objects')/*/.[./*/o:%s = '%s']/o:DN/string()" % (ref_attribute, self.dn)))
+                    map(lambda s: s.decode('utf-8'), dns if dns else [])
                 ))
 
         return res
@@ -1198,6 +1201,8 @@ class ObjectChanged(object):
         self.reason = reason
         self.uuid = uuid or obj.uuid
         self.dn = dn or obj.dn
+        #TODO: needs to be removed later on
+        print "------>", self.dn
         self.orig_dn = orig_dn or obj.orig_dn
         self.o_type = o_type or obj.__class__.__name__
 

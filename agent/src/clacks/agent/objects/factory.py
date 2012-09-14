@@ -166,7 +166,7 @@ class ObjectFactory(object):
                 for attr in find(element):
                     if bool(load(attr, "NotIndexed", True)):
                         res.append(attr.Name.text)
-        return res
+        return list(set(res))
 
     def getObjectTemplates(self, objectType):
         """
@@ -199,12 +199,8 @@ class ObjectFactory(object):
                 res['tag'] = attr['Tag']
 
                 res['search'] = []
-                res['fallback-search'] = []
                 for s in attr['Search']:
-                    if 'fallback' in s.attrib and s.attrib['fallback'] == "1":
-                        res['fallback-search'].append(s.text)
-                    else:
-                        res['search'].append(s.text)
+                    res['search'].append(s.text)
 
                 res['keyword'] = []
                 for s in attr['Keyword']:

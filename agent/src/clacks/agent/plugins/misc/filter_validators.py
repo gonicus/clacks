@@ -37,7 +37,7 @@ class IsExistingDN(ElementComparator):
     def process(self, key, value, errors):
         index = PluginRegistry.getInstance("ObjectIndex")
         for dn in value:
-            if not index.xquery("collection('objects')//.[o:DN='%s']/o:DN/string()" % dn):
+            if not index.raw_search({'dn': dn}, {'dn': 1}).count():
                 errors.append(_("The given dn does not exists '%s'!") % dn)
 
         return len(errors) == 0
@@ -55,7 +55,7 @@ class IsExistingDnOfType(ElementComparator):
 
         index = PluginRegistry.getInstance("ObjectIndex")
         for dn in value:
-            if not index.xquery("collection('objects')/o:%s[o:DN='%s']/o:DN/string()" % (objectType, dn)):
+            if not index.raw_search({'_type': objectType, 'dn': dn}, {'dn': 1}).count():
                 errors.append(_("The given dn does not exists '%s'!") % dn)
 
         return len(errors) == 0
@@ -73,7 +73,7 @@ class ObjectWithPropertyExists(ElementComparator):
 
         index = PluginRegistry.getInstance("ObjectIndex")
         for val in value:
-            if not index.xquery("collection('objects')/o:%s/o:Attributes[o:%s='%s']/o:%s/string()" % (objectType, attribute, val, attribute)):
+            if not index.raw_search({'_type': objectType, attribute: val}, {'dn': 1}).count():
                 errors.append(_("There is no '%s' with '%s=%s'!") % (objectType, attribute, val))
 
         return len(errors) == 0

@@ -124,12 +124,11 @@ class goFonAccount(Plugin):
                 raise Exception("please define gofon.sip_context in your config!")
 
             # Read phone-hardware settings from the index
-            res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonDmtfMode/string()" % hardware)
-            dtmf_mode = res[0] if len(res) and res[0] else "rfc2833"
-            res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonQualify/string()" % hardware)
-            qualify = res[0] if len(res) and res[0] else "yes"
-            res = index.xquery("collection('objects')/o:goFonHardware/o:Attributes[o:cn = '%s']/o:goFonType/string()" % hardware)
-            hardware_type = res[0] if len(res) and res[0] else "friend"
+            res = index.raw_search({'_type': 'goFonHardware', 'cn': hardware},
+                    {'goFonDmtfMode': 1, 'goFonQualify': 1, 'goFonType': 1})
+            dtmf_mode = res[0]['goFonDmtfMode'][0] if len(res) and 'goFonDmtfMode' in res[0] else "rfc2833"
+            qualify = res[0]['goFonQualify'][0] if len(res) and 'goFonQualify' in res[0] else "yes"
+            hardware_type = res[0]['goFonType'][0] if len(res) and 'goFonType' in res[0] else "friend"
 
             # Now create the new entries
             sip_entry = {}

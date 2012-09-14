@@ -82,12 +82,11 @@ class PasswordManager(Plugin):
         index = PluginRegistry.getInstance("ObjectIndex")
 
         # Get password hash
-        hsh = index.xquery("collection('objects')/*[o:DN='%s']/o:Attributes/o:userPassword/string()" % \
-                            (object_dn))
-        if len(hsh):
-            hsh = hsh[0]
-        else:
+        res = index.raw_search({'dn': object_dn, 'userPassword': {'$exists': True}}, {'userPassword': 1})
+        if res.count():
+            hsh = res[0]['userPassword'][0]
 
+        else:
             # No password hash -> cannot lock/unlock account
             return False
 
@@ -104,13 +103,11 @@ class PasswordManager(Plugin):
     def accountUnlockable(self, object_dn):
         index = PluginRegistry.getInstance("ObjectIndex")
 
-        # Get password hash
-        hsh = index.xquery("collection('objects')/*[o:DN='%s']/o:Attributes/o:userPassword/string()" % \
-                            (object_dn))
-        if len(hsh):
-            hsh = hsh[0]
-        else:
+        res = index.raw_search({'dn': object_dn, 'userPassword': {'$exists': True}}, {'userPassword': 1})
+        if res.count():
+            hsh = res[0]['userPassword'][0]
 
+        else:
             # No password hash -> cannot lock/unlock account
             return False
 

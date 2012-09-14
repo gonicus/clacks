@@ -31,12 +31,13 @@ will list the available extension types for that specific object.
 import StringIO
 import pkg_resources
 import re
-from itertools import izip
+import time
 from lxml import etree
 from ldap.dn import str2dn, dn2str
 from logging import getLogger
 from clacks.common import Environment
 from clacks.common.components import PluginRegistry
+from bson.binary import Binary
 
 
 class ProxyException(Exception):
@@ -413,23 +414,18 @@ class ObjectProxy(object):
                 # Traverse tree and find different backends
                 foreign_backends = {}
                 index = PluginRegistry.getInstance("ObjectIndex")
-                children = index.xquery("""xquery version '1.0';
-                    let $doc := collection('objects')
-                    for $x in $doc/node()
-                    where ends-with($x/o:ParentDN, '%s')
-                    return
-                      ($x/o:DN/string(), $x/o:Type/string())""" % self.__base.dn)
+                children = index.raw_search({"dn": re.compile("^(.*,)?" + re.escape(self.__base.dn) + "$")},
+                    {'dn': 1, '_type': 1})
 
                 # Note all elements with different backends
-                i = iter(children)
-                children = dict(izip(i, i))
-                children = dict(map(lambda x: (x[0].decode("utf-8"), x[1]), children.items()))
-                for cdn, ctype in children.items():
+                for v in children:
+                    cdn = v['dn']
+                    ctype = v['_type']
                     cback = self.__factory.getObjectTypes()[ctype]['backend']
                     if cback != p_backend:
                         if not cback in foreign_backends:
                             foreign_backends = []
-                        foreign_backends[cback].append(cdn)
+                        foreign_backends[cback].append(cdn.decode('utf-8'))
 
                 # Only keep the first per backend that is close to the root
                 root_elements = {}
@@ -504,7 +500,9 @@ class ObjectProxy(object):
             # Load all children and remove them, starting from the most
             # nested ones.
             index = PluginRegistry.getInstance("ObjectIndex")
-            children = index.xquery("collection('objects')/*/.[ends-with(o:ParentDN, '%s')]/o:DN/string()" % self.__base.dn)
+            children = index.raw_search({"dn": re.compile("^(.*,)?" + re.escape(self.__base.dn) + "$")}, {'dn': 1})
+            children = [c['dn'] for c in children]
+
             children.sort(key=len, reverse=True)
 
             for child in children:
@@ -514,7 +512,7 @@ class ObjectProxy(object):
         else:
             # Test if we've children
             index = PluginRegistry.getInstance("ObjectIndex")
-            if len(index.xquery("collection('objects')/*/.[ends-with(o:ParentDN, '%s')]/o:DN/string()" % self.__base.dn)):
+            if index.raw_search({"dn": re.compile("^(.*,)?" + re.escape(self.__base.dn) + "$")}, {'dn': 1}).count():
                 raise ProxyException("specified object has children - use the recursive flag to remove them")
 
         for extension in [e for e in self.__extensions.values() if e]:
@@ -543,18 +541,14 @@ class ObjectProxy(object):
         # Traverse tree and find different backends
         foreign_backends = {}
         index = PluginRegistry.getInstance("ObjectIndex")
-        children = index.xquery("""xquery version '1.0';
-                    let $doc := collection('objects')
-                    for $x in $doc/node()
-                    where ends-with($x/o:ParentDN, '%s')
-                    return
-                      ($x/o:DN/string(), $x/o:Type/string())""" % self.__base.dn)
+        children = index.raw_search({"dn": re.compile("^(.*,)?" + re.escape(self.__base.dn) + "$")},
+            {'dn': 1, '_type': 1})
 
         # Note all elements with different backends
-        i = iter(children)
-        children = dict(izip(i, i))
-        children = dict(map(lambda x: (x[0].decode("utf-8"), x[1]), children.items()))
-        for cdn, ctype in children.items():
+        for v in children:
+            cdn = v['dn']
+            ctype = v['_type']
+
             cback = self.__factory.getObjectTypes()[ctype]['backend']
             if cback != p_backend:
                 if not cback in foreign_backends:
@@ -703,6 +697,46 @@ class ObjectProxy(object):
 
         if not found:
             raise AttributeError("no such attribute '%s'" % name)
+
+    def asJSON(self, only_indexed=False):
+        """
+        Returns JSON representations for the base-object and all its extensions.
+        """
+        atypes = self.__factory.getAttributeTypes()
+
+        # Check permissions
+        topic = "%s.objects.%s" % (self.__env.domain, self.__base_type)
+        if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
+            self.__log.debug("user '%s' has insufficient permissions for asXML on %s, required is %s:%s" % (
+                self.__current_user, self.dn, topic, "r"))
+            raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
+
+        res = {}
+
+        # Create non object pseudo attributes
+        res['dn'] = self.__base.dn
+        res['_type'] = self.__base.__class__.__name__
+        res['_parent_dn'] = re.sub("^[^,]*,", "", self.__base.dn)
+        res['_uuid'] = self.__base.uuid
+
+        if self.__base.modifyTimestamp:
+            res['_last_changed'] = time.mktime(self.__base.modifyTimestamp.timetuple)
+
+        res['_extensions'] = self.__extensions.keys()
+
+        props = self.__property_map
+        for propname in self.__property_map:
+
+            # Use the object-type conversion method to get valid item string-representations.
+            prop_value = props[propname]['value']
+            if props[propname]['type'] == "Binary":
+                res[propname] = map(lambda x: Binary(x), prop_value)
+
+            # Make remaining values unicode
+            else:
+                res[propname] = atypes[props[propname]['type']].convert_to("UnicodeString", prop_value)
+
+        return res
 
     def asXML(self, only_indexed=False):
         """

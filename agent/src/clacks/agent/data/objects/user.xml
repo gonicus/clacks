@@ -521,37 +521,32 @@
     </Attributes>
     <BaseObject>true</BaseObject>
 
-    <Find>
-      <Aspect>
-	<Tag>User</Tag>
-	<Keyword>User</Keyword>
-	<Search>User.givenName = "%(__search__)s"</Search>
-	<Search>User.sn = "%(__search__)s"</Search>
-	<Search>User.cn = "%(__search__)s"</Search>
-	<Search>User.uid = "%(__search__)s"</Search>
-	<Search fallback="1">User.givenName LIKE "%(__search__)s"</Search>
-	<Search fallback="1">User.sn LIKE "%(__search__)s"</Search>
-	<Search fallback="1">User.cn LIKE "%(__search__)s"</Search>
-	<Search fallback="1">User.uid LIKE "%(__search__)s"</Search>
-	<Resolve type="PosixGroup" filter="cn">groupMembership</Resolve>
-	<Resolve filter="DN">manager</Resolve>
-        <Result>
-          <Map>
-            <Source>cn</Source>
-            <Destination>title</Destination>
-          </Map>
-          <Map>
-            <Source><![CDATA[%(description)s%(phoneRenderer)s%(mailRenderer)s<br>%(extensions)s]]></Source>
-            <Destination>description</Destination>
-          </Map>
-          <Map>
-            <Source>jpegPhoto</Source>
-            <Destination>icon</Destination>
-          </Map>
-        </Result>
-      </Aspect>
-    </Find>
+	<Find>
+		<Aspect>
+			<Tag>User</Tag>
+			<Keyword>User</Keyword>
+			<Search>givenName</Search>
+			<Search>sn</Search>
+			<Search>cn</Search>
+			<Search>uid</Search>
+			<Resolve type="PosixGroup" filter="cn">groupMembership</Resolve>
+			<Resolve filter="DN">manager</Resolve>
+			<Result>
+				<Map>
+					<Source>cn</Source>
+					<Destination>title</Destination>
+				</Map>
+				<Map>
+					<Source><![CDATA[%(description)s%(phoneRenderer)s%(mailRenderer)s<br>%(extensions)s]]></Source>
+					<Destination>description</Destination>
+				</Map>
+				<Map>
+					<Source>jpegPhoto</Source>
+					<Destination>icon</Destination>
+				</Map>
+			</Result>
+		</Aspect>
+	</Find>
 
   </Object>
 </Objects>
-

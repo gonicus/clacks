@@ -13,6 +13,11 @@ class SambaGuiMethods(Plugin):
         index = PluginRegistry.getInstance("ObjectIndex")
         return index.xquery("collection('objects')/o:SambaDomain/o:Attributes/o:sambaDomainName/string()")
 
+        res = index.raw_search({'_type': 'SambaDomain', 'sambaDomainName': {'$exists': True}},
+            {'sambaDomainName': 1})
+
+        return list(set([x['sambaDomainName'][0] for x in res]))
+
     @Command(__help__=N_("Returns a list of DOS/Windows drive letters"))
     def getSambaDriveLetters(self):
         return ["%s:" % c for c in self.letterizer('C', 'Z')]

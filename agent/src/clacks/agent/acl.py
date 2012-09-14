@@ -883,8 +883,12 @@ class ACLResolver(Plugin):
         unresolved = []
 
         # Read all AclRole objects.
+        dns = []
         index = PluginRegistry.getInstance("ObjectIndex")
-        dns = index.xquery("collection('objects')/o:AclRole/o:DN/text()")
+        res = index.raw_search({'_type': 'AclRole'}, {'dn': 1})
+        if res.count():
+            dns = [x['dn'] for x in res]
+
         for entry_dn in dns:
 
             self.log.info("found acl-role %s" % (entry_dn))
@@ -944,8 +948,12 @@ class ACLResolver(Plugin):
             self.add_acl_role(roles[role_name])
 
         # Load all Objects that have the Acl exntension enabled
+        dns = []
         index = PluginRegistry.getInstance("ObjectIndex")
-        dns = index.xquery("collection('objects')/*[o:Attributes/o:AclSets]/o:DN/text()")
+        res = index.raw_search({'AclSets': {'$exists': True}}, {'dn': 1})
+        if res.count():
+            dns = [x['dn'] for x in res]
+
         for entry_dn in dns:
             self.log.info("found acl for object %s" % (entry_dn))
 

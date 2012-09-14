@@ -66,24 +66,22 @@
     <BaseObject>true</BaseObject>
 
     <Find>
-      <Aspect>
-        <Tag>PosixGroup</Tag>
-	<Keyword>Group</Keyword>
-	<Keyword>Member</Keyword>
-	<Keyword>Membership</Keyword>
-        <Search>PosixGroup.cn = "%(__search__)s"</Search>
-        <Search>PosixGroup.description = "%(__search__)s"</Search>
-        <Search fallback="1">PosixGroup.cn LIKE "%(__search__)s"</Search>
-        <Search fallback="1">PosixGroup.description LIKE "%(__search__)s"</Search>
-        <Resolve type="User" filter="uid">memberUid</Resolve>
-        <Result>
-          <Map>
-            <Source>cn</Source>
-            <Destination>title</Destination>
-          </Map>
-        </Result>
-      </Aspect>
-    </Find>
+	<Aspect>
+		<Tag>PosixGroup</Tag>
+		<Keyword>Group</Keyword>
+		<Keyword>Member</Keyword>
+		<Keyword>Membership</Keyword>
+		<Search>cn</Search>
+		<Search>description</Search>
+		<Resolve type="User" filter="uid">memberUid</Resolve>
+		<Result>
+			<Map>
+				<Source>cn</Source>
+				<Destination>title</Destination>
+			</Map>
+		</Result>
+	</Aspect>
+</Find>
 
   </Object>
 </Objects>

@@ -67,10 +67,11 @@ setup(
         'pycrypto',
         'unidecode',
         'sqlalchemy',
-        'lepl',
         'setproctitle',
         'tornado',
         'python-Levenshtein',
+        'pymongo',
+        'bson',
         ],
     dependency_links = [
         'http://oss.gonicus.de/pub/gosa/eggs',
@@ -90,7 +91,6 @@ setup(
         scheduler = clacks.agent.scheduler:SchedulerService
         acl = clacks.agent.acl:ACLResolver
         objects = clacks.agent.objects.index:ObjectIndex
-        search = clacks.agent.objects.index:SearchWrapper
         xmldb = clacks.agent.xmldb.handler:XMLDBHandler
         jsonrpc_service = clacks.agent.jsonrpc_service:JSONRPCService
         jsonrpc_om = clacks.agent.jsonrpc_objects:JSONRPCObjectMapper
