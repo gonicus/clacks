@@ -753,8 +753,6 @@ class Object(object):
 
         # Log values
         self.log.debug(" -> FILTER STARTED (%s)" % (key))
-        #for pkey in prop:
-        #    self.log.debug("  %s: %s: %s" % (lptr, pkey, prop[pkey]['value']))
 
         # Process the list till we reach the end..
         while (lptr + 1) in fltr:

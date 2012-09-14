@@ -71,7 +71,6 @@ setup(
         'tornado',
         'python-Levenshtein',
         'pymongo',
-        'bson',
         ],
     dependency_links = [
         'http://oss.gonicus.de/pub/gosa/eggs',

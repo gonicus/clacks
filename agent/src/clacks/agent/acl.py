@@ -950,7 +950,8 @@ class ACLResolver(Plugin):
         # Load all Objects that have the Acl exntension enabled
         dns = []
         index = PluginRegistry.getInstance("ObjectIndex")
-        res = index.raw_search({'AclSets': {'$exists': True}}, {'dn': 1})
+
+        res = index.raw_search({'AclSets': {'$exists': True, '$not': {'$size': 0}}}, {'dn': 1})
         if res.count():
             dns = [x['dn'] for x in res]
 

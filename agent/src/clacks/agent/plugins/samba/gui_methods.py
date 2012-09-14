@@ -11,8 +11,6 @@ class SambaGuiMethods(Plugin):
     @Command(__help__=N_("Returns a list with all selectable samba-domain-names"))
     def getSambaDomainNames(self):
         index = PluginRegistry.getInstance("ObjectIndex")
-        return index.xquery("collection('objects')/o:SambaDomain/o:Attributes/o:sambaDomainName/string()")
-
         res = index.raw_search({'_type': 'SambaDomain', 'sambaDomainName': {'$exists': True}},
             {'sambaDomainName': 1})
 

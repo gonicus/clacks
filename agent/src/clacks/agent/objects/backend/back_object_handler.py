@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
+import itertools
 from clacks.agent.objects.backend import ObjectBackend, EntryNotFound
 from clacks.agent.objects.index import ObjectIndex
 from clacks.common.components import PluginRegistry
@@ -58,11 +59,10 @@ class ObjectHandler(ObjectBackend):
                 result[targetAttr] = []
                 foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = mapping[targetAttr] #@UnusedVariable
                 results = index.raw_search({'_uuid': uuid, matchAttr: {'$exists': True}}, {matchAttr: 1})
-                if results.count() == 1:
+                if results.count():
                     matchValue = results[0][matchAttr][0]
                     xq = index.raw_search({'_type': foreignObject, foreignMatchAttr: matchValue}, {foreignAttr: 1})
-                    if xq.count() == 1:
-                        result[targetAttr] = xq[0][foreignAttr][0]
+                    result[targetAttr] = list(itertools.chain.from_iterable([x[foreignAttr] for x in xq]))
 
         return result
 

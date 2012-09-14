@@ -720,7 +720,7 @@ class ObjectProxy(object):
         res['_uuid'] = self.__base.uuid
 
         if self.__base.modifyTimestamp:
-            res['_last_changed'] = time.mktime(self.__base.modifyTimestamp.timetuple)
+            res['_last_changed'] = time.mktime(self.__base.modifyTimestamp.timetuple())
 
         res['_extensions'] = self.__extensions.keys()
 
@@ -730,7 +730,7 @@ class ObjectProxy(object):
             # Use the object-type conversion method to get valid item string-representations.
             prop_value = props[propname]['value']
             if props[propname]['type'] == "Binary":
-                res[propname] = map(lambda x: Binary(x), prop_value)
+                res[propname] = map(lambda x: Binary(str(x.get())), prop_value)
 
             # Make remaining values unicode
             else:

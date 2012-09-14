@@ -17,9 +17,10 @@ import shlex
 import md5
 import clacks.agent.objects.renderer
 import itertools
+import base64
+import time
 from pymongo import Connection
 from zope.interface import implements
-from time import time
 from clacks.common import Environment
 from clacks.common.utils import N_
 from clacks.common.handler import IInterfaceHandler
@@ -73,9 +74,15 @@ class ObjectIndex(Plugin):
 
     def serve(self):
         # Load db instance
-        mongo_uri = self.config.get("mongo.uri", default="localhost:27017")
+        mongo_uri = self.env.config.get("mongo.uri", default="localhost:27017")
         mongo_host, mongo_port = mongo_uri.split(':')
         self.db = Connection(mongo_host, int(mongo_port)).clacks
+
+        # Check for authentication
+        mongo_user = self.env.config.get("mongo.user")
+        mongo_password = self.env.config.get("mongo.password")
+        if mongo_user and mongo_password:
+            self.db.authenticate(mongo_user, mongo_password)
 
         # If there is already a collection, check if there is a newer schema available
         schema = self.factory.getXMLObjectSchema(True)
@@ -103,9 +110,20 @@ class ObjectIndex(Plugin):
         for index in ['dn', '_uuid', '_last_changed', '_type', '_extensions', '_container']:
             self.db.objects.ensure_index(index)
 
-        # Ensure index for all attributes that want an index
-        for attr in self.factory.getIndexedAttributes():
-            self.db.objects.ensure_index(attr)
+        #TODO: we should not have more than 40 indices - currently nearly
+        #      everything has an index...
+        ## Ensure index for all attributes that want an index
+        #indices = [x['key'][0][0] for x in self.db.objects.index_information().values()]
+        #
+        #to_be_indexed = self.factory.getIndexedAttributes()
+        #for attr in self.factory.getIndexedAttributes():
+        #    if not attr in indices:
+        #        self.db.objects.ensure_index(attr)
+        #
+        ## Remove index that is not in use anymore
+        #for attr in indices:
+        #    if not attr in to_be_index and not attr in ['dn', '_uuid', '_last_changed', '_type', '_extensions', '_container']:
+        #        self.db.objects.drop_index(attr)
 
         # Extract search aid
         attrs = {}
@@ -145,8 +163,11 @@ class ObjectIndex(Plugin):
         tmp = [x for x in attrs.values()]
         used_attrs = list(itertools.chain.from_iterable(tmp))
         used_attrs += list(itertools.chain.from_iterable([x.values() for x in mapping.values()]))
-        used_attrs += [x.values()[0] for x in resolve.values()]
+        used_attrs += list(set(itertools.chain.from_iterable([[x[0]['filter'], x[0]['attribute']] for x in resolve.values()])))
         used_attrs = list(set(used_attrs))
+
+        # Remove potentially not assigned values
+        used_attrs = [u for u in used_attrs if u]
 
         # Memorize search information for later use
         self.__search_aid = dict(attrs=attrs,
@@ -162,9 +183,12 @@ class ObjectIndex(Plugin):
         md5sum = md5s.hexdigest()
 
         # Load stored checksum of current schema from the collection
-        old_md5sum = self.db[collection].find_one({'schema.checksum': {'$exists': True}}, {'schema.checksum': 1})['schema']['checksum']
+        old_md5sum = None
+        tmp = self.db[collection].find_one({'schema.checksum': {'$exists': True}}, {'schema.checksum': 1})
+        if tmp:
+            old_md5sum = tmp['schema']['checksum']
 
-        return old_md5sum == md5sum
+        return old_md5sum != md5sum
 
     def sync_index(self):
         # Don't index if someone else is already doing it
@@ -185,7 +209,7 @@ class ObjectIndex(Plugin):
         try:
             self._indexed = True
 
-            t0 = time()
+            t0 = time.time()
 
             def resolve_children(dn):
                 self.log.debug("found object '%s'" % dn)
@@ -246,7 +270,7 @@ class ObjectIndex(Plugin):
                 if entry['_uuid'] not in backend_objects:
                     self.remove_by_uuid(entry['_uuid'])
 
-            t1 = time()
+            t1 = time.time()
             self.log.info("processed %d objects in %ds" % (len(res), t1 - t0))
 
         except Exception as e:
@@ -307,7 +331,7 @@ class ObjectIndex(Plugin):
         self.log.debug("creating object index for %s" % obj.uuid)
 
         # If this is the root node, add the root document
-        if self.db.objects.find_one({'_uuid', obj.uuid}, {'_uuid': 1}):
+        if self.db.objects.find_one({'_uuid': obj.uuid}, {'_uuid': 1}):
             raise IndexException("Object with UUID %s already exists" % obj.uuid)
 
         self.db.objects.save(obj.asJSON(True))
@@ -396,7 +420,7 @@ class ObjectIndex(Plugin):
         Checks whether the given user has access to the given object/attribute or not.
         """
         if user:
-            topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, object_type, attr)
+            topic = "%s.objects.%s.attributes.%s" % (self.env.domain, object_type, attr)
             res = self.__acl_resolver.check(user, topic, "r", base=object_dn)
             return res
         else:
@@ -476,9 +500,9 @@ class ObjectIndex(Plugin):
             if len(attrs) == 0:
                 continue
             if len(attrs) == 1:
-                queries.append({'TYPE': typ, attrs[0]: _s})
+                queries.append({'_type': typ, attrs[0]: _s})
             if len(attrs) > 1:
-                queries.append({'TYPE': typ, "$or": map(lambda a: {a: _s}, attrs)})
+                queries.append({'_type': typ, "$or": map(lambda a: {a: _s}, attrs)})
 
         # Build query: assemble
         query = ""
@@ -506,7 +530,7 @@ class ObjectIndex(Plugin):
             elif fltr['mod-time'] == 'year':
                 td = now - datetime.timedelta(days=365)
 
-            td = {"$gte": time.mktime(td.timetuple)}
+            td = {"$gte": time.mktime(td.timetuple())}
             query["_last_changed"] = td
 
         # Perform primary query and get collect the results
@@ -514,6 +538,8 @@ class ObjectIndex(Plugin):
         squery = []
         these = dict([(x, 1) for x in self.__search_aid['used_attrs']])
         these['dn'] = 1
+        these['_type'] = 1
+
         for item in self.db.objects.find(query, these):
             self.__update_res(res, item, user)
 
@@ -521,20 +547,20 @@ class ObjectIndex(Plugin):
             if fltr['secondary'] != "enabled":
                 continue
 
-            for r in self.__search_aid['resolve'][item['Type']]:
-
+            for r in self.__search_aid['resolve'][item['_type']]:
                 if r['attribute'] in item:
-                    tag = r['type'] if r['type'] else item['Type']
+                    tag = r['type'] if r['type'] else item['_type']
 
                     # If a category was choosen and it does not fit the
                     # desired target tag - skip that one
                     if not (fltr['category'] == "all" or fltr['category'] == tag):
                         continue
 
-                    squery.append({'Type': tag, r['filter']: {'$in': item[r['attribute']]}})
+                    squery.append({'_type': tag, r['filter']: {'$in': item[r['attribute']]}})
+
 
         # Perform secondary query and update the result
-        if squery:
+        if fltr['secondary'] == "enabled" and squery:
             query = {"$or": squery}
 
             # Add "_last_changed" information to query
@@ -576,23 +602,38 @@ class ObjectIndex(Plugin):
         relevance = 0
 
         # Filter out what the current use is not allowed to see
-        item = self.__filter_entry(user, item)
-        if not item:
-            # We've obviously no permission to see thins one - skip it
-            continue
+        #TODO: re-enable filter
+        #item = self.__filter_entry(user, item)
+        #if not item:
+        #    # We've obviously no permission to see thins one - skip it
+        #    return
 
         if item['dn'] in res:
             #TODO: we may need to update the relevance information
             #dn = item['dn']
             #if res[dn]['relevance'] > relevance:
             #    res[dn]['relevance'] = relevance
-            continue
+            return
 
-        entry = {'tag': item['Type'], 'relevance': relevance}
-        for k, v in self.__search_aid['mapping'][item['Type']].items():
+        entry = {'tag': item['_type'], 'relevance': relevance}
+        for k, v in self.__search_aid['mapping'][item['_type']].items():
             if k:
-                entry[k] = item[v][0] if v in item else self.__build_value(v, item)
-        entry['icon'] = ("data:image/jpeg;base64," + item[self.__search_aid['mapping'][item['Type']['icon']]][0]) if self.__search_aid['mapping'][item['Type']]['icon'] in item else None
+                if k == "icon":
+                    continue
+                if v in item and item[v]:
+                    if v == "dn":
+                        entry[k] = item[v]
+                    else:
+                        entry[k] = item[v][0]
+                else:
+                    entry[k] = self.__build_value(v, item)
+
+            entry['icon'] = None
+
+            icon_attribute = self.__search_aid['mapping'][item['_type']]['icon']
+            if icon_attribute and icon_attribute in item and item[icon_attribute]:
+                entry['icon'] = "data:image/jpeg;base64," + base64.b64encode(item[icon_attribute][0])
+
         res[item['dn']] = entry
 
     def __build_value(self, v, info):
