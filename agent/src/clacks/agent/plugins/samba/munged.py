@@ -143,7 +143,6 @@ class SambaMungedDial(object):
 
         # Build up 'CtxCfgFlags1' property.
         flags = list(values['CtxCfgFlags1'])
-        flags = list('00e00000')
 
         # Handle flag at position 2
         flag = int(flags[2], 16)
