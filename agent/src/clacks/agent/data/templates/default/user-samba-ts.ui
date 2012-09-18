@@ -18,7 +18,7 @@
     <normaloff>:/images/user-samba.png</normaloff>:/images/user-samba.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
-   <item row="0" column="0">
+   <item row="1" column="0">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
       <string>Generic</string>
@@ -26,13 +26,6 @@
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
        <layout class="QFormLayout" name="formLayout_5">
-        <item row="0" column="0" colspan="2">
-         <widget class="QCheckBox" name="Ctx_flag_tsLoginEdit">
-          <property name="text">
-           <string>Allow login on terminal server</string>
-          </property>
-         </widget>
-        </item>
         <item row="1" column="0">
          <widget class="QLabel" name="CtxWFHomeDirLabel">
           <property name="text">
@@ -128,7 +121,7 @@
      </layout>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="2" column="0">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Connection</string>
@@ -273,6 +266,13 @@
        </layout>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QCheckBox" name="Ctx_flag_tsLoginEdit">
+     <property name="text">
+      <string>Allow login on terminal server</string>
+     </property>
     </widget>
    </item>
   </layout>
