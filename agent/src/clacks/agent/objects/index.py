@@ -421,9 +421,7 @@ class ObjectIndex(Plugin):
         """
         if user:
             topic = "%s.objects.%s.attributes.%s" % (self.env.domain, object_type, attr)
-            #TODO: never-come-back-airlines - check why
-            #return self.__acl_resolver.check(user, topic, "r", base=object_dn)
-            return True
+            return self.__acl_resolver.check(user, topic, "r", base=[object_dn])
         else:
             return True
 
