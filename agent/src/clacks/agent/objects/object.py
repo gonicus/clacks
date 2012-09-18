@@ -894,7 +894,7 @@ class Object(object):
                         ref_attribute,
                         idsc[1],
                         getattr(self, idsc[1]),
-                        map(lambda s: s.decode('utf-8'), dns if dns else []),
+                        dns or [],
                         self.myProperties[idsc[1]]['multivalue']))
 
         return res
@@ -1199,8 +1199,6 @@ class ObjectChanged(object):
         self.reason = reason
         self.uuid = uuid or obj.uuid
         self.dn = dn or obj.dn
-        #TODO: needs to be removed later on
-        print "------>", dn or self.dn
         self.orig_dn = orig_dn or obj.orig_dn
         self.o_type = o_type or obj.__class__.__name__
 
