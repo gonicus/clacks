@@ -74,15 +74,7 @@ class ObjectIndex(Plugin):
 
     def serve(self):
         # Load db instance
-        mongo_uri = self.env.config.get("mongo.uri", default="localhost:27017")
-        mongo_host, mongo_port = mongo_uri.split(':')
-        self.db = Connection(mongo_host, int(mongo_port)).clacks
-
-        # Check for authentication
-        mongo_user = self.env.config.get("mongo.user")
-        mongo_password = self.env.config.get("mongo.password")
-        if mongo_user and mongo_password:
-            self.db.authenticate(mongo_user, mongo_password)
+        self.db = self.env.get_mongo_db('clacks')
 
         # If there is already a collection, check if there is a newer schema available
         schema = self.factory.getXMLObjectSchema(True)

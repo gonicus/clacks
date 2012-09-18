@@ -20,6 +20,11 @@ try:
     from sqlalchemy import create_engine
 except ImportError:
     pass
+try:
+    from pymongo import Connection
+except ImportError:
+    pass
+
 from clacks.common.utils import dmi_system
 
 
@@ -125,6 +130,20 @@ class Environment:
         session = scoped_session(sessionmaker(autoflush=True))
         session.configure(bind=sql)
         return session()
+
+
+    def get_mongo_db(self, collection):
+        mongo_uri = self.config.get("mongo.uri", default="localhost:27017")
+        mongo_host, mongo_port = mongo_uri.split(':')
+        db = Connection(mongo_host, int(mongo_port))[collection]
+
+        # Check for authentication
+        mongo_user = self.config.get("mongo.user")
+        mongo_password = self.config.get("mongo.password")
+        if mongo_user and mongo_password:
+            db.authenticate(mongo_user, mongo_password)
+
+        return db
 
     def requestRestart(self):
         self.log.warning("a component requested an environment reset")
