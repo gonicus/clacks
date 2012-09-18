@@ -7,8 +7,6 @@ from clacks.common.handler import IInterfaceHandler
 from clacks.common import Environment
 from clacks.common.utils import N_
 from clacks.common.components import Command, PluginRegistry, ObjectRegistry, AMQPServiceProxy, Plugin
-from sqlalchemy.sql import select, and_
-from sqlalchemy import Table, Column, String, PickleType, DateTime, MetaData
 
 
 class JSONRPCObjectMapper(Plugin):
@@ -40,21 +38,7 @@ class JSONRPCObjectMapper(Plugin):
 
     def __init__(self):
         self.env = Environment.getInstance()
-        obj = self.env.config.get("index.pool", default="objectpool")
-        self.__engine = self.env.getDatabaseEngine('core')
-
-        metadata = MetaData()
-
-        self.__pool = Table(obj, metadata,
-            Column('uuid', String(36), primary_key=True),
-            Column('node', String(256)),
-            Column('object', PickleType),
-            Column('created', DateTime))
-
-        metadata.create_all(self.__engine)
-
-        # Establish the connection
-        self.__session = self.env.getDatabaseSession('core')
+        self.db = self.env.get_mongo_db('clacks')
 
     def serve(self):
         sched = PluginRegistry.getInstance("SchedulerService").getScheduler()
@@ -89,7 +73,7 @@ class JSONRPCObjectMapper(Plugin):
         if ref in self.__object:
             del self.__object[ref]
 
-        self.__session.execute(self.__pool.delete().where(self.__pool.c.uuid == ref))
+        self.db.object_pool.remove({'uuid': ref})
 
     @Command(__help__=N_("Set property for object on stack"))
     def setObjectProperty(self, ref, name, value):
@@ -188,9 +172,23 @@ class JSONRPCObjectMapper(Plugin):
 
         ``Return``: JSON encoded object description
         """
+
         if not self.__can_oid_be_handled_locally(oid):
             proxy = self.__get_proxy_by_oid(oid)
             return proxy.openObject(oid, *args)
+
+        # In case of "object" we want to check the lock
+        if oid == 'object':
+            lck = self.db.object_pool.find_one({'$or': [
+                {'object.uuid': args[0]},
+                {'object.dn': args[0]}]},
+                {'user': 1, 'created': 1})
+            if lck:
+                raise Exception('Object %s has been opened by "%s" on %s' % (
+                    args[0],
+                    lck['user'],
+                    lck['created'].strftime("%Y-%m-%d (%H:%M:%S)")
+                    ))
 
         env = Environment.getInstance()
 
@@ -217,16 +215,18 @@ class JSONRPCObjectMapper(Plugin):
 
         objdsc = {'node': env.id,
                 'oid': oid,
+                'dn': obj.dn if hasattr(obj, 'dn') else None,
+                'uuid': obj.uuid if hasattr(obj, 'uuid') else None,
                 'object': obj if pickle else None,
                 'methods': methods,
                 'properties': properties}
 
-        self.__session.execute(self.__pool.insert(), {
+        self.db.object_pool.save({
             'uuid': ref,
+            'user': user,
             'node': self.env.id,
             'object': objdsc,
-            'created': datetime.datetime.now(),
-            })
+            'created': datetime.datetime.now()})
 
         # Build property dict
         propvals = {}
@@ -293,31 +293,28 @@ class JSONRPCObjectMapper(Plugin):
         return self.__proxy[provider]
 
     def __get_ref(self, ref):
-        tmp = self.__session.execute(select([self.__pool.c.uuid, self.__pool.c.node, self.__pool.c.object, self.__pool.c.created], self.__pool.c.uuid == ref))
-        res = tmp.fetchone()
-        tmp.close()
+        res = self.db.object_pool.find_one({'uuid': ref})
         if not res:
             return None
 
         # Fill in local object if needed
-        ores = dict(res[2])
         if ref in self.__object:
-            ores['object'] = self.__object[ref]
+            res['object']['object'] = self.__object[ref]
 
-        return {'uuid': res[0], 'node': res[1], 'object': ores, 'created': res[3]}
+        return res
 
     def __gc(self):
         self.env.log.debug("running garbage collector on object store")
 
-        entries = self.__session.execute(select([self.__pool.c.uuid],
-            and_(self.__pool.c.created < datetime.datetime.now() -
-                datetime.timedelta(hours=1), self.__pool.c.node ==
-                self.env.id)))
+        entries = self.db.object_pool.find({
+            'created': {'$lt': datetime.datetime.now() - datetime.timedelta(hours=1)},
+            'node': self.env.id}, {'uuid': 1})
         for entry in entries:
-            ref = entry[0]
+            ref = entry['uuid']
             if ref in self.__object:
                 del self.__object[ref]
 
-        self.__session.execute(self.__pool.delete().where(and_(self.__pool.c.created <
-            datetime.datetime.now() - datetime.timedelta(hours=1),
-            self.__pool.c.node == self.env.id)))
+        self.db.object_pool.remove({
+            'created': {'$lt': datetime.datetime.now() - datetime.timedelta(hours=1)},
+            'node': self.env.id
+            })

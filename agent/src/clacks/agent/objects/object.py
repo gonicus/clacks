@@ -1200,7 +1200,7 @@ class ObjectChanged(object):
         self.uuid = uuid or obj.uuid
         self.dn = dn or obj.dn
         #TODO: needs to be removed later on
-        print "------>", self.dn
+        print "------>", dn or self.dn
         self.orig_dn = orig_dn or obj.orig_dn
         self.o_type = o_type or obj.__class__.__name__
 
