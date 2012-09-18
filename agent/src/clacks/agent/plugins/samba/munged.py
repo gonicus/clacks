@@ -143,7 +143,6 @@ class SambaMungedDial(object):
 
         # Build up 'CtxCfgFlags1' property.
         flags = list(values['CtxCfgFlags1'])
-        flags = list('00e00000')
 
         # Handle flag at position 2
         flag = int(flags[2], 16)
@@ -179,6 +178,8 @@ class SambaMungedDial(object):
             flag |= 4
         else:
             flag &= 0xFF & ~0x4
+
+        flags[5] = hex(flag)[2:]
         flags[6] = '1' if values['Ctx_flag_inheritMode'] else '0'
 
         # Add shadow handling.
@@ -330,7 +331,7 @@ class SambaMungedDial(object):
         result[u'Ctx_flag_tsLogin'] = bool(flags & 1)
         result[u'Ctx_flag_reConn'] = bool(flags & 2)
         result[u'Ctx_flag_brokenConn'] = bool(flags & 4)
-        result[u'Ctx_flag_inheritMode'] = bool(result['CtxCfgFlags1'][6:7] == 1)
+        result[u'Ctx_flag_inheritMode'] = bool(result['CtxCfgFlags1'][6:7] == "1")
 
         # convert the shadow value into integer.
         if old_behavior:
