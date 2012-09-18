@@ -58,10 +58,9 @@ Package: clacks-agent
 Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, clacks-common,
  python-dumbnet, python-ldap, python-smbpasswd, python-unidecode,
- python-dbxml, python-sqlalchemy, python-mysqldb, python-sqlalchemy-ext,
- adduser, python-zope.event, python-lepl, python-setproctitle
+ adduser, python-zope.event, python-setproctitle
 Conflicts: clacks-client
-Suggests: qpidd
+Suggests: qpidd, python-sqlalchemy, python-mysqldb, python-sqlalchemy-ext
 Description: clacks infrastructure service - agent
  Brief description is missing.
  .
