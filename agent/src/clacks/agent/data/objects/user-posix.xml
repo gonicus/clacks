@@ -10,7 +10,7 @@
     <BaseObject>false</BaseObject>
     <BackendParameters>
       <Backend objectClasses="posixAccount">LDAP</Backend>
-      <Backend groupMembership="PosixGroup:cn,memberUid=uid,">ObjectHandler</Backend>
+      <Backend groupMembership="PosixGroup:cn,memberUid=uid">ObjectHandler</Backend>
     </BackendParameters>
     <Backend>LDAP</Backend>
 

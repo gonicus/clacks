@@ -71,7 +71,6 @@
       </Attribute>
       <!--
       <Attribute>
-        <NotIndexed>true</NotIndexed>
         <Name>installPartitionTable</Name>
         <Description></Description>
         <Type>DevicePartitionTableType</Type>

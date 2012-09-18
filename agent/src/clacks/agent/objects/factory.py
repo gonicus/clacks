@@ -159,13 +159,11 @@ class ObjectFactory(object):
         res = []
         for element in self.__xml_defs.values():
 
-            # Get all <Attribute> tags and check if the property NotIndexed exists
-            # and isn't set to 'true'
+            # Get all <Attribute> tags
             find = objectify.ObjectPath("Object.Attributes.Attribute")
             if find.hasattr(element):
                 for attr in find(element):
-                    if bool(load(attr, "NotIndexed", True)):
-                        res.append(attr.Name.text)
+                    res.append(attr.Name.text)
         return list(set(res))
 
     def getObjectTemplates(self, objectType):
@@ -1381,3 +1379,25 @@ class ObjectFactory(object):
                                     res[unicode(message.find("source").text)] = unicode(translation.text)
 
         return res
+
+    def getObjectBackendParameters(self, backend, attribute):
+        """
+        Helper method to extract backendParameter infos
+        """
+        attrs = self.getObjectBackendProperties(backend)
+
+        for be in attrs:
+            if attribute in attrs[be]:
+                result = {}
+                for targetAttr in attrs[be]:
+                    res = re.match("^([^:]*):([^,]*)(,([^=]*)=([^,]*))?", attrs[be][targetAttr])
+                    if res:
+                        result[targetAttr] = []
+                        result[targetAttr].append(res.groups()[0])
+                        result[targetAttr].append(res.groups()[1])
+                        result[targetAttr].append(res.groups()[3])
+                        result[targetAttr].append(res.groups()[4])
+
+                return result
+
+        return None

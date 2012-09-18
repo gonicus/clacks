@@ -50,14 +50,14 @@ class ObjectHandler(ObjectBackend):
         else:
 
             # Extract backend attrs
-            mapping = ObjectHandler.extractBackAttrs(back_attrs)
+            mapping = self.extractBackAttrs(back_attrs)
 
             # Load related objects from the index and add the required attribute-values
             # as values for 'targetAttr'
             index = PluginRegistry.getInstance("ObjectIndex")
             for targetAttr in mapping:
                 result[targetAttr] = []
-                foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = mapping[targetAttr] #@UnusedVariable
+                foreignObject, foreignAttr, foreignMatchAttr, matchAttr = mapping[targetAttr]
                 results = index.raw_search({'_uuid': uuid, matchAttr: {'$exists': True}}, {matchAttr: 1})
                 if results.count():
                     matchValue = results[0][matchAttr][0]
@@ -87,7 +87,7 @@ class ObjectHandler(ObjectBackend):
         """
 
         # Extract usable information out og the backend attributes
-        mapping = ObjectHandler.extractBackAttrs(back_attrs)
+        mapping = self.extractBackAttrs(back_attrs)
         index = PluginRegistry.getInstance("ObjectIndex")
 
         # Ensure that we have a configuration for all attributes
@@ -106,7 +106,7 @@ class ObjectHandler(ObjectBackend):
                 continue
 
             # Get the matching attribute for the current object
-            foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = mapping[targetAttr] #@UnusedVariable
+            foreignObject, foreignAttr, foreignMatchAttr, matchAttr = mapping[targetAttr]
             res = index.raw_search({'_uuid': uuid}, {matchAttr: 1})
             if not res.count():
                 raise Exception("source object could not be found" % targetAttr)
@@ -144,24 +144,6 @@ class ObjectHandler(ObjectBackend):
             for item in object_mapping:
                 if object_mapping[item]:
                     object_mapping[item].commit()
-
-    @staticmethod
-    def extractBackAttrs(back_attrs):
-        """
-        Helper method to extract backendParameter infos
-        """
-        result = {}
-        for targetAttr in back_attrs:
-            res = re.match("^([^:]*):([^,]*),(([^=]*)=([^,]*),|,)(.*)", back_attrs[targetAttr])
-            if res:
-                result[targetAttr] = []
-                result[targetAttr].append(res.groups()[0])
-                result[targetAttr].append(res.groups()[1])
-                result[targetAttr].append(res.groups()[3])
-                result[targetAttr].append(res.groups()[4])
-                result[targetAttr].append(res.groups()[5])
-
-        return result
 
     def __init__(self):
         pass
@@ -213,3 +195,16 @@ class ObjectHandler(ObjectBackend):
 
     def get_next_id(self, attr):
         raise EntryNotFound("cannot generate IDs")
+
+    def extractBackAttrs(self, attrs):
+       result = {}
+       for targetAttr in attrs:
+           res = re.match("^([^:]*):([^,]*)(,([^=]*)=([^,]*))?", attrs[targetAttr])
+           if res:
+               result[targetAttr] = []
+               result[targetAttr].append(res.groups()[0])
+               result[targetAttr].append(res.groups()[1])
+               result[targetAttr].append(res.groups()[3])
+               result[targetAttr].append(res.groups()[4])
+
+       return result

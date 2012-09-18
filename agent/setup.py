@@ -122,7 +122,7 @@ setup(
 
         [object.backend]
         ldap = clacks.agent.objects.backend.back_ldap:LDAP
-        Object_handler = clacks.agent.objects.backend.back_object_handler:ObjectHandler
+        Object_handler = clacks.agent.objects.backend.back_object:ObjectHandler
         null = clacks.agent.objects.backend.back_null:NULL
         json = clacks.agent.objects.backend.back_json:JSON
         sql = clacks.agent.objects.backend.back_sql:SQL

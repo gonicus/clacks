@@ -94,7 +94,7 @@
                     <xsl:if test="not(g:Name=preceding-sibling::g:Attribute/g:Name)">
 
                         <!-- Skip attributes that do not have to be indexed-->
-                        <xsl:if test="($only_indexed='false') or ($only_indexed='true') and not(g:NotIndexed='true')">
+                        <xsl:if test="($only_indexed='false')">
                             <xsl:variable name="propname" select="g:Name" />
                             <xsl:variable name="proptype" select="g:Type" />
                             <xsl:if test="$props[g:name=$propname]/g:value">

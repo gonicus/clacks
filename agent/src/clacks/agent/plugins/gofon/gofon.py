@@ -40,21 +40,17 @@ class goFonAccount(Plugin):
         from the realtime database.
         """
 
-        # Get the user object by its uuid and extract relevant values.
-        s_wrapper = PluginRegistry.getInstance("SearchWrapper")
-        query = """
-        SELECT User.*
-        BASE User SUB "dc=example,dc=net"
-        WHERE User.UUID = "%s"
-        ORDER BY User.UUID
-        """ % (uuid)
-
         # Query the index database and check if we've found a user with the given uuid
-        result = s_wrapper.execute(query)
-        if result and len(result) == 1:
+        index = PluginRegistry.getInstance("ObjectIndex")
+        result = index.raw_search({'_type': 'User', '_uuid': uuid}, {
+            'uid': 1,
+            'goFonHomeServer': 1,
+            'telephoneNumber': 1})
+
+        if result.count() == 1:
 
             # Extract required attribute values.
-            entry = result[0]["User"]
+            entry = result[0]
 
             # Nothing to do here, no account found...
             if "goFonHomeServer" not in entry:
@@ -90,17 +86,21 @@ class goFonAccount(Plugin):
         from an existing goFonAccount.
         """
 
-        s_wrapper = PluginRegistry.getInstance("SearchWrapper")
         index = PluginRegistry.getInstance("ObjectIndex")
-        query = """
-        SELECT User.*
-        BASE User SUB "dc=example,dc=net"
-        WHERE User.UUID = "%s"
-        ORDER BY User.UUID
-        """ % (uuid)
-        result = s_wrapper.execute(query)
-        if result and len(result) == 1:
-            entry = result[0]["User"]
+        result = index.raw_search({'_type': 'User', '_uuid': uuid}, {
+            'uid': 1,
+            'goFonHomeServer': 1,
+            'goFonPin': 1,
+            'sn': 1,
+            'givenName': 1,
+            'goFonVoicemailPIN': 1,
+            'mail': 1,
+            'goFonMacro': 1,
+            'goFonHardware': 1,
+            'telephoneNumber': 1})
+
+        if result.count() == 1:
+            entry = result[0]
 
             # Extract required attribute values.
             uid = entry["uid"][0]

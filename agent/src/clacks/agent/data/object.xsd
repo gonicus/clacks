@@ -84,7 +84,6 @@
       </element>
       <element name="CaseSensitive" type="boolean" maxOccurs="1" minOccurs="0"></element>
       <element name="References" type="o:References" maxOccurs="1" minOccurs="0"></element>
-      <element name="NotIndexed" type="boolean" maxOccurs="1" minOccurs="0"></element>
     </all>
   </complexType>
 

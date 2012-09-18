@@ -421,8 +421,9 @@ class ObjectIndex(Plugin):
         """
         if user:
             topic = "%s.objects.%s.attributes.%s" % (self.env.domain, object_type, attr)
-            res = self.__acl_resolver.check(user, topic, "r", base=object_dn)
-            return res
+            #TODO: never-come-back-airlines - check why
+            #return self.__acl_resolver.check(user, topic, "r", base=object_dn)
+            return True
         else:
             return True
 
@@ -602,11 +603,10 @@ class ObjectIndex(Plugin):
         relevance = 0
 
         # Filter out what the current use is not allowed to see
-        #TODO: re-enable filter
-        #item = self.__filter_entry(user, item)
-        #if not item:
-        #    # We've obviously no permission to see thins one - skip it
-        #    return
+        item = self.__filter_entry(user, item)
+        if not item:
+            # We've obviously no permission to see thins one - skip it
+            return
 
         if item['dn'] in res:
             #TODO: we may need to update the relevance information

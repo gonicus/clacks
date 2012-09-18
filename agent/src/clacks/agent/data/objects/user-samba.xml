@@ -10,8 +10,7 @@
 			<Template>user-samba-ts.ui</Template>
 		</Templates>
 		<BackendParameters>
-			<Backend sambaPrimaryGroupSID="PosixGroup:sambaSID,,PosixGroup.sambaSID LIKE &quot;&quot;"
-				objectClasses="sambaSamAccount">LDAP</Backend>
+			<Backend sambaPrimaryGroupSID="SambaGroup:sambaSID" objectClasses="sambaSamAccount">LDAP</Backend>
 		</BackendParameters>
 		<Backend>LDAP</Backend>
 
@@ -304,7 +303,6 @@
 				<Name>sambaPasswordHistory</Name>
 				<Description>Concatenated MD5 hashes of the salted NT passwords used on this account</Description>
 				<Type>UnicodeString</Type>
-				<NotIndexed>true</NotIndexed>
 			</Attribute>
 
 			<Attribute>
@@ -356,7 +354,6 @@
 						</FilterEntry>
 					</FilterChain>
 				</OutFilter>
-				<NotIndexed>true</NotIndexed>
 			</Attribute>
 
 			<Attribute>

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 from clacks.common.components import Command
 from clacks.common.components import Plugin
 from clacks.common.utils import N_
@@ -6,7 +7,6 @@ from clacks.common import Environment
 from clacks.common.components import PluginRegistry
 from clacks.agent.objects import ObjectProxy
 from clacks.agent.objects.factory import ObjectFactory
-from clacks.agent.objects.backend.back_object_handler import ObjectHandler
 from json import loads, dumps
 
 
@@ -64,67 +64,46 @@ class GuiMethods(Plugin):
 
         return None
 
-    @Command(__help__=N_("Search for object informations"))
+    @Command(__help__=N_("Search for object information"))
     def searchForObjectDetails(self, extension, attribute, fltr, attributes, skip_values):
         """
         Search selectable items valid for the attribute "extension.attribute".
 
-        This is used to add new groups to the users groupMemeberhip attribute.
+        This is used to add new groups to the users groupMembership attribute.
         """
         env = Environment.getInstance()
 
         # Extract the the required information about the object
         # relation out of the BackendParameters for the given extension.
         of = ObjectFactory.getInstance()
-        be_attrs = of.getObjectBackendProperties(extension)
-        be_data = None
-        for be_name in be_attrs:
-            if attribute in be_attrs[be_name]:
-                be_data = ObjectHandler.extractBackAttrs(be_attrs[be_name])
-
+        be_data = of.getObjectBackendParameters(extension, attribute)
         if not be_data:
             raise Exception("no backend parameter found for %s.%s" % (extension, attribute))
 
         # Collection basic information
-        foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = be_data[attribute]  #@UnusedVariable
-        otype = foreignObject
-        oattr = foreignAttr
-        base = env.base
-
-        # Create list of conditional statements
-        condition = '(%s.%s LIKE "%s")' % (otype, oattr, fltr)
-
-        if additionalFilter:
-            additionalFilter = " AND " + additionalFilter
+        otype, oattr, foreignMatchAttr, matchAttr = be_data[attribute]
 
         # Create a list of attributes that will be requested
-        a = []
         if oattr not in attributes:
             attributes.append(oattr)
-        for attr in attributes:
-            a.append("%s.%s" % (otype, attr))
-        attrs = ", ".join(a)
-
-        # Prepare the query
-        query = """
-            SELECT %(attrs)s
-            BASE %(type)s SUB "%(base)s"
-            WHERE %(condition)s %(filter)s
-            """ % {"attrs": attrs, "condition": condition, "type": otype, "base": base, "filter": additionalFilter}
+        attrs = dict([(x, 1) for x in attributes])
 
         # Start the query and brind the result in a usable form
-        search = PluginRegistry.getInstance("SearchWrapper")
-        res = search.execute(query)
+        index = PluginRegistry.getInstance("ObjectIndex")
+        res = index.raw_search({
+            '$or': [{'_type': otype}, {'_extensions': otype}],
+            oattr: re.compile("^.*" + re.escape(fltr) + ".*$")
+            }, attrs)
         result = []
 
         for entry in res:
             item = {}
             for attr in attributes:
-                if attr in entry[otype] and len(entry[otype][attr]):
-                    item[attr] = entry[otype][attr][0]
+                if attr in entry and len(entry[attr]):
+                    item[attr] = entry[attr] if attr == "dn" else entry[attr][0]
                 else:
                     item[attr] = ""
-            item['__identifier__'] = item[foreignAttr]
+            item['__identifier__'] = item[oattr]
 
             # Skip values that are in the skip list
             if skip_values and item['__identifier__'] in skip_values:
@@ -140,54 +119,36 @@ class GuiMethods(Plugin):
         This method is used to complete object information shown in the gui.
         e.g. The groupMembership table just knows the groups cn attribute.
              To be able to show the description too, it uses this method.
+
+        #TODO: @fabian - this function is about 95% the same than the one
+        #                above.
         """
         env = Environment.getInstance()
 
         # Extract the the required information about the object
         # relation out of the BackendParameters for the given extension.
         of = ObjectFactory.getInstance()
-        be_attrs = of.getObjectBackendProperties(extension)
-        be_data = None
-        for be_name in be_attrs:
-            if attribute in be_attrs[be_name]:
-                be_data = ObjectHandler.extractBackAttrs(be_attrs[be_name])
+        be_data = of.getObjectBackendParameters(extension, attribute)
 
         if not be_data:
             raise Exception("no backend parameter found for %s.%s" % (extension, attribute))
 
         # Collection basic information
-        foreignObject, foreignAttr, foreignMatchAttr, matchAttr, additionalFilter = be_data[attribute]  #@UnusedVariable
-        otype = foreignObject
-        oattr = foreignAttr
-        base = env.base
-
-        # Create list of conditional statements
-        if not oattr in names:
-            names.append(oattr)
-        snames = ['"%s"' % n for n in names]
-        condition = '(%s.%s = %s)' % (otype, oattr, "(%s)" % (", ".join(snames)))
+        otype, oattr, foreignMatchAttr, matchAttr = be_data[attribute]
 
         # Create a list of attributes that will be requested
-        a = []
         if oattr not in attributes:
             attributes.append(oattr)
-        for attr in attributes:
-            a.append("%s.%s" % (otype, attr))
-        attrs = ", ".join(a)
-
-        if additionalFilter:
-            additionalFilter = " AND " + additionalFilter
-
-        # Prepare the query
-        query = """
-            SELECT %(attrs)s
-            BASE %(type)s SUB "%(base)s"
-            WHERE %(condition)s %(filter)s
-            """ % {"attrs": attrs, "condition": condition, "type": otype, "base": base, "filter": additionalFilter}
+        attrs = dict([(x, 1) for x in attributes])
 
         # Start the query and brind the result in a usable form
-        search = PluginRegistry.getInstance("SearchWrapper")
-        res = search.execute(query)
+        index = PluginRegistry.getInstance("ObjectIndex")
+
+        res = index.raw_search({
+            '$or': [{'_type': otype}, {'_extensions': otype}],
+            oattr: {'$in': names}
+            }, attrs)
+
         result = {}
         mapping = {}
 
@@ -199,8 +160,8 @@ class GuiMethods(Plugin):
         for entry in res:
             item = {}
             for attr in attributes:
-                if attr in entry[otype] and len(entry[otype][attr]):
-                    item[attr] = entry[otype][attr][0]
+                if attr in entry and len(entry[attr]):
+                    item[attr] = entry[attr] if attr == 'dn' else entry[attr][0]
                 else:
                     item[attr] = ""
 
