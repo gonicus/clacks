@@ -69,7 +69,6 @@ setup(
         'sqlalchemy',
         'setproctitle',
         'tornado',
-        'python-Levenshtein',
         'pymongo',
         ],
     dependency_links = [
