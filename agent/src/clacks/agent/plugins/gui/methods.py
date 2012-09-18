@@ -13,13 +13,21 @@ from json import loads, dumps
 class GuiMethods(Plugin):
     _target_ = 'misc'
 
+    @Command(__help__=N_("Returns all templates used by the given object type."))
+    def getGuiTemplates(self, objectType):
+        factory = ObjectFactory.getInstance()
+        if objectType not in factory.getObjectTypes():
+            raise Exception("No such object type: %s" % (objectType))
+
+        return factory.getObjectTemplates(objectType)
+
     @Command(__help__=N_("Get all translations bound to templates."))
     def getTemplateI18N(self, language, theme="default"):
         templates = []
         factory = ObjectFactory.getInstance()
 
         for otype in factory.getObjectTypes():
-            templates += factory.getObjectTemplates(otype)
+            templates += factory.getObjectTemplateNames(otype)
 
         return factory.getNamedI18N(list(set(templates)), language=language, theme=theme)
 
