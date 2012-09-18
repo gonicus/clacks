@@ -166,7 +166,21 @@ class ObjectFactory(object):
                     res.append(attr.Name.text)
         return list(set(res))
 
-    def getObjectTemplates(self, objectType):
+    def getObjectTemplates(self, objectType, theme="default"):
+        """
+        Returns a list of templates for this object.
+        """
+        names = self.getObjectTemplateNames(objectType)
+        result = {}
+        for name in names:
+            path = pkg_resources.resource_filename('clacks.agent', 
+                os.path.join('data', 'templates', theme, name))
+
+            result[name] = open(path).read()
+
+        return result
+
+    def getObjectTemplateNames(self, objectType):
         """
         Returns a list of template filenames for this object.
         """
