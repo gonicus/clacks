@@ -13,6 +13,11 @@ from json import loads, dumps
 class GuiMethods(Plugin):
     _target_ = 'misc'
 
+    @Command(__help__=N_("Returns a list containing all available object names"))
+    def getAvailableObjectNames(self):
+        factory = ObjectFactory.getInstance()
+        return factory.getAvailableObjectNames()
+
     @Command(__help__=N_("Returns all templates used by the given object type."))
     def getGuiTemplates(self, objectType):
         factory = ObjectFactory.getInstance()
