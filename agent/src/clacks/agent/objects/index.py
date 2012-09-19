@@ -98,7 +98,7 @@ class ObjectIndex(Plugin):
                     tag='_internal', jobstore='ram')
 
         # Ensure basic index for the objects
-        for index in ['dn', '_uuid', '_last_changed', '_type', '_extensions', '_container']:
+        for index in ['dn', '_uuid', '_last_changed', '_type', '_extensions', '_container', '_parent_dn']:
             self.db.index.ensure_index(index)
 
         # Extract search aid
@@ -151,7 +151,7 @@ class ObjectIndex(Plugin):
 
         # Remove index that is not in use anymore
         for attr in indices:
-            if not attr in used_attrs and not attr in ['dn', '_id', '_uuid', '_last_changed', '_type', '_extensions', '_container']:
+            if not attr in used_attrs and not attr in ['dn', '_id', '_uuid', '_last_changed', '_type', '_extensions', '_container', '_parent_dn']:
                 self.log.debug("removing obsolete index for '%s'" % attr)
                 self.db.index.drop_index(attr)
 
@@ -509,7 +509,7 @@ class ObjectIndex(Plugin):
             query = {"dn": re.compile("^(.*,)?" + re.escape(base) + "$"), "$or": queries}
 
         elif scope == "ONE":
-            query = {"dn": base, "_parent_dn": base, "$or": queries}
+            query = {"$or": [{"dn": base}, {"_parent_dn": base}], "$or": queries}
 
         else:
             query = {"dn": base, "$or": queries}
