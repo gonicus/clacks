@@ -28,7 +28,7 @@ from clacks.common.event import EventMaker
 from clacks.common.components import Command, PluginRegistry, Plugin
 from clacks.common.components.scheduler import Scheduler
 from clacks.common.components.scheduler.job import JOB_RUNNING
-from clacks.common.components.scheduler.jobstores.sqlalchemy_store import SQLAlchemyJobStore
+from clacks.common.components.scheduler.jobstores.mongodb_store import MongoDBJobStore
 from clacks.common.components.scheduler.jobstores.ram_store import RAMJobStore
 from clacks.common.components.scheduler.triggers import SimpleTrigger, IntervalTrigger, CronTrigger
 from clacks.common.components.scheduler.events import EVENT_JOBSTORE_JOB_REMOVED, EVENT_JOBSTORE_JOB_ADDED, EVENT_JOB_EXECUTED
@@ -53,9 +53,11 @@ class SchedulerService(Plugin):
         self.env = env
 
         self.sched = Scheduler(origin=self.env.id)
-        self.sched.add_jobstore(SQLAlchemyJobStore(
-            engine=env.getDatabaseEngine('core'),
-            tablename='scheduler'), 'default')
+
+        self.sched.add_jobstore(MongoDBJobStore(
+            database='clacks',
+            collection='scheduler',
+            connection=self.env.get_mongo_connection()), 'default')
         self.sched.add_jobstore(RAMJobStore(), 'ram', True)
 
     def getScheduler(self):

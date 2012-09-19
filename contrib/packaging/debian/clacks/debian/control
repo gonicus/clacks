@@ -38,8 +38,9 @@ Architecture: all
 Conflicts: clacks-agent
 Depends: ${python:Depends}, ${misc:Depends}, python-dateutil, python-netifaces,
  python-crypto, adduser, python-newt, python-zope.event, python-setproctitle,
- python-tornado, python-levenshtein
-Suggests: clacks-dbus, fusioninventory-agent, python-pyside | python-qt4, avahi-utils
+ python-tornado, python-pymongo
+Suggests: clacks-dbus, fusioninventory-agent, python-pyside | python-qt4, avahi-utils,
+ mongodb
 Description: clacks infrastructure service - client
  Brief description is missing.
  .
@@ -57,10 +58,9 @@ Package: clacks-agent
 Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, clacks-common,
  python-dumbnet, python-ldap, python-smbpasswd, python-unidecode,
- python-dbxml, python-sqlalchemy, python-mysqldb, python-sqlalchemy-ext,
- adduser, python-zope.event, python-lepl, python-setproctitle
+ adduser, python-zope.event, python-setproctitle
 Conflicts: clacks-client
-Suggests: qpidd
+Suggests: qpidd, python-sqlalchemy, python-mysqldb, python-sqlalchemy-ext
 Description: clacks infrastructure service - agent
  Brief description is missing.
  .

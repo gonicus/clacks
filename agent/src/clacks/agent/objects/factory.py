@@ -164,6 +164,23 @@ class ObjectFactory(object):
             if find.hasattr(element):
                 for attr in find(element):
                     res.append(attr.Name.text)
+
+        return list(set(res))
+
+    def getBinaryAttributes(self):
+        """
+        Returns a list of binary attributes
+        """
+        res = []
+        for element in self.__xml_defs.values():
+
+            # Get all <Attribute> tags
+            find = objectify.ObjectPath("Object.Attributes.Attribute")
+            if find.hasattr(element):
+                for attr in find(element):
+                    if attr.Type.text == "Binary":
+                        res.append(attr.Name.text)
+
         return list(set(res))
 
     def getAvailableObjectNames(self):
@@ -179,7 +196,7 @@ class ObjectFactory(object):
         names = self.getObjectTemplateNames(objectType)
         result = []
         for name in names:
-            path = pkg_resources.resource_filename('clacks.agent', 
+            path = pkg_resources.resource_filename('clacks.agent',
                 os.path.join('data', 'templates', theme, name))
 
             result.append(open(path).read())
