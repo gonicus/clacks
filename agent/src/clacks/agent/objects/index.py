@@ -60,7 +60,6 @@ class ObjectIndex(Plugin):
 
     def __init__(self):
         self.env = Environment.getInstance()
-        self.__acl_resolver = ACLResolver.get_instance()
 
         self.log = logging.getLogger(__name__)
         self.log.info("initializing object index handler")
@@ -419,9 +418,10 @@ class ObjectIndex(Plugin):
         """
         Checks whether the given user has access to the given object/attribute or not.
         """
+        aclresolver = PluginRegistry.getInstance("ACLResolver")
         if user:
             topic = "%s.objects.%s.attributes.%s" % (self.env.domain, object_type, attr)
-            return self.__acl_resolver.check(user, topic, "r", base=[object_dn])
+            return aclresolver.check(user, topic, "r", base=[object_dn])
         else:
             return True
 

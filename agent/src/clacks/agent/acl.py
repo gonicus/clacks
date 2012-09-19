@@ -777,7 +777,10 @@ class ACLResolver(Plugin):
     _target_ = 'core'
 
     def __init__(self):
-        ACLResolver.instance = self
+        if not ACLResolver.instance:
+            ACLResolver.instance = self
+        else:
+            raise Exception("ACLResolver is a singleton - please use PluginRegistry.getInstance(\"ACLResolver\")")
         self.env = Environment.getInstance()
         self.log = logging.getLogger(__name__)
         self.log.debug("initializing ACL resolver")
@@ -794,7 +797,7 @@ class ACLResolver(Plugin):
         Return an instance of the ACLResolver
         """
         if not ACLResolver.instance:
-            ACLResolver.instance = ACLResolver()
+            raise Exception("ACLResolver not yet instantiated by the plugin registry!")
 
         return ACLResolver.instance
 
