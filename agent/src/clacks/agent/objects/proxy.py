@@ -39,7 +39,6 @@ from clacks.common import Environment
 from clacks.common.components import PluginRegistry
 from bson.binary import Binary
 
-
 class ProxyException(Exception):
     pass
 
@@ -279,7 +278,7 @@ class ObjectProxy(object):
     def _get_template(self, obj, theme):
         templates = self._get_object_templates(obj)
         if templates:
-            return self.__base.getNamedTemplate(templates, theme)
+            return self.__base.__class__.getNamedTemplate(self.__env, templates, theme)
 
         return None
 

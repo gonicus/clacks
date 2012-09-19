@@ -364,9 +364,10 @@ class Object(object):
         """
         Return the template data - if any. Else None.
         """
-        return self.getNamedTemplate(self._templates, theme)
+        return Object.getNamedTemplate(self.env, self._templates, theme)
 
-    def getNamedTemplate(self, templates, theme="default"):
+    @staticmethod
+    def getNamedTemplate(env, templates, theme="default"):
         """
         Return the template data - if any. Else None.
         """
@@ -386,11 +387,11 @@ class Object(object):
                     # Find path
                     path = pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', theme, template)) #@UndefinedVariable
                     if not os.path.exists(path):
-                        path = os.path.join(self.env.config.getBaseDir(), 'templates', theme, template)
+                        path = os.path.join(env.config.getBaseDir(), 'templates', theme, template)
                         if not os.path.exists(path):
                             path = pkg_resources.resource_filename('clacks.agent', os.path.join('data', 'templates', "default", template)) #@UndefinedVariable
                             if not os.path.exists(path):
-                                path = os.path.join(self.env.config.getBaseDir(), 'templates', "default", template)
+                                path = os.path.join(env.config.getBaseDir(), 'templates', "default", template)
                                 if not os.path.exists(path):
                                     return None
 
