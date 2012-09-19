@@ -102,21 +102,6 @@ class ObjectIndex(Plugin):
         for index in ['dn', '_uuid', '_last_changed', '_type', '_extensions', '_container']:
             self.db.objects.ensure_index(index)
 
-        #TODO: we should not have more than 40 indices - currently nearly
-        #      everything has an index...
-        ## Ensure index for all attributes that want an index
-        #indices = [x['key'][0][0] for x in self.db.objects.index_information().values()]
-        #
-        #to_be_indexed = self.factory.getIndexedAttributes()
-        #for attr in self.factory.getIndexedAttributes():
-        #    if not attr in indices:
-        #        self.db.objects.ensure_index(attr)
-        #
-        ## Remove index that is not in use anymore
-        #for attr in indices:
-        #    if not attr in to_be_index and not attr in ['dn', '_uuid', '_last_changed', '_type', '_extensions', '_container']:
-        #        self.db.objects.drop_index(attr)
-
         # Extract search aid
         attrs = {}
         mapping = {}
@@ -160,6 +145,29 @@ class ObjectIndex(Plugin):
 
         # Remove potentially not assigned values
         used_attrs = [u for u in used_attrs if u]
+
+        # Prepare index
+        indices = [x['key'][0][0] for x in self.db.objects.index_information().values()]
+        binaries = self.factory.getBinaryAttributes()
+
+        # Remove index that is not in use anymore
+        for attr in indices:
+            if not attr in used_attrs and not attr in ['dn', '_id', '_uuid', '_last_changed', '_type', '_extensions', '_container']:
+                self.log.debug("removing obsolete index for '%s'" % attr)
+                self.db.objects.drop_index(attr)
+
+        # Ensure index for all attributes that want an index
+        for attr in used_attrs[:39]:
+
+            # Skip non attribute values
+            if '%' in attr or attr in binaries:
+                self.log.debug("not adding index for '%s'" % attr)
+                continue
+
+            # Add index if it doesn't exist already
+            if not attr in indices:
+                self.log.debug("adding index for '%s'" % attr)
+                self.db.objects.ensure_index(attr)
 
         # Memorize search information for later use
         self.__search_aid = dict(attrs=attrs,
@@ -620,9 +628,10 @@ class ObjectIndex(Plugin):
 
             entry['icon'] = None
 
-            icon_attribute = self.__search_aid['mapping'][item['_type']]['icon']
-            if icon_attribute and icon_attribute in item and item[icon_attribute]:
-                entry['icon'] = "data:image/jpeg;base64," + base64.b64encode(item[icon_attribute][0])
+            #TODO: build server side caching and transfer an URL instead of
+            #icon_attribute = self.__search_aid['mapping'][item['_type']]['icon']
+            #if icon_attribute and icon_attribute in item and item[icon_attribute]:
+            #    entry['icon'] = "data:image/jpeg;base64," + base64.b64encode(item[icon_attribute][0])
 
         res[item['dn']] = entry
 

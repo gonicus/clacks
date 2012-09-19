@@ -164,8 +164,24 @@ class ObjectFactory(object):
             if find.hasattr(element):
                 for attr in find(element):
                     res.append(attr.Name.text)
+
         return list(set(res))
 
+    def getBinaryAttributes(self):
+        """
+        Returns a list of binary attributes
+        """
+        res = []
+        for element in self.__xml_defs.values():
+
+            # Get all <Attribute> tags
+            find = objectify.ObjectPath("Object.Attributes.Attribute")
+            if find.hasattr(element):
+                for attr in find(element):
+                    if attr.Type.text == "Binary":
+                        res.append(attr.Name.text)
+
+        return list(set(res))
     def getObjectTemplates(self, objectType, theme="default"):
         """
         Returns a list of templates for this object.
