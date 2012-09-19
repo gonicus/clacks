@@ -602,7 +602,7 @@ class ObjectIndex(Plugin):
 
         # Filter out what the current use is not allowed to see
         item = self.__filter_entry(user, item)
-        if not item:
+        if not item or item['dn'] == None:
             # We've obviously no permission to see thins one - skip it
             return
 
