@@ -77,18 +77,18 @@ class ObjectIndex(Plugin):
 
         # If there is already a collection, check if there is a newer schema available
         schema = self.factory.getXMLObjectSchema(True)
-        if "objects" in self.db.collection_names() and self.isSchemaUpdated("objects", schema):
-            self.db.objects.drop()
+        if "index" in self.db.collection_names() and self.isSchemaUpdated("index", schema):
+            self.db.index.drop()
             self.log.info('object definitions changed, dropped old object index collection')
 
         # Create the initial schema information if required
-        if not "objects" in self.db.collection_names():
+        if not "index" in self.db.collection_names():
             self.log.info('created object index collection')
             md5s = md5.new()
             md5s.update(schema)
             md5sum = md5s.hexdigest()
 
-            self.db.objects.save({'schema': {'checksum': md5sum}})
+            self.db.index.save({'schema': {'checksum': md5sum}})
 
         # Sync index
         if self.env.config.get("index.disable", "False").lower() != "true":
@@ -99,7 +99,7 @@ class ObjectIndex(Plugin):
 
         # Ensure basic index for the objects
         for index in ['dn', '_uuid', '_last_changed', '_type', '_extensions', '_container']:
-            self.db.objects.ensure_index(index)
+            self.db.index.ensure_index(index)
 
         # Extract search aid
         attrs = {}
@@ -146,14 +146,14 @@ class ObjectIndex(Plugin):
         used_attrs = [u for u in used_attrs if u]
 
         # Prepare index
-        indices = [x['key'][0][0] for x in self.db.objects.index_information().values()]
+        indices = [x['key'][0][0] for x in self.db.index.index_information().values()]
         binaries = self.factory.getBinaryAttributes()
 
         # Remove index that is not in use anymore
         for attr in indices:
             if not attr in used_attrs and not attr in ['dn', '_id', '_uuid', '_last_changed', '_type', '_extensions', '_container']:
                 self.log.debug("removing obsolete index for '%s'" % attr)
-                self.db.objects.drop_index(attr)
+                self.db.index.drop_index(attr)
 
         # Ensure index for all attributes that want an index
         for attr in used_attrs[:39]:
@@ -166,7 +166,7 @@ class ObjectIndex(Plugin):
             # Add index if it doesn't exist already
             if not attr in indices:
                 self.log.debug("adding index for '%s'" % attr)
-                self.db.objects.ensure_index(attr)
+                self.db.index.ensure_index(attr)
 
         # Memorize search information for later use
         self.__search_aid = dict(attrs=attrs,
@@ -245,7 +245,7 @@ class ObjectIndex(Plugin):
                     continue
 
                 # Check for index entry
-                indexEntry = self.db.objects.find_one({'_uuid': obj.uuid}, {'_last_changed': 1})
+                indexEntry = self.db.index.find_one({'_uuid': obj.uuid}, {'_last_changed': 1})
 
                 # Entry is not in the database
                 if not indexEntry:
@@ -265,7 +265,7 @@ class ObjectIndex(Plugin):
                 del obj
 
             # Remove entries that are in the index, but not in any other backends
-            for entry in self.db.objects.find({'_uuid': {'$exists': True}}, {'_uuid': 1}):
+            for entry in self.db.index.find({'_uuid': {'$exists': True}}, {'_uuid': 1}):
                 if entry['_uuid'] not in backend_objects:
                     self.remove_by_uuid(entry['_uuid'])
 
@@ -283,7 +283,7 @@ class ObjectIndex(Plugin):
             # Some object may have queued themselves to be re-indexed, process them now.
             self.log.info("need to refresh index for %d objects" % (len(ObjectIndex.to_be_updated)))
             for uuid in ObjectIndex.to_be_updated:
-                entry = self.db.objects.find_one({'_uuid': uuid, 'dn': {'$exists': True}}, {'dn': 1})
+                entry = self.db.index.find_one({'_uuid': uuid, 'dn': {'$exists': True}}, {'dn': 1})
 
                 if entry:
                     obj = ObjectProxy(entry['dn'])
@@ -319,7 +319,7 @@ class ObjectIndex(Plugin):
             if event.reason in ["post retract", "post update", "post extend"]:
                 self.log.debug("updating object index for %s" % uuid)
                 if not event.dn:
-                    entry = self.db.objects.find_one({'_uuid': event.uuid, 'dn': {'$exists': 1}}, {'dn': 1})
+                    entry = self.db.index.find_one({'_uuid': event.uuid, 'dn': {'$exists': 1}}, {'dn': 1})
                     if entry:
                         event.dn = entry['dn']
 
@@ -330,10 +330,10 @@ class ObjectIndex(Plugin):
         self.log.debug("creating object index for %s" % obj.uuid)
 
         # If this is the root node, add the root document
-        if self.db.objects.find_one({'_uuid': obj.uuid}, {'_uuid': 1}):
+        if self.db.index.find_one({'_uuid': obj.uuid}, {'_uuid': 1}):
             raise IndexException("Object with UUID %s already exists" % obj.uuid)
 
-        self.db.objects.save(obj.asJSON(True))
+        self.db.index.save(obj.asJSON(True))
 
     def remove(self, obj):
         self.remove_by_uuid(obj.uuid)
@@ -341,24 +341,24 @@ class ObjectIndex(Plugin):
     def remove_by_uuid(self, uuid):
         self.log.debug("removing object index for %s" % uuid)
         if self.exists(uuid):
-            self.db.objects.remove({'_uuid': uuid})
+            self.db.index.remove({'_uuid': uuid})
 
     def update(self, obj):
         # Gather information
         current = obj.asJSON(True)
-        saved = self.db.objects.find_one({'_uuid': obj.uuid})
+        saved = self.db.index.find_one({'_uuid': obj.uuid})
         if not saved:
             raise IndexException("No such object %s" % obj.uuid)
 
         # Remove old entry and insert new
         self.remove_by_uuid(obj.uuid)
-        self.db.objects.save(obj.asJSON(True))
+        self.db.index.save(obj.asJSON(True))
 
         # Has the entry been moved?
         if current['dn'] != saved['dn']:
 
             # Adjust all ParentDN entries of child objects
-            res = self.db.objects.find(
+            res = self.db.index.find(
                 {'_parent_dn': re.compile('^(.*,)?%s$' % re.escape(saved['dn']))},
                 {'_uuid': 1, 'dn': 1, '_parent_dn': 1})
 
@@ -370,7 +370,7 @@ class ObjectIndex(Plugin):
                 n_dn = o_dn[:-len(saved['dn'])] + current['dn']
                 n_parent = o_parent[:-len(saved['dn'])] + current['dn']
 
-                self.db.objects.update({'_uuid': o_uuid}, {
+                self.db.index.update({'_uuid': o_uuid}, {
                         '$set': {'dn': n_dn, '_parent_dn': n_parent}})
 
     @Command(__help__=N_("Check if an object with the given UUID exists."))
@@ -387,7 +387,7 @@ class ObjectIndex(Plugin):
 
         ``Return``: True/False
         """
-        return self.db.objects.find_one({'_uuid': uuid}, {'_uuid': 1}) != None
+        return self.db.index.find_one({'_uuid': uuid}, {'_uuid': 1}) != None
 
     def __filter_entry(self, user, entry):
         """
@@ -539,7 +539,7 @@ class ObjectIndex(Plugin):
         these['dn'] = 1
         these['_type'] = 1
 
-        for item in self.db.objects.find(query, these):
+        for item in self.db.index.find(query, these):
             self.__update_res(res, item, user)
 
             # Collect information for secondary search?
@@ -567,7 +567,7 @@ class ObjectIndex(Plugin):
                 query["_last_changed"] = td
 
             # Execute query and update results
-            for item in self.db.objects.find(query, these):
+            for item in self.db.index.find(query, these):
                 self.__update_res(res, item, user)
 
         return res.values()
@@ -685,4 +685,4 @@ class ObjectIndex(Plugin):
         if GlobalLock.exists("scan_index"):
             raise FilterException("index rebuild in progress - try again later")
 
-        return self.db.objects.find(query, conditions)
+        return self.db.index.find(query, conditions)

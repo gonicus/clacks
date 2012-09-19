@@ -593,7 +593,9 @@ class ObjectProxy(object):
 
                 # Update all DN references
                 # Emit 'post move' events
-                for cdn, ctype in children.items():
+                for entry in children:
+                    cdn = entry['dn']
+                    ctype = entry['_type']
 
                     # Don't handle objects that already have been moved
                     if cdn in root_elements.values():
