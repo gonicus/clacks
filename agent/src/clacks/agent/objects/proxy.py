@@ -288,7 +288,6 @@ class ObjectProxy(object):
 
         res['base'] = self.get_base_type()
         res['extensions'] = self.get_extension_types()
-        res['templates'] = self.get_templates(theme)
 
         # Resolve all available extensions for their dependencies
         ei = {}
