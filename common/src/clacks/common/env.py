@@ -131,11 +131,13 @@ class Environment:
         session.configure(bind=sql)
         return session()
 
-
-    def get_mongo_db(self, collection):
+    def get_mongo_connection(self):
         mongo_uri = self.config.get("mongo.uri", default="localhost:27017")
         mongo_host, mongo_port = mongo_uri.split(':')
-        db = Connection(mongo_host, int(mongo_port))[collection]
+        return Connection(mongo_host, int(mongo_port))
+
+    def get_mongo_db(self, collection):
+        db = self.get_mongo_connection()[collection]
 
         # Check for authentication
         mongo_user = self.config.get("mongo.user")
