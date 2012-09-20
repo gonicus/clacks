@@ -3,6 +3,9 @@
   <Object>
     <Name>PosixGroup</Name>
     <Description>A posix group</Description>
+    <Templates>
+      <Template>group-posix.ui</Template>
+    </Templates>
     <DisplayName>Posix group</DisplayName>
     <BackendParameters>
       <Backend objectClasses="posixGroup"
