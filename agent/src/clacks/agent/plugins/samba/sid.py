@@ -1,8 +1,28 @@
 # -*- coding: utf-8 -*-
+import re
 from clacks.common import Environment
 from clacks.agent.objects.filter import ElementFilter
 from clacks.common.components import PluginRegistry
 
+class DetectSambaDomainFromSID(ElementFilter):
+    """
+    Detects the sambaDomainName for the given SID
+    """
+
+    def __init__(self, obj):
+        super(DetectSambaDomainFromSID, self).__init__(obj)
+        self.env = Environment.getInstance()
+
+    def process(self, obj, key, valDict, sid):
+
+        index = PluginRegistry.getInstance("ObjectIndex")
+        sids = index.raw_search({'_type': 'SambaDomain'}, {'sambaSID': 1, 'sambaDomainName': 1})
+        for item in sids:
+            if re.match("^" + re.escape(item['sambaSID'][0]) + "\-[0-9]*$", sid):
+                valDict[key]['value'] = [item['sambaDomainName'][0]]
+                return key, valDict
+
+        return key, valDict
 
 class GenerateSambaSid(ElementFilter):
     """

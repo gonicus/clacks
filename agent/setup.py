@@ -162,6 +162,7 @@ setup(
         sambaacctflagsout = clacks.agent.plugins.samba.flags:SambaAcctFlagsOut
         sambamungedialin = clacks.agent.plugins.samba.munged:SambaMungedDialIn
         sambamungedialout = clacks.agent.plugins.samba.munged:SambaMungedDialOut
+        detectsambadomainnamefromsid = clacks.agent.plugins.samba.sid:DetectSambaDomainFromSID
         generatesambasid = clacks.agent.plugins.samba.sid:GenerateSambaSid
         posixgetnextid = clacks.agent.plugins.posix.filters:GetNextID
         generategecos = clacks.agent.plugins.posix.filters:GenerateGecos
