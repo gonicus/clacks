@@ -14,7 +14,7 @@
    <string>POSIX</string>
   </property>
   <property name="categoryTitle" stdset="0">
-    <string>Group</string>
+    <string>PosixGroup</string>
   </property>
   <property name="windowIcon">
    <iconset>

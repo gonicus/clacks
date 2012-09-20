@@ -9,59 +9,63 @@
         <translation>POSIX</translation>
     </message>
     <message>
-        <location filename="../group-posix.ui" line="17"/>
         <source>Group</source>
-        <translation>Gruppe</translation>
+        <translation type="obsolete">Gruppe</translation>
     </message>
     <message>
-        <location filename="../group-posix.ui" line="24"/>
+        <location filename="../group-posix.ui" line="108"/>
         <source>Edit members</source>
         <translation>Mitglieder bearbeiten</translation>
     </message>
     <message>
-        <location filename="../group-posix.ui" line="30"/>
+        <location filename="../group-posix.ui" line="27"/>
         <source>Generic</source>
         <translation>Allgmein</translation>
     </message>
     <message>
-        <location filename="../group-posix.ui" line="38"/>
+        <location filename="../group-posix.ui" line="17"/>
+        <source>PosixGroup</source>
+        <translation>Gruppe</translation>
+    </message>
+    <message>
+        <location filename="../group-posix.ui" line="35"/>
         <source>Group name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../group-posix.ui" line="51"/>
+        <location filename="../group-posix.ui" line="48"/>
         <source>Description</source>
         <translation>Beschreibung</translation>
     </message>
     <message>
-        <location filename="../group-posix.ui" line="64"/>
+        <location filename="../group-posix.ui" line="61"/>
         <source>Automatically assign group ID</source>
         <translation>Gruppen-ID automatisch vergeben</translation>
     </message>
     <message>
-        <location filename="../group-posix.ui" line="71"/>
+        <location filename="../group-posix.ui" line="68"/>
         <source>Group ID</source>
         <translation>Gruppen-ID</translation>
     </message>
     <message>
-        <location filename="../group-posix.ui" line="105"/>
+        <location filename="../group-posix.ui" line="102"/>
         <source>Members</source>
         <translation>Mitglieder</translation>
     </message>
     <message>
-        <location filename="../group-posix.ui" line="112"/>
+        <location filename="../group-posix.ui" line="118"/>
         <source>Name</source>
         <comment>sn</comment>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../group-posix.ui" line="117"/>
+        <location filename="../group-posix.ui" line="123"/>
         <source>Given name</source>
         <comment>givenName</comment>
         <translation>Vorname</translation>
     </message>
     <message>
-        <location filename="../group-posix.ui" line="122"/>
+        <location filename="../group-posix.ui" line="128"/>
         <source>Login ID</source>
         <comment>uid</comment>
         <translation>Anmelde-ID</translation>
