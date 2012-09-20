@@ -56,7 +56,7 @@
          <widget class="QLineEdit" name="descriptionEdit"/>
         </item>
         <item row="3" column="0" colspan="2">
-         <widget class="QCheckBox" name="checkBox">
+         <widget class="QCheckBox" name="autoGid">
           <property name="text">
            <string>Automatically assign group ID</string>
           </property>
@@ -173,6 +173,22 @@
     <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>autoGid</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>posixAccount</receiver>
+   <slot>property_autoGid()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>178</x>
+     <y>118</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>337</x>
+     <y>224</y>
     </hint>
    </hints>
   </connection>

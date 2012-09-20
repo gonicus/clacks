@@ -33,19 +33,14 @@
         <Name>gidNumber</Name>
         <Description>The primary group number  number</Description>
         <Type>Integer</Type>
-        <MultiValue>false</MultiValue>
         <Mandatory>true</Mandatory>
-        <Default>-1</Default>
-        <OutFilter>
-          <FilterChain>
-            <FilterEntry>
-              <Filter>
-                <Name>GetNextID</Name>
-                <Param>gidNumber</Param>
-              </Filter>
-            </FilterEntry>
-          </FilterChain>
-        </OutFilter>
+        <BlockedBy>
+          <Name>autoGid</Name>
+          <Value>true</Value>
+        </BlockedBy>
+        <DependsOn>
+          <Attribute>autoGid</Attribute>
+        </DependsOn>
         <Validators>
           <Condition>
             <Name>Smaller</Name>
@@ -65,6 +60,24 @@
             <Attribute>uid</Attribute>
           </Reference>
         </References>
+      </Attribute>
+      <Attribute>
+        <Name>autoGid</Name>
+        <Default>true</Default>
+        <Mandatory>true</Mandatory>
+        <Backend>NULL</Backend>
+        <Type>Boolean</Type>
+        <OutFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>GenerateIDs</Name>
+                <Param>65500</Param>
+                <Param>65500</Param>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </OutFilter>
       </Attribute>
     </Attributes>
     <BaseObject>true</BaseObject>
