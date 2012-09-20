@@ -183,12 +183,13 @@ class JSONRPCObjectMapper(Plugin):
                 {'object.uuid': args[0]},
                 {'object.dn': args[0]}]},
                 {'user': 1, 'created': 1})
-            if lck:
-                raise Exception('Object %s has been opened by "%s" on %s' % (
-                    args[0],
-                    lck['user'],
-                    lck['created'].strftime("%Y-%m-%d (%H:%M:%S)")
-                    ))
+            #TODO: re-enable locking
+            #if lck:
+            #    raise Exception('Object %s has been opened by "%s" on %s' % (
+            #        args[0],
+            #        lck['user'],
+            #        lck['created'].strftime("%Y-%m-%d (%H:%M:%S)")
+            #        ))
 
         env = Environment.getInstance()
 
