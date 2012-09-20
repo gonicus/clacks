@@ -10,6 +10,7 @@
     <BackendParameters>
       <Backend objectClasses="posixGroup"
         RDN="cn">LDAP</Backend>
+      <Backend memberUid="PosixUser:uid,">ObjectHandler</Backend>
     </BackendParameters>
     <Backend>LDAP</Backend>
 
