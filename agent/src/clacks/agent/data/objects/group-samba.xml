@@ -4,6 +4,9 @@
     <Name>SambaGroup</Name>
     <Description>A samba extension for a posix group</Description>
     <DisplayName>Samba group extension</DisplayName>
+    <Templates>
+      <Template>group-samba.ui</Template>
+    </Templates>
     <BackendParameters>
       <Backend objectClasses="sambaGroupMapping">LDAP</Backend>
     </BackendParameters>
@@ -55,14 +58,32 @@
         <Description>Samba group(0) Domain administrators(512) Domain users(513) Domain guests(514)</Description>
         <Type>Integer</Type>
         <Values>
-          <Value>0</Value>
-          <Value>512</Value>
-          <Value>513</Value>
-          <Value>514</Value>
+          <Value key="0">Samba group</Value>
+          <Value key="512">Domain administrators</Value>
+          <Value key="513">Domain users</Value>
+          <Value key="514">Domain guests</Value>
         </Values>
         <Default>0</Default>
         <ReadOnly>false</ReadOnly>
         <Mandatory>true</Mandatory>
+      </Attribute>
+      <Attribute>
+        <Name>description</Name>
+        <Description>Description</Description>
+        <Type>UnicodeString</Type>
+      </Attribute>
+      <Attribute>
+        <Name>sambaSIDList</Name>
+        <Description>A list of member-SIDs</Description>
+        <Type>String</Type>
+        <MultiValue>true</MultiValue>
+        <Mandatory>false</Mandatory>
+        <References>
+          <Reference>
+            <Object>SambaGroup</Object>
+            <Attribute>sambaSID</Attribute>
+          </Reference>
+        </References>
       </Attribute>
     </Attributes>
     <Extends>
@@ -71,6 +92,3 @@
     <BaseObject>false</BaseObject>
   </Object>
 </Objects>
-
-
-
