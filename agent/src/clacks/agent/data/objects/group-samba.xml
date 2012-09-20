@@ -68,8 +68,8 @@
         <Mandatory>true</Mandatory>
       </Attribute>
       <Attribute>
-        <Name>description</Name>
-        <Description>Description</Description>
+        <Name>displayName</Name>
+        <Description>Displayed name</Description>
         <Type>UnicodeString</Type>
       </Attribute>
       <Attribute>
