@@ -887,7 +887,10 @@ class Object(object):
 
             for ref_attribute, dsc in info.items():
                 for idsc in dsc:
-                    oval = self.myProperties[idsc[1]]['orig_value'][0]
+                    if self.myProperties[idsc[1]]['orig_value'] and len(self.myProperties[idsc[1]]['orig_value']):
+                        oval = self.myProperties[idsc[1]]['orig_value'][0]
+                    else:
+                        oval = None
                     dns = index.raw_search({'_type': ref, ref_attribute: oval}, {'dn': 1})
                     if dns.count():
                         dns = [x['dn'] for x in dns]
