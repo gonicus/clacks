@@ -502,6 +502,7 @@
 					<Name>Ctx_flag_tsLogin</Name>
 					<Value>False</Value>
 				</BlockedBy>
+				<Values populate="getSambaDriveLetters" />
 			</Attribute>
 
 			<Attribute>
