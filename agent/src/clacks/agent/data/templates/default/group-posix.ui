@@ -107,6 +107,12 @@
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
        <widget class="QTableWidget" name="memberUidEdit">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>200</height>
+         </size>
+        </property>
         <column>
          <property name="text">
           <string comment="sn">Name</string>
