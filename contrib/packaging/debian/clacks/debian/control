@@ -40,7 +40,7 @@ Depends: ${python:Depends}, ${misc:Depends}, python-dateutil, python-netifaces,
  python-crypto, adduser, python-newt, python-zope.event, python-setproctitle,
  python-tornado, python-pymongo
 Suggests: clacks-dbus, fusioninventory-agent, python-pyside | python-qt4, avahi-utils,
- mongodb
+ mongodb-server
 Description: clacks infrastructure service - client
  Brief description is missing.
  .
