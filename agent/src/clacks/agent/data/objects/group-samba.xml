@@ -17,7 +17,6 @@
         <Name>sambaSID</Name>
         <Description>Security ID</Description>
         <Type>String</Type>
-        <Mandatory>true</Mandatory>
         <DependsOn>
           <Attribute>sambaDomainName</Attribute>
           <Attribute>sambaGroupType</Attribute>
@@ -28,7 +27,7 @@
               <Filter>
                 <Name>GenerateSambaSid</Name>
                 <Param>group</Param>
-                <Param>%(gidNumber)</Param>
+                <Param>%(gidNumber)s</Param>
                 <Param>%(sambaDomainName)s</Param>
                 <Param>%(sambaGroupType)s</Param>
               </Filter>
@@ -42,9 +41,18 @@
         <Description></Description>
         <Backend>NULL</Backend>
         <Type>String</Type>
-        <ReadOnly>false</ReadOnly>
         <Mandatory>true</Mandatory>
-	<Values populate="getSambaDomainNames" />
+	      <Values populate="getSambaDomainNames" />
+				<InFilter>
+					<FilterChain>
+						<FilterEntry>
+							<Filter>
+                <Name>DetectSambaDomainFromSID</Name>
+                <Param>%(sambaSID)s</Param>
+							</Filter>
+						</FilterEntry>
+					</FilterChain>
+				</InFilter>
       </Attribute>
       <ForeignAttribute>
         <Name>gidNumber</Name>

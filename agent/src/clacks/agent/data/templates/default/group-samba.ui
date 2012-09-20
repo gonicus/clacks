@@ -160,6 +160,12 @@
    </hints>
   </connection>
   <connection>
+   <sender>sambaSIDEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaGroupMapping</receiver>
+   <slot>property_sambaSID()</slot>
+  </connection>
+  <connection>
    <sender>sambaDomainNameEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>sambaGroupMapping</receiver>
