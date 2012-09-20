@@ -143,6 +143,18 @@
  </resources>
  <connections>
   <connection>
+   <sender>cnEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>posixGroup</receiver>
+   <slot>property_cn()</slot>
+  </connection>
+  <connection>
+   <sender>gidNumberEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>posixGroup</receiver>
+   <slot>property_gidNumber()</slot>
+  </connection>
+  <connection>
    <sender>descriptionEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>posixGroup</receiver>
