@@ -1,97 +1,178 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-  <class>posixGroup</class>
-  <widget name="posixGroup" class="QWidget">
-    <property name="geometry">
-      <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>400</width>
-        <height>300</height>
-      </rect>
-    </property>
-    <property name="windowTitle">
-      <string>posixGroup</string>
-    </property>
-    <layout name="gridLayout" class="QGridLayout">
-      <item column="0" row="0">
-        <layout name="formLayout" class="QFormLayout">
-          <item column="0" row="0">
-            <widget name="gidNumberLabel*" class="QLabel">
-              <property name="text">
-                <string>gidNumber</string>
-              </property>
-            </widget>
-          </item>
-          <item column="1" row="0">
-            <widget name="gidNumberEdit*" class="QSpinBox"/>
-          </item>
-          <item column="0" row="1">
-            <widget name="cnLabel*" class="QLabel">
-              <property name="text">
-                <string>cn</string>
-              </property>
-            </widget>
-          </item>
-          <item column="1" row="1">
-            <widget name="cnEdit*" class="QLineEdit"/>
-          </item>
-          <item column="0" row="2">
-            <widget name="descriptionLabel" class="QLabel">
-              <property name="text">
-                <string>description</string>
-              </property>
-            </widget>
-          </item>
-          <item column="1" row="2">
-            <widget name="descriptionEdit" class="QLineEdit"/>
-          </item>
-          <item column="0" row="2">
-            <widget name="memberUid" class="QLabel">
-              <property name="text">
-                <string>memberUid</string>
-              </property>
-            </widget>
-          </item>
-          <item column="1" row="2">
-            <widget name="memberUidEdit" class="QTableWidget"/>
-          </item>
-        </layout>
+ <class>posixGroup</class>
+ <widget class="QWidget" name="posixGroup">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>467</width>
+    <height>472</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>POSIX</string>
+  </property>
+  <property name="categoryTitle" stdset="0">
+    <string>Group</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>:/images/group-posix.png</normaloff>:/images/group-posix.png</iconset>
+  </property>
+  <property name="editTitle" stdset="0">
+   <string>Edit members</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Generic</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <layout class="QFormLayout" name="formLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="cnLabel">
+          <property name="text">
+           <string>Group name</string>
+          </property>
+          <property name="buddy">
+           <cstring>cnEdit</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="cnEdit"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="descriptionLabel">
+          <property name="text">
+           <string>Description</string>
+          </property>
+          <property name="buddy">
+           <cstring>descriptionEdit</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="descriptionEdit"/>
+        </item>
+        <item row="3" column="0" colspan="2">
+         <widget class="QCheckBox" name="checkBox">
+          <property name="text">
+           <string>Automatically assign group ID</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="gidNumberLabel">
+          <property name="text">
+           <string>Group ID</string>
+          </property>
+          <property name="buddy">
+           <cstring>gidNumberEdit</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QSpinBox" name="gidNumberEdit"/>
+        </item>
+        <item row="2" column="0">
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
-    </layout>
-  </widget>
-  <tabstops>
-    <tabstop>gidNumber</tabstop>
-    <tabstop>cn</tabstop>
-    <tabstop>description</tabstop>
-  </tabstops>
-  <resources>
-   <include location="resources/group-posix.qrc"/>
-  </resources>
-  <connections>
-    <connection>
-      <sender>gidNumberEdit</sender>
-      <signal>textChanged(QString)</signal>
-      <receiver>posixGroup</receiver>
-      <slot>property_gidNumber()</slot>
-    </connection>
-    <connection>
-      <sender>cnEdit</sender>
-      <signal>textChanged(QString)</signal>
-      <receiver>posixGroup</receiver>
-      <slot>property_cn()</slot>
-    </connection>
-    <connection>
-      <sender>descriptionEdit</sender>
-      <signal>textChanged(QString)</signal>
-      <receiver>posixGroup</receiver>
-      <slot>property_description()</slot>
-    </connection>
-    <connection>
-      <sender>memberUidEdit</sender>
-      <signal>textChanged(QString)</signal>
-      <receiver>posixGroup</receiver>
-      <slot>property_memberUid()</slot>
-    </connection>
-  </connections>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Members</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QTableWidget" name="memberUidEdit">
+        <column>
+         <property name="text">
+          <string comment="sn">Name</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string comment="givenName">Given name</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string comment="uid">Login ID</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+     </layout>
+     <zorder>memberUidEdit</zorder>
+     <zorder>memberUidEdit</zorder>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>cnEdit</tabstop>
+  <tabstop>descriptionEdit</tabstop>
+  <tabstop>checkBox</tabstop>
+  <tabstop>gidNumberEdit</tabstop>
+  <tabstop>memberUidEdit</tabstop>
+ </tabstops>
+ <resources>
+  <include location="resources/group-posix.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>descriptionEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>posixGroup</receiver>
+   <slot>property_description()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>memberUidEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>posixGroup</receiver>
+   <slot>property_memberUid()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

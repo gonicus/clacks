@@ -134,7 +134,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="CtxMaxConnectionTimeLabel">
             <property name="text">
-             <string>Connection time</string>
+             <string>Connection time limit</string>
             </property>
             <property name="buddy">
              <cstring>CtxMaxConnectionTimeEdit</cstring>
@@ -147,7 +147,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="CtxMaxDisconnectionTimeLabel">
             <property name="text">
-             <string>Disconnection time</string>
+             <string>Disconnection time limit</string>
             </property>
             <property name="buddy">
              <cstring>CtxMaxDisconnectionTimeEdit</cstring>
@@ -160,7 +160,7 @@
           <item row="2" column="0">
            <widget class="QLabel" name="CtxMaxIdleTimeLabel">
             <property name="text">
-             <string>IDLE time</string>
+             <string>IDLE time limit</string>
             </property>
             <property name="buddy">
              <cstring>CtxMaxIdleTimeEdit</cstring>
