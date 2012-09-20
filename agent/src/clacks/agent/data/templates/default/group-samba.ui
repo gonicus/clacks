@@ -1,100 +1,146 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-  <class>sambaGroupMapping</class>
-  <widget name="sambaGroupMapping" class="QWidget">
-    <property name="geometry">
-      <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>400</width>
-        <height>300</height>
-      </rect>
-    </property>
-    <property name="windowTitle">
-      <string>sambaGroupMapping</string>
-    </property>
-    <property name="windowIcon">
-       <iconset>
-       <normaloff>:/images/user-samba.png</normaloff>:/images/user-samba.png</iconset>
-    </property>
-    <layout name="gridLayout" class="QGridLayout">
-      <item column="0" row="0">
-        <layout name="formLayout" class="QFormLayout">
-          <item column="0" row="0">
-            <widget name="gidNumberLabel" class="QLabel">
-              <property name="text">
-                <string>gidNumber</string>
-              </property>
-            </widget>
-          </item>
-          <item column="1" row="0">
-            <widget name="gidNumberEdit" class="QSpinBox"/>
-          </item>
-          <item column="0" row="1">
-            <widget name="sambaGroupTypeLabel" class="QLabel">
-              <property name="text">
-                <string>sambaGroupType</string>
-              </property>
-            </widget>
-          </item>
-          <item column="1" row="1">
-            <widget name="sambaGroupTypeEdit" class="QSpinBox"/>
-          </item>
-          <item column="0" row="2">
-            <widget name="displayNameLabel" class="QLabel">
-              <property name="text">
-                <string>displayName</string>
-              </property>
-            </widget>
-          </item>
-          <item column="1" row="2">
-            <widget name="displayNameEdit" class="QLineEdit"/>
-          </item>
-          <item column="0" row="3">
-            <widget name="descriptionLabel" class="QLabel">
-              <property name="text">
-                <string>description</string>
-              </property>
-            </widget>
-          </item>
-          <item column="1" row="3">
-            <widget name="descriptionEdit" class="QLineEdit"/>
-          </item>
-          <item column="0" row="4">
-            <widget name="sambaSIDListLabel" class="QLabel">
-              <property name="text">
-                <string>sambaSIDList</string>
-              </property>
-            </widget>
-          </item>
-          <item column="1" row="4">
-            <widget name="sambaSIDListEdit" class="QTableWidget"/>
-          </item>
-        </layout>
+ <class>sambaGroupMapping</class>
+ <widget class="QWidget" name="sambaGroupMapping">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>484</width>
+    <height>396</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Samba</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>:/images/user-samba.png</normaloff>:/images/user-samba.png</iconset>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Generic</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="sambaGroupTypeLabel">
+        <property name="text">
+         <string>Group type</string>
+        </property>
+       </widget>
       </item>
-    </layout>
-  </widget>
-  <resources>
-    <include location="resources/user-samba.qrc"/>
-  </resources>
-  <connections>
-    <connection>
-      <sender>sambaGroupTypeEdit</sender>
-      <signal>textChanged(QString)</signal>
-      <receiver>sambaGroupMapping</receiver>
-      <slot>property_sambaGroupType()</slot>
-    </connection>
-    <connection>
-      <sender>displayNameEdit</sender>
-      <signal>textChanged(QString)</signal>
-      <receiver>sambaGroupMapping</receiver>
-      <slot>property_displayName()</slot>
-    </connection>
-    <connection>
-      <sender>sambaSIDListEdit</sender>
-      <signal>textChanged(QString)</signal>
-      <receiver>sambaGroupMapping</receiver>
-      <slot>property_sambaSIDList()</slot>
-    </connection>
-  </connections>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="sambaGroupTypeEdit"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="displayNameLabel">
+        <property name="text">
+         <string>Display name</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="displayNameEdit"/>
+      </item>
+     </layout>
+     <zorder>displayNameLabel</zorder>
+     <zorder>displayNameEdit</zorder>
+     <zorder>sambaGroupTypeLabel</zorder>
+     <zorder>sambaGroupTypeEdit</zorder>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Nested groups</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QTableWidget" name="sambaSIDListEdit">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>200</height>
+         </size>
+        </property>
+        <property name="editTitle" stdset="0">
+         <string>Edit nested groups</string>
+        </property>
+        <column>
+         <property name="text">
+          <string extracomment="cn">Name</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string extracomment="description">Description</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string extracomment="sambaSID">SID</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="resources/user-samba.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>sambaGroupTypeEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaGroupMapping</receiver>
+   <slot>property_sambaGroupType()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>displayNameEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaGroupMapping</receiver>
+   <slot>property_displayName()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sambaSIDListEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaGroupMapping</receiver>
+   <slot>property_sambaSIDList()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
