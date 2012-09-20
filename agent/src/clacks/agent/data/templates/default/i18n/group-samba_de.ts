@@ -14,42 +14,62 @@
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="../group-samba.ui" line="30"/>
+        <location filename="../group-samba.ui" line="35"/>
+        <source>Domain</source>
+        <translation>Domäne</translation>
+    </message>
+    <message>
+        <location filename="../group-samba.ui" line="45"/>
         <source>Group type</source>
         <translation>Gruppen-Typ</translation>
     </message>
     <message>
-        <location filename="../group-samba.ui" line="40"/>
+        <location filename="../group-samba.ui" line="55"/>
         <source>Display name</source>
         <translation>Angezeigter Name</translation>
     </message>
     <message>
-        <location filename="../group-samba.ui" line="58"/>
+        <location filename="../group-samba.ui" line="70"/>
         <source>Nested groups</source>
         <translation>Verschachtelte Gruppen</translation>
     </message>
     <message>
-        <location filename="../group-samba.ui" line="64"/>
+        <location filename="../group-samba.ui" line="82"/>
         <source>Edit nested groups</source>
         <translation>Verschachtelte Gruppen bearbeiten</translation>
     </message>
     <message>
-        <location filename="../group-samba.ui" line="68"/>
+        <location filename="../group-samba.ui" line="86"/>
         <source>Name</source>
-        <extracomment>cn</extracomment>
+        <comment>cn</comment>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../group-samba.ui" line="73"/>
+        <location filename="../group-samba.ui" line="91"/>
         <source>Description</source>
-        <extracomment>description</extracomment>
+        <comment>description</comment>
         <translation>Beschreibung</translation>
     </message>
     <message>
-        <location filename="../group-samba.ui" line="78"/>
+        <location filename="../group-samba.ui" line="96"/>
+        <source>SID</source>
+        <comment>sambaSID</comment>
+        <translation>SID</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <extracomment>cn</extracomment>
+        <translation type="obsolete">Name</translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <extracomment>description</extracomment>
+        <translation type="obsolete">Beschreibung</translation>
+    </message>
+    <message>
         <source>SID</source>
         <extracomment>sambaSID</extracomment>
-        <translation>SID</translation>
+        <translation type="obsolete">SID</translation>
     </message>
 </context>
 </TS>

@@ -26,43 +26,42 @@
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
        <layout class="QFormLayout" name="formLayout">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::ExpandingFieldsGrow</enum>
+        </property>
         <item row="0" column="0">
-         <widget class="QLabel" name="sambaGroupTypeLabel">
-          <property name="text">
-           <string>Group type</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QComboBox" name="sambaGroupTypeEdit"/>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="displayNameLabel">
-          <property name="text">
-           <string>Display name</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="displayNameEdit"/>
-        </item>
-        <item row="0" column="2">
          <widget class="QLabel" name="sambaDomainNameLabel">
           <property name="text">
            <string>Domain</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="2">
+        <item row="0" column="1">
          <widget class="QComboBox" name="sambaDomainNameEdit"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="sambaGroupTypeLabel">
+          <property name="text">
+           <string>Group type</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="sambaGroupTypeEdit"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="displayNameLabel">
+          <property name="text">
+           <string>Display name</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="displayNameEdit"/>
         </item>
        </layout>
       </item>
      </layout>
-     <zorder>displayNameLabel</zorder>
-     <zorder>displayNameEdit</zorder>
-     <zorder>sambaGroupTypeLabel</zorder>
-     <zorder>sambaGroupTypeEdit</zorder>
     </widget>
    </item>
    <item>
@@ -129,6 +128,16 @@
    <signal>textChanged(QString)</signal>
    <receiver>sambaGroupMapping</receiver>
    <slot>property_sambaDomainName()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
   </connection>
   <connection>
    <sender>displayNameEdit</sender>
