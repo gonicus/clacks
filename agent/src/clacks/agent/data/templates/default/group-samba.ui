@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>484</width>
-    <height>396</height>
+    <width>496</width>
+    <height>327</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,26 +23,30 @@
      <property name="title">
       <string>Generic</string>
      </property>
-     <layout class="QFormLayout" name="formLayout">
+     <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
-       <widget class="QLabel" name="sambaGroupTypeLabel">
-        <property name="text">
-         <string>Group type</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="sambaGroupTypeEdit"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="displayNameLabel">
-        <property name="text">
-         <string>Display name</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="displayNameEdit"/>
+       <layout class="QFormLayout" name="formLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="sambaGroupTypeLabel">
+          <property name="text">
+           <string>Group type</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QComboBox" name="sambaGroupTypeEdit"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="displayNameLabel">
+          <property name="text">
+           <string>Display name</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="displayNameEdit"/>
+        </item>
+       </layout>
       </item>
      </layout>
      <zorder>displayNameLabel</zorder>
@@ -56,7 +60,7 @@
      <property name="title">
       <string>Nested groups</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
+     <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
        <widget class="QTableWidget" name="sambaSIDListEdit">
         <property name="maximumSize">
