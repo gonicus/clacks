@@ -5,7 +5,6 @@ import gettext
 import base64
 import re
 import logging
-from StringIO import StringIO
 from PIL import Image
 from lxml import etree
 from zope.interface import implements
@@ -15,6 +14,12 @@ from clacks.common.utils import parseURL, makeAuthURL
 from clacks.common.components.registry import PluginRegistry
 from clacks.common.components.amqp import EventConsumer
 from clacks.common.components import AMQPServiceProxy
+
+try:
+        from cStringIO import StringIO
+except ImportError:
+        from StringIO import StringIO
+
 
 # Set locale domain
 t = gettext.translation('messages', pkg_resources.resource_filename("amires", "locale"),

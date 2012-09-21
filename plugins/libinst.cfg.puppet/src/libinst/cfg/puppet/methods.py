@@ -3,7 +3,6 @@ import os.path
 import pwd
 import shutil
 import pkg_resources
-import StringIO
 import ConfigParser
 import ldap.filter
 import logging
@@ -17,6 +16,12 @@ from types import StringTypes
 from clacks.common.components.registry import PluginRegistry
 from clacks.agent.ldap_utils import LDAPHandler
 from nodes import PuppetNodeManager
+
+try:
+        from cStringIO import StringIO
+except ImportError:
+        from StringIO import StringIO
+
 
 # Global puppet lock
 puppet_lock = RLock()
@@ -364,7 +369,7 @@ reportdir=$logdir
             data += (line.lstrip())
 
             config = ConfigParser.ConfigParser()
-            config.readfp(StringIO.StringIO(data))
+            config.readfp(StringIO(data))
 
             return config
 

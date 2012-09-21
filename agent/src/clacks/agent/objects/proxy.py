@@ -28,7 +28,6 @@ This fragment will add the *PosixUser* extension to the object, while
 will list the available extension types for that specific object.
 ----
 """
-import StringIO
 import pkg_resources
 import re
 import time
@@ -38,6 +37,12 @@ from logging import getLogger
 from clacks.common import Environment
 from clacks.common.components import PluginRegistry
 from bson.binary import Binary
+
+try:
+        from cStringIO import StringIO
+except ImportError:
+        from StringIO import StringIO
+
 
 class ProxyException(Exception):
     pass
@@ -823,7 +828,7 @@ class ObjectProxy(object):
                 xmldefs, etree.tostring(propertiestag), etree.tostring(exttag), use_index)
 
         # Transform xml-combination into a useable xml-class representation
-        xml_doc = etree.parse(StringIO.StringIO(xml))
+        xml_doc = etree.parse(StringIO(xml))
         xslt_doc = etree.parse(pkg_resources.resource_filename('clacks.agent', 'data/object_to_xml.xsl')) #@UndefinedVariable
         transform = etree.XSLT(xslt_doc)
         res = transform(xml_doc)

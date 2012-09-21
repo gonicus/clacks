@@ -5,7 +5,6 @@ make the life of plugin programming easier.
 import re
 import os
 import time
-import StringIO
 from tokenize import generate_tokens
 from token import STRING
 import urllib2
@@ -14,6 +13,11 @@ from subprocess import Popen, PIPE
 from qpid.messaging.constants import AMQP_PORT, AMQPS_PORT
 from urlparse import urlparse
 from datetime import datetime
+
+try:
+        from cStringIO import StringIO
+except ImportError:
+        from StringIO import StringIO
 
 
 def stripNs(data):
@@ -223,7 +227,7 @@ def f_print(data):
 
 
 def repr2json(string):
-    g = generate_tokens(StringIO.StringIO(string).readline)
+    g = generate_tokens(StringIO(string).readline)
 
     result = ""
     for toknum, tokval, _, _, _ in g:
