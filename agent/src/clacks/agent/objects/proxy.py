@@ -111,6 +111,7 @@ class ObjectProxy(object):
         for extension in extensions:
             self.__log.debug("loading %s extension for %s" % (extension, dn_or_base))
             self.__extensions[extension] = self.__factory.getObject(extension, self.__base.uuid)
+            self.__extensions[extension].dn = self.__base.dn
             self.__initial_extension_state[extension] = True
         for extension in all_extensions:
             if extension not in self.__extensions:

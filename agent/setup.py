@@ -70,6 +70,7 @@ setup(
         'setproctitle',
         'tornado',
         'pymongo',
+        'pil',
         ],
     dependency_links = [
         'http://oss.gonicus.de/pub/gosa/eggs',
@@ -169,6 +170,7 @@ setup(
         posixgetnextid = clacks.agent.plugins.posix.filters:GetNextID
         generategecos = clacks.agent.plugins.posix.filters:GenerateGecos
         loadgecosstate = clacks.agent.plugins.posix.filters:LoadGecosState
+        imagefilter = clacks.agent.plugins.user.filters:ImageProcessor
         generatedn = clacks.agent.plugins.user.filters:GenerateDisplayName
         loaddnstate = clacks.agent.plugins.user.filters:LoadDisplayNameState
         generateids = clacks.agent.plugins.posix.filters:GenerateIDs

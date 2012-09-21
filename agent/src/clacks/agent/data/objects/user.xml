@@ -238,6 +238,32 @@
         <Name>jpegPhoto</Name>
         <Description>Used to store one or more images of a person using the JPEG File Interchange Format [JFIF].</Description>
         <Type>Binary</Type>
+        <InFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>ImageProcessor</Name>
+                <Param>22</Param>
+                <Param>32</Param>
+                <Param>48</Param>
+                <Param>64</Param>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </InFilter>
+        <OutFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>ImageProcessor</Name>
+                <Param>22</Param>
+                <Param>32</Param>
+                <Param>48</Param>
+                <Param>64</Param>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </OutFilter>
       </Attribute>
       <Attribute>
         <Name>labeledURI</Name>
