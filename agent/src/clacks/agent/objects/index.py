@@ -633,7 +633,7 @@ class ObjectIndex(Plugin):
             icon_attribute = self.__search_aid['mapping'][item['_type']]['icon']
             if icon_attribute and icon_attribute in item and item[icon_attribute]:
                 cache_path = self.env.config.get('gosa.cache_path', default="/cache")
-                entry['icon'] = os.path.join(cache_path, item['_uuid'], icon_attribute, "0", "48")
+                entry['icon'] = os.path.join(cache_path, item['_uuid'], icon_attribute, "0", "64")
 
         res[item['dn']] = entry
 
