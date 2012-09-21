@@ -17,17 +17,16 @@ class CheckSambaSIDList(ElementComparator):
     def process(self, all_props, key, value):
 
         errors = []
-        #if "sambaSIDList" in valDict:
-        #    sidList = valDict["sambaSIDList"]["value"]
+        if "sambaSIDList" in all_props:
+            sidList = all_props["sambaSIDList"]["value"]
 
-        #    if "sambaSID" in valDict and len(valDict["sambaSID"]["value"]):
-        #        sid = valDict["sambaSID"]["value"][0]
+            if "sambaSID" in all_props and len(all_props["sambaSID"]["value"]):
+                sid = all_props["sambaSID"]["value"][0]
 
-        #        if sid in sidList:
-        #            raise Exception("Cannot use ourselves in as member for the SID list!")
+                if sid in sidList:
+                    errors.append(_("Cannot use ourselves as member for the SID list!"))
 
-        errors.append("Ne")
-        return False, errors
+        return len(errors)==0, errors
 
 class DetectSambaDomainFromSID(ElementFilter):
     """
