@@ -574,6 +574,12 @@ class ObjectProxy(object):
         # Handle commits
         self.__base.commit()
         for extension in [ext for ext in self.__extensions.values() if ext]:
+
+            # Populate the base uuid to the extensions
+            if(extension.uuid and extension.uuid != self.__base.uuid):
+                raise Exception("Base and extension have different uuids! Please check!")
+            if not extension.uuid:
+                extension.uuid = self.__base.uuid
             extension.commit()
 
         # Skip further actions if we're in create mode
