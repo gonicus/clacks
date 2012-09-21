@@ -693,10 +693,8 @@ class Object(object):
                 args = [key, value] + curline['params']
 
                 # Process condition and keep results
-                errors = []
-                named = {'errors': errors}
                 fname = type(curline['condition']).__name__
-                v = (curline['condition']).process(*args, **named)
+                v, errors = (curline['condition']).process(*args)
 
                 # Log what happend!
                 self.log.debug("  %s: [Filter]  %s(%s) called and returned: %s" % (

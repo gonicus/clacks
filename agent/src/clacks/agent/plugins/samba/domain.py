@@ -17,15 +17,16 @@ class IsValidSambaDomainName(ElementComparator):
     def __init__(self, obj):
         super(IsValidSambaDomainName, self).__init__()
 
-    def process(self, key, value, errors=None):
+    def process(self, key, value):
         domain = value[0]
+        errors = []
         index = PluginRegistry.getInstance("ObjectIndex")
 
         res = index.raw_search({'_type': 'SambaDomain', 'sambaDomainName': domain},
             {'_uuid': 1})
 
         if res.count():
-            return True
+            return True, errors
 
         errors.append(_("The given sambaDomainName '%s' does not exists!") % value[0])
-        return False
+        return False, errors

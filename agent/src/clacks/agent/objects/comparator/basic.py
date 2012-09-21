@@ -17,7 +17,9 @@ class Equals(ElementComparator):
     def __init__(self, obj):
         super(Equals, self).__init__()
 
-    def process(self, key, value, match, case_ignore=False, errors=[]):
+    def process(self, key, value, match, case_ignore=False):
+
+        errors = []
 
         # Check each property value
         cnt = 0
@@ -28,14 +30,14 @@ class Equals(ElementComparator):
                 if item.lower() != match.lower():
                     errors.append("Item %s (%s) did not match the given value '%s'! (ignore case)" % (
                         cnt, item, match))
-                    return False
+                    return False, errors
             else:
                 if item != match:
                     errors.append("Item %s (%s) did not match the given value '%s'!" % (
                         cnt, item, match))
-                    return False
+                    return False, errors
             cnt += 1
-        return True
+        return True, errors
 
 
 class Greater(ElementComparator):
@@ -53,7 +55,9 @@ class Greater(ElementComparator):
     def __init__(self, obj):
         super(Greater, self).__init__()
 
-    def process(self, key, value, match, errors=[]):
+    def process(self, key, value, match):
+
+        errors = []
 
         # All items of value have to match.
         cnt = 0
@@ -62,9 +66,9 @@ class Greater(ElementComparator):
             item = int(item)
             if not (item > match):
                 errors.append("Item %s (%s) is not greater then %s!" % (cnt, item, match))
-                return False
+                return False, errors
             cnt += 1
-        return True
+        return True, errors
 
 
 class Smaller(ElementComparator):
@@ -82,7 +86,9 @@ class Smaller(ElementComparator):
     def __init__(self, obj):
         super(Smaller, self).__init__()
 
-    def process(self, key, value, match, errors=[]):
+    def process(self, key, value, match):
+
+        errors = []
 
         # All items of value have to match.
         match = int(match)
@@ -91,6 +97,6 @@ class Smaller(ElementComparator):
             item = int(item)
             if not (item < match):
                 errors.append("Item %s (%s) is not smaller then %s!" % (cnt, item, match))
-                return False
+                return False, errors
             cnt += 1
-        return True
+        return True, errors

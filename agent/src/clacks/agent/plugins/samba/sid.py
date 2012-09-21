@@ -3,6 +3,31 @@ import re
 from clacks.common import Environment
 from clacks.agent.objects.filter import ElementFilter
 from clacks.common.components import PluginRegistry
+from clacks.agent.objects.comparator import ElementComparator
+
+
+class CheckSambaSIDList(ElementComparator):
+    """
+    Checks whether the given sambaSIDList can be saved or if it
+    will produce recursions.
+    """
+    def __init__(self, obj):
+        super(CheckSambaSIDList, self).__init__()
+
+    def process(self, key, value):
+
+        errors = []
+        #if "sambaSIDList" in valDict:
+        #    sidList = valDict["sambaSIDList"]["value"]
+
+        #    if "sambaSID" in valDict and len(valDict["sambaSID"]["value"]):
+        #        sid = valDict["sambaSID"]["value"][0]
+
+        #        if sid in sidList:
+        #            raise Exception("Cannot use ourselves in as member for the SID list!")
+
+        errors.append("Ne")
+        return False, errors
 
 class DetectSambaDomainFromSID(ElementFilter):
     """

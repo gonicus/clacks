@@ -17,10 +17,11 @@ class IsAclSet(ElementComparator):
     def __init__(self, obj):
         super(IsAclSet, self).__init__()
 
-    def process(self, key, value, errors=[]):
+    def process(self, key, value):
 
         # Check each property value
         entry_cnt = 0
+        errors = []
 
         ares = ACLResolver.get_instance()
         rolenames = [n["name"] for n in ares.getACLRoles(None) if "name" in n]
@@ -30,60 +31,60 @@ class IsAclSet(ElementComparator):
 
             if not "priority" in entry:
                 errors.append(_("missing attribute 'priority' for acl-entry %s!" % (str(entry_cnt,))))
-                return False
+                return False, errors
 
             if not "members" in entry:
                 errors.append(_("missing attribute 'members'! for acl-entry %s!" % (str(entry_cnt,))))
-                return False
+                return False, errors
 
             if "rolename" in entry:
 
                 if "actions" in entry and entry["actions"]:
                     errors.append(_("you can either use a rolename or actions but not both!"))
-                    return False
+                    return False, errors
 
                 # If a 'rolename' is we do not allow other dict, keys
                 if type(entry["rolename"]) not in [str, unicode]:
                     errors.append(_("expected attribute '%s' to be of type '%s' but found '%s!'" % ("rolename", str, type(entry["rolename"]))))
-                    return False
+                    return False, errors
 
                 # Ensure that the given role exists....
                 if not entry["rolename"] in rolenames:
                     errors.append(_("unknown role %s used!" % entry["rolename"]))
-                    return False
+                    return False, errors
 
             else:
 
                 if not "scope" in entry:
                     errors.append(_("missing attribute 'scope' for acl-entry %s!" % (str(entry_cnt,))))
-                    return False
+                    return False, errors
 
                 if not "actions" in entry:
                     errors.append(_("missing attribute 'actions'! for acl-entry %s!" % (str(entry_cnt,))))
-                    return False
+                    return False, errors
 
                 for item in entry['actions']:
 
                     # Check  if the required keys 'topic' and 'acl' are present
                     if not "topic" in item:
                         errors.append(_("missing attribute 'topic'!"))
-                        return False
+                        return False, errors
                     if not "acl" in item:
                         errors.append(_("missing attribute 'acl'!"))
-                        return False
+                        return False, errors
 
                     # Check for the correct attribute types
                     if not type(item["topic"]) in [str, unicode]:
                         errors.append(_("expected attribute '%s' to be of type '%s' but found '%s!'" % ("topic", str, type(item["topic"]))))
-                        return False
+                        return False, errors
                     if not type(item["acl"]) in [str, unicode]:
                         errors.append(_("expected attribute '%s' to be of type '%s' but found '%s!'" % ("topic", str, type(item["topic"]))))
-                        return False
+                        return False, errors
 
                     # Check for a correct value for acls
                     if not all(map(lambda x: x in 'rwcdsex', item['acl'])):
                         errors.append(_("invalid acl attribute given, allowed is a combination of 'rwcdsex'!'"))
-                        return False
+                        return False, errors
 
                     # Check if there are unsupported keys given
                     keys = item.keys()
@@ -93,10 +94,10 @@ class IsAclSet(ElementComparator):
                         keys.remove("options")
                     if len(keys):
                         errors.append(_("invalid attributes given '%s', allowed are 'rolename, topic, acl, options'!" % (', '.join(keys))))
-                        return False
+                        return False, errors
 
                     if "options" in item and not type(item["options"]) in [dict]:
                         errors.append(_("expected attribute '%s' to be of type '%s' but found '%s!'" % ("options", dict, type(item["options"]))))
-                        return False
+                        return False, errors
 
-        return True
+        return True, errors

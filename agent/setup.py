@@ -142,6 +142,7 @@ setup(
         isexistingdnoftype = clacks.agent.plugins.misc.filter_validators:IsExistingDnOfType
         is_acl_role = clacks.agent.objects.comparator.acl_roles:IsAclRole
         is_acl_set = clacks.agent.objects.comparator.acl_set:IsAclSet
+        checksambasidlist = clacks.agent.plugins.samba.sid:CheckSambaSIDList
 
         [object.filter]
         concatstring = clacks.agent.objects.filter.strings:ConcatString

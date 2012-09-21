@@ -89,6 +89,11 @@
             <Attribute>sambaSID</Attribute>
           </Reference>
         </References>
+        <Validators>
+          <Condition>
+            <Name>CheckSambaSIDList</Name>
+          </Condition>
+        </Validators>
       </Attribute>
     </Attributes>
     <Extends>
