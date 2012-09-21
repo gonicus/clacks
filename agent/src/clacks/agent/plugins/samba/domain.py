@@ -17,7 +17,7 @@ class IsValidSambaDomainName(ElementComparator):
     def __init__(self, obj):
         super(IsValidSambaDomainName, self).__init__()
 
-    def process(self, key, value):
+    def process(self, all_props, key, value):
         domain = value[0]
         errors = []
         index = PluginRegistry.getInstance("ObjectIndex")

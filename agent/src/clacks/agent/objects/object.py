@@ -302,7 +302,10 @@ class Object(object):
 
             # Validate value
             if self.myProperties[name]['validator']:
-                res, error = self.__processValidator(self.myProperties[name]['validator'], name, new_value)
+
+                props_copy = copy.deepcopy(self.myProperties)
+
+                res, error = self.__processValidator(self.myProperties[name]['validator'], name, new_value, props_copy)
                 if not res:
                     if len(error):
                         raise ValueError("<%s> Property validation failed: %s" % (name, error[0]))
@@ -660,7 +663,7 @@ class Object(object):
     def getForeignProperties(self):
         return [x for x, y in self.myProperties.items() if y['foreign']]
 
-    def __processValidator(self, fltr, key, value):
+    def __processValidator(self, fltr, key, value, props_copy):
         """
         This method processes a given process-list (fltr) for a given property (prop).
         And return TRUE if the value matches the validator set and FALSE if
@@ -690,7 +693,7 @@ class Object(object):
             if 'condition' in curline:
 
                 # Build up argument list
-                args = [key, value] + curline['params']
+                args = [props_copy, key, value] + curline['params']
 
                 # Process condition and keep results
                 fname = type(curline['condition']).__name__

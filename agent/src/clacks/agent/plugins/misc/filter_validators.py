@@ -18,7 +18,7 @@ class IsValidHostName(ElementComparator):
     def __init__(self, obj):
         super(IsValidHostName, self).__init__()
 
-    def process(self, key, value):
+    def process(self, all_props, key, value):
 
         errors = []
 
@@ -37,7 +37,7 @@ class IsExistingDN(ElementComparator):
     def __init__(self, obj):
         super(IsExistingDN, self).__init__()
 
-    def process(self, key, value):
+    def process(self, all_props, key, value):
 
         errors = []
         index = PluginRegistry.getInstance("ObjectIndex")
@@ -56,7 +56,7 @@ class IsExistingDnOfType(ElementComparator):
     def __init__(self, obj):
         super(IsExistingDnOfType, self).__init__()
 
-    def process(self, key, value, objectType):
+    def process(self, all_props, key, value, objectType):
 
         errors = []
         index = PluginRegistry.getInstance("ObjectIndex")
@@ -75,7 +75,7 @@ class ObjectWithPropertyExists(ElementComparator):
     def __init__(self, obj):
         super(ObjectWithPropertyExists, self).__init__()
 
-    def process(self, key, value, objectType, attribute):
+    def process(self, all_props, key, value, objectType, attribute):
 
         errors = []
         index = PluginRegistry.getInstance("ObjectIndex")

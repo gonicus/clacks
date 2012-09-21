@@ -17,7 +17,7 @@ class IsAclSet(ElementComparator):
     def __init__(self, obj):
         super(IsAclSet, self).__init__()
 
-    def process(self, key, value):
+    def process(self, all_props, key, value):
 
         # Check each property value
         entry_cnt = 0

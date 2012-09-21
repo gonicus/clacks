@@ -14,7 +14,7 @@ class CheckSambaSIDList(ElementComparator):
     def __init__(self, obj):
         super(CheckSambaSIDList, self).__init__()
 
-    def process(self, key, value):
+    def process(self, all_props, key, value):
 
         errors = []
         #if "sambaSIDList" in valDict:

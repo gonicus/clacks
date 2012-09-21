@@ -17,7 +17,7 @@ class Equals(ElementComparator):
     def __init__(self, obj):
         super(Equals, self).__init__()
 
-    def process(self, key, value, match, case_ignore=False):
+    def process(self, all_props, key, value, match, case_ignore=False):
 
         errors = []
 
@@ -55,7 +55,7 @@ class Greater(ElementComparator):
     def __init__(self, obj):
         super(Greater, self).__init__()
 
-    def process(self, key, value, match):
+    def process(self, all_props, key, value, match):
 
         errors = []
 
@@ -86,7 +86,7 @@ class Smaller(ElementComparator):
     def __init__(self, obj):
         super(Smaller, self).__init__()
 
-    def process(self, key, value, match):
+    def process(self, all_props, key, value, match):
 
         errors = []
 
