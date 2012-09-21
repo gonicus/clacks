@@ -511,7 +511,7 @@ class ObjectProxy(object):
         else:
             # Test if we've children
             index = PluginRegistry.getInstance("ObjectIndex")
-            if index.raw_search({"dn": re.compile("^(.*,)?" + re.escape(self.__base.dn) + "$")}, {'dn': 1}).count():
+            if index.raw_search({"dn": re.compile("^(.*,)" + re.escape(self.__base.dn) + "$")}, {'dn': 1}).count():
                 raise ProxyException("specified object has children - use the recursive flag to remove them")
 
         for extension in [e for e in self.__extensions.values() if e]:
