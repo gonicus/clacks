@@ -1,5 +1,49 @@
 # -*- coding: utf-8 -*-
-from clacks.agent.objects.filter import ElementFilter
+import os
+import StringIO
+import Image, ImageOps
+from clacks.agent.objects.filter import ElementFilter, ElementFilterException
+
+
+class ImageProcessor(ElementFilter):
+    """
+    Generate a couple of pre-sized images and place them in the cache.
+    """
+    def __init__(self, obj):
+        super(ImageProcessor, self).__init__(obj)
+
+    def process(self, obj, key, valDict, *sizes):
+
+        # Sanity check
+        if len(sizes) == 0:
+            raise ElementFilterException("ImageProcessor needs at least one image size to process")
+
+        # Do we have an attribute to process?
+        if key in valDict and valDict[key]['value']:
+            #TODO: Check if a cache entry exists...
+            #      ... and if it's new enough
+
+            # Obviously we want to do scaling
+            print "-"*80
+            print "Object:", obj.uuid
+            print "Last changed:", obj.modifyTimestamp
+            print "Image processor sizes:", list(sizes)
+            print key
+
+            # Convert all images to all requested sizes
+            for idx in range(0, len(valDict[key]['value'])):
+                image = StringIO.StringIO(valDict[key]['value'][idx].get())
+                im = Image.open(image)
+
+                for size in sizes:
+                    size = int(size)
+                    tmp = ImageOps.fit(im, (size, size), Image.ANTIALIAS)
+                    tgt = StringIO.StringIO()
+                    tmp.save(tgt, "JPEG")
+
+                    #TODO: insert somewhere
+
+        return key, valDict
 
 
 class LoadDisplayNameState(ElementFilter):
