@@ -146,7 +146,9 @@ class CacheHandler(object):
         #TODO
 
         # Load the cached binary data and serve it
-        data = self.db.find_one({'uuid': uuid, 'attribute': attribute}, {subindex: 1})
+        data = self.db.find_one({'uuid': uuid, 'attribute': attribute,
+            subindex: {'$exists': True},
+            "%s.%s" % (subindex, index): {'$exists': True}}, {subindex: 1})
         if not data:
             raise exc.HTTPForbidden().exception
 

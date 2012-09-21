@@ -13,6 +13,7 @@ import logging
 import zope.event
 import datetime
 import re
+import os
 import shlex
 import md5
 import clacks.agent.objects.renderer
@@ -403,7 +404,7 @@ class ObjectIndex(Plugin):
 
         ``Return``: Filtered result entry
         """
-        ne = {'dn': entry['dn'], '_type': entry['_type']}
+        ne = {'dn': entry['dn'], '_type': entry['_type'], '_uuid': entry['_uuid']}
         attrs = self.__search_aid['mapping'][entry['_type']].values()
 
         for attr in attrs:
@@ -538,6 +539,7 @@ class ObjectIndex(Plugin):
         these = dict([(x, 1) for x in self.__search_aid['used_attrs']])
         these['dn'] = 1
         these['_type'] = 1
+        these['_uuid'] = 1
 
         for item in self.db.index.find(query, these):
             self.__update_res(res, item, user)
@@ -628,10 +630,10 @@ class ObjectIndex(Plugin):
 
             entry['icon'] = None
 
-            #TODO: build server side caching and transfer an URL instead of
-            #icon_attribute = self.__search_aid['mapping'][item['_type']]['icon']
-            #if icon_attribute and icon_attribute in item and item[icon_attribute]:
-            #    entry['icon'] = "data:image/jpeg;base64," + base64.b64encode(item[icon_attribute][0])
+            icon_attribute = self.__search_aid['mapping'][item['_type']]['icon']
+            if icon_attribute and icon_attribute in item and item[icon_attribute]:
+                cache_path = self.env.config.get('gosa.cache_path', default="/cache")
+                entry['icon'] = os.path.join(cache_path, item['_uuid'], icon_attribute, "0", "48")
 
         res[item['dn']] = entry
 
