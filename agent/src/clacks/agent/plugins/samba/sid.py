@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
 import re
+import gettext
+from pkg_resources import resource_filename #@UnresolvedImport
 from clacks.common import Environment
 from clacks.agent.objects.filter import ElementFilter
 from clacks.common.components import PluginRegistry
 from clacks.agent.objects.comparator import ElementComparator
 
+# Include locales
+t = gettext.translation('messages', resource_filename("clacks.agent", "locale"), fallback=True)
+_ = t.ugettext
 
 class CheckSambaSIDList(ElementComparator):
     """
@@ -15,16 +20,11 @@ class CheckSambaSIDList(ElementComparator):
         super(CheckSambaSIDList, self).__init__()
 
     def process(self, all_props, key, value):
-
         errors = []
-        if "sambaSIDList" in all_props:
-            sidList = all_props["sambaSIDList"]["value"]
-
-            if "sambaSID" in all_props and len(all_props["sambaSID"]["value"]):
-                sid = all_props["sambaSID"]["value"][0]
-
-                if sid in sidList:
-                    errors.append(_("Cannot use ourselves as member for the SID list!"))
+        if "sambaSID" in all_props and len(all_props["sambaSID"]["value"]):
+            sid = all_props["sambaSID"]["value"][0]
+            if sid in value:
+                errors.append(_("Cannot use ourselves as member for the SID list!"))
 
         return len(errors)==0, errors
 
