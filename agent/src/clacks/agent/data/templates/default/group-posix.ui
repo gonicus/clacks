@@ -131,8 +131,6 @@
        </widget>
       </item>
      </layout>
-     <zorder>memberUidEdit</zorder>
-     <zorder>memberUidEdit</zorder>
     </widget>
    </item>
   </layout>
