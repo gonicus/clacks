@@ -9,6 +9,7 @@
     </Templates>
     <BackendParameters>
       <Backend objectClasses="sambaGroupMapping">LDAP</Backend>
+      <Backend sambaSIDList="SambaGroup:sambaSID,">ObjectHandler</Backend>
     </BackendParameters>
     <Backend>LDAP</Backend>
 
