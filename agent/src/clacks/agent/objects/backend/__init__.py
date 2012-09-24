@@ -13,6 +13,27 @@ class EntryNotFound(Exception):
     pass
 
 
+class DNGeneratorError(Exception):
+    """
+    Exception thrown for dn generation errors
+    """
+    pass
+
+
+class RDNNotSpecified(Exception):
+    """
+    Exception thrown for missing rdn property in object definitions
+    """
+    pass
+
+
+class BackendError(Exception):
+    """
+    Exception thrown for unknown objects
+    """
+    pass
+
+
 class ObjectBackend(object):
     _is_uuid = re.compile(r'^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$')
 

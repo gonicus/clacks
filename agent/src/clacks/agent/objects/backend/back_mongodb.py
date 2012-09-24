@@ -9,32 +9,11 @@ import re
 import uuid
 import datetime
 from copy import deepcopy
-from clacks.agent.objects.backend import ObjectBackend
+from clacks.agent.objects.backend import ObjectBackend, DNGeneratorError, RDNNotSpecified, BackendError
 from logging import getLogger
 from clacks.common import Environment
 from itertools import permutations
 import ldap
-
-
-class RDNNotSpecified(Exception):
-    """
-    Exception thrown for missing rdn property in object definitions
-    """
-    pass
-
-
-class DNGeneratorError(Exception):
-    """
-    Exception thrown for dn generation errors
-    """
-    pass
-
-
-class JsonBackendError(Exception):
-    """
-    Exception thrown for unknown objects
-    """
-    pass
 
 
 class MongoDB(ObjectBackend):
@@ -260,7 +239,7 @@ class MongoDB(ObjectBackend):
 
             # Check if we can move the entry
             if self.exists(dn):
-                raise JsonBackendError("cannot move entry - the target DN '%s' already exists!" % dn)
+                raise BackendError("cannot move entry - the target DN '%s' already exists!" % dn)
 
             entry = dict(dn=dn, _parent_dn=new_base)
             self.db.update({'_uuid': item_uuid}, entry)

@@ -1,18 +1,10 @@
 # -*- coding: utf-8 -*-
 import re
 import itertools
-from clacks.agent.objects.backend import ObjectBackend, EntryNotFound
+from clacks.agent.objects.backend import ObjectBackend, EntryNotFound, BackendError
 from clacks.agent.objects.index import ObjectIndex
 from clacks.common.components import PluginRegistry
 from clacks.agent.objects import ObjectProxy
-
-
-class NoSuchObject(Exception):
-    pass
-
-
-class NoBackendParametersFound(Exception):
-    pass
 
 
 class ObjectHandler(ObjectBackend):
@@ -93,10 +85,10 @@ class ObjectHandler(ObjectBackend):
         # Ensure that we have a configuration for all attributes
         for attr in data.keys():
             if attr not in mapping:
-                raise NoBackendParametersFound("attribute %s uses the ObjectHandler backend but there is no config for it!" % attr)
+                raise BackendError("attribute %s uses the ObjectHandler backend but there is no config for it!" % attr)
         #for targetAttr in mapping:
         #    if not targetAttr in data:
-        #        raise NoBackendParametersFound("an attribute named %s is configured for the ObjectHandler backend but there" \
+        #        raise BackendError("an attribute named %s is configured for the ObjectHandler backend but there" \
         #                                       " is no such attribute in the object" % targetAttr)
 
         # Walk through each mapped foreign-object-attribute
@@ -118,7 +110,7 @@ class ObjectHandler(ObjectBackend):
             for value in allvalues:
                 res = index.raw_search({'_type': foreignObject, foreignAttr: value}, {'dn': 1})
                 if res.count() != 1:
-                    raise NoSuchObject("Could not find any unique '%s' with '%s=%s'!" % (foreignObject, foreignAttr, value))
+                    raise EntryNotFound("Could not find any unique '%s' with '%s=%s'!" % (foreignObject, foreignAttr, value))
                 else:
                     object_mapping[value] = ObjectProxy(res[0]['dn'])
 

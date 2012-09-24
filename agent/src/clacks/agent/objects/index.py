@@ -18,9 +18,7 @@ import shlex
 import md5
 import clacks.agent.objects.renderer
 import itertools
-import base64
 import time
-from pymongo import Connection
 from zope.interface import implements
 from clacks.common import Environment
 from clacks.common.utils import N_
@@ -28,7 +26,6 @@ from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import Command, Plugin, PluginRegistry
 from clacks.agent.objects import ObjectFactory, ObjectProxy, ObjectChanged, ProxyException, ObjectException
 from clacks.agent.lock import GlobalLock
-from clacks.agent.acl import ACLResolver
 
 
 class IndexScanFinished():
@@ -557,7 +554,6 @@ class ObjectIndex(Plugin):
                         continue
 
                     squery.append({'_type': tag, r['filter']: {'$in': item[r['attribute']]}})
-
 
         # Perform secondary query and update the result
         if fltr['secondary'] == "enabled" and squery:
