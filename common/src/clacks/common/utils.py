@@ -5,10 +5,11 @@ make the life of plugin programming easier.
 import re
 import os
 import time
-from tokenize import generate_tokens
-from token import STRING
 import urllib2
 import tempfile
+import lxml
+from tokenize import generate_tokens
+from token import STRING
 from subprocess import Popen, PIPE
 from qpid.messaging.constants import AMQP_PORT, AMQPS_PORT
 from urlparse import urlparse
@@ -305,7 +306,7 @@ def downloadFile(url, download_dir=None, use_filename=False):
     return result
 
 
-def xml2json(node):
+def xml2dict(node):
     """
     Recursive operation which returns a tree formated
     as dicts and lists.
@@ -313,19 +314,26 @@ def xml2json(node):
     in the actual parent tag.
     """
     ret = {}
-    if node.items():
-        ret.update(dict(node.items()))
 
-    if node.text:
-        ret['__content__'] = node.text
+    for k, v in node.__dict__.items():
+        if isinstance(v, str):
+            ret[k] = v
+        elif isinstance(v, lxml.objectify.StringElement):
+            ret[k] = v.text
+        elif isinstance(v, lxml.objectify.IntElement):
+            ret[k] = v.text
+        elif isinstance(v, lxml.objectify.ObjectifiedElement):
+            if v.__len__ > 1:
+                tmp = []
+                for el in v:
+                    tmp.append(xml2dict(el))
 
-    if ('List' in node.tag):
-        ret['__list__'] = []
-        for element in node:
-            ret['__list__'].append(xml2json(element))
-    else:
-        for element in node:
-            ret[element.tag] = xml2json(element)
+                ret.update({k: tmp})
+
+            else:
+                ret.update({k: xml2dict(v)})
+        else:
+            raise Exception("Cannot convert type %s" % type(v))
 
     return ret
 

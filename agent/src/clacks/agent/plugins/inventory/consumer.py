@@ -2,7 +2,7 @@
 import logging
 from zope.interface import implements
 from clacks.common import Environment
-from clacks.common.utils import xml2json
+from clacks.common.utils import xml2dict
 from clacks.common.components import Plugin
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components.amqp import EventConsumer
@@ -32,11 +32,10 @@ class InventoryConsumer(Plugin):
         # Enable logging
         self.log = logging.getLogger(__name__)
         self.env = Environment.getInstance()
-        self.db = self.env.get_mongo_db("clacks")['inventory']
 
     def serve(self):
-        # Try to establish the database connections
-        self.db = self.env.get_mongo_db()
+        # Establish the database connection
+        self.db = self.env.get_mongo_db("clacks").inventory
 
         # Create event consumer
         amqp = PluginRegistry.getInstance('AMQPHandler')
@@ -87,7 +86,7 @@ class InventoryConsumer(Plugin):
             raise InventoryException(msg)
 
         # Get the Inventory part of the event only
-        inv_only = xml2json(data.xpath('/e:Event/e:Inventory', \
+        inv_only = xml2dict(data.xpath('/e:Event/e:Inventory', \
                 namespaces={'e': 'http://www.gonicus.de/Events'})[0])
 
         # The given hardware-uuid is already part of our inventory database
