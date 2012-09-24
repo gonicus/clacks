@@ -154,11 +154,6 @@ class InventoryConsumer(Plugin):
 
         self.db.save(data)
 
-        #TODO: remove me
-        print "-" * 80
-        print data
-        print "-" * 80
-
     def deleteByHardwareUUID(self, huuid):
         if self.hardwareUUIDExists(huuid):
             self.db.remove({'HardwareUUID': huuid})
