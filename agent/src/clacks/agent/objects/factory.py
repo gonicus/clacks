@@ -38,7 +38,6 @@ import os
 import re
 import logging
 import ldap
-import StringIO
 from lxml import etree, objectify
 from clacks.common import Environment
 from clacks.common.components import PluginRegistry
@@ -47,6 +46,11 @@ from clacks.agent.objects.backend.registry import ObjectBackendRegistry
 from clacks.agent.objects.comparator import get_comparator
 from clacks.agent.objects.operator import get_operator
 from clacks.agent.objects.object import Object
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
 
 # Status
 STATUS_OK = 0
@@ -637,7 +641,7 @@ class ObjectFactory(object):
         xstr += "</Paths>"
 
         # Now combine all files into one single xml construct
-        xml_doc = etree.parse(StringIO.StringIO(xstr))
+        xml_doc = etree.parse(StringIO(xstr))
         xslt_doc = etree.parse(pkg_resources.resource_filename('clacks.agent', 'data/combine_objects.xsl')) #@UndefinedVariable
         transform = etree.XSLT(xslt_doc)
         self.__xml_objects_combined = transform(xml_doc)

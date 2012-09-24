@@ -9,13 +9,50 @@ import base64
 import time
 from clacks.common.gjson import dumps
 from hashlib import sha1
-from webob import exc #@UnresolvedImport
+from webob import exc, Request, Response #@UnresolvedImport
 from zope.interface import implements
 from clacks.common.utils import stripNs, N_
 from clacks.common.handler import IInterfaceHandler
 from clacks.common import Environment
 from clacks.common.components import PluginRegistry
 from clacks.common.components.amqp import EventConsumer
+
+
+def extract_cookie(name, secret, data):
+
+    def make_time(value):
+        return time.strftime("%Y%m%d%H%M", time.gmtime(value))
+
+    for item in re.split(r";\s*", data):
+        if item.startswith(name + "="):
+            cookie = item[len(name):]
+            decode = base64.decodestring(cookie.replace("_", "/").replace("~", "="))
+            _signature_size = len(hmac.new('x', 'x', sha1).digest())
+            _header_size = _signature_size + len(make_time(time.time()))
+
+            signature = decode[:_signature_size]
+            expires = decode[_signature_size:_header_size]
+            content = decode[_header_size:]
+
+            if signature == hmac.new(secret, content, sha1).digest():
+                if int(expires) > int(make_time(time.time())):
+                    res = {}
+                    for v in re.split(r";\s*", content):
+                        res[v.split("=")[0]] = v.split("=", 1)[1]
+
+                    return res
+                else:
+                    # This is the normal case of an expired cookie; just
+                    # don't bother doing anything here.
+                    return None
+
+            # This case can happen if the server is restarted with a
+            # different secret; or if the user's IP address changed
+            # due to a proxy.  However, it could also be a break-in
+            # attempt -- so should it be reported?
+            return None
+
+    return None
 
 
 class GOsaService(object):
@@ -29,6 +66,7 @@ class GOsaService(object):
         self.log.info("initializing GOsa static HTTP and WebSocket service")
         self.path = self.env.config.get('gosa.path', default="/admin")
         self.static_path = self.env.config.get('gosa.static_path', default="/static")
+        self.cache_path = self.env.config.get('gosa.cache_path', default="/cache")
         self.resource_path = pkg_resources.resource_filename('clacks.agent', 'data/templates') #@UndefinedVariable
         self.ws_path = self.env.config.get('gosa.websocket', default="/ws")
 
@@ -49,6 +87,74 @@ class GOsaService(object):
         # Register a redirector for the static handler
         redirector = Redirector(self.path)
         self.__http.register(r"/", redirector)
+
+        # Register a cache handler
+        cache_handler = CacheHandler(self.cache_path)
+        self.__http.register(self.cache_path, cache_handler)
+
+
+class CacheHandler(object):
+    http_subtree = True
+
+    def __init__(self, path):
+        env = Environment.getInstance()
+        self.__path = path
+        self.__secret = env.config.get('http.cookie_secret', default="TecloigJink4")
+        self.db = env.get_mongo_db('clacks').cache
+
+    def __call__(self, environ, start_response):
+        req = Request(environ)
+        try:
+            resp = self.process(req, environ)
+        except ValueError, e:
+            resp = exc.HTTPBadRequest(str(e))
+        except exc.HTTPException, e:
+            resp = e
+        return resp(environ, start_response)
+
+    def check_cookie(self, environ):
+        if "HTTP_COOKIE" in environ:
+            info = extract_cookie("ClacksRPC", self.__secret, environ['HTTP_COOKIE'])
+
+            # The cookie seems to be valid - check the session id
+            if info:
+                jsrpc = PluginRegistry.getInstance("JSONRPCService")
+                return jsrpc.check_session(info['REMOTE_SESSION'], info['REMOTE_USER'])
+
+            return False
+
+        return False
+
+    def process(self, req, environ):
+
+        # Check if we're authenticated
+        if not self.check_cookie(environ):
+            raise exc.HTTPUnauthorized(
+                      "Please use the login method to authorize yourself.",
+                      allow='POST').exception
+
+        # Strip leading part of the path
+        path = environ['PATH_INFO'][len(self.__path):].strip(os.sep)
+
+        # Extract cache entry uuid, attribute, index and subindex
+        try:
+            uuid, attribute, index, subindex = path.split(os.sep)
+        except:
+            raise exc.HTTPForbidden().exception
+
+        # Check if we're authorized
+        #TODO
+
+        # Load the cached binary data and serve it
+        data = self.db.find_one({'uuid': uuid, 'attribute': attribute,
+            subindex: {'$exists': True},
+            "%s.%s" % (subindex, index): {'$exists': True}}, {subindex: 1})
+        if not data:
+            raise exc.HTTPForbidden().exception
+
+        return Response(
+                content_type='image/jpeg',
+                body=str(data[subindex][int(index)]))
 
 
 class Redirector(object):
@@ -72,7 +178,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
     def check_cookie(self):
         if "Cookie" in self.request.headers:
-            info = self.__extract_cookie("ClacksRPC", self.__secret, self.request.headers['Cookie'])
+            info = extract_cookie("ClacksRPC", self.__secret, self.request.headers['Cookie'])
 
             # The cookie seems to be valid - check the session id
             if info:
@@ -83,42 +189,6 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
         return False
 
-    def __extract_cookie(self, name, secret, data):
-
-        def make_time(value):
-            return time.strftime("%Y%m%d%H%M", time.gmtime(value))
-
-        for item in re.split(r";\s*", data):
-            if item.startswith(name + "="):
-                cookie = item[len(name):]
-                decode = base64.decodestring(cookie.replace("_", "/").replace("~", "="))
-                _signature_size = len(hmac.new('x', 'x', sha1).digest())
-                _header_size = _signature_size + len(make_time(time.time()))
-
-                signature = decode[:_signature_size]
-                expires = decode[_signature_size:_header_size]
-                content = decode[_header_size:]
-
-                if signature == hmac.new(secret, content, sha1).digest():
-                    if int(expires) > int(make_time(time.time())):
-                        res = {}
-                        for v in re.split(r";\s*", content):
-                            res[v.split("=")[0]] = v.split("=", 1)[1]
-
-                        return res
-                    else:
-                        # This is the normal case of an expired cookie; just
-                        # don't bother doing anything here.
-                        return None
-
-                # This case can happen if the server is restarted with a
-                # different secret; or if the user's IP address changed
-                # due to a proxy.  However, it could also be a break-in
-                # attempt -- so should it be reported?
-                return None
-
-        return None
-
     def send_message(self, message_type, message):
         self.write_message(dumps([message_type, message]))
 
@@ -128,7 +198,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             return
 
         # Store user information
-        info = self.__extract_cookie("ClacksRPC", self.__secret, self.request.headers['Cookie'])
+        info = extract_cookie("ClacksRPC", self.__secret, self.request.headers['Cookie'])
         self.__user = info['REMOTE_USER']
 
         self.log.debug("new websocket connection established by %s" % self.request.remote_ip)

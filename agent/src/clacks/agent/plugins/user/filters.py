@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
 import os
-import StringIO
 import Image, ImageOps
+from bson.binary import Binary
+from clacks.common import Environment
 from clacks.agent.objects.filter import ElementFilter, ElementFilterException
 
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
 
 class ImageProcessor(ElementFilter):
     """
@@ -11,6 +16,14 @@ class ImageProcessor(ElementFilter):
     """
     def __init__(self, obj):
         super(ImageProcessor, self).__init__(obj)
+
+        # Get mongo cache collection
+        env = Environment.getInstance()
+        self.db = env.get_mongo_db('clacks')
+
+        # Ensure basic index for the objects
+        for index in ['uuid', 'attribute', 'modified']:
+            self.db.cache.ensure_index(index)
 
     def process(self, obj, key, valDict, *sizes):
 
@@ -20,28 +33,47 @@ class ImageProcessor(ElementFilter):
 
         # Do we have an attribute to process?
         if key in valDict and valDict[key]['value']:
-            #TODO: Check if a cache entry exists...
-            #      ... and if it's new enough
 
-            # Obviously we want to do scaling
-            print "-"*80
-            print "Object:", obj.uuid
-            print "Last changed:", obj.modifyTimestamp
-            print "Image processor sizes:", list(sizes)
-            print key
+            # Check if a cache entry exists...
+            entry = self.db.cache.find_one({'uuid': obj.uuid, 'attribute': key}, {'modified': 1})
+            if entry:
+
+                # Nothing to do if it's unmodified
+                if obj.modifyTimestamp == entry['modified']:
+                    return key, valDict
+
+            # Create new cache entry
+            else:
+                c_entry = {
+                    'uuid': obj.uuid,
+                    'attribute': key
+                    }
+                self.db.cache.save(c_entry)
 
             # Convert all images to all requested sizes
+            data = {
+                    'uuid': obj.uuid,
+                    'attribute': key,
+                    'modified': obj.modifyTimestamp
+                    }
             for idx in range(0, len(valDict[key]['value'])):
-                image = StringIO.StringIO(valDict[key]['value'][idx].get())
+                image = StringIO(valDict[key]['value'][idx].get())
                 im = Image.open(image)
 
                 for size in sizes:
-                    size = int(size)
-                    tmp = ImageOps.fit(im, (size, size), Image.ANTIALIAS)
-                    tgt = StringIO.StringIO()
+                    s = int(size)
+                    tmp = ImageOps.fit(im, (s, s), Image.ANTIALIAS)
+                    tgt = StringIO()
                     tmp.save(tgt, "JPEG")
 
-                    #TODO: insert somewhere
+                    # Collect all images in [size][] lists
+                    if not size in data:
+                        data[size] = []
+
+                    data[size].append(Binary(tgt.getvalue()))
+
+            # Update cache
+            self.db.cache.update({'uuid': obj.uuid, 'attribute': key}, data)
 
         return key, valDict
 
