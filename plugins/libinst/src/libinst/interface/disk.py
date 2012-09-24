@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import itertools
-from lxml import objectify
-from clacks.common.components.registry import PluginRegistry
+from clacks.common import Environment
 
 LINUX = 2 ** 0
 ALL = 2 ** 1
@@ -859,12 +858,14 @@ class DiskDefinition(object):
 
         # Load values from system inventory if available
         if self.uuid:
-            db = PluginRegistry.getInstance("XMLDBHandler")
-            res = db.xquery("collection('inventory')/e:Inventory[e:ClientUUID/string()='%s']/e:Storage[e:Type/string()='disk']" % self.uuid)
 
-            for r in res:
-                o = objectify.fromstring(r)
-                available_disks[o.Name.text] = int(o.DiskSize.text)
+            env = Environment.getInstance()
+            db = env.get_mongo_db("clacks").inventory
+            res = db.find_one({'HardwareUUID': self.uuid, 'Storage.Type': 'disk'},
+                    {'Storage.Name': 1, 'Storage.Type': 1, 'Storage.DiskSize': 1})
+
+            for r in res['Storage']:
+                available_disks[r['Name']] = int(r['DiskSize'])
 
         else:
             for disk in self._disks:
