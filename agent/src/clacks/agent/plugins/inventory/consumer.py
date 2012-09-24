@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 import logging
-from lxml import etree
-import pkg_resources
 from zope.interface import implements
 from clacks.common import Environment
+from clacks.common.utils import xml2json
 from clacks.common.components import Plugin
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components.amqp import EventConsumer
 from clacks.common.components.registry import PluginRegistry
-from clacks.agent.objects import ObjectFactory
 
 
 class InventoryException(Exception):
@@ -25,7 +23,6 @@ class InventoryConsumer(Plugin):
     _target_ = 'core'
     _priority_ = 92
 
-    xmldb = None
     log = None
     inv_db = None
 
@@ -35,16 +32,11 @@ class InventoryConsumer(Plugin):
         # Enable logging
         self.log = logging.getLogger(__name__)
         self.env = Environment.getInstance()
+        self.db = self.env.get_mongo_db("clacks")['inventory']
 
     def serve(self):
         # Try to establish the database connections
-        self.db = PluginRegistry.getInstance("XMLDBHandler")
-        if not self.db.collectionExists("inventory"):
-            sf = pkg_resources.resource_filename('clacks.agent', 'plugins/goto/data/events/Inventory.xsd') #@UndefinedVariable
-            self.__factory = ObjectFactory.getInstance()
-            self.db.createCollection("inventory",
-                    {"e": "http://www.gonicus.de/Events"},
-                    {"inventory.xsd": open(sf).read()})
+        self.db = self.env.get_mongo_db()
 
         # Create event consumer
         amqp = PluginRegistry.getInstance('AMQPHandler')
@@ -67,11 +59,11 @@ class InventoryConsumer(Plugin):
         if mode:
             # Send an inventory information with the current checksum
             self.log.info("requesting inventory from client %s" % client)
-            db = PluginRegistry.getInstance("XMLDBHandler")
             cs = PluginRegistry.getInstance("ClientService")
-            checksum = db.xquery("collection('inventory')/e:Inventory[e:ClientUUID/string()='%s']/e:Checksum/string()" % client)
-            if checksum:
-                cs.clientDispatch(client, "request_inventory", str(checksum[0]))
+
+            entry = self.db.find_one({'ClientUUID': client}, {'Checksum': 1})
+            if entry:
+                cs.clientDispatch(client, "request_inventory", entry['checksum'])
             else:
                 cs.clientDispatch(client, "request_inventory")
 
@@ -84,9 +76,9 @@ class InventoryConsumer(Plugin):
         # Try to extract the clients uuid and hostname out of the received data
         try:
             binfo = data.xpath('/e:Event/e:Inventory', namespaces={'e': 'http://www.gonicus.de/Events'})[0]
-            uuid = str(binfo['ClientUUID'])
-            huuid = str(binfo['HardwareUUID'])
-            checksum = str(binfo['Checksum'])
+            uuid = binfo['ClientUUID'].text
+            huuid = binfo['HardwareUUID'].text
+            checksum = binfo['Checksum'].text
             self.log.debug("inventory information received for client %s" % uuid)
 
         except Exception as e:
@@ -95,8 +87,8 @@ class InventoryConsumer(Plugin):
             raise InventoryException(msg)
 
         # Get the Inventory part of the event only
-        inv_only = etree.tostring(data.xpath('/e:Event/e:Inventory', \
-                namespaces={'e': 'http://www.gonicus.de/Events'})[0], pretty_print=True)
+        inv_only = xml2json(data.xpath('/e:Event/e:Inventory', \
+                namespaces={'e': 'http://www.gonicus.de/Events'})[0])
 
         # The given hardware-uuid is already part of our inventory database
         if self.hardwareUUIDExists(huuid):
@@ -120,7 +112,7 @@ class InventoryConsumer(Plugin):
                 self.log.debug("inventory information still up to date for %s" % uuid)
 
         else:
-            # A new client has send its inventory data - Import data into dbxml
+            # A new client has send its inventory data - Import data into mongodb
             self.log.debug("adding inventory information %s" % uuid)
             self.addClientInventoryData(huuid, inv_only)
 
@@ -128,12 +120,11 @@ class InventoryConsumer(Plugin):
         """
         Returns the ClientUUID used by the given HardwareUUID.
         """
-        results = self.db.xquery("collection('inventory')/e:Inventory"
-                "[e:HardwareUUID='%s']/e:ClientUUID/string()" % (huuid))
+        results = self.db.find({'HardwareUUID': huuid}, {'ClientUUID': 1})
 
         # Walk through results and return the ClientUUID
-        if len(results) == 1:
-            return(results[0])
+        if results.count() == 1:
+            return(results[0]['ClientUUID'])
         else:
             raise InventoryException("No or more than one ClientUUID was found for HardwareUUID")
 
@@ -141,12 +132,11 @@ class InventoryConsumer(Plugin):
         """
         Returns the checksum of a specific entry.
         """
-        results = self.db.xquery("collection('inventory')/e:Inventory"
-                "[e:HardwareUUID='%s']/e:Checksum/string()" % (huuid))
+        results = self.db.find({'HardwareUUID': huuid}, {'Checksum': 1})
 
         # Walk through results and return the found checksum
-        if len(results) == 1:
-            return(results[0])
+        if results.count() == 1:
+            return(results[0]['Checksum'])
         else:
             raise InventoryException("No or more than one checksums found for ClientUUID=%s" % huuid)
 
@@ -154,23 +144,22 @@ class InventoryConsumer(Plugin):
         """
         Checks whether an inventory exists for the given client ID or not.
         """
-        results = self.db.xquery("collection('inventory')/e:Inventory"
-                "[e:HardwareUUID='%s']/e:HardwareUUID/string()" % (huuid))
-
-        # Walk through results if there are any and return True in that case.
-        return(len(results) != 0)
+        return bool(self.db.find_one({'HardwareUUID': huuid}, {'HardwareUUID': 1}))
 
     def addClientInventoryData(self, huuid, data):
         """
         Adds client inventory data to the database.
         """
-        self.db.addDocument('inventory', huuid, data)
+        if self.hardwareUUIDExists(huuid):
+            self.db.remove({'HardwareUUID': huuid})
+
+        self.db.save(data)
+
+        #TODO: remove me
+        print "-" * 80
+        print data
+        print "-" * 80
 
     def deleteByHardwareUUID(self, huuid):
-        results = self.db.xquery("collection('inventory')/e:Inventory"
-                "[e:HardwareUUID='%s']" % (huuid))
-        if len(results) == 1:
-            self.db.deleteDocument('inventory', huuid)
-        else:
-            raise InventoryException("No or more than one document found, removal aborted!")
-        return None
+        if self.hardwareUUIDExists(huuid):
+            self.db.remove({'HardwareUUID': huuid})

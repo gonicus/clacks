@@ -14,6 +14,7 @@ from qpid.messaging.constants import AMQP_PORT, AMQPS_PORT
 from urlparse import urlparse
 from datetime import datetime
 
+
 try:
         from cStringIO import StringIO
 except ImportError:
@@ -302,6 +303,31 @@ def downloadFile(url, download_dir=None, use_filename=False):
         raise ValueError(N_("Unsupported URL scheme %s!"), o.scheme)
 
     return result
+
+
+def xml2json(node):
+    """
+    Recursive operation which returns a tree formated
+    as dicts and lists.
+    Decision to add a list is to find the 'List' word
+    in the actual parent tag.
+    """
+    ret = {}
+    if node.items():
+        ret.update(dict(node.items()))
+
+    if node.text:
+        ret['__content__'] = node.text
+
+    if ('List' in node.tag):
+        ret['__list__'] = []
+        for element in node:
+            ret['__list__'].append(xml2json(element))
+    else:
+        for element in node:
+            ret[element.tag] = xml2json(element)
+
+    return ret
 
 
 class SystemLoad:
