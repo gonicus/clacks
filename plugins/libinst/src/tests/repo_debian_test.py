@@ -5,14 +5,15 @@ from libinst import LibinstManager
 from libinst.entities.type import Type
 from clacks.common import Environment
 
+KALIGN_PACKAGE_URL = "http://ftp.de.debian.org/debian-archive/debian/pool/main/k/kalign/kalign_2.03-2_i386.deb"
+JAAA_SRC_PACKAGE_URL = "http://ftp.de.debian.org/debian-archive/debian/pool/main/j/jaaa/jaaa_0.4.2-1.dsc"
 
 class TestDebianRepository(unittest.TestCase):
-
     env = None
 
     def setUp(self):
         """ Stuff to be run before every test """
-        Environment.config = os.path.join(os.path.dirname(os.path.realpath(__file__)), "test-libinst.conf")
+        Environment.config = os.path.join(os.path.dirname(os.path.realpath(__file__)))
         Environment.noargs = True
         self.env = Environment.getInstance()
         self.mgr = LibinstManager()
@@ -186,12 +187,12 @@ class TestDebianRepository(unittest.TestCase):
 
     def test_getArchitectures(self):
         self.assertEquals(len(self.mgr.getArchitectures()), 0)
-        self.assertTrue(self.mgr.addPackage("http://ftp.de.debian.org/debian/pool/main/k/kalign/kalign_2.03-2_i386.deb", release="lenny"))
+        self.assertTrue(self.mgr.addPackage(KALIGN_PACKAGE_URL, release = "lenny"))
         self.assertEquals(len(self.mgr.getArchitectures()), 1)
 
     def test_getSections(self):
         self.assertEquals(len(self.mgr.getSections()), 0)
-        self.assertTrue(self.mgr.addPackage("http://ftp2.de.debian.org/debian/pool/main/k/kalign/kalign_2.03-2_i386.deb", release="lenny"))
+        self.assertTrue(self.mgr.addPackage(KALIGN_PACKAGE_URL, release = "lenny"))
         self.assertEquals(len(self.mgr.getSections()), 1)
 
     def test_removeRelease(self):
@@ -209,23 +210,25 @@ class TestDebianRepository(unittest.TestCase):
         self.assertFalse(self.mgr._getRelease("lenny_test"))
 
     def test_parentReleaseInheriting(self):
-        self.assertFalse("kalign" in [p['name'] for p in self.mgr.getPackages(release="lenny")])
-        self.assertTrue(self.mgr.addPackage("http://ftp2.de.debian.org/debian/pool/main/k/kalign/kalign_2.03-2_i386.deb", release="lenny"))
-        self.assertTrue("kalign" in [p['name'] for p in self.mgr.getPackages(release="lenny")])
+        self.assertFalse("kalign" in [p['name'] for p in self.mgr.getPackages(release = "lenny")])
+        self.assertTrue(self.mgr.addPackage(KALIGN_PACKAGE_URL, release = "lenny"))
+        self.assertTrue("kalign" in [p['name'] for p in self.mgr.getPackages(release = "lenny")])
         self.assertTrue(self.mgr.createRelease("debian", "lenny/5.0.5"))
         self.assertTrue("kalign" in [p['name'] for p in self.mgr.getPackages(release="lenny/5.0.5")])
 
     def test_addSourcePackage(self):
-        self.assertFalse("jaaa" in [p['name'] for p in self.mgr.getPackages(release="lenny", arch="source")])
-        self.assertTrue(self.mgr.addPackage("http://ftp.de.debian.org/debian/pool/main/j/jaaa/jaaa_0.4.2-1.dsc", release="lenny"))
-        self.assertTrue("jaaa" in [p['name'] for p in self.mgr.getPackages(release="lenny", arch="source")])
+        self.assertFalse("jaaa" in [p['name'] for p in self.mgr.getPackages(release = "lenny", arch="source")])
+        self.assertTrue(self.mgr.addPackage(JAAA_SRC_PACKAGE_URL, release = "lenny"))
+        self.assertTrue("jaaa" in [p['name'] for p in self.mgr.getPackages(release = "lenny", arch="source")])
+
 
     def test_removeSourcePackage(self):
-        self.assertFalse("jaaa" in [p['name'] for p in self.mgr.getPackages(release="lenny", arch="source")])
-        self.assertTrue(self.mgr.addPackage("http://ftp.de.debian.org/debian/pool/main/j/jaaa/jaaa_0.4.2-1.dsc", release="lenny"))
-        self.assertTrue("jaaa" in [p['name'] for p in self.mgr.getPackages(release="lenny", arch="source")])
-        self.assertTrue(self.mgr.removePackage("jaaa", release="lenny", arch="source"))
-        self.assertFalse("jaaa" in [p['name'] for p in self.mgr.getPackages(release="lenny", arch="source")])
+        self.assertFalse("jaaa" in [p['name'] for p in self.mgr.getPackages(release = "lenny", arch="source")])
+        self.assertTrue(self.mgr.addPackage(JAAA_SRC_PACKAGE_URL, release = "lenny"))
+        self.assertTrue("jaaa" in [p['name'] for p in self.mgr.getPackages(release = "lenny", arch="source")])
+        self.assertTrue(self.mgr.removePackage("jaaa", release = "lenny", arch="source"))
+        self.assertFalse("jaaa" in [p['name'] for p in self.mgr.getPackages(release = "lenny", arch="source")])
+
 
     def test_createMirror(self):
         pass
@@ -252,13 +255,14 @@ class TestDebianRepository(unittest.TestCase):
         self.assertTrue(self.mgr.createDistribution("debian_test", "deb"))
 
     def test_addPackage(self):
-        self.assertTrue(self.mgr.addPackage("http://ftp2.de.debian.org/debian/pool/main/k/kalign/kalign_2.03-2_i386.deb", release="lenny"))
-        self.assertTrue("kalign" in [p['name'] for p in self.mgr.getPackages(release="lenny")])
+        self.assertTrue(self.mgr.addPackage(KALIGN_PACKAGE_URL, release = "lenny"))
+        self.assertTrue("kalign" in [p['name'] for p in self.mgr.getPackages(release = "lenny")])
+
 
     def test_removePackage(self):
-        before = self.mgr.getPackages(release="lenny")
-        self.assertTrue(self.mgr.addPackage("http://ftp2.de.debian.org/debian/pool/main/k/kalign/kalign_2.03-2_i386.deb", release="lenny"))
-        after = self.mgr.getPackages(release="lenny")
+        before = self.mgr.getPackages(release = "lenny")
+        self.assertTrue(self.mgr.addPackage(KALIGN_PACKAGE_URL, release = "lenny"))
+        after = self.mgr.getPackages(release = "lenny")
         self.assertEquals(len(before), len(after) - 1)
         self.assertTrue(self.mgr.removePackage("kalign", release="lenny"))
         self.assertEquals(len(before), len(self.mgr.getPackages(release="lenny")))

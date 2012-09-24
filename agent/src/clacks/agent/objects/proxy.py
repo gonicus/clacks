@@ -571,6 +571,11 @@ class ObjectProxy(object):
                 self.__retractions[idx].retract()
             del self.__retractions[idx]
 
+        # Check each extension before trying to save them
+        self.__base.check()
+        for extension in [ext for ext in self.__extensions.values() if ext]:
+            extension.check()
+
         # Handle commits
         self.__base.commit()
         for extension in [ext for ext in self.__extensions.values() if ext]:

@@ -57,6 +57,9 @@ _ = t.ugettext
 ALLOWED_CHARS_RELEASE = "^[A-Za-z0-9\-_\.\/]+$"
 ALLOWED_CHARS_DISTRIBUTION = "^[A-Za-z0-9\-_\.]+$"
 
+import pprint
+pp = pprint.PrettyPrinter()
+
 #TODO: @Command decorators need to be configured for making
 #      it multi-server aware. But this feature has to be tested
 #      completely.

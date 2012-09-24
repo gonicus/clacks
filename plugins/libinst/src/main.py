@@ -5,10 +5,12 @@ import shutil
 from clacks.common import Environment
 from libinst import LibinstManager
 
+KALIGN_PACKAGE_URL = "http://ftp.de.debian.org/debian-archive/debian/pool/main/k/kalign/kalign_2.03-2_i386.deb"
+JAAA_SRC_PACKAGE_URL = "http://ftp.de.debian.org/debian-archive/debian/pool/main/j/jaaa/jaaa_0.4.2-1.dsc"
 
 def main():
-    Environment.config = "tests/test-libinst.conf"
-    Environment.noargs = True
+    Environment.config="tests"
+    Environment.noargs=True
     env = Environment.getInstance()
     repo_path = env.config.get('repository.path')
     if os.path.exists(repo_path):
@@ -46,17 +48,15 @@ LcWMU6gayNYj7eMgCOFM6ywySRS81FC+PPnr147xbp5FwgmoPRK52MURsHJ+
     #print manager.getSupportedInstallMethods()
 
     manager.addKeys(keyring)
-    print "createDistribution:", manager.createDistribution("debian_mirror", "deb",
-            {"mirror": "http://archive.debian.org/debian"},
-            install_method="puppet")
-    #print "createDistribution:", manager.createDistribution("debian", "deb", install_method="puppet")
-    print "createRelease:", manager.createRelease("debian_mirror", "etch")
-    print "createRelease:", manager.createRelease("debian_mirror", "etch/4.0")
-    print("removeDistribution", manager.removeDistribution("debian_mirror", recursive=True))
+    #print "createDistribution:", manager.createDistribution("debian_mirror", "deb", mirror="http://archive.debian.org/debian", install_method="puppet")
+    print "createDistribution:", manager.createDistribution("debian", "deb", install_method="puppet")
+    # print "createRelease:", manager.createRelease("debian_mirror", "etch")
+    # print "createRelease:", manager.createRelease("debian_mirror", "etch/4.0")
+    #print("removeDistribution", manager.removeDistribution("debian_mirror", recursive=True))
     #print "addMirrorProperty:", manager.addMirrorProperty(distribution="debian", arch="i386", component="main")
     #print "getDistributions:", manager.getDistributions()
     #print "updateMirror:", manager.updateMirror(distribution="debian", components=["main"], sections=["shells"])
-    #print "createRelease:", manager.createRelease("debian", "lenny")
+    print "createRelease:", manager.createRelease("debian", "lenny")
     #print "createRelease:", manager.createRelease("debian", "lenny/1.0")
     #print "setDistribution:", manager.setDistribution(
     #        {
@@ -107,8 +107,8 @@ LcWMU6gayNYj7eMgCOFM6ywySRS81FC+PPnr147xbp5FwgmoPRK52MURsHJ+
     ##manager._getRelease("bo").distribution._sync()
     #print "createRelease:", manager.createRelease("debian", "squeeze")
     #print("getReleases: distribution=debian", manager.getReleases(distribution="debian"))
-    #print("addPackage: jaaa_0.4.2-1.dsc", manager.addPackage("http://ftp.de.debian.org/debian/pool/main/j/jaaa/jaaa_0.4.2-1.dsc", {"release": "lenny"}))
-    #print("addPackage: kalign_2.03-2_i386.deb", manager.addPackage("http://ftp2.de.debian.org/debian/pool/main/k/kalign/kalign_2.03-2_i386.deb", release = "lenny"))
+    print("addPackage: jaaa_0.4.2-1.dsc", manager.addPackage(JAAA_SRC_PACKAGE_URL, release="lenny"))
+    print("addPackage: kalign_2.03-2_i386.deb", manager.addPackage("http://ftp2.de.debian.org/debian/pool/main/k/kalign/kalign_2.04-2_i386.deb", release = "lenny"))
     #print("addPackage: kalign_2.03-2_i386.deb", manager.addPackage("http://ftp2.de.debian.org/debian/pool/main/k/kalign/kalign_2.03-2_i386.deb", release = "squeeze"))
     #print("addPackage: a2ps_4.14-1.1_i386.deb", manager.addPackage("http://ftp2.de.debian.org/debian/pool/main/a/a2ps/a2ps_4.14-1.1_i386.deb", release = "lenny"))
     #print "addKernelPackage:", manager.addPackage("http://ftp.de.debian.org/debian/pool/main/l/linux-2.6/linux-image-2.6.32-5-486_2.6.32-31_i386.deb", {"release": "lenny"})
@@ -142,8 +142,7 @@ LcWMU6gayNYj7eMgCOFM6ywySRS81FC+PPnr147xbp5FwgmoPRK52MURsHJ+
     #print "manager.getDistribution(distribution='debian_mirror'):", manager.getDistribution(distribution='debian_mirror')
     #print "manager.getRelease(release='etch'):", manager.getRelease(release="etch")
     #print("removeRelease: ", manager.removeRelease(release = "bo"))
-    #print("removeRelease: ", manager.removeRelease(release = "squeeze"))
-    #print(manager.getReleases())
+
     #print(manager.listKeys())
     #print(manager.removeKey("BC4BBE72DA12A270"))
     #print(manager.listKeys())
@@ -153,7 +152,9 @@ LcWMU6gayNYj7eMgCOFM6ywySRS81FC+PPnr147xbp5FwgmoPRK52MURsHJ+
     #print("in releaes", "squeeze" in [r.name for r in manager.getReleases("debian")])
     #print(manager.createDistribution("ubuntu", "deb"))
     #print("removeDistribution", manager.removeDistribution("ubuntu"))
+    #print("removeDistribution", manager.removeDistribution("debian", recursive=True))
     #print("getDistributions", manager.getDistributions())
+    #print("removeDistribution", manager.removeDistribution("debian_mirror", recursive=True))
 
     # End:   New stuff
 
