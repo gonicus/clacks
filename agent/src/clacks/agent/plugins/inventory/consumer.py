@@ -62,7 +62,7 @@ class InventoryConsumer(Plugin):
 
             entry = self.db.find_one({'ClientUUID': client}, {'Checksum': 1})
             if entry:
-                cs.clientDispatch(client, "request_inventory", entry['checksum'])
+                cs.clientDispatch(client, "request_inventory", entry['Checksum'])
             else:
                 cs.clientDispatch(client, "request_inventory")
 
