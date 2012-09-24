@@ -438,9 +438,9 @@ class Object(object):
 
         raise AttributeError("<%s> No such property!" % name)
 
-    def commit(self):
+    def check(self):
         """
-        Commits changes of an object to the corresponding backends.
+        Checks whether everything is fine with the extension and its given values or not.
         """
         # Create a copy to avoid touching the original values
         props = copy.deepcopy(self.myProperties)
@@ -461,7 +461,55 @@ class Object(object):
             if self.__class__.__name__ not in self._objectFactory.getAllowedSubElementsForObject(base_type):
                 raise ObjectException("objects of type '%s' cannot be added as sub-objects to '%s'" % (self.__class__.__name__, base_type))
 
+        # Transfer status into commit status
+        for key in props:
+            props[key]['commit_status'] = props[key]['status']
+
+        # Collect values by store and process the property filters
+        collectedAttrs = {}
+        for key in props:
+
+            # Skip foreign properties
+            if props[key]['foreign']:
+                continue
+
+            # Check if this attribute is blocked by another attribute and its value.
+            is_blocked = False
+            for bb in  props[key]['blocked_by']:
+                if bb['value'] in props[bb['name']]['value']:
+                    is_blocked = True
+                    break
+
+            # Check if all required attributes are set. (Skip blocked once, they cannot be set!)
+            if not is_blocked and props[key]['mandatory'] and not len(props[key]['value']):
+                raise ObjectException("<%s> This value is required!" % key)
+
+        # Collect properties by backend
+        for prop_key in props:
+
+            # Skip foreign properties
+            if props[prop_key]['foreign']:
+                continue
+
+            # Ensure that mandatory values are set
+            if props[prop_key]['mandatory'] and not len(props[prop_key]['value']):
+                raise ObjectException("<%s> This value is required!" % prop_key)
+
+            # Do not save untouched values
+            if not props[prop_key]['commit_status'] & STATUS_CHANGED:
+                continue
+
+    def commit(self):
+        """
+        Commits changes of an object to the corresponding backends.
+        """
+
+        self.check()
+
         self.log.debug("saving object modifications for [%s|%s]" % (type(self).__name__, self.uuid))
+
+        # Create a copy to avoid touching the original values
+        props = copy.deepcopy(self.myProperties)
 
         # Transfer status into commit status
         for key in props:
@@ -495,17 +543,6 @@ class Object(object):
             if props[key]['foreign']:
                 continue
 
-            # Check if this attribute is blocked by another attribute and its value.
-            is_blocked = False
-            for bb in  props[key]['blocked_by']:
-                if bb['value'] in props[bb['name']]['value']:
-                    is_blocked = True
-                    break
-
-            # Check if all required attributes are set. (Skip blocked once, they cannot be set!)
-            if not is_blocked and props[key]['mandatory'] and not len(props[key]['value']):
-                raise ObjectException("<%s> This value is required!" % key)
-
             # Do not save untouched values
             if not props[key]['commit_status'] & STATUS_CHANGED:
                 continue
@@ -527,10 +564,6 @@ class Object(object):
             # Skip foreign properties
             if props[prop_key]['foreign']:
                 continue
-
-            # Ensure that mandatory values are set
-            if props[prop_key]['mandatory'] and not len(props[prop_key]['value']):
-                    raise ObjectException("<%s> This value is required!" % prop_key)
 
             # Do not save untouched values
             if not props[prop_key]['commit_status'] & STATUS_CHANGED:
