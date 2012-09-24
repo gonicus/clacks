@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from unidecode import unidecode
+from unidecode import unidecode #@UnresolvedImport
 from clacks.common.components import Command
 from clacks.common.components import Plugin
 from clacks.common.utils import N_

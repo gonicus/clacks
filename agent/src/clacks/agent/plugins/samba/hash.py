@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import smbpasswd
+import smbpasswd #@UnresolvedImport
 from clacks.agent.objects.filter import ElementFilter
 
 
