@@ -90,7 +90,6 @@ setup(
         scheduler = clacks.agent.scheduler:SchedulerService
         acl = clacks.agent.acl:ACLResolver
         objects = clacks.agent.objects.index:ObjectIndex
-        xmldb = clacks.agent.xmldb.handler:XMLDBHandler
         jsonrpc_service = clacks.agent.jsonrpc_service:JSONRPCService
         jsonrpc_om = clacks.agent.jsonrpc_objects:JSONRPCObjectMapper
         transliterate = clacks.agent.plugins.misc.transliterate:Transliterate
@@ -189,9 +188,6 @@ setup(
 
         [object.renderer]
         extensions = clacks.agent.objects.renderer.extensions:ExtensionRenderer
-
-        [xmldb.driver]
-        berkleydb = clacks.agent.xmldb.driver.dbxml_driver:DBXml
 
         [object]
         object = clacks.agent.objects.proxy:ObjectProxy
