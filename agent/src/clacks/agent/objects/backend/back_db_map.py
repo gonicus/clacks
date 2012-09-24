@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
-from clacks.agent.objects.backend import ObjectBackend
+from clacks.agent.objects.backend import ObjectBackend, BackendError
 from sqlalchemy import create_engine
 from clacks.common import Environment
 from logging import getLogger
-
-
-class DBMapBackendError(Exception):
-    pass
 
 
 class DBMAP(ObjectBackend):
@@ -25,7 +21,7 @@ class DBMAP(ObjectBackend):
         # Read storage path from config
         con_str = self.env.config.get("sql.backend_connection", None)
         if not con_str:
-            raise DBMapBackendError("no sql.backend_connection found in config file")
+            raise BackendError("no sql.backend_connection found in config file")
 
         # Extract action per connection
         connections = {}
@@ -37,7 +33,7 @@ class DBMAP(ObjectBackend):
                     # Try to find a database connection for the DB
                     con_str = self.env.config.get("backend_dbmap.%s" % (database.replace(".", "_")), None)
                     if not con_str:
-                        raise DBMapBackendError("no database connection specified for %s! Please add config parameters for %s" % \
+                        raise BackendError("no database connection specified for %s! Please add config parameters for %s" % \
                               (database, "backend_dbmap.%s" % (database.replace(".", "_"))))
 
                     # Try to establish the connection
@@ -54,7 +50,7 @@ class DBMAP(ObjectBackend):
                         try:
                             conn.execute(action)
                         except Exception as e:
-                            raise DBMapBackendError("failed to execute SQL statement '%s' on database '%s': %s" % (str(action), database, str(e)))
+                            raise BackendError("failed to execute SQL statement '%s' on database '%s': %s" % (str(action), database, str(e)))
 
     def load(self, uuid, info, back_attrs=None):
         return {}

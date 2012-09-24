@@ -8,16 +8,8 @@ from itertools import permutations
 from logging import getLogger
 from clacks.common import Environment
 from clacks.agent.ldap_utils import LDAPHandler
-from clacks.agent.objects.backend import ObjectBackend, EntryNotFound, EntryNotUnique
+from clacks.agent.objects.backend import ObjectBackend, EntryNotFound, EntryNotUnique, RDNNotSpecified, DNGeneratorError
 from clacks.common.components.jsonrpc_utils import Binary
-
-
-class RDNNotSpecified(Exception):
-    pass
-
-
-class DNGeneratorError(Exception):
-    pass
 
 
 class LDAP(ObjectBackend):

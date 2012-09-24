@@ -11,6 +11,7 @@ from clacks.agent.objects.comparator import ElementComparator
 t = gettext.translation('messages', resource_filename("clacks.agent", "locale"), fallback=True)
 _ = t.ugettext
 
+
 class CheckSambaSIDList(ElementComparator):
     """
     Checks whether the given sambaSIDList can be saved or if it
@@ -26,7 +27,8 @@ class CheckSambaSIDList(ElementComparator):
             if sid in value:
                 errors.append(_("Cannot use ourselves as member for the SID list!"))
 
-        return len(errors)==0, errors
+        return len(errors) == 0, errors
+
 
 class DetectSambaDomainFromSID(ElementFilter):
     """
@@ -47,6 +49,7 @@ class DetectSambaDomainFromSID(ElementFilter):
                 return key, valDict
 
         return key, valDict
+
 
 class GenerateSambaSid(ElementFilter):
     """

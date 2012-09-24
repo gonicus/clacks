@@ -198,7 +198,7 @@ class ObjectFactory(object):
         Returns a list of templates for this object.
         """
         names = self.getObjectTemplateNames(objectType)
-        return Object.getNamedTemplate(self.env, names, theme) 
+        return Object.getNamedTemplate(self.env, names, theme)
 
     def getObjectTemplateNames(self, objectType):
         """

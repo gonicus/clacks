@@ -98,9 +98,10 @@ class CacheHandler(object):
 
     def __init__(self, path):
         env = Environment.getInstance()
+        self.env = env
         self.__path = path
         self.__secret = env.config.get('http.cookie_secret', default="TecloigJink4")
-        self.db = env.get_mongo_db('clacks').cache
+        self.db = env.get_mongo_db('clacks')
 
     def __call__(self, environ, start_response):
         req = Request(environ)
@@ -140,17 +141,30 @@ class CacheHandler(object):
         try:
             uuid, attribute, index, subindex = path.split(os.sep)
         except:
-            raise exc.HTTPForbidden().exception
+            raise exc.HTTPNotFound().exception
 
         # Check if we're authorized
-        #TODO
+        info = extract_cookie("ClacksRPC", self.__secret, environ['HTTP_COOKIE'])
+
+        # Query type and dn from uuid
+        tmp = self.db.index.find_one({'_uuid': uuid}, {'dn': 1, '_type': 1})
+        if not tmp:
+            raise exc.HTTPNotFound().exception
+
+        aclresolver = PluginRegistry.getInstance("ACLResolver")
+        topic = "%s.objects.%s.attributes.%s" % (self.env.domain, tmp['_type'], attribute)
+        if not aclresolver.check(info['REMOTE_USER'], topic, "r", base=[tmp['dn']]):
+            raise exc.HTTPForbidden().exception
+
+        # Remove extension from subindex
+        subindex = os.path.splitext(subindex)[0]
 
         # Load the cached binary data and serve it
-        data = self.db.find_one({'uuid': uuid, 'attribute': attribute,
+        data = self.db.cache.find_one({'uuid': uuid, 'attribute': attribute,
             subindex: {'$exists': True},
             "%s.%s" % (subindex, index): {'$exists': True}}, {subindex: 1})
         if not data:
-            raise exc.HTTPForbidden().exception
+            raise exc.HTTPNotFound().exception
 
         return Response(
                 content_type='image/jpeg',
