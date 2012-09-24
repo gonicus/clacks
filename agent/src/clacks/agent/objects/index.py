@@ -404,7 +404,8 @@ class ObjectIndex(Plugin):
 
         ``Return``: Filtered result entry
         """
-        ne = {'dn': entry['dn'], '_type': entry['_type'], '_uuid': entry['_uuid']}
+        ne = {'dn': entry['dn'], '_type': entry['_type'], '_uuid':
+                entry['_uuid'], '_last_changed': entry['_last_changed']}
         attrs = self.__search_aid['mapping'][entry['_type']].values()
 
         for attr in attrs:
@@ -537,9 +538,7 @@ class ObjectIndex(Plugin):
         #TODO:- relevance / map / reduce functionality?
         squery = []
         these = dict([(x, 1) for x in self.__search_aid['used_attrs']])
-        these['dn'] = 1
-        these['_type'] = 1
-        these['_uuid'] = 1
+        these.update(dict(dn=1, _type=1, _uuid=1, _last_changed=1))
 
         for item in self.db.index.find(query, these):
             self.__update_res(res, item, user)
@@ -633,7 +632,9 @@ class ObjectIndex(Plugin):
             icon_attribute = self.__search_aid['mapping'][item['_type']]['icon']
             if icon_attribute and icon_attribute in item and item[icon_attribute]:
                 cache_path = self.env.config.get('gosa.cache_path', default="/cache")
-                entry['icon'] = os.path.join(cache_path, item['_uuid'], icon_attribute, "0", "64")
+                entry['icon'] = os.path.join(cache_path, item['_uuid'],
+                        icon_attribute, "0", "64.jpg?c=%s" %
+                        item['_last_changed'])
 
         res[item['dn']] = entry
 
