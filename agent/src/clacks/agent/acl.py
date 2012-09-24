@@ -1098,6 +1098,7 @@ class ACLResolver(Plugin):
 
             # Check acls for each acl set.
             if not self.acl_sets:
+                base = ','.join(ldap.dn.explode_dn(base)[1::])
                 continue
 
             for acl_set in self.acl_sets:
