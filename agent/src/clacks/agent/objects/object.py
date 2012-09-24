@@ -466,7 +466,6 @@ class Object(object):
             props[key]['commit_status'] = props[key]['status']
 
         # Collect values by store and process the property filters
-        collectedAttrs = {}
         for key in props:
 
             # Skip foreign properties

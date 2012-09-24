@@ -189,14 +189,14 @@ class ObjectHandler(ObjectBackend):
         raise EntryNotFound("cannot generate IDs")
 
     def extractBackAttrs(self, attrs):
-       result = {}
-       for targetAttr in attrs:
-           res = re.match("^([^:]*):([^,]*)(,([^=]*)=([^,]*))?", attrs[targetAttr])
-           if res:
-               result[targetAttr] = []
-               result[targetAttr].append(res.groups()[0])
-               result[targetAttr].append(res.groups()[1])
-               result[targetAttr].append(res.groups()[3])
-               result[targetAttr].append(res.groups()[4])
+        result = {}
+        for targetAttr in attrs:
+            res = re.match("^([^:]*):([^,]*)(,([^=]*)=([^,]*))?", attrs[targetAttr])
+            if res:
+                result[targetAttr] = []
+                result[targetAttr].append(res.groups()[0])
+                result[targetAttr].append(res.groups()[1])
+                result[targetAttr].append(res.groups()[3])
+                result[targetAttr].append(res.groups()[4])
 
-       return result
+        return result

@@ -3,7 +3,6 @@ import time
 import datetime
 from inspect import stack
 from clacks.common import Environment
-from pymongo import Connection
 
 
 class LockError(Exception):

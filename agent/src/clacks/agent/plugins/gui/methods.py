@@ -3,7 +3,6 @@ import re
 from clacks.common.components import Command
 from clacks.common.components import Plugin
 from clacks.common.utils import N_
-from clacks.common import Environment
 from clacks.common.components import PluginRegistry
 from clacks.agent.objects import ObjectProxy
 from clacks.agent.objects.factory import ObjectFactory
@@ -84,7 +83,6 @@ class GuiMethods(Plugin):
 
         This is used to add new groups to the users groupMembership attribute.
         """
-        env = Environment.getInstance()
 
         # Extract the the required information about the object
         # relation out of the BackendParameters for the given extension.
@@ -94,7 +92,7 @@ class GuiMethods(Plugin):
             raise Exception("no backend parameter found for %s.%s" % (extension, attribute))
 
         # Collection basic information
-        otype, oattr, foreignMatchAttr, matchAttr = be_data[attribute]
+        otype, oattr, foreignMatchAttr, matchAttr = be_data[attribute] #@UnusedVariable
 
         # Create a list of attributes that will be requested
         if oattr not in attributes:
@@ -136,7 +134,6 @@ class GuiMethods(Plugin):
         #TODO: @fabian - this function is about 95% the same than the one
         #                above.
         """
-        env = Environment.getInstance()
 
         # Extract the the required information about the object
         # relation out of the BackendParameters for the given extension.
@@ -147,7 +144,7 @@ class GuiMethods(Plugin):
             raise Exception("no backend parameter found for %s.%s" % (extension, attribute))
 
         # Collection basic information
-        otype, oattr, foreignMatchAttr, matchAttr = be_data[attribute]
+        otype, oattr, foreignMatchAttr, matchAttr = be_data[attribute] #@UnusedVariable
 
         # Create a list of attributes that will be requested
         if oattr not in attributes:

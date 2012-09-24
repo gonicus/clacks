@@ -4,7 +4,6 @@ or object fragments.
 """
 
 # -*- coding: utf-8 -*-
-import os
 import re
 import uuid
 import datetime
@@ -12,7 +11,6 @@ from copy import deepcopy
 from clacks.agent.objects.backend import ObjectBackend, DNGeneratorError, RDNNotSpecified, BackendError
 from logging import getLogger
 from clacks.common import Environment
-from itertools import permutations
 import ldap
 
 

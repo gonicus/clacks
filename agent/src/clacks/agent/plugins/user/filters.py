@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-import os
-import Image, ImageOps
+import Image
+import ImageOps
 from bson.binary import Binary
 from clacks.common import Environment
 from clacks.agent.objects.filter import ElementFilter, ElementFilterException
@@ -9,6 +9,7 @@ try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
+
 
 class ImageProcessor(ElementFilter):
     """

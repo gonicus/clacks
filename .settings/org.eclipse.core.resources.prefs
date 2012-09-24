@@ -13,6 +13,7 @@ encoding//agent/src/clacks/agent/objects/backend/__init__.py=utf-8
 encoding//agent/src/clacks/agent/objects/backend/back_db_map.py=utf-8
 encoding//agent/src/clacks/agent/objects/backend/back_ldap.py=utf-8
 encoding//agent/src/clacks/agent/objects/backend/back_null.py=utf-8
+encoding//agent/src/clacks/agent/objects/backend/back_object.py=utf-8
 encoding//agent/src/clacks/agent/objects/backend/registry.py=utf-8
 encoding//agent/src/clacks/agent/objects/comparator/__init__.py=utf-8
 encoding//agent/src/clacks/agent/objects/comparator/basic.py=utf-8

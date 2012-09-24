@@ -11,7 +11,6 @@ from clacks.agent.objects.backend import ObjectBackend, DNGeneratorError, RDNNot
 from json import loads, dumps
 from logging import getLogger
 from clacks.common import Environment
-from itertools import permutations
 import ldap
 
 
