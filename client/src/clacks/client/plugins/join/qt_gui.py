@@ -21,15 +21,6 @@ if os.getenv("DISPLAY"):
     except Exception as e:
         pass
 
-    if not supported:
-        try:
-            from PyQt4.QtCore import * #@UnusedWildImport
-            from PyQt4.QtGui import * #@UnusedWildImport
-            supported = True
-
-        except Exception as e:
-            pass
-
 
 if not supported:
     class QObject():
