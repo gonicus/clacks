@@ -59,7 +59,10 @@ class ImageProcessor(ElementFilter):
                     }
             for idx in range(0, len(valDict[key]['value'])):
                 image = StringIO(valDict[key]['value'][idx].get())
-                im = Image.open(image)
+                try:
+                    im = Image.open(image)
+                except IOError:
+                    continue
 
                 for size in sizes:
                     s = int(size)
