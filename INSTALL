@@ -18,37 +18,37 @@ all the ACL issues instead of applying them by the ACL utilty.
 Create GUI Acl-Role
 ~~~~~~~~~~~~~~~~~~~
 
-  acl-admin add role "dc=example,dc=net" GUI
-  acl-admin add roleacl with-actions name=GUI,dc=example,dc=net 0 \
+  # acl-admin add role "dc=example,dc=net" GUI
+  # acl-admin add roleacl with-actions name=GUI,dc=example,dc=net 0 \
   	sub "^net\.example\.command\.core\.(getSessionUser|getBase|search):x"
-  acl-admin add roleacl with-actions name=GUI,dc=example,dc=net 0 \
+  # acl-admin add roleacl with-actions name=GUI,dc=example,dc=net 0 \
     sub "^net\.example\.command\.gosa\..*:x"emplateI18N|getAvailableObjectNames|getGuiTemplates|getObjectDetails|searchForObjectDetails|loadUserPreferences|saveUserPreferences):x"
 
 Create self service role
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-  acl-admin add role "dc=example,dc=net" SelfService
-  acl-admin add roleacl with-actions name=SelfService,dc=example,dc=net 0 \
+  # acl-admin add role "dc=example,dc=net" SelfService
+  # acl-admin add roleacl with-actions name=SelfService,dc=example,dc=net 0 \
   	sub "^net\.example\.command\.core\.(openObject|dispatchObjectMethod|setObjectProperty|closeObject):x"
-  acl-admin add roleacl with-actions name=SelfService,dc=example,dc=net 0 \
+  # acl-admin add roleacl with-actions name=SelfService,dc=example,dc=net 0 \
   	sub "^net\.example\.command\.password\.(listPasswordMethods|accountLockable|accountUnlockable):x"
-  acl-admin add roleacl with-actions name=SelfService,dc=example,dc=net 0 \
+  # acl-admin add roleacl with-actions name=SelfService,dc=example,dc=net 0 \
   	sub "^net\.example\.command\.objects\.(User|PosixUser|SambaUser|ShadowUser):crowdsexm"
 
 Create Administrative Role
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  acl-admin add role "dc=example,dc=net" Administrators
-  acl-admin add roleacl with-actions name=Administrators,dc=example,dc=net 0 \
+  # acl-admin add role "dc=example,dc=net" Administrators
+  # acl-admin add roleacl with-actions name=Administrators,dc=example,dc=net 0 \
   	sub "^net\.example\..*:crwdsex"
 
 Assign user 'admin' the role 'Administrators'
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  acl-admin add acl with-role dc=example,dc=net -100 admin Administrators
+  # acl-admin add acl with-role dc=example,dc=net -100 admin Administrators
 
 Assign user 'user' the SelfService and GUI role
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  acl-admin add acl with-role dc=example,dc=net 0 user SelfService 
-  acl-admin add acl with-role dc=example,dc=net 0 user GUI
+  # acl-admin add acl with-role dc=example,dc=net 0 user SelfService 
+  # acl-admin add acl with-role dc=example,dc=net 0 user GUI
