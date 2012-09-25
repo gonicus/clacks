@@ -13,12 +13,9 @@ import logging
 import zope.event
 import datetime
 import re
-import os
-import shlex
 import md5
-import clacks.agent.objects.renderer
-import itertools
 import time
+import itertools
 from zope.interface import implements
 from clacks.common import Environment
 from clacks.common.utils import N_
@@ -65,9 +62,6 @@ class ObjectIndex(Plugin):
 
         # Listen for object events
         zope.event.subscribers.append(self.__handle_events)
-
-        # Collect value extenders
-        self.__value_extender = clacks.agent.objects.renderer.get_renderers()
 
     def serve(self):
         # Load db instance
@@ -172,6 +166,9 @@ class ObjectIndex(Plugin):
                                  mapping=mapping,
                                  resolve=resolve,
                                  aliases=aliases)
+
+    def get_search_aid(self):
+        return self.__search_aid
 
     def isSchemaUpdated(self, collection, schema):
         # Calculate md5 checksum for potentially new schema
@@ -386,284 +383,6 @@ class ObjectIndex(Plugin):
         ``Return``: True/False
         """
         return self.db.index.find_one({'_uuid': uuid}, {'_uuid': 1}) != None
-
-    def __filter_entry(self, user, entry):
-        """
-        Takes a query entry and decides based on the user what to do
-        with the result set.
-
-        ========== ===========================
-        Parameter  Description
-        ========== ===========================
-        user       User ID
-        entry      Search entry as hash
-        ========== ===========================
-
-        ``Return``: Filtered result entry
-        """
-        ne = {'dn': entry['dn'], '_type': entry['_type'], '_uuid':
-                entry['_uuid'], '_last_changed': entry['_last_changed']}
-        attrs = self.__search_aid['mapping'][entry['_type']].values()
-
-        for attr in attrs:
-            if attr != None and self.__has_access_to(user, entry['dn'], entry['_type'], attr):
-                ne[attr] = entry[attr] if attr in entry else None
-            else:
-                ne[attr] = None
-
-        return ne
-
-    def __has_access_to(self, user, object_dn, object_type, attr):
-        """
-        Checks whether the given user has access to the given object/attribute or not.
-        """
-        aclresolver = PluginRegistry.getInstance("ACLResolver")
-        if user:
-            topic = "%s.objects.%s.attributes.%s" % (self.env.domain, object_type, attr)
-            return aclresolver.check(user, topic, "r", base=[object_dn])
-        else:
-            return True
-
-    @Command(needsUser=True, __help__=N_("Filter for indexed attributes and return the matches."))
-    def search(self, user, base, scope, qstring, fltr=None):
-        """
-        Performs a query based on a simple search string consisting of keywords.
-
-        Query the database using the given query string and an optional filter
-        dict - and return the result set.
-
-        ========== ==================
-        Parameter  Description
-        ========== ==================
-        base       Query base
-        scope      Query scope (SUB, BASE, ONE)
-        qstring    Query string
-        fltr       Hash for extra parameters
-        ========== ==================
-
-        ``Return``: List of dicts
-        """
-        res = {}
-        keywords = None
-        fallback = fltr and "fallback" in fltr and fltr["fallback"]
-
-        # Bail out for empty searches
-        if not qstring:
-            return []
-
-        # Set defaults
-        if not fltr:
-            fltr = {}
-        if not 'category' in fltr:
-            fltr['category'] = "all"
-        if not 'secondary' in fltr:
-            fltr['secondary'] = "disabled"
-        if not 'mod-time' in fltr:
-            fltr['mod-time'] = "all"
-
-        try:
-            keywords = [s.strip("'").strip('"') for s in shlex.split(qstring)]
-        except ValueError:
-            keywords = [s.strip("'").strip('"') for s in qstring.split(" ")]
-        qstring = qstring.strip("'").strip('"')
-        keywords.append(qstring)
-
-        # Make keywords unique
-        keywords = list(set(keywords))
-
-        # Sanity checks
-        scope = scope.upper()
-        if not scope in ["SUB", "BASE", "ONE"]:
-            raise Exception("invalid scope - needs to be one of SUB, BASE or ONE")
-        if not fltr['mod-time'] in ["hour", "day", "week", "month", "year", "all"]:
-            raise Exception("invalid scope - needs to be one of SUB, BASE or ONE")
-
-        # Build query: assemble keywords
-        _s = ""
-        if fallback:
-            _s = re.compile('^.*(' + ("|".join([re.escape(p) for p in keywords])) + ').*$', re.IGNORECASE)
-        else:
-            _s = {'$in': keywords}
-
-        # Build query: join attributes and keywords
-        queries = []
-        for typ in self.__search_aid['attrs'].keys():
-
-            # Only filter for cateogry if desired
-            if not ("all" == fltr['category'] or typ == fltr['category']):
-                continue
-
-            attrs = self.__search_aid['attrs'][typ]
-
-            if len(attrs) == 0:
-                continue
-            if len(attrs) == 1:
-                queries.append({'_type': typ, attrs[0]: _s})
-            if len(attrs) > 1:
-                queries.append({'_type': typ, "$or": map(lambda a: {a: _s}, attrs)})
-
-        # Build query: assemble
-        query = ""
-        if scope == "SUB":
-            query = {"dn": re.compile("^(.*,)?" + re.escape(base) + "$"), "$or": queries}
-
-        elif scope == "ONE":
-            query = {"$or": [{"dn": base}, {"_parent_dn": base}], "$or": queries}
-
-        else:
-            query = {"dn": base, "$or": queries}
-
-        # Build query: eventually extend with timing information
-        td = None
-        if fltr['mod-time'] != "all":
-            now = datetime.datetime.now()
-            if fltr['mod-time'] == 'hour':
-                td = now - datetime.timedelta(hours=1)
-            elif fltr['mod-time'] == 'day':
-                td = now - datetime.timedelta(days=1)
-            elif fltr['mod-time'] == 'week':
-                td = now - datetime.timedelta(weeks=1)
-            elif fltr['mod-time'] == 'month':
-                td = now - datetime.timedelta(days=31)
-            elif fltr['mod-time'] == 'year':
-                td = now - datetime.timedelta(days=365)
-
-            td = {"$gte": time.mktime(td.timetuple())}
-            query["_last_changed"] = td
-
-        # Perform primary query and get collect the results
-        #TODO:- relevance / map / reduce functionality?
-        squery = []
-        these = dict([(x, 1) for x in self.__search_aid['used_attrs']])
-        these.update(dict(dn=1, _type=1, _uuid=1, _last_changed=1))
-
-        for item in self.db.index.find(query, these):
-            self.__update_res(res, item, user)
-
-            # Collect information for secondary search?
-            if fltr['secondary'] != "enabled":
-                continue
-
-            for r in self.__search_aid['resolve'][item['_type']]:
-                if r['attribute'] in item:
-                    tag = r['type'] if r['type'] else item['_type']
-
-                    # If a category was choosen and it does not fit the
-                    # desired target tag - skip that one
-                    if not (fltr['category'] == "all" or fltr['category'] == tag):
-                        continue
-
-                    squery.append({'_type': tag, r['filter']: {'$in': item[r['attribute']]}})
-
-        # Perform secondary query and update the result
-        if fltr['secondary'] == "enabled" and squery:
-            query = {"$or": squery}
-
-            # Add "_last_changed" information to query
-            if fltr['mod-time'] != "all":
-                query["_last_changed"] = td
-
-            # Execute query and update results
-            for item in self.db.index.find(query, these):
-                self.__update_res(res, item, user)
-
-        return res.values()
-
-#    def __make_relevance(self, tag, qstring, o_qstring, keywords, secondary=False, fuzzy=False):
-#        relevance = 1
-#
-#        # Penalty for not having an exact match
-#        if qstring != o_qstring:
-#            relevance *= 2
-#
-#        # Penalty for not having an case insensitive match
-#        if qstring.lower() != o_qstring.lower():
-#            relevance *= 4
-#
-#        # Penalty for not having tag in keywords
-#        if not set([t.lower() for t in tag]).intersection(set([k.lower() for k in keywords])):
-#            relevance *= 6
-#
-#        # Penalty for secondary
-#        if secondary:
-#            relevance *= 10
-#
-#        # Penalty for fuzzyness
-#        if fuzzy:
-#            relevance *= 10
-#
-#        return relevance
-
-    def __update_res(self, res, item, user=None):
-        relevance = 0
-
-        # Filter out what the current use is not allowed to see
-        item = self.__filter_entry(user, item)
-        if not item or item['dn'] == None:
-            # We've obviously no permission to see thins one - skip it
-            return
-
-        if item['dn'] in res:
-            #TODO: we may need to update the relevance information
-            #dn = item['dn']
-            #if res[dn]['relevance'] > relevance:
-            #    res[dn]['relevance'] = relevance
-            return
-
-        entry = {'tag': item['_type'], 'relevance': relevance}
-        for k, v in self.__search_aid['mapping'][item['_type']].items():
-            if k:
-                if k == "icon":
-                    continue
-                if v in item and item[v]:
-                    if v == "dn":
-                        entry[k] = item[v]
-                    else:
-                        entry[k] = item[v][0]
-                else:
-                    entry[k] = self.__build_value(v, item)
-
-            entry['icon'] = None
-
-            icon_attribute = self.__search_aid['mapping'][item['_type']]['icon']
-            if icon_attribute and icon_attribute in item and item[icon_attribute]:
-                cache_path = self.env.config.get('gosa.cache_path', default="/cache")
-                entry['icon'] = os.path.join(cache_path, item['_uuid'],
-                        icon_attribute, "0", "64.jpg?c=%s" %
-                        item['_last_changed'])
-
-        res[item['dn']] = entry
-
-    def __build_value(self, v, info):
-        """
-        Fill placeholders in the value to be displayed as "description".
-        """
-
-        if not v:
-            return ""
-
-        # Find all placeholders
-        attrs = {}
-        for attr in re.findall(r"%\(([^)]+)\)s", v):
-
-            # Extract ordinary attributes
-            if attr in info:
-                attrs[attr] = ", ".join(info[attr])
-
-            # Check for result renderers
-            elif attr in self.__value_extender:
-                attrs[attr] = self.__value_extender[attr](info)
-
-            # Fallback - just set nothing
-            else:
-                attrs[attr] = ""
-
-        # Assemble and remove empty lines and multiple whitespaces
-        res = v % attrs
-        res = re.sub(r"(<br>)+", "<br>", res)
-        res = re.sub(r"^<br>", "", res)
-        res = re.sub(r"<br>$", "", res)
-        return "<br>".join([s.strip() for s in res.split("<br>")])
 
     def raw_search(self, query, conditions):
         """
