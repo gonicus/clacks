@@ -2,14 +2,14 @@
 <Objects xmlns="http://www.gonicus.de/Objects" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gonicus.de/Objects ../object.xsd ">
   <Object>
     <Name>User</Name>
-    <Description>GOsa user account</Description>
+    <Description>A generic user</Description>
     <DisplayName>User</DisplayName>
     <Templates>
       <Template>user.ui</Template>
       <Template>user-organizational.ui</Template>
     </Templates>
     <BackendParameters>
-      <Backend objectClasses="inetOrgPerson,gosaAccount" manager="User:dn" RDN="cn,uid">LDAP</Backend>
+      <Backend objectClasses="inetOrgPerson" manager="User:dn" RDN="cn,uid">LDAP</Backend>
       <Backend type="User">JSON</Backend>
     </BackendParameters>
     <Backend>LDAP</Backend>
