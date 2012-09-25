@@ -629,7 +629,7 @@ class ACL(object):
         Returns a list with all uids that can manage the given dn.
         """
         index = PluginRegistry.getInstance("ObjectIndex")
-        res = index.raw_search({'dn': dn, 'manager': {'$ne': [], '$exists': True}}, {'manager': 1})
+        res = index.search({'dn': dn, 'manager': {'$ne': [], '$exists': True}}, {'manager': 1})
         if res.count():
             uids = []
             for item in res:
@@ -646,7 +646,7 @@ class ACL(object):
         Returns the uid for a given dn.
         """
         index = PluginRegistry.getInstance("ObjectIndex")
-        res = index.raw_search({'dn': dn, '_type': 'User'}, {'uid': 1})
+        res = index.search({'dn': dn, '_type': 'User'}, {'uid': 1})
         if res.count() == 1:
             return res[0]['uid'][0]
         elif res.count() > 1:
