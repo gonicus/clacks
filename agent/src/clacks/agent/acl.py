@@ -626,19 +626,27 @@ class ACL(object):
 
 
     def __getManagerUids(self, dn):
+        """
+        Returns a list with all uids that can manage the given dn.
+        """
         index = PluginRegistry.getInstance("ObjectIndex")
         res = index.raw_search({'dn': dn, 'manager': {'$ne': [], '$exists': True}}, {'manager': 1})
         if res.count():
             uids = []
             for item in res:
-                p_uid = self.__getUidByDn(item['manager'][0])
-                if p_uid:
-                    uids.append(p_uid)
+                for manager_dn in item['manager']:
+                    p_uid = self.__getUidByDn(manager_dn)
+                    if p_uid:
+                        uids.append(p_uid)
             return uids
         else:
             return None
 
+
     def __getUidByDn(self, dn):
+        """
+        Returns the uid for a given dn.
+        """
         index = PluginRegistry.getInstance("ObjectIndex")
         res = index.raw_search({'dn': dn, '_type': 'User'}, {'uid': 1})
         if res.count() == 1:
