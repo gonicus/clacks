@@ -74,7 +74,7 @@ class MongoDBJobStore(JobStore):
     def migrate_jobs(self, job, origin):
         # Migrate job only if it still has it's original origin, elseways
         # someone else already migrated it...
-        self.collection.update({'origin': job.origin, '_id': job.id}, {'origin': origin}, false, true)
+        self.collection.update({'origin': job.origin, '_id': job.id}, {'origin': origin}, False, True)
 
     def update_job(self, job):
         spec = {'_id': job.id}
