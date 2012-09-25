@@ -9,7 +9,7 @@
       <Template>user-organizational.ui</Template>
     </Templates>
     <BackendParameters>
-      <Backend objectClasses="inetOrgPerson" manager="User:dn" RDN="cn,uid">LDAP</Backend>
+      <Backend objectClasses="inetOrgPerson,gosaAccount" manager="User:dn" RDN="cn,uid">LDAP</Backend>
       <Backend type="User">JSON</Backend>
     </BackendParameters>
     <Backend>LDAP</Backend>
