@@ -5,6 +5,7 @@ import shlex
 import time
 import datetime
 import clacks.agent.objects.renderer
+from zope.interface import implements
 from clacks.common import Environment
 from clacks.common.components import Command
 from clacks.common.components import Plugin
@@ -12,15 +13,19 @@ from clacks.common.utils import N_
 from clacks.common.components import PluginRegistry
 from clacks.agent.objects import ObjectProxy
 from clacks.agent.objects.factory import ObjectFactory
+from clacks.common.handler import IInterfaceHandler
 from json import loads, dumps
 
 
 class GuiMethods(Plugin):
-    _target_ = 'misc'
+    implements(IInterfaceHandler)
+    _target_ = 'gosa'
+    _priority_ = 80
 
     def __init__(self):
         self.env = Environment.getInstance()
 
+    def serve(self):
         # Collect value extenders
         self.__value_extender = clacks.agent.objects.renderer.get_renderers()
         self.__search_aid = PluginRegistry.getInstance("ObjectIndex").get_search_aid()
