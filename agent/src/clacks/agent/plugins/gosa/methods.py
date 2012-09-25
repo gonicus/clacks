@@ -325,13 +325,13 @@ class GuiMethods(Plugin):
             query["_last_changed"] = td
 
         # Perform primary query and get collect the results
-        #TODO:- relevance / map / reduce functionality?
         squery = []
         these = dict([(x, 1) for x in self.__search_aid['used_attrs']])
         these.update(dict(dn=1, _type=1, _uuid=1, _last_changed=1))
 
         for item in self.db.index.find(query, these):
-            self.__update_res(res, item, user)
+
+            self.__update_res(res, item, user, self.__make_relevance(item, keywords, fltr))
 
             # Collect information for secondary search?
             if fltr['secondary'] != "enabled":
@@ -358,37 +358,62 @@ class GuiMethods(Plugin):
 
             # Execute query and update results
             for item in self.db.index.find(query, these):
-                self.__update_res(res, item, user)
+                self.__update_res(res, item, user, self.__make_relevance(item, keywords, fltr, True))
 
         return res.values()
 
-#    def __make_relevance(self, tag, qstring, o_qstring, keywords, secondary=False, fuzzy=False):
-#        relevance = 1
-#
-#        # Penalty for not having an exact match
-#        if qstring != o_qstring:
-#            relevance *= 2
-#
-#        # Penalty for not having an case insensitive match
-#        if qstring.lower() != o_qstring.lower():
-#            relevance *= 4
-#
-#        # Penalty for not having tag in keywords
-#        if not set([t.lower() for t in tag]).intersection(set([k.lower() for k in keywords])):
-#            relevance *= 6
-#
-#        # Penalty for secondary
-#        if secondary:
-#            relevance *= 10
-#
-#        # Penalty for fuzzyness
-#        if fuzzy:
-#            relevance *= 10
-#
-#        return relevance
+    def __make_relevance(self, item, keywords, fltr, fuzzy=False):
+        """
+        Very simple relevance weight-o-meter for search results. To
+        be improved...
 
-    def __update_res(self, res, item, user=None):
-        relevance = 0
+        It basically takes the item and checks if one of the keyword
+        is contained. Takes account on fuzzyness, secondary searches,
+        tags.
+        """
+
+        # Set defaults
+#        if not fltr:
+#            fltr = {}
+#        if not 'category' in fltr:
+#            fltr['category'] = "all"
+#        if not 'secondary' in fltr:
+#            fltr['secondary'] = "disabled"
+#        if not 'mod-time' in fltr:
+#            fltr['mod-time'] = "all"
+
+        relevance = 1
+
+        # Walk thru keywords
+        for keyword in keywords:
+
+            # No exact match
+            if not keyword in item.values():
+                relevance *= 2
+
+            # Penalty for not having an case insensitive match
+            if not keyword.lower() in [s.lower() for s in item.values()]:
+                relevance *= 4
+
+            # Penalty for not having the correct category
+            if fltr['category'] != "all" and fltr['category'].lower() != item['_type'].lower():
+                relevance *= 2
+
+        # Penalty for not having category in keywords
+        if not set([t.lower() for t in self.__search_aid['aliases'][item['_type']]]).intersection(set([k.lower() for k in keywords])):
+            relevance *= 6
+
+        # Penalty for secondary
+        if fltr['secondary'] == "enabled":
+            relevance *= 10
+
+        # Penalty for fuzzyness
+        if fuzzy:
+            relevance *= 10
+
+        return relevance
+
+    def __update_res(self, res, item, user=None, relevance=0):
 
         # Filter out what the current use is not allowed to see
         item = self.__filter_entry(user, item)
@@ -397,10 +422,9 @@ class GuiMethods(Plugin):
             return
 
         if item['dn'] in res:
-            #TODO: we may need to update the relevance information
-            #dn = item['dn']
-            #if res[dn]['relevance'] > relevance:
-            #    res[dn]['relevance'] = relevance
+            dn = item['dn']
+            if res[dn]['relevance'] > relevance:
+                res[dn]['relevance'] = relevance
             return
 
         entry = {'tag': item['_type'], 'relevance': relevance}

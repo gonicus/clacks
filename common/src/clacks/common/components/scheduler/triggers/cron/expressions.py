@@ -178,7 +178,6 @@ class WeekdayPositionExpression(AllExpression):
                                    WEEKDAYS[self.weekday])
 
 
-
 class LastDayOfMonthExpression(AllExpression):
     value_re = re.compile(r'last', re.IGNORECASE)
 
@@ -193,4 +192,3 @@ class LastDayOfMonthExpression(AllExpression):
 
     def __repr__(self):
         return "%s()" % self.__class__.__name__
-

@@ -624,7 +624,6 @@ class ACL(object):
                 rstr += "\n%s%s:%s %s" % ((" " * (indent + 1)), entry['topic'], str(entry['acls']), str(entry['options']))
         return rstr
 
-
     def __getManagerUids(self, dn):
         """
         Returns a list with all uids that can manage the given dn.
@@ -642,7 +641,6 @@ class ACL(object):
         else:
             return None
 
-
     def __getUidByDn(self, dn):
         """
         Returns the uid for a given dn.
@@ -656,7 +654,6 @@ class ACL(object):
             return None
         else:
             return None
-
 
     def match(self, user, topic, acls, targetBase, options=None, skip_user_check=False, used_roles=None, override_users=None):
         """
@@ -720,7 +717,7 @@ class ACL(object):
                     if "o" in act['acls'] or "m" in act['acls']:
 
                         # Collect manager and owner uids and replace
-                        # the original user list, to check only against 
+                        # the original user list, to check only against
                         # owner and manager uids.
                         users = []
                         if "m" in act['acls']:
