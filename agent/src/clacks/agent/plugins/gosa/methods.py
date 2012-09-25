@@ -251,7 +251,7 @@ class GuiMethods(Plugin):
         if not 'category' in fltr:
             fltr['category'] = "all"
         if not 'secondary' in fltr:
-            fltr['secondary'] = "disabled"
+            fltr['secondary'] = "enabled"
         if not 'mod-time' in fltr:
             fltr['mod-time'] = "all"
 
