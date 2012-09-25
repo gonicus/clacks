@@ -59,7 +59,7 @@ class GuiMethods(Plugin):
     @Command(__help__=N_("Save user preferences"))
     def saveUserPreferences(self, userid, name, value):
         index = PluginRegistry.getInstance("ObjectIndex")
-        res = index.raw_search({'_type': 'User', 'uid': userid}, {'dn': 1})
+        res = index.search({'_type': 'User', 'uid': userid}, {'dn': 1})
         if not res.count():
             raise Exception("No such user %s" % (userid))
 
@@ -80,7 +80,7 @@ class GuiMethods(Plugin):
     @Command(__help__=N_("Load user preferences"))
     def loadUserPreferences(self, userid, name):
         index = PluginRegistry.getInstance("ObjectIndex")
-        res = index.raw_search({'_type': 'User', 'uid': userid}, {'dn': 1})
+        res = index.search({'_type': 'User', 'uid': userid}, {'dn': 1})
         if not res.count():
             raise Exception("No such user %s" % (userid))
 
@@ -122,7 +122,7 @@ class GuiMethods(Plugin):
 
         # Start the query and brind the result in a usable form
         index = PluginRegistry.getInstance("ObjectIndex")
-        res = index.raw_search({
+        res = index.search({
             '$or': [{'_type': otype}, {'_extensions': otype}],
             oattr: re.compile("^.*" + re.escape(fltr) + ".*$")
             }, attrs)
@@ -175,7 +175,7 @@ class GuiMethods(Plugin):
         # Start the query and brind the result in a usable form
         index = PluginRegistry.getInstance("ObjectIndex")
 
-        res = index.raw_search({
+        res = index.search({
             '$or': [{'_type': otype}, {'_extensions': otype}],
             oattr: {'$in': names}
             }, attrs)
@@ -204,7 +204,7 @@ class GuiMethods(Plugin):
     @Command(__help__=N_("Returns a list with all selectable samba-domain-names"))
     def getSambaDomainNames(self):
         index = PluginRegistry.getInstance("ObjectIndex")
-        res = index.raw_search({'_type': 'SambaDomain', 'sambaDomainName': {'$exists': True}},
+        res = index.search({'_type': 'SambaDomain', 'sambaDomainName': {'$exists': True}},
             {'sambaDomainName': 1})
 
         return list(set([x['sambaDomainName'][0] for x in res]))

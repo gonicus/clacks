@@ -888,7 +888,7 @@ class ACLResolver(Plugin):
         # Read all AclRole objects.
         dns = []
         index = PluginRegistry.getInstance("ObjectIndex")
-        res = index.raw_search({'_type': 'AclRole'}, {'dn': 1})
+        res = index.search({'_type': 'AclRole'}, {'dn': 1})
         if res.count():
             dns = [x['dn'] for x in res]
 
@@ -954,7 +954,7 @@ class ACLResolver(Plugin):
         dns = []
         index = PluginRegistry.getInstance("ObjectIndex")
 
-        res = index.raw_search({'AclSets': {'$exists': True, '$not': {'$size': 0}}}, {'dn': 1})
+        res = index.search({'AclSets': {'$exists': True, '$not': {'$size': 0}}}, {'dn': 1})
         if res.count():
             dns = [x['dn'] for x in res]
 

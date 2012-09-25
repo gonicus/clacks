@@ -418,7 +418,7 @@ class ObjectProxy(object):
                 # Traverse tree and find different backends
                 foreign_backends = {}
                 index = PluginRegistry.getInstance("ObjectIndex")
-                children = index.raw_search({"dn": re.compile("^(.*,)?" + re.escape(self.__base.dn) + "$")},
+                children = index.search({"dn": re.compile("^(.*,)?" + re.escape(self.__base.dn) + "$")},
                     {'dn': 1, '_type': 1})
 
                 # Note all elements with different backends
@@ -504,7 +504,7 @@ class ObjectProxy(object):
             # Load all children and remove them, starting from the most
             # nested ones.
             index = PluginRegistry.getInstance("ObjectIndex")
-            children = index.raw_search({"dn": re.compile("^(.*,)?" + re.escape(self.__base.dn) + "$")}, {'dn': 1})
+            children = index.search({"dn": re.compile("^(.*,)?" + re.escape(self.__base.dn) + "$")}, {'dn': 1})
             children = [c['dn'] for c in children]
 
             children.sort(key=len, reverse=True)
@@ -516,7 +516,7 @@ class ObjectProxy(object):
         else:
             # Test if we've children
             index = PluginRegistry.getInstance("ObjectIndex")
-            if index.raw_search({"dn": re.compile("^(.*,)" + re.escape(self.__base.dn) + "$")}, {'dn': 1}).count():
+            if index.search({"dn": re.compile("^(.*,)" + re.escape(self.__base.dn) + "$")}, {'dn': 1}).count():
                 raise ProxyException("specified object has children - use the recursive flag to remove them")
 
         for extension in [e for e in self.__extensions.values() if e]:
@@ -545,7 +545,7 @@ class ObjectProxy(object):
         # Traverse tree and find different backends
         foreign_backends = {}
         index = PluginRegistry.getInstance("ObjectIndex")
-        children = index.raw_search({"dn": re.compile("^(.*,)?" + re.escape(self.__base.dn) + "$")},
+        children = index.search({"dn": re.compile("^(.*,)?" + re.escape(self.__base.dn) + "$")},
             {'dn': 1, '_type': 1})
 
         # Note all elements with different backends

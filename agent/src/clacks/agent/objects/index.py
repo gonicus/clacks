@@ -384,7 +384,7 @@ class ObjectIndex(Plugin):
         """
         return self.db.index.find_one({'_uuid': uuid}, {'_uuid': 1}) != None
 
-    def raw_search(self, query, conditions):
+    def search(self, query, conditions):
         """
         Perform a raw mongodb find call.
 
