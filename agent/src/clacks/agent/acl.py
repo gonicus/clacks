@@ -558,6 +558,8 @@ class ACL(object):
          * w - Write
          * c - Create
          * d - Delete
+         * o - Onwer only, this acl affects only loggedin user itself.
+         * m - Manager, this acl applies for the manager of on object.
          * s - Search - or beeing found
          * x - Execute
          * e - Receive event
@@ -589,9 +591,9 @@ class ACL(object):
             raise ACLException("ACL classes that use a role cannot define"
                    " additional costum acls!")
 
-        # Check given acls allowed are 'rwcdsex'
-        if not all(map(lambda x: x in 'rwcdsex', acls)):
-            raise ACLException("got invalid acls string, allows is a combination of '%s' but got '%s'!" % ('rwcdsex', acls))
+        # Check given acls allowed are 'rwcdsexom'
+        if not all(map(lambda x: x in 'rwcdsexom', acls)):
+            raise ACLException("got invalid acls string, allows is a combination of '%s' but got '%s'!" % ('rwcdsexom', acls))
 
         acl = {
                 'topic': topic,
@@ -622,7 +624,33 @@ class ACL(object):
                 rstr += "\n%s%s:%s %s" % ((" " * (indent + 1)), entry['topic'], str(entry['acls']), str(entry['options']))
         return rstr
 
-    def match(self, user, topic, acls, options=None, skip_user_check=False, used_roles=None):
+
+    def __getManagerUids(self, dn):
+        index = PluginRegistry.getInstance("ObjectIndex")
+        res = index.raw_search({'dn': dn, 'manager': {'$ne': [], '$exists': True}}, {'manager': 1})
+        if res.count():
+            uids = []
+            for item in res:
+                p_uid = self.__getUidByDn(item['manager'][0])
+                if p_uid:
+                    uids.append(p_uid)
+            return uids
+        else:
+            return None
+
+    def __getUidByDn(self, dn):
+        index = PluginRegistry.getInstance("ObjectIndex")
+        res = index.raw_search({'dn': dn, '_type': 'User'}, {'uid': 1})
+        if res.count() == 1:
+            return res[0]['uid'][0]
+        elif res.count() > 1:
+            raise Exception("User dn '%s' found twice!" % (dn))
+            return None
+        else:
+            return None
+
+
+    def match(self, user, topic, acls, targetBase, options=None, skip_user_check=False, used_roles=None, override_users=None):
         """
         Check if this ``ACL`` object matches the given criteria.
 
@@ -638,6 +666,9 @@ class ACL(object):
         options         Special additional options that have to be checked.
         skip_user_check Skips checks for users, this is required to resolve roles.
         used_roles      A list of roles used in this recursion, to be able to check for endless-recursions.
+        override_users  If an acl ises a role, then the original user list will be passed to the roles-match method
+                        to ensure that we can match for the correct list of users.
+        targetBase      To object that was initially checked for (DN)
         =============== =============
         """
 
@@ -645,66 +676,93 @@ class ACL(object):
         if not used_roles:
             used_roles = []
 
-        # Check if the given user string matches one of the defined users
-        if skip_user_check:
-            user_match = True
+        if self.uses_role:
+
+            # Check the roles using the current user-list
+            override_users = self.members
+
+            # Check for recursions while resolving the acls.
+            if self.role in used_roles:
+                raise ACLException("Recursion in acl resolution, loop in role '%s'! Included roles %s." % (self.role, str(used_roles)))
+
+            # Resolve acls used in the role.
+            used_roles.append(self.role)
+            r = ACLResolver.instance
+            self.log.debug("checking ACL role entries for role: %s" % self.role)
+            for acl in r.acl_roles[self.role]:
+                (match, scope) = acl.match(user, topic, acls, targetBase, options if options else {}, False, used_roles, override_users)
+                if match:
+                    self.log.debug("ACL role entry matched for role '%s'" % self.role)
+                    return (match, scope)
+
         else:
-            user_match = False
-            for suser in self.members:
-                if re.match(suser, user):
+            for act in self.actions:
+
+                users = override_users
+                if not users:
+                    users = self.members
+
+                # Check if the given user string matches one of the defined users
+                if skip_user_check:
                     user_match = True
-                    break
+                else:
 
-        if user_match:
+                    # This acl applies to the owner/manager only!
+                    if "o" in act['acls'] or "m" in act['acls']:
 
-            if self.uses_role:
+                        # Collect manager and owner uids and replace
+                        # the original user list, to check only against 
+                        # owner and manager uids.
+                        users = []
+                        if "m" in act['acls']:
+                            manager_uid = self.__getManagerUids(targetBase)
+                            if manager_uid:
+                                users = manager_uid
 
-                # Check for recursions while resolving the acls.
-                if self.role in used_roles:
-                    raise ACLException("Recursion in acl resolution, loop in role '%s'! Included roles %s." % (self.role, str(used_roles)))
+                        if "o" in act['acls']:
+                            dn_uid = self.__getUidByDn(targetBase)
+                            if dn_uid:
+                                users.append(dn_uid)
 
-                # Resolve acls used in the role.
-                used_roles.append(self.role)
-                r = ACLResolver.instance
-                self.log.debug("checking ACL role entries for role: %s" % self.role)
-                for acl in r.acl_roles[self.role]:
-                    (match, scope) = acl.match(user, topic, acls, options if options else {}, True, used_roles)
-                    if match:
-                        self.log.debug("ACL role entry matched for role '%s'" % self.role)
-                        return (match, scope)
-            else:
-                for act in self.actions:
+                    user_match = False
+                    for suser in users:
+                        if re.match(suser, user):
+                            user_match = True
+                            break
 
-                    # Check if the requested-action matches the acl-action.
-                    if not re.match(act['topic'], topic):
+                if not user_match:
+                    continue
+
+                # Check if the requested-action matches the acl-action.
+                if not re.match(act['topic'], topic):
+                    continue
+
+                # Check if the required permission are allowed.
+                if (set(acls) & set(act['acls'])) != set(acls):
+                    continue
+
+                # Check if all required options are given
+                for entry in act['options']:
+
+                    # Check for missing options
+                    if entry not in options:
+                        self.log.debug("ACL option '%s' is missing" % entry)
                         continue
 
-                    # Check if the required permission are allowed.
-                    if (set(acls) & set(act['acls'])) != set(acls):
+                    # Simply match string options.
+                    if isinstance(act['options'][entry], str) and not re.match(act['options'][entry], options[entry]):
+                        self.log.debug("ACL option '%s' with value '%s' does not match with '%s'" % (entry,
+                                    act['options'][entry], options[entry]))
                         continue
 
-                    # Check if all required options are given
-                    for entry in act['options']:
+                    # Simply match string options.
+                    elif act['options'][entry] != options[entry]:
+                        self.log.debug("ACL option '%s' with value '%s' does not match with '%s'" % (entry,
+                                    act['options'][entry], options[entry]))
+                        continue
 
-                        # Check for missing options
-                        if entry not in options:
-                            self.log.debug("ACL option '%s' is missing" % entry)
-                            continue
-
-                        # Simply match string options.
-                        if isinstance(act['options'][entry], str) and not re.match(act['options'][entry], options[entry]):
-                            self.log.debug("ACL option '%s' with value '%s' does not match with '%s'" % (entry,
-                                        act['options'][entry], options[entry]))
-                            continue
-
-                        # Simply match string options.
-                        elif act['options'][entry] != options[entry]:
-                            self.log.debug("ACL option '%s' with value '%s' does not match with '%s'" % (entry,
-                                        act['options'][entry], options[entry]))
-                            continue
-
-                    # The acl rule matched!
-                    return (True, self.scope)
+                # The acl rule matched!
+                return (True, self.scope)
 
         # Nothing matched!
         return (False, None)
@@ -1110,7 +1168,7 @@ class ACLResolver(Plugin):
                 # Check ACls
                 for acl in acl_set:
 
-                    (match, scope) = acl.match(user, topic, acls, options)
+                    (match, scope) = acl.match(user, topic, acls, orig_loc, options)
                     if match:
 
                         self.log.debug("found matching ACL in '%s'" % base)

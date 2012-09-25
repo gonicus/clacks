@@ -146,13 +146,13 @@ class ACLAdmin(object):
                     "\n"
                     "\n Command examples:"
                     "\n   A single definition without options:"
-                    "\n       '^org\.clacks\..*:rwcdsex'"
+                    "\n       '^org\.clacks\..*:crowdsexm'"
                     "\n"
                     "\n   A single definition with options:"
-                    "\n       '^org\.clacks\..*:rwcdsex:uid=user_*:tag=event'"
+                    "\n       '^org\.clacks\..*:crowdsexm:uid=user_*:tag=event'"
                     "\n"
                     "\n   A multi action defintion"
-                    "\n       '^org\.clacks\.events$:rwcdsex,^org\.clacks\.factory$:rw,^org\.clacks\.something$:rw'"
+                    "\n       '^org\.clacks\.events$:crowdsexm,^org\.clacks\.factory$:rw,^org\.clacks\.something$:rw'"
                     "\n"
                     "\n <topic> "
                     "\n ========"
@@ -492,12 +492,16 @@ class ACLAdmin(object):
             aclentry["rolename"] = use_role
 
         # Update the object with the given acls
-        roles = obj.AclRoles
-        roles.append(aclentry)
-        obj.AclRoles = roles
-        obj.commit()
+        try:
+            roles = obj.AclRoles
+            roles.append(aclentry)
+            obj.AclRoles = roles
+            obj.commit()
+        except:
+            print "The given DN seems not to be an acl-role!"
 
-    @helpDecorator(_("Adds a new role"), _("add role <rolename>"))
+
+    @helpDecorator(_("Adds a new role"), _("add role <base> <rolename>"))
     def add_role(self, args):
         """
         This method creates a new role
@@ -517,6 +521,7 @@ class ACLAdmin(object):
             obj = self.proxy.openObject("object", base, "AclRole")
         except:
             print("invalid dn given, failed to open object!")
+            return
 
         obj.name = rolename
         obj.commit()

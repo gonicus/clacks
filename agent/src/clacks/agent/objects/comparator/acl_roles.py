@@ -79,8 +79,8 @@ class IsAclRole(ElementComparator):
                         return False, errors
 
                     # Check for a correct value for acls
-                    if not all(map(lambda x: x in 'rwcdsex', item['acl'])):
-                        errors.append(_("invalid acl attribute given, allowed is a combination of 'rwcdsex'!'"))
+                    if not all(map(lambda x: x in 'crowdsexm', item['acl'])):
+                        errors.append(_("invalid acl attribute given, allowed is a combination of 'crowdsexm'!'"))
                         return False, errors
 
                     # Check if there are unsupported keys given

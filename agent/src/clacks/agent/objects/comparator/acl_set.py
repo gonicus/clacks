@@ -50,6 +50,7 @@ class IsAclSet(ElementComparator):
 
                 # Ensure that the given role exists....
                 if not entry["rolename"] in rolenames:
+                    print rolenames
                     errors.append(_("unknown role %s used!" % entry["rolename"]))
                     return False, errors
 
@@ -82,8 +83,8 @@ class IsAclSet(ElementComparator):
                         return False, errors
 
                     # Check for a correct value for acls
-                    if not all(map(lambda x: x in 'rwcdsex', item['acl'])):
-                        errors.append(_("invalid acl attribute given, allowed is a combination of 'rwcdsex'!'"))
+                    if not all(map(lambda x: x in 'crowdsexm', item['acl'])):
+                        errors.append(_("invalid acl attribute given, allowed is a combination of 'crowdsexm'!'"))
                         return False, errors
 
                     # Check if there are unsupported keys given

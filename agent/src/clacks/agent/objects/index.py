@@ -420,7 +420,7 @@ class ObjectIndex(Plugin):
         aclresolver = PluginRegistry.getInstance("ACLResolver")
         if user:
             topic = "%s.objects.%s.attributes.%s" % (self.env.domain, object_type, attr)
-            return aclresolver.check(user, topic, "r", base=[object_dn])
+            return aclresolver.check(user, topic, "r", base=object_dn)
         else:
             return True
 
