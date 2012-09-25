@@ -8,9 +8,10 @@ from libinst import LibinstManager
 KALIGN_PACKAGE_URL = "http://ftp.de.debian.org/debian-archive/debian/pool/main/k/kalign/kalign_2.03-2_i386.deb"
 JAAA_SRC_PACKAGE_URL = "http://ftp.de.debian.org/debian-archive/debian/pool/main/j/jaaa/jaaa_0.4.2-1.dsc"
 
+
 def main():
-    Environment.config="tests"
-    Environment.noargs=True
+    Environment.config = "tests"
+    Environment.noargs = True
     env = Environment.getInstance()
     repo_path = env.config.get('repository.path')
     if os.path.exists(repo_path):
@@ -108,7 +109,7 @@ LcWMU6gayNYj7eMgCOFM6ywySRS81FC+PPnr147xbp5FwgmoPRK52MURsHJ+
     #print "createRelease:", manager.createRelease("debian", "squeeze")
     #print("getReleases: distribution=debian", manager.getReleases(distribution="debian"))
     print("addPackage: jaaa_0.4.2-1.dsc", manager.addPackage(JAAA_SRC_PACKAGE_URL, release="lenny"))
-    print("addPackage: kalign_2.03-2_i386.deb", manager.addPackage("http://ftp2.de.debian.org/debian/pool/main/k/kalign/kalign_2.04-2_i386.deb", release = "lenny"))
+    print("addPackage: kalign_2.03-2_i386.deb", manager.addPackage("http://ftp2.de.debian.org/debian/pool/main/k/kalign/kalign_2.04-2_i386.deb", release="lenny"))
     #print("addPackage: kalign_2.03-2_i386.deb", manager.addPackage("http://ftp2.de.debian.org/debian/pool/main/k/kalign/kalign_2.03-2_i386.deb", release = "squeeze"))
     #print("addPackage: a2ps_4.14-1.1_i386.deb", manager.addPackage("http://ftp2.de.debian.org/debian/pool/main/a/a2ps/a2ps_4.14-1.1_i386.deb", release = "lenny"))
     #print "addKernelPackage:", manager.addPackage("http://ftp.de.debian.org/debian/pool/main/l/linux-2.6/linux-image-2.6.32-5-486_2.6.32-31_i386.deb", {"release": "lenny"})
