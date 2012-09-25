@@ -42,7 +42,7 @@ class IsExistingDN(ElementComparator):
         errors = []
         index = PluginRegistry.getInstance("ObjectIndex")
         for dn in value:
-            if not index.raw_search({'dn': dn}, {'dn': 1}).count():
+            if not index.search({'dn': dn}, {'dn': 1}).count():
                 errors.append(_("The given dn does not exists '%s'!") % dn)
 
         return len(errors) == 0, errors
@@ -61,7 +61,7 @@ class IsExistingDnOfType(ElementComparator):
         errors = []
         index = PluginRegistry.getInstance("ObjectIndex")
         for dn in value:
-            if not index.raw_search({'_type': objectType, 'dn': dn}, {'dn': 1}).count():
+            if not index.search({'_type': objectType, 'dn': dn}, {'dn': 1}).count():
                 errors.append(_("The given dn does not exists '%s'!") % dn)
 
         return len(errors) == 0, errors
@@ -80,7 +80,7 @@ class ObjectWithPropertyExists(ElementComparator):
         errors = []
         index = PluginRegistry.getInstance("ObjectIndex")
         for val in value:
-            if not index.raw_search({'_type': objectType, attribute: val}, {'dn': 1}).count():
+            if not index.search({'_type': objectType, attribute: val}, {'dn': 1}).count():
                 errors.append(_("There is no '%s' with '%s=%s'!") % (objectType, attribute, val))
 
         return len(errors) == 0, errors

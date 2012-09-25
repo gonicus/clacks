@@ -50,10 +50,10 @@ class ObjectHandler(ObjectBackend):
             for targetAttr in mapping:
                 result[targetAttr] = []
                 foreignObject, foreignAttr, foreignMatchAttr, matchAttr = mapping[targetAttr]
-                results = index.raw_search({'_uuid': uuid, matchAttr: {'$exists': True}}, {matchAttr: 1})
+                results = index.search({'_uuid': uuid, matchAttr: {'$exists': True}}, {matchAttr: 1})
                 if results.count():
                     matchValue = results[0][matchAttr][0]
-                    xq = index.raw_search({'_type': foreignObject, foreignMatchAttr: matchValue}, {foreignAttr: 1})
+                    xq = index.search({'_type': foreignObject, foreignMatchAttr: matchValue}, {foreignAttr: 1})
                     result[targetAttr] = list(itertools.chain.from_iterable([x[foreignAttr] for x in xq]))
 
         return result
@@ -99,7 +99,7 @@ class ObjectHandler(ObjectBackend):
 
             # Get the matching attribute for the current object
             foreignObject, foreignAttr, foreignMatchAttr, matchAttr = mapping[targetAttr]
-            res = index.raw_search({'_uuid': uuid}, {matchAttr: 1})
+            res = index.search({'_uuid': uuid}, {matchAttr: 1})
             if not res.count():
                 raise Exception("source object could not be found" % targetAttr)
             matchValue = res[0][matchAttr][0]
@@ -108,7 +108,7 @@ class ObjectHandler(ObjectBackend):
             allvalues = data[targetAttr]['orig'] + data[targetAttr]['value']
             object_mapping = {}
             for value in allvalues:
-                res = index.raw_search({'_type': foreignObject, foreignAttr: value}, {'dn': 1})
+                res = index.search({'_type': foreignObject, foreignAttr: value}, {'dn': 1})
                 if res.count() != 1:
                     raise EntryNotFound("Could not find any unique '%s' with '%s=%s'!" % (foreignObject, foreignAttr, value))
                 else:

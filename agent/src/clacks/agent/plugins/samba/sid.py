@@ -42,7 +42,7 @@ class DetectSambaDomainFromSID(ElementFilter):
     def process(self, obj, key, valDict, sid):
 
         index = PluginRegistry.getInstance("ObjectIndex")
-        sids = index.raw_search({'_type': 'SambaDomain'}, {'sambaSID': 1, 'sambaDomainName': 1})
+        sids = index.search({'_type': 'SambaDomain'}, {'sambaSID': 1, 'sambaDomainName': 1})
         for item in sids:
             if re.match("^" + re.escape(item['sambaSID'][0]) + "\-[0-9]*$", sid):
                 valDict[key]['value'] = [item['sambaDomainName'][0]]
@@ -69,7 +69,7 @@ class GenerateSambaSid(ElementFilter):
             raise Exception("No sambaDomainName available")
 
         index = PluginRegistry.getInstance("ObjectIndex")
-        sid = index.raw_search({'_type': 'SambaDomain', 'sambaDomainName': domain},
+        sid = index.search({'_type': 'SambaDomain', 'sambaDomainName': domain},
             {'sambaSID': 1, 'sambaAlgorithmicRidBase': 1})
 
         if sid.count() != 1:

@@ -1,0 +1,496 @@
+# -*- coding: utf-8 -*-
+import re
+import os
+import shlex
+import time
+import datetime
+import clacks.agent.objects.renderer
+from zope.interface import implements
+from clacks.common import Environment
+from clacks.common.components import Command
+from clacks.common.components import Plugin
+from clacks.common.utils import N_
+from clacks.common.components import PluginRegistry
+from clacks.agent.objects import ObjectProxy
+from clacks.agent.objects.factory import ObjectFactory
+from clacks.common.handler import IInterfaceHandler
+from json import loads, dumps
+
+
+class GuiMethods(Plugin):
+    implements(IInterfaceHandler)
+    _target_ = 'gosa'
+    _priority_ = 80
+
+    def __init__(self):
+        self.env = Environment.getInstance()
+
+    def serve(self):
+        # Collect value extenders
+        self.__value_extender = clacks.agent.objects.renderer.get_renderers()
+        self.__search_aid = PluginRegistry.getInstance("ObjectIndex").get_search_aid()
+
+        # Load DB instance
+        self.db = self.env.get_mongo_db('clacks')
+
+    @Command(__help__=N_("Returns a list containing all available object names"))
+    def getAvailableObjectNames(self):
+        factory = ObjectFactory.getInstance()
+        return factory.getAvailableObjectNames()
+
+    @Command(__help__=N_("Returns all templates used by the given object type."))
+    def getGuiTemplates(self, objectType, theme="default"):
+        factory = ObjectFactory.getInstance()
+        if objectType not in factory.getObjectTypes():
+            raise Exception("No such object type: %s" % (objectType))
+
+        return factory.getObjectTemplates(objectType, theme)
+
+    @Command(__help__=N_("Get all translations bound to templates."))
+    def getTemplateI18N(self, language, theme="default"):
+        templates = []
+        factory = ObjectFactory.getInstance()
+
+        for otype in factory.getObjectTypes():
+            templates += factory.getObjectTemplateNames(otype)
+
+        return factory.getNamedI18N(list(set(templates)), language=language, theme=theme)
+
+    @Command(__help__=N_("Save user preferences"))
+    def saveUserPreferences(self, userid, name, value):
+        index = PluginRegistry.getInstance("ObjectIndex")
+        res = index.search({'_type': 'User', 'uid': userid}, {'dn': 1})
+        if not res.count():
+            raise Exception("No such user %s" % (userid))
+
+        user = ObjectProxy(res[0]['dn'])
+        prefs = user.guiPreferences
+
+        if not prefs:
+            prefs = {}
+        else:
+            prefs = loads(prefs)
+
+        prefs[name] = value
+        user.guiPreferences = dumps(prefs)
+        user.commit()
+
+        return True
+
+    @Command(__help__=N_("Load user preferences"))
+    def loadUserPreferences(self, userid, name):
+        index = PluginRegistry.getInstance("ObjectIndex")
+        res = index.search({'_type': 'User', 'uid': userid}, {'dn': 1})
+        if not res.count():
+            raise Exception("No such user %s" % (userid))
+
+        user = ObjectProxy(res[0]['dn'])
+        prefs = user.guiPreferences
+
+        if not prefs:
+            prefs = {}
+        else:
+            prefs = loads(prefs)
+
+        if name in prefs:
+            return prefs[name]
+
+        return None
+
+    @Command(__help__=N_("Search for object information"))
+    def searchForObjectDetails(self, extension, attribute, fltr, attributes, skip_values):
+        """
+        Search selectable items valid for the attribute "extension.attribute".
+
+        This is used to add new groups to the users groupMembership attribute.
+        """
+
+        # Extract the the required information about the object
+        # relation out of the BackendParameters for the given extension.
+        of = ObjectFactory.getInstance()
+        be_data = of.getObjectBackendParameters(extension, attribute)
+        if not be_data:
+            raise Exception("no backend parameter found for %s.%s" % (extension, attribute))
+
+        # Collection basic information
+        otype, oattr, foreignMatchAttr, matchAttr = be_data[attribute] #@UnusedVariable
+
+        # Create a list of attributes that will be requested
+        if oattr not in attributes:
+            attributes.append(oattr)
+        attrs = dict([(x, 1) for x in attributes])
+
+        # Start the query and brind the result in a usable form
+        index = PluginRegistry.getInstance("ObjectIndex")
+        res = index.search({
+            '$or': [{'_type': otype}, {'_extensions': otype}],
+            oattr: re.compile("^.*" + re.escape(fltr) + ".*$")
+            }, attrs)
+        result = []
+
+        for entry in res:
+            item = {}
+            for attr in attributes:
+                if attr in entry and len(entry[attr]):
+                    item[attr] = entry[attr] if attr == "dn" else entry[attr][0]
+                else:
+                    item[attr] = ""
+            item['__identifier__'] = item[oattr]
+
+            # Skip values that are in the skip list
+            if skip_values and item['__identifier__'] in skip_values:
+                continue
+
+            result.append(item)
+
+        return result
+
+    @Command(__help__=N_("Resolves object information"))
+    def getObjectDetails(self, extension, attribute, names, attributes):
+        """
+        This method is used to complete object information shown in the gui.
+        e.g. The groupMembership table just knows the groups cn attribute.
+             To be able to show the description too, it uses this method.
+
+        #TODO: @fabian - this function is about 95% the same than the one
+        #                above.
+        """
+
+        # Extract the the required information about the object
+        # relation out of the BackendParameters for the given extension.
+        of = ObjectFactory.getInstance()
+        be_data = of.getObjectBackendParameters(extension, attribute)
+
+        if not be_data:
+            raise Exception("no backend parameter found for %s.%s" % (extension, attribute))
+
+        # Collection basic information
+        otype, oattr, foreignMatchAttr, matchAttr = be_data[attribute] #@UnusedVariable
+
+        # Create a list of attributes that will be requested
+        if oattr not in attributes:
+            attributes.append(oattr)
+        attrs = dict([(x, 1) for x in attributes])
+
+        # Start the query and brind the result in a usable form
+        index = PluginRegistry.getInstance("ObjectIndex")
+
+        res = index.search({
+            '$or': [{'_type': otype}, {'_extensions': otype}],
+            oattr: {'$in': names}
+            }, attrs)
+
+        result = {}
+        mapping = {}
+
+        for entry in names:
+            _id = len(result)
+            mapping[entry] = _id
+            result[_id] = None
+
+        for entry in res:
+            item = {}
+            for attr in attributes:
+                if attr in entry and len(entry[attr]):
+                    item[attr] = entry[attr] if attr == 'dn' else entry[attr][0]
+                else:
+                    item[attr] = ""
+
+            _id = mapping[item[oattr]]
+            result[_id] = item
+
+        return {"result": result, "map": mapping}
+
+    @Command(__help__=N_("Returns a list with all selectable samba-domain-names"))
+    def getSambaDomainNames(self):
+        index = PluginRegistry.getInstance("ObjectIndex")
+        res = index.search({'_type': 'SambaDomain', 'sambaDomainName': {'$exists': True}},
+            {'sambaDomainName': 1})
+
+        return list(set([x['sambaDomainName'][0] for x in res]))
+
+    @Command(__help__=N_("Returns a list of DOS/Windows drive letters"))
+    def getSambaDriveLetters(self):
+        return ["%s:" % c for c in self.letterizer('C', 'Z')]
+
+    def letterizer(self, start='A', stop='Z'):
+        for number in xrange(ord(start), ord(stop) + 1):
+            yield chr(number)
+
+    @Command(needsUser=True, __help__=N_("Filter for indexed attributes and return the matches."))
+    def search(self, user, base, scope, qstring, fltr=None):
+        """
+        Performs a query based on a simple search string consisting of keywords.
+
+        Query the database using the given query string and an optional filter
+        dict - and return the result set.
+
+        ========== ==================
+        Parameter  Description
+        ========== ==================
+        base       Query base
+        scope      Query scope (SUB, BASE, ONE)
+        qstring    Query string
+        fltr       Hash for extra parameters
+        ========== ==================
+
+        ``Return``: List of dicts
+        """
+        res = {}
+        keywords = None
+        fallback = fltr and "fallback" in fltr and fltr["fallback"]
+
+        # Bail out for empty searches
+        if not qstring:
+            return []
+
+        # Set defaults
+        if not fltr:
+            fltr = {}
+        if not 'category' in fltr:
+            fltr['category'] = "all"
+        if not 'secondary' in fltr:
+            fltr['secondary'] = "disabled"
+        if not 'mod-time' in fltr:
+            fltr['mod-time'] = "all"
+
+        try:
+            keywords = [s.strip("'").strip('"') for s in shlex.split(qstring)]
+        except ValueError:
+            keywords = [s.strip("'").strip('"') for s in qstring.split(" ")]
+        qstring = qstring.strip("'").strip('"')
+        keywords.append(qstring)
+
+        # Make keywords unique
+        keywords = list(set(keywords))
+
+        # Sanity checks
+        scope = scope.upper()
+        if not scope in ["SUB", "BASE", "ONE"]:
+            raise Exception("invalid scope - needs to be one of SUB, BASE or ONE")
+        if not fltr['mod-time'] in ["hour", "day", "week", "month", "year", "all"]:
+            raise Exception("invalid scope - needs to be one of SUB, BASE or ONE")
+
+        # Build query: assemble keywords
+        _s = ""
+        if fallback:
+            _s = re.compile('^.*(' + ("|".join([re.escape(p) for p in keywords])) + ').*$', re.IGNORECASE)
+        else:
+            _s = {'$in': keywords}
+
+        # Build query: join attributes and keywords
+        queries = []
+        for typ in self.__search_aid['attrs'].keys():
+
+            # Only filter for cateogry if desired
+            if not ("all" == fltr['category'] or typ == fltr['category']):
+                continue
+
+            attrs = self.__search_aid['attrs'][typ]
+
+            if len(attrs) == 0:
+                continue
+            if len(attrs) == 1:
+                queries.append({'_type': typ, attrs[0]: _s})
+            if len(attrs) > 1:
+                queries.append({'_type': typ, "$or": map(lambda a: {a: _s}, attrs)})
+
+        # Build query: assemble
+        query = ""
+        if scope == "SUB":
+            query = {"dn": re.compile("^(.*,)?" + re.escape(base) + "$"), "$or": queries}
+
+        elif scope == "ONE":
+            query = {"$or": [{"dn": base}, {"_parent_dn": base}], "$or": queries}
+
+        else:
+            query = {"dn": base, "$or": queries}
+
+        # Build query: eventually extend with timing information
+        td = None
+        if fltr['mod-time'] != "all":
+            now = datetime.datetime.now()
+            if fltr['mod-time'] == 'hour':
+                td = now - datetime.timedelta(hours=1)
+            elif fltr['mod-time'] == 'day':
+                td = now - datetime.timedelta(days=1)
+            elif fltr['mod-time'] == 'week':
+                td = now - datetime.timedelta(weeks=1)
+            elif fltr['mod-time'] == 'month':
+                td = now - datetime.timedelta(days=31)
+            elif fltr['mod-time'] == 'year':
+                td = now - datetime.timedelta(days=365)
+
+            td = {"$gte": time.mktime(td.timetuple())}
+            query["_last_changed"] = td
+
+        # Perform primary query and get collect the results
+        #TODO:- relevance / map / reduce functionality?
+        squery = []
+        these = dict([(x, 1) for x in self.__search_aid['used_attrs']])
+        these.update(dict(dn=1, _type=1, _uuid=1, _last_changed=1))
+
+        for item in self.db.index.find(query, these):
+            self.__update_res(res, item, user)
+
+            # Collect information for secondary search?
+            if fltr['secondary'] != "enabled":
+                continue
+
+            for r in self.__search_aid['resolve'][item['_type']]:
+                if r['attribute'] in item:
+                    tag = r['type'] if r['type'] else item['_type']
+
+                    # If a category was choosen and it does not fit the
+                    # desired target tag - skip that one
+                    if not (fltr['category'] == "all" or fltr['category'] == tag):
+                        continue
+
+                    squery.append({'_type': tag, r['filter']: {'$in': item[r['attribute']]}})
+
+        # Perform secondary query and update the result
+        if fltr['secondary'] == "enabled" and squery:
+            query = {"$or": squery}
+
+            # Add "_last_changed" information to query
+            if fltr['mod-time'] != "all":
+                query["_last_changed"] = td
+
+            # Execute query and update results
+            for item in self.db.index.find(query, these):
+                self.__update_res(res, item, user)
+
+        return res.values()
+
+#    def __make_relevance(self, tag, qstring, o_qstring, keywords, secondary=False, fuzzy=False):
+#        relevance = 1
+#
+#        # Penalty for not having an exact match
+#        if qstring != o_qstring:
+#            relevance *= 2
+#
+#        # Penalty for not having an case insensitive match
+#        if qstring.lower() != o_qstring.lower():
+#            relevance *= 4
+#
+#        # Penalty for not having tag in keywords
+#        if not set([t.lower() for t in tag]).intersection(set([k.lower() for k in keywords])):
+#            relevance *= 6
+#
+#        # Penalty for secondary
+#        if secondary:
+#            relevance *= 10
+#
+#        # Penalty for fuzzyness
+#        if fuzzy:
+#            relevance *= 10
+#
+#        return relevance
+
+    def __update_res(self, res, item, user=None):
+        relevance = 0
+
+        # Filter out what the current use is not allowed to see
+        item = self.__filter_entry(user, item)
+        if not item or item['dn'] == None:
+            # We've obviously no permission to see thins one - skip it
+            return
+
+        if item['dn'] in res:
+            #TODO: we may need to update the relevance information
+            #dn = item['dn']
+            #if res[dn]['relevance'] > relevance:
+            #    res[dn]['relevance'] = relevance
+            return
+
+        entry = {'tag': item['_type'], 'relevance': relevance}
+        for k, v in self.__search_aid['mapping'][item['_type']].items():
+            if k:
+                if k == "icon":
+                    continue
+                if v in item and item[v]:
+                    if v == "dn":
+                        entry[k] = item[v]
+                    else:
+                        entry[k] = item[v][0]
+                else:
+                    entry[k] = self.__build_value(v, item)
+
+            entry['icon'] = None
+
+            icon_attribute = self.__search_aid['mapping'][item['_type']]['icon']
+            if icon_attribute and icon_attribute in item and item[icon_attribute]:
+                cache_path = self.env.config.get('gosa.cache_path', default="/cache")
+                entry['icon'] = os.path.join(cache_path, item['_uuid'],
+                        icon_attribute, "0", "64.jpg?c=%s" %
+                        item['_last_changed'])
+
+        res[item['dn']] = entry
+
+    def __build_value(self, v, info):
+        """
+        Fill placeholders in the value to be displayed as "description".
+        """
+
+        if not v:
+            return ""
+
+        # Find all placeholders
+        attrs = {}
+        for attr in re.findall(r"%\(([^)]+)\)s", v):
+
+            # Extract ordinary attributes
+            if attr in info:
+                attrs[attr] = ", ".join(info[attr])
+
+            # Check for result renderers
+            elif attr in self.__value_extender:
+                attrs[attr] = self.__value_extender[attr](info)
+
+            # Fallback - just set nothing
+            else:
+                attrs[attr] = ""
+
+        # Assemble and remove empty lines and multiple whitespaces
+        res = v % attrs
+        res = re.sub(r"(<br>)+", "<br>", res)
+        res = re.sub(r"^<br>", "", res)
+        res = re.sub(r"<br>$", "", res)
+        return "<br>".join([s.strip() for s in res.split("<br>")])
+
+    def __filter_entry(self, user, entry):
+        """
+        Takes a query entry and decides based on the user what to do
+        with the result set.
+
+        ========== ===========================
+        Parameter  Description
+        ========== ===========================
+        user       User ID
+        entry      Search entry as hash
+        ========== ===========================
+
+        ``Return``: Filtered result entry
+        """
+        ne = {'dn': entry['dn'], '_type': entry['_type'], '_uuid':
+                entry['_uuid'], '_last_changed': entry['_last_changed']}
+        attrs = self.__search_aid['mapping'][entry['_type']].values()
+
+        for attr in attrs:
+            if attr != None and self.__has_access_to(user, entry['dn'], entry['_type'], attr):
+                ne[attr] = entry[attr] if attr in entry else None
+            else:
+                ne[attr] = None
+
+        return ne
+
+    def __has_access_to(self, user, object_dn, object_type, attr):
+        """
+        Checks whether the given user has access to the given object/attribute or not.
+        """
+        aclresolver = PluginRegistry.getInstance("ACLResolver")
+        if user:
+            topic = "%s.objects.%s.attributes.%s" % (self.env.domain, object_type, attr)
+            return aclresolver.check(user, topic, "r", base=object_dn)
+        else:
+            return True

@@ -22,7 +22,7 @@ class IsValidSambaDomainName(ElementComparator):
         errors = []
         index = PluginRegistry.getInstance("ObjectIndex")
 
-        res = index.raw_search({'_type': 'SambaDomain', 'sambaDomainName': domain},
+        res = index.search({'_type': 'SambaDomain', 'sambaDomainName': domain},
             {'_uuid': 1})
 
         if res.count():

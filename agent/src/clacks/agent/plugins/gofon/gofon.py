@@ -42,7 +42,7 @@ class goFonAccount(Plugin):
 
         # Query the index database and check if we've found a user with the given uuid
         index = PluginRegistry.getInstance("ObjectIndex")
-        result = index.raw_search({'_type': 'User', '_uuid': uuid}, {
+        result = index.search({'_type': 'User', '_uuid': uuid}, {
             'uid': 1,
             'goFonHomeServer': 1,
             'telephoneNumber': 1})
@@ -87,7 +87,7 @@ class goFonAccount(Plugin):
         """
 
         index = PluginRegistry.getInstance("ObjectIndex")
-        result = index.raw_search({'_type': 'User', '_uuid': uuid}, {
+        result = index.search({'_type': 'User', '_uuid': uuid}, {
             'uid': 1,
             'goFonHomeServer': 1,
             'goFonPin': 1,
@@ -124,7 +124,7 @@ class goFonAccount(Plugin):
                 raise Exception("please define gofon.sip_context in your config!")
 
             # Read phone-hardware settings from the index
-            res = index.raw_search({'_type': 'goFonHardware', 'cn': hardware},
+            res = index.search({'_type': 'goFonHardware', 'cn': hardware},
                     {'goFonDmtfMode': 1, 'goFonQualify': 1, 'goFonType': 1})
             dtmf_mode = res[0]['goFonDmtfMode'][0] if len(res) and 'goFonDmtfMode' in res[0] else "rfc2833"
             qualify = res[0]['goFonQualify'][0] if len(res) and 'goFonQualify' in res[0] else "yes"

@@ -24,7 +24,7 @@ class ClacksNumberResolver(PhoneNumberResolver):
         number = self.replaceNumber(number)
 
         index = PluginRegistry.getInstance("ObjectIndex")
-        res = index.raw_search({'_type': 'User', 'telephoneNumber': str(number)},
+        res = index.search({'_type': 'User', 'telephoneNumber': str(number)},
             {'dn': 1})
 
         if res.count() == 1:

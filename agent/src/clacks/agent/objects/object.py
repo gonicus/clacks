@@ -909,7 +909,7 @@ class Object(object):
         Returns the objectType for a given DN
         """
         index = PluginRegistry.getInstance("ObjectIndex")
-        res = index.raw_search({'dn': dn}, {'_type': 1})
+        res = index.search({'dn': dn}, {'_type': 1})
         return res[0]['_type'] if res.count() == 1 else None
 
     def get_references(self, override=None):
@@ -924,7 +924,7 @@ class Object(object):
                         oval = self.myProperties[idsc[1]]['orig_value'][0]
                     else:
                         oval = None
-                    dns = index.raw_search({'_type': ref, ref_attribute: oval}, {'dn': 1})
+                    dns = index.search({'_type': ref, ref_attribute: oval}, {'dn': 1})
                     if dns.count():
                         dns = [x['dn'] for x in dns]
                     res.append((
@@ -995,7 +995,7 @@ class Object(object):
 
         for info in self._objectFactory.getReferences("*", "dn").values():
             for ref_attribute in info.keys():
-                dns = index.raw_search({ref_attribute: self.dn}, {'dn': 1})
+                dns = index.search({ref_attribute: self.dn}, {'dn': 1})
                 if dns.count():
                     dns = [x['dn'] for x in dns]
                 res.append((
