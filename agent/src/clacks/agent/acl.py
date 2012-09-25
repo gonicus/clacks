@@ -686,7 +686,8 @@ class ACL(object):
 
         if self.uses_role:
 
-            # Check the roles using the current user-list
+            # Roles do not have users themselves, so we need to check
+            # for the original set of users.
             override_users = self.members
 
             # Check for recursions while resolving the acls.
