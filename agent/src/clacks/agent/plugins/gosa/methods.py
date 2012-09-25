@@ -5,6 +5,7 @@ import shlex
 import time
 import datetime
 import clacks.agent.objects.renderer
+from bson.binary import Binary
 from zope.interface import implements
 from clacks.common import Environment
 from clacks.common.components import Command
@@ -371,28 +372,24 @@ class GuiMethods(Plugin):
         is contained. Takes account on fuzzyness, secondary searches,
         tags.
         """
-
-        # Set defaults
-#        if not fltr:
-#            fltr = {}
-#        if not 'category' in fltr:
-#            fltr['category'] = "all"
-#        if not 'secondary' in fltr:
-#            fltr['secondary'] = "disabled"
-#        if not 'mod-time' in fltr:
-#            fltr['mod-time'] = "all"
-
         relevance = 1
 
+        # Prepare attribute set
+        values = []
+        for attrs in item.values():
+            if isinstance(attrs, list):
+                for attr in attrs:
+                    if isinstance(attr, str) and not isinstance(attr, Binary):
+                        values.append(attr)
         # Walk thru keywords
         for keyword in keywords:
 
             # No exact match
-            if not keyword in item.values():
+            if not keyword in values:
                 relevance *= 2
 
             # Penalty for not having an case insensitive match
-            if not keyword.lower() in [s.lower() for s in item.values()]:
+            if not keyword.lower() in [s.lower() for s in item]:
                 relevance *= 4
 
             # Penalty for not having the correct category
