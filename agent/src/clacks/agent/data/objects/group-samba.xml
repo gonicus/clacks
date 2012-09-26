@@ -90,9 +90,21 @@
           </Reference>
         </References>
         <Validators>
-          <Condition>
-            <Name>CheckSambaSIDList</Name>
-          </Condition>
+          <ConditionOperator>
+            <Operator>and</Operator>
+            <LeftConditionChain>
+              <Condition>
+                <Name>CheckSambaSIDList</Name>
+              </Condition>
+            </LeftConditionChain>
+            <RightConditionChain>
+              <Condition>
+                <Name>ObjectWithPropertyExists</Name>
+                <Param>SambaGroup</Param>
+                <Param>sambaSID</Param>
+              </Condition>
+            </RightConditionChain>
+          </ConditionOperator>
         </Validators>
       </Attribute>
     </Attributes>
