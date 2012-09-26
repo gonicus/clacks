@@ -80,7 +80,8 @@ class ObjectWithPropertyExists(ElementComparator):
         errors = []
         index = PluginRegistry.getInstance("ObjectIndex")
         for val in value:
-            if not index.search({'_type': objectType, attribute: val}, {'dn': 1}).count():
+            query = {'$or': [{'_type': objectType}, {'_extensions': {'$in': [objectType]}}], attribute: val}
+            if not index.search(query, {'dn': 1}).count():
                 errors.append(_("There is no '%s' with '%s=%s'!") % (objectType, attribute, val))
 
         return len(errors) == 0, errors
