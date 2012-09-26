@@ -151,7 +151,7 @@ class LDAP(ObjectBackend):
         dn = self.uuid2dn(uuid)
 
         self.log.debug("removing entry '%s'" % dn)
-        return self.con.delete_s(dn)
+        return self.con.delete_s(dn.encode('utf-8'))
 
     def __delete_children(self, dn):
         res = self.con.search_s(dn, ldap.SCOPE_ONELEVEL, '(objectClass=*)',
