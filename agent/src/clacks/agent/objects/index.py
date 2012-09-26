@@ -18,9 +18,10 @@ import time
 import itertools
 from zope.interface import implements
 from clacks.common import Environment
-from clacks.common.utils import N_
+from clacks.common.utils import N_, stripNs
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import Command, Plugin, PluginRegistry
+from clacks.common.components.amqp import EventConsumer
 from clacks.agent.objects import ObjectFactory, ObjectProxy, ObjectChanged, ProxyException, ObjectException
 from clacks.agent.lock import GlobalLock
 
@@ -166,6 +167,109 @@ class ObjectIndex(Plugin):
                                  mapping=mapping,
                                  resolve=resolve,
                                  aliases=aliases)
+
+        # Add event processor
+        amqp = PluginRegistry.getInstance('AMQPHandler')
+        EventConsumer(self.env,
+            amqp.getConnection(),
+            xquery="""
+                declare namespace f='http://www.gonicus.de/Events';
+                let $e := ./f:Event
+                return $e/f:BackendChange
+            """,
+            callback=self.__backend_change_processor)
+
+    def __backend_change_processor(self, data):
+        """
+        This method gets called if an external backend reports
+        a modification of an entry under its hood.
+
+        We use it to update / create / delete existing index
+        entries.
+        """
+        data = data.BackendChange
+        dn = data.DN.text if hasattr(data, 'DN') else None
+        new_dn = data.NewDN.text if hasattr(data, 'NewDN') else None
+        change_type = data.ChangeType.text
+        _uuid = data.UUID.text if hasattr(data, 'UUID') else None
+        _last_changed = datetime.datetime.strptime(data.ModificationTime.text, "%Y%m%d%H%M%SZ")
+
+        # Resolve dn from uuid if needed
+        if not dn:
+            entry = self.db.index.find_one({'_uuid': _uuid}, {'dn': 1})
+            if entry:
+                dn = entry['dn']
+
+        print "-"*80
+        print dn
+        print new_dn
+        print change_type
+        print _last_changed
+
+        # Modification
+        if change_type == "modify":
+
+            # Get object
+            obj = self._get_object(dn)
+            if not obj:
+                return
+
+            # Check if the entry exists - if not, maybe let create it
+            entry = self.db.index.find_one({'$or': [{'dn': re.compile(r'^%s$' %
+                re.escape(dn), re.IGNORECASE)}, {'_uuid': _uuid}]}, {'_last_changed': 1})
+
+            if entry:
+                self.update(obj)
+
+            else:
+                self.insert(obj)
+
+        # Add
+        if change_type == "add":
+
+            # Get object
+            obj = self._get_object(dn)
+            if not obj:
+                return
+
+            self.insert(obj)
+
+        # Delete
+        if change_type == "delete":
+            self.log.info("object has changed in backend: indexing %s" % dn)
+            self.log.warning("external delete might not take care about references")
+            self.db.index.remove({'dn': dn})
+
+        # Move
+        if change_type in ['modrdn', 'moddn']:
+
+            # Get object
+            obj = self._get_object(new_dn)
+            if not obj:
+                return
+
+            # Check if the entry exists - if not, maybe let create it
+            entry = self.db.index.find_one({'$or': [{'dn': re.compile(r'^%s$' % re.escape(new_dn), re.IGNORECASE)}, {'_uuid': _uuid}]}, {'_last_changed': 1})
+
+            if entry and obj:
+                self.update(obj)
+
+            else:
+                self.insert(obj)
+
+    def _get_object(self, dn):
+        try:
+            obj = ObjectProxy(dn)
+
+        except ProxyException as e:
+            self.log.warning("not found %s: %s" % (obj, str(e)))
+            obj = None
+
+        except ObjectException as e:
+            self.log.warning("not indexing %s: %s" % (obj, str(e)))
+            obj = None
+
+        return obj
 
     def get_search_aid(self):
         return self.__search_aid

@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 import os
 from time import sleep
+from datetime import datetime
 from lxml import etree
 from base64 import b64decode
 from clacks.common import Environment
+from clacks.common.utils import parseURL, makeAuthURL
 from clacks.common.event import EventMaker
 from clacks.common.components import AMQPServiceProxy
 
@@ -72,7 +74,10 @@ def monitor(path, modifier, proxy):
 
                 # Trigger on newline.
                 if line == "":
-                    if dn and ch:
+                    if dn:
+                        if not ts:
+                            ts = datetime.now().strftime("%Y%m%d%H%M%SZ")
+
                         e = EventMaker()
                         update = e.Event(
                             e.BackendChange(
@@ -94,13 +99,18 @@ def monitor(path, modifier, proxy):
 
 
 def main():
-    #TODO: args
-    path = '/tmp/ldap-audit.socket'
-    modifier = 'cn=clacks,dc=gonicus,dc=de'
-    url = 'amqp://admin:secret@localhost/org.clacks'
+    env = Environment.getInstance()
+    config = env.config
+
+    # Load configuration
+    path = config.get('backend-monitor.audit-log', default='/var/lib/clacks/ldap-audit.log')
+    modifier = config.get('backend-monitor.modifier')
+    user = config.get('amqp.id')
+    password = config.get('amqp.key')
+    url = parseURL(makeAuthURL(config.get('amqp.url'), user, password))
 
     # Connect to Clacks BUS
-    proxy = AMQPServiceProxy(url)
+    proxy = AMQPServiceProxy(url['source'] + "/" + env.domain)
 
     # Main loop
     while True:
@@ -126,4 +136,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        pass

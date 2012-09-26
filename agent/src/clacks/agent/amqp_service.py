@@ -148,7 +148,8 @@ class AMQPService(object):
 
     def stop(self):
         """ Stop AMQP service for this clacks service provider. """
-        self.__zeroconf.unpublish()
+        if self.__zeroconf:
+            self.__zeroconf.unpublish()
 
     def commandReceived(self, ssn, message):
         """

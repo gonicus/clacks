@@ -90,7 +90,8 @@ class JSONRPCService(object):
     def stop(self):
         """ Stop serving the JSONRPC service for this clacks service provider. """
         self.log.debug("shutting down JSON RPC service provider")
-        self.__http.app.unregister(self.path)
+        if hasattr(self.__http, 'app'):
+            self.__http.app.unregister(self.path)
 
     def check_session(self, sid, user):
         return self.__app.check_session(sid, user)

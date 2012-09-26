@@ -22,9 +22,10 @@ def shutdown(a=None, b=None):
     amqp = PluginRegistry.getInstance("AMQPHandler")
 
     # Tell others that we're away now
-    e = EventMaker()
-    goodbye = e.Event(e.NodeLeave(e.Id(amqp.env.id)))
-    amqp.sendEvent(goodbye)
+    if hasattr(amqp, 'env'):
+        e = EventMaker()
+        goodbye = e.Event(e.NodeLeave(e.Id(amqp.env.id)))
+        amqp.sendEvent(goodbye)
 
     # Shutdown plugins
     PluginRegistry.shutdown()

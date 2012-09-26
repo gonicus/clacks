@@ -358,6 +358,7 @@ class LDAP(ObjectBackend):
                 '(objectClass=*)', [self.create_ts_entry, self.modify_ts_entry])
         cts = self._convert_from_timestamp(res[0][1][self.create_ts_entry][0])
         mts = self._convert_from_timestamp(res[0][1][self.modify_ts_entry][0])
+
         return (cts, mts)
 
     def get_uniq_dn(self, rdns, base, data, FixedRDN):
