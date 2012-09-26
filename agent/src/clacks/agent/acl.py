@@ -956,7 +956,7 @@ class ACLResolver(Plugin):
         if res.count():
             dns = [x['dn'] for x in res]
 
-        for entry_dn in dns:
+        for entry_dn in set(dns):
 
             self.log.info("found acl-role %s" % (entry_dn))
 
