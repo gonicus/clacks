@@ -115,10 +115,10 @@ class MongoDB(ObjectBackend):
         """
 
         # Build query: assemble
-        if scope == "sub":
+        if self.scope_map[scope] == "sub":
             query = {"dn": re.compile("^(.*,)?" + re.escape(base) + "$")}
 
-        elif scope == "one":
+        elif self.scope_map[scope] == "one":
             query = {"$or": [{"dn": base}, {"_parent_dn": base}]}
 
         else:
