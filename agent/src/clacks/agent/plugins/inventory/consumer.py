@@ -37,6 +37,11 @@ class InventoryConsumer(Plugin):
         # Establish the database connection
         self.db = self.env.get_mongo_db("clacks").inventory
 
+        # Eventually add index
+        if not 'HardwareUUID' in self.db.index_information().values():
+            self.db.ensure_index('HardwareUUID')
+            self.db.ensure_index('Checksum')
+
         # Create event consumer
         amqp = PluginRegistry.getInstance('AMQPHandler')
         EventConsumer(self.env,
