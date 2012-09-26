@@ -79,6 +79,13 @@
         <Type>UnicodeString</Type>
         <MultiValue>false</MultiValue>
         <Mandatory>false</Mandatory>
+        <Validators>
+          <Condition>
+            <Name>ObjectWithPropertyExists</Name>
+            <Param>User</Param>
+            <Param>dn</Param>
+          </Condition>
+        </Validators>
       </Attribute>
       <Attribute>
         <Name>destinationIndicator</Name>

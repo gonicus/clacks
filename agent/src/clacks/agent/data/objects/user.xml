@@ -280,6 +280,13 @@
         <Name>manager</Name>
         <Description>The Manager attribute type specifies the manager of an object represented by an entry.</Description>
         <Type>UnicodeString</Type>
+        <Validators>
+          <Condition>
+            <Name>ObjectWithPropertyExists</Name>
+            <Param>User</Param>
+            <Param>dn</Param>
+          </Condition>
+        </Validators>
       </Attribute>
       <Attribute>
         <Name>mobile</Name>
