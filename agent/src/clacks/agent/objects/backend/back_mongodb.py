@@ -1,13 +1,20 @@
 """
-This class implements a MongoDB backend to store clacks objects
-or object fragments.
+This file is part of the clacks framework.
+
+  http://clacks-project.org
+
+Copyright:
+  (C) 2010-2012 GONICUS GmbH, Germany, http://www.gonicus.de
+
+License:
+  GPL-2: http://www.gnu.org/licenses/gpl-2.0.html
+  See the LICENSE file in the project's top-level directory for details.
 """
 
 # -*- coding: utf-8 -*-
 import re
 import uuid
 import datetime
-from copy import deepcopy
 from clacks.agent.objects.backend import ObjectBackend, DNGeneratorError, RDNNotSpecified, BackendError
 from logging import getLogger
 from clacks.common import Environment
@@ -81,9 +88,9 @@ class MongoDB(ObjectBackend):
         _data = {}
         for name in data:
             _data[name] = data[name]['value']
+
         _data['_uuid'] = item_uuid
         _data['_type'] = params['type']
-
 
         self.db.save(_data)
 

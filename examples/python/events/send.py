@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from clacks.common.components import AMQPServiceProxy, PluginRegistry
+from clacks.common.components import AMQPServiceProxy
 from clacks.common.event import EventMaker
 from lxml import etree
 
