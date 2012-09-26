@@ -5,9 +5,9 @@
 		<DisplayName>Acl</DisplayName>
 		<Description>Acl extension</Description>
 		<BaseObject>false</BaseObject>
-		<Backend>JSON</Backend>
+		<Backend>MongoDB</Backend>
     <BackendParameters>
-      <Backend type="Acl">JSON</Backend>
+      <Backend type="Acl">MongoDB</Backend>
     </BackendParameters>
     <Attributes>
       <Attribute>

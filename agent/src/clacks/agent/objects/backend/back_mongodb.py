@@ -78,9 +78,13 @@ class MongoDB(ObjectBackend):
         """
         Create an object extension
         """
-        _data = deepcopy(data)
+        _data = {}
+        for name in data:
+            _data[name] = data[name]['value']
         _data['_uuid'] = item_uuid
         _data['_type'] = params['type']
+
+
         self.db.save(_data)
 
     def dn2uuid(self, object_dn):
@@ -217,7 +221,7 @@ class MongoDB(ObjectBackend):
         for item in data:
             changes[item] = data[item]['value']
 
-        self.db.update({'_uuid': item_uuid}, changes)
+        self.db.update({'_uuid': item_uuid}, {"$set": changes})
         return True
 
     def move_extension(self, item_uuid, new_base):
@@ -240,7 +244,7 @@ class MongoDB(ObjectBackend):
                 raise BackendError("cannot move entry - the target DN '%s' already exists!" % dn)
 
             entry = dict(dn=dn, _parent_dn=new_base)
-            self.db.update({'_uuid': item_uuid}, entry)
+            self.db.update({'_uuid': item_uuid}, {"$set": entry})
             return True
 
         return False
