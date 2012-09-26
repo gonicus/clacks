@@ -60,6 +60,13 @@
             <Attribute>uid</Attribute>
           </Reference>
         </References>
+        <Validators>
+          <Condition>
+            <Name>ObjectWithPropertyExists</Name>
+            <Param>User</Param>
+            <Param>uid</Param>
+          </Condition>
+        </Validators>
       </Attribute>
       <Attribute>
         <Name>autoGid</Name>
