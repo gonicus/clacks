@@ -4,9 +4,9 @@
 		<Name>AclRole</Name>
 		<DisplayName>AclRole</DisplayName>
 		<Description>AclRole</Description>
-		<Backend>JSON</Backend>
+		<Backend>MongoDB</Backend>
     <BackendParameters>
-      <Backend type="AclRole" rdn="name">JSON</Backend>
+      <Backend type="AclRole" rdn="name">MongoDB</Backend>
     </BackendParameters>
     <Attributes>
       <Attribute>
