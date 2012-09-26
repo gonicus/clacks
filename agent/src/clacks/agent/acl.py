@@ -956,7 +956,7 @@ class ACLResolver(Plugin):
         if res.count():
             dns = [x['dn'] for x in res]
 
-        for entry_dn in dns:
+        for entry_dn in set(dns):
 
             self.log.info("found acl-role %s" % (entry_dn))
 
@@ -1040,17 +1040,21 @@ class ACLResolver(Plugin):
             base = o.dn
             acls = ACLSet(base)
             for acls_data in o.AclSets:
-                if 'rolename' in acls_data and acls_data['rolename']:
-                    acl = ACL(role=str(acls_data['rolename']))
-                    acl.set_members(acls_data["members"])
-                    acl.set_priority(int(acls_data["priority"]))
-                    acls.add(acl)
-                else:
-                    acl = ACL(acl_scope_map[acls_data["scope"]])
-                    acl.set_members(acls_data["members"])
-                    acl.set_priority(int(acls_data["priority"]))
-                    for action in acls_data["actions"]:
-                        acl.add_action(action['topic'], action['acl'], action['options'])
+                try:
+                    if 'rolename' in acls_data and acls_data['rolename']:
+                        acl = ACL(role=str(acls_data['rolename']))
+                        acl.set_members(acls_data["members"])
+                        acl.set_priority(int(acls_data["priority"]))
+                        acls.add(acl)
+                    else:
+                        acl = ACL(acl_scope_map[acls_data["scope"]])
+                        acl.set_members(acls_data["members"])
+                        acl.set_priority(int(acls_data["priority"]))
+                        for action in acls_data["actions"]:
+                            acl.add_action(action['topic'], action['acl'], action['options'])
+                except Exception as e:
+                    self.log.warning("failed to load acl information for '%s': %s" % (entry_dn, str(e)))
+                    continue
 
                     acls.add(acl)
             self.add_acl_set(acls)
