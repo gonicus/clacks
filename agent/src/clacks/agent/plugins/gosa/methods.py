@@ -372,7 +372,7 @@ class GuiMethods(Plugin):
         is contained. Takes account on fuzzyness, secondary searches,
         tags.
         """
-        relevance = 1
+        penalty = 1
 
         # Prepare attribute set
         values = []
@@ -386,29 +386,29 @@ class GuiMethods(Plugin):
 
             # No exact match
             if not keyword in values:
-                relevance *= 2
+                penalty *= 2
 
             # Penalty for not having an case insensitive match
-            if not keyword.lower() in [s.lower() for s in item]:
-                relevance *= 4
+            elif not keyword.lower() in [s.lower() for s in item]:
+                penalty *= 4
 
             # Penalty for not having the correct category
-            if fltr['category'] != "all" and fltr['category'].lower() != item['_type'].lower():
-                relevance *= 2
+            elif fltr['category'] != "all" and fltr['category'].lower() != item['_type'].lower():
+                penalty *= 2
 
         # Penalty for not having category in keywords
         if not set([t.lower() for t in self.__search_aid['aliases'][item['_type']]]).intersection(set([k.lower() for k in keywords])):
-            relevance *= 6
+            penalty *= 6
 
         # Penalty for secondary
         if fltr['secondary'] == "enabled":
-            relevance *= 10
+            penalty *= 10
 
         # Penalty for fuzzyness
         if fuzzy:
-            relevance *= 10
+            penalty *= 10
 
-        return relevance
+        return penalty
 
     def __update_res(self, res, item, user=None, relevance=0):
 
