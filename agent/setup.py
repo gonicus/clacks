@@ -85,6 +85,7 @@ setup(
 
         [agent.module]
         command = clacks.agent.command:CommandRegistry
+        error = clacks.agent.error:ClacksErrorHandler
         amqp_service = clacks.agent.amqp_service:AMQPService
         httpd = clacks.agent.httpd:HTTPService
         scheduler = clacks.agent.scheduler:SchedulerService

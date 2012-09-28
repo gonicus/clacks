@@ -1,0 +1,482 @@
+# Translations template for PROJECT.
+# Copyright (C) 2012 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2012-09-28 16:00+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.5\n"
+
+#: src/clacks/agent/acl.py:1394
+msgid "List defined ACLs by base or topic."
+msgstr ""
+
+#: src/clacks/agent/acl.py:1479
+msgid "Remove defined ACL by ID."
+msgstr ""
+
+#: src/clacks/agent/acl.py:1519
+msgid "Add a new ACL."
+msgstr ""
+
+#: src/clacks/agent/acl.py:1618
+msgid "Refresh existing ACL by ID."
+msgstr ""
+
+#: src/clacks/agent/acl.py:1721
+msgid "List defined roles."
+msgstr ""
+
+#: src/clacks/agent/acl.py:1763
+msgid "Add new role."
+msgstr ""
+
+#: src/clacks/agent/acl.py:1797
+msgid "Add new acl to an existing role."
+msgstr ""
+
+#: src/clacks/agent/acl.py:1891
+msgid "Refresh existing role by ID."
+msgstr ""
+
+#: src/clacks/agent/acl.py:2005
+msgid "Remove defined role-acl by ID."
+msgstr ""
+
+#: src/clacks/agent/acl.py:2033
+msgid "Remove a defined acl-role by name"
+msgstr ""
+
+#: src/clacks/agent/command.py:96
+msgid "Returns the LDAP base"
+msgstr ""
+
+#: src/clacks/agent/command.py:105
+msgid "List available service nodes on the bus."
+msgstr ""
+
+#: src/clacks/agent/command.py:114
+msgid "List available methods that are registered on the bus."
+msgstr ""
+
+#: src/clacks/agent/command.py:158
+msgid "doc"
+msgstr ""
+
+#: src/clacks/agent/command.py:162
+msgid ""
+"Shut down the service belonging to the supplied queue. In case of HTTP "
+"connections, this command will shut down the node you're currently logged"
+" in."
+msgstr ""
+
+#: src/clacks/agent/command.py:649
+msgid "Return the current session's user ID."
+msgstr ""
+
+#: src/clacks/agent/command.py:653
+msgid "Send event to the bus."
+msgstr ""
+
+#: src/clacks/agent/error.py:20
+msgid "Get the error message assigned to a specific ID."
+msgstr ""
+
+#: src/clacks/agent/error.py:37
+msgid "code"
+msgstr ""
+
+#: src/clacks/agent/jsonrpc_objects.py:47
+msgid "List available object OIDs"
+msgstr ""
+
+#: src/clacks/agent/jsonrpc_objects.py:57
+msgid "Close object and remove it from stack"
+msgstr ""
+
+#: src/clacks/agent/jsonrpc_objects.py:78
+msgid "Set property for object on stack"
+msgstr ""
+
+#: src/clacks/agent/jsonrpc_objects.py:104
+msgid "Get property from object on stack"
+msgstr ""
+
+#: src/clacks/agent/jsonrpc_objects.py:131
+msgid "Call method from object on stack"
+msgstr ""
+
+#: src/clacks/agent/jsonrpc_objects.py:159
+msgid "Instantiate object and place it on stack"
+msgstr ""
+
+#: src/clacks/agent/scheduler.py:111
+msgid "List jobs matchings an optional filter."
+msgstr ""
+
+#: src/clacks/agent/scheduler.py:166
+msgid "Add a new date based job to the scheduler."
+msgstr ""
+
+#: src/clacks/agent/scheduler.py:211
+msgid "Add a new cron based job to the scheduler."
+msgstr ""
+
+#: src/clacks/agent/scheduler.py:253
+msgid "Add a new interval job to the scheduler."
+msgstr ""
+
+#: src/clacks/agent/scheduler.py:292
+msgid "Remove job from the scheduler."
+msgstr ""
+
+#: src/clacks/agent/objects/index.py:475
+msgid "Check if an object with the given UUID exists."
+msgstr ""
+
+#: src/clacks/agent/objects/object.py:25
+#, python-format
+msgid "Creation of '%(location)s' lacks a base DN"
+msgstr ""
+
+#: src/clacks/agent/objects/object.py:26
+#, python-format
+msgid "Error reading properties for backend '%(backend)s'"
+msgstr ""
+
+#: src/clacks/agent/objects/object.py:27
+#, python-format
+msgid "Attribute is blocked by %(source)s==%(value)s"
+msgstr ""
+
+#: src/clacks/agent/objects/object.py:28
+msgid "Attribute is read only"
+msgstr ""
+
+#: src/clacks/agent/objects/object.py:29
+msgid "Attribute is mandatory"
+msgstr ""
+
+#: src/clacks/agent/objects/object.py:30
+#, python-format
+msgid "Value is invalid - expected one of %(elements)s"
+msgstr ""
+
+#: src/clacks/agent/objects/object.py:31
+msgid "Value is invalid - expected a list"
+msgstr ""
+
+#: src/clacks/agent/objects/object.py:32
+#, python-format
+msgid "Value is invalid - expected value of type '%(type)s'"
+msgstr ""
+
+#: src/clacks/agent/objects/object.py:33
+#, python-format
+msgid "Value is invalid %(error)s"
+msgstr ""
+
+#: src/clacks/agent/objects/object.py:34
+#, python-format
+msgid "Value is not unique (%(value)s)"
+msgstr ""
+
+#: src/clacks/agent/objects/object.py:35
+msgid "Attribute not found"
+msgstr ""
+
+#: src/clacks/agent/objects/object.py:36
+#, python-format
+msgid "Mode '%(mode)s' is not available for base objects"
+msgstr ""
+
+#: src/clacks/agent/objects/object.py:37
+#, python-format
+msgid "Mode '%(mode)s' is only available for base objects"
+msgstr ""
+
+#: src/clacks/agent/objects/object.py:38
+#, python-format
+msgid "Object of type '%(type)s' cannot be added as to the '%s' container"
+msgstr ""
+
+#: src/clacks/agent/objects/object.py:39
+msgid "Cannot remove non base object"
+msgstr ""
+
+#: src/clacks/agent/objects/object.py:40
+msgid "Cannot move non base object"
+msgstr ""
+
+#: src/clacks/agent/objects/object.py:41
+msgid "Base object cannot be retracted"
+msgstr ""
+
+#: src/clacks/agent/objects/object.py:42
+#, python-format
+msgid "Invalid key '%(key)s' for filter '%(filter)s'"
+msgstr ""
+
+#: src/clacks/agent/objects/object.py:43
+#, python-format
+msgid "Missing key '%(key)s' after processing filter '%(filter)s'"
+msgstr ""
+
+#: src/clacks/agent/objects/object.py:44
+#, python-format
+msgid "Filter '%(filter)s' did not return a %(type)s value - a list was expected"
+msgstr ""
+
+#: src/clacks/agent/objects/comparator/acl_roles.py:34
+#: src/clacks/agent/objects/comparator/acl_set.py:33
+#, python-format
+msgid "missing attribute 'priority' for acl-entry %s!"
+msgstr ""
+
+#: src/clacks/agent/objects/comparator/acl_roles.py:40
+#: src/clacks/agent/objects/comparator/acl_set.py:43
+msgid "you can either use a rolename or actions but not both!"
+msgstr ""
+
+#: src/clacks/agent/objects/comparator/acl_roles.py:45
+#: src/clacks/agent/objects/comparator/acl_roles.py:75
+#: src/clacks/agent/objects/comparator/acl_roles.py:78
+#: src/clacks/agent/objects/comparator/acl_roles.py:97
+#: src/clacks/agent/objects/comparator/acl_set.py:48
+#: src/clacks/agent/objects/comparator/acl_set.py:79
+#: src/clacks/agent/objects/comparator/acl_set.py:82
+#: src/clacks/agent/objects/comparator/acl_set.py:101
+#, python-format
+msgid "expected attribute '%s' to be of type '%s' but found '%s!'"
+msgstr ""
+
+#: src/clacks/agent/objects/comparator/acl_roles.py:50
+#: src/clacks/agent/objects/comparator/acl_set.py:54
+#, python-format
+msgid "unknown role %s used!rolename"
+msgstr ""
+
+#: src/clacks/agent/objects/comparator/acl_roles.py:56
+#: src/clacks/agent/objects/comparator/acl_set.py:60
+#, python-format
+msgid "missing attribute 'scope' for acl-entry %s!"
+msgstr ""
+
+#: src/clacks/agent/objects/comparator/acl_roles.py:60
+#: src/clacks/agent/objects/comparator/acl_set.py:64
+#, python-format
+msgid "missing attribute 'actions'! for acl-entry %s!"
+msgstr ""
+
+#: src/clacks/agent/objects/comparator/acl_roles.py:67
+#: src/clacks/agent/objects/comparator/acl_set.py:71
+msgid "missing attribute 'topic'!"
+msgstr ""
+
+#: src/clacks/agent/objects/comparator/acl_roles.py:70
+#: src/clacks/agent/objects/comparator/acl_set.py:74
+msgid "missing attribute 'acl'!"
+msgstr ""
+
+#: src/clacks/agent/objects/comparator/acl_roles.py:83
+#: src/clacks/agent/objects/comparator/acl_set.py:87
+msgid "invalid acl attribute given, allowed is a combination of 'crowdsexm'!'"
+msgstr ""
+
+#: src/clacks/agent/objects/comparator/acl_roles.py:93
+#: src/clacks/agent/objects/comparator/acl_set.py:97
+#, python-format
+msgid ""
+"invalid attributes given '%s', allowed are 'rolename, topic, acl, "
+"options'!"
+msgstr ""
+
+#: src/clacks/agent/objects/comparator/acl_set.py:37
+#, python-format
+msgid "missing attribute 'members'! for acl-entry %s!"
+msgstr ""
+
+#: src/clacks/agent/plugins/gofon/gofon.py:36
+msgid "Remove the goFon extensions for a given user (uuid)"
+msgstr ""
+
+#: src/clacks/agent/plugins/gofon/gofon.py:82
+msgid "Adds a goFon extension for a given user (uuid)"
+msgstr ""
+
+#: src/clacks/agent/plugins/gosa/methods.py:37
+msgid "Returns a list containing all available object names"
+msgstr ""
+
+#: src/clacks/agent/plugins/gosa/methods.py:42
+msgid "Returns all templates used by the given object type."
+msgstr ""
+
+#: src/clacks/agent/plugins/gosa/methods.py:50
+msgid "Get all translations bound to templates."
+msgstr ""
+
+#: src/clacks/agent/plugins/gosa/methods.py:60
+msgid "Save user preferences"
+msgstr ""
+
+#: src/clacks/agent/plugins/gosa/methods.py:81
+msgid "Load user preferences"
+msgstr ""
+
+#: src/clacks/agent/plugins/gosa/methods.py:101
+msgid "Search for object information"
+msgstr ""
+
+#: src/clacks/agent/plugins/gosa/methods.py:149
+msgid "Resolves object information"
+msgstr ""
+
+#: src/clacks/agent/plugins/gosa/methods.py:205
+msgid "Returns a list with all selectable samba-domain-names"
+msgstr ""
+
+#: src/clacks/agent/plugins/gosa/methods.py:213
+msgid "Returns a list of DOS/Windows drive letters"
+msgstr ""
+
+#: src/clacks/agent/plugins/gosa/methods.py:221
+msgid "Filter for indexed attributes and return the matches."
+msgstr ""
+
+#: src/clacks/agent/plugins/gosa/service.py:230
+msgid "Server information"
+msgstr ""
+
+#: src/clacks/agent/plugins/gosa/service.py:230
+msgid "Websockets enabled"
+msgstr ""
+
+#: src/clacks/agent/plugins/gosa/service.py:259
+msgid "System notification"
+msgstr ""
+
+#: src/clacks/agent/plugins/goto/client_service.py:123
+msgid "List available clients."
+msgstr ""
+
+#: src/clacks/agent/plugins/goto/client_service.py:136
+msgid "Call method exposed by client."
+msgstr ""
+
+#: src/clacks/agent/plugins/goto/client_service.py:176
+msgid "Get the client Interface/IP/Netmask/Broadcast/MAC list."
+msgstr ""
+
+#: src/clacks/agent/plugins/goto/client_service.py:194
+msgid "List available client methods for specified client."
+msgstr ""
+
+#: src/clacks/agent/plugins/goto/client_service.py:208
+msgid "List user sessions per client"
+msgstr ""
+
+#: src/clacks/agent/plugins/goto/client_service.py:218
+msgid "List clients a user is logged in"
+msgstr ""
+
+#: src/clacks/agent/plugins/goto/client_service.py:225
+msgid "Send synchronous notification message to user"
+msgstr ""
+
+#: src/clacks/agent/plugins/goto/client_service.py:288
+#: src/clacks/agent/plugins/goto/client_service.py:309
+msgid "Set system status"
+msgstr ""
+
+#: src/clacks/agent/plugins/goto/client_service.py:357
+msgid "Join a client to the clacks infrastructure."
+msgstr ""
+
+#: src/clacks/agent/plugins/goto/network.py:20
+msgid "Resolve network address to a mac / dns name tupel."
+msgstr ""
+
+#: src/clacks/agent/plugins/goto/network.py:47
+msgid "Resolve MAC address to the producer of the network card if possible."
+msgstr ""
+
+#: src/clacks/agent/plugins/misc/filter_validators.py:27
+#, python-format
+msgid "The given hostname '%s' is not valid!"
+msgstr ""
+
+#: src/clacks/agent/plugins/misc/filter_validators.py:46
+#: src/clacks/agent/plugins/misc/filter_validators.py:65
+#, python-format
+msgid "The given dn does not exists '%s'!"
+msgstr ""
+
+#: src/clacks/agent/plugins/misc/filter_validators.py:85
+#, python-format
+msgid "There is no '%s' with '%s=%s'!"
+msgstr ""
+
+#: src/clacks/agent/plugins/misc/gravatar.py:22
+msgid "Generate samba lm:nt hash combination from the supplied password."
+msgstr ""
+
+#: src/clacks/agent/plugins/misc/locales.py:24
+msgid "Return list of languages"
+msgstr ""
+
+#: src/clacks/agent/plugins/misc/transliterate.py:11
+msgid "Transliterate a given string"
+msgstr ""
+
+#: src/clacks/agent/plugins/password/manager.py:32
+msgid "Locks the account password for the given DN"
+msgstr ""
+
+#: src/clacks/agent/plugins/password/manager.py:56
+msgid "Unlocks the account password for the given DN"
+msgstr ""
+
+#: src/clacks/agent/plugins/password/manager.py:80
+msgid "Check whether the account can be locked or not"
+msgstr ""
+
+#: src/clacks/agent/plugins/password/manager.py:102
+msgid "Check whether the account can be unlocked or not"
+msgstr ""
+
+#: src/clacks/agent/plugins/password/manager.py:123
+msgid "Changes the used password enryption method"
+msgstr ""
+
+#: src/clacks/agent/plugins/password/manager.py:142
+msgid "Sets a new password for a user"
+msgstr ""
+
+#: src/clacks/agent/plugins/password/manager.py:162
+msgid "List all password hashing-methods"
+msgstr ""
+
+#: src/clacks/agent/plugins/posix/shells.py:21
+msgid "Return list of supported shells"
+msgstr ""
+
+#: src/clacks/agent/plugins/samba/domain.py:31
+#, python-format
+msgid "The given sambaDomainName '%s' does not exists!"
+msgstr ""
+
+#: src/clacks/agent/plugins/samba/sid.py:28
+msgid "Cannot use ourselves as member for the SID list!"
+msgstr ""
+
