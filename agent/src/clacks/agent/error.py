@@ -1,4 +1,6 @@
 import traceback
+import gettext
+from pkg_resources import resource_filename #@UnresolvedImport
 from bson import ObjectId
 from clacks.common.utils import N_
 from clacks.common import Environment
@@ -22,9 +24,9 @@ class ClacksErrorHandler(Plugin):
         res = None
 
         if trace:
-            res = self.__db.find_one({_id: ObjectId(_id)})
+            res = self.__db.find_one({'_id': ObjectId(_id)})
         else:
-            res = self.__db.find_one({_id: ObjectId(_id)}, {trace: 0})
+            res = self.__db.find_one({'_id': ObjectId(_id)}, {'trace': 0})
 
         # Translate message if requested
         if res and locale:
@@ -37,7 +39,10 @@ class ClacksErrorHandler(Plugin):
             res['text'] = t.ugettext(ClacksErrorHandler._codes[res['code']])
 
         # Fill keywords
-        return res % res['kwargs']
+        res['text'] % res['kwargs']
+        res['_id'] = _id
+
+        return res
 
     @staticmethod
     def make_error(code, topic=None, **kwargs):
