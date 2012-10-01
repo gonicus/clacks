@@ -224,6 +224,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
                 declare namespace f='http://www.gonicus.de/Events';
                 let $e := ./f:Event
                 return $e/f:Notification
+                    or $e/f:ObjectChanged
             """,
             callback=self.__eventProcessor)
 
@@ -249,6 +250,16 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         eventType = stripNs(data.xpath('/g:Event/*', namespaces={'g': "http://www.gonicus.de/Events"})[0].tag)
         func = getattr(self, "_handle" + eventType)
         func(data)
+
+    def _handleObjectChanged(self, data):
+        data = data.ObjectChanged
+
+        self.send_message("objectChange", {
+            "uuid": data.UUID.text,
+            "dn": data.DN.text,
+            "lastChanged": data.ModificationTime.text,
+            "changeType": data.ChangeType.text,
+            })
 
     def _handleNotification(self, data):
         data = data.Notification

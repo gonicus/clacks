@@ -19,6 +19,7 @@ import itertools
 from zope.interface import implements
 from clacks.common import Environment
 from clacks.common.utils import N_, stripNs
+from clacks.common.event import EventMaker
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import Command, Plugin, PluginRegistry
 from clacks.common.components.amqp import EventConsumer
@@ -199,12 +200,6 @@ class ObjectIndex(Plugin):
             entry = self.db.index.find_one({'_uuid': _uuid}, {'dn': 1})
             if entry:
                 dn = entry['dn']
-
-        print "-"*80
-        print dn
-        print new_dn
-        print change_type
-        print _last_changed
 
         # Modification
         if change_type == "modify":
@@ -399,31 +394,61 @@ class ObjectIndex(Plugin):
     def __handle_events(self, event):
 
         if isinstance(event, ObjectChanged):
-            uuid = event.uuid
+            change_type = None
+            _uuid = event.uuid
+            _dn = None
+            _last_changed = time.mktime(datetime.datetime.now().timetuple())
+
+            # Try to find the affected DN
+            e = self.db.index.find_one({'_uuid': _uuid}, {'dn': 1, '_last_changed': 1})
+            if e:
+                _dn = e['dn']
+                _last_changed = e['_last_changed']
 
             if event.reason == "post remove":
-                self.log.debug("removing object index for %s" % uuid)
-                self.remove_by_uuid(uuid)
+                self.log.debug("removing object index for %s" % _uuid)
+                self.remove_by_uuid(_uuid)
+                change_type = "remove"
 
             if event.reason == "post move":
-                self.log.debug("updating object index for %s" % uuid)
+                self.log.debug("updating object index for %s" % _uuid)
                 obj = ObjectProxy(event.dn)
                 self.update(obj)
+                _dn = obj.dn
+                change_type = "move"
 
             if event.reason == "post create":
-                self.log.debug("creating object index for %s" % uuid)
+                self.log.debug("creating object index for %s" % _uuid)
                 obj = ObjectProxy(event.dn)
                 self.insert(obj)
+                _dn = obj.dn
+                change_type = "create"
 
             if event.reason in ["post retract", "post update", "post extend"]:
-                self.log.debug("updating object index for %s" % uuid)
+                self.log.debug("updating object index for %s" % _uuid)
                 if not event.dn:
-                    entry = self.db.index.find_one({'_uuid': event.uuid, 'dn': {'$exists': 1}}, {'dn': 1})
+                    entry = self.db.index.find_one({'_uuid': _uuid, 'dn': {'$exists': 1}}, {'dn': 1})
                     if entry:
                         event.dn = entry['dn']
 
                 obj = ObjectProxy(event.dn)
                 self.update(obj)
+                change_type = "update"
+
+            # If there were changes, notify about changed objects
+            if change_type:
+                amqp = PluginRegistry.getInstance('AMQPHandler')
+
+                e = EventMaker()
+                update = e.Event(
+                    e.ObjectChanged(
+                        e.DN(_dn),
+                        e.UUID(_uuid),
+                        e.ModificationTime(str(_last_changed)),
+                        e.ChangeType(change_type)
+                    )
+                )
+                amqp.sendEvent(update)
 
     def insert(self, obj):
         self.log.debug("creating object index for %s" % obj.uuid)
