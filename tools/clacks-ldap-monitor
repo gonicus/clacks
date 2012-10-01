@@ -82,7 +82,6 @@ def monitor(path, modifier, proxy):
                         update = e.Event(
                             e.BackendChange(
                                 e.DN(dn),
-                                e.UUID(dn),
                                 e.ModificationTime(ts),
                                 e.ChangeType(ct)
                             )
