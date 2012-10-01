@@ -288,6 +288,19 @@ class ObjectProxy(object):
 
         return None
 
+    def get_attribute_values(self):
+        """
+        Return a dictionary containing all property values.
+        """
+        res = {}
+        for item in self.get_attributes():
+            if self.__base_type == self.__attribute_type_map[item]:
+                res[item] = getattr(self, item)
+            elif self.__extensions[self.__attribute_type_map[item]]:
+                res[item] = getattr(self, item)
+
+        return res
+
     def get_object_info(self, locale=None, theme="default"):
         res = {}
 
