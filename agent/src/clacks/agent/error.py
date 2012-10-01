@@ -1,5 +1,6 @@
 import traceback
 import gettext
+from datetime import datetime
 from pkg_resources import resource_filename #@UnresolvedImport
 from bson import ObjectId
 from clacks.common.utils import N_
@@ -42,6 +43,9 @@ class ClacksErrorHandler(Plugin):
         res['text'] % res['kwargs']
         res['_id'] = _id
 
+        # Remove the entry
+        self.__db.remove({'_id': ObjectId(_id)})
+
         return res
 
     @staticmethod
@@ -61,7 +65,8 @@ class ClacksErrorHandler(Plugin):
         env = Environment.getInstance()
         db = env.get_mongo_db('clacks').errors
         data = dict(code=code, topic=topic, text=detail,
-                args=args, kwargs=kwargs, trace=traceback.format_stack())
+                args=args, kwargs=kwargs, trace=traceback.format_stack(),
+                timestamp=datetime.now(), user=None)
         __id = str(db.save(data))
 
         # First, catch unconverted exceptions
