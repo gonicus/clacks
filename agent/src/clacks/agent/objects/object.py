@@ -533,7 +533,6 @@ class Object(object):
         """
         Commits changes of an object to the corresponding backends.
         """
-
         self.check()
 
         self.log.debug("saving object modifications for [%s|%s]" % (type(self).__name__, self.uuid))
@@ -630,6 +629,29 @@ class Object(object):
             toStore[self._backend] = {}
 
         # Leave the show if there's nothing to do
+        tmp = {}
+        for key, value in toStore.items():
+
+            # Skip NULL backend. Nothing to save, anyway.
+            if key == "NULL":
+                continue
+
+            # Skip unchanged values that found their way in thru unclean filter
+            # definitions.
+            if value:
+                n_value = {}
+                for a_key, a_value in value.items():
+                    if a_value['orig'] == a_value['value']:
+                        continue
+                    n_value[a_key] = a_value
+
+                value = n_value
+
+            tmp[key] = value
+
+        toStore = tmp
+
+        # Skip the whole process if there's no change at all
         if not toStore:
             return
 
