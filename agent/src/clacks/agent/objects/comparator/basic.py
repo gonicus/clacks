@@ -30,13 +30,13 @@ class Equals(ElementComparator):
                 if item.lower() != match.lower():
                     errors.append(dict(index=cnt,
                         detail=N_("item does not match the given value ignoring the case",
-                        ))
+                        )))
                     return False, errors
             else:
                 if item != match:
                     errors.append(dict(index=cnt,
                         detail=N_("item does not match the given value",
-                        ))
+                        )))
                     return False, errors
             cnt += 1
         return True, errors
@@ -70,7 +70,7 @@ class Greater(ElementComparator):
                 errors.append(dict(index=cnt,
                     detail=N_("item needs to be greater than %(compare)s",
                     compare=match
-                    ))
+                    )))
                 return False, errors
             cnt += 1
         return True, errors
@@ -104,7 +104,7 @@ class Smaller(ElementComparator):
                 errors.append(dict(index=cnt,
                     detail=N_("item needs to be smaller than %(compare)s",
                     compare=match
-                    ))
+                    )))
                 return False, errors
             cnt += 1
         return True, errors
