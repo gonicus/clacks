@@ -310,9 +310,8 @@ msgid "missing attribute 'members'! for acl-entry %s!"
 msgstr ""
 
 #: src/clacks/agent/objects/comparator/strings.py:32
-#, fuzzy, python-format
 msgid "value is not like %(comparator)s"
-msgstr "Der Wert ist ungültig %(error)s"
+msgstr "Der Wert ist nicht ähnlich zu %(comparator)s"
 
 #: src/clacks/agent/objects/comparator/strings.py:62
 msgid "syntax error"
