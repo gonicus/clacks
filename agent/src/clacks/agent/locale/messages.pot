@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2012-09-28 16:00+0200\n"
+"POT-Creation-Date: 2012-10-04 10:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.5\n"
+"Generated-By: Babel 0.9.6\n"
 
 #: src/clacks/agent/acl.py:1394
 msgid "List defined ACLs by base or topic."
@@ -88,12 +88,16 @@ msgstr ""
 msgid "Send event to the bus."
 msgstr ""
 
-#: src/clacks/agent/error.py:20
+#: src/clacks/agent/error.py:23
 msgid "Get the error message assigned to a specific ID."
 msgstr ""
 
-#: src/clacks/agent/error.py:37
+#: src/clacks/agent/error.py:40
 msgid "code"
+msgstr ""
+
+#: src/clacks/agent/error.py:44
+msgid "detail"
 msgstr ""
 
 #: src/clacks/agent/jsonrpc_objects.py:47
@@ -140,7 +144,7 @@ msgstr ""
 msgid "Remove job from the scheduler."
 msgstr ""
 
-#: src/clacks/agent/objects/index.py:475
+#: src/clacks/agent/objects/index.py:500
 msgid "Check if an object with the given UUID exists."
 msgstr ""
 
@@ -182,8 +186,7 @@ msgid "Value is invalid - expected value of type '%(type)s'"
 msgstr ""
 
 #: src/clacks/agent/objects/object.py:33
-#, python-format
-msgid "Value is invalid %(error)s"
+msgid "Value is invalid"
 msgstr ""
 
 #: src/clacks/agent/objects/object.py:34
@@ -306,6 +309,25 @@ msgstr ""
 msgid "missing attribute 'members'! for acl-entry %s!"
 msgstr ""
 
+#: src/clacks/agent/objects/comparator/strings.py:32
+#, python-format
+msgid "value is not like %(comparator)s"
+msgstr ""
+
+#: src/clacks/agent/objects/comparator/strings.py:62
+msgid "syntax error"
+msgstr ""
+
+#: src/clacks/agent/objects/comparator/strings.py:96
+#, python-format
+msgid "value is short, at least %(count)s characters required"
+msgstr ""
+
+#: src/clacks/agent/objects/comparator/strings.py:101
+#, python-format
+msgid "value is long, at max %(count)s characters allowed"
+msgstr ""
+
 #: src/clacks/agent/plugins/gofon/gofon.py:36
 msgid "Remove the goFon extensions for a given user (uuid)"
 msgstr ""
@@ -327,42 +349,46 @@ msgid "Get all translations bound to templates."
 msgstr ""
 
 #: src/clacks/agent/plugins/gosa/methods.py:60
+msgid "Returns details about the currently logged in user"
+msgstr ""
+
+#: src/clacks/agent/plugins/gosa/methods.py:69
 msgid "Save user preferences"
 msgstr ""
 
-#: src/clacks/agent/plugins/gosa/methods.py:81
+#: src/clacks/agent/plugins/gosa/methods.py:90
 msgid "Load user preferences"
 msgstr ""
 
-#: src/clacks/agent/plugins/gosa/methods.py:101
+#: src/clacks/agent/plugins/gosa/methods.py:110
 msgid "Search for object information"
 msgstr ""
 
-#: src/clacks/agent/plugins/gosa/methods.py:149
+#: src/clacks/agent/plugins/gosa/methods.py:158
 msgid "Resolves object information"
 msgstr ""
 
-#: src/clacks/agent/plugins/gosa/methods.py:205
+#: src/clacks/agent/plugins/gosa/methods.py:214
 msgid "Returns a list with all selectable samba-domain-names"
 msgstr ""
 
-#: src/clacks/agent/plugins/gosa/methods.py:213
+#: src/clacks/agent/plugins/gosa/methods.py:222
 msgid "Returns a list of DOS/Windows drive letters"
 msgstr ""
 
-#: src/clacks/agent/plugins/gosa/methods.py:221
+#: src/clacks/agent/plugins/gosa/methods.py:230
 msgid "Filter for indexed attributes and return the matches."
 msgstr ""
 
-#: src/clacks/agent/plugins/gosa/service.py:230
+#: src/clacks/agent/plugins/gosa/service.py:231
 msgid "Server information"
 msgstr ""
 
-#: src/clacks/agent/plugins/gosa/service.py:230
+#: src/clacks/agent/plugins/gosa/service.py:231
 msgid "Websockets enabled"
 msgstr ""
 
-#: src/clacks/agent/plugins/gosa/service.py:259
+#: src/clacks/agent/plugins/gosa/service.py:270
 msgid "System notification"
 msgstr ""
 

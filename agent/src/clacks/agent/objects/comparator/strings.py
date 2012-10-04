@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import difflib
+from clacks.common.utils import N_
 from clacks.agent.objects.comparator import ElementComparator
 
 
@@ -27,7 +28,9 @@ class Like(ElementComparator):
         cnt = 0
         for item in value:
             if difflib.SequenceMatcher(None, unicode(item), unicode(match)).ratio() < 0.75:
-                errors.append("Item %s (%s) is not like '%s'!" % (cnt, item, match))
+                errors.append(dict(index=cnt,
+                    detail=N_("value is not like %(comparator)s",
+                    comparator=match)))
                 return False, errors
             cnt += 1
         return True, errors
@@ -56,7 +59,7 @@ class RegEx(ElementComparator):
         cnt = 0
         for item in value:
             if not re.match(match, item):
-                errors.append("Item %s (%s) does not match the regular expression '%s'!" % (cnt, item, match))
+                errors.append(dict(index=cnt, detail=N_("syntax error")))
                 return False, errors
             cnt += 1
         return True, errors
@@ -89,9 +92,13 @@ class stringLength(ElementComparator):
         for entry in value:
             cnt = len(entry)
             if minSize >= 0 and cnt < minSize:
-                errors.append("Item %s (%s) is to small, at least %s characters are required!" % (cnt, entry, minSize))
+                errors.append(dict(index=cnt,
+                    detail=N_("value is short, at least %(count)s characters required",
+                    count=minSize)))
                 return False, errors
             elif maxSize >= 0 and cnt > maxSize:
-                errors.append("Item %s (%s) is to great, at max %s characters are allowed!" % (cnt, entry, maxSize))
+                errors.append(dict(index=cnt,
+                    detail=N_("value is long, at max %(count)s characters allowed",
+                    count=maxSize)))
                 return False, errors
         return True, errors

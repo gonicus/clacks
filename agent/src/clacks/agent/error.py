@@ -39,6 +39,10 @@ class ClacksErrorHandler(Plugin):
 
             res['text'] = t.ugettext(ClacksErrorHandler._codes[res['code']])
 
+            # Process details by translating detail text
+            for detail in res['details']:
+                detail['detail'] = t.ugettext(detail['detail']) % detail
+
         # Fill keywords
         res['text'] % res['kwargs']
         res['_id'] = _id
@@ -49,7 +53,7 @@ class ClacksErrorHandler(Plugin):
         return res
 
     @staticmethod
-    def make_error(code, topic=None, **kwargs):
+    def make_error(code, topic=None, details=None, **kwargs):
 
         # Add topic to make it usable inside of the error messages
         if not kwargs:
@@ -57,21 +61,24 @@ class ClacksErrorHandler(Plugin):
         kwargs.update(dict(topic=topic))
 
         # Assemble message
-        detail = ClacksErrorHandler._codes[code] % kwargs
+        text = ClacksErrorHandler._codes[code] % kwargs
 
-        # Write to db and update uuid
+        # Assemble error information
         env = Environment.getInstance()
         db = env.get_mongo_db('clacks').errors
-        data = dict(code=code, topic=topic, text=detail,
+        data = dict(code=code, topic=topic, text=text,
                 kwargs=kwargs, trace=traceback.format_stack(),
+                details=details,
                 timestamp=datetime.now(), user=None)
+
+        # Write to db and update uuid
         __id = str(db.save(data))
 
         # First, catch unconverted exceptions
         if not code in ClacksErrorHandler._codes:
             return code
 
-        return '<%s> %s' % (__id, detail)
+        return '<%s> %s' % (__id, text)
 
     @staticmethod
     def register_codes(codes, module="clacks.agent"):

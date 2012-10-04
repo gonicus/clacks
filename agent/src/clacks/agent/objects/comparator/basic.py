@@ -28,13 +28,15 @@ class Equals(ElementComparator):
             # Depending on the ignore-case parameter we do not match upper/lower-case differences.
             if case_ignore:
                 if item.lower() != match.lower():
-                    errors.append("Item %s (%s) did not match the given value '%s'! (ignore case)" % (
-                        cnt, item, match))
+                    errors.append(dict(index=cnt,
+                        detail=N_("item does not match the given value ignoring the case",
+                        ))
                     return False, errors
             else:
                 if item != match:
-                    errors.append("Item %s (%s) did not match the given value '%s'!" % (
-                        cnt, item, match))
+                    errors.append(dict(index=cnt,
+                        detail=N_("item does not match the given value",
+                        ))
                     return False, errors
             cnt += 1
         return True, errors
@@ -65,7 +67,10 @@ class Greater(ElementComparator):
         for item in value:
             item = int(item)
             if not (item > match):
-                errors.append("Item %s (%s) is not greater then %s!" % (cnt, item, match))
+                errors.append(dict(index=cnt,
+                    detail=N_("item needs to be greater than %(compare)s",
+                    compare=match
+                    ))
                 return False, errors
             cnt += 1
         return True, errors
@@ -96,7 +101,10 @@ class Smaller(ElementComparator):
         for item in value:
             item = int(item)
             if not (item < match):
-                errors.append("Item %s (%s) is not smaller then %s!" % (cnt, item, match))
+                errors.append(dict(index=cnt,
+                    detail=N_("item needs to be smaller than %(compare)s",
+                    compare=match
+                    ))
                 return False, errors
             cnt += 1
         return True, errors

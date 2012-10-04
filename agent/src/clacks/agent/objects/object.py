@@ -30,7 +30,7 @@ C.register_codes(dict(
     ATTRIBUTE_INVALID_CONSTANT=N_("Value is invalid - expected one of %(elements)s"),
     ATTRIBUTE_INVALID_LIST=N_("Value is invalid - expected a list"),
     ATTRIBUTE_INVALID=N_("Value is invalid - expected value of type '%(type)s'"),
-    ATTRIBUTE_CHECK_FAILED=N_("Value is invalid %(error)s"),
+    ATTRIBUTE_CHECK_FAILED=N_("Value is invalid"),
     ATTRIBUTE_NOT_UNIQUE=N_("Value is not unique (%(value)s)"),
     ATTRIBUTE_NOT_FOUND=N_("Attribute not found"),
     OBJECT_MODE_NOT_AVAILABLE=N_("Mode '%(mode)s' is not available for base objects"),
@@ -338,7 +338,8 @@ class Object(object):
                 res, error = self.__processValidator(self.myProperties[name]['validator'], name, new_value, props_copy)
                 if not res:
                     if len(error):
-                        raise ValueError(C.make_error('ATTRIBUTE_CHECK_FAILED', name, error="- " + error[0]))
+                        raise ValueError(C.make_error('ATTRIBUTE_CHECK_FAILED',
+                            name, details=error))
                     else:
                         raise ValueError(C.make_error('ATTRIBUTE_CHECK_FAILED', name))
 
