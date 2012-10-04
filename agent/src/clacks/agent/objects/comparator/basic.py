@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from clacks.common.utils import N_
 from clacks.agent.objects.comparator import ElementComparator
 
 

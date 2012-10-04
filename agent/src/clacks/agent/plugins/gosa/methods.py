@@ -60,7 +60,7 @@ class GuiMethods(Plugin):
     @Command(__help__=N_("Returns details about the currently logged in user"), needsUser=True)
     def getUserDetails(self, userid):
         index = PluginRegistry.getInstance("ObjectIndex")
-        res = index.search({'_type': 'User', 'uid': userid}, {'sn': 1, 'givenName': 1, 'cn': 1, 'dn': 1, '_uuid' :1})
+        res = index.search({'_type': 'User', 'uid': userid}, {'sn': 1, 'givenName': 1, 'cn': 1, 'dn': 1, '_uuid': 1})
         if not res.count():
             raise Exception("No such user %s" % (userid))
 

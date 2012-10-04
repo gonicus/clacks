@@ -1,8 +1,6 @@
-import gettext
 from clacks.common.utils import N_
 from clacks.agent.acl import ACLResolver
 from clacks.agent.objects.comparator import ElementComparator
-from pkg_resources import resource_filename #@UnresolvedImport
 
 
 class IsAclRole(ElementComparator):
