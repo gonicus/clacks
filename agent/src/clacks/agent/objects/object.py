@@ -869,7 +869,7 @@ class Object(object):
                 for pk in prop:
                     if not all(k in prop[pk] for k in ('backend', 'value', 'type')):
                         missing = ", ".join(set(['backend', 'value', 'type']) - set(prop[pk].keys()))
-                        raise ObjectException(C.make_error('FILTER_MISSING_KEY', None, {'key': key, 'filter': fname}))
+                        raise ObjectException(C.make_error('FILTER_MISSING_KEY', None, {'key': missing, 'filter': fname}))
 
                     # Check if the returned value-type is list or None.
                     if type(prop[pk]['value']) not in [list, type(None)]:

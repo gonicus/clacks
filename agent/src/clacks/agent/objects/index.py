@@ -18,7 +18,7 @@ import time
 import itertools
 from zope.interface import implements
 from clacks.common import Environment
-from clacks.common.utils import N_, stripNs
+from clacks.common.utils import N_
 from clacks.common.event import EventMaker
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import Command, Plugin, PluginRegistry
