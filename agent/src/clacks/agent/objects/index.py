@@ -24,7 +24,16 @@ from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import Command, Plugin, PluginRegistry
 from clacks.common.components.amqp import EventConsumer
 from clacks.agent.objects import ObjectFactory, ObjectProxy, ObjectChanged, ProxyException, ObjectException
+from clacks.agent.error import ClacksErrorHandler as C
 from clacks.agent.lock import GlobalLock
+
+
+# Register the errors handled  by us
+C.register_codes(dict(
+    OBJECT_EXISTS=N_("Object with UUID %(uuid)s already exists"),
+    OBJECT_NOT_FOUND=N_("Cannot find object with UUID %(uuid)s"),
+    INDEXING=N_("index rebuild in progress - try again later")
+))
 
 
 class IndexScanFinished():
@@ -455,7 +464,7 @@ class ObjectIndex(Plugin):
 
         # If this is the root node, add the root document
         if self.db.index.find_one({'_uuid': obj.uuid}, {'_uuid': 1}):
-            raise IndexException("Object with UUID %s already exists" % obj.uuid)
+            raise IndexException(C.make_error('OBJECT_EXISTS', "base", uuid=obj.uuid))
 
         self.db.index.save(obj.asJSON(True))
 
@@ -472,7 +481,7 @@ class ObjectIndex(Plugin):
         current = obj.asJSON(True)
         saved = self.db.index.find_one({'_uuid': obj.uuid})
         if not saved:
-            raise IndexException("No such object %s" % obj.uuid)
+            raise IndexException(C.make_error('OBJECT_NOT_FOUND', "base", uuid=obj.uuid))
 
         # Remove old entry and insert new
         self.remove_by_uuid(obj.uuid)
@@ -530,6 +539,6 @@ class ObjectIndex(Plugin):
         """
 
         if GlobalLock.exists("scan_index"):
-            raise FilterException("index rebuild in progress - try again later")
+            raise FilterException(C.make_error('INDEXING', "base"))
 
         return self.db.index.find(query, conditions)
