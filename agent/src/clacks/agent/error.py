@@ -50,8 +50,6 @@ class ClacksErrorHandler(Plugin):
 
     @staticmethod
     def make_error(code, topic=None, **kwargs):
-        # Convert to real message
-        detail = ""
 
         # Add topic to make it usable inside of the error messages
         if not kwargs:
@@ -65,7 +63,7 @@ class ClacksErrorHandler(Plugin):
         env = Environment.getInstance()
         db = env.get_mongo_db('clacks').errors
         data = dict(code=code, topic=topic, text=detail,
-                args=args, kwargs=kwargs, trace=traceback.format_stack(),
+                kwargs=kwargs, trace=traceback.format_stack(),
                 timestamp=datetime.now(), user=None)
         __id = str(db.save(data))
 
