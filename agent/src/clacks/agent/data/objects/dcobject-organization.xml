@@ -60,7 +60,6 @@
       <Type>OrganizationalRoleContainer</Type>
       <Type>AclRole</Type>
       <Type>PhoneContainer</Type>
-      <Type>Repository</Type>
     </Container>
     <BaseObject>true</BaseObject>
   </Object>
