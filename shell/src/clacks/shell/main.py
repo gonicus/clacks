@@ -134,7 +134,7 @@ class MyConsole(code.InteractiveConsole):
                 if info['topic']:
                     print info['text'] + detail + ": " + info['topic']
                 else:
-                    print info['text'] + detail + ": " + info['topic']
+                    print info['text'] + detail
 
             else:
                 print err
