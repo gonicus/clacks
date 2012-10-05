@@ -54,7 +54,7 @@ msgstr "Anmeldung des Benutzers '%s' ist fehlgeschlagen"
 
 #: src/clacks/shell/main.py:403
 msgid "Clacks infrastructure shell. Use Ctrl+D to exit."
-msgstr "GOsa-Dienst-Schnittstelle. Benutzen Sie Strg+D zum Beenden."
+msgstr "Clacks-Infrastruktur-Interpreter. Benutzen Sie Strg+D zum Beenden."
 
 #: src/clacks/shell/main.py:411
 msgid "Closing session"
