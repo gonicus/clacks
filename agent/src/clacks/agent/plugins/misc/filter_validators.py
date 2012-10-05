@@ -44,7 +44,6 @@ class IsExistingDN(ElementComparator):
                     detail=N_("DN '%(dn)s' does not exist"),
                     dn=dn))
 
-
         return len(errors) == 0, errors
 
 
