@@ -18,9 +18,10 @@ import datetime
 from itertools import permutations
 from logging import getLogger
 from clacks.common import Environment
+from clacks.common.utils import is_uuid
+from clacks.common.components.jsonrpc_utils import Binary
 from clacks.agent.ldap_utils import LDAPHandler
 from clacks.agent.objects.backend import ObjectBackend, EntryNotFound, EntryNotUnique, RDNNotSpecified, DNGeneratorError
-from clacks.common.components.jsonrpc_utils import Binary
 
 
 class LDAP(ObjectBackend):
@@ -142,7 +143,7 @@ class LDAP(ObjectBackend):
         return [unicode(x.decode('utf-8')) for x in dict(res).keys()]
 
     def exists(self, misc):
-        if self.is_uuid(misc):
+        if is_uuid(misc):
             fltr_tpl = "%s=%%s" % self.uuid_entry
             fltr = ldap.filter.filter_format(fltr_tpl, [misc])
 

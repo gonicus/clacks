@@ -61,8 +61,6 @@ SCOPE_BASE = ldap.SCOPE_BASE
 SCOPE_ONE = ldap.SCOPE_ONELEVEL
 SCOPE_SUB = ldap.SCOPE_SUBTREE
 
-_is_uuid = re.compile(r'^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$')
-
 
 def load(attr, element, default=None):
     """

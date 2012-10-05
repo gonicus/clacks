@@ -35,6 +35,7 @@ from lxml import etree
 from ldap.dn import str2dn, dn2str
 from logging import getLogger
 from clacks.common import Environment
+from clacks.common.utils import is_uuid
 from clacks.common.components import PluginRegistry
 from bson.binary import Binary
 
@@ -71,7 +72,7 @@ class ObjectProxy(object):
     __property_map = None
     __foreign_attrs = None
 
-    def __init__(self, dn_or_base, what=None, user=None):
+    def __init__(self, _id, what=None, user=None):
         self.__env = Environment.getInstance()
         self.__log = getLogger(__name__)
         self.__factory = ObjectFactory.getInstance()
@@ -88,6 +89,16 @@ class ObjectProxy(object):
         self.__method_type_map = {}
         self.__property_map = {}
         self.__foreign_attrs = []
+
+        # Do we have a uuid when opening?
+        dn_or_base = _id
+        if is_uuid(_id):
+            index = PluginRegistry.getInstance("ObjectIndex")
+            res = index.search({'_uuid': _id}, {'dn': 1})
+            if res.count() == 1:
+                dn_or_base = res[0]['dn']
+            else:
+                raise ProxyException("object '%s' not found" % _id)
 
         # Load available object types
         object_types = self.__factory.getObjectTypes()

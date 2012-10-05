@@ -14,11 +14,12 @@ License:
 # -*- coding: utf-8 -*-
 import re
 import uuid
-import datetime
-from clacks.agent.objects.backend import ObjectBackend, DNGeneratorError, RDNNotSpecified, BackendError
-from logging import getLogger
-from clacks.common import Environment
 import ldap
+import datetime
+from logging import getLogger
+from clacks.agent.objects.backend import ObjectBackend, DNGeneratorError, RDNNotSpecified, BackendError
+from clacks.common import Environment
+from clacks.common.utils import is_uuid
 
 
 class MongoDB(ObjectBackend):
@@ -208,7 +209,7 @@ class MongoDB(ObjectBackend):
         Check whether the given uuid or dn exists
         """
 
-        if self.is_uuid(misc):
+        if is_uuid(misc):
             return bool(self.db.find_one({'_uuid': misc}, {'_uuid': 1}))
         else:
             return bool(self.db.find_one({'dn': misc}, {'_uuid': 1}))

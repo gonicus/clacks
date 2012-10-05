@@ -35,7 +35,6 @@ class BackendError(Exception):
 
 
 class ObjectBackend(object):
-    _is_uuid = re.compile(r'^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$')
 
     def dn2uuid(self, dn):
         """
@@ -108,9 +107,6 @@ class ObjectBackend(object):
         Retract extension from base object specified by UUID.
         """
         raise NotImplementedError("object backend is missing retract()")
-
-    def is_uuid(self, uuid):
-        return bool(self._is_uuid.match(uuid))
 
     def is_uniq(self, attr, value):
         """
