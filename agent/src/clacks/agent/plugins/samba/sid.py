@@ -1,15 +1,10 @@
 # -*- coding: utf-8 -*-
 import re
-import gettext
-from pkg_resources import resource_filename #@UnresolvedImport
+from clacks.common.utils import N_
 from clacks.common import Environment
 from clacks.agent.objects.filter import ElementFilter
 from clacks.common.components import PluginRegistry
 from clacks.agent.objects.comparator import ElementComparator
-
-# Include locales
-t = gettext.translation('messages', resource_filename("clacks.agent", "locale"), fallback=True)
-_ = t.ugettext
 
 
 class CheckSambaSIDList(ElementComparator):
@@ -25,7 +20,8 @@ class CheckSambaSIDList(ElementComparator):
         if "sambaSID" in all_props and len(all_props["sambaSID"]["value"]):
             sid = all_props["sambaSID"]["value"][0]
             if sid in value:
-                errors.append(_("Cannot use ourselves as member for the SID list!"))
+                errors.append(dict(index=value.index(sid),
+                        detail=N_("recursive nesting not supported")))
 
         return len(errors) == 0, errors
 
