@@ -10,7 +10,6 @@
 #
 # See the LICENSE file in the project's top-level directory for details.
 
-# -*- coding: utf-8 -*-
 import re
 import uuid
 import ldap
