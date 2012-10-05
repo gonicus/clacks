@@ -100,3 +100,9 @@ class ClacksErrorHandler(Plugin):
         # Memorize which module to get translations from
         for k in codes.keys():
             ClacksErrorHandler._i18n_map[k] = module
+
+
+# Register basic errors
+ClacksErrorHandler.register_codes(dict(
+    NOT_IMPLEMENTED=N_("Method %(method)s is not implemented"),
+    ))
