@@ -40,8 +40,9 @@ class ClacksErrorHandler(Plugin):
             res['text'] = t.ugettext(ClacksErrorHandler._codes[res['code']])
 
             # Process details by translating detail text
-            for detail in res['details']:
-                detail['detail'] = t.ugettext(detail['detail']) % detail
+            if res['details']:
+                for detail in res['details']:
+                    detail['detail'] = t.ugettext(detail['detail']) % detail
 
         # Fill keywords
         res['text'] % res['kwargs']
