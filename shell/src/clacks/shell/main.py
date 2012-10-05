@@ -33,8 +33,8 @@
  mapped to the global namespace, additionally. Try
  clacks.help() for a list of methods.
 """
-from __future__ import print_function
 import sys
+import re
 import traceback
 import code
 import getopt
@@ -117,18 +117,30 @@ class MyConsole(code.InteractiveConsole):
                 err = e.error["error"]
             except TypeError:
                 err = str(e)
-            if isinstance(err, ListType):
-                print(err[0] % tuple(err[1:]))
+
+            # Resolve error details if supplied
+            error_id = re.match(r'^<([^>]+)>.*$', err)
+            if error_id:
+                info = self.proxy.get_error(error_id.groups()[0])
+                detail = ""
+                if info['details']:
+                    detail = " - %s [%s]" % (info['details']['detail'], info['details']['index'])
+                if info['topic']:
+                    print info['text'] + detail + ": " + info['topic']
+                else:
+                    print info['text'] + detail + ": " + info['topic']
+
             else:
-                print(err.capitalize())
+                print err
+
             if softspace(sys.stdout, 0):
-                print()
+                print
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info() #@UnusedVariable
             self.showtraceback()
         else:
             if softspace(sys.stdout, 0):
-                print()
+                print
 
 
 class ClacksService():
@@ -149,17 +161,17 @@ class ClacksService():
         service_uri = service_uri.strip()
 
         if len(service_uri) <= 0:
-            print(_("Searching service provider..."))
+            print _("Searching service provider...")
             try:
                 service_uri = ZeroconfClient.discover(['_amqps._tcp', '_amqp._tcp',
                     '_https._tcp', '_http._tcp'], domain=self.domain)[0]
 
             except DBusException as e:
-                print(_("DBUS error: %s") % str(e))
+                print _("DBUS error: %s") % str(e)
                 sys.exit(1)
 
             except Exception as e:
-                print(e.__dict__)
+                print e.__dict__
 
         # Test if one argument is still needed.
         if len(service_uri) <= 0:
@@ -174,12 +186,11 @@ class ClacksService():
         # If we have still no service host, quit, because the connect will fail
         # pylint: disable-msg=E1101
         if not url:
-            print(_("Need at least a service URI!"))
+            print _("Need at least a service URI!")
             sys.exit(1)
 
         # TRANSLATOR: Conected to URL, i.e. https://amqp.local:8080/rpc
-        print(_("Connected to %s://%s:%s/%s") %
-            (url['scheme'], url['host'], url['port'], url['path']))
+        print _("Connected to %s://%s:%s/%s") % (url['scheme'], url['host'], url['port'], url['path'])
 
         # Check weather to use method parameters or the URI elements.
         # If URI username is set and the method username is not set
@@ -222,16 +233,16 @@ class ClacksService():
             self.proxy = JSONServiceProxy(connection)
 
         else:
-            print(_("The selected protocol is not supported!"))
+            print _("The selected protocol is not supported!")
             sys.exit(1)
 
         # Try to log in
         try:
             if not self.proxy.login(username, password):
-                print(_("Login of user '%s' failed") % username)
+                print _("Login of user '%s' failed") % username
                 sys.exit(1)
         except Exception, e:
-            print(e)
+            print e
             sys.exit(1)
 
         return connection, username, password
@@ -244,7 +255,7 @@ class ClacksService():
             else:
                 sys.exit(1)
         except Exception, e:
-            print(e)
+            print e
             sys.exit(1)
 
     def help(self):
@@ -274,23 +285,23 @@ class ClacksService():
         keylist = mlist.keys()
         keylist.sort()
         for module in keylist:
-            print(module.upper())
-            print("=" * len(module))
+            print module.upper()
+            print "=" * len(module)
             mlist[module].sort()
             for mset in mlist[module]:
-                print("  %s(%s)\n%s" % mset)
+                print "  %s(%s)\n%s" % mset
 
 
 def main(argv=sys.argv):
 
     # Print help/usage and exit
     if '-h' in argv or '--help' in argv:
-        print(__doc__)
+        print __doc__
         return 0
     try:
         opts, args = getopt.getopt(argv[1:], "u:p:c:", ["user=", "password=", "command="])
     except getopt.GetoptError:
-        print(__doc__)
+        print __doc__
         sys.exit(2)
 
     service_uri = ''
@@ -316,7 +327,7 @@ def main(argv=sys.argv):
     try:
         service_uri, username, password = service.connect(service_uri, username, password)
     except KeyboardInterrupt:
-        print()
+        print
         sys.exit(1)
 
     # Prepare to enter the interactive console.
@@ -387,15 +398,17 @@ for i in clacks.getMethods().keys():
             try:
                 if not pyconsole:
                     pyconsole = MyConsole(context)
+                    pyconsole.proxy = service.proxy
                     pyconsole.runcode(startup)
                     pyconsole.interact(_("Clacks infrastructure shell. Use Ctrl+D to exit."))
                 else:
                     mycode = pyconsole.getLastCode()
                     pyconsole = MyConsole(context)
+                    pyconsole.proxy = service.proxy
                     pyconsole.runcode(mycode)
                     pyconsole.interact("")
 
-                print(_("Closing session"))
+                print _("Closing session")
                 service.proxy.logout()
                 letRun = 0
 
@@ -406,7 +419,7 @@ for i in clacks.getMethods().keys():
                     context = {'clacks': service, 'service': service.proxy,
                         '__name__': '__console__', '__doc__': None}
                 else:
-                    print(e)
+                    print e
                     sys.exit(1)
     return 0
 
