@@ -22,6 +22,9 @@ except ImportError:
         from StringIO import StringIO
 
 
+_is_uuid = re.compile(r'^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$')
+
+
 def stripNs(data):
     """
     **stripNS** removes the namespace from a plain XML string.
@@ -128,6 +131,10 @@ def N_(message):
     ``Return``: Target XML schema processed by stylesheet as string.
     """
     return message
+
+
+def is_uuid(uuid):
+    return bool(_is_uuid.match(uuid))
 
 
 def get_timezone_delta():

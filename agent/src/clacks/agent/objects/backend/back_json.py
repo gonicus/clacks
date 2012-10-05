@@ -7,11 +7,12 @@ import os
 import re
 import uuid
 import datetime
-from clacks.agent.objects.backend import ObjectBackend, DNGeneratorError, RDNNotSpecified, BackendError
+import ldap
 from json import loads, dumps
 from logging import getLogger
 from clacks.common import Environment
-import ldap
+from clacks.common.utils import is_uuid
+from clacks.agent.objects.backend import ObjectBackend, DNGeneratorError, RDNNotSpecified, BackendError
 
 
 class JSON(ObjectBackend):
@@ -255,7 +256,7 @@ class JSON(ObjectBackend):
         Check whether the given uuid or dn exists
         """
         json = self.__load()
-        if self.is_uuid(misc):
+        if is_uuid(misc):
             return misc in json['objects']
         else:
             for uuid in json:

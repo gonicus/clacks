@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import copy
-import re
 import zope.event
 import pkg_resources
 import os
@@ -9,7 +8,7 @@ from lxml.builder import E
 from logging import getLogger
 from zope.interface import Interface, implements
 from clacks.common import Environment
-from clacks.common.utils import N_
+from clacks.common.utils import N_, is_uuid
 from clacks.common.components import PluginRegistry
 from clacks.agent.error import ClacksErrorHandler as C
 from clacks.agent.objects.backend.registry import ObjectBackendRegistry
@@ -43,9 +42,6 @@ C.register_codes(dict(
     FILTER_MISSING_KEY=N_("Missing key '%(key)s' after processing filter '%(filter)s'"),
     FILTER_NO_LIST=N_("Filter '%(filter)s' did not return a %(type)s value - a list was expected"),
 ))
-
-
-_is_uuid = re.compile(r'^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$')
 
 
 class ObjectException(Exception):
@@ -109,7 +105,7 @@ class Object(object):
         # Initialize object using a DN
         if where:
             if mode == "create":
-                if _is_uuid.match(where):
+                if is_uuid(where):
                     raise ValueError(C.make_error('CREATE_NEEDS_BASE', "base", location=where))
                 self.orig_dn = self.dn = where
 
@@ -156,7 +152,7 @@ class Object(object):
 
         """
         # Generate missing values
-        if _is_uuid.match(where):
+        if is_uuid(where):
             #pylint: disable=E1101
             if self._base_object:
                 self.dn = self._reg.uuid2dn(self._backend, where)

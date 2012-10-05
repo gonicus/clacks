@@ -11,8 +11,8 @@ from clacks.agent.objects.backend import ObjectBackend
 from json import loads, dumps
 from logging import getLogger
 from clacks.common import Environment
+from clacks.common.utils import is_uuid
 from itertools import permutations
-
 from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, BLOB, DateTime
 from sqlalchemy.sql import and_
 
@@ -300,7 +300,7 @@ class SQL(ObjectBackend):
         Check whether the given uuid or dn exists
         """
 
-        if self.is_uuid(misc):
+        if is_uuid(misc):
             search = self.objects.select(self.objects.c.uuid == misc).execute().first()
         else:
             search = self.objects.select(self.objects.c.dn == misc).execute().first()
