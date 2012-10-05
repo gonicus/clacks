@@ -42,7 +42,7 @@ from clacks.agent.lock import GlobalLock
 # Register the errors handled  by us
 C.register_codes(dict(
     OBJECT_EXISTS=N_("Object with UUID %(uuid)s already exists"),
-    OBJECT_NOT_FOUND=N_("Cannot find object with UUID %(uuid)s"),
+    OBJECT_NOT_FOUND=N_("Cannot find object %(id)s"),
     INDEXING=N_("index rebuild in progress - try again later")
 ))
 

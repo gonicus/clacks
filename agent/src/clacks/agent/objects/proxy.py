@@ -54,7 +54,6 @@ from clacks.agent.error import ClacksErrorHandler as C
 
 # Register the errors handled  by us
 C.register_codes(dict(
-    OBJECT_NOT_FOUND=N_("Object '%(id)s' not found"),
     OBJECT_UNKNOWN_TYPE=N_("Unknown object type '%(type)s'"),
     OBJECT_EXTENSION_NOT_ALLOWED=N_("Extension '%(extension)s' not allowed"),
     OBJECT_EXTENSION_DEFINED=N_("Extension '%(extension)s' already there"),
