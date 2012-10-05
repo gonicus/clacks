@@ -1,12 +1,18 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# This file is part of the clacks framework.
+#
+#  http://clacks-project.org
+#
+# Copyright:
+#  (C) 2010-2012 GONICUS GmbH, Germany, http://www.gonicus.de
+#
+# License:
+#  GPL-2: http://www.gnu.org/licenses/gpl-2.0.html
+#
+# See the LICENSE file in the project's top-level directory for details.
 """
- This code is part of GOsa (http://www.gosa-project.org)
- Copyright (C) 2009, 2010 GONICUS GmbH
-
- ID: $$Id: main.py 1357 2010-11-15 09:12:54Z cajus $$
-
- See LICENSE for more information about the licensing.
+ Clacks Shell
+ ------------
 
  There are three usage scenarios:
 
