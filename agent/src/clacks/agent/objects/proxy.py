@@ -641,6 +641,7 @@ class ObjectProxy(object):
                 raise ProxyException(C.make_error('OBJECT_UUID_MISMATCH', None, b_uuid=self.__base.uuid, e_uuid=extension.uuid))
             if not extension.uuid:
                 extension.uuid = self.__base.uuid
+            extension.dn = self.__base.dn
             extension.commit()
 
         # Skip further actions if we're in create mode
