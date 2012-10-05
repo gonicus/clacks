@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from pkg_resources import resource_filename #@UnresolvedImport
 from clacks.common.components import PluginRegistry
 from clacks.common.utils import N_
 from clacks.agent.objects.comparator import ElementComparator

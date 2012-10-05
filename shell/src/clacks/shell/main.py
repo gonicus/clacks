@@ -46,7 +46,6 @@ import gettext
 import textwrap
 import locale
 import thread
-from types import ListType
 from urllib2 import HTTPError
 from pkg_resources import resource_filename #@UnresolvedImport
 from dbus.exceptions import DBusException
