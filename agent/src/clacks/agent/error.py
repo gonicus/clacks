@@ -57,7 +57,7 @@ class ClacksErrorHandler(Plugin):
                     detail['detail'] = t.ugettext(detail['detail']) % detail
 
         # Fill keywords
-        res['text'] % res['kwargs']
+        res['text'] = res['text'] % res['kwargs']
         res['_id'] = _id
 
         # Remove the entry

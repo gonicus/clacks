@@ -127,7 +127,7 @@ class MyConsole(code.InteractiveConsole):
             # Resolve error details if supplied
             error_id = re.match(r'^<([^>]+)>.*$', err)
             if error_id:
-                info = self.proxy.get_error(error_id.groups()[0])
+                info = self.proxy.get_error(error_id.groups()[0], ".".join(locale.getdefaultlocale()))
                 detail = ""
                 if info['details']:
                     detail = " - %s [%s]" % (info['details']['detail'], info['details']['index'])
