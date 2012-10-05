@@ -167,6 +167,23 @@ class JSONRPCObjectMapper(Plugin):
 
         return getattr(objdsc['object']['object'], method)(*args)
 
+    @Command(needsUser=True, __help__=N_("Reloads the object"))
+    def reloadObject(self, user, instance_uuid):
+        """
+        Opens a copy of the object given as instance_uuid and
+        closes the original instance.
+        """
+        res = self.db.object_pool.find({'uuid': instance_uuid})
+        if res:
+            item = res[0]
+            oid = item['object']['oid']
+            uuid = item['object']['uuid']
+            new_obj = self.openObject(user, oid,  uuid)
+            return new_obj
+        else:
+            raise ValueError("reference %s not found" % ref)
+
+
     @Command(needsUser=True, __help__=N_("Instantiate object and place it on stack"))
     def openObject(self, user, oid, *args, **kwargs):
         """
@@ -244,6 +261,8 @@ class JSONRPCObjectMapper(Plugin):
         propvals = {}
         if properties:
             propvals = dict([(p, getattr(obj, p)) for p in properties])
+
+        propvals['uuid'] = obj.uuid
 
         # Build result
         result = {"__jsonclass__": ["json.JSONObjectFactory", [obj_type.__name__, ref, obj.dn, oid, methods, properties]]}
