@@ -32,7 +32,7 @@ class CheckSambaSIDList(ElementComparator):
             sid = all_props["sambaSID"]["value"][0]
             if sid in value:
                 errors.append(dict(index=value.index(sid),
-                        detail=N_("recursive nesting not supported")))
+                        detail=N_("recursive nesting not allowed")))
 
         return len(errors) == 0, errors
 

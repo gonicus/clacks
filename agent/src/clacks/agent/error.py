@@ -105,4 +105,5 @@ class ClacksErrorHandler(Plugin):
 # Register basic errors
 ClacksErrorHandler.register_codes(dict(
     NOT_IMPLEMENTED=N_("Method %(method)s is not implemented"),
+    NO_SUCH_RESOURCE=N_("Cannot read resource '%(resource)s'"),
     ))
