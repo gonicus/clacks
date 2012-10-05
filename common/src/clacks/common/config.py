@@ -1,4 +1,15 @@
-# -*- coding: utf-8 -*-
+# This file is part of the clacks framework.
+#
+#  http://clacks-project.org
+#
+# Copyright:
+#  (C) 2010-2012 GONICUS GmbH, Germany, http://www.gonicus.de
+#
+# License:
+#  GPL-2: http://www.gnu.org/licenses/gpl-2.0.html
+#
+# See the LICENSE file in the project's top-level directory for details.
+
 """
 The configuration module is the central place where the clacks configuration
 can be queried. Using the configuration module requires the presence of the
