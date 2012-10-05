@@ -411,8 +411,14 @@ class ObjectIndex(Plugin):
             # Try to find the affected DN
             e = self.db.index.find_one({'_uuid': _uuid}, {'dn': 1, '_last_changed': 1})
             if e:
-                _dn = e['dn']
-                _last_changed = e['_last_changed']
+
+                # New pre-events don't have a dn. Just skip is in this case...
+                if 'dn' in e:
+                    _dn = e['dn']
+                    _last_changed = e['_last_changed']
+                else:
+                    _dn = "not known yet"
+                    _last_changed = datetime.datetime.now()
 
             if event.reason == "post remove":
                 self.log.debug("removing object index for %s" % _uuid)
@@ -521,6 +527,15 @@ class ObjectIndex(Plugin):
         ``Return``: True/False
         """
         return self.db.index.find_one({'_uuid': uuid}, {'_uuid': 1}) != None
+
+    @Command(__help__=N_("Get list of defined base object types."))
+    def getBaseObjectTypes(self):
+        ret = []
+        for k, v in self.factory.getObjectTypes().items():
+            if v['base'] == True:
+                ret.append(k)
+
+        return ret
 
     def search(self, query, conditions):
         """

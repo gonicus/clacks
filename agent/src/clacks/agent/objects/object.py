@@ -483,8 +483,7 @@ class Object(object):
         if self._base_object and self._mode == "create":
             base_type = self.get_object_type_by_dn(self.dn)
             if not base_type:
-                raise
-            ObjectException(C.make_error('OBJECT_MODE_BASE_AVAILABLE=', None, mode=self._mode))
+                raise ObjectException(C.make_error('OBJECT_MODE_BASE_AVAILABLE', None, mode=self._mode))
 
             if self.__class__.__name__ not in self._objectFactory.getAllowedSubElementsForObject(base_type):
                 raise ObjectException(C.make_error('OBJECT_NOT_SUB_FOR', None,
@@ -634,17 +633,6 @@ class Object(object):
             # Skip NULL backend. Nothing to save, anyway.
             if key == "NULL":
                 continue
-
-            # Skip unchanged values that found their way in thru unclean filter
-            # definitions.
-            if value:
-                n_value = {}
-                for a_key, a_value in value.items():
-                    if a_value['orig'] == a_value['value']:
-                        continue
-                    n_value[a_key] = a_value
-
-                value = n_value
 
             tmp[key] = value
 
