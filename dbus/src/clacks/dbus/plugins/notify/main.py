@@ -1,3 +1,15 @@
+# This file is part of the clacks framework.
+#
+#  http://clacks-project.org
+#
+# Copyright:
+#  (C) 2010-2012 GONICUS GmbH, Germany, http://www.gonicus.de
+#
+# License:
+#  GPL-2: http://www.gnu.org/licenses/gpl-2.0.html
+#
+# See the LICENSE file in the project's top-level directory for details.
+
 """
 Clacks D-Bus Notification Plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -6,7 +18,6 @@ This plugin allows to notify a single or all users on the client.
 
 """
 
-# -*- coding: utf-8 -*-
 import dbus.service
 from clacks.common import Environment
 from clacks.common.components import Plugin

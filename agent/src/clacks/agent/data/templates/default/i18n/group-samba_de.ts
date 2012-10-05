@@ -19,39 +19,39 @@
         <translation>Domäne</translation>
     </message>
     <message>
-        <location filename="../group-samba.ui" line="45"/>
+        <location filename="../group-samba.ui" line="48"/>
         <source>Group type</source>
         <translation>Gruppen-Typ</translation>
     </message>
     <message>
-        <location filename="../group-samba.ui" line="55"/>
+        <location filename="../group-samba.ui" line="61"/>
         <source>Display name</source>
         <translation>Angezeigter Name</translation>
     </message>
     <message>
-        <location filename="../group-samba.ui" line="70"/>
+        <location filename="../group-samba.ui" line="99"/>
         <source>Nested groups</source>
         <translation>Verschachtelte Gruppen</translation>
     </message>
     <message>
-        <location filename="../group-samba.ui" line="82"/>
+        <location filename="../group-samba.ui" line="111"/>
         <source>Edit nested groups</source>
         <translation>Verschachtelte Gruppen bearbeiten</translation>
     </message>
     <message>
-        <location filename="../group-samba.ui" line="86"/>
+        <location filename="../group-samba.ui" line="115"/>
         <source>Name</source>
         <comment>cn</comment>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../group-samba.ui" line="91"/>
+        <location filename="../group-samba.ui" line="120"/>
         <source>Description</source>
         <comment>description</comment>
         <translation>Beschreibung</translation>
     </message>
     <message>
-        <location filename="../group-samba.ui" line="96"/>
+        <location filename="../group-samba.ui" line="125"/>
         <source>SID</source>
         <comment>sambaSID</comment>
         <translation>SID</translation>
@@ -67,9 +67,9 @@
         <translation type="obsolete">Beschreibung</translation>
     </message>
     <message>
+        <location filename="../group-samba.ui" line="84"/>
         <source>SID</source>
-        <extracomment>sambaSID</extracomment>
-        <translation type="obsolete">SID</translation>
+        <translation type="unfinished">SID</translation>
     </message>
 </context>
 </TS>

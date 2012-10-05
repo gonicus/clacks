@@ -1,3 +1,15 @@
+# This file is part of the clacks framework.
+#
+#  http://clacks-project.org
+#
+# Copyright:
+#  (C) 2010-2012 GONICUS GmbH, Germany, http://www.gonicus.de
+#
+# License:
+#  GPL-2: http://www.gnu.org/licenses/gpl-2.0.html
+#
+# See the LICENSE file in the project's top-level directory for details.
+
 import traceback
 import gettext
 from datetime import datetime
@@ -88,3 +100,10 @@ class ClacksErrorHandler(Plugin):
         # Memorize which module to get translations from
         for k in codes.keys():
             ClacksErrorHandler._i18n_map[k] = module
+
+
+# Register basic errors
+ClacksErrorHandler.register_codes(dict(
+    NOT_IMPLEMENTED=N_("Method %(method)s is not implemented"),
+    NO_SUCH_RESOURCE=N_("Cannot read resource '%(resource)s'"),
+    ))

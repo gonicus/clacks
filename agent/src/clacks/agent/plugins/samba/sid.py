@@ -1,4 +1,15 @@
-# -*- coding: utf-8 -*-
+# This file is part of the clacks framework.
+#
+#  http://clacks-project.org
+#
+# Copyright:
+#  (C) 2010-2012 GONICUS GmbH, Germany, http://www.gonicus.de
+#
+# License:
+#  GPL-2: http://www.gnu.org/licenses/gpl-2.0.html
+#
+# See the LICENSE file in the project's top-level directory for details.
+
 import re
 from clacks.common.utils import N_
 from clacks.common import Environment
@@ -21,7 +32,7 @@ class CheckSambaSIDList(ElementComparator):
             sid = all_props["sambaSID"]["value"][0]
             if sid in value:
                 errors.append(dict(index=value.index(sid),
-                        detail=N_("recursive nesting not supported")))
+                        detail=N_("recursive nesting not allowed")))
 
         return len(errors) == 0, errors
 

@@ -1,4 +1,15 @@
-# -*- coding: utf-8 -*-
+# This file is part of the clacks framework.
+#
+#  http://clacks-project.org
+#
+# Copyright:
+#  (C) 2010-2012 GONICUS GmbH, Germany, http://www.gonicus.de
+#
+# License:
+#  GPL-2: http://www.gnu.org/licenses/gpl-2.0.html
+#
+# See the LICENSE file in the project's top-level directory for details.
+
 import copy
 import zope.event
 import pkg_resources
@@ -436,7 +447,7 @@ class Object(object):
                     rc = include.get("location")
                     location = os.path.join(os.path.dirname(path), rc)
                     if not os.path.exists(location):
-                        raise Exception("Cannot read resource file '%s'" % location)
+                        raise IOError(C.make_error("NO_SUCH_RESOURCE", None, resource=location))
 
                     res = None
                     with open(location, "r") as f:

@@ -1,4 +1,15 @@
-# -*- coding: utf-8 -*-
+# This file is part of the clacks framework.
+#
+#  http://clacks-project.org
+#
+# Copyright:
+#  (C) 2010-2012 GONICUS GmbH, Germany, http://www.gonicus.de
+#
+# License:
+#  GPL-2: http://www.gnu.org/licenses/gpl-2.0.html
+#
+# See the LICENSE file in the project's top-level directory for details.
+
 import pkg_resources
 import gettext
 import math
@@ -76,8 +87,8 @@ class DoingReportRenderer(BaseRenderer):
         # Assemble new entry for TB
         date = datetime.strftime(datetime.utcnow(), "%Y.%m.%d")
         minutes = int(math.ceil(float(event["Duration"]) / 60))
-        details = u"Bitte ergänzen"
-        comment = "Telefonat mit %s" % contact_name or contact_phone or company_name or company_phone
+        details = "Please amend"
+        comment = "Phone call with %s" % contact_name or contact_phone or company_name or company_phone
 
         if customer_id:
             sess.execute("""
