@@ -183,6 +183,47 @@ class JSONRPCObjectMapper(Plugin):
         else:
             raise ValueError("reference %s not found" % ref)
 
+    @Command(needsUser=True, __help__=N_("Removes the given object"))
+    def removeObject(self, user, oid, *args, **kwargs):
+        """
+        Open object on the agent side and calls its remove method
+
+        ================= ==========================
+        Parameter         Description
+        ================= ==========================
+        oid               OID of the object to create
+        args/kwargs       Arguments to be used when getting an object instance
+        ================= ==========================
+
+        ``Return``: True
+        """
+
+        if not self.__can_oid_be_handled_locally(oid):
+            proxy = self.__get_proxy_by_oid(oid)
+            return proxy.removeObject(oid, *args)
+
+        # In case of "object" we want to check the lock
+        if oid == 'object':
+            lck = self.db.object_pool.find_one({'$or': [
+                {'object.uuid': args[0]},
+                {'object.dn': args[0]}]},
+                {'user': 1, 'created': 1})
+            #TODO: re-enable locking
+            #if lck:
+            #    raise Exception('Object %s has been opened by "%s" on %s' % (
+            #        args[0],
+            #        lck['user'],
+            #        lck['created'].strftime("%Y-%m-%d (%H:%M:%S)")
+            #        ))
+
+        # Use oid to find the object type
+        obj_type = self.__get_object_type(oid)
+
+        # Make object instance and store it
+        kwargs['user'] = user
+        obj = obj_type(*args, **kwargs)
+        obj.remove()
+        return True
 
     @Command(needsUser=True, __help__=N_("Instantiate object and place it on stack"))
     def openObject(self, user, oid, *args, **kwargs):
