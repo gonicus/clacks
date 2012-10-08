@@ -20,6 +20,7 @@ C.register_codes(dict(
     FILTER_NO_INSTANCE=N_("No filter instance for '%(filter)s' found")
     ))
 
+
 def get_filter(name):
     for entry in pkg_resources.iter_entry_points("object.filter"):
         module = entry.load()

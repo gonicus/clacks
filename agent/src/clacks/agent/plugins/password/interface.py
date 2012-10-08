@@ -10,6 +10,7 @@
 #
 # See the LICENSE file in the project's top-level directory for details.
 
+
 class PasswordMethod(object):
     """
     The interface all password-methods should use.
