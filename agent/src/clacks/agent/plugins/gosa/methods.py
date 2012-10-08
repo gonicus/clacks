@@ -448,7 +448,7 @@ class GuiMethods(Plugin):
                 res[dn]['relevance'] = relevance
             return
 
-        entry = {'tag': item['_type'], 'relevance': relevance}
+        entry = {'tag': item['_type'], 'relevance': relevance, 'uuid': item['_uuid']}
         for k, v in self.__search_aid['mapping'][item['_type']].items():
             if k:
                 if k == "icon":
