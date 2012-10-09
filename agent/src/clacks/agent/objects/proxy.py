@@ -43,6 +43,7 @@ will list the available extension types for that specific object.
 import pkg_resources
 import re
 import time
+import zope.event
 from lxml import etree
 from ldap.dn import str2dn, dn2str
 from logging import getLogger
@@ -463,6 +464,8 @@ class ObjectProxy(object):
                     self.__current_user, self.__base.dn, topic_user, "c", new_base))
                 raise ACLException(C.make_error('PERMISSION_MOVE', None, source=self.__base.dn, target=new_base))
 
+        zope.event.notify(ObjectChanged("pre object move", self.__base))
+
         if recursive:
             try:
                 old_base = self.__base.dn
@@ -524,6 +527,7 @@ class ObjectProxy(object):
                     obj = self.__factory.getObject(ctype, new_cdn)
                     obj.simulate_move(cdn)
 
+                zope.event.notify(ObjectChanged("post object move", self.__base))
                 return True
 
             except Exception as e:
@@ -537,7 +541,11 @@ class ObjectProxy(object):
             if len(self.__factory.getObjectChildren(self.__base.dn)):
                 raise ProxyException(C.make_error('OBJECT_HAS_CHILDREN', None, target=self.__base.dn))
 
-        return self.__base.move(new_base)
+        res = self.__base.move(new_base)
+        if res:
+            zope.event.notify(ObjectChanged("post object move", self.__base))
+
+        return res
 
     def remove(self, recursive=False):
         """
@@ -554,6 +562,8 @@ class ObjectProxy(object):
                     self.__log.debug("user '%s' has insufficient permissions to remove %s, required is %s:%s" % (
                         self.__current_user, self.__base.dn, topic, 'd'))
                     raise ACLException(C.make_error('PERMISSION_REMOVE', None, target=self.__base.dn))
+
+        zope.event.notify(ObjectChanged("pre object remove", self.__base))
 
         if recursive:
 
@@ -582,6 +592,8 @@ class ObjectProxy(object):
         self.__base.remove_refs()
         self.__base.remove()
 
+        zope.event.notify(ObjectChanged("post object remove", self.__base))
+
     def commit(self):
 
         # Check create permissions
@@ -591,6 +603,8 @@ class ObjectProxy(object):
                 self.__log.debug("user '%s' has insufficient permissions to create %s, required is %s:%s" % (
                     self.__current_user, self.__base.dn, topic, 'c'))
                 raise ACLException(C.make_error('PERMISSION_CREATE', None, target=self.__base.dn))
+
+        zope.event.notify(ObjectChanged("pre object %s" % self.__base_mode, self.__base))
 
         # Gather information about children
         old_base = self.__base.dn
@@ -683,6 +697,10 @@ class ObjectProxy(object):
                     obj.simulate_move(cdn)
 
             self.dn = self.__base.dn
+
+            zope.event.notify(ObjectChanged("post object move", self.__base))
+
+        zope.event.notify(ObjectChanged("post object %s" % self.__base_mode, self.__base))
 
     def __getattr__(self, name):
 
@@ -904,4 +922,5 @@ class ObjectProxy(object):
 
 
 from .factory import ObjectFactory
+from .object import ObjectChanged
 from clacks.agent.acl import ACLResolver, ACLException

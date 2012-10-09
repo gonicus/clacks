@@ -174,7 +174,7 @@ class JSONRPCObjectMapper(Plugin):
         closes the original instance.
         """
         res = self.db.object_pool.find({'uuid': instance_uuid})
-        if res:
+        if res.count():
             item = res[0]
             oid = item['object']['oid']
             uuid = item['object']['uuid']

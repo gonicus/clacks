@@ -431,26 +431,26 @@ class ObjectIndex(Plugin):
                     _dn = "not known yet"
                     _last_changed = datetime.datetime.now()
 
-            if event.reason == "post remove":
+            if event.reason == "post object remove":
                 self.log.debug("removing object index for %s" % _uuid)
                 self.remove_by_uuid(_uuid)
                 change_type = "remove"
 
-            if event.reason == "post move":
+            if event.reason == "post object move":
                 self.log.debug("updating object index for %s" % _uuid)
                 obj = ObjectProxy(event.dn)
                 self.update(obj)
                 _dn = obj.dn
                 change_type = "move"
 
-            if event.reason == "post create":
+            if event.reason == "post object create":
                 self.log.debug("creating object index for %s" % _uuid)
                 obj = ObjectProxy(event.dn)
                 self.insert(obj)
                 _dn = obj.dn
                 change_type = "create"
 
-            if event.reason in ["post retract", "post update", "post extend"]:
+            if event.reason in ["post retract", "post object update", "post extend"]:
                 self.log.debug("updating object index for %s" % _uuid)
                 if not event.dn:
                     entry = self.db.index.find_one({'_uuid': _uuid, 'dn': {'$exists': 1}}, {'dn': 1})
