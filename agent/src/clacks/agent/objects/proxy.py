@@ -43,13 +43,34 @@ will list the available extension types for that specific object.
 import pkg_resources
 import re
 import time
+import zope.event
 from lxml import etree
 from ldap.dn import str2dn, dn2str
 from logging import getLogger
-from clacks.common import Environment
-from clacks.common.utils import is_uuid
-from clacks.common.components import PluginRegistry
 from bson.binary import Binary
+from clacks.common import Environment
+from clacks.common.utils import is_uuid, N_
+from clacks.common.components import PluginRegistry
+from clacks.agent.error import ClacksErrorHandler as C
+
+# Register the errors handled  by us
+C.register_codes(dict(
+    OBJECT_UNKNOWN_TYPE=N_("Unknown object type '%(type)s'"),
+    OBJECT_EXTENSION_NOT_ALLOWED=N_("Extension '%(extension)s' not allowed"),
+    OBJECT_EXTENSION_DEFINED=N_("Extension '%(extension)s' already there"),
+    OBJECT_EXTENSION_DEPENDS=N_("Extension '%(extension)s' depends on '%(missing)s'"),
+    PERMISSION_EXTEND=N_("No permission to extend %(target)s with %(extension)s"),
+    OBJECT_NO_SUCH_EXTENSION=N_("Extension '%(extension)s' already retracted"),
+    OBJECT_EXTENSION_IN_USE=N_("Extension '%(extension)s' is required by '%(origin)s'"),
+    PERMISSION_RETRACT=N_("No permission to retract '%(extension)s' from '%(target)s'"),
+    PERMISSION_MOVE=N_("No permission to move '%(source)s' to '%(target)s'"),
+    OBJECT_HAS_CHILDREN=N_("Object '%(target)s' has children"),
+    PERMISSION_REMOVE=N_("No permission to remove '%(target)s'"),
+    PERMISSION_CREATE=N_("No permission to create '%(target)s'"),
+    PERMISSION_ACCESS=N_("No permission to access '%(topic)s' on '%(target)s'"),
+    OBJECT_UUID_MISMATCH=N_("UUID of base (%(b_uuid)s)and extension (%(e_uuid)s) differ")
+    ))
+
 
 try:
         from cStringIO import StringIO
@@ -110,7 +131,7 @@ class ObjectProxy(object):
             if res.count() == 1:
                 dn_or_base = res[0]['dn']
             else:
-                raise ProxyException("object '%s' not found" % _id)
+                raise ProxyException(C.make_error('OBJECT_NOT_FOUND', None, id=_id))
 
         # Load available object types
         object_types = self.__factory.getObjectTypes()
@@ -119,14 +140,14 @@ class ObjectProxy(object):
         base, extensions = self.__factory.identifyObject(dn_or_base)
         if what:
             if not what in object_types:
-                raise ProxyException("unknown object type '%s'" % what)
+                raise ProxyException(C.make_error('OBJECT_UNKNOWN_TYPE', None, type=type))
 
             base = what
             base_mode = "create"
             extensions = []
 
         if not base:
-            raise ProxyException("object '%s' not found" % dn_or_base)
+            raise ProxyException(C.make_error('OBJECT_NOT_FOUND', None, id=dn_or_base))
 
         # Get available extensions
         self.__log.debug("loading %s base object for %s" % (base, dn_or_base))
@@ -345,17 +366,19 @@ class ObjectProxy(object):
 
         # Is this a valid extension?
         if not extension in self.__extensions:
-            raise ProxyException("extension '%s' not allowed" % extension)
+            raise ProxyException(C.make_error('OBJECT_EXTENSION_NOT_ALLOWED', None, extension=extension))
 
         # Is this extension already active?
         if self.__extensions[extension] != None:
-            raise ProxyException("extension '%s' already defined" % extension)
+            raise ProxyException(C.make_error('OBJECT_EXTENSION_DEFINED', None, extension=extension))
+
+        zope.event.notify(ObjectChanged("pre object extend", self.__base))
 
         # Ensure that all precondition for this extension are fullfilled
         oTypes = self.__factory.getObjectTypes()
         for r_ext in oTypes[extension]['requires']:
             if not r_ext in self.__extensions or self.__extensions[r_ext] == None:
-                raise ProxyException("extension '%s' is required to to extend %s" % (r_ext, extension))
+                raise ProxyException(C.make_error('OBJECT_EXTENSION_DEPENDS', None, extension=extension, missing=r_ext))
 
         # Check Acls
         # Required is the 'c' (create) right for the extension on the current object.
@@ -364,7 +387,7 @@ class ObjectProxy(object):
             if not self.__acl_resolver.check(self.__current_user, topic, "c", base=self.__base.dn):
                 self.__log.debug("user '%s' has insufficient permissions to add extension %s to %s, required is %s:%s on %s" % (
                 self.__current_user, extension, self.__base.dn, topic, "c", self.__base.dn))
-                raise ACLException("you've no permission to extend %s with %s" % (self.__base.dn, extension))
+                raise ACLException(C.make_error('PERMISSION_EXTEND', None, extension=extension, target=self.__base.dn))
 
         # Create extension
         if extension in self.__retractions:
@@ -377,22 +400,26 @@ class ObjectProxy(object):
         # Set initial values for foreign properties
         self.populate_to_foreign_properties(extension)
 
+        zope.event.notify(ObjectChanged("post object extend", self.__base))
+
     def retract(self, extension):
         """
         Retracts an extension from the current object
         """
         if not extension in self.__extensions:
-            raise ProxyException("extension '%s' not allowed" % extension)
+            raise ProxyException(C.make_error('OBJECT_EXTENSION_NOT_ALLOWED', None, extension=extension))
 
         if self.__extensions[extension] == None:
-            raise ProxyException("extension '%s' already retracted" % extension)
+            raise ProxyException(C.make_error('OBJECT_NO_SUCH_EXTENSION', None, extension=extension))
+
+        zope.event.notify(ObjectChanged("pre object retract", self.__base))
 
         # Collect all extensions that are required due to dependencies..
         oTypes = self.__factory.getObjectTypes()
         for ext in self.__extensions:
             if self.__extensions[ext]:
                 if extension in  oTypes[ext]['requires']:
-                    raise ProxyException("extension '%s' is still required by '%s'" % (extension, ext))
+                    raise ProxyException(C.make_error('OBJECT_EXTENSION_IN_USE', None, extension=extension, origin=ext))
 
         # Check Acls
         # Required is the 'd' (delete) right for the extension on the current object.
@@ -401,11 +428,13 @@ class ObjectProxy(object):
             if not self.__acl_resolver.check(self.__current_user, topic, "d", base=self.__base.dn):
                 self.__log.debug("user '%s' has insufficient permissions to add extension %s to %s, required is %s:%s on %s" % (
                 self.__current_user, extension, self.__base.dn, topic, "d", self.__base.dn))
-                raise ACLException("you've no permission to retract %s from %s" % (extension, self.__base.dn))
+                raise ACLException(C.make_error('PERMISSION_RETRACT', None, extension=extension, target=self.__base.dn))
 
         # Move the extension to retractions
         self.__retractions[extension] = self.__extensions[extension]
         self.__extensions[extension] = None
+
+        zope.event.notify(ObjectChanged("post object retract", self.__base))
 
     def move(self, new_base, recursive=False):
         """
@@ -429,19 +458,21 @@ class ObjectProxy(object):
             if not allowed_base_mod:
                 self.__log.debug("user '%s' has insufficient permissions to move %s, required is %s:%s on %s" % (
                     self.__current_user, self.__base.dn, topic_base, "w", self.__base.dn))
-                raise ACLException("you've no permission to move %s (%s:%s) to %s" % (self.__base.dn, topic_base, "w", new_base))
+                raise ACLException(C.make_error('PERMISSION_MOVE', None, source=self.__base.dn, target=new_base))
 
             # Check for 'd' permission on the source object
             if not allowed_delete:
                 self.__log.debug("user '%s' has insufficient permissions to move %s, required is %s:%s on %s" % (
                     self.__current_user, self.__base.dn, topic_user, "d", self.__base.dn))
-                raise ACLException("you've no permission to move %s (%s:%s) to %s" % (self.__base.dn, topic_user, "d", new_base))
+                raise ACLException(C.make_error('PERMISSION_MOVE', None, source=self.__base.dn, target=new_base))
 
             # Check for 'c' permission on the source object
             if not allowed_create:
                 self.__log.debug("user '%s' has insufficient permissions to move %s, required is %s:%s on %s" % (
                     self.__current_user, self.__base.dn, topic_user, "c", new_base))
-                raise ACLException("you've no permission to move %s (%s:%s) to %s" % (self.__base.dn, topic_user, "c", new_base))
+                raise ACLException(C.make_error('PERMISSION_MOVE', None, source=self.__base.dn, target=new_base))
+
+        zope.event.notify(ObjectChanged("pre object move", self.__base))
 
         if recursive:
             try:
@@ -504,6 +535,7 @@ class ObjectProxy(object):
                     obj = self.__factory.getObject(ctype, new_cdn)
                     obj.simulate_move(cdn)
 
+                zope.event.notify(ObjectChanged("post object move", self.__base))
                 return True
 
             except Exception as e:
@@ -515,9 +547,13 @@ class ObjectProxy(object):
         else:
             # Test if we've children
             if len(self.__factory.getObjectChildren(self.__base.dn)):
-                raise ProxyException("specified object has children - use the recursive flag to move them")
+                raise ProxyException(C.make_error('OBJECT_HAS_CHILDREN', None, target=self.__base.dn))
 
-        return self.__base.move(new_base)
+        res = self.__base.move(new_base)
+        if res:
+            zope.event.notify(ObjectChanged("post object move", self.__base))
+
+        return res
 
     def remove(self, recursive=False):
         """
@@ -533,7 +569,9 @@ class ObjectProxy(object):
                 if not self.__acl_resolver.check(self.__current_user, topic, "d", base=self.dn):
                     self.__log.debug("user '%s' has insufficient permissions to remove %s, required is %s:%s" % (
                         self.__current_user, self.__base.dn, topic, 'd'))
-                    raise ACLException("you've no permission to remove %s (%s)" % (self.__base.dn, topic))
+                    raise ACLException(C.make_error('PERMISSION_REMOVE', None, target=self.__base.dn))
+
+        zope.event.notify(ObjectChanged("pre object remove", self.__base))
 
         if recursive:
 
@@ -553,7 +591,7 @@ class ObjectProxy(object):
             # Test if we've children
             index = PluginRegistry.getInstance("ObjectIndex")
             if index.search({"dn": re.compile("^(.*,)" + re.escape(self.__base.dn) + "$")}, {'dn': 1}).count():
-                raise ProxyException("specified object has children - use the recursive flag to remove them")
+                raise ProxyException(C.make_error('OBJECT_HAS_CHILDREN', None, target=self.__base.dn))
 
         for extension in [e for e in self.__extensions.values() if e]:
             extension.remove_refs()
@@ -561,6 +599,8 @@ class ObjectProxy(object):
 
         self.__base.remove_refs()
         self.__base.remove()
+
+        zope.event.notify(ObjectChanged("post object remove", self.__base))
 
     def commit(self):
 
@@ -570,7 +610,9 @@ class ObjectProxy(object):
             if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "c", base=self.dn):
                 self.__log.debug("user '%s' has insufficient permissions to create %s, required is %s:%s" % (
                     self.__current_user, self.__base.dn, topic, 'c'))
-                raise ACLException("you've no permission to create %s (%s)" % (self.__base.dn, topic))
+                raise ACLException(C.make_error('PERMISSION_CREATE', None, target=self.__base.dn))
+
+        zope.event.notify(ObjectChanged("pre object %s" % self.__base_mode, self.__base))
 
         # Gather information about children
         old_base = self.__base.dn
@@ -618,9 +660,10 @@ class ObjectProxy(object):
 
             # Populate the base uuid to the extensions
             if(extension.uuid and extension.uuid != self.__base.uuid):
-                raise Exception("Base and extension have different uuids! Please check!")
+                raise ProxyException(C.make_error('OBJECT_UUID_MISMATCH', None, b_uuid=self.__base.uuid, e_uuid=extension.uuid))
             if not extension.uuid:
                 extension.uuid = self.__base.uuid
+            extension.dn = self.__base.dn
             extension.commit()
 
         # Skip further actions if we're in create mode
@@ -663,6 +706,10 @@ class ObjectProxy(object):
 
             self.dn = self.__base.dn
 
+            zope.event.notify(ObjectChanged("post object move", self.__base))
+
+        zope.event.notify(ObjectChanged("post object %s" % self.__base_mode, self.__base))
+
     def __getattr__(self, name):
 
         # Valid method? and enough permissions?
@@ -675,7 +722,7 @@ class ObjectProxy(object):
             if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "x", base=self.dn):
                 self.__log.debug("user '%s' has insufficient permissions to execute %s on %s, required is %s:%s" % (
                     self.__current_user, name, self.dn, topic, "x"))
-                raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
+                raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=self.dn))
             return self.__method_map[name]
 
         if name == 'modifyTimestamp':
@@ -688,7 +735,7 @@ class ObjectProxy(object):
 
         # Valid attribute?
         if not name in self.__attribute_map:
-            raise AttributeError("no such attribute '%s'" % name)
+            raise AttributeError(C.make_error('ATTRIBUTE_NOT_FOUND', name))
 
         # Do we have read permissions for the requested attribute
         attr_type = self.__attribute_type_map[name]
@@ -696,7 +743,7 @@ class ObjectProxy(object):
         if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
             self.__log.debug("user '%s' has insufficient permissions to read %s on %s, required is %s:%s" % (
                 self.__current_user, name, self.dn, topic, "r"))
-            raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
+            raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=self.dn))
 
         # Load from primary object
         base_object = self.__attribute_map[name]['base']
@@ -729,7 +776,7 @@ class ObjectProxy(object):
             if not self.__acl_resolver.check(self.__current_user, topic, "w", base=self.dn):
                 self.__log.debug("user '%s' has insufficient permissions to write %s on %s, required is %s:%s" % (
                     self.__current_user, name, self.dn, topic, "w"))
-                raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
+                raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=self.dn))
 
         found = False
         classes = [self.__attribute_map[name]['base']] + self.__attribute_map[name]['secondary']
@@ -749,7 +796,7 @@ class ObjectProxy(object):
                 continue
 
         if not found:
-            raise AttributeError("no such attribute '%s'" % name)
+            raise AttributeError(C.make_error('ATTRIBUTE_NOT_FOUND', name))
 
     def asJSON(self, only_indexed=False):
         """
@@ -762,7 +809,7 @@ class ObjectProxy(object):
         if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
             self.__log.debug("user '%s' has insufficient permissions for asXML on %s, required is %s:%s" % (
                 self.__current_user, self.dn, topic, "r"))
-            raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
+            raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=self.dn))
 
         res = {}
 
@@ -802,7 +849,7 @@ class ObjectProxy(object):
         if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
             self.__log.debug("user '%s' has insufficient permissions for asXML on %s, required is %s:%s" % (
                 self.__current_user, self.dn, topic, "r"))
-            raise ACLException("you've no permission to access %s on %s" % (topic, self.dn))
+            raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=self.dn))
 
         # Get the xml definitions combined for all objects.
         xmldefs = etree.tostring(self.__factory.getXMLDefinitionsCombined())
@@ -883,4 +930,5 @@ class ObjectProxy(object):
 
 
 from .factory import ObjectFactory
+from .object import ObjectChanged
 from clacks.agent.acl import ACLResolver, ACLException

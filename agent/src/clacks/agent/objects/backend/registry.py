@@ -11,6 +11,14 @@
 # See the LICENSE file in the project's top-level directory for details.
 
 import pkg_resources
+from clacks.common.utils import N_
+from clacks.agent.error import ClacksErrorHandler as C
+
+
+# Register the errors handled  by us
+C.register_codes(dict(
+    BACKEND_NOT_FOUND=N_("Backend '%(topic)s' not found"),
+    ))
 
 
 class ObjectBackendRegistry(object):
@@ -43,42 +51,42 @@ class ObjectBackendRegistry(object):
     @staticmethod
     def getBackend(name):
         if not name in ObjectBackendRegistry.backends:
-            raise ValueError("no such backend '%s'" % name)
+            raise ValueError(C.make_error("BACKEND_NOT_FOUND", name))
 
         return ObjectBackendRegistry.backends[name]
 
     def load(self, uuid, info):
-        raise NotImplementedError("no way to find new DN implemented")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="load"))
 
     def identify(self, dn, params, fixed_rdn=None):
-        raise NotImplementedError("no way to find new DN implemented")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="identify"))
 
     def exists(self, misc):
-        raise NotImplementedError("no way to find new DN implemented")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="exists"))
 
     def remove(self, uuid, data, params):
-        raise NotImplementedError("no way to find new DN implemented")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="remove"))
 
     def retract(self, uuid, data, params):
-        raise NotImplementedError("no way to find new DN implemented")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="retract"))
 
     def extend(self, uuid, data, params, foreign_keys):
-        raise NotImplementedError("no way to find new DN implemented")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="extend"))
 
     def move_extension(self, uuid, new_base):
-        raise NotImplementedError("no way to find new DN implemented")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="move_extension"))
 
     def move(self, uuid, new_base):
-        raise NotImplementedError("no way to find new DN implemented")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="move"))
 
     def create(self, base, data, params, foreign_keys=None):
-        raise NotImplementedError("no way to find new DN implemented")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="create"))
 
     def update(self, uuid, data):
-        raise NotImplementedError("no way to find new DN implemented")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="update"))
 
     def is_uniq(self, attr, value, at_type):
-        raise NotImplementedError("no way to find new DN implemented")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="is_uniq"))
 
     def query(self, base, scope, params, fixed_rdn=None):
-        raise NotImplementedError("no way to find new DN implemented")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="query"))

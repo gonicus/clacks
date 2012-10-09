@@ -87,8 +87,8 @@ class DoingReportRenderer(BaseRenderer):
         # Assemble new entry for TB
         date = datetime.strftime(datetime.utcnow(), "%Y.%m.%d")
         minutes = int(math.ceil(float(event["Duration"]) / 60))
-        details = u"Bitte ergänzen"
-        comment = "Telefonat mit %s" % contact_name or contact_phone or company_name or company_phone
+        details = "Please amend"
+        comment = "Phone call with %s" % contact_name or contact_phone or company_name or company_phone
 
         if customer_id:
             sess.execute("""

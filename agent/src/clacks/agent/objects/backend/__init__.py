@@ -14,6 +14,14 @@ __import__('pkg_resources').declare_namespace(__name__)
 import re
 import ldap
 from itertools import permutations
+from clacks.common.utils import N_
+from clacks.agent.error import ClacksErrorHandler as C
+
+
+# Register the errors handled  by us
+C.register_codes(dict(
+    GENERATOR_RDN_ATTRIBUTE_MISSING=N_("Attribute '%(topic)s needed to generate a RDN is missing")
+    ))
 
 
 class EntryNotUnique(Exception):
@@ -51,13 +59,13 @@ class ObjectBackend(object):
         """
         Convert DN to uuid.
         """
-        raise NotImplementedError("object backend is not capable of mapping DN to UUID")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", dn, method="dn2uuid"))
 
     def uuid2dn(self, uuid):
         """
         Convert uuid to DN.
         """
-        raise NotImplementedError("object backend is not capable of mapping UUID to DN")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", uuid, method="uuid2dn"))
 
     def get_timestamps(self, dn):
         """
@@ -69,73 +77,73 @@ class ObjectBackend(object):
         """
         Load given keys from entry with uuid.
         """
-        raise NotImplementedError("object backend is missing load()")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", uuid, method="load"))
 
     def move(self, uuid, new_base):
         """
         Move object to new base.
         """
-        raise NotImplementedError("object backend is not capable of moving objects")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", uuid, method="move"))
 
     def move_extension(self, uuid, new_base):
         """
         Notify extension that it is on another base now.
         """
-        raise NotImplementedError("object backend is not capable of moving extensions")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", uuid, method="move_extension"))
 
     def create(self, dn, data, params):
         """
         Create a new base object entry with the given DN.
         """
-        raise NotImplementedError("object backend is not capable of creating base objects")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", dn, method="create"))
 
     def extend(self, uuid, data, params, foreign_keys):
         """
         Create an extension to a base object with the given UUID.
         """
-        raise NotImplementedError("object backend is not capable of creating object extensions")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", uuid, method="extend"))
 
     def update(self, uuid, data, params):
         """
         Update a base entry or an extension with the given UUID.
         """
-        raise NotImplementedError("object backend is missing update()")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", uuid, method="update"))
 
     def exists(self, misc):
         """
         Check if an object with the given UUID or DN exists.
         """
-        raise NotImplementedError("object backend is missing exists()")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="exists"))
 
     def remove(self, uuid, data, params):
         """
         Remove base object specified by UUID.
         """
-        raise NotImplementedError("object backend is missing remove()")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", uuid, method="remove"))
 
     def retract(self, uuid, data, params):
         """
         Retract extension from base object specified by UUID.
         """
-        raise NotImplementedError("object backend is missing retract()")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", uuid, method="retract"))
 
     def is_uniq(self, attr, value):
         """
         Check if the given attribute is unique.
         """
-        raise NotImplementedError("object backend is missing is_uniq()")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="is_uniq"))
 
     def identify(self, dn, params, fixed_rdn=None):
-        raise NotImplementedError("object backend is missing identify()")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", dn, method="identify"))
 
     def identify_by_uuid(self, dn, params):
-        raise NotImplementedError("object backend is missing identify_by_uuid()")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", dn, method="identify_by_uuid"))
 
     def query(self, base, scope, params, fixed_rdn=None):
-        raise NotImplementedError("object backend is missing query()")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="query"))
 
     def get_next_id(self, attr):
-        raise NotImplementedError("object backend is missing get_next_id()")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="get_next_id"))
 
     def build_dn_list(self, rdns, base, data, FixedRDN):
         """
@@ -152,7 +160,7 @@ class ObjectBackend(object):
 
         # Bail out if fix part is not in data
         if not fix in data:
-            raise DNGeneratorError("fix attribute '%s' is not in the entry" % fix)
+            raise DNGeneratorError(C.make_error("GENERATOR_RDN_ATTRIBUTE_MISSING", fix))
 
         # Append possible variations of RDN attributes
         if var:

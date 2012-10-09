@@ -57,7 +57,7 @@ class ClacksErrorHandler(Plugin):
                     detail['detail'] = t.ugettext(detail['detail']) % detail
 
         # Fill keywords
-        res['text'] % res['kwargs']
+        res['text'] = res['text'] % res['kwargs']
         res['_id'] = _id
 
         # Remove the entry
@@ -100,3 +100,10 @@ class ClacksErrorHandler(Plugin):
         # Memorize which module to get translations from
         for k in codes.keys():
             ClacksErrorHandler._i18n_map[k] = module
+
+
+# Register basic errors
+ClacksErrorHandler.register_codes(dict(
+    NOT_IMPLEMENTED=N_("Method %(method)s is not implemented"),
+    NO_SUCH_RESOURCE=N_("Cannot read resource '%(resource)s'"),
+    ))

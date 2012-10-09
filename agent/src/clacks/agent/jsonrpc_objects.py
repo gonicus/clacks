@@ -167,6 +167,64 @@ class JSONRPCObjectMapper(Plugin):
 
         return getattr(objdsc['object']['object'], method)(*args)
 
+    @Command(needsUser=True, __help__=N_("Reloads the object"))
+    def reloadObject(self, user, instance_uuid):
+        """
+        Opens a copy of the object given as instance_uuid and
+        closes the original instance.
+        """
+        res = self.db.object_pool.find({'uuid': instance_uuid})
+        if res.count():
+            item = res[0]
+            oid = item['object']['oid']
+            uuid = item['object']['uuid']
+            new_obj = self.openObject(user, oid,  uuid)
+            return new_obj
+        else:
+            raise ValueError("reference %s not found" % instance_uuid)
+
+    @Command(needsUser=True, __help__=N_("Removes the given object"))
+    def removeObject(self, user, oid, *args, **kwargs):
+        """
+        Open object on the agent side and calls its remove method
+
+        ================= ==========================
+        Parameter         Description
+        ================= ==========================
+        oid               OID of the object to create
+        args/kwargs       Arguments to be used when getting an object instance
+        ================= ==========================
+
+        ``Return``: True
+        """
+
+        if not self.__can_oid_be_handled_locally(oid):
+            proxy = self.__get_proxy_by_oid(oid)
+            return proxy.removeObject(oid, *args)
+
+        # In case of "object" we want to check the lock
+        if oid == 'object':
+            lck = self.db.object_pool.find_one({'$or': [
+                {'object.uuid': args[0]},
+                {'object.dn': args[0]}]},
+                {'user': 1, 'created': 1})
+            #TODO: re-enable locking
+            #if lck:
+            #    raise Exception('Object %s has been opened by "%s" on %s' % (
+            #        args[0],
+            #        lck['user'],
+            #        lck['created'].strftime("%Y-%m-%d (%H:%M:%S)")
+            #        ))
+
+        # Use oid to find the object type
+        obj_type = self.__get_object_type(oid)
+
+        # Make object instance and store it
+        kwargs['user'] = user
+        obj = obj_type(*args, **kwargs)
+        obj.remove()
+        return True
+
     @Command(needsUser=True, __help__=N_("Instantiate object and place it on stack"))
     def openObject(self, user, oid, *args, **kwargs):
         """
@@ -244,6 +302,8 @@ class JSONRPCObjectMapper(Plugin):
         propvals = {}
         if properties:
             propvals = dict([(p, getattr(obj, p)) for p in properties])
+
+        propvals['uuid'] = obj.uuid
 
         # Build result
         result = {"__jsonclass__": ["json.JSONObjectFactory", [obj_type.__name__, ref, obj.dn, oid, methods, properties]]}

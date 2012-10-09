@@ -12,6 +12,7 @@
 
 __import__('pkg_resources').declare_namespace(__name__)
 import pkg_resources
+from clacks.agent.error import ClacksErrorHandler as C
 
 
 def get_renderers():
@@ -27,8 +28,8 @@ class ResultRenderer(object):
 
     @staticmethod
     def getName():
-        raise NotImplementedError("not implemented")
+        raise NotImplementedError(C.make_error('NOT_IMPLEMENTED', None, method="getName"))
 
     @staticmethod
     def render(value):
-        raise NotImplementedError("not implemented")
+        raise NotImplementedError(C.make_error('NOT_IMPLEMENTED', None, method="render"))

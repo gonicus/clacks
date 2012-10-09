@@ -447,7 +447,7 @@ class Object(object):
                     rc = include.get("location")
                     location = os.path.join(os.path.dirname(path), rc)
                     if not os.path.exists(location):
-                        raise Exception("Cannot read resource file '%s'" % location)
+                        raise IOError(C.make_error("NO_SUCH_RESOURCE", None, resource=location))
 
                     res = None
                     with open(location, "r") as f:
@@ -1230,6 +1230,7 @@ class Object(object):
         # Retract for all backends, removing the primary one as the last one
         backends.reverse()
         obj = self
+
         zope.event.notify(ObjectChanged("pre retract", obj))
 
         for backend in backends:

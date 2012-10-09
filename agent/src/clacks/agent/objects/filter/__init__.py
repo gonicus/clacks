@@ -12,6 +12,13 @@
 
 __import__('pkg_resources').declare_namespace(__name__)
 import pkg_resources
+from clacks.common.utils import N_
+from clacks.agent.error import ClacksErrorHandler as C
+
+
+C.register_codes(dict(
+    FILTER_NO_INSTANCE=N_("No filter instance for '%(filter)s' found")
+    ))
 
 
 def get_filter(name):
@@ -20,7 +27,7 @@ def get_filter(name):
         if module.__name__ == name:
             return module
 
-    raise KeyError("no filter instance for '%s' found" % name)
+    raise KeyError(C.make_error("FILTER_NO_INSTANCE", None, name))
 
 
 class ElementFilter(object):
@@ -29,7 +36,7 @@ class ElementFilter(object):
         pass
 
     def process(self, obj, key, value):
-        raise NotImplementedError("not implemented")
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="process"))
 
     def __copy__(self):
         """
