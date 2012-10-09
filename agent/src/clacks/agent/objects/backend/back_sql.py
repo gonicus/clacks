@@ -19,35 +19,21 @@ import re
 import uuid
 import ldap
 import datetime
-from clacks.agent.objects.backend import ObjectBackend
 from json import loads, dumps
 from logging import getLogger
 from clacks.common import Environment
-from clacks.common.utils import is_uuid
+from clacks.common.utils import is_uuid, N_
 from itertools import permutations
-from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, BLOB, DateTime
 from sqlalchemy.sql import and_
+from clacks.agent.error import ClacksErrorHandler as C
+from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, BLOB, DateTime
+from clacks.agent.objects.backend import ObjectBackend, RDNNotSpecified, DNGeneratorError
 
 
-class RDNNotSpecified(Exception):
-    """
-    Exception thrown for missing rdn property in object definitions
-    """
-    pass
-
-
-class DNGeneratorError(Exception):
-    """
-    Exception thrown for dn generation errors
-    """
-    pass
-
-
-class BackendError(Exception):
-    """
-    Exception thrown for unknown objects
-    """
-    pass
+# Register the errors handled  by us
+C.register_codes(dict(
+    DB_CONFIG_MISSING=N_("No database configuration found for '%(target)s'"),
+    ))
 
 
 class SQL(ObjectBackend):
@@ -75,7 +61,7 @@ class SQL(ObjectBackend):
         # Read storage path from config
         con_str = self.env.config.get("sql.backend_connection", None)
         if not con_str:
-            raise Exception("no sql.backend_connection found in config file")
+            raise Exception(C.make_error("DB_CONFIG_MISSING"), target="sql.backend_connection")
 
         # Create table definition
         self.engine = create_engine(con_str, echo=False)
@@ -213,7 +199,7 @@ class SQL(ObjectBackend):
 
         # All entries require a naming attribute, if it's not available we cannot generate a dn for the entry
         if not 'rdn' in params:
-            raise RDNNotSpecified("there is no 'RDN' backend parameter specified")
+            raise RDNNotSpecified(C.make_error("RDN_NOT_SPECIFIED"))
 
         # Split given rdn-attributes into a list.
         rdns = [d.strip() for d in params['rdn'].split(",")]
@@ -224,7 +210,7 @@ class SQL(ObjectBackend):
         # Get a unique dn for this entry, if there was no free dn left (None) throw an error
         object_dn = self.get_uniq_dn(rdns, base, data, fixed_rdn)
         if not object_dn:
-            raise DNGeneratorError("no unique DN available on '%s' using: %s" % (base, ",".join(rdns)))
+            raise DNGeneratorError(C.make_error("NO_UNIQUE_DN", base=base, rnds=", ".join(rdns)))
         object_dn = object_dn.encode('utf-8')
 
         # Build the entry that will be written to the json-database
@@ -283,7 +269,7 @@ class SQL(ObjectBackend):
 
         # Bail out if fix part is not in data
         if not fix in data:
-            raise DNGeneratorError("fix attribute '%s' is not in the entry" % fix)
+            raise DNGeneratorError(C.make_error("ATTRIBUTE_NOT_FOUND", attribute=fix))
 
         # Append possible variations of RDN attributes
         if var:
@@ -360,7 +346,7 @@ class SQL(ObjectBackend):
             dn = re.sub(re.escape(entry['parentDN']) + "$", new_base, entry['dn'])
             parentDN = new_base
             if self.exists(dn):
-                raise BackendError("cannot move entry, the target DN '%s' already exists!" % dn)
+                raise BackendError(make_error("TARGET_EXISTS", target= dn))
 
             self.objects.update().where(self.objects.c.uuid == item_uuid).values(modifyTimestamp=datetime.datetime.now(), dn=dn, parentDN=parentDN).execute()
             return True
