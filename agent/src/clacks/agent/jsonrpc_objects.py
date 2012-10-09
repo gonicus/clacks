@@ -181,7 +181,7 @@ class JSONRPCObjectMapper(Plugin):
             new_obj = self.openObject(user, oid,  uuid)
             return new_obj
         else:
-            raise ValueError("reference %s not found" % ref)
+            raise ValueError("reference %s not found" % instance_uuid)
 
     @Command(needsUser=True, __help__=N_("Removes the given object"))
     def removeObject(self, user, oid, *args, **kwargs):
