@@ -29,6 +29,8 @@ C.register_codes(dict(
     SOURCE_OBJECT_NOT_FOUND=N_("Cannot find source object '%(object)s'"),
     NO_UNIQUE_ENTRY=N_("No unique '%(object)s' object which matches '%(attribute)s == %(value)s'"),
     ID_GENERATION_FAILED=N_("Failed to generate a unique ID"),
+    ENTRY_UUID_NOT_FOUND=N_("Entry '%(uuid)s' not found"),
+    ENTRY_UUID_NOT_UNIQUE=N_("Entry '%(uuid)s' not unique"),
     ))
 
 

@@ -18,10 +18,18 @@ import datetime
 from itertools import permutations
 from logging import getLogger
 from clacks.common import Environment
-from clacks.common.utils import is_uuid
+from clacks.common.utils import is_uuid, N_
 from clacks.common.components.jsonrpc_utils import Binary
 from clacks.agent.ldap_utils import LDAPHandler
+from clacks.agent.error import ClacksErrorHandler as C
 from clacks.agent.objects.backend import ObjectBackend, EntryNotFound, EntryNotUnique, RDNNotSpecified, DNGeneratorError
+
+
+# Register the errors handled  by us
+C.register_codes(dict(
+    NO_POOL_ID=N_("No ID pool found"),
+    MULTIPLE_ID_POOLS=N_("Multiple ID pools found")
+    ))
 
 
 class LDAP(ObjectBackend):
@@ -244,7 +252,7 @@ class LDAP(ObjectBackend):
             # Check if obligatory information for assembling the DN are
             # provided
             if not 'RDN' in params:
-                raise RDNNotSpecified("there is no 'RDN' backend parameter specified")
+                raise RDNNotSpecified(C.make_error("RDN_NOT_SPECIFIED"))
 
             # Build unique DN using maybe optional RDN parameters
             rdns = [d.strip() for d in params['RDN'].split(",")]
@@ -252,7 +260,7 @@ class LDAP(ObjectBackend):
             FixedRDN = params['FixedRDN'] if 'FixedRDN' in params else None
             dn = self.get_uniq_dn(rdns, base, data, FixedRDN)
             if not dn:
-                raise DNGeneratorError("no unique DN available on '%s' using: %s" % (base, ",".join(rdns)))
+                raise DNGeneratorError(C.make_error("NO_UNIQUE_DN", base=base, rdns=", ".join(rdns)))
             dn = dn.encode('utf-8')
 
         else:
@@ -400,7 +408,7 @@ class LDAP(ObjectBackend):
 
         # Bail out if fix part is not in data
         if not fix in data:
-            raise DNGeneratorError("fix attribute '%s' is not in the entry" % fix)
+            raise DNGeneratorError(C.make_error("ATTRIBUTE_NOT_FOUND", attribute=fix))
 
         # Append possible variations of RDN attributes
         if var:
@@ -423,10 +431,10 @@ class LDAP(ObjectBackend):
         res = self.con.search_s(self.lh.get_base(False), ldap.SCOPE_SUBTREE, fltr, [attr])
 
         if not res:
-            raise EntryNotFound("please configure an ID pool")
+            raise EntryNotFound(C.make_error("NO_POOL_ID"))
 
         if len(res) != 1:
-            raise EntryNotFound("found multiple ID pool entries")
+            raise EntryNotFound(C.make_error("MULTIPLE_ID_POOLS"))
 
         # Current value
         old_value = res[0][1][attr][0]
@@ -444,10 +452,10 @@ class LDAP(ObjectBackend):
 
     def __check_res(self, uuid, res):
         if not res:
-            raise EntryNotFound("entry '%s' is not present" % uuid)
+            raise EntryNotFound(C.make_error("ENTRY_UUID_NOT_FOUND", uuid=uuid))
 
         if len(res) != 1:
-            raise EntryNotUnique("entry '%s' is not unique" % uuid)
+            raise EntryNotFound(C.make_error("ENTRY_UUID_NOT_UNIQUE", uuid=uuid))
 
     def _convert_from_boolean(self, value):
         return value == "TRUE"
