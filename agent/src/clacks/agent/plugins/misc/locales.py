@@ -171,7 +171,7 @@ class Locales(Plugin):
         self.__locales = {}
 
         for lang, description in self.__locales_map.items():
-            _lang = lang.split(".")[0]
+            _lang = lang.split("_")[0]
             self.__locales[lang] = {'value': "%s" % description, 'icon': 'flags/%s.png' % _lang}
 
     @Command(__help__=N_("Return list of languages"))
