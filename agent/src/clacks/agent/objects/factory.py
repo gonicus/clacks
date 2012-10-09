@@ -53,11 +53,13 @@ import ldap
 from lxml import etree, objectify
 from clacks.common import Environment
 from clacks.common.components import PluginRegistry
+from clacks.common.utils import N_
 from clacks.agent.objects.filter import get_filter
 from clacks.agent.objects.backend.registry import ObjectBackendRegistry
 from clacks.agent.objects.comparator import get_comparator
 from clacks.agent.objects.operator import get_operator
 from clacks.agent.objects.object import Object
+from clacks.agent.error import ClacksErrorHandler as C
 
 try:
     from cStringIO import StringIO
@@ -72,6 +74,21 @@ STATUS_CHANGED = 1
 SCOPE_BASE = ldap.SCOPE_BASE
 SCOPE_ONE = ldap.SCOPE_ONELEVEL
 SCOPE_SUB = ldap.SCOPE_SUBTREE
+
+
+# Register the errors handled  by us
+C.register_codes(dict(
+    OBJECT_TYPE_NO_BASE_TYPE=N_("'%(type)s' is no base type"),
+    OBJECT_TYPE_NOT_FOUND=N_("Unknown object type '%(type)s'"),
+    OBJECT_NO_BASE_FOUND=N_("Cannot find base object for type '%(type)s'"),
+    BASE_OBJECT_NOT_FOUND=N_("No base type for attribute '%(attribute)s found'"),
+    FACTORY_TYPE_MISMATCH=N_("Cannot identify '%(topic)s' - it seems to be of type '%(type1)s and %(type2)s at the same time'"),
+    FACTORY_SCHEMA_ERROR=N_("Cannot load object schema"),
+    FACTORY_BLOCK_BY_NON_EXISTING=N_("Attribute '%(topic)s' is blocked by non existing attribute '%(blocker)s'"),
+    FACTORY_DEPEND_NON_EXISTING=N_("Attribute '%(topic)s' depends on non existing attribute '%(dependency)s'"),
+    FACTORY_INVALID_METHOD_DEPENDS=N_("Method '%(method)s' depends on unknown attribute %(attribute)s"),
+    FACTORY_PARAMETER_MISSING=N_("Parameter '%(parameter)s' for command '%(command)s' is missing"),
+    ))
 
 
 def load(attr, element, default=None):
@@ -215,7 +232,7 @@ class ObjectFactory(object):
         Returns a list of template filenames for this object.
         """
         if not objectType in self.__xml_defs:
-            raise Exception("cannot get templates - object %s does not exist!" % objectType)
+            raise KeyError(C.make_error("OBJECT_TYPE_NOT_FOUND", None, type=objectType))
 
         res = []
         find = objectify.ObjectPath("Object.Templates.Template")
@@ -231,7 +248,7 @@ class ObjectFactory(object):
         object.
         """
         if not objectType in self.__xml_defs:
-            raise Exception("cannot create search aid, object %s does not exist!" % objectType)
+            raise KeyError(C.make_error("OBJECT_TYPE_NOT_FOUND", None, type=objectType))
 
         res = {}
         find = objectify.ObjectPath("Object.Find.Aspect")
@@ -266,10 +283,10 @@ class ObjectFactory(object):
         Returns a list of objects that can be stored as sub-objects for the given object.
         """
         if not objectType in self.__xml_defs:
-            raise Exception("cannot create attribute map, object %s does not exist!" % objectType)
+            raise KeyError(C.make_error("OBJECT_TYPE_NOT_FOUND", None, type=objectType))
 
         if not self.__xml_defs[objectType]['BaseObject']:
-            raise Exception("cannot create attribute map, %s is not a base-object!" % objectType)
+            raise TypeError(C.make_error("OBJECT_TYPE_NO_BASE_TYPE", None, type=objectType))
 
         # Get list of allowed sub-elements
         res = []
@@ -285,10 +302,10 @@ class ObjectFactory(object):
         the given object Type and the object-type they belong to.
         """
         if not objectType in self.__xml_defs:
-            raise Exception("cannot create attribute map, object %s does not exist!" % objectType)
+            raise KeyError(C.make_error("OBJECT_TYPE_NOT_FOUND", None, type=objectType))
 
         if not self.__xml_defs[objectType]['BaseObject']:
-            raise Exception("cannot create attribute map, %s is not a base-object!" % objectType)
+            raise TypeError(C.make_error("OBJECT_TYPE_NO_BASE_TYPE", None, type=objectType))
 
         # Collect all object-types that can extend this class.
         find = objectify.ObjectPath("Object.Extends.Value")
@@ -369,7 +386,7 @@ class ObjectFactory(object):
 
             # No base class found
             if not baseclass:
-                raise Exception("could not detect base-object for %s, is it really an extension?" % obj)
+                raise TypeError(C.make_error("OBJECT_NO_BASE_FOUND", None, type=obj))
 
             # Now find all possible extensions and check if they contain a primary-attribute with the given name
             for item in self.__xml_defs.values():
@@ -385,9 +402,9 @@ class ObjectFactory(object):
                     if attr.tag == "{http://www.gonicus.de/Objects}Attribute" and attr["Name"] == attribute:
                         return attr
 
-            raise Exception("no primary attribute found for %s" % attribute)
+            raise ValueError(C.make_error("BASE_OBJECT_NOT_FOUND", None, attribute=attribute))
         else:
-            raise Exception("unknown object %s given" % obj)
+            raise ValueError(C.make_error("OBJECT_TYPE_NOT_FOUND", None, type=obj))
 
     def get_attributes_by_object(self, object_name):
         """
@@ -426,11 +443,11 @@ class ObjectFactory(object):
         res = {}
         if object_name in self.__xml_defs:
             if not bool(load(self.__xml_defs[object_name], "BaseObject", False)):
-                raise Exception("object %s is no base-object" % object_name)
+                raise TypeError(C.make_error("OBJECT_TYPE_NO_BASE_TYPE", None, type=object_name))
 
             res = extract_attrs(res, self.__xml_defs[object_name])
         else:
-            raise Exception("unknown object-type %s" % (object_name))
+            raise TypeError(C.make_error("OBJECT_TYPE_NOT_FOUND", None, type=object_name))
 
         # Add extension attributes
         for element in self.__xml_defs.values():
@@ -553,14 +570,12 @@ class ObjectFactory(object):
                     if info['base']:
                         if fixed_rdn:
                             if id_base_fixed:
-                                raise FactoryException("looks like '%s' beeing '%s' and '%s' at the same time" + \
-                                        " - multiple base objects are not supported" % (dn, id_base, name))
+                                raise FactoryException(C.make_error("FACTORY_TYPE_MISMATCH", dn, type1=id_base, type2=name))
                             id_base_fixed = name
 
                         else:
                             if id_base:
-                                raise FactoryException("looks like '%s' beeing '%s' and '%s' at the same time" + \
-                                        " - multiple base objects are not supported" % (dn, id_base, name))
+                                raise FactoryException(C.make_error("FACTORY_TYPE_MISMATCH", dn, type1=id_base, type2=name))
                             id_base = name
 
         # .. then find all active extensions
@@ -672,7 +687,8 @@ class ObjectFactory(object):
                     self.log.info("loaded schema for '%s'" % (attr['Name'].text))
 
         except etree.XMLSyntaxError as e:
-            raise FactoryException("Error loading object-schema: %s" % (str(e)))
+            self.log.error("error loading object schema: %s" % str(e))
+            raise FactoryException("FACTORY_SCHEMA_ERROR")
 
     def __build_class(self, name):
         """
@@ -804,7 +820,6 @@ class ObjectFactory(object):
                 # Foreign attributes do not need any filters, validation or block settings
                 # All this is done by its primary backend.
                 if foreign:
-                    #backend = "NULL"
                     mandatory = False
                 else:
 
@@ -904,9 +919,7 @@ class ObjectFactory(object):
 
                 # Does the blocking property exists?
                 if bentry['name'] not in props:
-                    raise FactoryException("Property '%s' cannot be blocked by a non existing" \
-                                           " property '%s', please check the XML definition!" % (
-                                               pname, bentry['name']))
+                    raise FactoryException("FACTORY_BLOCK_BY_NON_EXISTING", pname, blocker=bentry['name'])
 
                 # Convert the blocking condition to its expected value-type
                 syntax = props[bentry['name']]['type']
@@ -915,9 +928,7 @@ class ObjectFactory(object):
             # Depends on
             for dentry in props[pname]['depends_on']:
                 if dentry not in props:
-                    raise FactoryException("Property '%s' cannot depend on non existing property" \
-                                           " '%s', please check the XML definition!" % (
-                                               pname, dentry))
+                    raise FactoryException("FACTORY_DEPEND_NON_EXISTING", pname, dependency=dentry)
 
         # Build up a list of callable methods
         if 'Methods' in classr.__dict__:
@@ -1008,11 +1019,13 @@ class ObjectFactory(object):
                 elif value in ['dn', 'uuid']:
                     parmList.append(getattr(caller_object, value))
                 else:
-                    raise FactoryException("Method '%s' depends on unknown attribute '%s'!" % (command, value))
+                    raise FactoryException("FACTORY_INVALID_METHOD_DEPENDS", None, method=command, attribute=value)
 
             cr = PluginRegistry.getInstance('CommandRegistry')
             self.log.info("Executed %s-hook for class %s which invoked %s(...)" % (m_type, klass.__name__, command))
+
             return cr.call(command, *parmList)
+
         return funk
 
     def __create_class_method(self, klass, methodName, command, mParams, cParams):
@@ -1039,7 +1052,7 @@ class ObjectFactory(object):
                 elif mDefault:
                     arguments[mName] = mDefault
                 else:
-                    raise FactoryException("Missing parameter '%s'!" % mName)
+                    raise FactoryException("FACTORY_PARAMETER_MISSING", None, command=command, parameter=mName)
 
                 # Convert value to its required type.
                 arguments[mName] = self.__attribute_type['String'].convert_to(mType, [arguments[mName]])[0]
@@ -1067,7 +1080,7 @@ class ObjectFactory(object):
                 elif value in ['dn']:
                     parmList.append(getattr(caller_object, value))
                 else:
-                    raise FactoryException("Method '%s' depends on unknown attribute '%s'!" % (command, value))
+                    raise FactoryException("FACTORY_INVALID_METHOD_DEPENDS", None, method=command, attribute=value)
 
             cr = PluginRegistry.getInstance('CommandRegistry')
             self.log.info("Executed %s.%s which invoked %s(...)" % (klass.__name__, methodName, command))
