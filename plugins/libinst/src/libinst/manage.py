@@ -51,7 +51,6 @@ from libinst.entities.release import Release
 from libinst.entities.repository import Repository, RepositoryKeyring
 from libinst.entities.section import Section
 from libinst.entities.type import Type
-from libinst.system_locale import locale_map
 from libinst.keyboard_models import KeyboardModels
 from libinst.utils import load_system
 
@@ -60,6 +59,7 @@ from clacks.common.components.command import Command
 from clacks.agent.ldap_utils import LDAPHandler
 from clacks.common.components import Plugin
 from clacks.common.utils import N_, parseURL
+from clacks.common.components.registry import PluginRegistry
 
 # Include locales
 t = gettext.translation('messages', resource_filename("libinst", "locale"), fallback=True)
@@ -1969,7 +1969,8 @@ class LibinstManager(Plugin):
 
         ``Return:`` dict
         """
-        return locale_map
+        loc = PluginRegistry.getInstance("Locale")
+        return loc.get_locales_map()
 
     @Command(__help__=N_("Get supported keyboard models"))
     def getKeyboardModels(self):
