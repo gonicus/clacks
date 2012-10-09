@@ -28,7 +28,7 @@ def get_operator(name):
         if module.__name__ == name:
             return module
 
-    raise KeyError(C.make_error("OPERATOR_NO_INSTANCE", None, operator=name))
+    raise KeyError(C.make_error("OPERATOR_NO_INSTANCE", operator=name))
 
 
 class ElementOperator(object):
@@ -37,4 +37,4 @@ class ElementOperator(object):
         pass
 
     def process(self, *args, **kwargs):
-        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="process"))
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", method="process"))

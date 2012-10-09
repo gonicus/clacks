@@ -40,10 +40,10 @@ class AttributeType(object):
             return (self.__alias__.lower(), fname[14:].replace("_", " "))
 
     def is_valid_value(self, value):
-        raise ConversationNotSupported(C.make_error('TYPE_NO_CHECK', None, type=self.__alias__.lower()))
+        raise ConversationNotSupported(C.make_error('TYPE_NO_CHECK', type=self.__alias__.lower()))
 
     def values_match(self, value1, value2):
-        raise ConversationNotSupported(C.make_error('TYPE_NO_MATCH', None, type=self.__alias__.lower()))
+        raise ConversationNotSupported(C.make_error('TYPE_NO_MATCH', type=self.__alias__.lower()))
 
     def convert_to(self, target_type, value):
         cnv = getattr(self, "_convert_to_%s" % target_type.lower())
@@ -57,71 +57,71 @@ class AttributeType(object):
         return cnv(value)
 
     def _convert_to_boolean(self, value):
-        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT', None,
+        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT',
             source=self.__alias__.lower(),
             target=self._cnv_topic()[1]))
 
     def _convert_to_string(self, value):
-        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT', None,
+        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT',
             source=self.__alias__.lower(),
             target=self._cnv_topic()[1]))
 
     def _convert_to_unicodestring(self, value):
-        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT', None,
+        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT',
             source=self.__alias__.lower(),
             target=self._cnv_topic()[1]))
 
     def _convert_to_integer(self, value):
-        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT', None,
+        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT',
             source=self.__alias__.lower(),
             target=self._cnv_topic()[1]))
 
     def _convert_to_timestamp(self, value):
-        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT', None,
+        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT',
             source=self.__alias__.lower(),
             target=self._cnv_topic()[1]))
 
     def _convert_to_date(self, value):
-        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT', None,
+        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT',
             source=self.__alias__.lower(),
             target=self._cnv_topic()[1]))
 
     def _convert_to_binary(self, value):
-        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT', None,
+        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT',
             source=self.__alias__.lower(),
             target=self._cnv_topic()[1]))
 
     def _convert_from_boolean(self, value):
-        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT', None,
+        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT',
             source=self.__alias__.lower(),
             target=self._cnv_topic()[1]))
 
     def _convert_from_string(self, value):
-        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT', None,
+        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT',
             source=self.__alias__.lower(),
             target=self._cnv_topic()[1]))
 
     def _convert_from_unicodestring(self, value):
-        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT', None,
+        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT',
             source=self.__alias__.lower(),
             target=self._cnv_topic()[1]))
 
     def _convert_from_integer(self, value):
-        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT', None,
+        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT',
             source=self.__alias__.lower(),
             target=self._cnv_topic()[1]))
 
     def _convert_from_timestamp(self, value):
-        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT', None,
+        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT',
             source=self.__alias__.lower(),
             target=self._cnv_topic()[1]))
 
     def _convert_from_date(self, value):
-        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT', None,
+        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT',
             source=self.__alias__.lower(),
             target=self._cnv_topic()[1]))
 
     def _convert_from_binary(self, value):
-        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT', None,
+        raise ConversationNotSupported(C.make_error('TYPE_NO_CONVERT',
             source=self.__alias__.lower(),
             target=self._cnv_topic()[1]))

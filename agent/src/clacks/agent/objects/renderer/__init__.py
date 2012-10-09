@@ -28,8 +28,8 @@ class ResultRenderer(object):
 
     @staticmethod
     def getName():
-        raise NotImplementedError(C.make_error('NOT_IMPLEMENTED', None, method="getName"))
+        raise NotImplementedError(C.make_error('NOT_IMPLEMENTED', method="getName"))
 
     @staticmethod
     def render(value):
-        raise NotImplementedError(C.make_error('NOT_IMPLEMENTED', None, method="render"))
+        raise NotImplementedError(C.make_error('NOT_IMPLEMENTED', method="render"))

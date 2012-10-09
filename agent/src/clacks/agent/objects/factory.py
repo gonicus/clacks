@@ -232,7 +232,7 @@ class ObjectFactory(object):
         Returns a list of template filenames for this object.
         """
         if not objectType in self.__xml_defs:
-            raise KeyError(C.make_error("OBJECT_TYPE_NOT_FOUND", None, type=objectType))
+            raise KeyError(C.make_error("OBJECT_TYPE_NOT_FOUND", type=objectType))
 
         res = []
         find = objectify.ObjectPath("Object.Templates.Template")
@@ -248,7 +248,7 @@ class ObjectFactory(object):
         object.
         """
         if not objectType in self.__xml_defs:
-            raise KeyError(C.make_error("OBJECT_TYPE_NOT_FOUND", None, type=objectType))
+            raise KeyError(C.make_error("OBJECT_TYPE_NOT_FOUND", type=objectType))
 
         res = {}
         find = objectify.ObjectPath("Object.Find.Aspect")
@@ -283,10 +283,10 @@ class ObjectFactory(object):
         Returns a list of objects that can be stored as sub-objects for the given object.
         """
         if not objectType in self.__xml_defs:
-            raise KeyError(C.make_error("OBJECT_TYPE_NOT_FOUND", None, type=objectType))
+            raise KeyError(C.make_error("OBJECT_TYPE_NOT_FOUND", type=objectType))
 
         if not self.__xml_defs[objectType]['BaseObject']:
-            raise TypeError(C.make_error("OBJECT_TYPE_NO_BASE_TYPE", None, type=objectType))
+            raise TypeError(C.make_error("OBJECT_TYPE_NO_BASE_TYPE", type=objectType))
 
         # Get list of allowed sub-elements
         res = []
@@ -302,10 +302,10 @@ class ObjectFactory(object):
         the given object Type and the object-type they belong to.
         """
         if not objectType in self.__xml_defs:
-            raise KeyError(C.make_error("OBJECT_TYPE_NOT_FOUND", None, type=objectType))
+            raise KeyError(C.make_error("OBJECT_TYPE_NOT_FOUND", type=objectType))
 
         if not self.__xml_defs[objectType]['BaseObject']:
-            raise TypeError(C.make_error("OBJECT_TYPE_NO_BASE_TYPE", None, type=objectType))
+            raise TypeError(C.make_error("OBJECT_TYPE_NO_BASE_TYPE", type=objectType))
 
         # Collect all object-types that can extend this class.
         find = objectify.ObjectPath("Object.Extends.Value")
@@ -386,7 +386,7 @@ class ObjectFactory(object):
 
             # No base class found
             if not baseclass:
-                raise TypeError(C.make_error("OBJECT_NO_BASE_FOUND", None, type=obj))
+                raise TypeError(C.make_error("OBJECT_NO_BASE_FOUND", type=obj))
 
             # Now find all possible extensions and check if they contain a primary-attribute with the given name
             for item in self.__xml_defs.values():
@@ -402,9 +402,9 @@ class ObjectFactory(object):
                     if attr.tag == "{http://www.gonicus.de/Objects}Attribute" and attr["Name"] == attribute:
                         return attr
 
-            raise ValueError(C.make_error("BASE_OBJECT_NOT_FOUND", None, attribute=attribute))
+            raise ValueError(C.make_error("BASE_OBJECT_NOT_FOUND", attribute=attribute))
         else:
-            raise ValueError(C.make_error("OBJECT_TYPE_NOT_FOUND", None, type=obj))
+            raise ValueError(C.make_error("OBJECT_TYPE_NOT_FOUND", type=obj))
 
     def get_attributes_by_object(self, object_name):
         """
@@ -443,11 +443,11 @@ class ObjectFactory(object):
         res = {}
         if object_name in self.__xml_defs:
             if not bool(load(self.__xml_defs[object_name], "BaseObject", False)):
-                raise TypeError(C.make_error("OBJECT_TYPE_NO_BASE_TYPE", None, type=object_name))
+                raise TypeError(C.make_error("OBJECT_TYPE_NO_BASE_TYPE", type=object_name))
 
             res = extract_attrs(res, self.__xml_defs[object_name])
         else:
-            raise TypeError(C.make_error("OBJECT_TYPE_NOT_FOUND", None, type=object_name))
+            raise TypeError(C.make_error("OBJECT_TYPE_NOT_FOUND", type=object_name))
 
         # Add extension attributes
         for element in self.__xml_defs.values():
@@ -1019,7 +1019,7 @@ class ObjectFactory(object):
                 elif value in ['dn', 'uuid']:
                     parmList.append(getattr(caller_object, value))
                 else:
-                    raise FactoryException(C.make_error("FACTORY_INVALID_METHOD_DEPENDS", None, method=command, attribute=value))
+                    raise FactoryException(C.make_error("FACTORY_INVALID_METHOD_DEPENDS", method=command, attribute=value))
 
             cr = PluginRegistry.getInstance('CommandRegistry')
             self.log.info("Executed %s-hook for class %s which invoked %s(...)" % (m_type, klass.__name__, command))
@@ -1052,7 +1052,7 @@ class ObjectFactory(object):
                 elif mDefault:
                     arguments[mName] = mDefault
                 else:
-                    raise FactoryException(C.make_error("FACTORY_PARAMETER_MISSING", None, command=command, parameter=mName))
+                    raise FactoryException(C.make_error("FACTORY_PARAMETER_MISSING", command=command, parameter=mName))
 
                 # Convert value to its required type.
                 arguments[mName] = self.__attribute_type['String'].convert_to(mType, [arguments[mName]])[0]
@@ -1080,7 +1080,7 @@ class ObjectFactory(object):
                 elif value in ['dn']:
                     parmList.append(getattr(caller_object, value))
                 else:
-                    raise FactoryException(C.make_error("FACTORY_INVALID_METHOD_DEPENDS", None, method=command, attribute=value))
+                    raise FactoryException(C.make_error("FACTORY_INVALID_METHOD_DEPENDS", method=command, attribute=value))
 
             cr = PluginRegistry.getInstance('CommandRegistry')
             self.log.info("Executed %s.%s which invoked %s(...)" % (klass.__name__, methodName, command))

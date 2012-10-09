@@ -12,6 +12,13 @@
 
 __import__('pkg_resources').declare_namespace(__name__)
 import pkg_resources
+from clacks.common.utils import N_
+from clacks.agent.error import ClacksErrorHandler as C
+
+
+C.register_codes(dict(
+    COMOPARATOR_NO_INSTANCE=N_("No comparator instance for '%(comparator)s' found")
+    ))
 
 
 def get_comparator(name):
@@ -21,7 +28,7 @@ def get_comparator(name):
         if module.__name__ == name:
             return module
 
-    raise KeyError("no comparator instance for '%s' found" % name)
+    raise KeyError(C.make_error("COMPARATOR_NO_INSTANCE", comparator=name))
 
 
 class ElementComparator(object):
@@ -30,7 +37,8 @@ class ElementComparator(object):
         pass
 
     def process(self, *args, **kwargs):
-        raise NotImplementedError("not implemented")
+        raise NotImplementedError(C.make_error('NOT_IMPLEMENTED', method="process"))
+
 
     def __copy__(self):
         """

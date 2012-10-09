@@ -20,7 +20,10 @@ from clacks.agent.error import ClacksErrorHandler as C
 
 # Register the errors handled  by us
 C.register_codes(dict(
-    GENERATOR_RDN_ATTRIBUTE_MISSING=N_("Attribute '%(topic)s needed to generate a RDN is missing")
+    GENERATOR_RDN_ATTRIBUTE_MISSING=N_("Attribute '%(topic)s needed to generate a RDN is missing"),
+    RDN_NOT_SPECIFIED=N_("No 'RDN' backend parameter specified"),
+    NO_UNIQUE_DN=N_("Cannot generate a unique DN in '%(base)s' using a combination of %(rdns)s"),
+    TARGET_EXISTS=N_("Target DN '%(target)s' already exists")
     ))
 
 
@@ -113,7 +116,7 @@ class ObjectBackend(object):
         """
         Check if an object with the given UUID or DN exists.
         """
-        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="exists"))
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", method="exists"))
 
     def remove(self, uuid, data, params):
         """
@@ -131,7 +134,7 @@ class ObjectBackend(object):
         """
         Check if the given attribute is unique.
         """
-        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="is_uniq"))
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", method="is_uniq"))
 
     def identify(self, dn, params, fixed_rdn=None):
         raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", dn, method="identify"))
@@ -140,10 +143,10 @@ class ObjectBackend(object):
         raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", dn, method="identify_by_uuid"))
 
     def query(self, base, scope, params, fixed_rdn=None):
-        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="query"))
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", method="query"))
 
     def get_next_id(self, attr):
-        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="get_next_id"))
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", method="get_next_id"))
 
     def build_dn_list(self, rdns, base, data, FixedRDN):
         """

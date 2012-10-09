@@ -56,37 +56,37 @@ class ObjectBackendRegistry(object):
         return ObjectBackendRegistry.backends[name]
 
     def load(self, uuid, info):
-        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="load"))
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", method="load"))
 
     def identify(self, dn, params, fixed_rdn=None):
-        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="identify"))
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", method="identify"))
 
     def exists(self, misc):
-        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="exists"))
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", method="exists"))
 
     def remove(self, uuid, data, params):
-        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="remove"))
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", method="remove"))
 
     def retract(self, uuid, data, params):
-        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="retract"))
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", method="retract"))
 
     def extend(self, uuid, data, params, foreign_keys):
-        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="extend"))
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", method="extend"))
 
     def move_extension(self, uuid, new_base):
-        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="move_extension"))
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", method="move_extension"))
 
     def move(self, uuid, new_base):
-        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="move"))
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", method="move"))
 
     def create(self, base, data, params, foreign_keys=None):
-        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="create"))
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", method="create"))
 
     def update(self, uuid, data):
-        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="update"))
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", method="update"))
 
     def is_uniq(self, attr, value, at_type):
-        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="is_uniq"))
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", method="is_uniq"))
 
     def query(self, base, scope, params, fixed_rdn=None):
-        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="query"))
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", method="query"))

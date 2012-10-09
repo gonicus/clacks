@@ -27,7 +27,7 @@ def get_filter(name):
         if module.__name__ == name:
             return module
 
-    raise KeyError(C.make_error("FILTER_NO_INSTANCE", None, name))
+    raise KeyError(C.make_error("FILTER_NO_INSTANCE", name))
 
 
 class ElementFilter(object):
@@ -36,7 +36,7 @@ class ElementFilter(object):
         pass
 
     def process(self, obj, key, value):
-        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", None, method="process"))
+        raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", method="process"))
 
     def __copy__(self):
         """

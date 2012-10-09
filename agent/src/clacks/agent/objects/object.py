@@ -196,7 +196,7 @@ class Object(object):
                 attrs = be.load(self.uuid, info, be_attrs)
 
             except ValueError as e:
-                raise ObjectException(C.make_error('READ_BACKEND_PROPERTIES', None, backend=backend))
+                raise ObjectException(C.make_error('READ_BACKEND_PROPERTIES', backend=backend))
 
             # Assign fetched value to the properties.
             for key in self._propsByBackend[backend]:
@@ -447,7 +447,7 @@ class Object(object):
                     rc = include.get("location")
                     location = os.path.join(os.path.dirname(path), rc)
                     if not os.path.exists(location):
-                        raise IOError(C.make_error("NO_SUCH_RESOURCE", None, resource=location))
+                        raise IOError(C.make_error("NO_SUCH_RESOURCE", resource=location))
 
                     res = None
                     with open(location, "r") as f:
@@ -486,18 +486,18 @@ class Object(object):
         # Check if _mode matches with the current object type
         #pylint: disable=E1101
         if self._base_object and not self._mode in ['create', 'remove', 'update']:
-            raise ObjectException(C.make_error('OBJECT_MODE_NOT_AVAILABLE', None, mode=self._mode))
+            raise ObjectException(C.make_error('OBJECT_MODE_NOT_AVAILABLE', mode=self._mode))
         if not self._base_object and self._mode in ['create', 'remove']:
-            raise ObjectException(C.make_error('OBJECT_MODE_BASE_AVAILABLE', None, mode=self._mode))
+            raise ObjectException(C.make_error('OBJECT_MODE_BASE_AVAILABLE', mode=self._mode))
 
         # Check if we are allowed to create this base object on the given base
         if self._base_object and self._mode == "create":
             base_type = self.get_object_type_by_dn(self.dn)
             if not base_type:
-                raise ObjectException(C.make_error('OBJECT_MODE_BASE_AVAILABLE', None, mode=self._mode))
+                raise ObjectException(C.make_error('OBJECT_MODE_BASE_AVAILABLE', mode=self._mode))
 
             if self.__class__.__name__ not in self._objectFactory.getAllowedSubElementsForObject(base_type):
-                raise ObjectException(C.make_error('OBJECT_NOT_SUB_FOR', None,
+                raise ObjectException(C.make_error('OBJECT_NOT_SUB_FOR',
                     ext=self.__class__.__name__,
                     base=base_type))
 
@@ -862,17 +862,17 @@ class Object(object):
                 # Filter may mess things up and then the next cannot process correctly.
                 if (key not in prop):
                     raise ObjectException(C.make_error('FILTER_INVALID_KEY',
-                        None, key=key, filter=fname))
+                        key=key, filter=fname))
 
                 # Check if the filter returned all expected property values.
                 for pk in prop:
                     if not all(k in prop[pk] for k in ('backend', 'value', 'type')):
                         missing = ", ".join(set(['backend', 'value', 'type']) - set(prop[pk].keys()))
-                        raise ObjectException(C.make_error('FILTER_MISSING_KEY', None, key=missing, filter=fname))
+                        raise ObjectException(C.make_error('FILTER_MISSING_KEY', key=missing, filter=fname))
 
                     # Check if the returned value-type is list or None.
                     if type(prop[pk]['value']) not in [list, type(None)]:
-                        raise ObjectException(C.make_error('FILTER_NO_LIST', None,
+                        raise ObjectException(C.make_error('FILTER_NO_LIST',
                             key=pk, filter=fname, type=type(prop[pk]['value'])))
 
                 self.log.debug("  %s: [Filter]  %s(%s) called " % (lptr, fname,
