@@ -16,6 +16,7 @@ from clacks.agent.objects.backend import ObjectBackend, EntryNotFound, BackendEr
 from clacks.agent.objects.index import ObjectIndex
 from clacks.common.components import PluginRegistry
 from clacks.agent.objects import ObjectProxy
+from clacks.agent.error import ClacksErrorHandler as C
 
 
 class ObjectHandler(ObjectBackend):
@@ -96,11 +97,7 @@ class ObjectHandler(ObjectBackend):
         # Ensure that we have a configuration for all attributes
         for attr in data.keys():
             if attr not in mapping:
-                raise BackendError("attribute %s uses the ObjectHandler backend but there is no config for it!" % attr)
-        #for targetAttr in mapping:
-        #    if not targetAttr in data:
-        #        raise BackendError("an attribute named %s is configured for the ObjectHandler backend but there" \
-        #                                       " is no such attribute in the object" % targetAttr)
+                raise BackendError(C.make_error("BACKEND_ATTRIBUTE_CONFIG_MISSING", attribute=attr))
 
         # Walk through each mapped foreign-object-attribute
         for targetAttr in mapping:
@@ -112,7 +109,7 @@ class ObjectHandler(ObjectBackend):
             foreignObject, foreignAttr, foreignMatchAttr, matchAttr = mapping[targetAttr]
             res = index.search({'_uuid': uuid}, {matchAttr: 1})
             if not res.count():
-                raise Exception("source object could not be found" % targetAttr)
+                raise BackendError(C.make_error("SOURCE_OBJECT_NOT_FOUND", object=targetAttr))
             matchValue = res[0][matchAttr][0]
 
             # Collect all objects that match the given value
@@ -121,7 +118,7 @@ class ObjectHandler(ObjectBackend):
             for value in allvalues:
                 res = index.search({'_type': foreignObject, foreignAttr: value}, {'dn': 1})
                 if res.count() != 1:
-                    raise EntryNotFound("Could not find any unique '%s' with '%s=%s'!" % (foreignObject, foreignAttr, value))
+                    raise EntryNotFound(C.make_error("NO_UNIQUE_ENTRY", object=foreignObject, attribute=foreignAttr, value=value))
                 else:
                     object_mapping[value] = ObjectProxy(res[0]['dn'])
 
@@ -197,7 +194,7 @@ class ObjectHandler(ObjectBackend):
         return False
 
     def get_next_id(self, attr):
-        raise EntryNotFound("cannot generate IDs")
+        raise BackendError(C.make_error("ID_GENERATION_FAILED"))
 
     def extractBackAttrs(self, attrs):
         result = {}

@@ -25,6 +25,10 @@ C.register_codes(dict(
     NO_UNIQUE_DN=N_("Cannot generate a unique DN in '%(base)s' using a combination of %(rdns)s"),
     TARGET_EXISTS=N_("Target DN '%(target)s' already exists"),
     DB_CONFIG_MISSING=N_("No database configuration found for '%(target)s'"),
+    BACKEND_ATTRIBUTE_CONFIG_MISSING=N_("Attribute '%s' uses the ObjectHandler backend but there is no config for it"),
+    SOURCE_OBJECT_NOT_FOUND=N_("Cannot find source object '%(object)s'"),
+    NO_UNIQUE_ENTRY=N_("No unique '%(object)s' object which matches '%(attribute)s == %(value)s'"),
+    ID_GENERATION_FAILED=N_("Failed to generate a unique ID"),
     ))
 
 

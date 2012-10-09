@@ -102,7 +102,7 @@ def load(attr, element, default=None):
 
 
 class FactoryException(Exception):
-        pass
+    pass
 
 
 class ObjectFactory(object):

@@ -75,6 +75,7 @@ class LDAP(ObjectBackend):
         if 'RDN' in params:
             rdns = [o.strip() for o in params['RDN'].split(",")]
             rdn_parts = ldap.dn.str2dn(dn.encode('utf-8'), flags=ldap.DN_FORMAT_LDAPV3)[0]
+
             found = False
             for rdn_a, rdn_v, dummy in rdn_parts: #@UnusedVariable
                 if rdn_a in rdns:

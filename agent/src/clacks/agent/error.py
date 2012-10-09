@@ -102,6 +102,18 @@ class ClacksErrorHandler(Plugin):
             ClacksErrorHandler._i18n_map[k] = module
 
 
+class ClacksException(Exception):
+    """
+    Clacks base exception that converts the error to a string and
+    feeds it to the database  in parallel. Errors emitted with
+    ClacksException can be queried by their ID later on.
+    """
+
+    def __init__(*args, **kwargs):
+        info = ClacksErrorHandler.make_error(*args, **kwargs)
+        super(ClacksException, self).__init__(info)
+
+
 # Register basic errors
 ClacksErrorHandler.register_codes(dict(
     NOT_IMPLEMENTED=N_("Method %(method)s is not implemented"),
