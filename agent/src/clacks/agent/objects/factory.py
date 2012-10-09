@@ -688,7 +688,7 @@ class ObjectFactory(object):
 
         except etree.XMLSyntaxError as e:
             self.log.error("error loading object schema: %s" % str(e))
-            raise FactoryException("FACTORY_SCHEMA_ERROR")
+            raise FactoryException(C.make_error("FACTORY_SCHEMA_ERROR"))
 
     def __build_class(self, name):
         """
@@ -919,7 +919,7 @@ class ObjectFactory(object):
 
                 # Does the blocking property exists?
                 if bentry['name'] not in props:
-                    raise FactoryException("FACTORY_BLOCK_BY_NON_EXISTING", pname, blocker=bentry['name'])
+                    raise FactoryException(C.make_error("FACTORY_BLOCK_BY_NON_EXISTING", pname, blocker=bentry['name']))
 
                 # Convert the blocking condition to its expected value-type
                 syntax = props[bentry['name']]['type']
@@ -928,7 +928,7 @@ class ObjectFactory(object):
             # Depends on
             for dentry in props[pname]['depends_on']:
                 if dentry not in props:
-                    raise FactoryException("FACTORY_DEPEND_NON_EXISTING", pname, dependency=dentry)
+                    raise FactoryException(C.make_error("FACTORY_DEPEND_NON_EXISTING", pname, dependency=dentry))
 
         # Build up a list of callable methods
         if 'Methods' in classr.__dict__:
@@ -1019,7 +1019,7 @@ class ObjectFactory(object):
                 elif value in ['dn', 'uuid']:
                     parmList.append(getattr(caller_object, value))
                 else:
-                    raise FactoryException("FACTORY_INVALID_METHOD_DEPENDS", None, method=command, attribute=value)
+                    raise FactoryException(C.make_error("FACTORY_INVALID_METHOD_DEPENDS", None, method=command, attribute=value))
 
             cr = PluginRegistry.getInstance('CommandRegistry')
             self.log.info("Executed %s-hook for class %s which invoked %s(...)" % (m_type, klass.__name__, command))
@@ -1052,7 +1052,7 @@ class ObjectFactory(object):
                 elif mDefault:
                     arguments[mName] = mDefault
                 else:
-                    raise FactoryException("FACTORY_PARAMETER_MISSING", None, command=command, parameter=mName)
+                    raise FactoryException(C.make_error("FACTORY_PARAMETER_MISSING", None, command=command, parameter=mName))
 
                 # Convert value to its required type.
                 arguments[mName] = self.__attribute_type['String'].convert_to(mType, [arguments[mName]])[0]
@@ -1080,7 +1080,7 @@ class ObjectFactory(object):
                 elif value in ['dn']:
                     parmList.append(getattr(caller_object, value))
                 else:
-                    raise FactoryException("FACTORY_INVALID_METHOD_DEPENDS", None, method=command, attribute=value)
+                    raise FactoryException(C.make_error("FACTORY_INVALID_METHOD_DEPENDS", None, method=command, attribute=value))
 
             cr = PluginRegistry.getInstance('CommandRegistry')
             self.log.info("Executed %s.%s which invoked %s(...)" % (klass.__name__, methodName, command))
