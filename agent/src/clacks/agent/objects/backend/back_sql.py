@@ -27,13 +27,7 @@ from itertools import permutations
 from sqlalchemy.sql import and_
 from clacks.agent.error import ClacksErrorHandler as C
 from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, BLOB, DateTime
-from clacks.agent.objects.backend import ObjectBackend, RDNNotSpecified, DNGeneratorError
-
-
-# Register the errors handled  by us
-C.register_codes(dict(
-    DB_CONFIG_MISSING=N_("No database configuration found for '%(target)s'"),
-    ))
+from clacks.agent.objects.backend import ObjectBackend, RDNNotSpecified, DNGeneratorError, BackendError
 
 
 class SQL(ObjectBackend):
@@ -61,7 +55,7 @@ class SQL(ObjectBackend):
         # Read storage path from config
         con_str = self.env.config.get("sql.backend_connection", None)
         if not con_str:
-            raise Exception(C.make_error("DB_CONFIG_MISSING"), target="sql.backend_connection")
+            raise BackendError(C.make_error("DB_CONFIG_MISSING", target="sql.backend_connection"))
 
         # Create table definition
         self.engine = create_engine(con_str, echo=False)

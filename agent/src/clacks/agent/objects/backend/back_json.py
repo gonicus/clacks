@@ -24,6 +24,7 @@ from json import loads, dumps
 from logging import getLogger
 from clacks.common import Environment
 from clacks.common.utils import is_uuid
+from clacks.agent.error import ClacksErrorHandler as C
 from clacks.agent.objects.backend import ObjectBackend, DNGeneratorError, RDNNotSpecified, BackendError
 
 
@@ -47,7 +48,7 @@ class JSON(ObjectBackend):
         # Read storage path from config
         self._file_path = self.env.config.get("json.database_file", None)
         if not self._file_path:
-            raise Exception("no json.database_file found in config file")
+            raise BackendError(C.make_error("DB_CONFIG_MISSING", target="json.database_file"))
 
         # Create a json file on demand
         if not os.path.exists(self._file_path):
@@ -184,7 +185,7 @@ class JSON(ObjectBackend):
 
         # All entries require a naming attribute, if it's not available we cannot generate a dn for the entry
         if not 'rdn' in params:
-            raise RDNNotSpecified("there is no 'RDN' backend parameter specified")
+            raise RDNNotSpecified(C.make_error("RDN_NOT_SPECIFIED"))
 
         # Split given rdn-attributes into a list.
         rdns = [d.strip() for d in params['rdn'].split(",")]
@@ -195,7 +196,7 @@ class JSON(ObjectBackend):
         # Get a unique dn for this entry, if there was no free dn left (None) throw an error
         object_dn = self.get_uniq_dn(rdns, base, data, FixedRDN)
         if not object_dn:
-            raise DNGeneratorError("no unique DN available on '%s' using: %s" % (base, ",".join(rdns)))
+            raise DNGeneratorError(C.make_error("NO_UNIQUE_DN", base=base, rdns=", ".join(rdns)))
         object_dn = object_dn.encode('utf-8')
 
         # Build the entry that will be written to the json-database
@@ -331,7 +332,7 @@ class JSON(ObjectBackend):
 
                     # Check if we can move the entry
                     if self.exists(entry['dn']):
-                        raise BackendError("cannot move entry, the target DN '%s' already exists!" % entry['dn'])
+                        raise BackendError(C.make_error("TARGET_EXISTS", target=entry['dn']))
 
                     # Save the changes
                     json[item_uuid][obj] = entry

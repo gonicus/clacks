@@ -13,7 +13,15 @@
 from clacks.agent.objects.backend import ObjectBackend, BackendError
 from sqlalchemy import create_engine
 from clacks.common import Environment
+from clacks.common.utils import N_
+from clacks.agent.error import ClacksErrorHandler as C
 from logging import getLogger
+
+
+# Register the errors handled  by us
+C.register_codes(dict(
+    SQL_QUERY_ERROR=N_("Failed to execute SQL statement '%(action)s' on database '%(database)s'")
+    ))
 
 
 class DBMAP(ObjectBackend):
@@ -32,7 +40,7 @@ class DBMAP(ObjectBackend):
         # Read storage path from config
         con_str = self.env.config.get("sql.backend_connection", None)
         if not con_str:
-            raise BackendError("no sql.backend_connection found in config file")
+            raise BackendError(C.make_error("DB_CONFIG_MISSING", target="sql.backend_connection"))
 
         # Extract action per connection
         connections = {}
@@ -44,8 +52,7 @@ class DBMAP(ObjectBackend):
                     # Try to find a database connection for the DB
                     con_str = self.env.config.get("backend_dbmap.%s" % (database.replace(".", "_")), None)
                     if not con_str:
-                        raise BackendError("no database connection specified for %s! Please add config parameters for %s" % \
-                              (database, "backend_dbmap.%s" % (database.replace(".", "_"))))
+                        raise BackendError(C.make_error("DB_CONFIG_MISSING", target="backend_dbmap.%s" % database.replace(".", "_")))
 
                     # Try to establish the connection
                     engine = create_engine(con_str)
@@ -61,7 +68,7 @@ class DBMAP(ObjectBackend):
                         try:
                             conn.execute(action)
                         except Exception as e:
-                            raise BackendError("failed to execute SQL statement '%s' on database '%s': %s" % (str(action), database, str(e)))
+                            raise BackendError(C.make_error("SQL_QUERY_ERROR", action=str(action), database=database))
 
     def load(self, uuid, info, back_attrs=None):
         return {}
