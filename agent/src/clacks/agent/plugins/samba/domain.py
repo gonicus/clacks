@@ -12,12 +12,9 @@
 
 import gettext
 from pkg_resources import resource_filename #@UnresolvedImport
+from clacks.common.utils import N_
 from clacks.common.components import PluginRegistry
 from clacks.agent.objects.comparator import ElementComparator
-
-# Include locales
-t = gettext.translation('messages', resource_filename("clacks.agent", "locale"), fallback=True)
-_ = t.ugettext
 
 
 class IsValidSambaDomainName(ElementComparator):
@@ -39,5 +36,6 @@ class IsValidSambaDomainName(ElementComparator):
         if res.count():
             return True, errors
 
-        errors.append(_("The given sambaDomainName '%s' does not exists!") % value[0])
+        errors.append(dict(index=0, detail=N_("Unknown domain '%(domain)s'"), domain=value[0]))
+
         return False, errors
