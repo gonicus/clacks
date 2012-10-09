@@ -450,7 +450,7 @@ class ObjectIndex(Plugin):
                 _dn = obj.dn
                 change_type = "create"
 
-            if event.reason in ["post retract", "post object update", "post extend"]:
+            if event.reason in ["post object retract", "post object update", "post object extend"]:
                 self.log.debug("updating object index for %s" % _uuid)
                 if not event.dn:
                     entry = self.db.index.find_one({'_uuid': _uuid, 'dn': {'$exists': 1}}, {'dn': 1})

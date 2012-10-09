@@ -1230,6 +1230,7 @@ class Object(object):
         # Retract for all backends, removing the primary one as the last one
         backends.reverse()
         obj = self
+
         zope.event.notify(ObjectChanged("pre retract", obj))
 
         for backend in backends:
