@@ -41,6 +41,7 @@ from clacks.common.handler import IInterfaceHandler
 from clacks.common import Environment
 from clacks.common.components import Command, Plugin
 from clacks.common.utils import N_
+from clacks.common.error import ClacksErrorHandler as C
 from clacks.common.components import PluginRegistry
 from clacks.agent.objects.object import ObjectChanged
 from clacks.agent.objects.proxy import ObjectProxy
@@ -149,7 +150,7 @@ class ACLSet(list):
                 return
 
         # Raise an exception about the unknown ID
-        raise ACLException("There is no such acl")
+        raise ACLException(C.make_error("ACL_NOT_FOUND"))
 
     def add(self, item):
         """
@@ -173,7 +174,7 @@ class ACLSet(list):
 
         """
         if type(item) != ACL:
-            raise TypeError('item is not of type %s' % ACL)
+            raise TypeError(C.make_error('ACL_ITEM_INVALID_TYPE', type=ACL))
 
         if item.priority == None:
             item.priority = len(self)
@@ -293,7 +294,7 @@ class ACLRole(list):
 
         """
         if type(item) != ACLRoleEntry:
-            raise TypeError('item is not of type %s' % ACLRoleEntry)
+            raise TypeError(C.make_error('ACL_ITEM_INVALID_TYPE', type=ACLRoleEntry.__name__))
 
         # Create an item priority if it does not exists.
         if item.priority == None:
@@ -427,7 +428,7 @@ class ACL(object):
         else:
 
             if scope not in (ACL.ONE, ACL.SUB, ACL.PSUB, ACL.RESET):
-                raise(Exception("Invalid ACL type given"))
+                raise TypeError(C.make_error("ACL_INVALID_SCOPE", scope=scope))
 
             self.set_scope(scope)
 
@@ -443,14 +444,14 @@ class ACL(object):
 
         """
         if not isinstance(rolename, str):
-            raise ACLException("Expected type str for rolename!")
+            raise ACLException(C.make_error("ATTRIBUTE_INVALID", "rolename", str.__name__))
 
         r = ACLResolver.instance
         if rolename in r.acl_roles:
             self.uses_role = True
             self.role = rolename
         else:
-            raise ACLException("Unknown role '%s'!" % rolename)
+            raise ACLException(C.make_error("ROLE_NOT_FOUND", role=rolename))
 
     def set_scope(self, scope):
         """
@@ -466,10 +467,10 @@ class ACL(object):
         """
 
         if scope not in [ACL.ONE, ACL.SUB, ACL.PSUB, ACL.RESET]:
-            raise ACLException("Invalid scope value given!")
+            raise TypeError(C.make_error("ACL_INVALID_SCOPE", scope=scope))
 
         if self.uses_role:
-            raise ACLException("A scope can only set for non-role bases ACLs.")
+            raise ACLException(C.make_error("ACL_INVALID_SCOPE_TARGET"))
 
         self.scope = scope
 
@@ -516,7 +517,7 @@ class ACL(object):
 
         """
         if type(members) != list:
-            raise(ACLException("Requires a list of members!"))
+            raise ACLException(C.make_error("ATTRIBUTE_INVALID", "members", list.__name__))
 
         self.members = members
 
@@ -596,15 +597,14 @@ class ACL(object):
         """
 
         if options and type(options) != dict:
-            raise ACLException("paramters options is of invalid type exptected '%s' but got '%s'!" % (dict, type(options)))
+            raise ACLException(C.make_error("ATTRIBUTE_INVALID", "options", dict.__name__))
 
         if self.uses_role and self.role:
-            raise ACLException("ACL classes that use a role cannot define"
-                   " additional costum acls!")
+            raise ACLException(C.make_error("ACL_TYPE_MISMATCH"))
 
         # Check given acls allowed are 'rwcdsexom'
         if not all(map(lambda x: x in 'rwcdsexom', acls)):
-            raise ACLException("got invalid acls string, allows is a combination of '%s' but got '%s'!" % ('rwcdsexom', acls))
+            raise ACLException(C.make_error("ACL_STRING_INVALID"))
 
         acl = {
                 'topic': topic,
@@ -661,8 +661,7 @@ class ACL(object):
         if res.count() == 1:
             return res[0]['uid'][0]
         elif res.count() > 1:
-            raise Exception("User dn '%s' found twice!" % (dn))
-            return None
+            raise ValueError(C.make_error("ENTRY_NOT_UNIQUE", dn=dn))
         else:
             return None
 
@@ -700,7 +699,7 @@ class ACL(object):
 
             # Check for recursions while resolving the acls.
             if self.role in used_roles:
-                raise ACLException("Recursion in acl resolution, loop in role '%s'! Included roles %s." % (self.role, str(used_roles)))
+                raise ACLException(C.make_error("ACL_LOOP", role=self.role))
 
             # Resolve acls used in the role.
             used_roles.append(self.role)
@@ -812,7 +811,7 @@ class ACLRoleEntry(ACL):
         """
         An overloaded method from ACL which disallows to add users.
         """
-        raise ACLException("Role ACLs do not support direct members")
+        raise ACLException(C.make_error("ROLE_DIRECT_MEMBER"))
 
 
 class ACLResolver(Plugin):
@@ -852,10 +851,6 @@ class ACLResolver(Plugin):
     _target_ = 'core'
 
     def __init__(self):
-        if not ACLResolver.instance:
-            ACLResolver.instance = self
-        else:
-            raise Exception("ACLResolver is a singleton - please use PluginRegistry.getInstance(\"ACLResolver\")")
         self.env = Environment.getInstance()
         self.log = logging.getLogger(__name__)
         self.log.debug("initializing ACL resolver")
@@ -866,15 +861,18 @@ class ACLResolver(Plugin):
         # Load default LDAP base
         self.base = self.env.base
 
-    @staticmethod
-    def get_instance():
-        """
-        Return an instance of the ACLResolver
-        """
-        if not ACLResolver.instance:
-            raise Exception("ACLResolver not yet instantiated by the plugin registry!")
-
-        return ACLResolver.instance
+    def __check_actions(self, actions):
+        for action in actions:
+            if 'acls' not in action:
+                raise ACLException(C.make_error('ACL_MISSING_KEY', key="acls", action=action))
+            if 'topic' not in action:
+                raise ACLException(C.make_error('ACL_MISSING_KEY', key="topic", action=action))
+            if 'options' not in action:
+                action['options'] = {}
+            if type(action['options']) != dict:
+                raise ACLException(C.make_error("ATTRIBUTE_INVALID", "options", dict.__name__))
+            if len(set(action['acls']) - set("rwcdmxose")) != 0:
+                raise ACLException(C.make_error("ACL_STRING_INVALID"))
 
     def __handle_events(self, event):
         """
@@ -1019,7 +1017,7 @@ class ACLResolver(Plugin):
 
         # Check if we've got unresolved roles!
         if len(unresolved):
-            raise ACLException("Loading ACls failed, we've got unresolved roles references: '%s'!" % (str(unresolved), ))
+            raise ACLException(C.make_error("ROLE_UNRESOLVED_REFERENCES", references=", ".join(unresolved)))
 
         # Add the recently created roles.
         for role_name in roles:
@@ -1092,7 +1090,7 @@ class ACLResolver(Plugin):
         ============== =============
         """
         if not self.aclset_exists_by_base(base):
-            raise ACLException("No acl definition found for base '%s' cannot add acl!" % (base,))
+            raise ACLException(C.make_error("ACL_NO_BASE_ACL", base=base))
         else:
             aclset = self.get_aclset_by_base(base)
             aclset.add(acl)
@@ -1112,10 +1110,10 @@ class ACLResolver(Plugin):
         """
 
         if type(acl) != ACLRoleEntry:
-            raise ACLException("expected parameter '%s' to be of type '%s' but got '%s'!" % ("acl", ACLRoleEntry, type(acl)))
+            raise ACLException(C.make_error("ATTRIBUTE_INVALID", "acl", type(acl).__name__))
 
         if rolename not in self.acl_roles:
-            raise ACLException("A role with the given name does not exists! (%s)" % (rolename,))
+            raise ACLException(C.make_error("ROLE_NOT_FOUND", role=rolename))
         else:
             self.acl_roles[rolename].add(acl)
 
@@ -1254,7 +1252,7 @@ class ACLResolver(Plugin):
         """
 
         if not isinstance(rolename, str):
-            raise ACLException("Expected parameter to be of type 'str'!")
+            raise ACLException(C.make_error("ATTRIBUTE_INVALID", "rolename", str.__name__))
 
         for aclset in self.acl_sets:
             if self.__is_role_used(aclset, rolename):
@@ -1288,7 +1286,7 @@ class ACLResolver(Plugin):
                 if aclset.base == base:
                     return aclset
         else:
-            raise ACLException("No acl definition found for base '%s'!" % (base,))
+            raise ACLException(C.make_error("ACL_NOT_FOUND_ON_BASE", base=base))
 
     def aclset_exists_by_base(self, base):
         """
@@ -1325,7 +1323,7 @@ class ACLResolver(Plugin):
 
         # Send a message if there were no ACLSets for the given base
         if  not found:
-            raise ACLException("No acl definitions for base '%s' were found, removal aborted!")
+            raise ACLException(C.make_error("ACL_NOT_FOUND_ON_BASE", base=base))
 
     def remove_role(self, name):
         """
@@ -1344,17 +1342,17 @@ class ACLResolver(Plugin):
 
         # Check if we've got a valid name type.
         if not isinstance(name, str):
-            raise ACLException("Roles can only be removed by name, '%s' is an invalid parameter" % name)
+            raise ACLException(C.make_error("ATTRIBUTE_INVALID", "name", str.__name__))
 
         # Check if such a role-name exists and then try to remove it.
         if name in self.acl_roles:
             if self.is_role_used(self.acl_roles[name].name):
-                raise ACLException("The role '%s' cannot be removed, it is still in use!" % name)
+                raise ACLException(C.make_error("ROLE_IN_USE", role=name))
             else:
                 del(self.acl_roles[name])
                 return True
         else:
-            raise ACLException("No such role '%s', removal aborted!" % name)
+            raise ACLException(C.make_error("ROLE_NOT_FOUND", role=name))
 
     def add_acl_to_base(self, base, acl):
         """
@@ -1368,7 +1366,7 @@ class ACLResolver(Plugin):
         ============== =============
         """
         if type(acl) != ACL:
-            raise ACLException("Expected parameter to be of type ACL!")
+            raise ACLException(C.make_error("ATTRIBUTE_INVALID", "acl", ACL.__name__))
 
         for aclset in self.acl_sets:
             if aclset.base == base:
@@ -1513,7 +1511,8 @@ class ACLResolver(Plugin):
 
                     # Check permissions
                     if not self.check(user, '%s.acl' % self.env.domain, 'w', aclset.base):
-                        raise ACLException("The requested operation is not allowed!")
+                        raise ACLException(C.make_error('PERMISSION_REMOVE', target=acl_id))
+
 
                     # Remove the acl from the set.
                     aclset.remove(acl)
@@ -1525,7 +1524,7 @@ class ACLResolver(Plugin):
                     return True
 
         # Nothing removed
-        raise ACLException("No such acl-id (%s) removal aborted!" % (acl_id))
+        raise ACLException(C.make_error("ACL_NOT_FOUND"))
 
     @Command(needsUser=True, __help__=N_("Add a new ACL."))
     def addACL(self, user, base, priority, members, actions=None, scope=None, rolename=None):
@@ -1560,7 +1559,7 @@ class ACLResolver(Plugin):
 
         # Check permissions
         if not self.check(user, '%s.acl' % self.env.domain, 'w', base):
-            raise ACLException("The requested operation is not allowed!")
+            raise ACLException(C.make_error('PERMISSION_CREATE', target=base))
 
         # Validate the given scope
         if scope:
@@ -1571,37 +1570,27 @@ class ACLResolver(Plugin):
             acl_scope_map['reset'] = ACL.RESET
 
             if scope not in acl_scope_map:
-                raise ACLException("Invalid scope given! Expected on of 'one', 'sub', 'psub' and 'reset'!")
+                raise ACLException(C.make_error("ACL_INVALID_SCOPE", scope=scope))
 
             scope_int = acl_scope_map[scope]
 
         # Validate the priority
         if type(priority) != int:
-            raise ACLException("Expected priority to be of type int!")
+            raise ACLException(C.make_error("ATTRIBUTE_INVALID", "priority", int.__name__))
 
         if priority < -100 or priority > 100:
-            raise ACLException("Priority it out of range! (-100, 100)")
+            raise ACLException(C.make_error('ACL_PRIORITY_INVALID'))
 
         # Validate given actions
         if actions:
             if type(actions) != list:
-                raise ACLException("Expected actions to be of type list!")
+                raise ACLException(C.make_error("ATTRIBUTE_INVALID", "actions", list.__name__))
             else:
-                for action in actions:
-                    if 'acls' not in action:
-                        raise ACLException("An action is missing the 'acls' key! %s" % action)
-                    if 'topic' not in action:
-                        raise ACLException("An action is missing the 'topic' key! %s" % action)
-                    if 'options' not in action:
-                        action['options'] = {}
-                    if type(action['options']) != dict:
-                        raise ACLException("Options have to be of type dict! %s" % action)
-                    if len(set(action['acls']) - set("rwcdmxse")) != 0:
-                        raise ACLException("Unsupported acl type found '%s'!" % "".join((set(action['acls']) - set("rwcdmxse"))))
+                self.__check_actions(actions)
 
         # We can either set actions or a role, but not both.
         if actions and rolename:
-            raise ACLException("You can either use the actions or the the rolename parameter, but not both!")
+            raise ACLException(C.make_error("ACL_PARAMETER_MISMATCH"))
 
         # All checks passed now add the new ACL.
 
@@ -1663,28 +1652,20 @@ class ACLResolver(Plugin):
             acl_scope_map['reset'] = ACL.RESET
 
             if scope not in acl_scope_map:
-                raise ACLException("Invalid scope given! Expected on of 'one', 'sub', 'psub' and 'reset'!")
+                raise ACLException(C.make_error("ACL_INVALID_SCOPE", scope=scope))
 
             scope_int = acl_scope_map[scope]
 
         # Validate given actions
+        new_actions = []
+
         if actions:
             if type(actions) != list:
-                raise ACLException("Expected actions to be of type list!")
+                raise ACLException(C.make_error("ATTRIBUTE_INVALID", "actions", list.__name__))
             else:
-                new_actions = []
-                for action in actions:
-                    if 'acls' not in action:
-                        raise ACLException("An action is missing the 'acls' key! %s" % action)
-                    if 'topic' not in action:
-                        raise ACLException("An action is missing the 'topic' key! %s" % action)
-                    if 'options' not in action:
-                        action['options'] = {}
-                    if type(action['options']) != dict:
-                        raise ACLException("Options have to be of type dict! %s" % action)
-                    if len(set(action['acls']) - set("rwcdmxse")) != 0:
-                        raise ACLException("Unsupported acl type found '%s'!" % "".join((set(action['acls']) - set("rwcdmxse"))))
+                self.__check_actions(actions)
 
+                for action in actions:
                     # Create a new action entry
                     entry = {'acls': action['acls'],
                              'topic': action['topic'],
@@ -1699,16 +1680,16 @@ class ACLResolver(Plugin):
 
                     # Check permissions
                     if not self.check(user, '%s.acl' % self.env.domain, 'w', _aclset.base):
-                        raise ACLException("The requested operation is not allowed!")
+                        raise ACLException(C.make_error("PERMISSION_UPDATE"), target=_aclset.base)
 
                     acl = _acl
 
         # Check if we've found a valid acl object with the given id.
         if not acl:
-            raise ACLException("No such acl definition with id %s" % acl_id)
+            raise ACLException(C.make_error("ACL_NOT_FOUND"))
 
         if actions and rolename:
-            raise ACLException("You can either use the actions or the the rolename parameter, but not both!")
+            raise ACLException(C.make_error("ACL_PARAMETER_MISMATCH"))
 
         # Update properties
         if members:
@@ -1742,7 +1723,7 @@ class ACLResolver(Plugin):
 
         # Check permissions
         if not self.check(user, '%s.acl' % self.env.domain, 'r', self.base):
-            raise ACLException("The requested operation is not allowed!")
+            raise ACLException(C.make_error("PERMISSION_ACCESS", target=self.base))
 
         acl_scope_map = {}
         acl_scope_map[ACL.ONE] = 'one'
@@ -1791,15 +1772,15 @@ class ACLResolver(Plugin):
 
         # Check permissions
         if not self.check(user, '%s.acl' % self.env.domain, 'w', self.base):
-            raise ACLException("The requested operation is not allowed!")
+            raise ACLException(C.make_error('PERMISSION_CREATE', target=self.base))
 
         # Validate the rolename
         if not isinstance(rolename, str) or len(rolename) <= 0:
-            raise ACLException("Expected parameter to be of type str!")
+            raise ACLException(C.make_error("ATTRIBUTE_INVALID", "rolename", str.__name__))
 
         # Check if rolename exists
         if rolename in self.acl_roles:
-            raise ACLException("A role with the given name already exists! (%s)" % (rolename,))
+            raise ACLException(C.make_error("ROLE_EXISTS", name=rolename))
 
         # Create and add the new role
         role = ACLRole(rolename)
@@ -1835,18 +1816,18 @@ class ACLResolver(Plugin):
 
         # Check permissions
         if not self.check(user, '%s.acl' % self.env.domain, 'w', self.base):
-            raise ACLException("The requested operation is not allowed!")
+            raise ACLException(C.make_error("PERMISSION_CREATE", target=self.base))
 
         # Check if the given rolename exists
         if rolename not in self.acl_roles:
-            raise ACLException("A role with the given name does not exists! (%s)" % (rolename,))
+            raise ACLException(C.make_error("ROLE_NOT_FOUND", role=rolename))
 
         # Validate the priority
         if type(priority) != int:
-            raise ACLException("Expected priority to be of type int!")
+            raise ACLException(C.make_error("ATTRIBUTE_INVALID", "priority", int.__name__))
 
         if priority < -100 or priority > 100:
-            raise ACLException("Priority it out of range! (-100, 100)")
+            raise ACLException(C.make_error("ACL_PRIORITY_INVALID"))
 
         # Validate the given scope and actions
         if actions:
@@ -1857,30 +1838,21 @@ class ACLResolver(Plugin):
             acl_scope_map['reset'] = ACL.RESET
 
             if scope not in acl_scope_map:
-                raise ACLException("Invalid scope given! Expected on of 'one', 'sub', 'psub' and 'reset'!")
+                raise TypeError(C.make_error("ACL_INVALID_SCOPE", scope=scope))
+
             scope_int = acl_scope_map[scope]
 
             if type(actions) != list:
-                raise ACLException("Expected actions to be of type list!")
+                raise ACLException(C.make_error("ATTRIBUTE_INVALID", "actions", list.__name__))
             else:
-                for action in actions:
-                    if 'acls' not in action:
-                        raise ACLException("An action is missing the 'acls' key! %s" % action)
-                    if 'topic' not in action:
-                        raise ACLException("An action is missing the 'topic' key! %s" % action)
-                    if 'options' not in action:
-                        action['options'] = {}
-                    if type(action['options']) != dict:
-                        raise ACLException("Options have to be of type dict! %s" % action)
-                    if len(set(action['acls']) - set("rwcdmxse")) != 0:
-                        raise ACLException("Unsupported acl type found '%s'!" % "".join((set(action['acls']) - set("rwcdmxse"))))
+                self.__check_actions(actions)
 
         # We can either set actions or a role, but not both.
         if actions and use_role:
-            raise ACLException("You can either use the actions or the the rolename parameter, but not both!")
+            raise ACLException(C.make_error("ACL_PARAMETER_MISMATCH"))
 
         if use_role and use_role == rolename:
-            raise ACLException("The same roles cannot point to each other")
+            raise ACLException(C.make_error("ROLE_CANNOT_POINT_TO_ITSELF"))
 
         # All checks passed now add the new ACL.
 
@@ -1929,19 +1901,19 @@ class ACLResolver(Plugin):
 
         # Check permissions
         if not self.check(user, '%s.acl' % self.env.domain, 'w', self.base):
-            raise ACLException("The requested operation is not allowed!")
+            raise ACLException(C.make_error("PERMISSION_UPDATE", target=self.base))
 
         # Validate the priority
         if priority != None and type(priority) != int:
-            raise ACLException("Expected priority to be of type int!")
+            raise ACLException(C.make_error("ATTRIBUTE_INVALID", "priority", int.__name__))
 
         # Check for priority
         if priority != None and priority < -100 or priority > 100:
-            raise ACLException("Priority it out of range! (-100, 100)")
+            raise ACLException(C.make_error('ACL_PRIORITY_INVALID'))
 
         # We cannot set a role and actions.
         if actions and use_role:
-            raise ACLException("You can either use the actions or the the rolename parameter, but not both!")
+            raise ACLException(C.make_error("ACL_PARAMETER_MISMATCH"))
 
         # Validate the scope value
         if scope:
@@ -1952,26 +1924,16 @@ class ACLResolver(Plugin):
             acl_scope_map['reset'] = ACL.RESET
 
             if scope not in acl_scope_map:
-                raise ACLException("Invalid scope given! Expected on of 'one', 'sub', 'psub' and 'reset'!")
+                raise TypeError(C.make_error("ACL_INVALID_SCOPE", scope=scope))
 
             scope_int = acl_scope_map[scope]
 
         # Validate the given actions
         if actions:
             if type(actions) != list:
-                raise ACLException("Expected actions to be of type list!")
+                raise ACLException(C.make_error("ATTRIBUTE_INVALID", "actions", list.__name__))
             else:
-                for action in actions:
-                    if 'acls' not in action:
-                        raise ACLException("An action is missing the 'acls' key! %s" % action)
-                    if 'topic' not in action:
-                        raise ACLException("An action is missing the 'topic' key! %s" % action)
-                    if 'options' not in action:
-                        action['options'] = {}
-                    if type(action['options']) != dict:
-                        raise ACLException("Options have to be of type dict! %s" % action)
-                    if len(set(action['acls']) - set("rwcdmxse")) != 0:
-                        raise ACLException("Unsupported acl type found '%s'!" % "".join((set(action['acls']) - set("rwcdmxse"))))
+                self.__check_actions(actions)
 
         # Try to find role-acl with the given ID.
         acl = None
@@ -1987,7 +1949,7 @@ class ACLResolver(Plugin):
 
             # Check that we do not point to ourselves
             if use_role and use_role == role.name:
-                raise ACLException("The same roles cannot point to each other")
+                raise ACLException(C.make_error("ROLE_CANNOT_POINT_TO_ITSELF"))
 
             # Update the priority
             if priority:
@@ -2011,7 +1973,7 @@ class ACLResolver(Plugin):
                 acl.set_scope(scope_int)
 
         else:
-            raise ACLException("An acl with the given id does not exists! (%s)" % (acl_id,))
+            raise ACLException(C.make_error("ACL_NOT_FOUND"))
 
     @Command(needsUser=True, __help__=N_("Remove defined role-acl by ID."))
     def removeRoleACL(self, user, role_id):
@@ -2030,7 +1992,7 @@ class ACLResolver(Plugin):
 
         # Check permissions
         if not self.check(user, '%s.acl' % self.env.domain, 'w', self.base):
-            raise ACLException("The requested operation is not allowed!")
+            raise ACLException(C.make_error("PERMISSION_REMOVE"), target=self.base)
 
         # Try to find role-acl with the given ID.
         for _aclrole in self.acl_roles:
@@ -2039,7 +2001,7 @@ class ACLResolver(Plugin):
                     self.acl_roles[_aclrole].remove(_acl)
                     return
 
-        raise ACLException("No such roleacl-id (%s) removal aborted!" % (role_id))
+        raise ACLException(C.make_error("ROLE_NOT_FOUND", role=role_id))
 
     @Command(needsUser=True, __help__=N_("Remove a defined acl-role by name"))
     def removeRole(self, user, rolename):
@@ -2055,7 +2017,7 @@ class ACLResolver(Plugin):
 
         # Check permissions
         if not self.check(user, '%s.acl' % self.env.domain, 'w', self.base):
-            raise ACLException("The requested operation is not allowed!")
+            raise ACLException(C.make_error("PERMISSION_REMOVE"), target=self.base)
 
         # Try to find role-acl with the given ID.
         self.remove_role(rolename)
