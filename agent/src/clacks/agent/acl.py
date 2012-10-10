@@ -52,6 +52,30 @@ from clacks.agent.objects.proxy import ObjectProxy
 #TODO: Groups are not supported yet
 
 
+C.register_codes(dict(
+    ACL_NOT_FOUND=N_("ACL not found"),
+    ACL_ITEM_INVALID_TYPE=N_("Item is not of type '%(type)s'"),
+    ACL_INVALID_SCOPEN=N_("Invalid ACL scope '%(scope)s'"),
+    ROLE_NOT_FOUND=N_("Role '%(role)s' not found"),
+    ACL_INVALID_SCOPE_TARGET=N_("Cannot set scope for role ACLs"),
+    ACL_TYPE_MISMATCH=N_("ACL and Role objects are not combinable"),
+    ACL_STRING_INVALID=N_("Invalid permission map - combination of the charaters c, r, o, w, d, s, e, x and m expected"),
+    ENTRY_NOT_UNIQUE=N_("Entry %(dn)s is not unique"),
+    ACL_LOOP=N_("Recursion in ACL resolution for role '%(role)s'"),
+    ROLE_DIRECT_MEMBER=N_("Role ACLs do not support members"),
+    ROLE_UNRESOLVED_REFERENCES=N_("Unresolved role references: %(references)s"),
+    ACL_NO_BASE_ACL=N_("No base ACL definition for '%(base)s' found"),
+    ACL_NOT_FOUND_ON_BASE=N_("No ACL definition for '%(base)s' found"),
+    ROLE_IN_USE=N_("Role '%(role)s' is still in use"),
+    ACL_PRIORITY_INVALID=N_("Priority needs to be above -100 and below 100"),
+    ACL_MISSING_KEY=N_("Action '%(action)s' lacks a '%(key)s' key"),
+    ACL_PARAMETER_MISMATCH=N_("Action and rolename parameter cannot be used at the same time"),
+    PERMISSION_UPDATE=N_("No permission to modify '%(target)s'"),
+    ROLE_EXISTS=N_("Role '%(name)s' already exists"),
+    ROLE_CANNOT_POINT_TO_ITSELF=N_("Roles cannot point to themselves")
+    ))
+
+
 class ACLException(Exception):
     pass
 
@@ -174,7 +198,7 @@ class ACLSet(list):
 
         """
         if type(item) != ACL:
-            raise TypeError(C.make_error('ACL_ITEM_INVALID_TYPE', type=ACL))
+            raise TypeError(C.make_error('ACL_ITEM_INVALID_TYPE', type=ACL.__name__))
 
         if item.priority == None:
             item.priority = len(self)
