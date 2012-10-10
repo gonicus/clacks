@@ -1537,7 +1537,6 @@ class ACLResolver(Plugin):
                     if not self.check(user, '%s.acl' % self.env.domain, 'w', aclset.base):
                         raise ACLException(C.make_error('PERMISSION_REMOVE', target=acl_id))
 
-
                     # Remove the acl from the set.
                     aclset.remove(acl)
 
