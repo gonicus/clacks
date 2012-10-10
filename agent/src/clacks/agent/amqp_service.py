@@ -80,9 +80,17 @@ from clacks.common.gjson import loads, dumps
 from clacks.common.components.jsonrpc_utils import ServiceRequestNotTranslatable, BadServiceRequest
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import PluginRegistry, AMQPWorker, ZeroconfService
-from clacks.common.utils import parseURL, repr2json
+from clacks.common.utils import parseURL, repr2json, N_
 from clacks.common import Environment
+from clacks.common.error import ClacksErrorHandler as C
 from avahi import dict_to_txt_array
+
+
+# Register the errors handled  by us
+C.register_codes(dict(
+    AMQP_MESSAGE_WITHOUT_UID=N_("Incoming message has no user_id field"),
+    AMQP_BAD_PARAMETERS=N_("Bad parameters - list or dict expected")
+    ))
 
 
 class AMQPService(object):
@@ -182,7 +190,7 @@ class AMQPService(object):
 
         # Check for id
         if not message.user_id:
-            raise ValueError("incoming message without user_id")
+            raise ValueError(C.make_error("AMQP_MESSAGE_WITHOUT_UID"))
 
         err = None
         res = None
@@ -204,7 +212,7 @@ class AMQPService(object):
                 err = str(BadServiceRequest(message.content))
 
         if not isinstance(args, list) and not isinstance(args, dict):
-            raise ValueError("bad params %r: must be a list or dict" % args)
+            raise ValueError(C.make_error("AMQP_BAD_PARAMETERS"))
 
         # Extract source queue
         p = re.compile(r';.*$')

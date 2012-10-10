@@ -26,9 +26,19 @@ from tornado.ioloop import IOLoop
 from tornado.httpserver import HTTPServer
 from zope.interface import implements
 from webob import exc #@UnresolvedImport
-
 from clacks.common import Environment
 from clacks.common.handler import IInterfaceHandler
+from clacks.common.utils import N_
+from clacks.common.error import ClacksErrorHandler as C
+
+
+C.register_codes(dict(
+    HTTP_PATH_ALREADY_REGISTERED=N_("'%(path)s' has already been registered")
+    ))
+
+
+class HTTPException(Exception):
+    pass
 
 
 class HTTPDispatcher(object):
@@ -202,7 +212,7 @@ class HTTPService(object):
         ================= ==========================
         """
         if path in self.__register_static or path in self.__register_ws:
-            raise Exception("path '%s' has already been registered" % path)
+            raise HTTPException(C.make_error("HTTP_PATH_ALREADY_REGISTERED", path=path))
 
         self.__register[path] = app
 
@@ -219,7 +229,7 @@ class HTTPService(object):
         ================= ==========================
         """
         if path in self.__register or path in self.__register_ws:
-            raise Exception("path '%s' has already been registered" % path)
+            raise HTTPException(C.make_error("HTTP_PATH_ALREADY_REGISTERED", path=path))
 
         self.__register_static[path] = local_path
 
@@ -235,5 +245,6 @@ class HTTPService(object):
         ================= ==========================
         """
         if path in self.__register or path in self.__register_static:
-            raise Exception("path '%s' has already been registered" % path)
+            raise HTTPException(C.make_error("HTTP_PATH_ALREADY_REGISTERED", path=path))
+
         self.__register_ws[path] = app

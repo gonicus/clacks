@@ -22,6 +22,18 @@ import types
 import logging
 from contextlib import contextmanager
 from clacks.common import Environment
+from clacks.common.utils import N_
+from clacks.common.error import ClacksErrorHandler as C
+
+
+C.register_codes(dict(
+    NO_SASL_SUPPORT=N_("No SASL support in the installed python-ldap detected"),
+    LDAP_NO_CONNECTIONS=N_("No LDAP connection available"),
+    ))
+
+
+class LDAPException(Exception):
+    pass
 
 
 class LDAPHandler(object):
@@ -94,7 +106,7 @@ class LDAPHandler(object):
 
         # Sanity check
         if self.__bind_user and not ldap.SASL_AVAIL:
-            raise Exception("bind_user needs SASL support, which doesn't seem to be available in python-ldap")
+            raise LDAPException(C.make_error("NO_SASL_SUPPORT"))
 
         # Initialize static pool
         LDAPHandler.connection_handle = [None] * self.__pool
@@ -121,7 +133,7 @@ class LDAPHandler(object):
         try:
             next_free = LDAPHandler.connection_usage.index(False)
         except ValueError:
-            raise Exception("no free LDAP connection available")
+            raise LDAPException(C.make_error("LDAP_NO_CONNECTIONS"))
 
         # Need to initialize?
         if not LDAPHandler.connection_handle[next_free]:
