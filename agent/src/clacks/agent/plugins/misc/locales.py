@@ -11,9 +11,11 @@
 #
 # See the LICENSE file in the project's top-level directory for details.
 
+import gettext
 from clacks.common.components import Command
 from clacks.common.components import Plugin
 from clacks.common.utils import N_
+from pkg_resources import resource_filename
 
 
 class Locales(Plugin):
@@ -165,7 +167,6 @@ class Locales(Plugin):
          "xh_ZA.UTF-8": N_(u"Xhosa (South Africa)"),
          "zu_ZA.UTF-8": N_(u"Zulu (South Africa)")
     }
-
 
     def __init__(self):
         self.__locales = {}

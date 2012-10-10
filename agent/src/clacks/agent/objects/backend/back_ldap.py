@@ -22,7 +22,7 @@ from clacks.common.utils import is_uuid, N_
 from clacks.common.components.jsonrpc_utils import Binary
 from clacks.agent.ldap_utils import LDAPHandler
 from clacks.common.error import ClacksErrorHandler as C
-from clacks.agent.objects.backend import ObjectBackend, EntryNotFound, EntryNotUnique, RDNNotSpecified, DNGeneratorError
+from clacks.agent.objects.backend import ObjectBackend, EntryNotFound, RDNNotSpecified, DNGeneratorError
 
 
 # Register the errors handled  by us

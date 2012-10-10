@@ -10,8 +10,6 @@
 #
 # See the LICENSE file in the project's top-level directory for details.
 
-import gettext
-from pkg_resources import resource_filename #@UnresolvedImport
 from clacks.common.utils import N_
 from clacks.common.components import PluginRegistry
 from clacks.agent.objects.comparator import ElementComparator

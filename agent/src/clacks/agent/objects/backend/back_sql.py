@@ -22,7 +22,7 @@ import datetime
 from json import loads, dumps
 from logging import getLogger
 from clacks.common import Environment
-from clacks.common.utils import is_uuid, N_
+from clacks.common.utils import is_uuid
 from clacks.common.error import ClacksErrorHandler as C
 from itertools import permutations
 from sqlalchemy.sql import and_
@@ -340,7 +340,7 @@ class SQL(ObjectBackend):
             dn = re.sub(re.escape(entry['parentDN']) + "$", new_base, entry['dn'])
             parentDN = new_base
             if self.exists(dn):
-                raise BackendError(make_error("TARGET_EXISTS", target= dn))
+                raise BackendError(C.make_error("TARGET_EXISTS", target=dn))
 
             self.objects.update().where(self.objects.c.uuid == item_uuid).values(modifyTimestamp=datetime.datetime.now(), dn=dn, parentDN=parentDN).execute()
             return True
