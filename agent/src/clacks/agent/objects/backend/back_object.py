@@ -15,8 +15,8 @@ import itertools
 from clacks.agent.objects.backend import ObjectBackend, EntryNotFound, BackendError
 from clacks.agent.objects.index import ObjectIndex
 from clacks.common.components import PluginRegistry
+from clacks.common.error import ClacksErrorHandler as C
 from clacks.agent.objects import ObjectProxy
-from clacks.agent.error import ClacksErrorHandler as C
 
 
 class ObjectHandler(ObjectBackend):

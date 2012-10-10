@@ -13,7 +13,7 @@
 __import__('pkg_resources').declare_namespace(__name__)
 import pkg_resources
 from clacks.common.utils import N_
-from clacks.agent.error import ClacksErrorHandler as C
+from clacks.common.error import ClacksErrorHandler as C
 
 
 C.register_codes(dict(

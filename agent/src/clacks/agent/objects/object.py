@@ -21,7 +21,7 @@ from zope.interface import Interface, implements
 from clacks.common import Environment
 from clacks.common.utils import N_, is_uuid
 from clacks.common.components import PluginRegistry
-from clacks.agent.error import ClacksErrorHandler as C
+from clacks.common.error import ClacksErrorHandler as C
 from clacks.agent.objects.backend.registry import ObjectBackendRegistry
 
 

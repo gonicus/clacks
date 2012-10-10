@@ -23,9 +23,9 @@ from json import loads, dumps
 from logging import getLogger
 from clacks.common import Environment
 from clacks.common.utils import is_uuid, N_
+from clacks.common.error import ClacksErrorHandler as C
 from itertools import permutations
 from sqlalchemy.sql import and_
-from clacks.agent.error import ClacksErrorHandler as C
 from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, BLOB, DateTime
 from clacks.agent.objects.backend import ObjectBackend, RDNNotSpecified, DNGeneratorError, BackendError
 

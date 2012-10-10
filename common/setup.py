@@ -100,6 +100,7 @@ setup(
     entry_points = """
         [agent.module]
         amqp = clacks.common.components.amqp:AMQPHandler
+        error = clacks.common.error:ClacksErrorHandler
 
         [json.datahandler]
         datetime = clacks.common.components.jsonrpc_utils:DateTimeHandler

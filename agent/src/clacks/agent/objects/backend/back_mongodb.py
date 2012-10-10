@@ -18,7 +18,7 @@ from logging import getLogger
 from clacks.agent.objects.backend import ObjectBackend, DNGeneratorError, RDNNotSpecified, BackendError
 from clacks.common import Environment
 from clacks.common.utils import is_uuid, N_
-from clacks.agent.error import ClacksErrorHandler as C
+from clacks.common.error import ClacksErrorHandler as C
 
 
 C.register_codes(dict(

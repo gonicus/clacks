@@ -34,8 +34,8 @@ from clacks.common.event import EventMaker
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import Command, Plugin, PluginRegistry
 from clacks.common.components.amqp import EventConsumer
+from clacks.common.error import ClacksErrorHandler as C
 from clacks.agent.objects import ObjectFactory, ObjectProxy, ObjectChanged, ProxyException, ObjectException
-from clacks.agent.error import ClacksErrorHandler as C
 from clacks.agent.lock import GlobalLock
 
 

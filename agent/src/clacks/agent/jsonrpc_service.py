@@ -293,6 +293,7 @@ class JsonRpcApp(object):
                 message=str(exc_value),
                 error=e.error)
             self.log.error(e.error)
+
             return Response(
                 server=self.ident,
                 status=500,
@@ -301,18 +302,11 @@ class JsonRpcApp(object):
                 body=dumps(dict(result=None,
                                 error=error_value,
                                 id=jid)))
+
         except Exception as e:
             text = traceback.format_exc()
             exc_value = sys.exc_info()[1]
             err = str(e)
-
-            # If message starts with [, it's a translateable message in
-            # repr format
-            if err.startswith("[") and not err.startswith("[Err"):
-                err = loads(repr2json(err))
-            if err.startswith("("):
-                err = "[" + err[1:-1] + "]"
-                err = loads(repr2json(err))
 
             error_value = dict(
                 name='JSONRPCError',

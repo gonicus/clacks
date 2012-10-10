@@ -51,7 +51,7 @@ from bson.binary import Binary
 from clacks.common import Environment
 from clacks.common.utils import is_uuid, N_
 from clacks.common.components import PluginRegistry
-from clacks.agent.error import ClacksErrorHandler as C
+from clacks.common.error import ClacksErrorHandler as C
 
 # Register the errors handled  by us
 C.register_codes(dict(

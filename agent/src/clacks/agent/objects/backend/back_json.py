@@ -24,7 +24,7 @@ from json import loads, dumps
 from logging import getLogger
 from clacks.common import Environment
 from clacks.common.utils import is_uuid
-from clacks.agent.error import ClacksErrorHandler as C
+from clacks.common.error import ClacksErrorHandler as C
 from clacks.agent.objects.backend import ObjectBackend, DNGeneratorError, RDNNotSpecified, BackendError
 
 

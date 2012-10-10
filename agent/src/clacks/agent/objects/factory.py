@@ -54,12 +54,12 @@ from lxml import etree, objectify
 from clacks.common import Environment
 from clacks.common.components import PluginRegistry
 from clacks.common.utils import N_
+from clacks.common.error import ClacksErrorHandler as C
 from clacks.agent.objects.filter import get_filter
 from clacks.agent.objects.backend.registry import ObjectBackendRegistry
 from clacks.agent.objects.comparator import get_comparator
 from clacks.agent.objects.operator import get_operator
 from clacks.agent.objects.object import Object
-from clacks.agent.error import ClacksErrorHandler as C
 
 try:
     from cStringIO import StringIO

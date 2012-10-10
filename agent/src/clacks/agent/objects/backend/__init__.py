@@ -15,7 +15,7 @@ import re
 import ldap
 from itertools import permutations
 from clacks.common.utils import N_
-from clacks.agent.error import ClacksErrorHandler as C
+from clacks.common.error import ClacksErrorHandler as C
 
 
 # Register the errors handled  by us

@@ -12,7 +12,7 @@
 
 __import__('pkg_resources').declare_namespace(__name__)
 import pkg_resources
-from clacks.agent.error import ClacksErrorHandler as C
+from clacks.common.error import ClacksErrorHandler as C
 
 
 def get_renderers():
