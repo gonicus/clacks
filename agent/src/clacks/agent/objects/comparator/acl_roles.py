@@ -11,7 +11,7 @@
 # See the LICENSE file in the project's top-level directory for details.
 
 from clacks.common.utils import N_
-from clacks.agent.acl import ACLResolver
+from clacks.common.components import PluginRegistry
 from clacks.agent.objects.comparator import ElementComparator
 
 
@@ -30,7 +30,7 @@ class IsAclRole(ElementComparator):
         # Check each property value
         entry_cnt = 0
 
-        ares = ACLResolver.get_instance()
+        ares = PluginRegistry.getInstance("ACLResolver")
         rolenames = [n["name"] for n in ares.getACLRoles(None) if "name" in n]
 
         for entry in value:

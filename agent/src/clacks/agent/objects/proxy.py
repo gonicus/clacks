@@ -116,7 +116,7 @@ class ObjectProxy(object):
         self.__attribute_map = {}
         self.__method_map = {}
         self.__current_user = user
-        self.__acl_resolver = ACLResolver.get_instance()
+        self.__acl_resolver = PluginRegistry.getInstance("ACLResolver")
         self.__attribute_type_map = {}
         self.__attributes = []
         self.__method_type_map = {}
@@ -931,4 +931,4 @@ class ObjectProxy(object):
 
 from .factory import ObjectFactory
 from .object import ObjectChanged
-from clacks.agent.acl import ACLResolver, ACLException
+from clacks.agent.acl import ACLException
