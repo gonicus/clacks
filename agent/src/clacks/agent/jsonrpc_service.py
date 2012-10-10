@@ -27,12 +27,22 @@ from zope.interface import implements
 from clacks.common.gjson import loads, dumps
 from webob import exc, Request, Response #@UnresolvedImport
 from paste.auth.cookie import AuthCookieHandler #@UnresolvedImport
-from clacks.common.utils import repr2json, f_print
+from clacks.common.utils import repr2json, f_print, N_
+from clacks.common.error import ClacksErrorHandler as C
 from clacks.common.handler import IInterfaceHandler
 from clacks.common import Environment
 from clacks.common.components import PluginRegistry, ZeroconfService, JSONRPCException
 from clacks.agent import __version__ as VERSION
 from avahi import dict_to_txt_array
+
+
+# Register the errors handled  by us
+C.register_codes(dict(
+    INVALID_JSON=N_("Invalid JSON string '%(data)s'"),
+    JSON_MISSING_PARAMETER=N_("Parameter missing in JSON body"),
+    PARAMETER_LIST_OR_DICT=N_("Parameter must be list or dictionary"),
+    REGISTRY_NOT_READY=N_("Registry is not ready")
+    ))
 
 
 class JSONRPCService(object):
@@ -164,21 +174,20 @@ class JsonRpcApp(object):
         try:
             json = loads(req.body)
         except ValueError, e:
-            raise ValueError('Bad JSON: %s' % e)
+            raise ValueError(C.make_error("INVALID_JSON", data=str(e)))
 
         try:
             method = json['method']
             params = json['params']
             jid = json['id']
         except KeyError, e:
-            raise ValueError(
-                "JSON body missing parameter: %s" % e)
+            raise ValueError(C.make_error("JSON_MISSING_PARAMETER"))
+
         if method.startswith('_'):
             raise exc.HTTPForbidden(
                 "Bad method name %s: must not start with _" % method).exception
         if not isinstance(params, list) and not isinstance(params, dict):
-            raise ValueError(
-                "bad params %r: must be a list or dict" % params)
+            raise ValueError(C.make_error("PARAMETER_LIST_OR_DICT"))
 
         # Create an authentication cookie on login
         if method == 'login':
@@ -278,7 +287,7 @@ class JsonRpcApp(object):
                 self.log.warning("waiting for registry to get ready")
                 if not self.__cr.processing.wait(5):
                     self.log.error("aborting call [%s] for %s: %s(%s) - timed out" % (jid, user, method, params))
-                    raise RuntimeError("registry not ready")
+                    raise RuntimeError(C.make_error("REGISTRY_NOT_READY"))
 
             if isinstance(params, dict):
                 result = self.dispatcher.dispatch(user, None, method, **params)
@@ -299,13 +308,13 @@ class JsonRpcApp(object):
                 status=500,
                 content_type='application/json',
                 charset='utf8',
-                body=dumps(dict(result=None,
-                                error=error_value,
-                                id=jid)))
+                body=dumps(dict(result=None, error=error_value, id=jid)))
 
         except Exception as e:
             text = traceback.format_exc()
             exc_value = sys.exc_info()[1]
+
+            #TODO: enroll information if it's an extended exception
             err = str(e)
 
             error_value = dict(
@@ -331,9 +340,7 @@ class JsonRpcApp(object):
             server=self.ident,
             content_type='application/json',
             charset='utf8',
-            body=dumps(dict(result=result,
-                            error=None,
-                            id=jid)))
+            body=dumps(dict(result=result, error=None, id=jid)))
 
     def authenticate(self, user=None, password=None):
         """
