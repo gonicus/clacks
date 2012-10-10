@@ -14,11 +14,21 @@ import uuid
 import datetime
 from types import MethodType
 from zope.interface import implements
-from clacks.common.handler import IInterfaceHandler
-from clacks.common import Environment
 from clacks.common.utils import N_
+from clacks.common import Environment
+from clacks.common.error import ClacksErrorHandler as C
+from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import Command, PluginRegistry, ObjectRegistry, AMQPServiceProxy, Plugin
 
+
+# Register the errors handled  by us
+C.register_codes(dict(
+    REFERENCE_NOT_FOUND=N_("Reference '%(ref)s' not found"),
+    PROPERTY_NOT_FOUND=N_("Property '%(property)s' not found"),
+    METHOD_NOT_FOUND=N_("Method '%(method)s' not found"),
+    OBJECT_LOCKED=N_("Object '%(object)s' has been locked by '%(user)s' on %(when)s"),
+    OID_NOT_FOUND=N_("Object OID '%(oid)s' not found")
+    ))
 
 class JSONRPCObjectMapper(Plugin):
     """
@@ -78,7 +88,7 @@ class JSONRPCObjectMapper(Plugin):
         ================= ==========================
         """
         if not self.__get_ref(ref):
-            raise ValueError("reference %s not found" % ref)
+            raise ValueError(C.make_error("REFERENCE_NOT_FOUND", ref=ref))
 
         # Remove local object if needed
         if ref in self.__object:
@@ -101,10 +111,10 @@ class JSONRPCObjectMapper(Plugin):
         """
         objdsc = self.__get_ref(ref)
         if not objdsc:
-            raise ValueError("reference %s not found" % ref)
+            raise ValueError(C.make_error("REFERENCE_NOT_FOUND", ref=ref))
 
         if not name in objdsc['object']['properties']:
-            raise ValueError("property %s not found" % name)
+            raise ValueError(C.make_error("PROPERTY_NOT_FOUND", property=name))
 
         if not self.__can_be_handled_locally(ref):
             proxy = self.__get_proxy(ref)
@@ -128,10 +138,10 @@ class JSONRPCObjectMapper(Plugin):
         """
         objdsc = self.__get_ref(ref)
         if not objdsc:
-            raise ValueError("reference %s not found" % ref)
+            raise ValueError(C.make_error("REFERENCE_NOT_FOUND", ref=ref))
 
         if not name in objdsc['object']['properties']:
-            raise ValueError("property %s not found" % name)
+            raise ValueError(C.make_error("PROPERTY_NOT_FOUND", property=name))
 
         if not self.__can_be_handled_locally(ref):
             proxy = self.__get_proxy(ref)
@@ -156,10 +166,10 @@ class JSONRPCObjectMapper(Plugin):
         """
         objdsc = self.__get_ref(ref)
         if not objdsc:
-            raise ValueError("reference %s not found" % ref)
+            raise ValueError(C.make_error("REFERENCE_NOT_FOUND", ref=ref))
 
         if not method in objdsc['object']['methods']:
-            raise ValueError("method %s not found" % method)
+            raise ValueError(C.make_error("METHOD_NOT_FOUND", method=method))
 
         if not self.__can_be_handled_locally(ref):
             proxy = self.__get_proxy(ref)
@@ -181,7 +191,7 @@ class JSONRPCObjectMapper(Plugin):
             new_obj = self.openObject(user, oid,  uuid)
             return new_obj
         else:
-            raise ValueError("reference %s not found" % instance_uuid)
+            raise ValueError(C.make_error("REFERENCE_NOT_FOUND", ref=instance_uuid))
 
     @Command(needsUser=True, __help__=N_("Removes the given object"))
     def removeObject(self, user, oid, *args, **kwargs):
@@ -210,10 +220,9 @@ class JSONRPCObjectMapper(Plugin):
                 {'user': 1, 'created': 1})
             #TODO: re-enable locking
             #if lck:
-            #    raise Exception('Object %s has been opened by "%s" on %s' % (
-            #        args[0],
-            #        lck['user'],
-            #        lck['created'].strftime("%Y-%m-%d (%H:%M:%S)")
+            #    raise Exception(C.make_error("OBJECT_LOCKED", object=args[0],
+            #        user=lck['user'],
+            #        when=lck['created'].strftime("%Y-%m-%d (%H:%M:%S)")
             #        ))
 
         # Use oid to find the object type
@@ -254,10 +263,9 @@ class JSONRPCObjectMapper(Plugin):
                 {'user': 1, 'created': 1})
             #TODO: re-enable locking
             #if lck:
-            #    raise Exception('Object %s has been opened by "%s" on %s' % (
-            #        args[0],
-            #        lck['user'],
-            #        lck['created'].strftime("%Y-%m-%d (%H:%M:%S)")
+            #    raise Exception(C.make_error("OBJECT_LOCKED", object=args[0],
+            #        user=lck['user'],
+            #        when=lck['created'].strftime("%Y-%m-%d (%H:%M:%S)")
             #        ))
 
         env = Environment.getInstance()
@@ -313,7 +321,7 @@ class JSONRPCObjectMapper(Plugin):
 
     def __get_object_type(self, oid):
         if not oid in ObjectRegistry.objects:
-            raise ValueError("Unknown object OID %s" % oid)
+            raise ValueError(C.make_error("OID_NOT_FOUND", oid=oid))
 
         return ObjectRegistry.objects[oid]['object']
 
@@ -338,7 +346,7 @@ class JSONRPCObjectMapper(Plugin):
 
     def __can_oid_be_handled_locally(self, oid):
         if not oid in ObjectRegistry.objects:
-            raise ValueError("Unknown object OID %s" % oid)
+            raise ValueError(C.make_error("OID_NOT_FOUND", oid=oid))
         return oid in ObjectRegistry.objects
 
     def __get_proxy(self, ref):
