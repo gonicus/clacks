@@ -15,7 +15,7 @@ import gettext
 from clacks.common.components import Command
 from clacks.common.components import Plugin
 from clacks.common.utils import N_
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename #@UnresolvedImport
 
 
 class Locales(Plugin):

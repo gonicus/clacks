@@ -128,7 +128,6 @@ encoding//plugins/libinst/src/libinst/interface/disk.py=utf-8
 encoding//plugins/libinst/src/libinst/keyboard_models.py=utf-8
 encoding//plugins/libinst/src/libinst/manage.py=utf-8
 encoding//plugins/libinst/src/libinst/methods.py=utf-8
-encoding//plugins/libinst/src/libinst/system_locale.py=utf-8
 encoding//plugins/libinst/src/main.py=utf-8
 encoding//plugins/libinst/src/tests/repo_debian_test.py=utf-8
 encoding//shell/src/clacks/shell/main.py=utf-8

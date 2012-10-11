@@ -19,7 +19,7 @@ from clacks.client.plugins.join.methods import join_method
 from pkg_resources import resource_filename #@UnresolvedImport
 
 try:
-    from snack import * #@UnusedWildImport
+    from snack import SnackScreen, ButtonBar, Entry, Grid, GridForm, Label, TextboxReflowed #@UnusedWildImport
     available = True
 except ImportError:
     available = False

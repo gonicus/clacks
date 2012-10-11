@@ -40,7 +40,7 @@ On client shutdown, a **ClientLeave** is emitted to tell the agents that
 the client has passed away.
 """
 import sys
-import netifaces
+import netifaces #@UnresolvedImport
 import traceback
 import logging
 import random

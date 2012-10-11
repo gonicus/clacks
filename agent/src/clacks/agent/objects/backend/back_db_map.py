@@ -67,7 +67,7 @@ class DBMAP(ObjectBackend):
                     for action in actions[database]:
                         try:
                             conn.execute(action)
-                        except Exception as e:
+                        except Exception as e: #@UnusedVariable
                             raise BackendError(C.make_error("SQL_QUERY_ERROR", action=str(action), database=database))
 
     def load(self, uuid, info, back_attrs=None):

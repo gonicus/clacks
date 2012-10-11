@@ -109,7 +109,7 @@ class ClacksException(Exception):
     ClacksException can be queried by their ID later on.
     """
 
-    def __init__(*args, **kwargs):
+    def __init__(self, *args, **kwargs):
         info = ClacksErrorHandler.make_error(*args, **kwargs)
         super(ClacksException, self).__init__(info)
 

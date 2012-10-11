@@ -11,7 +11,7 @@
 # See the LICENSE file in the project's top-level directory for details.
 
 import Image
-import ImageOps
+import ImageOps #@UnresolvedImport
 from bson.binary import Binary
 from clacks.common import Environment
 from clacks.agent.objects.filter import ElementFilter, ElementFilterException
@@ -71,13 +71,13 @@ class ImageProcessor(ElementFilter):
             for idx in range(0, len(valDict[key]['value'])):
                 image = StringIO(valDict[key]['value'][idx].get())
                 try:
-                    im = Image.open(image)
+                    im = Image.open(image) #@UndefinedVariable
                 except IOError:
                     continue
 
                 for size in sizes:
                     s = int(size)
-                    tmp = ImageOps.fit(im, (s, s), Image.ANTIALIAS)
+                    tmp = ImageOps.fit(im, (s, s), Image.ANTIALIAS) #@UndefinedVariable
                     tgt = StringIO()
                     tmp.save(tgt, "JPEG")
 

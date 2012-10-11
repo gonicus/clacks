@@ -174,7 +174,7 @@ class PuppetClient(Plugin):
         if not os.path.exists(git_path):
             # Initialize a bare git repository
             self.log.debug("creating bare git repository at '%s'" % git_path)
-            Repo.init_bare(git_path)
+            Repo.init_bare(git_path) #@UndefinedVariable
             os.chmod(git_path, 0770)
 
             # Create post-update hook

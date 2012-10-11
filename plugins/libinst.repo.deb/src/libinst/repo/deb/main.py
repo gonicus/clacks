@@ -33,10 +33,10 @@ from clacks.common.utils import downloadFile
 
 try:
     # pylint: disable-msg=F0401
-    from debian import debfile, deb822
+    from debian import debfile, deb822 #@UnusedImport
 except:
     # pylint: disable-msg=E0611
-    from debian_bundle import debfile, deb822
+    from debian_bundle import debfile, deb822 #@UnresolvedImport @Reimport
 
 
 from clacks.common import Environment

@@ -25,8 +25,8 @@ supported = False
 if os.getenv("DISPLAY"):
     # Import PySide classes if available
     try:
-        from PySide.QtCore import * #@UnusedWildImport
-        from PySide.QtGui import * #@UnusedWildImport
+        from PySide.QtCore import QApplication, QEvent, Qt, QTimer, SIGNAL, QCoreApplication  # @UnresolvedImport
+        from PySide.QtGui import QDialogButtonBox, QLabel, QLineEdit, QMessageBox, QPixmap, QFormLayout, QGridLayout, QHBoxLayout, QVBoxLayout  # @UnresolvedImport
         supported = True
 
     except Exception as e:

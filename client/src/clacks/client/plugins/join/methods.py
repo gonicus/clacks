@@ -13,7 +13,7 @@
 import re
 import os
 import gettext
-import netifaces
+import netifaces #@UnresolvedImport
 import ConfigParser
 import socket
 import logging
