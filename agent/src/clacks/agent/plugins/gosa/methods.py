@@ -383,7 +383,7 @@ class GuiMethods(Plugin):
 
             # Execute query and update results
             for item in self.db.index.find(query, these):
-                self.__update_res(res, item, user, self.__make_relevance(item, keywords, fltr, True))
+                self.__update_res(res, item, user, self.__make_relevance(item, keywords, fltr, True), secondary=True)
 
         return res.values()
 
@@ -434,7 +434,7 @@ class GuiMethods(Plugin):
 
         return penalty
 
-    def __update_res(self, res, item, user=None, relevance=0):
+    def __update_res(self, res, item, user=None, relevance=0, secondary=False):
 
         # Filter out what the current use is not allowed to see
         item = self.__filter_entry(user, item)
@@ -448,7 +448,8 @@ class GuiMethods(Plugin):
                 res[dn]['relevance'] = relevance
             return
 
-        entry = {'tag': item['_type'], 'relevance': relevance, 'uuid': item['_uuid']}
+        entry = {'tag': item['_type'], 'relevance': relevance, 'uuid': item['_uuid'],
+            'secondary': secondary, 'lastChanged':item['_last_changed']}
         for k, v in self.__search_aid['mapping'][item['_type']].items():
             if k:
                 if k == "icon":
