@@ -60,6 +60,7 @@ from clacks.common.handler import IInterfaceHandler
 from clacks.common import Environment
 from clacks.common.event import EventMaker
 from clacks.common.utils import stripNs, N_
+from clacks.common.error import ClacksErrorHandler as C
 from clacks.common.components import AMQPServiceProxy, Plugin
 from clacks.common.components.amqp import EventConsumer
 
@@ -68,6 +69,17 @@ from clacks.common.components.amqp import EventConsumer
 NORMAL = 1
 FIRSTRESULT = 2
 CUMULATIVE = 4
+
+
+# Register the errors handled  by us
+C.register_codes(dict(
+    COMMAND_NO_USERNAME=N_("Calling method '%(method)s' without a valid user session is not permitted"),
+    COMMAND_NOT_DEFINED=N_("Method '%(method)s' is not defined"),
+    PERMISSION_EXEC=N_("No permission to execute method '%(queue)s.%(method)s'"),
+    COMMAND_INVALID_QUEUE=N_("Invalid queue '%(queue)s' for method '%(method)s'"),
+    COMMAND_TYPE_NOT_DEFINED=N_("No method type '%(type)s' defined"),
+    COMMAND_WITHOUT_DOCS=N_("Method '%(method)s' has no documentation")
+    ))
 
 
 class CommandInvalid(Exception):
@@ -275,11 +287,11 @@ class CommandRegistry(Plugin):
 
         # Check for user authentication (if user is 'self' this is an internal call)
         if not user and user != self:
-            raise CommandNotAuthorized("call of function '%s' without a valid username is not permitted" % func)
+            raise CommandNotAuthorized(C.make_error("COMMAND_NO_USERNAME", method=func))
 
         # Check if the command is available
         if not func in self.capabilities:
-            raise CommandInvalid("no function '%s' defined" % func)
+            raise CommandInvalid(C.make_error("COMMAND_NOT_DEFINED", method=func))
 
         # Depending on the call method, we may have no queue information
         if not queue:
@@ -290,7 +302,7 @@ class CommandRegistry(Plugin):
             chk_options = dict(dict(zip(self.capabilities[func]['sig'], arg)).items() + larg.items())
             acl = PluginRegistry.getInstance("ACLResolver")
             if not acl.check(user, "%s.%s" % (queue, func), "x", options=chk_options):
-                raise CommandNotAuthorized("call of function '%s.%s' is not permitted" % (queue, func))
+                raise CommandNotAuthorized(C.make_error("PERMISSION_EXEC", queue=queue, method=func))
 
         # Convert to list
         arg = list(arg)
@@ -299,7 +311,7 @@ class CommandRegistry(Plugin):
         # shutdown i.e. may not be very handy if globaly executed.
         if self.callNeedsQueue(func):
             if not self.checkQueue(func, queue):
-                raise CommandInvalid("invalid queue '%s' for function '%s'" % (queue, func))
+                raise CommandInvalid(C.make_error("COMMAND_INVALID_QUEUE", queue=queue, method=func))
             else:
                 arg.insert(0, queue)
 
@@ -389,7 +401,7 @@ class CommandRegistry(Plugin):
             return result
 
         else:
-            raise CommandInvalid("no method type '%s' defined" % methodType)
+            raise CommandInvalid(C.make_error("COMMAND_TYPE_NOT_DEFINED", type=methodType))
 
     def path2method(self, path):
         """
@@ -418,7 +430,7 @@ class CommandRegistry(Plugin):
         ``Return:`` success or failure
         """
         if not func in self.commands:
-            raise CommandInvalid("no function '%s' defined" % func)
+            raise CommandInvalid(C.make_error("COMMAND_NOT_DEFINED", method=func))
 
         (clazz, method) = self.path2method(self.commands[func]['path'])
 
@@ -438,7 +450,7 @@ class CommandRegistry(Plugin):
         ``Return:`` success or failure
         """
         if not func in self.commands:
-            raise CommandInvalid("no function '%s' defined" % func)
+            raise CommandInvalid(C.make_error("COMMAND_NOT_DEFINED", method=func))
 
         (clazz, method) = self.path2method(self.commands[func]['path'])
 
@@ -459,7 +471,7 @@ class CommandRegistry(Plugin):
         ``Return:`` success or failure
         """
         if not func in self.commands:
-            raise CommandInvalid("no function '%s' defined" % func)
+            raise CommandInvalid(C.make_error("COMMAND_NOT_DEFINED", method=func))
 
         (clazz, method) = self.path2method(self.commands[func]['path']) #@UnusedVariable
         p = re.compile(r'\.' + self.env.id + '$')
@@ -620,7 +632,8 @@ class CommandRegistry(Plugin):
 
                     # Adjust documentation
                     if not method.__help__:
-                        raise Exception("method '%s' has no documentation" % func)
+                        raise CommandInvalid(C.make_error("COMMAND_WITHOUT_DOCS", method=func))
+
                     doc = re.sub("(\s|\n)+", " ", method.__help__).strip()
 
                     self.log.debug("registering %s" % func)
