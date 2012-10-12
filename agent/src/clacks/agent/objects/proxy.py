@@ -372,8 +372,6 @@ class ObjectProxy(object):
         if self.__extensions[extension] != None:
             raise ProxyException(C.make_error('OBJECT_EXTENSION_DEFINED', extension=extension))
 
-        zope.event.notify(ObjectChanged("pre object extend", self.__base))
-
         # Ensure that all precondition for this extension are fullfilled
         oTypes = self.__factory.getObjectTypes()
         for r_ext in oTypes[extension]['requires']:
@@ -400,8 +398,6 @@ class ObjectProxy(object):
         # Set initial values for foreign properties
         self.populate_to_foreign_properties(extension)
 
-        zope.event.notify(ObjectChanged("post object extend", self.__base))
-
     def retract(self, extension):
         """
         Retracts an extension from the current object
@@ -411,8 +407,6 @@ class ObjectProxy(object):
 
         if self.__extensions[extension] == None:
             raise ProxyException(C.make_error('OBJECT_NO_SUCH_EXTENSION', extension=extension))
-
-        zope.event.notify(ObjectChanged("pre object retract", self.__base))
 
         # Collect all extensions that are required due to dependencies..
         oTypes = self.__factory.getObjectTypes()
@@ -433,8 +427,6 @@ class ObjectProxy(object):
         # Move the extension to retractions
         self.__retractions[extension] = self.__extensions[extension]
         self.__extensions[extension] = None
-
-        zope.event.notify(ObjectChanged("post object retract", self.__base))
 
     def move(self, new_base, recursive=False):
         """
