@@ -171,115 +171,18 @@ def main():
 
     env.log.info("Clacks %s is starting up (server id: %s)" % (VERSION, env.id))
 
-    # Configured in daemon mode?
-    if not env.config.get('core.foreground'):
-        import grp
-        import pwd
-        import stat
-        import signal
-        import daemon
-        import lockfile
-        from lockfile import AlreadyLocked, LockFailed
-
-        pidfile = None
-
-        # Running as root?
-        if os.geteuid() != 0:
-            env.log.critical("Clacks agent needs to be started as root in non foreground mode")
-            exit(1)
-
-        try:
-            user = env.config.get("core.user")
-            group = env.config.get("core.group")
-
-            pidfile = env.config.get("core.pidfile", default="/var/run/clacks/clacks-agent.pid")
-
-            # Check if pid path if writable for us
-            piddir = os.path.dirname(pidfile)
-            pwe = pwd.getpwnam(user)
-            gre = grp.getgrnam(group)
-            try:
-                s = os.stat(piddir)
-            except OSError as e:
-                env.log.critical("cannot stat pid directory '%s' - %s" % (piddir, str(e)))
-                exit(1)
-            mode = s[stat.ST_MODE]
-
-            if not bool(((s[stat.ST_UID] == pwe.pw_uid) and (mode & stat.S_IWUSR)) or \
-                   ((s[stat.ST_GID] == gre.gr_gid) and (mode & stat.S_IWGRP)) or \
-                   (mode & stat.S_IWOTH)):
-                env.log.critical("cannot aquire lock '%s' - no write permission for group '%s'" % (piddir, group))
-                exit(1)
-
-            # Has to run as root?
-            if pwe.pw_uid == 0:
-                env.log.warning("Clacks agent should not be configured to run as root")
-
-            context = daemon.DaemonContext(
-                working_directory=env.config.get("core.workdir"),
-                umask=int(env.config.get("core.umask")),
-                pidfile=lockfile.FileLock(pidfile),
-            )
-
-            context.signal_map = {
-                signal.SIGTERM: handleTermSignal,
-                signal.SIGHUP: handleHupSignal,
-            }
-
-            context.uid = pwd.getpwnam(user).pw_uid
-            context.gid = grp.getgrnam(group).gr_gid
-
-        except KeyError:
-            env.log.critical("cannot resolve user:group '%s:%s'" %
-                (user, group))
-            exit(1)
-
-        except AlreadyLocked:
-            env.log.critical("pid file '%s' is already in use" % pidfile)
-            exit(1)
-
-        except LockFailed:
-            env.log.critical("cannot aquire lock '%s'" % pidfile)
-            exit(1)
-
-        else:
-
-            try:
-                with context:
-                    # Write out pid to allow clean shutdown
-                    pid = os.getpid()
-                    env.log.debug("forked process with pid %s" % pid)
-
-                    try:
-                        pid_file = open(env.config.get('core.pidfile'), 'w')
-                        try:
-                            pid_file.write(str(pid))
-                        finally:
-                            pid_file.close()
-                    except IOError:
-                        env.log.error("cannot write pid file %s" %
-                                env.config.get('core.pidfile'))
-                        exit(1)
-
-                    mainLoop(env)
-
-            except daemon.daemon.DaemonOSEnvironmentError as detail:
-                env.log.critical("error while daemonizing: " + str(detail))
-                exit(1)
-
+    if env.config.get('core.profile'):
+        import cProfile
+        import clacks.common.lsprofcalltree
+        p = cProfile.Profile()
+        p.runctx('mainLoop(env)', globals(), {'env': env})
+        #pylint: disable=E1101
+        k = clacks.common.lsprofcalltree.KCacheGrind(p)
+        data = open('prof.kgrind', 'w+')
+        k.output(data)
+        data.close()
     else:
-        if env.config.get('core.profile'):
-            import cProfile
-            import clacks.common.lsprofcalltree
-            p = cProfile.Profile()
-            p.runctx('mainLoop(env)', globals(), {'env': env})
-            #pylint: disable=E1101
-            k = clacks.common.lsprofcalltree.KCacheGrind(p)
-            data = open('prof.kgrind', 'w+')
-            k.output(data)
-            data.close()
-        else:
-            mainLoop(env)
+        mainLoop(env)
 
 
 if __name__ == '__main__':

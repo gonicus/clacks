@@ -73,8 +73,6 @@ setup(
         'paste',
         'netaddr',
         'smbpasswd',
-        'python_daemon',
-        'lockfile',
         'dumbnet',
         'pycrypto',
         'unidecode',
