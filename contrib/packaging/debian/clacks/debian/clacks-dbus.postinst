@@ -9,6 +9,8 @@ case "$1" in
     if [ -x "/etc/init.d/dbus" ]; then
       invoke-rc.d dbus force-reload || true
     fi
+
+    mkdir /etc/clacks/shell.d
   ;;
   abort-upgrade|abort-remove|abort-deconfigure)
   ;;

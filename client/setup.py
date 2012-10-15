@@ -46,7 +46,6 @@ if platform.system() == "Windows":
 else:
     client_install_requires[0].append([
         'setproctitle',
-        'lockfile',
     ])
 
     modules = """

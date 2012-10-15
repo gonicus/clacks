@@ -1,1 +1,13 @@
 clacks.common clacks-common
+qpid_python python-qpid
+netaddr python-netaddr
+netifaces python-netifaces
+setproctitle python-setproctitle
+webob python-webob
+paste python-paste
+smbpasswd python-smbpasswd
+dumbnet python-dumbnet
+unidecode python-unidecode
+sqlalchemy python-sqlalchemy
+tornado python-tornado
+pymongo python-pymongo

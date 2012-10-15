@@ -16,6 +16,7 @@ case "$1" in
         chown clacks: /var/lib/clacks
 
 	install -d -o clacks -g clacks -m 0770 /etc/clacks
+	install -d -o clacks -g clacks -m 0770 /var/spool/clacks
         ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

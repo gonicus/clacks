@@ -18,6 +18,8 @@ import os
 import hmac
 import base64
 import time
+import rfc822
+from datetime import datetime
 from clacks.common.gjson import dumps
 from hashlib import sha1
 from webob import exc, Request, Response #@UnresolvedImport
@@ -173,13 +175,25 @@ class CacheHandler(object):
         # Load the cached binary data and serve it
         data = self.db.cache.find_one({'uuid': uuid, 'attribute': attribute,
             subindex: {'$exists': True},
-            "%s.%s" % (subindex, index): {'$exists': True}}, {subindex: 1})
+            "%s.%s" % (subindex, index): {'$exists': True}}, {subindex: 1, 'modified': 1})
         if not data:
             raise exc.HTTPNotFound().exception
 
-        return Response(
-                content_type='image/jpeg',
-                body=str(data[subindex][int(index)]))
+        # Tell the client that we've no modification?
+        lm = req.headers.get('If-Modified-Since')
+        if lm:
+            lm = rfc822.parsedate(lm)
+            if data['modified']  > lm:
+                raise exc.HTTPNotModified().exception
+
+        resp = Response(
+            content_type='image/jpeg',
+            body=str(data[subindex][int(index)]))
+        resp.cache_control.max_age = 3600
+        resp.cache_control.private = 1
+        resp.last_modified = datetime(2007, 1, 1, 12, 0)
+
+        return resp
 
 
 class Redirector(object):
