@@ -443,7 +443,7 @@ class ACL(object):
         self.actions = []
         self.members = []
 
-        r = ACLResolver.instance
+        r = PluginRegistry.getInstance("ACLResolver")
         self.id = r.get_next_acl_id()
 
         # Is this a role base or manually configured ACL object.
@@ -470,7 +470,7 @@ class ACL(object):
         if not isinstance(rolename, str):
             raise ACLException(C.make_error("ATTRIBUTE_INVALID", "rolename", str.__name__))
 
-        r = ACLResolver.instance
+        r = PluginRegistry.getInstance("ACLResolver")
         if rolename in r.acl_roles:
             self.uses_role = True
             self.role = rolename
@@ -650,7 +650,7 @@ class ACL(object):
         Generates a human readable representation of the ACL-object.
         """
         if self.uses_role:
-            r = ACLResolver.instance
+            r = PluginRegistry.getInstance("ACLResolver")
             rstr = "\n%s<ACL> %s" % (" " * indent, str(self.members))
             rstr += "\n%s" % r.acl_roles[self.role].repr_self(indent + 1)
         else:
@@ -727,7 +727,8 @@ class ACL(object):
 
             # Resolve acls used in the role.
             used_roles.append(self.role)
-            r = ACLResolver.instance
+            r = PluginRegistry.getInstance("ACLResolver")
+
             self.log.debug("checking ACL role entries for role: %s" % self.role)
             for acl in r.acl_roles[self.role]:
                 (match, scope) = acl.match(user, topic, acls, targetBase, options if options else {}, False, used_roles, override_users)
@@ -864,7 +865,6 @@ class ACLResolver(Plugin):
         >>> acls
     """
     implements(IInterfaceHandler)
-    instance = None
     acl_sets = None
     acl_roles = None
     admins = []
