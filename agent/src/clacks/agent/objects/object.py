@@ -269,9 +269,11 @@ class Object(object):
             if self.myProperties[name]['mandatory']:
                 raise AttributeError(C.make_error('ATTRIBUTE_MANDATORY', name))
 
-            self.myProperties[name]['status'] = STATUS_CHANGED
-            self.myProperties[name]['last_value'] = copy.deepcopy(self.myProperties[name]['value'])
-            self.myProperties[name]['value'] = []
+            # If not already in removed state
+            if len(self.myProperties[name]['value']) != 0:
+                self.myProperties[name]['status'] = STATUS_CHANGED
+                self.myProperties[name]['last_value'] = copy.deepcopy(self.myProperties[name]['value'])
+                self.myProperties[name]['value'] = []
         else:
             raise AttributeError(C.make_error('ATTRIBUTE_NOT_FOUND', name))
 
