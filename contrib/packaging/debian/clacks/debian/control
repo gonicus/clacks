@@ -5,7 +5,7 @@ Maintainer: Cajus Pollmeier <cajus@debian.org>
 Build-Depends: debhelper (>= 7.0.50~), python (>= 2.6.6-3~), python-setuptools,
  python-pybabel, python-nose, python-kid, python-coverage,
  python-logilab-astng, python-logilab-common,
- python-logilab-constraint, pylint
+ python-logilab-constraint, pylint, python-dateutil
 X-Python-Version: >= 2.6
 Standards-Version: 3.9.2
 Homepage: http://gosa-project.org
@@ -27,7 +27,7 @@ Package: clacks-dbus
 Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, clacks-client, hal,
  python-notify | python-inotify, python-dbus, python-dateutil,
- python-setproctitle
+ python-setproctitle, supervisor
 Description: clacks infrastructure service - DBUS service provider
  Brief description is missing.
  .
@@ -38,9 +38,8 @@ Architecture: all
 Conflicts: clacks-agent
 Depends: ${python:Depends}, ${misc:Depends}, python-dateutil, python-netifaces,
  python-crypto, adduser, python-newt, python-zope.event, python-setproctitle,
- python-tornado, python-pymongo
-Suggests: clacks-dbus, fusioninventory-agent, python-pyside, avahi-utils,
- mongodb-server
+ supervisor
+Suggests: clacks-dbus, fusioninventory-agent, python-pyside
 Description: clacks infrastructure service - client
  Brief description is missing.
  .
@@ -58,9 +57,11 @@ Package: clacks-agent
 Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, clacks-common,
  python-dumbnet, python-ldap, python-smbpasswd, python-unidecode,
- adduser, python-zope.event, python-setproctitle
+ adduser, python-zope.event, python-setproctitle,
+ python-tornado, python-pymongo, supervisor
 Conflicts: clacks-client
-Suggests: qpidd, python-sqlalchemy, python-mysqldb, python-sqlalchemy-ext
+Suggests: qpidd, python-sqlalchemy, python-mysqldb, python-sqlalchemy-ext,
+ avahi-utils, mongodb-server
 Description: clacks infrastructure service - agent
  Brief description is missing.
  .

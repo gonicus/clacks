@@ -4,3 +4,4 @@ usr/lib/python*/dist-packages/clacks/client
 usr/lib/python*/dist-packages/clacks.client-*.egg-info
 usr/lib/python*/dist-packages/clacks.client-*-nspkg.pth
 ../rsyslog/clacks-client.conf /etc/rsyslog.d
+../supervisor/clacks-client.conf /etc/supervisor/conf.d

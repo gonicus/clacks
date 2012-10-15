@@ -1,4 +1,4 @@
-/var/log/clacks/client.log {
+/var/log/clacks.log {
     daily
     missingok
     rotate 10
@@ -8,5 +8,5 @@
     postrotate
         invoke-rc.d rsyslog rotate > /dev/null
     endscript
-    create 640 clacks adm
+    create 640 root adm
 }

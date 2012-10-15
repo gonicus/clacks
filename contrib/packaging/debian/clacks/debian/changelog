@@ -1,5 +1,5 @@
-clacks (1.0-1) unstable; urgency=low
+clacks (0.8-1) unstable; urgency=low
 
-  * Initial release
+  * Initial release.
 
  -- Cajus Pollmeier <cajus@debian.org>  Fri, 06 May 2011 12:20:22 +0200
