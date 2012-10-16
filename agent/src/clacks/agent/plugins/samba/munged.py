@@ -13,6 +13,7 @@
 from base64 import b64decode, b64encode
 from binascii import hexlify, unhexlify
 from clacks.agent.objects.filter import ElementFilter
+from clacks.common.error import ClacksErrorHandler as C
 
 
 class SambaMungedDialOut(ElementFilter):
@@ -38,7 +39,10 @@ class SambaMungedDialOut(ElementFilter):
         # Build up a list of values to encode.
         res = {}
         for entry in alist:
-            res[entry] = valDict[entry]['value'][0]
+            if not len(valDict[entry]['value']):
+                raise AttributeError(C.make_error('ATTRIBUTE_MANDATORY', entry))
+            else:
+                res[entry] = valDict[entry]['value'][0]
 
         # Encode the sambaMungedDial attribute.
         result = SambaMungedDial.encode(res)
