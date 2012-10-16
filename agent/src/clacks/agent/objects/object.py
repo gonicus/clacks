@@ -52,6 +52,7 @@ C.register_codes(dict(
     FILTER_INVALID_KEY=N_("Invalid key '%(key)s' for filter '%(filter)s'"),
     FILTER_MISSING_KEY=N_("Missing key '%(key)s' after processing filter '%(filter)s'"),
     FILTER_NO_LIST=N_("Filter '%(filter)s' did not return a %(type)s value - a list was expected"),
+    ATTRIBUTE_DEPEND_LOOP=N_("Potential loop in attribute dependencies")
 ))
 
 
@@ -85,6 +86,52 @@ class Object(object):
     modifyTimestamp = None
     myProperties = None
     env = None
+    attributesInSaveOrder = None
+
+
+    def __saveOrder(self):
+        """
+        Returns a list containing all attributes in the correct
+        save-order.
+        Due to the fact that some attributes depend on another,
+        we have to save some attributes first and then the others.
+        """
+
+        data = self.__saveOrderHelper()
+        attrs = []
+        for level in sorted(data.keys(), reverse=True):
+            for attr in data[level]:
+                if attr not in attrs:
+                    attrs.append(attr)
+        return attrs
+
+
+    def __saveOrderHelper(self, res=None, item=None, level=0):
+        """
+        Helper method for '__saveOrder' to detect the dependency
+        depth (level) for an attribute
+        """
+
+        if not res:
+            res = {}
+
+        if not level in res:
+            res[level] = []
+
+        if level == 10:
+            raise ValueError(C.make_error('ATTRIBUTE_DEPEND_LOOP'))
+
+        if not item:
+            for key in self.myProperties:
+                self.__saveOrderHelper(res, key, level +1)
+        else:
+            if len(self.myProperties[item]['depends_on']):
+                for key in self.myProperties[item]['depends_on']:
+                    self.__saveOrderHelper(res, key, level +1)
+
+            res[level].append(item)
+        return res
+
 
     def __init__(self, where=None, mode="update"):
         self.env = Environment.getInstance()
@@ -99,6 +146,7 @@ class Object(object):
         props = getattr(self, '__properties')
 
         self.myProperties = copy.deepcopy(props)
+        self.attributesInSaveOrder = self.__saveOrder();
 
         for key in self.myProperties:
 
@@ -252,7 +300,7 @@ class Object(object):
         """
         Deleter method for properties.
         """
-        if name in self.myProperties:
+        if name in self.attributesInSaveOrder:
 
             # Check if this attribute is blocked by another attribute and its value.
             for bb in  self.myProperties[name]['blocked_by']:
@@ -478,10 +526,11 @@ class Object(object):
 
         raise AttributeError(C.make_error('ATTRIBUTE_NOT_FOUND', name))
 
-    def check(self):
+    def check(self, propsFromOtherExtensions={}):
         """
         Checks whether everything is fine with the extension and its given values or not.
         """
+
         # Create a copy to avoid touching the original values
         props = copy.deepcopy(self.myProperties)
 
@@ -503,9 +552,22 @@ class Object(object):
                     ext=self.__class__.__name__,
                     base=base_type))
 
+        # Transfer values form other commit processes into ourselfes
+        for key in props:
+            if props[key]['foreign'] and key in propsFromOtherExtensions:
+                props[key]['value'] = propsFromOtherExtensions[key]['value']
+
         # Transfer status into commit status
         for key in props:
             props[key]['commit_status'] = props[key]['status']
+
+            # Process each and every out-filter with a clean set of input values,
+            #  to avoid that return-values overwrite themselves.
+            if len(props[key]['out_filter']):
+
+                self.log.debug(" found %s out-filter for %s" % (str(len(props[key]['out_filter'])), key,))
+                for out_f in props[key]['out_filter']:
+                    self.__processFilter(out_f, key, props)
 
         # Collect values by store and process the property filters
         for key in props:
@@ -540,11 +602,14 @@ class Object(object):
             if not props[prop_key]['commit_status'] & STATUS_CHANGED:
                 continue
 
-    def commit(self):
+        return props
+
+    def commit(self, propsFromOtherExtensions={}):
         """
         Commits changes of an object to the corresponding backends.
         """
-        self.check()
+
+        self.check(propsFromOtherExtensions)
 
         self.log.debug("saving object modifications for [%s|%s]" % (type(self).__name__, self.uuid))
 
@@ -552,8 +617,12 @@ class Object(object):
         props = copy.deepcopy(self.myProperties)
 
         # Transfer status into commit status
-        for key in props:
+        for key in self.attributesInSaveOrder:
             props[key]['commit_status'] = props[key]['status']
+
+            # Transfer values form other commit processes into ourselfes
+            if props[key]['foreign'] and key in propsFromOtherExtensions:
+                props[key]['value'] = propsFromOtherExtensions[key]['value']
 
         # Adapt property states
         # Run this once - If any state was adapted, then run again to ensure
@@ -565,7 +634,7 @@ class Object(object):
             first = False
             required = False
             _max -= 1
-            for key in props:
+            for key in self.attributesInSaveOrder:
 
                 # Adapt status from dependent properties.
                 for propname in props[key]['depends_on']:
@@ -577,7 +646,7 @@ class Object(object):
 
         # Collect values by store and process the property filters
         collectedAttrs = {}
-        for key in props:
+        for key in self.attributesInSaveOrder:
 
             # Skip foreign properties
             if props[key]['foreign']:
@@ -599,7 +668,7 @@ class Object(object):
                     self.__processFilter(out_f, key, props)
 
         # Collect properties by backend
-        for prop_key in props:
+        for prop_key in self.attributesInSaveOrder:
 
             # Skip foreign properties
             if props[prop_key]['foreign']:
@@ -732,6 +801,8 @@ class Object(object):
             self.__execute_hook("PostCreate")
         if self._mode in ["update"] and "PostModify":
             self.__execute_hook("PostModify")
+
+        return props
 
     def revert(self):
         """
