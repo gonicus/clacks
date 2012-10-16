@@ -17,7 +17,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0',
+        VERSION:     '0.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -35,7 +35,8 @@
 
   </head>
   <body>
-<!--<a href="http://github.com/clacks"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>-->
+<script src="_static/jquery.js"></script>
+<a href="http://github.com/clacks"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>
 <div class="header">
   <div class="logo">
     <a href="../index.html">
@@ -343,9 +344,54 @@ values.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="clacks.agent.jsonrpc_objects.JSONRPCObjectMapper.reloadObject">
+<tt class="descname">reloadObject</tt><big>(</big><em>user</em>, <em>instance_uuid</em><big>)</big><a class="headerlink" href="#clacks.agent.jsonrpc_objects.JSONRPCObjectMapper.reloadObject" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition" id="cmd-5">
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>This method will be exported by the CommandRegistry.</strong></p>
+</div>
+<p>Opens a copy of the object given as instance_uuid and
+closes the original instance.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="clacks.agent.jsonrpc_objects.JSONRPCObjectMapper.removeObject">
+<tt class="descname">removeObject</tt><big>(</big><em>user</em>, <em>oid</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#clacks.agent.jsonrpc_objects.JSONRPCObjectMapper.removeObject" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition" id="cmd-6">
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>This method will be exported by the CommandRegistry.</strong></p>
+</div>
+<p>Open object on the agent side and calls its remove method</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="75%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>oid</td>
+<td>OID of the object to create</td>
+</tr>
+<tr class="row-odd"><td>args/kwargs</td>
+<td>Arguments to be used when getting an object instance</td>
+</tr>
+</tbody>
+</table>
+<p><tt class="docutils literal"><span class="pre">Return</span></tt>: True</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="clacks.agent.jsonrpc_objects.JSONRPCObjectMapper.setObjectProperty">
 <tt class="descname">setObjectProperty</tt><big>(</big><em>ref</em>, <em>name</em>, <em>value</em><big>)</big><a class="headerlink" href="#clacks.agent.jsonrpc_objects.JSONRPCObjectMapper.setObjectProperty" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition" id="cmd-5">
+<dd><div class="admonition" id="cmd-7">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -422,7 +468,7 @@ values.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2011, Cajus Pollmeier.
+        &copy; Copyright 2012, GONICUS GmbH.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>

@@ -17,7 +17,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0',
+        VERSION:     '0.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -35,7 +35,8 @@
 
   </head>
   <body>
-<!--<a href="http://github.com/clacks"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>-->
+<script src="_static/jquery.js"></script>
+<a href="http://github.com/clacks"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>
 <div class="header">
   <div class="logo">
     <a href="../index.html">
@@ -275,9 +276,22 @@ are capable of processing them - ordered by load.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="clacks.agent.command.CommandRegistry.getBase">
+<tt class="descname">getBase</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.getBase" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition" id="cmd-0">
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>This method will be exported by the CommandRegistry.</strong></p>
+</div>
+<p>Returns the LDAP base used by the agent as string</p>
+<p><tt class="docutils literal"><span class="pre">Return</span></tt>: a string representing the LDAP base</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="clacks.agent.command.CommandRegistry.getMethods">
 <tt class="descname">getMethods</tt><big>(</big><em>queue=None</em>, <em>locale=None</em><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.getMethods" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition" id="cmd-0">
+<dd><div class="admonition" id="cmd-1">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -309,7 +323,7 @@ are capable of processing them - ordered by load.</li>
 <dl class="method">
 <dt id="clacks.agent.command.CommandRegistry.getNodes">
 <tt class="descname">getNodes</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.getNodes" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition" id="cmd-1">
+<dd><div class="admonition" id="cmd-2">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -399,7 +413,7 @@ node which is available.</p>
 <dl class="method">
 <dt id="clacks.agent.command.CommandRegistry.sendEvent">
 <tt class="descname">sendEvent</tt><big>(</big><em>user</em>, <em>data</em><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.sendEvent" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition" id="cmd-2">
+<dd><div class="admonition" id="cmd-3">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -436,7 +450,7 @@ hello and register event callbacks.</p>
 <dl class="method">
 <dt id="clacks.agent.command.CommandRegistry.shutdown">
 <tt class="descname">shutdown</tt><big>(</big><em>queue</em>, <em>force=False</em><big>)</big><a class="headerlink" href="#clacks.agent.command.CommandRegistry.shutdown" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition" id="cmd-3">
+<dd><div class="admonition" id="cmd-4">
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -511,7 +525,7 @@ in the configured interval.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2011, Cajus Pollmeier.
+        &copy; Copyright 2012, GONICUS GmbH.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>

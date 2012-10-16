@@ -24,7 +24,7 @@ which may be scheduled by a user or by indirectly by a script or the web fronten
     >>> proxy.schedulerGetJobs({'tag':'service'})
     {}
 
-    >> proxy.schedulerAddDateJob("notifyUser", ["cajus", "test", "test"], None, "20110909131212")
+    >>> proxy.schedulerAddDateJob("notifyUser", ["cajus", "test", "test"], None, "20110909131212")
     u'596b8f2e-dad4-11e0-bcf1-5452005f1250'
 
 ------
@@ -124,15 +124,20 @@ class SchedulerService(Plugin):
         """
         List available jobs with filtering for job properties.
 
-        Example::
+        Example:
 
             >>> proxy.schedulerGetJobs()
-            {u'b4b54880-dac9-11e0-b58e-5452005f1250': {u'next_run_time':
-            u'20110909115527', u'name': u'SchedulerService.migrate',
-            u'misfire_grace_time': 1, u'job_type': None, u'max_instances': 1,
-            u'max_runs': None, u'coalesce': True, u'tag': u'_internal', u'owner': None,
-            u'description': None}}
-
+            {u'b4b54880-dac9-11e0-b58e-5452005f1250': {
+                u'next_run_time': u'20110909115527',
+                u'name': u'SchedulerService.migrate',
+                u'misfire_grace_time': 1,
+                u'job_type': None,
+                u'max_instances': 1,
+                u'max_runs': None,
+                u'coalesce': True,
+                u'tag': u'\_internal',
+                u'owner': None,
+                u'description': None}}
             >>> proxy.schedulerGetJobs({'tag':'service'})
             {}
 

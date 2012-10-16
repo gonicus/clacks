@@ -17,7 +17,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0',
+        VERSION:     '0.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -35,7 +35,8 @@
 
   </head>
   <body>
-<!--<a href="http://github.com/clacks"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>-->
+<script src="_static/jquery.js"></script>
+<a href="http://github.com/clacks"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>
 <div class="header">
   <div class="logo">
     <a href="../index.html">
@@ -139,7 +140,7 @@ can register such a component like this:</p>
 and will be served when the <em>HTTPService</em> starts up.</p>
 <dl class="method">
 <dt id="clacks.agent.httpd.HTTPService.register">
-<tt class="descname">register</tt><big>(</big><em>path</em>, <em>obj</em><big>)</big><a class="headerlink" href="#clacks.agent.httpd.HTTPService.register" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">register</tt><big>(</big><em>path</em>, <em>app</em><big>)</big><a class="headerlink" href="#clacks.agent.httpd.HTTPService.register" title="Permalink to this definition">¶</a></dt>
 <dd><p>Register the application <em>app</em> on path <em>path</em>.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -154,6 +155,57 @@ and will be served when the <em>HTTPService</em> starts up.</p>
 <tbody valign="top">
 <tr class="row-even"><td>path</td>
 <td>Path part of an URL - i.e. &#8216;/rpc&#8217;</td>
+</tr>
+<tr class="row-odd"><td>app</td>
+<td>WSGI application</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="clacks.agent.httpd.HTTPService.register_static">
+<tt class="descname">register_static</tt><big>(</big><em>path</em>, <em>local_path</em><big>)</big><a class="headerlink" href="#clacks.agent.httpd.HTTPService.register_static" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a static directory <em>local_path</em> in the web servers
+<em>path</em>.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>path</td>
+<td>Path part of an URL - i.e. &#8216;/static&#8217;</td>
+</tr>
+<tr class="row-odd"><td>local_path</td>
+<td>Local path to serve from - i.e. &#8216;/var/www&#8217;</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="clacks.agent.httpd.HTTPService.register_ws">
+<tt class="descname">register_ws</tt><big>(</big><em>path</em>, <em>app</em><big>)</big><a class="headerlink" href="#clacks.agent.httpd.HTTPService.register_ws" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register the websocket application <em>app</em> on path <em>path</em>.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="35%" />
+<col width="65%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>path</td>
+<td>Path part of an URL - i.e. &#8216;/ws&#8217;</td>
 </tr>
 <tr class="row-odd"><td>app</td>
 <td>WSGI application</td>
@@ -214,7 +266,7 @@ and will be served when the <em>HTTPService</em> starts up.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2011, Cajus Pollmeier.
+        &copy; Copyright 2012, GONICUS GmbH.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>

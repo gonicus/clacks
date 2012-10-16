@@ -17,7 +17,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '1.0',
+        VERSION:     '0.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -35,7 +35,8 @@
 
   </head>
   <body>
-<!--<a href="http://github.com/clacks"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>-->
+<script src="_static/jquery.js"></script>
+<a href="http://github.com/clacks"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>
 <div class="header">
   <div class="logo">
     <a href="../../index.html">
@@ -67,37 +68,37 @@
 <div class="section" id="powermanagement">
 <h2>Powermanagement<a class="headerlink" href="#powermanagement" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="clacks.client.plugins.powermanagement.utils.PowerManagement">
-<em class="property">class </em><tt class="descclassname">clacks.client.plugins.powermanagement.utils.</tt><tt class="descname">PowerManagement</tt><a class="headerlink" href="#clacks.client.plugins.powermanagement.utils.PowerManagement" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.client.plugins.powermanagement.main.PowerManagement">
+<em class="property">class </em><tt class="descclassname">clacks.client.plugins.powermanagement.main.</tt><tt class="descname">PowerManagement</tt><a class="headerlink" href="#clacks.client.plugins.powermanagement.main.PowerManagement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Utility class that contains methods needed to handle shutdown
 functionality.</p>
 <dl class="method">
-<dt id="clacks.client.plugins.powermanagement.utils.PowerManagement.hibernate">
-<tt class="descname">hibernate</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.client.plugins.powermanagement.utils.PowerManagement.hibernate" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.client.plugins.powermanagement.main.PowerManagement.hibernate">
+<tt class="descname">hibernate</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.client.plugins.powermanagement.main.PowerManagement.hibernate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute a hibernation of the client.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="clacks.client.plugins.powermanagement.utils.PowerManagement.reboot">
-<tt class="descname">reboot</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.client.plugins.powermanagement.utils.PowerManagement.reboot" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.client.plugins.powermanagement.main.PowerManagement.reboot">
+<tt class="descname">reboot</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.client.plugins.powermanagement.main.PowerManagement.reboot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute a reboot of the client.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="clacks.client.plugins.powermanagement.utils.PowerManagement.setpowersave">
-<tt class="descname">setpowersave</tt><big>(</big><em>enable</em><big>)</big><a class="headerlink" href="#clacks.client.plugins.powermanagement.utils.PowerManagement.setpowersave" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.client.plugins.powermanagement.main.PowerManagement.setpowersave">
+<tt class="descname">setpowersave</tt><big>(</big><em>enable</em><big>)</big><a class="headerlink" href="#clacks.client.plugins.powermanagement.main.PowerManagement.setpowersave" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set powersave mode of the client.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="clacks.client.plugins.powermanagement.utils.PowerManagement.shutdown">
-<tt class="descname">shutdown</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.client.plugins.powermanagement.utils.PowerManagement.shutdown" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.client.plugins.powermanagement.main.PowerManagement.shutdown">
+<tt class="descname">shutdown</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.client.plugins.powermanagement.main.PowerManagement.shutdown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute a shutdown of the client.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="clacks.client.plugins.powermanagement.utils.PowerManagement.suspend">
-<tt class="descname">suspend</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.client.plugins.powermanagement.utils.PowerManagement.suspend" title="Permalink to this definition">¶</a></dt>
+<dt id="clacks.client.plugins.powermanagement.main.PowerManagement.suspend">
+<tt class="descname">suspend</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.client.plugins.powermanagement.main.PowerManagement.suspend" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute a suspend of the client.</p>
 </dd></dl>
 
@@ -126,20 +127,6 @@ functionality.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="notify">
-<h2>Notify<a class="headerlink" href="#notify" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="clacks.client.plugins.notify.utils.Notify">
-<em class="property">class </em><tt class="descclassname">clacks.client.plugins.notify.utils.</tt><tt class="descname">Notify</tt><a class="headerlink" href="#clacks.client.plugins.notify.utils.Notify" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="clacks.client.plugins.notify.utils.Notify.notify_all">
-<tt class="descname">notify_all</tt><big>(</big><em>title</em>, <em>message</em>, <em>timeout=0</em>, <em>urgency='normal'</em>, <em>icon='dialog-information'</em>, <em>actions=''</em>, <em>recurrence=60</em><big>)</big><a class="headerlink" href="#clacks.client.plugins.notify.utils.Notify.notify_all" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sent a notification to all users on a machine</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
 </div>
 
 
@@ -153,7 +140,6 @@ functionality.</p>
 <li><a class="reference internal" href="#">GOto</a><ul>
 <li><a class="reference internal" href="#powermanagement">Powermanagement</a></li>
 <li><a class="reference internal" href="#sessions">Sessions</a></li>
-<li><a class="reference internal" href="#notify">Notify</a></li>
 </ul>
 </li>
 </ul>
@@ -188,7 +174,7 @@ functionality.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2011, Cajus Pollmeier.
+        &copy; Copyright 2012, GONICUS GmbH.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
