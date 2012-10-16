@@ -189,13 +189,21 @@ class ClientService(Plugin):
         """
         Get brief information about the client network setup.
 
-        Example::
+        Example:
 
-            >>> getClientNetInfo('eb5e72d4-c53f-4612-81a3-602b14a8da69')
-            {'eth0': {'Broadcast': '10.89.1.255', 'MAC': '00:01:6c:9d:b9:fa', 'IPAddress': '10.89.1.31', 'Netmask': '255.255.255.0', 'IPv6Address': 'fe80::201:6cff:fe9d:b9fa\\/64'}}
+        .. doctest::
+
+            >>> getClientNetInfo("eb5e72d4-c53f-4612-81a3-602b14a8da69")
+            {'eth0': {
+                'Broadcast': '10.89.1.255',
+                'MAC': '00:01:6c:9d:b9:fa',
+                'IPAddress': '10.89.1.31',
+                'Netmask': '255.255.255.0',
+                'IPv6Address': 'fe80::201:6cff:fe9d:b9fa/64'}}
 
         ``Return:`` dict with network information
         """
+
         if not client in self.__client:
             return []
 

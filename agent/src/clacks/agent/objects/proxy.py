@@ -38,6 +38,7 @@ This fragment will add the *PosixUser* extension to the object, while
     >>> obj.get_extension_types()
 
 will list the available extension types for that specific object.
+
 ----
 """
 import pkg_resources

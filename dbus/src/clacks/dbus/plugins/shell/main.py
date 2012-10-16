@@ -41,7 +41,7 @@ and has to act on the parameter '-- --signature', see below.
 
 
 The parameter -- --signature
-.........................
+............................
 
 Each script has to return a signature when it is used with the parameter '-- --signature'.
 This is required to populate the method to the clacks-dbus process.
@@ -138,7 +138,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
     e.g.
         print proxy.clientDispatch("<clientUUID>", "dbus_shell_exec", "myScript.sh", [])
 
-    (The 'dbus_' prefix in the above example was added by the clacks-client dbus-proxy
+    (The '\_dbus' prefix in the above example was added by the clacks-client dbus-proxy
     plugin to mark exported dbus methods - See clacks-client proxy  plugin for details)
     """
 
