@@ -369,6 +369,22 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>employeeNumberEdit</tabstop>
+  <tabstop>employeeTypeEdit</tabstop>
+  <tabstop>managerEdit</tabstop>
+  <tabstop>oEdit</tabstop>
+  <tabstop>ouEdit</tabstop>
+  <tabstop>departmentNumberEdit</tabstop>
+  <tabstop>roomNumberEdit</tabstop>
+  <tabstop>telephoneNumberEdit</tabstop>
+  <tabstop>mobileEdit</tabstop>
+  <tabstop>pagerEdit</tabstop>
+  <tabstop>facsimileTelephoneNumberEdit</tabstop>
+  <tabstop>lEdit</tabstop>
+  <tabstop>stEdit</tabstop>
+  <tabstop>postalAddressEdit</tabstop>
+ </tabstops>
  <resources>
   <include location="resources/user.qrc"/>
  </resources>
