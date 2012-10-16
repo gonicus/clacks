@@ -443,16 +443,6 @@ class ObjectIndex(Plugin):
                 _dn = obj.dn
                 change_type = "create"
 
-            if event.reason in ["post retract", "post extend"]:
-                self.log.debug("updating object index for %s" % _uuid)
-                if not event.dn:
-                    entry = self.db.index.find_one({'_uuid': _uuid, 'dn': {'$exists': 1}}, {'dn': 1})
-                    if entry:
-                        event.dn = entry['dn']
-
-                obj = ObjectProxy(event.dn)
-                self.update(obj)
-
             if event.reason in ["post object update"]:
                 self.log.debug("updating object index for %s" % _uuid)
                 if not event.dn:
