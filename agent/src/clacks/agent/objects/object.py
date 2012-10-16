@@ -553,24 +553,15 @@ class Object(object):
                     base=base_type))
 
         # Transfer values form other commit processes into ourselfes
-        for key in props:
+        for key in self.attributesInSaveOrder:
             if props[key]['foreign'] and key in propsFromOtherExtensions:
                 props[key]['value'] = propsFromOtherExtensions[key]['value']
 
-        # Transfer status into commit status
-        for key in props:
+            # Transfer status into commit status
             props[key]['commit_status'] = props[key]['status']
 
-            # Process each and every out-filter with a clean set of input values,
-            #  to avoid that return-values overwrite themselves.
-            if len(props[key]['out_filter']):
-
-                self.log.debug(" found %s out-filter for %s" % (str(len(props[key]['out_filter'])), key,))
-                for out_f in props[key]['out_filter']:
-                    self.__processFilter(out_f, key, props)
-
         # Collect values by store and process the property filters
-        for key in props:
+        for key in self.attributesInSaveOrder:
 
             # Skip foreign properties
             if props[key]['foreign']:
@@ -587,8 +578,16 @@ class Object(object):
             if not is_blocked and props[key]['mandatory'] and not len(props[key]['value']):
                 raise ObjectException(C.make_error('ATTRIBUTE_MANDATORY', key))
 
+            # Process each and every out-filter with a clean set of input values,
+            #  to avoid that return-values overwrite themselves.
+            if len(props[key]['out_filter']):
+
+                self.log.debug(" found %s out-filter for %s" % (str(len(props[key]['out_filter'])), key,))
+                for out_f in props[key]['out_filter']:
+                    self.__processFilter(out_f, key, props)
+
         # Collect properties by backend
-        for prop_key in props:
+        for prop_key in self.attributesInSaveOrder:
 
             # Skip foreign properties
             if props[prop_key]['foreign']:
