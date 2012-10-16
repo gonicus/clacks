@@ -508,7 +508,7 @@ class ObjectIndex(Plugin):
         current = obj.asJSON(True)
         saved = self.db.index.find_one({'_uuid': obj.uuid})
         if not saved:
-            raise IndexException(C.make_error('OBJECT_NOT_FOUND', "base", uuid=obj.uuid))
+            raise IndexException(C.make_error('OBJECT_NOT_FOUND', "base", id=obj.uuid))
 
         # Remove old entry and insert new
         self.remove_by_uuid(obj.uuid)
