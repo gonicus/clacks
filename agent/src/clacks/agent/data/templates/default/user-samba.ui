@@ -433,9 +433,9 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>sambaDomainNameEdit</tabstop>
   <tabstop>sambaSIDEdit</tabstop>
   <tabstop>sambaPrimaryGroupSIDEdit</tabstop>
-  <tabstop>sambaDomainNameEdit</tabstop>
   <tabstop>descriptionEdit</tabstop>
   <tabstop>sambaHomePathEdit</tabstop>
   <tabstop>sambaHomeDriveEdit</tabstop>
