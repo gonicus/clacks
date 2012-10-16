@@ -24,16 +24,13 @@ from contextlib import contextmanager
 from clacks.common import Environment
 from clacks.common.utils import N_
 from clacks.common.error import ClacksErrorHandler as C
+from clacks.agent.exceptions import LDAPException
 
 
 C.register_codes(dict(
     NO_SASL_SUPPORT=N_("No SASL support in the installed python-ldap detected"),
     LDAP_NO_CONNECTIONS=N_("No LDAP connection available"),
     ))
-
-
-class LDAPException(Exception):
-    pass
 
 
 class LDAPHandler(object):

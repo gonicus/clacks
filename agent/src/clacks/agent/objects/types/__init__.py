@@ -13,6 +13,7 @@
 import inspect
 from clacks.common.utils import N_
 from clacks.common.error import ClacksErrorHandler as C
+from clacks.agent.exceptions import ConversationNotSupported
 __import__('pkg_resources').declare_namespace(__name__)
 
 
@@ -22,10 +23,6 @@ C.register_codes(dict(
     TYPE_NO_MATCH=N_("Cannot match value of type %(type)s"),
     TYPE_NO_CONVERT=N_("Cannot convert from '%(source)s' type to '%(target)s' type"),
     ))
-
-
-class ConversationNotSupported(Exception):
-    pass
 
 
 class AttributeType(object):

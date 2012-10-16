@@ -25,7 +25,8 @@ from logging import getLogger
 from clacks.common import Environment
 from clacks.common.utils import is_uuid
 from clacks.common.error import ClacksErrorHandler as C
-from clacks.agent.objects.backend import ObjectBackend, DNGeneratorError, RDNNotSpecified, BackendError
+from clacks.agent.objects.backend import ObjectBackend
+from clacks.agent.exceptions import DNGeneratorError, RDNNotSpecified, BackendError
 
 
 class JSON(ObjectBackend):

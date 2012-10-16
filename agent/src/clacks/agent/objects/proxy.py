@@ -53,6 +53,13 @@ from clacks.common import Environment
 from clacks.common.utils import is_uuid, N_
 from clacks.common.components import PluginRegistry
 from clacks.common.error import ClacksErrorHandler as C
+from clacks.agent.exceptions import ACLException, ProxyException
+
+try:
+        from cStringIO import StringIO
+except ImportError:
+        from StringIO import StringIO
+
 
 # Register the errors handled  by us
 C.register_codes(dict(
@@ -71,16 +78,6 @@ C.register_codes(dict(
     PERMISSION_ACCESS=N_("No permission to access '%(topic)s' on '%(target)s'"),
     OBJECT_UUID_MISMATCH=N_("UUID of base (%(b_uuid)s)and extension (%(e_uuid)s) differ")
     ))
-
-
-try:
-        from cStringIO import StringIO
-except ImportError:
-        from StringIO import StringIO
-
-
-class ProxyException(Exception):
-    pass
 
 
 class ObjectProxy(object):
@@ -924,4 +921,3 @@ class ObjectProxy(object):
 
 from .factory import ObjectFactory
 from .object import ObjectChanged
-from clacks.agent.acl import ACLException

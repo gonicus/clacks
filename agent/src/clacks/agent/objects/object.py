@@ -23,6 +23,7 @@ from clacks.common.utils import N_, is_uuid
 from clacks.common.components import PluginRegistry
 from clacks.common.error import ClacksErrorHandler as C
 from clacks.agent.objects.backend.registry import ObjectBackendRegistry
+from clacks.agent.exceptions import ObjectException
 
 
 # Status
@@ -54,10 +55,6 @@ C.register_codes(dict(
     FILTER_NO_LIST=N_("Filter '%(filter)s' did not return a %(type)s value - a list was expected"),
     ATTRIBUTE_DEPEND_LOOP=N_("Potential loop in attribute dependencies")
 ))
-
-
-class ObjectException(Exception):
-    pass
 
 
 class Object(object):
