@@ -1,8 +1,8 @@
 /*
- * pylons.css_t
+ * clacks.css_t
  * ~~~~~~~~~~~~
  *
- * Sphinx stylesheet -- pylons theme.
+ * Sphinx stylesheet -- clacks theme.
  *
  * :copyright: Copyright 2007-2010 by the Sphinx team, see AUTHORS.
  * :license: BSD, see LICENSE for details.
@@ -16,8 +16,8 @@
 body {
     font-family: "Nobile", sans-serif;
     font-size: 100%;
-    background-color: #393939;
-    color: #ffffff;
+    background: url("bg-gradient-sand.png") repeat-x 0 0, url("bg-sand.png") repeat 0 0;
+    color: #000;
     margin: 0;
     padding: 0;
 }
@@ -25,6 +25,20 @@ body {
 div.documentwrapper {
     float: left;
     width: 100%;
+}
+
+div.project-header {
+    font-size: 400%;
+    width: 100%;
+    color: #404040;
+    padding-top: 30px;
+    text-align: center;
+}
+
+div.project-subscript {
+    text-align: center;
+    color: #404040;
+    padding-bottom: 20px;
 }
 
 div.bodywrapper {
@@ -36,13 +50,16 @@ hr {
 }
  
 div.document {
-    background-color: #eee;
+    margin-left: 80px;
+    margin-right: 80px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    background-color: white;
 }
 
 div.header {
     width:100%;
-    background: #000 url(headerbg.png) repeat-x 0 top;
-    border-bottom: 2px solid #ffffff;
+    height: 0;
 }
 
 div.logo {
@@ -52,27 +69,29 @@ div.logo {
 }
 
 div.body {
-    background-color: #ffffff;
     color: #3E4349;
     padding: 0 30px 30px 30px;
     font-size: 1em;
-    border: 2px solid #ddd;
-    border-right-style: none;
     overflow: auto;
+    border-left: 1px solid #EEE;
+    border-top: 1px solid #EEE;
+    border-right: 2px solid rgba(80, 80, 80, .3);
+    border-bottom: 2px solid rgba(80, 80, 80, .3);
 }
  
 div.footer {
-    color: #ffffff;
+    color: black;
     width: 100%;
     padding: 13px 0;
     text-align: center;
     font-size: 75%;
-    background: transparent;
-    clear:both;
+    background: white;
+    clear: both;
+    border-top: 1px solid rgba(80, 80, 80, .3);
 }
  
 div.footer a {
-    color: #ffffff;
+    color: #808080;
     text-decoration: none;
 }
 
@@ -83,20 +102,16 @@ div.footer a:hover {
  
 div.related {
     line-height: 30px;
-    color: #373839;
+    color: #505050;
     font-size: 0.8em;
-    background-color: #eee;
-    padding-right: 100px;
+    background-color: white;
+    border-bottom: 2px solid rgba(80, 80, 80, .5);
 }
  
 div.related a {
     color: #1b61d6;
 }
 
-div.related ul {
-    padding-left: {{ theme_sidebarwidth|toint + 10 }}px;
-}
- 
 div.sphinxsidebar {
     font-size: 0.75em;
     line-height: 1.5em;

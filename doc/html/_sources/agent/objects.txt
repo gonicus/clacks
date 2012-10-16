@@ -12,3 +12,8 @@
 
 .. automodule:: clacks.agent.objects.proxy
    :members:
+
+------
+
+.. automodule:: clacks.agent.objects.index
+   :members:

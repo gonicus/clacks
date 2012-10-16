@@ -35,32 +35,32 @@
 
   </head>
   <body>
-<script src="_static/jquery.js"></script>
-<a href="http://github.com/clacks"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>
-<div class="header">
-  <div class="logo">
-    <a href="index.html">
-      <img class="logo" src="_static/logo.png" alt="Logo"/>
-    </a>
-  </div>
-</div>
+<script src="_static/jquery-1.7.1.min.js"></script>
+<script src="_static/jquery.msCarousel-min.js"></script>
+<link rel="stylesheet" type="text/css" href="_static/mscarousel.css" />
 
     <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li class="right" style="margin-right: 10px">
+        <li class="right" style="margin-right: 10px"> |<form class="search" style="display:inline" action="search.html" method="get">
+  <input type="text" name="q" />
+  <input type="submit" value="Go" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+<script type="text/javascript">$('#searchbox').show(0);</script></li>
+        <li class="right">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="right" >
+        <li class="right">
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li><a href="index.html">Clacks Project</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
 
     <div class="document">
       <div class="documentwrapper">
-        <div class="bodywrapper">
           <div class="body">
             
   <div class="section" id="agent-command-index">
@@ -76,19 +76,49 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><a class="reference internal" href="plugins/agent/goto.html#cmd-0">clientDispatch</a></td>
+<tr class="row-even"><td><a class="reference internal" href="agent/acl.html#cmd-0">addACL</a></td>
+<td><div class="first last container">
+Add a new ACL.</div>
+</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="agent/acl.html#cmd-1">addACLRole</a></td>
+<td><div class="first last container">
+Add new role.</div>
+</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="agent/acl.html#cmd-2">addACLToRole</a></td>
+<td><div class="first last container">
+Add new acl to an existing role.</div>
+</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="plugins/agent/goto.html#cmd-0">clientDispatch</a></td>
 <td><div class="first last container">
 Call method exposed by client.</div>
 </td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="agent/jsonrpc.html#cmd-0">closeObject</a></td>
+<tr class="row-even"><td><a class="reference internal" href="agent/jsonrpc.html#cmd-0">closeObject</a></td>
 <td><div class="first last container">
 Close object and remove it from stack</div>
 </td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="agent/jsonrpc.html#cmd-1">dispatchObjectMethod</a></td>
+<tr class="row-odd"><td><a class="reference internal" href="agent/jsonrpc.html#cmd-1">dispatchObjectMethod</a></td>
 <td><div class="first last container">
 Call method from object on stack</div>
+</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="agent/objects.html#cmd-0">exists</a></td>
+<td><div class="first last container">
+Check if an object with the given UUID exists.</div>
+</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="agent/acl.html#cmd-3">getACLRoles</a></td>
+<td><div class="first last container">
+List defined roles.</div>
+</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="agent/acl.html#cmd-4">getACLs</a></td>
+<td><div class="first last container">
+List defined ACLs by base or topic.</div>
 </td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="agent/command.html#cmd-0">getBase</a></td>
@@ -181,64 +211,89 @@ Instantiate object and place it on stack</div>
 Reloads the object</div>
 </td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="agent/jsonrpc.html#cmd-6">removeObject</a></td>
+<tr class="row-odd"><td><a class="reference internal" href="agent/acl.html#cmd-5">removeACL</a></td>
+<td><div class="first last container">
+Remove defined ACL by ID.</div>
+</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="agent/jsonrpc.html#cmd-6">removeObject</a></td>
 <td><div class="first last container">
 Removes the given object</div>
 </td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="agent/scheduler.html#cmd-0">schedulerAddDateJob</a></td>
+<tr class="row-odd"><td><a class="reference internal" href="agent/acl.html#cmd-6">removeRole</a></td>
+<td><div class="first last container">
+Remove a defined acl-role by name</div>
+</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="agent/acl.html#cmd-7">removeRoleACL</a></td>
+<td><div class="first last container">
+Remove defined role-acl by ID.</div>
+</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="agent/scheduler.html#cmd-0">schedulerAddDateJob</a></td>
 <td><div class="first last container">
 Add a new date based job to the scheduler.</div>
 </td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="agent/scheduler.html#cmd-1">schedulerCronDateJob</a></td>
+<tr class="row-even"><td><a class="reference internal" href="agent/scheduler.html#cmd-1">schedulerCronDateJob</a></td>
 <td><div class="first last container">
 Add a new cron based job to the scheduler.</div>
 </td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="agent/scheduler.html#cmd-2">schedulerGetJobs</a></td>
+<tr class="row-odd"><td><a class="reference internal" href="agent/scheduler.html#cmd-2">schedulerGetJobs</a></td>
 <td><div class="first last container">
 List jobs matchings an optional filter.</div>
 </td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="agent/scheduler.html#cmd-3">schedulerIntervalJob</a></td>
+<tr class="row-even"><td><a class="reference internal" href="agent/scheduler.html#cmd-3">schedulerIntervalJob</a></td>
 <td><div class="first last container">
 Add a new interval job to the scheduler.</div>
 </td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="agent/scheduler.html#cmd-4">schedulerRemoveJob</a></td>
+<tr class="row-odd"><td><a class="reference internal" href="agent/scheduler.html#cmd-4">schedulerRemoveJob</a></td>
 <td><div class="first last container">
 Remove job from the scheduler.</div>
 </td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="agent/command.html#cmd-3">sendEvent</a></td>
+<tr class="row-even"><td><a class="reference internal" href="agent/command.html#cmd-3">sendEvent</a></td>
 <td><div class="first last container">
 Send event to the bus.</div>
 </td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="agent/jsonrpc.html#cmd-7">setObjectProperty</a></td>
+<tr class="row-odd"><td><a class="reference internal" href="agent/jsonrpc.html#cmd-7">setObjectProperty</a></td>
 <td><div class="first last container">
 Set property for object on stack</div>
 </td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="agent/command.html#cmd-4">shutdown</a></td>
+<tr class="row-even"><td><a class="reference internal" href="agent/command.html#cmd-4">shutdown</a></td>
 <td><div class="first last container">
 Shut down the service belonging to the supplied queue. In case of HTTP connections, this command will shut down the node you&#8217;re currently logged in.</div>
 </td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="plugins/agent/goto.html#cmd-8">systemGetStatus</a></td>
+<tr class="row-odd"><td><a class="reference internal" href="plugins/agent/goto.html#cmd-8">systemGetStatus</a></td>
 <td><div class="first last container">
 Set system status</div>
 </td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="plugins/agent/goto.html#cmd-9">systemSetStatus</a></td>
+<tr class="row-even"><td><a class="reference internal" href="plugins/agent/goto.html#cmd-9">systemSetStatus</a></td>
 <td><div class="first last container">
 Set system status</div>
 </td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="plugins/agent/misc.html#cmd-0">transliterate</a></td>
+<tr class="row-odd"><td><a class="reference internal" href="plugins/agent/misc.html#cmd-0">transliterate</a></td>
 <td><div class="first last container">
 Transliterate a given string</div>
+</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="agent/acl.html#cmd-8">updateACL</a></td>
+<td><div class="first last container">
+Refresh existing ACL by ID.</div>
+</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="agent/acl.html#cmd-9">updateACLRole</a></td>
+<td><div class="first last container">
+Refresh existing role by ID.</div>
 </td>
 </tr>
 </tbody>
@@ -277,45 +332,10 @@ Return the list of active sessions </div>
 
 
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Agent command index</a></li>
-<li><a class="reference internal" href="#client-command-index">Client command index</a></li>
-</ul>
-
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="index.html">Clacks Project</a> &raquo;</li> 
-      </ul>
-    </div>
+
     <div class="footer">
         &copy; Copyright 2012, GONICUS GmbH.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.

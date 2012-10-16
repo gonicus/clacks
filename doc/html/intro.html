@@ -35,32 +35,32 @@
 
   </head>
   <body>
-<script src="_static/jquery.js"></script>
-<a href="http://github.com/clacks"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>
-<div class="header">
-  <div class="logo">
-    <a href="index.html">
-      <img class="logo" src="_static/logo.png" alt="Logo"/>
-    </a>
-  </div>
-</div>
+<script src="_static/jquery-1.7.1.min.js"></script>
+<script src="_static/jquery.msCarousel-min.js"></script>
+<link rel="stylesheet" type="text/css" href="_static/mscarousel.css" />
 
     <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li class="right" style="margin-right: 10px">
+        <li class="right" style="margin-right: 10px"> |<form class="search" style="display:inline" action="search.html" method="get">
+  <input type="text" name="q" />
+  <input type="submit" value="Go" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+<script type="text/javascript">$('#searchbox').show(0);</script></li>
+        <li class="right">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="right" >
+        <li class="right">
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li><a href="index.html">Clacks Project</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
 
     <div class="document">
       <div class="documentwrapper">
-        <div class="bodywrapper">
           <div class="body">
             
   <div class="section" id="introduction">
@@ -699,81 +699,10 @@ Now adjust the values of these properties to match your setup and click <tt clas
 
 
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Introduction</a><ul>
-<li><a class="reference internal" href="#quickstart">Quickstart</a><ul>
-<li><a class="reference internal" href="#common-setup">Common setup</a><ul>
-<li><a class="reference internal" href="#system-prerequisites">System prerequisites</a></li>
-<li><a class="reference internal" href="#python-prerequisites">Python prerequisites</a></li>
-<li><a class="reference internal" href="#setup-a-virtual-environment-for-playing-with-clacks-1-0-alpha">Setup a virtual environment for playing with clacks 1.0 alpha</a></li>
-<li><a class="reference internal" href="#obtaining-the-source">Obtaining the source</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#the-clacks-agent">The clacks agent</a><ul>
-<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
-<li><a class="reference internal" href="#adding-the-amqp-repository">Adding the AMQP repository</a></li>
-<li><a class="reference internal" href="#install-qpid-broker-and-clients">Install qpid broker and clients</a></li>
-<li><a class="reference internal" href="#install-ldap-service">Install LDAP service</a></li>
-<li><a class="reference internal" href="#amqp-ldap-authentication">AMQP LDAP-Authentication</a></li>
-<li><a class="reference internal" href="#prepare-dns-zone-for-zeroconf">Prepare DNS-Zone for zeroconf</a></li>
-<li><a class="reference internal" href="#deploy-a-development-agent">Deploy a development agent</a></li>
-<li><a class="reference internal" href="#starting-the-service">Starting the service</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#the-clacks-shell">The clacks shell</a><ul>
-<li><a class="reference internal" href="#installing">Installing</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#first-contact">First contact</a></li>
-<li><a class="reference internal" href="#the-clacks-client">The clacks client</a><ul>
-<li><a class="reference internal" href="#id2">Installing</a></li>
-<li><a class="reference internal" href="#joining-the-party">Joining the party</a></li>
-<li><a class="reference internal" href="#running-the-root-component">Running the root component</a></li>
-<li><a class="reference internal" href="#running-the-client">Running the client</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#integration-with-php-clacks">Integration with PHP Clacks</a></li>
-<li><a class="reference internal" href="#design-overview">Design overview</a></li>
-</ul>
-</li>
-</ul>
-
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="index.html">Clacks Project</a> &raquo;</li> 
-      </ul>
-    </div>
+
     <div class="footer">
         &copy; Copyright 2012, GONICUS GmbH.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.

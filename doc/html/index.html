@@ -35,32 +35,57 @@
 
   </head>
   <body>
-<script src="_static/jquery.js"></script>
-<a href="http://github.com/clacks"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>
-<div class="header">
-  <div class="logo">
-    <a href="#">
-      <img class="logo" src="_static/logo.png" alt="Logo"/>
-    </a>
-  </div>
-</div>
+<script src="_static/jquery-1.7.1.min.js"></script>
+<script src="_static/jquery.msCarousel-min.js"></script>
+<link rel="stylesheet" type="text/css" href="_static/mscarousel.css" />
 
     <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li class="right" style="margin-right: 10px">
+        <li class="right" style="margin-right: 10px"> |<form class="search" style="display:inline" action="search.html" method="get">
+  <input type="text" name="q" />
+  <input type="submit" value="Go" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+<script type="text/javascript">$('#searchbox').show(0);</script></li>
+        <li class="right">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="right" >
+        <li class="right">
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li><a href="#">Clacks Project</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
+    <div class="project-header">
+      The Clacks Project
+    </div>
+    <div class="project-subscript">
+       manage. infrastructure. objects.
+    </div>
+
+    <div style="border-right:1px solid rgba(40, 40, 40, 0.3); border-bottom:1px solid rgba(40, 40, 40, 0.3); width: 1008px; margin-left: auto; margin-right: auto;">
+      <div id="infobar" style="border:4px solid #FFF; background-color:#000;">
+        <div class="box">
+          <img src="_static/fog.png">
+        </div>
+        <div class="box">
+          <img src="_static/farm.png">
+        </div>
+        <div class="box">
+          <img src="_static/city.png">
+        </div>
+      </div>
+    </div>
+  
+    <script type="text/javascript">
+         $("#infobar").msCarousel({boxClass:'div.box', width:1000, height:500, scrollSpeed:500, autoSlide:10000}).data("msCarousel");
+    </script>
+  
 
     <div class="document">
       <div class="documentwrapper">
-        <div class="bodywrapper">
           <div class="body">
             
   <div class="section" id="welcome-to-the-clacks-project">
@@ -134,48 +159,10 @@ HTTP[S] or AMQP[S].</p>
 
 
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="#">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Welcome to the Clacks Project</a><ul>
-<li><a class="reference internal" href="#project-links">Project links</a></li>
-<li><a class="reference internal" href="#key-features">Key features</a></li>
-</ul>
-</li>
-</ul>
-
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="#">Clacks Project</a> &raquo;</li> 
-      </ul>
-    </div>
+
     <div class="footer">
         &copy; Copyright 2012, GONICUS GmbH.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
