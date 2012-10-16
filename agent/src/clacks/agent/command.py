@@ -63,6 +63,7 @@ from clacks.common.utils import stripNs, N_
 from clacks.common.error import ClacksErrorHandler as C
 from clacks.common.components import AMQPServiceProxy, Plugin
 from clacks.common.components.amqp import EventConsumer
+from clacks.agent.exceptions import CommandInvalid, CommandNotAuthorized
 
 
 # Global command types
@@ -80,16 +81,6 @@ C.register_codes(dict(
     COMMAND_TYPE_NOT_DEFINED=N_("No method type '%(type)s' defined"),
     COMMAND_WITHOUT_DOCS=N_("Method '%(method)s' has no documentation")
     ))
-
-
-class CommandInvalid(Exception):
-    """ Exception which is raised when the command is not valid. """
-    pass
-
-
-class CommandNotAuthorized(Exception):
-    """ Exception which is raised when the call was not authorized. """
-    pass
 
 
 class CommandRegistry(Plugin):

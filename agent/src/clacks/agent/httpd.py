@@ -30,15 +30,12 @@ from clacks.common import Environment
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.utils import N_
 from clacks.common.error import ClacksErrorHandler as C
+from clacks.agent.exceptions import HTTPException
 
 
 C.register_codes(dict(
     HTTP_PATH_ALREADY_REGISTERED=N_("'%(path)s' has already been registered")
     ))
-
-
-class HTTPException(Exception):
-    pass
 
 
 class HTTPDispatcher(object):

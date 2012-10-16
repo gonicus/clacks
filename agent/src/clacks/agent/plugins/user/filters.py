@@ -14,7 +14,9 @@ import Image
 import ImageOps #@UnresolvedImport
 from bson.binary import Binary
 from clacks.common import Environment
-from clacks.agent.objects.filter import ElementFilter, ElementFilterException
+from clacks.agent.objects.filter import ElementFilter
+from clacks.agent.exceptions import ElementFilterException
+
 
 try:
     from cStringIO import StringIO

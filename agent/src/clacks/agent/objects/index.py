@@ -35,7 +35,8 @@ from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import Command, Plugin, PluginRegistry
 from clacks.common.components.amqp import EventConsumer
 from clacks.common.error import ClacksErrorHandler as C
-from clacks.agent.objects import ObjectFactory, ObjectProxy, ObjectChanged, ProxyException, ObjectException
+from clacks.agent.objects import ObjectFactory, ObjectProxy, ObjectChanged
+from clacks.agent.exceptions import ProxyException, ObjectException, FilterException, IndexException
 from clacks.agent.lock import GlobalLock
 
 
@@ -48,14 +49,6 @@ C.register_codes(dict(
 
 
 class IndexScanFinished():
-    pass
-
-
-class FilterException(Exception):
-    pass
-
-
-class IndexException(Exception):
     pass
 
 

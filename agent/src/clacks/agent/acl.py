@@ -45,6 +45,7 @@ from clacks.common.error import ClacksErrorHandler as C
 from clacks.common.components import PluginRegistry
 from clacks.agent.objects.object import ObjectChanged
 from clacks.agent.objects.proxy import ObjectProxy
+from clacks.agent.exceptions import ACLException
 
 
 #TODO: Think about ldap relations, how to store and load objects.
@@ -74,10 +75,6 @@ C.register_codes(dict(
     ROLE_EXISTS=N_("Role '%(name)s' already exists"),
     ROLE_CANNOT_POINT_TO_ITSELF=N_("Roles cannot point to themselves")
     ))
-
-
-class ACLException(Exception):
-    pass
 
 
 class ACLSet(list):

@@ -40,9 +40,9 @@ Here are some examples on how to instatiate on new object:
 >>> from clacks.agent.objects import ObjectFactory
 >>> f = ObjectFactory.getInstance()
 >>> person = f.getObject('Person', "410ad9f0-c4c0-11e0-962b-0800200c9a66")
->>> print person->sn
->>> person->sn = "Surname"
->>> person->commit()
+>>> print person.sn
+>>> person.sn = "Surname"
+>>> person.commit()
 
 """
 import pkg_resources
@@ -60,6 +60,7 @@ from clacks.agent.objects.backend.registry import ObjectBackendRegistry
 from clacks.agent.objects.comparator import get_comparator
 from clacks.agent.objects.operator import get_operator
 from clacks.agent.objects.object import Object
+from clacks.agent.exceptions import FactoryException
 
 try:
     from cStringIO import StringIO
@@ -99,10 +100,6 @@ def load(attr, element, default=None):
         return default
 
     return attr[element]
-
-
-class FactoryException(Exception):
-    pass
 
 
 class ObjectFactory(object):

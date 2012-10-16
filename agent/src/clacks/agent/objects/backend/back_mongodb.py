@@ -15,10 +15,11 @@ import uuid
 import ldap
 import datetime
 from logging import getLogger
-from clacks.agent.objects.backend import ObjectBackend, DNGeneratorError, RDNNotSpecified, BackendError
 from clacks.common import Environment
 from clacks.common.utils import is_uuid, N_
 from clacks.common.error import ClacksErrorHandler as C
+from clacks.agent.objects.backend import ObjectBackend
+from clacks.agent.exceptions import DNGeneratorError, RDNNotSpecified, BackendError
 
 
 C.register_codes(dict(

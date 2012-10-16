@@ -16,6 +16,7 @@ import ldap
 from itertools import permutations
 from clacks.common.utils import N_
 from clacks.common.error import ClacksErrorHandler as C
+from clacks.agent.exceptions import EntryNotUnique, EntryNotFound, DNGeneratorError, RDNNotSpecified, BackendError
 
 
 # Register the errors handled  by us
@@ -32,35 +33,6 @@ C.register_codes(dict(
     ENTRY_UUID_NOT_FOUND=N_("Entry '%(uuid)s' not found"),
     ENTRY_UUID_NOT_UNIQUE=N_("Entry '%(uuid)s' not unique"),
     ))
-
-
-class EntryNotUnique(Exception):
-    pass
-
-
-class EntryNotFound(Exception):
-    pass
-
-
-class DNGeneratorError(Exception):
-    """
-    Exception thrown for dn generation errors
-    """
-    pass
-
-
-class RDNNotSpecified(Exception):
-    """
-    Exception thrown for missing rdn property in object definitions
-    """
-    pass
-
-
-class BackendError(Exception):
-    """
-    Exception thrown for unknown objects
-    """
-    pass
 
 
 class ObjectBackend(object):

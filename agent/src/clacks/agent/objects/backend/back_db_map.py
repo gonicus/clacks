@@ -10,11 +10,12 @@
 #
 # See the LICENSE file in the project's top-level directory for details.
 
-from clacks.agent.objects.backend import ObjectBackend, BackendError
 from sqlalchemy import create_engine
 from clacks.common import Environment
 from clacks.common.utils import N_
 from clacks.common.error import ClacksErrorHandler as C
+from clacks.agent.objects.backend import ObjectBackend
+from clacks.agent.exceptions import BackendError
 from logging import getLogger
 
 

@@ -21,13 +21,14 @@ import ldap
 import datetime
 from json import loads, dumps
 from logging import getLogger
-from clacks.common import Environment
-from clacks.common.utils import is_uuid
-from clacks.common.error import ClacksErrorHandler as C
 from itertools import permutations
 from sqlalchemy.sql import and_
 from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, BLOB, DateTime
-from clacks.agent.objects.backend import ObjectBackend, RDNNotSpecified, DNGeneratorError, BackendError
+from clacks.common import Environment
+from clacks.common.utils import is_uuid
+from clacks.common.error import ClacksErrorHandler as C
+from clacks.agent.objects.backend import ObjectBackend
+from clacks.agent.exceptions import  RDNNotSpecified, DNGeneratorError, BackendError
 
 
 class SQL(ObjectBackend):
