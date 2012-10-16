@@ -642,12 +642,12 @@ class ObjectProxy(object):
             del self.__retractions[idx]
 
         # Check each extension before trying to save them
-        self.__base.check()
+        check_props = self.__base.check()
         for extension in [ext for ext in self.__extensions.values() if ext]:
-            extension.check()
+            check_props.update(extension.check(check_props))
 
         # Handle commits
-        self.__base.commit()
+        save_props = self.__base.commit()
         for extension in [ext for ext in self.__extensions.values() if ext]:
 
             # Populate the base uuid to the extensions
@@ -656,7 +656,7 @@ class ObjectProxy(object):
             if not extension.uuid:
                 extension.uuid = self.__base.uuid
             extension.dn = self.__base.dn
-            extension.commit()
+            save_props.update(extension.commit(save_props))
 
         # Skip further actions if we're in create mode
         if self.__base_mode == "create":

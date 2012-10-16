@@ -33,7 +33,6 @@
         <Name>gidNumber</Name>
         <Description>The primary group number  number</Description>
         <Type>Integer</Type>
-        <Mandatory>true</Mandatory>
         <BlockedBy>
           <Name>autoGid</Name>
           <Value>true</Value>
