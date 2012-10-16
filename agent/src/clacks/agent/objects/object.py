@@ -85,7 +85,6 @@ class Object(object):
     env = None
     attributesInSaveOrder = None
 
-
     def __saveOrder(self):
         """
         Returns a list containing all attributes in the correct
@@ -101,7 +100,6 @@ class Object(object):
                 if attr not in attrs:
                     attrs.append(attr)
         return attrs
-
 
     def __saveOrderHelper(self, res=None, item=None, level=0):
         """
@@ -120,15 +118,14 @@ class Object(object):
 
         if not item:
             for key in self.myProperties:
-                self.__saveOrderHelper(res, key, level +1)
+                self.__saveOrderHelper(res, key, level + 1)
         else:
             if len(self.myProperties[item]['depends_on']):
                 for key in self.myProperties[item]['depends_on']:
-                    self.__saveOrderHelper(res, key, level +1)
+                    self.__saveOrderHelper(res, key, level + 1)
 
             res[level].append(item)
         return res
-
 
     def __init__(self, where=None, mode="update"):
         self.env = Environment.getInstance()
@@ -143,7 +140,7 @@ class Object(object):
         props = getattr(self, '__properties')
 
         self.myProperties = copy.deepcopy(props)
-        self.attributesInSaveOrder = self.__saveOrder();
+        self.attributesInSaveOrder = self.__saveOrder()
 
         for key in self.myProperties:
 

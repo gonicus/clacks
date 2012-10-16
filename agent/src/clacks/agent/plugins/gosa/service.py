@@ -183,7 +183,7 @@ class CacheHandler(object):
         lm = req.headers.get('If-Modified-Since')
         if lm:
             lm = rfc822.parsedate(lm)
-            if data['modified']  > lm:
+            if data['modified'] > lm:
                 raise exc.HTTPNotModified().exception
 
         resp = Response(

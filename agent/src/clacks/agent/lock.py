@@ -14,7 +14,6 @@ import time
 import datetime
 from inspect import stack
 from clacks.common import Environment
-from clacks.agent.exceptions import LockError
 
 
 class GlobalLock(object):
