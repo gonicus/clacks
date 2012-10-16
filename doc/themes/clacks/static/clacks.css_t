@@ -323,3 +323,8 @@ tt.xref {
     font-weight: normal;
     font-style: normal;
 }
+
+.box {
+    width: 1000px;
+    height: 500px;
+}

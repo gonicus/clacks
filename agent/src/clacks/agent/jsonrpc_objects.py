@@ -30,6 +30,7 @@ C.register_codes(dict(
     OID_NOT_FOUND=N_("Object OID '%(oid)s' not found")
     ))
 
+
 class JSONRPCObjectMapper(Plugin):
     """
     The *JSONRPCObjectMapper* is a clacks agent plugin that implements a stack
@@ -188,7 +189,7 @@ class JSONRPCObjectMapper(Plugin):
             item = res[0]
             oid = item['object']['oid']
             uuid = item['object']['uuid']
-            new_obj = self.openObject(user, oid,  uuid)
+            new_obj = self.openObject(user, oid, uuid)
             return new_obj
         else:
             raise ValueError(C.make_error("REFERENCE_NOT_FOUND", ref=instance_uuid))

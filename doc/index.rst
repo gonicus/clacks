@@ -8,6 +8,27 @@ reliable communication.
 Clacks was designed as a backend for the GOsa GUI, but does not depend on it. It has
 not been named *GOsa-whatever* to avoid naming confusion.
 
+.. raw:: html
+
+  <div id="infobar" style="border:2px solid #FFF; background-color:#000; margin-left: auto; margin-right: auto;">
+    <div class="box">
+      <h1>1</h1>
+    </div>
+    <div class="box">
+      <h1>2</h1>
+    </div>
+    <div class="box">
+      <h1>3</h1>
+    </div>
+    <div class="box">
+      <h1>4</h1>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+       $("#infobar").msCarousel({boxClass:'div.box', width:1000, height:500, scrollSpeed:500, autoSlide:10000}).data("msCarousel");
+  </script>
+
 -----------------------------------------------------------------------------------
 
 Project links
