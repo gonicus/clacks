@@ -1,5 +1,5 @@
-Introduction
-============
+Getting started
+===============
 
 .. _quickstart:
 
@@ -7,14 +7,15 @@ Quickstart
 ----------
 
 This document contains information on *how to get started* with
-the current clacks 1.0 alpha. It does not care about SSL or other
-security related issues around qpid.
+the current Clacks framework - version 0.8.
 
-It works starting with wheezy or later.
+While not beeing distribution specific, it is mostly tested with
+Debian. The easiest way to try it from scratch is Debian wheezy,
+because almost all requirements are inside of that distribution.
 
 .. warning::
 
-    Lenny does not work, so you just don't have to try...
+    Squeeze does not work out of the box for agent setups.
 
 Depending on which parts of clacks you want to deploy, there are
 different prerequisites to fulfill. Please read the relevant sections.
