@@ -1,5 +1,5 @@
-Welcome to the Clacks Project
-=============================
+About
+=====
 
 The Clacks Project aims to provide a general infrastructure service framework which can
 be used for various tasks. It is written in Python and makes use of AMQP messaging for
