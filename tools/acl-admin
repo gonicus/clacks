@@ -435,6 +435,7 @@ class ACLAdmin(object):
             obj = self.proxy.openObject("object", base)
         except:
             print("invalid base given, failed to open object!")
+            return
             
         priority = self.get_value_from_args("priority", args)
         members = self.get_value_from_args("members", args)

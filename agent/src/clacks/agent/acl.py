@@ -917,7 +917,7 @@ class ACLResolver(Plugin):
                 for item in res:
                     if '_type' in item and item['_type'] == "AclRole":
                         reload = True
-                    elif 'AclSets' in item and len(item['AclSets']):
+                    elif 'AclSets' in item:
                         reload = True
 
                 if reload:
