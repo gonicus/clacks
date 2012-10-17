@@ -166,7 +166,7 @@ class CacheHandler(object):
 
         aclresolver = PluginRegistry.getInstance("ACLResolver")
         topic = "%s.objects.%s.attributes.%s" % (self.env.domain, tmp['_type'], attribute)
-        if not aclresolver.check(info['REMOTE_USER'], topic, "r", base=[tmp['dn']]):
+        if not aclresolver.check(info['REMOTE_USER'], topic, "r", base=tmp['dn']):
             raise exc.HTTPForbidden().exception
 
         # Remove extension from subindex
