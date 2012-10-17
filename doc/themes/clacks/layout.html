@@ -12,7 +12,13 @@
     <div class="related">
       <h3>{{ _('Navigation') }}</h3>
       <ul>
-        <li class="right" style="margin-right: 10px">{%- include "searchbox.html" %}</li>
+        <li class="right">{%- include "searchbox.html" %}</li>
+        {%- if title != 'About' %}
+        <li class="right"><a href="http://oss.gonicus.de">Issues</a> {{ reldelim2 }}</li>
+        <li class="right"><a href="downloads.html">Download</a> {{ reldelim2 }}</li>
+        <li class="right"><a href="index_doc.html">Documentation</a> {{ reldelim2 }}</li>
+        <li class="right"><a href="start.html">Getting started</a> {{ reldelim2 }}</li>
+        {%- endif %}
         {%- block rootrellink %}
         <li><a href="{{ pathto(master_doc) }}">{{ shorttitle|e }}</a>{{ reldelim1 }}</li>
         {%- endblock %}
@@ -23,7 +29,6 @@
       </ul>
     </div>
 {%- endmacro %}
-
 
 {%- block relbar1 %}{{ c_relbar() }}{% endblock %}
 
@@ -43,21 +48,6 @@
        manage. infrastructure. objects.
     </div>
 
-    <div class="document" style="width: 1008px; margin-left: auto; margin-right: auto; margin-bottom: 10px;">
-      <div class="documentwrapper">
-        <div class="body" style="padding: 0">
-         <ul class="selector">
-          <li><a style="margin-right:40px" href="start.html"><img align="center" src="_static/getting-started.png"> Getting started</a></li>
-          <li><a style="margin-right:40px" href="doc_index.html"><img align="center" src="_static/documentation.png"> Documentation</a></li>
-          <li><a style="margin-right:40px" href="downloads.html"><img align="center" src="_static/download.png"> Download</a></li>
-          <li><a style="margin-right:40px" href="https://demo.gonicus.de"><img align="center" src="_static/demo.png"> Live demo</a></li>
-          <li><a href="http://oss.gonicus.de"><img align="center" src="_static/issues.png">Issues</a></li>
-         </ul>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-
     <div style="border-right:1px solid rgba(40, 40, 40, 0.3); border-bottom:1px solid rgba(40, 40, 40, 0.3); width: 1008px; margin-left: auto; margin-right: auto;">
       <div id="infobar" style="border:4px solid #FFF; background-color:#000;">
         <div class="box">
@@ -75,6 +65,21 @@
     <script type="text/javascript">
          $("#infobar").msCarousel({boxClass:'div.box', width:1000, height:500, scrollSpeed:500, autoSlide:10000}).data("msCarousel");
     </script>
+
+    <div class="document" style="width: 1008px; margin-left: auto; margin-right: auto; margin-bottom: 10px;">
+      <div class="documentwrapper">
+        <div class="body" style="padding: 0">
+         <ul class="selector">
+          <li><a style="margin-right:40px" href="start.html"><img align="center" src="_static/getting-started.png"> Getting started</a></li>
+          <li><a style="margin-right:40px" href="doc_index.html"><img align="center" src="_static/documentation.png"> Documentation</a></li>
+          <li><a style="margin-right:40px" href="downloads.html"><img align="center" src="_static/download.png"> Download</a></li>
+          <li><a style="margin-right:40px" href="https://demo.gonicus.de"><img align="center" src="_static/demo.png"> Live demo</a></li>
+          <li><a href="http://oss.gonicus.de"><img align="center" src="_static/issues.png">Issues</a></li>
+         </ul>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
   {% endif %}
 
     <div class="document" {%- if title == 'About' %}style="width:1008px; margin-left:auto; margin-right:auto"{% endif %}>
