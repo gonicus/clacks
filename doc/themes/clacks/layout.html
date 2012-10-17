@@ -43,7 +43,7 @@
        manage. infrastructure. objects.
     </div>
 
-    <div class="document" style="width: 1008px; margin-left: auto; margin-right: auto;">
+    <div class="document" style="width: 1008px; margin-left: auto; margin-right: auto; margin-bottom: 10px;">
       <div class="documentwrapper">
         <div class="body" style="padding: 0">
          <ul class="selector">
@@ -77,7 +77,7 @@
     </script>
   {% endif %}
 
-    <div class="document">
+    <div class="document" {%- if title == 'About' %}style="width:1008px; margin-left:auto; margin-right:auto"{% endif %}>
   {%- block document %}
       <div class="documentwrapper">
         <div class="body">
