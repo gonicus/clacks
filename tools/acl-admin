@@ -603,6 +603,7 @@ class ACLAdmin(object):
             obj = self.proxy.openObject("object", obj_dn)
         except:
             print("invalid dn given, failed to open object!")
+            return
 
         obj.remove()
 

@@ -905,9 +905,24 @@ class ACLResolver(Plugin):
             self.load_acls()
 
         if isinstance(event, ObjectChanged):
-            if event.o_type in ["Acl", "AclRole"] and event.reason in ["post update", "post extend", "post create", "post remove", "post retract"]:
-                self.log.info("object change for %s triggered acl-reload" % (event.dn))
-                self.load_acls()
+
+            # Only act on these events
+            if not event.reason in ["post object create", "post object update", "post object remove"]:
+                return
+
+            reload = False
+            index = PluginRegistry.getInstance("ObjectIndex")
+            res = index.search({"dn": event.dn},  {'AclSets': 1, '_type': 1})
+            if res:
+                for item in res:
+                    if '_type' in item and item['_type'] == "AclRole":
+                        reload = True
+                    elif 'AclSets' in item and len(item['AclSets']):
+                        reload = True
+
+                if reload:
+                    self.log.info("object change for %s triggered acl-reload" % (event.dn))
+                    self.load_acls()
 
     def load_acls(self):
         """
