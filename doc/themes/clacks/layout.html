@@ -12,13 +12,7 @@
     <div class="related">
       <h3>{{ _('Navigation') }}</h3>
       <ul>
-        <li class="right" style="margin-right: 10px">{{ reldelim2 }}{%- include "searchbox.html" %}</li>
-        {%- for rellink in rellinks %}
-        <li class="right">
-          <a href="{{ pathto(rellink[0]) }}" title="{{ rellink[1]|striptags|e }}"
-             {{ accesskey(rellink[2]) }}>{{ rellink[3] }}</a>
-          {%- if not loop.first %}{{ reldelim2 }}{% endif %}</li>
-        {%- endfor %}
+        <li class="right" style="margin-right: 10px">{%- include "searchbox.html" %}</li>
         {%- block rootrellink %}
         <li><a href="{{ pathto(master_doc) }}">{{ shorttitle|e }}</a>{{ reldelim1 }}</li>
         {%- endblock %}
@@ -34,7 +28,6 @@
 {%- block relbar1 %}{{ c_relbar() }}{% endblock %}
 
 {% block header %}
-<script src="_static/jquery-1.7.1.min.js"></script>
 <script src="_static/jquery.msCarousel-min.js"></script>
 <link rel="stylesheet" type="text/css" href="_static/mscarousel.css" />
 {% endblock %}
@@ -42,7 +35,7 @@
 
 {%- block content %}
 
-  {%- if title == 'Welcome to the Clacks Project' %}
+  {%- if title == 'About' %}
     <div class="project-header">
       The Clacks Project
     </div>
@@ -50,16 +43,31 @@
        manage. infrastructure. objects.
     </div>
 
+    <div class="document" style="width: 1008px; margin-left: auto; margin-right: auto; margin-bottom: 10px;">
+      <div class="documentwrapper">
+        <div class="body" style="padding: 0">
+         <ul class="selector">
+          <li><a style="margin-right:40px" href="start.html"><img align="center" src="_static/getting-started.png"> Getting started</a></li>
+          <li><a style="margin-right:40px" href="doc_index.html"><img align="center" src="_static/documentation.png"> Documentation</a></li>
+          <li><a style="margin-right:40px" href="downloads.html"><img align="center" src="_static/download.png"> Download</a></li>
+          <li><a style="margin-right:40px" href="https://demo.gonicus.de"><img align="center" src="_static/demo.png"> Live demo</a></li>
+          <li><a href="http://oss.gonicus.de"><img align="center" src="_static/issues.png">Issues</a></li>
+         </ul>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
     <div style="border-right:1px solid rgba(40, 40, 40, 0.3); border-bottom:1px solid rgba(40, 40, 40, 0.3); width: 1008px; margin-left: auto; margin-right: auto;">
       <div id="infobar" style="border:4px solid #FFF; background-color:#000;">
         <div class="box">
-          <img src="_static/fog.png">
+          <img src="_static/slide-gosa-search.png">
         </div>
         <div class="box">
-          <img src="_static/farm.png">
+          <img src="_static/slide-gosa-edit.png">
         </div>
         <div class="box">
-          <img src="_static/city.png">
+          <img src="_static/slide-shell.png">
         </div>
       </div>
     </div>
@@ -69,18 +77,12 @@
     </script>
   {% endif %}
 
-    <div class="document">
+    <div class="document" {%- if title == 'About' %}style="width:1008px; margin-left:auto; margin-right:auto"{% endif %}>
   {%- block document %}
       <div class="documentwrapper">
-      {%- if render_sidebar %}
-        <div class="bodywrapper">
-      {%- endif %}
-          <div class="body">
-            {% block body %} {% endblock %}
-          </div>
-      {%- if render_sidebar %}
+        <div class="body">
+          {% block body %} {% endblock %}
         </div>
-      {%- endif %}
       </div>
   {%- endblock %}
 
