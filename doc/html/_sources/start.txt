@@ -58,6 +58,7 @@ alone should not return the fully quallified domain name.
 Below, we use **agent** for the Clacks agent hostname and **client** for the
 Clacks client hostname.
 
+
 .. _setting-up-dns:
 
 Service discovery
@@ -217,11 +218,55 @@ to fit the clacks-agent needs. A starting point could be a
    agent and *admin* which is the *cn* of your LDAP administrator.
 
 
-For production use, you should enable SSL for the AMQP broker. Generating the certificates
-is shown here:
+For production use, you should enable SSL for the AMQP broker. To generate the SSL
+certificates, you need to install the nss tools::
 
-http://rajith.2rlabs.com/2010/03/01/apache-qpid-securing-connections-with-ssl/
+  $ sudo apt-get install libnss3-tools
+  $ mkdir CA_db
+  $ certutil -N -d CA_db
+  $ certutil -S -d CA_db -n "ExampleCA" -s "CN=ExampleCA,O=Example,ST=Network,C=DE" -t "CT,," -x -2
 
+At the prompt, answer:
+
+ * It will prompt you for a password. Enter the password you specified when creating the root CA database.
+ * Type “y” for “Is this a CA certificate [y/N]?”
+ * Press enter for “Enter the path length constraint, enter to skip [<0 for unlimited path]: >”
+ * Type “n” for “Is this a critical extension [y/N]?”
+
+::
+
+  $ certutil -L -d CA_db -n "MyRootCA" -a -o CA_db/rootca.crt
+  $ mkdir server_db
+  $ certutil -N -d server_db
+  $ certutil -A -d server_db -n "ExampleCA" -t "TC,," -a -i CA_db/rootca.crt
+  $ certutil -R -d server_db -s "CN=agent.example.net,O=Example,ST=Network,C=DE" -a -o server_db/server.req
+  $ certutil -C -d CA_db -c "ExampleCA" -a -i server_db/server.req -o server_db/server.crt -2 -6
+
+At the prompt, answer:
+
+ * Select “0 - Server Auth” at the prompt
+ * Press 9 at the prompt
+ * Type “n” for “Is this a critical extension [y/N]?”
+ * Type “n” for “Is this a CA certificate [y/N]?”
+ * Enter “-1″ for “Enter the path length constraint, enter to skip [<0 for unlimited path]: >”
+ * Type “n” for “Is this a critical extension [y/N]?”
+ * When prompted password, enter the password you specified when creating the root CA database.
+
+::
+
+  $ certutil -A -d server_db -n agent.example.net -a -i server_db/server.crt -t ",,"
+
+
+This information has been taken from http://rajith.2rlabs.com/2010/03/01/apache-qpid-securing-connections-with-ssl/
+where you can find more detailed information about that.
+
+Copy the *server_db* directory to */etc/qpid/ssl*, create a *broker-pfile* containing
+the secret to unlock the certificate and add these lines to your qpidd.conf::
+
+  ssl-cert-password-file=/etc/qpid/ssl/broker-pfile
+  ssl-cert-db=/etc/qpid/ssl/server_db/
+  ssl-cert-name=agent.example.net
+  ssl-port=5671
 
 .. _setting-up-ldap:
 
@@ -599,10 +644,14 @@ Just try to run it::
   ...
 
 
-HIER---->
-
 Without pre-built packages
 ==========================
+
+Installing without packages makes sense for - well distributions where we
+have no packages yet, and for developers of course.
+
+This section describes how to get things up and running.
+
 
 Common setup
 ------------
@@ -627,23 +676,25 @@ development, some of the python modules need compilation - which rises the
 number of required packages drastically. For the time being, please install
 the following packages in your system::
 
-  $ sudo apt-get install python2.7-dev python-dumbnet python-avahi python-virtualenv \
-         libavahi-compat-libdnssd-dev python-openssl python-dbus libssl-dev python-gtk2 \
-         python-lxml python-libxml2 python-dmidecode python-ldap python-nose \
-         python-kid python-coverage python-dateutil python-smbpasswd python-netifaces \
-         sasl2-bin python-cjson
+  $ sudo apt-get install avahi-daemon hal pep8 pylint python python-avahi python-cjson \
+                 python-coverage python-crypto python-dateutil python-dbus \
+                 python-dmidecode python-dumbnet python-gtk2 python-kid python-ldap \
+                 python-libxml2 python-logilab-astng python-logilab-common \
+                 python-logilab-constraint python-lxml python-netifaces python-newt \
+                 python-nose python-notify python-openssl python-pkg-resources python-pybabel \
+                 python-pymongo python-qpid python-setuptools python-smbpasswd python-tornado \
+                 python-unidecode python-zope.event python-zope.interface
 
-.. note::
-      On MS Windows systems, only the client is supposed to work. Please install the
-      pywin32 package: http://sourceforge.net/projects/pywin32/
+If you've an RPM'ish distribution, you've to find the rpm names for this or install
+everything via *easy_install*.
 
 
-Setup a virtual environment for playing with clacks
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Setup a virtual environment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 As a non-root user, initialize the virtual environment::
 
-  $ virtualenv --setuptools --system-site-packages --python=python2.7  clacks
+  $ virtualenv --setuptools --system-site-packages --python=python2.7 clacks
   $ cd clacks
   $ source bin/activate
 
@@ -653,15 +704,8 @@ Obtaining the source
 
 For now, please use git::
 
-   $ cd 'the place where you created the clacks virtualenv'
-   $ git clone git://oss.gonicus.de/git/gosa.git src
-
-Additionally, you can get some stripped of Clacks 2.7 sources from here::
-
-   $ git clone git://oss.gonicus.de/git/gosa-gui.git
-   $ cd gosa-gui
-   $ git submodule init
-   $ git submodule update
+   $ cd clacks
+   $ git clone git://github.com/gonicus/clacks.git src
 
 This will place all relevant files inside the 'src' directory.
 
@@ -684,22 +728,24 @@ To proceed, you have to perform the actions detailed in:
  * :ref:`setting-up-amqp`
  * :ref:`setting-up-ldap-auth`
 
+
 Deploy a development agent
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To deploy the agent, please run these commands inside the activated
 virtual environment::
 
-  $ pushd .; cd clacks.common && ./setup.py develop; popd
-  $ pushd .; cd clacks.agent && ./setup.py develop; popd
+  $ ( cd common && ./setup.py develop )
+  $ ( cd agent && ./setup.py develop )
 
 
-  Alternatively you can build the complete package using::
+  Alternatively you can deploy the complete package using::
 
   $ ./setup.py develop
 
 
 .. warning:: 
+
 	Using the above command to build the complete package will also build
 	additional modules like libinst, amires, ... 
 
@@ -714,7 +760,7 @@ In a productive environment, everything should be defined in the configuration
 file, so copy the configuration file to the place where clacks expects it::
 
   $ mkdir -p /etc/clacks
-  $ cp ./src/clacks.agent/src/clacks/agent/data/agent.conf /etc/clacks/config
+  $ cp ./src/agent/src/clacks/agent/data/agent.conf /etc/clacks/config
 
 Now take a look at the config file and adapt it to your needs.
 
@@ -723,86 +769,81 @@ You can start the daemon in foreground like this::
   $ clacks-agent
 
 .. warning::
+
     Make sure, you've entered the virtual environment using "source bin/activate"
     from inside the clacks directory.
 
 
-If you want to run the agent in a more productive manner, you can use the
-daemon mode and start it as root. It will then fork to the configured user
-and run as a daemon.
+If you want to run the agent in a more productive manner, you should
+use a tool like *supervisord* to run it as a daemon.
 
+Here is an example config file::
 
-:status: todo
-	Describe how to secure the communication between the clacks-agent and used services.
+	[core]
+	domain = net.example
+	profile = False
+	id = agent
+	admins = admin
+	base = dc=example,dc=net
+	
+	[amqp]
+	url = amqps://amqp.example.net:5671
+	id = agent
+	key = secret
+	command-worker = 10
+	
+	[http]
+	host = agent.example.net
+	port = 8080
+	ssl = true
+	keyfile = /etc/clacks/agent.key
+	certfile = /etc/clacks/agent.crt
+	
+	[ldap]
+	url = ldap://localhost/dc=example,dc=net
+	bind_dn = cn=admin,dc=example,dc=net
+	bind_secret = secret
+	pool_size = 10
+	
+	[backend-monitor]
+	modifier = cn=admin,dc=gonicus,dc=de
+	audit-log = /var/log/ldap-audit.log
 
-
-Here is an example config file for a non-secured service. (A HowTo about securing the service will follow soon!)::
-
-    [core]
-    
-    # Keyword loglevel: ALL/DEBUG, INFO, WARNING, ERROR, CRITICAL
-    loglevel = DEBUG
-    
-    # Keyword syslog: file, stderr, syslog
-    log = stderr
-    
-    # Keyword logfile: full path to log to if log = file
-    #logfile = /var/log/clacks/agent.log
-    
-    # Keyword id: name of this clacks-agent node
-    id = clacks-agent
-    
-    # Keyword user: username to run the daemon as
-    #user = clacks
-    
-    # Keyword group: groupname to run the daemon as
-    #group = clacks
-    
-    # Keyword pidfile: where to place the pid in daemon mode
-    #pidfile = /var/run/clacks/clacks.pid
-    
-    # Keyword profile: for debugging, only
-    profile = False
-
-    [scheduler]
-    database = sqlite://
-    
-    [amqp]
-    
-    # Keyword url: URL to one of your AMQP servers
-    #
-    # Examples:
-    #
-    # amqp://amqp.example.net:5671
-    # amqps://amqp.example.net:5671
-    #
-    # Secured services listing on 5672!
-    # This example uses an unsecured amqp service
-    url = amqp://localhost:5672
-    
-    # Keyword id:
-    id = admin
-    key = tester
-    
-    [http]
-    host = localhost
-    port = 8080
-    #sslpemfile = /etc/clacks/host.pem
-    
-    [goto]
-    oui-db = /usr/share/clacks/oui.txt
-    
-    [repository]
-    database = mysql+mysqldb://libinst:secret@localhost/libinst?charset=utf8&use_unicode=0
-    http_base_url = http://localhost/debian
-    db_purge = False
-    path = /srv/repository/data
-    
-    [ldap]
-    url = ldap://localhost/dc=example,dc=net
-    bind_dn = cn=admin,dc=example,dc=net
-    bind_secret = secret
-    pool_size = 10
+	[handlers]
+	keys=syslog,console
+	
+	[formatters]
+	keys=syslog,console
+	
+	[logger_root]
+	level=WARNING
+	handlers=console
+	
+	[logger_clacks]
+	level=DEBUG
+	handlers=console
+	qualname=clacks
+	propagate=0
+	
+	[handler_console]
+	class=StreamHandler
+	formatter=console
+	args=(sys.stderr,)
+	
+	[handler_syslog]
+	class=logging.handlers.SysLogHandler
+	formatter=syslog
+	args=('/dev/log',)
+	
+	[formatter_syslog]
+	format=%(name)s: %(module)s - %(message)s
+	datefmt=
+	class=logging.Formatter
+	
+	[formatter_console]
+	format=%(asctime)s %(levelname)s: %(module)s - %(message)s
+	datefmt=
+	class=logging.Formatter
 
 
 
@@ -814,10 +855,10 @@ Installing
 
 To deploy the shell, use::
 
-  $ pushd .; cd clacks.common && ./setup.py develop; popd
-  $ pushd .; cd clacks.shell && ./setup.py develop; popd
+  $ ( cd common && ./setup.py develop )
+  $ ( cd shell && ./setup.py develop )
 
-inside your activated virtual env. You can skip this if you ran ./setup.py for
+inside your activated virtual env. You can skip this if you ran *./setup.py* for
 a complete deployment.
 
 
@@ -830,21 +871,23 @@ you can specify the connection URL to skip zeroconf/DNS.
 Start the shell and send a command::
 
   $ clacksh
-  (authenticate as the admin user you've created in qpid's SASL DB)
+  Searching service provider...
+  Connected to amqps://agent.example.net:5671/net.example
+  Username [admin]: 
+  Password: 
+  Clacks infrastructure shell. Use Ctrl+D to exit.
   >>> clacks.help()
+  ...
   >>> mksmbhash("secret")
   >>> <Strg+D>
 
-The shell did not get priorized work in the moment, so the clacks.help() output is
-neither sorted, nor grouped by plugins. Much space for improvements.
-
 If you tend to use a connection URL directly, use::
 
-  $ clacksh http[s]://amqp.example.com:8080/rpc
+  $ clacksh http[s]://agent.example.net:8080/rpc
 
 for HTTP based sessions or ::
 
-  $ clacksh amqp[s]://amqp.example.com/org.clacks
+  $ clacksh amqp[s]://agent.example.net/net.example
 
 for AMQP based sessions.
 
@@ -860,26 +903,26 @@ a managed client.
 Installing
 ^^^^^^^^^^
 
-To deploy the client components, use::
+To deploy the client components, use ::
 
-  $ pushd .; cd clacks.common && ./setup.py develop; popd
-  $ pushd .; cd clacks.client && ./setup.py develop; popd
-  $ pushd .; cd clacks.dbus && ./setup.py develop; popd
+  $ ( cd common && ./setup.py develop )
+  $ ( cd client && ./setup.py develop )
+  $ ( cd dbus && ./setup.py develop )
 
-inside your activated virtual env. You can skip this if you ran ./setup.py for
+inside your activated virtual env. You can skip this if you ran *./setup.py* for
 a complete deployment.
 
 
 Joining the party
 ^^^^^^^^^^^^^^^^^
 
-A client needs to authenticate to the clacks bus. In order to create the required
+A client needs to authenticate to the Clacks framework. In order to create the required
 credentials for that, you've to "announce" or "join" the client to the system.
 
 To do that, run ::
 
   $ sudo -s
-  # cd 'wherever your clacks virtual environment is'
+  # cd clacks
   # source bin/activate
   # clacks-join
 
@@ -906,7 +949,7 @@ To start the dbus component, activate the python virtual environment as root and
 the clacks-dbus component in daemon or foreground mode::
 
   $ sudo -s
-  # cd 'wherever your clacks virtual environment is'
+  # cd clacks
   # source bin/activate
   # clacks-dbus
 
@@ -997,8 +1040,6 @@ If you use it, please add a section to the Clacks configuration::
   [backend-monitor]
   modifier = cn=agent,dc=example,dc=net
   audit-log = /var/log/ldap-audit.log
-
-These are key descriptions:
 
 ============ ==========================================================================
 Key          Description

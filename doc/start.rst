@@ -218,11 +218,55 @@ to fit the clacks-agent needs. A starting point could be a
    agent and *admin* which is the *cn* of your LDAP administrator.
 
 
-For production use, you should enable SSL for the AMQP broker. Generating the certificates
-is shown here:
+For production use, you should enable SSL for the AMQP broker. To generate the SSL
+certificates, you need to install the nss tools::
 
-http://rajith.2rlabs.com/2010/03/01/apache-qpid-securing-connections-with-ssl/
+  $ sudo apt-get install libnss3-tools
+  $ mkdir CA_db
+  $ certutil -N -d CA_db
+  $ certutil -S -d CA_db -n "ExampleCA" -s "CN=ExampleCA,O=Example,ST=Network,C=DE" -t "CT,," -x -2
 
+At the prompt, answer:
+
+ * It will prompt you for a password. Enter the password you specified when creating the root CA database.
+ * Type “y” for “Is this a CA certificate [y/N]?”
+ * Press enter for “Enter the path length constraint, enter to skip [<0 for unlimited path]: >”
+ * Type “n” for “Is this a critical extension [y/N]?”
+
+::
+
+  $ certutil -L -d CA_db -n "MyRootCA" -a -o CA_db/rootca.crt
+  $ mkdir server_db
+  $ certutil -N -d server_db
+  $ certutil -A -d server_db -n "ExampleCA" -t "TC,," -a -i CA_db/rootca.crt
+  $ certutil -R -d server_db -s "CN=agent.example.net,O=Example,ST=Network,C=DE" -a -o server_db/server.req
+  $ certutil -C -d CA_db -c "ExampleCA" -a -i server_db/server.req -o server_db/server.crt -2 -6
+
+At the prompt, answer:
+
+ * Select “0 - Server Auth” at the prompt
+ * Press 9 at the prompt
+ * Type “n” for “Is this a critical extension [y/N]?”
+ * Type “n” for “Is this a CA certificate [y/N]?”
+ * Enter “-1″ for “Enter the path length constraint, enter to skip [<0 for unlimited path]: >”
+ * Type “n” for “Is this a critical extension [y/N]?”
+ * When prompted password, enter the password you specified when creating the root CA database.
+
+::
+
+  $ certutil -A -d server_db -n agent.example.net -a -i server_db/server.crt -t ",,"
+
+
+This information has been taken from http://rajith.2rlabs.com/2010/03/01/apache-qpid-securing-connections-with-ssl/
+where you can find more detailed information about that.
+
+Copy the *server_db* directory to */etc/qpid/ssl*, create a *broker-pfile* containing
+the secret to unlock the certificate and add these lines to your qpidd.conf::
+
+  ssl-cert-password-file=/etc/qpid/ssl/broker-pfile
+  ssl-cert-db=/etc/qpid/ssl/server_db/
+  ssl-cert-name=agent.example.net
+  ssl-port=5671
 
 .. _setting-up-ldap:
 
@@ -801,6 +845,32 @@ Here is an example config file::
 	datefmt=
 	class=logging.Formatter
 
+You need to generate *agent.crt* and *agent.key* either from your existing
+CA or you can quickly generate a self-signed server cert/key pair::
+
+  $ openssl genrsa -des3 -out agent.key 1024
+  Generating RSA private key, 1024 bit long modulus
+  .........................................................++++++
+  ........++++++
+  e is 65537 (0x10001)
+  Enter PEM pass phrase:
+  Verifying password - Enter PEM pass phrase:
+
+Certificate signing request::
+
+  $ openssl req -new -key agent.key -out agent.csr
+
+Strip the password from the key::
+
+  $ cp agent.key agent.key.org
+  $ openssl rsa -in agent.key.org -out agent.key
+
+Generate the certificate::
+
+  $ openssl x509 -req -days 365 -in agent.csr -signkey agent.key -out agent.crt
+
+Install these files to a directory where *clacks-agent* can read them - i.e.
+like shown in the configuration above: */etc/clacks*
 
 
 Installing a Clacks shell

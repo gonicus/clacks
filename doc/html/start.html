@@ -242,9 +242,52 @@ acl deny all all</pre>
 choosen in the beginning. Same for <em>agent</em> which is the hostname of your Clacks
 agent and <em>admin</em> which is the <em>cn</em> of your LDAP administrator.</p>
 </div>
-<p>For production use, you should enable SSL for the AMQP broker. Generating the certificates
-is shown here:</p>
-<p><a class="reference external" href="http://rajith.2rlabs.com/2010/03/01/apache-qpid-securing-connections-with-ssl/">http://rajith.2rlabs.com/2010/03/01/apache-qpid-securing-connections-with-ssl/</a></p>
+<p>For production use, you should enable SSL for the AMQP broker. To generate the SSL
+certificates, you need to install the nss tools:</p>
+<div class="highlight-python"><pre>$ sudo apt-get install libnss3-tools
+$ mkdir CA_db
+$ certutil -N -d CA_db
+$ certutil -S -d CA_db -n "ExampleCA" -s "CN=ExampleCA,O=Example,ST=Network,C=DE" -t "CT,," -x -2</pre>
+</div>
+<p>At the prompt, answer:</p>
+<blockquote>
+<div><ul class="simple">
+<li>It will prompt you for a password. Enter the password you specified when creating the root CA database.</li>
+<li>Type “y” for “Is this a CA certificate [y/N]?”</li>
+<li>Press enter for “Enter the path length constraint, enter to skip [&lt;0 for unlimited path]: &gt;”</li>
+<li>Type “n” for “Is this a critical extension [y/N]?”</li>
+</ul>
+</div></blockquote>
+<div class="highlight-python"><pre>$ certutil -L -d CA_db -n "MyRootCA" -a -o CA_db/rootca.crt
+$ mkdir server_db
+$ certutil -N -d server_db
+$ certutil -A -d server_db -n "ExampleCA" -t "TC,," -a -i CA_db/rootca.crt
+$ certutil -R -d server_db -s "CN=agent.example.net,O=Example,ST=Network,C=DE" -a -o server_db/server.req
+$ certutil -C -d CA_db -c "ExampleCA" -a -i server_db/server.req -o server_db/server.crt -2 -6</pre>
+</div>
+<p>At the prompt, answer:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Select “0 - Server Auth” at the prompt</li>
+<li>Press 9 at the prompt</li>
+<li>Type “n” for “Is this a critical extension [y/N]?”</li>
+<li>Type “n” for “Is this a CA certificate [y/N]?”</li>
+<li>Enter “-1″ for “Enter the path length constraint, enter to skip [&lt;0 for unlimited path]: &gt;”</li>
+<li>Type “n” for “Is this a critical extension [y/N]?”</li>
+<li>When prompted password, enter the password you specified when creating the root CA database.</li>
+</ul>
+</div></blockquote>
+<div class="highlight-python"><pre>$ certutil -A -d server_db -n agent.example.net -a -i server_db/server.crt -t ",,"</pre>
+</div>
+<p>This information has been taken from <a class="reference external" href="http://rajith.2rlabs.com/2010/03/01/apache-qpid-securing-connections-with-ssl/">http://rajith.2rlabs.com/2010/03/01/apache-qpid-securing-connections-with-ssl/</a>
+where you can find more detailed information about that.</p>
+<p>Copy the <em>server_db</em> directory to <em>/etc/qpid/ssl</em>, create a <em>broker-pfile</em> containing
+the secret to unlock the certificate and add these lines to your qpidd.conf:</p>
+<div class="highlight-python"><pre>ssl-cert-password-file=/etc/qpid/ssl/broker-pfile
+ssl-cert-db=/etc/qpid/ssl/server_db/
+ssl-cert-name=agent.example.net
+ssl-port=5671</pre>
+</div>
 </div>
 <div class="section" id="installing-the-ldap-service">
 <span id="setting-up-ldap"></span><h3>Installing the LDAP service<a class="headerlink" href="#installing-the-ldap-service" title="Permalink to this headline">¶</a></h3>
@@ -566,11 +609,13 @@ Clacks infrastructure shell. Use Ctrl+D to exit.
 &gt;&gt;&gt; clacks.help()
 ...</pre>
 </div>
-<p>HIER&#8212;-&gt;</p>
 </div>
 </div>
 <div class="section" id="without-pre-built-packages">
 <h2>Without pre-built packages<a class="headerlink" href="#without-pre-built-packages" title="Permalink to this headline">¶</a></h2>
+<p>Installing without packages makes sense for - well distributions where we
+have no packages yet, and for developers of course.</p>
+<p>This section describes how to get things up and running.</p>
 <div class="section" id="common-setup">
 <h3>Common setup<a class="headerlink" href="#common-setup" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="system-prerequisites">
@@ -588,22 +633,22 @@ there&#8217;s a <em>/var/run/clacks</em> for placing the PID files.</p>
 development, some of the python modules need compilation - which rises the
 number of required packages drastically. For the time being, please install
 the following packages in your system:</p>
-<div class="highlight-python"><pre>$ sudo apt-get install python2.7-dev python-dumbnet python-avahi python-virtualenv \
-       libavahi-compat-libdnssd-dev python-openssl python-dbus libssl-dev python-gtk2 \
-       python-lxml python-libxml2 python-dmidecode python-ldap python-nose \
-       python-kid python-coverage python-dateutil python-smbpasswd python-netifaces \
-       sasl2-bin python-cjson</pre>
+<div class="highlight-python"><pre>$ sudo apt-get install avahi-daemon hal pep8 pylint python python-avahi python-cjson \
+               python-coverage python-crypto python-dateutil python-dbus \
+               python-dmidecode python-dumbnet python-gtk2 python-kid python-ldap \
+               python-libxml2 python-logilab-astng python-logilab-common \
+               python-logilab-constraint python-lxml python-netifaces python-newt \
+               python-nose python-notify python-openssl python-pkg-resources python-pybabel \
+               python-pymongo python-qpid python-setuptools python-smbpasswd python-tornado \
+               python-unidecode python-zope.event python-zope.interface</pre>
 </div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">On MS Windows systems, only the client is supposed to work. Please install the
-pywin32 package: <a class="reference external" href="http://sourceforge.net/projects/pywin32/">http://sourceforge.net/projects/pywin32/</a></p>
+<p>If you&#8217;ve an RPM&#8217;ish distribution, you&#8217;ve to find the rpm names for this or install
+everything via <em>easy_install</em>.</p>
 </div>
-</div>
-<div class="section" id="setup-a-virtual-environment-for-playing-with-clacks">
-<h4>Setup a virtual environment for playing with clacks<a class="headerlink" href="#setup-a-virtual-environment-for-playing-with-clacks" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="setup-a-virtual-environment">
+<h4>Setup a virtual environment<a class="headerlink" href="#setup-a-virtual-environment" title="Permalink to this headline">¶</a></h4>
 <p>As a non-root user, initialize the virtual environment:</p>
-<div class="highlight-python"><pre>$ virtualenv --setuptools --system-site-packages --python=python2.7  clacks
+<div class="highlight-python"><pre>$ virtualenv --setuptools --system-site-packages --python=python2.7 clacks
 $ cd clacks
 $ source bin/activate</pre>
 </div>
@@ -611,14 +656,8 @@ $ source bin/activate</pre>
 <div class="section" id="obtaining-the-source">
 <h4>Obtaining the source<a class="headerlink" href="#obtaining-the-source" title="Permalink to this headline">¶</a></h4>
 <p>For now, please use git:</p>
-<div class="highlight-python"><pre>$ cd 'the place where you created the clacks virtualenv'
-$ git clone git://oss.gonicus.de/git/gosa.git src</pre>
-</div>
-<p>Additionally, you can get some stripped of Clacks 2.7 sources from here:</p>
-<div class="highlight-python"><pre>$ git clone git://oss.gonicus.de/git/gosa-gui.git
-$ cd gosa-gui
-$ git submodule init
-$ git submodule update</pre>
+<div class="highlight-python"><pre>$ cd clacks
+$ git clone git://github.com/gonicus/clacks.git src</pre>
 </div>
 <p>This will place all relevant files inside the &#8216;src&#8217; directory.</p>
 <div class="admonition warning">
@@ -646,11 +685,11 @@ a working LDAP setup.</p>
 <h4>Deploy a development agent<a class="headerlink" href="#deploy-a-development-agent" title="Permalink to this headline">¶</a></h4>
 <p>To deploy the agent, please run these commands inside the activated
 virtual environment:</p>
-<div class="highlight-python"><pre>$ pushd .; cd clacks.common &amp;&amp; ./setup.py develop; popd
-$ pushd .; cd clacks.agent &amp;&amp; ./setup.py develop; popd
+<div class="highlight-python"><pre>$ ( cd common &amp;&amp; ./setup.py develop )
+$ ( cd agent &amp;&amp; ./setup.py develop )
 
 
-Alternatively you can build the complete package using::
+Alternatively you can deploy the complete package using::
 
 $ ./setup.py develop</pre>
 </div>
@@ -667,7 +706,7 @@ recommended during the quickstart quide.</p>
 <p>In a productive environment, everything should be defined in the configuration
 file, so copy the configuration file to the place where clacks expects it:</p>
 <div class="highlight-python"><pre>$ mkdir -p /etc/clacks
-$ cp ./src/clacks.agent/src/clacks/agent/data/agent.conf /etc/clacks/config</pre>
+$ cp ./src/agent/src/clacks/agent/data/agent.conf /etc/clacks/config</pre>
 </div>
 <p>Now take a look at the config file and adapt it to your needs.</p>
 <p>You can start the daemon in foreground like this:</p>
@@ -678,84 +717,74 @@ $ cp ./src/clacks.agent/src/clacks/agent/data/agent.conf /etc/clacks/config</pre
 <p class="last">Make sure, you&#8217;ve entered the virtual environment using &#8220;source bin/activate&#8221;
 from inside the clacks directory.</p>
 </div>
-<p>If you want to run the agent in a more productive manner, you can use the
-daemon mode and start it as root. It will then fork to the configured user
-and run as a daemon.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">status:</th><td class="field-body">todo
-Describe how to secure the communication between the clacks-agent and used services.</td>
-</tr>
-</tbody>
-</table>
-<p>Here is an example config file for a non-secured service. (A HowTo about securing the service will follow soon!):</p>
+<p>If you want to run the agent in a more productive manner, you should
+use a tool like <em>supervisord</em> to run it as a daemon.</p>
+<p>Here is an example config file:</p>
 <div class="highlight-python"><pre>[core]
-
-# Keyword loglevel: ALL/DEBUG, INFO, WARNING, ERROR, CRITICAL
-loglevel = DEBUG
-
-# Keyword syslog: file, stderr, syslog
-log = stderr
-
-# Keyword logfile: full path to log to if log = file
-#logfile = /var/log/clacks/agent.log
-
-# Keyword id: name of this clacks-agent node
-id = clacks-agent
-
-# Keyword user: username to run the daemon as
-#user = clacks
-
-# Keyword group: groupname to run the daemon as
-#group = clacks
-
-# Keyword pidfile: where to place the pid in daemon mode
-#pidfile = /var/run/clacks/clacks.pid
-
-# Keyword profile: for debugging, only
+domain = net.example
 profile = False
-
-[scheduler]
-database = sqlite://
+id = agent
+admins = admin
+base = dc=example,dc=net
 
 [amqp]
-
-# Keyword url: URL to one of your AMQP servers
-#
-# Examples:
-#
-# amqp://amqp.example.net:5671
-# amqps://amqp.example.net:5671
-#
-# Secured services listing on 5672!
-# This example uses an unsecured amqp service
-url = amqp://localhost:5672
-
-# Keyword id:
-id = admin
-key = tester
+url = amqps://amqp.example.net:5671
+id = agent
+key = secret
+command-worker = 10
 
 [http]
-host = localhost
+host = agent.example.net
 port = 8080
-#sslpemfile = /etc/clacks/host.pem
-
-[goto]
-oui-db = /usr/share/clacks/oui.txt
-
-[repository]
-database = mysql+mysqldb://libinst:secret@localhost/libinst?charset=utf8&amp;use_unicode=0
-http_base_url = http://localhost/debian
-db_purge = False
-path = /srv/repository/data
+ssl = true
+keyfile = /etc/clacks/agent.key
+certfile = /etc/clacks/agent.crt
 
 [ldap]
 url = ldap://localhost/dc=example,dc=net
 bind_dn = cn=admin,dc=example,dc=net
 bind_secret = secret
-pool_size = 10</pre>
+pool_size = 10
+
+[backend-monitor]
+modifier = cn=admin,dc=gonicus,dc=de
+audit-log = /var/log/ldap-audit.log
+
+[handlers]
+keys=syslog,console
+
+[formatters]
+keys=syslog,console
+
+[logger_root]
+level=WARNING
+handlers=console
+
+[logger_clacks]
+level=DEBUG
+handlers=console
+qualname=clacks
+propagate=0
+
+[handler_console]
+class=StreamHandler
+formatter=console
+args=(sys.stderr,)
+
+[handler_syslog]
+class=logging.handlers.SysLogHandler
+formatter=syslog
+args=('/dev/log',)
+
+[formatter_syslog]
+format=%(name)s: %(module)s - %(message)s
+datefmt=
+class=logging.Formatter
+
+[formatter_console]
+format=%(asctime)s %(levelname)s: %(module)s - %(message)s
+datefmt=
+class=logging.Formatter</pre>
 </div>
 </div>
 </div>
@@ -764,10 +793,10 @@ pool_size = 10</pre>
 <div class="section" id="installing">
 <h4>Installing<a class="headerlink" href="#installing" title="Permalink to this headline">¶</a></h4>
 <p>To deploy the shell, use:</p>
-<div class="highlight-python"><pre>$ pushd .; cd clacks.common &amp;&amp; ./setup.py develop; popd
-$ pushd .; cd clacks.shell &amp;&amp; ./setup.py develop; popd</pre>
+<div class="highlight-python"><pre>$ ( cd common &amp;&amp; ./setup.py develop )
+$ ( cd shell &amp;&amp; ./setup.py develop )</pre>
 </div>
-<p>inside your activated virtual env. You can skip this if you ran ./setup.py for
+<p>inside your activated virtual env. You can skip this if you ran <em>./setup.py</em> for
 a complete deployment.</p>
 </div>
 <div class="section" id="first-steps">
@@ -776,18 +805,21 @@ a complete deployment.</p>
 you can specify the connection URL to skip zeroconf/DNS.</p>
 <p>Start the shell and send a command:</p>
 <div class="highlight-python"><pre>$ clacksh
-(authenticate as the admin user you've created in qpid's SASL DB)
+Searching service provider...
+Connected to amqps://agent.example.net:5671/net.example
+Username [admin]:
+Password:
+Clacks infrastructure shell. Use Ctrl+D to exit.
 &gt;&gt;&gt; clacks.help()
+...
 &gt;&gt;&gt; mksmbhash("secret")
 &gt;&gt;&gt; &lt;Strg+D&gt;</pre>
 </div>
-<p>The shell did not get priorized work in the moment, so the clacks.help() output is
-neither sorted, nor grouped by plugins. Much space for improvements.</p>
 <p>If you tend to use a connection URL directly, use:</p>
-<div class="highlight-python"><pre>$ clacksh http[s]://amqp.example.com:8080/rpc</pre>
+<div class="highlight-python"><pre>$ clacksh http[s]://agent.example.net:8080/rpc</pre>
 </div>
 <p>for HTTP based sessions or</p>
-<div class="highlight-python"><pre>$ clacksh amqp[s]://amqp.example.com/org.clacks</pre>
+<div class="highlight-python"><pre>$ clacksh amqp[s]://agent.example.net/net.example</pre>
 </div>
 <p>for AMQP based sessions.</p>
 </div>
@@ -799,21 +831,21 @@ Every client can incorporate functionality into the network - or can just be
 a managed client.</p>
 <div class="section" id="id3">
 <h4>Installing<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
-<p>To deploy the client components, use:</p>
-<div class="highlight-python"><pre>$ pushd .; cd clacks.common &amp;&amp; ./setup.py develop; popd
-$ pushd .; cd clacks.client &amp;&amp; ./setup.py develop; popd
-$ pushd .; cd clacks.dbus &amp;&amp; ./setup.py develop; popd</pre>
+<p>To deploy the client components, use</p>
+<div class="highlight-python"><pre>$ ( cd common &amp;&amp; ./setup.py develop )
+$ ( cd client &amp;&amp; ./setup.py develop )
+$ ( cd dbus &amp;&amp; ./setup.py develop )</pre>
 </div>
-<p>inside your activated virtual env. You can skip this if you ran ./setup.py for
+<p>inside your activated virtual env. You can skip this if you ran <em>./setup.py</em> for
 a complete deployment.</p>
 </div>
 <div class="section" id="joining-the-party">
 <h4>Joining the party<a class="headerlink" href="#joining-the-party" title="Permalink to this headline">¶</a></h4>
-<p>A client needs to authenticate to the clacks bus. In order to create the required
+<p>A client needs to authenticate to the Clacks framework. In order to create the required
 credentials for that, you&#8217;ve to &#8220;announce&#8221; or &#8220;join&#8221; the client to the system.</p>
 <p>To do that, run</p>
 <div class="highlight-python"><pre>$ sudo -s
-# cd 'wherever your clacks virtual environment is'
+# cd clacks
 # source bin/activate
 # clacks-join</pre>
 </div>
@@ -835,7 +867,7 @@ reload your dbus service.</p>
 <p>To start the dbus component, activate the python virtual environment as root and run
 the clacks-dbus component in daemon or foreground mode:</p>
 <div class="highlight-python"><pre>$ sudo -s
-# cd 'wherever your clacks virtual environment is'
+# cd clacks
 # source bin/activate
 # clacks-dbus</pre>
 </div>
@@ -915,7 +947,6 @@ the <em>supervisord</em>.</p>
 modifier = cn=agent,dc=example,dc=net
 audit-log = /var/log/ldap-audit.log</pre>
 </div>
-<p>These are key descriptions:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="14%" />

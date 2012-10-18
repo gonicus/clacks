@@ -41,10 +41,6 @@ more *conservative* users can continue to use the current PHP core.
 The 1.0 release will be a PHP-Clacks with nearly no functionality residing in PHP, but
 in the new core. And - finally - this documentation is growing on the way to 1.0.
 
-.. warning::
-
-   This is **pre-alpha** software and you're welcome to try, code and share with us.
-
 ---------------------
 
 **Documentation TODO list:**
