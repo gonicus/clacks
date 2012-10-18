@@ -56,7 +56,7 @@ in the new core. And - finally - this documentation is growing on the way to 1.0
 .. toctree::
    :maxdepth: 3
 
-   intro
+   start
    production
    development
    packaging

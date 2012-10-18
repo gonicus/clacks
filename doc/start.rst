@@ -1,312 +1,160 @@
-Getting started
-===============
-
 .. _quickstart:
 
+Getting started
+***************
+
 This document contains information on *how to get started* with
-the current Clacks framework - version 0.8.
-
-Using pre-built packages
-------------------------
-
-Currently there are only Debian/Ubuntu packages available for the Clacks
-framework. Additionally you need at least Wheezy/12.04 to proceed.
-
-.. information::
-
-    Older versions of Debian/Ubuntu do not have the required package versions
-    installed. Installations may work using backports and/or re-building
+the Clacks framework. It covers package based installations (Debian/Ubuntu),
+package less installtions and the common tasks that are needed to
+operate an agent.
 
 
-APT repository
-^^^^^^^^^^^^^^
+Common prerequisites
+====================
 
-Please create a new file under /etc/apt/sources.list.d/clacks.list and place
-the following content inside::
+The Clacks framework is a piece of software that has certain dependencies: it
+communicates using the AMQP protocol and stores its information in directory
+services or databases. These services - and their authentication - need to
+be properly orchestrated to form a valid Clacks domain.
 
-   deb http://debian.gonicus.de/debian wheezy Clacks stable
-
-Now install the key package::
-
-   $ sudo apt-get install gonicus-keyring
-
-The installer will report an untrusted package - which is ok in this case,
-because it *contains* the GONICUS signing key. It is used to sign the packages
-we'll download in the next step.
-
-
-Installing a Clacks agent
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-To use the Clacks framework, you need at least one agent that loads some
-plugins and provides the base communication framework. Compared to the
-client and the shell, the agent is the part that needs most supplying
-services.
-
-.. warning::
-
-  Until we reach version 1.0, you can only use one agent.
-
-
-For the first node, install *QPID*, *LDAP* and *MongoDB*::
-  
-  $ sudo apt-get install qpidd mongodb-server slapd ldap-utils sasl2-bin
-
-Memorize the user and passwords you've used for LDAP. MongoDB is just
-fine and can be configured to only run locally for now.
-
-To proceed, you have to perform the actions detailed in:
-
-:status: todo
-	Insert links
-
- * Setting up LDAP
- * Setting up QPID
-
-If this is fine, copy over the configuration file for the Clacks agent to
-/etc/clacks/config and adapt the settings to match the ones for your site::
-  
-  $ sudo install -o root -g clacks -m 0640 /usr/share/doc/clacks-agent/examples/config /etc/clacks/config
-  $ sudo vi /etc/clacks/config
-
-At least adapt the node-name to fit the current host name of your server
-and the LDAP credentials that you've created in **Setting up LDAP**.
-
-No you can start the agent using::
-  
-  $ sudo supervisorctl start clacks-agent
-
-Watch out for errors in */var/log/clacks.log*. If everything went up well,
-the agent starts indexing your LDAP and you might see some warnings about
-not recognized objects.
-
-After the agent is up and running, you should define a couple of ACL sets
-in order to get rid of the initial ACL override in your Clacks configuration.
-
-:status: todo
-	Insert links
-
-Please take a look at 'Configuring access control'.
-
-
-Installing a Clacks client
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Clacks clients are nodes that you want to have *under the hood* in some form. They
-are monitored, inventorized using fusioninventory (optionally) and can be controlled
-in various ways. Controlling addresses topics like *config management* (i.e. using puppet),
-*system states* (reboot, wake on lan, etc.), user notifications and executing certain
-commands as **root** on these systems.
-
-To install the client you need to work thru two steps. First, install it (the
-example includes the inventory part)::
-    
-  $ sudo apt-get install clacks-client fusioninventory-agent
-
-The client tries to start, but will fail due to missing configurations, so the
-second step is to generate a configuration - aka *joining* the client to the
-Clacks domain. May sound familiar to Microsoft users.
-
-.. warning::
-
-  In the current version, it is only possible to do an *active* join. The former
-  GOsa client *incoming* mechanism is currently beeing implemented and not usable
-  right now.
-
-Joining is easy::
-
-  $ sudo clacks-join
-
-It will first search for an active agent. Then you'll have to provide the credentials
-of a user that is allowed to join the client (i.e. the administrator you've initially
-created).
-
-.. information::
-
-  Maybe the zeroconf mechanism that is used to find an agent is not working
-  in your setup. In this case use the *--url* switch to provide the complete
-  AMQP URL. Example::
-    
-    $ sudo clacks-join --url amqps://agent.example.net/net.example
-
-If this succeeds, a configuration file is created automatically and you can start the
-client::
-  
-  $ sudo supervisorctl start clacks-client
-
-If everything went fine, the client is up and running. You'll see some messages
-in the agent's log and the client log for that. As for servers, messages find their
-way to */var/log/clacks.log*.
-
-.. information::
-
-  Joining requires at least one active agent.
-
-Note that while it is technically no problem to run both - a client and an agent -- on the
-same physical node, it is not supported by the packages in the moment.
-
-
-Installing the shell
-^^^^^^^^^^^^^^^^^^^^
-
-Compared to agents and clients, the shell installation is trivial::
-
-  $ sudo apt-get install clacks-shell
-
-Just try to run it::
-  
-  $ clacksh
-  Searching service provider...
-  Connected to https://amqp.example.net:8080/rpc
-  Username [cajus]:
-  Password:
-  Clacks infrastructure shell. Use Ctrl+D to exit.
-  >>> clacks.help()
-  ...
-
-
-Without pre-built packages
---------------------------
-
-Common setup
-^^^^^^^^^^^^
-
-System prerequisites
-""""""""""""""""""""
-
-To run the services in the designed way later on, you need a special user
-and a couple of directories::
-
-    $ sudo adduser --system --group clacks --home=/var/lib/clacks
-
-If you're going to run the service in daemon mode, please take care that
-there's a */var/run/clacks* for placing the PID files.
-
-
-Python prerequisites
-""""""""""""""""""""
-
-While we try to keep everything inside a virtual python environment for
-development, some of the python modules need compilation - which rises the
-number of required packages drastically. For the time being, please install
-the following packages in your system::
-
-  $ sudo apt-get install python2.7-dev python-dumbnet python-avahi python-virtualenv \
-         libavahi-compat-libdnssd-dev python-openssl python-dbus libssl-dev python-gtk2 \
-         python-lxml python-libxml2 python-dmidecode python-ldap python-nose \
-         python-kid python-coverage python-dateutil python-smbpasswd python-netifaces \
-         sasl2-bin python-cjson
+This section explains how to setup an AMQP broker, a LDAP server and optionally
+shows how to tweak a DNS for service discovery in networks where local service
+discovery is not sufficient.
 
 .. note::
-      On MS Windows systems, only the client is supposed to work. Please install the
-      pywin32 package: http://sourceforge.net/projects/pywin32/
+
+   In this guide all services run on the same host - which is not mandatory.
+
+It also covers the configuration of SASL to get the AMQP broker to authenticate
+with the LDAP service and helps to configure the AMQP authorization to avoid
+malicious use of AMQP queues.
 
 
-Setup a virtual environment for playing with clacks 1.0 alpha
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Choosing a domain
+-----------------
 
-As a non-root user, initialize the virtual environment::
+The first step - however - is to choose a domain where Clacks should operate
+on. It is recommended to use a reversed form of the DNS domain name that is
+valid for your current setup.
 
-  $ virtualenv --setuptools --system-site-packages --python=python2.7  clacks
-  $ cd clacks
-  $ source bin/activate
+If you're operating in **example.net**, the Clacks domain should be **net.example**.
+This reverse domain notation is used for determining access to certain objects
+and makes it more easy to grant access to sub domains like **foo.example.net** later
+on.
 
+.. note::
 
-Obtaining the source
-""""""""""""""""""""
-
-For now, please use git::
-
-   $ cd 'the place where you created the clacks virtualenv'
-   $ git clone git://oss.gonicus.de/git/gosa.git src
-
-Additionally, you can get some stripped of Clacks 2.7 sources from here::
-
-   $ git clone git://oss.gonicus.de/git/gosa-gui.git
-   $ cd gosa-gui
-   $ git submodule init
-   $ git submodule update
-
-This will place all relevant files inside the 'src' directory.
-
-.. warning::
-      The "source bin/activate" has to be done every time you work in or with the
-      virtual environment. Stuff will fail if you don't do this. If you're asked for
-      sudo/root, you're doing something wrong.
+   You're not forced to use this reversed notation, but you're encouraged to
+   do so in setups that may be nested later on.
 
 
-The clacks agent
-^^^^^^^^^^^^^^^^
+Choosing a hostname
+-------------------
 
-To run the agent, you most likely need a working AMQP broker and
-a working LDAP setup.
+Be sure that your current hostname is the one you're going to use later on
+and that *hostname* returns different output than *hostname -f*: hostname
+alone should not return the fully quallified domain name.
+
+Below, we use **agent** for the Clacks agent hostname and **client** for the
+Clacks client hostname.
+
+.. _setting-up-dns:
+
+Service discovery
+-----------------
+
+Clacks uses the zeroconf protocol to find its counterparts by default. While
+this works fine in local networks (like your test setup that you're using
+to get started), this may lead to problems when your network is split to
+several physical zones and routing of the discovery packages doesn't seam
+reasonable.
+
+If this is the case for you, you should configure your site DNS to allow
+static zeroconf DNS service discovery.
+
+Here is an example for the example.net domain::
+
+  ; Zeroconf base setup
+  b._dns-sd._udp                  PTR @   ;  b = browse domain
+  lb._dns-sd._udp                 PTR @   ;  lb = legacy browse domain
+  _services._dns-sd._udp          PTR _amqps._tcp
+                                  PTR _https._tcp
+  
+  ; Zeroconf clacks records
+  _amqps._tcp                     PTR Clacks\ RPC\ Service._amqps._tcp
+  Clacks\ RPC\ Service._amqps._tcp  SRV 0 0 5671 agent.example.net.
+                                  TXT path=/net.example service=clacks
+  
+  _https._tcp                     PTR Clacks\ Web\ Service._https._tcp
+                                  PTR Clacks\ RPC\ Service._https._tcp
+  Clacks\ Web\ Service._https._tcp  SRV 0 0 443 agent.example.net.
+                                  TXT path=/admin/index.html
+  Clacks\ RPC\ Service._https._tcp SRV 0 0 8080 agent.example.net.
+                                  TXT path=/rpc service=clacks
+
+This will add static service discovery entries for an agent with the
+hostname *agent.example.net*.
+
+After reloading your DNS, you may test your setup with::
+
+  you@agent:~$ avahi-browse -D
+  +  n/a  n/a example.net
+
+  you@agent:~$ avahi-browse -rd example.net _amqps._tcp
+  +   k.A. k.A. Clacks RPC Service                              _amqps._tcp          example.net
+  =   k.A. k.A. Clacks RPC Service                              _amqps._tcp          example.net
+     hostname = [agent.example.net]
+     address = [10.3.64.59]
+     port = [5671]
+     txt = ["service=clacks" "path=/net.example"]
 
 
-Prerequisites
-"""""""""""""
+.. _setting-up-mongo:
 
-We use qpidc as the AMQP broker. Other implementations like rabbitmq,
-etc. are not supported. They lack some functionality we're making use
-of.
+Installing MongoDB
+------------------
+
+The Clacks framework maintains an index of all objects of its one. The reason for
+this is that you can combine several backends like LDAP, JSON, Opsi, SQL, etc. to
+assemble a single object. Searching in all backends is expensive and uses the
+local index.
+
+Indexing is done with MongoDB which needs a basic, local install for the simpliest
+case::
+
+  $ sudo apt-get install mongodb-server
+
+Unless you're not doing bigger replicated setups, you should be fine with this.
+Note that mongodb doesn't use authentication in this basic installation. Be sure
+that you've at least restricted the access to *localhost* via
+
+  ::
+  bind_ip = 127.0.0.1
+
+in your */etc/mongodb.conf*.
 
 
-Adding the AMQP repository
-""""""""""""""""""""""""""
+.. _setting-up-amqp:
 
-In Debian, the simpliest way to get qpid running would be the use
-of an existing repository. Include it in your configuration like this::
+Installing an AMQP service
+--------------------------
 
-  # wget -O - http://apt.gonicus.de/archive.key | apt-key add -
-  # [ -d /etc/apt/sources.list.d ] || mkdir /etc/apt/sources.list.d
-  # echo "deb http://apt.gonicus.de/debian/ squeeze main" > /etc/apt/sources.list.d/gonicus.list
-  # apt-get update
+Clacks uses AMQP as a messaging service. It will not work without it. Several 
+used AMQP features lead to the requirement that Qpid needs to be used as
+an AMQP message broker. Your distribution should have one for you::
 
+  $ sudo apt-get install qpidd qpid-client qpid-tools
 
-Install qpid broker and clients
-"""""""""""""""""""""""""""""""
-
-::
-
-  # apt-get install qpidd qpid-client qpid-tools
 
 After qpid has been installed, you may modify the access policy
-to fit the clacks-agent needs a `/etc/qpid/qpidd.acl` containing::
-
-	# QPID policy file
-	#
-	# User definition:
-	#   user = <user-name>[@domain[/realm]]
-	#
-	# User/Group lists:
-	#   user-list = user1 user2 user3 ...
-	#   group-name-list = group1 group2 group3 ...
-	#
-	# Group definition:
-	#   group <group-name> = [user-list] [group-name-list]
-	#
-	# ACL definition:
-	#   permission = [allow|acl|deny|deny-log]
-	#   action = [consume|publish|create|access|bind|unbind|delete|purge|update]
-	#   object = [virtualhost|queue|exchange|broker|link|route|method]
-	#   property = [name|durable|owner|routingkey|passive|autodelete|exclusive|type|alternate|queuename|schemapackage|schemaclass]
-	#
-	# acl permission {<group-name>|<user-name>|"all"} {action|"all"} [object|"all"] [property=<property-value>]
-	#
-	# Example:
-	#
-	# group client = user1@QPID user2@QPID
-	# acl allow client publish routingkey=exampleQueue exchange=amq.direct
-	#
-	# Will allow the group "client" containing of "user1" and "user2" be able to
-	# make use of the routing key "exampleQueue" on the "amq.direct" exchange.
+to fit the clacks-agent needs. A starting point could be a
+`/etc/qpid/qpidd.acl` containing::
 	
 	# Group definitions
-	group admins admin@QPID cajus@QPID
-	group agents amqp@QPID
-	#group event-publisher agents admins
-	#group event-consumer agents admins
-	group event-consumer amqp@QPID
-	group event-publisher amqp@QPID
+	group admins admin@QPID
+	group agents agent@QPID
+	group event-consumer agent@QPID
+	group event-publisher agent@QPID
 	
 	# Admin is allowed to do everything
 	acl allow admins all
@@ -319,84 +167,102 @@ to fit the clacks-agent needs a `/etc/qpid/qpidd.acl` containing::
 	acl allow all publish exchange routingkey=reply-* owner=self
 	
 	# Event producer
-	acl allow event-publisher all     queue    name=org.clacks
-	acl allow event-publisher all     exchange name=org.clacks
+	acl allow event-publisher all     queue    name=net.example
+	acl allow event-publisher all     exchange name=net.example
 	
 	# Event consumer
-	#TODO: replace "all" by "event-consumer" later on
 	acl allow all create  queue    name=event-listener-*
 	acl allow all delete  queue    name=event-listener-* owner=self
 	acl allow all consume queue    name=event-listener-* owner=self
 	acl allow all access  queue    name=event-listener-* owner=self
 	acl allow all purge   queue    name=event-listener-* owner=self
-	acl allow all access  queue    name=org.clacks
-	acl allow all access  exchange name=org.clacks
+	acl allow all access  queue    name=net.example
+	acl allow all access  exchange name=net.example
 	acl allow all access  exchange name=event-listener-* owner=self
-	acl allow all bind    exchange name=org.clacks queuename=event-listener-* routingkey=event
-	acl allow all unbind  exchange name=org.clacks queuename=event-listener-* routingkey=event
-	acl allow all publish exchange name=org.clacks routingkey=event
+	acl allow all bind    exchange name=net.example queuename=event-listener-* routingkey=event
+	acl allow all unbind  exchange name=net.example queuename=event-listener-* routingkey=event
+	acl allow all publish exchange name=net.example routingkey=event
 	
-	# Let agents do everything with the org.clacks queues and exchanges, agents itself
+	# Let agents do everything with the net.example queues and exchanges, agents itself
 	# are trusted by now.
-	acl allow agents all queue name=org.clacks.*
-	acl allow agents all exchange name=org.clacks.*
-	acl allow agents all exchange name=amq.direct queuename=org.clacks.*
+	acl allow agents all queue name=net.example.*
+	acl allow agents all exchange name=net.example.*
+	acl allow agents all exchange name=amq.direct queuename=net.example.*
 	
 	# Let every authenticated instance publish to the command queues
-	acl allow all access   queue    name=org.clacks.command.*
-	acl allow all publish  queue    name=org.clacks.command.*
-	acl allow all publish  exchange routingkey=org.clacks.command.*
-	acl allow all access   exchange name=org.clacks.command.*
+	acl allow all access   queue    name=net.example.command.*
+	acl allow all publish  queue    name=net.example.command.*
+	acl allow all publish  exchange routingkey=net.example.command.*
+	acl allow all access   exchange name=net.example.command.*
 	
 	# Let clients create their own queue to listen on
-	acl allow all access  queue    name=org.clacks
-	acl allow all access  queue    name=org.clacks.client.* owner=self
-	acl allow all consume queue    name=org.clacks.client.* owner=self
-	acl allow all create  queue    name=org.clacks.client.* exclusive=true autodelete=true durable=false
-	acl allow all access  exchange name=org.clacks
-	acl allow all access  exchange name=org.clacks.client.* owner=self
-	acl allow all bind    exchange name=amq.direct queuename=org.clacks.client.*
+	acl allow all access  queue    name=net.example
+	acl allow all access  queue    name=net.example.client.* owner=self
+	acl allow all consume queue    name=net.example.client.* owner=self
+	acl allow all create  queue    name=net.example.client.* exclusive=true autodelete=true durable=false
+	acl allow all access  exchange name=net.example
+	acl allow all access  exchange name=net.example.client.* owner=self
+	acl allow all bind    exchange name=amq.direct queuename=net.example.client.*
 	
 	# Let agents send to the client queues
-	acl allow agents publish  exchange  routingkey=org.clacks.client.*
+	acl allow agents publish  exchange  routingkey=net.example.client.*
 	
 	# By default, drop everything else
 	acl deny all all
 
-Now the broker aka bus is up and running on the host.
+.. note::
+
+   Remember that you've to adjust the domain from *net.example* to whatever you've
+   choosen in the beginning. Same for *agent* which is the hostname of your Clacks
+   agent and *admin* which is the *cn* of your LDAP administrator.
 
 
-For production use, you should enable SSL for the broker and for clacks core. Generating
-the certificates is shown here:
+For production use, you should enable SSL for the AMQP broker. Generating the certificates
+is shown here:
 
 http://rajith.2rlabs.com/2010/03/01/apache-qpid-securing-connections-with-ssl/
 
 
-Install LDAP service
-""""""""""""""""""""
+.. _setting-up-ldap:
 
-To use the LDAP service, a couple of schema files have to be added to
+Installing the LDAP service
+---------------------------
+
+In the base setup you need to setup an LDAP server. It contains the very basic
+structure you're going to mainain with Clacks. Your distribution has LDAP packages
+for sure. We're using OpenLDAP in this case::
+
+  $ sudo DEBIAN_PRIORITY=low apt-get install slapd ldap-utils
+
+Select a base and the administrative credentials. Memorize these values, because
+you'll need them later on.
+
+.. note::
+
+   In this document we'll use the domain-component style for your current
+   domain. I.e. **dc=example,dc=net** is the base. **cn=admin,dc=example,dc=net** is
+   the administrative DN.
+
+Clacks itself does not require to install an additional LDAP schema. Nearly.
+Except if you plan to use Clacks *clients*.
+
+To use the client mechanisms, a couple of schema files have to be added to
 your configuration. The following text assumes that you've a plain / empty
 stock debian configuration on your system. If it's not the case, you've to
 know what to do yourself.
 
 First, install the provided schema files. These commands have to be executed
 with *root* power by default, so feel free to use sudo and find the schema
-*LDIF* files in the ``contrib/ldap`` directory of your clacks checkout. Install
-these schema files like this::
+*LDIF* files in the ``contrib/ldap`` directory of your clacks document
+directory. Install these schema files like this::
 
-	# ldapadd -Y EXTERNAL -H ldapi:/// -f clacks-core.ldif
-	# ldapadd -Y EXTERNAL -H ldapi:/// -f registered-device.ldif
-	# ldapadd -Y EXTERNAL -H ldapi:/// -f installed-device.ldif
-	# ldapadd -Y EXTERNAL -H ldapi:/// -f configured-device.ldif
+	$ sudo ldapadd -Y EXTERNAL -H ldapi:/// -f registered-device.ldif
+	$ sudo ldapadd -Y EXTERNAL -H ldapi:/// -f installed-device.ldif
+	$ sudo ldapadd -Y EXTERNAL -H ldapi:/// -f configured-device.ldif
 
-If you use the PHP GUI, you also need to install the "old" schema files, because
-the Clacks GUI and clacks.agent service are meant to coexist until everything is cleanly
-migrated.
+After you've done that, find out which base is configured for your system::
 
-After you've optionally done that, find out which base is configured for your system::
-
-	manager@ldap:~$ sudo ldapsearch -LLL -Y EXTERNAL -H ldapi:/// -b cn=config olcSuffix=* olcSuffix
+	$ sudo ldapsearch -LLL -Y EXTERNAL -H ldapi:/// -b cn=config olcSuffix=* olcSuffix
 	SASL/EXTERNAL authentication started
 	SASL username: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth
 	SASL SSF: 0
@@ -428,26 +294,52 @@ the *DN* shown in the result of the search above::
 	olcDbIndex: uniqueMember eq
 	olcDbIndex: deviceUUID pres,eq
 
+.. warning::
+
+   If you have not installed the Clacks device schema files, you have to skip the
+   attributes *deviceUUID*, *deviceStatus* and *deviceType* in the index list.
+
 Save that file to *index-update.ldif* and add it to your LDAP using::
 
-	manager@ldap:~$ sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f index-update.ldif
+	$ sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f index-update.ldif
 
 Your LDAP now has the required schema files and an updated index to perform
 searches in reliable speed.
 
-Later in this document, you'll need the *DN* and the *credentials* of the LDAP administrator
-which has been created during the setup process. For Debian, this is *cn=admin,<your base here>*.
+The agent itself needs an entry inside that LDAP that is used to authenticate
+to the AMQP service. Create this entry - again inside an LDIF file like this::
 
-.. note::
+  dn: cn=agent,dc=example,dc=net
+  objectClass: simpleSecurityObject
+  objectClass: organizationalRole
+  cn: agent
+  userPassword: secret
 
-	Hopefully, you remember the credentials you've assigned during LDAP
-	installation, because you'll need them later on ;-)
+Save that file to *agent.ldif* and apply it to your LDAP using::
 
+  $ sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f agent.ldif
+
+The password is unencrypted in the moment, that can be changed using::
+
+  $ sudo ldappasswd -Y EXTERNAL -H ldapi:/// cn=agent,dc=example,dc=net
+
+Change the password to the one you like and memorize it for use with the
+Clacks agent configuration below.
+
+
+.. _setting-up-ldap-auth:
 
 AMQP LDAP-Authentication
-""""""""""""""""""""""""
+------------------------
 
-/etc/default/saslauthd::
+Qpid is not LDAP enabled by default, but it supports everything supported
+by SASL thru the *saslauthd*. To install *saslauthd* run::
+
+  $ sudo apt-get install sasl2-bin
+
+The daemon is not started by default. To configure it to start up automatically
+and to use LDAP for it's authentication source, edit the file /etc/default/saslauthd
+like this::
 
   #
   # Settings for saslauthd daemon
@@ -505,12 +397,12 @@ AMQP LDAP-Authentication
   # Example for postfix users: "-c -m /var/spool/postfix/var/run/saslauthd"
   OPTIONS="-c -m /var/run/saslauthd"
 
+Additionally, you've to set up the LDAP configuration for *saslauthd* in the
+configuration file */etc/saslauthd.conf*::
 
-/etc/saslauthd.conf::
-
-  ldap_servers: ldap://ldap.your.domain
-  ldap_search_base: dc=example,dc=com
-  ldap_filter: (|(&(objectClass=simpleSecurityObject)(cn=%U))(&(objectClass=gosaAccount)(uid=%U))(&(objectClass=registeredDevice)(deviceUUID=%U)))
+  ldap_servers: ldap://agent.example.net
+  ldap_search_base: dc=example,dc=net
+  ldap_filter: (|(&(objectClass=simpleSecurityObject)(cn=%U))(&(objectClass=inetOrgPerson)(uid=%U))(&(objectClass=registeredDevice)(deviceUUID=%U)))
   ldap_scope: sub
   ldap_size_limit: 0
   ldap_time_limit: 15
@@ -518,66 +410,282 @@ AMQP LDAP-Authentication
   ldap_version: 3
   ldap_debug: 255
 
+.. note::
 
-Test::
+   You may need to adjust the list of LDAP servers and the search base
+   according to your setup.
 
-  # /etc/init.d/saslauthd restart
-  # testsaslauthd -u admin -p secret -r QPID
+If you have **not** installed the Clacks device schema files, you have to skip the
+search for *registeredDevice* and the search filter should look like this::
 
+  ldap_filter: (|(&(objectClass=simpleSecurityObject)(cn=%U))(&(objectClass=inetOrgPerson)(uid=%U)))
 
-/etc/qpid/sasl/qpidd.conf::
+Start the service and test it::
+
+  $ sudo service saslauthd start
+  $ sudo testsaslauthd -u agent -p secret -r QPID
+
+If that works pretty well, connect the Qpid SASL mechaism to *saslauthd* by editing
+*/etc/qpid/sasl/qpidd.conf* like this::
 
   pwcheck_method: saslauthd
   mech_list: PLAIN LOGIN
 
-Start up service::
+To let Qpid access the *saslauthd* socket, it needs to be added to the *sasl* group and the
+service needs to be restarted::
 
-  # adduser qpidd sasl
-  # /etc/init.d/qpidd restart
+  $ sudo adduser qpidd sasl
+  $ sudo service qpidd restart
 
-Check if it works::
+Check if it works like supposed to::
 
-  # qpid-config -a admin/secret@hostname queues
+  $ qpid-config -a admin/secret@hostname queues
 
-Prepare DNS-Zone for zeroconf
-"""""""""""""""""""""""""""""
+The command should list a few queues that are defined by default.
 
-Zeroconf setup::
 
-  ; Zeroconf base setup
-  b._dns-sd._udp                  PTR @   ;  b = browse domain
-  lb._dns-sd._udp                 PTR @   ;  lb = legacy browse domain
-  _services._dns-sd._udp          PTR _amqps._tcp
-                                  PTR _https._tcp
+Using pre-built packages
+========================
+
+Currently there are only Debian/Ubuntu packages available for the Clacks
+framework. Additionally you need at least Wheezy/12.04 to proceed.
+
+.. note::
+
+    Older versions of Debian/Ubuntu do not have the required package versions
+    installed. Installations may work using backports and/or re-building
+
+
+APT repository
+--------------
+
+Please create a new file under /etc/apt/sources.list.d/clacks.list and place
+the following content inside::
+
+   deb http://debian.gonicus.de/debian wheezy Clacks stable
+
+Now install the key package::
+
+   $ sudo apt-get install gonicus-keyring
+
+The installer will report an untrusted package - which is ok in this case,
+because it *contains* the GONICUS signing key. It is used to sign the packages
+we'll download in the next step.
+
+
+Installing a Clacks agent
+-------------------------
+
+To use the Clacks framework, you need at least one agent that loads some
+plugins and provides the base communication framework. Compared to the
+client and the shell, the agent is the part that needs most supplying
+services.
+
+.. warning::
+
+  Until we reach version 1.0, you can only use one agent.
+
+
+For the first node, install *QPID*, *LDAP* and *MongoDB*::
   
-  ; Zeroconf clacks records
-  _amqps._tcp                     PTR Clacks\ RPC\ Service._amqps._tcp
-  Clacks\ RPC\ Service._amqps._tcp  SRV 0 0 5671 amqp.intranet.gonicus.de.
-                                  TXT path=/org.clacks service=clacks
+  $ sudo apt-get install mongodb-server slapd ldap-utils sasl2-bin
+
+Memorize the user and passwords you've used for LDAP. MongoDB is just
+fine and can be configured to only run locally for now.
+
+To proceed, you have to perform the actions detailed in:
+
+ * :ref:`setting-up-dns`
+ * :ref:`setting-up-ldap`
+ * :ref:`setting-up-amqp`
+ * :ref:`setting-up-ldap-auth`
+
+If this is fine, copy over the configuration file for the Clacks agent to
+/etc/clacks/config and adapt the settings to match the ones for your site::
   
-  _https._tcp                     PTR Clacks\ Web\ Service._https._tcp
-                                  PTR Clacks\ RPC\ Service._https._tcp
-  Clacks\ Web\ Service._https._tcp  SRV 0 0 443 gosa.intranet.gonicus.de.
-                                  TXT path=/gosa
-  Clacks\ RPC\ Service._https._tcp SRV 0 0 8080 amqp.intranet.gonicus.de.
-                                  TXT path=/rpc service=clacks
+  $ sudo install -o root -g clacks -m 0640 /usr/share/doc/clacks-agent/examples/config /etc/clacks/config
+  $ sudo vi /etc/clacks/config
 
-You can test your setup with::
+At least adapt the node-name to fit the current host name of your server
+and the LDAP credentials that you've created in **Setting up LDAP**.
 
-  you@amqp:~$ avahi-browse -D
-  +  n/a  n/a example.net
+No you can start the agent using::
+  
+  $ sudo supervisorctl start clacks-agent
 
-  you@amqp:~$ avahi-browse -rd example.net _amqps._tcp
-  +   k.A. k.A. Clacks RPC Service                              _amqps._tcp          example.net
-  =   k.A. k.A. Clacks RPC Service                              _amqps._tcp          example.net
-     hostname = [amqp.example.net]
-     address = [10.3.64.59]
-     port = [5671]
-     txt = ["service=clacks" "path=/org.clacks"]
+Watch out for errors in */var/log/clacks.log*. If everything went up well,
+the agent starts indexing your LDAP and you might see some warnings about
+not recognized objects.
 
+After the agent is up and running, you should define a couple of ACL sets
+in order to get rid of the initial ACL override in your Clacks configuration.
+
+Please take a look at :ref:`setting-up-acl`.
+
+
+Installing a Clacks client
+--------------------------
+
+Clacks clients are nodes that you want to have *under the hood* in some form. They
+are monitored, inventorized using fusioninventory (optionally) and can be controlled
+in various ways. Controlling addresses topics like *config management* (i.e. using puppet),
+*system states* (reboot, wake on lan, etc.), user notifications and executing certain
+commands as **root** on these systems.
+
+To install the client you need to work thru two steps. First, install it (the
+example includes the inventory part)::
+    
+  $ sudo apt-get install clacks-client fusioninventory-agent
+
+The client tries to start, but will fail due to missing configurations, so the
+second step is to generate a configuration - aka *joining* the client to the
+Clacks domain. May sound familiar to Microsoft users.
+
+.. warning::
+
+  In the current version, it is only possible to do an *active* join. The former
+  GOsa client *incoming* mechanism is currently beeing implemented and not usable
+  right now.
+
+Joining is easy::
+
+  $ sudo clacks-join
+
+It will first search for an active agent. Then you'll have to provide the credentials
+of a user that is allowed to join the client (i.e. the administrator you've initially
+created).
+
+.. note::
+
+  Maybe the zeroconf mechanism that is used to find an agent is not working
+  in your setup. In this case use the *--url* switch to provide the complete
+  AMQP URL. Example::
+    
+    $ sudo clacks-join --url amqps://agent.example.net/net.example
+
+If this succeeds, a configuration file is created automatically and you can start the
+client::
+  
+  $ sudo supervisorctl start clacks-client
+
+If everything went fine, the client is up and running. You'll see some messages
+in the agent's log and the client log for that. As for servers, messages find their
+way to */var/log/clacks.log*.
+
+.. note::
+
+  Joining requires at least one active agent.
+
+Note that while it is technically no problem to run both - a client and an agent -- on the
+same physical node, it is not supported by the packages in the moment.
+
+
+Installing the shell
+--------------------
+
+Compared to agents and clients, the shell installation is trivial::
+
+  $ sudo apt-get install clacks-shell
+
+Just try to run it::
+  
+  $ clacksh
+  Searching service provider...
+  Connected to https://amqp.example.net:8080/rpc
+  Username [cajus]:
+  Password:
+  Clacks infrastructure shell. Use Ctrl+D to exit.
+  >>> clacks.help()
+  ...
+
+
+HIER---->
+
+Without pre-built packages
+==========================
+
+Common setup
+------------
+
+System prerequisites
+^^^^^^^^^^^^^^^^^^^^
+
+To run the services in the designed way later on, you need a special user
+and a couple of directories::
+
+    $ sudo adduser --system --group clacks --home=/var/lib/clacks
+
+If you're going to run the service in daemon mode, please take care that
+there's a */var/run/clacks* for placing the PID files.
+
+
+Python prerequisites
+^^^^^^^^^^^^^^^^^^^^
+
+While we try to keep everything inside a virtual python environment for
+development, some of the python modules need compilation - which rises the
+number of required packages drastically. For the time being, please install
+the following packages in your system::
+
+  $ sudo apt-get install python2.7-dev python-dumbnet python-avahi python-virtualenv \
+         libavahi-compat-libdnssd-dev python-openssl python-dbus libssl-dev python-gtk2 \
+         python-lxml python-libxml2 python-dmidecode python-ldap python-nose \
+         python-kid python-coverage python-dateutil python-smbpasswd python-netifaces \
+         sasl2-bin python-cjson
+
+.. note::
+      On MS Windows systems, only the client is supposed to work. Please install the
+      pywin32 package: http://sourceforge.net/projects/pywin32/
+
+
+Setup a virtual environment for playing with clacks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+As a non-root user, initialize the virtual environment::
+
+  $ virtualenv --setuptools --system-site-packages --python=python2.7  clacks
+  $ cd clacks
+  $ source bin/activate
+
+
+Obtaining the source
+^^^^^^^^^^^^^^^^^^^^
+
+For now, please use git::
+
+   $ cd 'the place where you created the clacks virtualenv'
+   $ git clone git://oss.gonicus.de/git/gosa.git src
+
+Additionally, you can get some stripped of Clacks 2.7 sources from here::
+
+   $ git clone git://oss.gonicus.de/git/gosa-gui.git
+   $ cd gosa-gui
+   $ git submodule init
+   $ git submodule update
+
+This will place all relevant files inside the 'src' directory.
+
+.. warning::
+      The "source bin/activate" has to be done every time you work in or with the
+      virtual environment. Stuff will fail if you don't do this. If you're asked for
+      sudo/root, you're doing something wrong.
+
+
+Installing a Clacks agent
+-------------------------
+
+To run the agent, you most likely need a working AMQP broker and
+a working LDAP setup.
+
+To proceed, you have to perform the actions detailed in:
+
+ * :ref:`setting-up-dns`
+ * :ref:`setting-up-ldap`
+ * :ref:`setting-up-amqp`
+ * :ref:`setting-up-ldap-auth`
 
 Deploy a development agent
-""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To deploy the agent, please run these commands inside the activated
 virtual environment::
@@ -600,7 +708,7 @@ virtual environment::
 
 
 Starting the service
-""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^
 
 In a productive environment, everything should be defined in the configuration
 file, so copy the configuration file to the place where clacks expects it::
@@ -612,7 +720,7 @@ Now take a look at the config file and adapt it to your needs.
 
 You can start the daemon in foreground like this::
 
-  $ clacks-agent -f
+  $ clacks-agent
 
 .. warning::
     Make sure, you've entered the virtual environment using "source bin/activate"
@@ -698,11 +806,11 @@ Here is an example config file for a non-secured service. (A HowTo about securin
 
 
 
-The clacks shell
-^^^^^^^^^^^^^^^^
+Installing a Clacks shell
+-------------------------
 
 Installing
-""""""""""
+^^^^^^^^^^
 
 To deploy the shell, use::
 
@@ -713,8 +821,8 @@ inside your activated virtual env. You can skip this if you ran ./setup.py for
 a complete deployment.
 
 
-First contact
-^^^^^^^^^^^^^
+First steps
+^^^^^^^^^^^
 
 The clacks shell will use zeroconf/DNS to find relevant connection methods. Alternatively
 you can specify the connection URL to skip zeroconf/DNS.
@@ -741,8 +849,8 @@ for HTTP based sessions or ::
 for AMQP based sessions.
 
 
-The clacks client
-^^^^^^^^^^^^^^^^^^
+Installing a Clacks client
+--------------------------
 
 A clacks client is a device instance that has been joined into the clacks network.
 Every client can incorporate functionality into the network - or can just be
@@ -750,7 +858,7 @@ a managed client.
 
 
 Installing
-""""""""""
+^^^^^^^^^^
 
 To deploy the client components, use::
 
@@ -763,7 +871,7 @@ a complete deployment.
 
 
 Joining the party
-"""""""""""""""""
+^^^^^^^^^^^^^^^^^
 
 A client needs to authenticate to the clacks bus. In order to create the required
 credentials for that, you've to "announce" or "join" the client to the system.
@@ -780,7 +888,7 @@ same machine which runs the agent.
 
 
 Running the root component
-""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Some functionality may need root permission, while we don't want to run the complete
 client as root. The clacks-dbus component is used to run dedicated tasks as root. It
@@ -800,11 +908,11 @@ the clacks-dbus component in daemon or foreground mode::
   $ sudo -s
   # cd 'wherever your clacks virtual environment is'
   # source bin/activate
-  # clacks-dbus -f
+  # clacks-dbus
 
 
 Running the client
-""""""""""""""""""
+^^^^^^^^^^^^^^^^^^
 
 To run the client, you should put your development user into the clacks group - to
 be able to use the dbus features::
@@ -814,54 +922,88 @@ be able to use the dbus features::
 You might need to re-login to make the changes happen. After that, start the clacks
 client inside the activated virtual environment::
 
-  $ clacks-client -f
-
-Integration with PHP Clacks
----------------------------
-
-The *clacks agent* and *clacks client* setup may be ok for playing around, but
-as of Clacks 2.7 you can configure an active communication between the ordinary
-PHP Clacks and the agent - which acts as a replacement for *gosa-si*.
-
-.. warning::
-
-   While the clacks agent series are under heavy development, it is recommended
-   to try with Clacks 2.7 trunk. You should be aware of not beeing able to replace
-   all gosa-si functionality in the moment.
-
------------------
-
-To connection the web-based Clacks with the clacks agent you have to adjust the configuration slightly.
-There are two ways to do so, the first is to update the Clacks 2.7 configuration file directly 
-``/etc/clacks/config`` to include the following lines:
-
-.. code-block:: xml
-
-    <main>
-    	...
-        <location 
-            gosaRpcPassword="secret"
-            gosaRpcServer="https://gosa-agent-server:8080/rpc"
-            gosaRpcUser="amqp"/>
-    </main>
+  $ clacks-client
 
 
-The other way would be to configure these properties inside of Clacks using the ``preferences`` plugin.
+Common configuration
+====================
 
-Select the ``preferences`` plugin from the menu and then read and accept the warning message.
+.. _setting-up-acl:
 
-.. image:: static/images/gosa_setup_rpc_1.png
+Configuring access control
+--------------------------
 
-Then click on the filter rules and select "All properties" to show all properties, even unused.
-Then enter ``rpc`` in the search-filter input box, to only show rpc related options, only three options should 
-be left in the list below. 
-Now adjust the values of these properties to match your setup and click ``apply`` on the bottom of the page.
+Because the Clacks framework supports various backends, it does access control of its
+own. In order to do something reasonable with the framework, you've either to override
+the access control (like done with the *admin* user), or you can apply fine grained
+ACL rules and roles to your directory tree.
 
-.. image:: static/images/gosa_setup_rpc_2.png
+On the command line, you can use the *acl-admin* tool to manage the ACL system. It uses
+the service discovery feature and asks for a username and password if it finds a service.
 
-That is all, you may only need to relog into the Clacks GUI.
+.. note::
+  
+  You can override the service discovery by issuing::
 
-Design overview
----------------
+    $ acl-admin --user agent --password secret --url https://agent.example.net:8080/rpc
 
-**TODO**: graphics, text, etc.
+The *acl-admin* is in development. Currently, you need to fire one subcommand per call,
+which makes it a bit unconfortable for the first time. Here are a couple of ACLs and
+roles that make sense::
+
+  # Allow clients to send certain events
+  add role dc=example,dc=net Clients
+  add roleacl with-actions name=Clients,dc=example,dc=net 0 psub "^net\.example\.command\.core\.(getMethods|sendEvent):x"
+  add roleacl with-actions name=Clients,dc=example,dc=net 0 psub "^net\.example\.event\.(Inventory|ClientAnnounce|ClientLeave|ClientSignature|ClientPing|UserSession)$:x"
+  add acl with-role dc=example,dc=net 0 '^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$' Clients
+  
+  # Create GUI ACL role that allows login to a GUI
+  add role "dc=example,dc=net" GUI
+  add roleacl with-actions name=GUI,dc=example,dc=net 0 sub "^net\.example\.command\.core\.(getSessionUser|getBase|search):x"
+  add roleacl with-actions name=GUI,dc=example,dc=net 0 sub "^net\.example\.command\.gosa\..*:x"
+  
+  # Create SelfService role that allows occupants to modify some of their attributes
+  add role "dc=example,dc=net" SelfService
+  add roleacl with-actions name=SelfService,dc=example,dc=net 0 sub "^net\.example\.command\.core\.(openObject|dispatchObjectMethod|setObjectProperty|closeObject):x"
+  add roleacl with-actions name=SelfService,dc=example,dc=net 0 sub "^net\.example\.command\.password\.(listPasswordMethods|accountLockable|accountUnlockable):x"
+  add roleacl with-actions name=SelfService,dc=example,dc=net 0 sub "^net\.example\.command\.objects\.(User|PosixUser|SambaUser|ShadowUser):crowdsexm"
+  
+  # Create Administrative role - everything is allowed
+  add role "dc=example,dc=net" Administrators
+  add roleacl with-actions name=Administrators,dc=example,dc=net -100 psub "^net\.example\..*:crwdsex"
+  
+  # Assign user 'ruth' the role 'Administrators'
+  add acl with-role dc=example,dc=net -100 ruth Administrators 
+  
+  # Assign user 'foobar' the SelfService and GUI role
+  add acl with-role dc=example,dc=net 0 foobar SelfService 
+  add acl with-role dc=example,dc=net 0 foobar GUI
+
+
+Configuring an LDAP update hook
+-------------------------------
+
+Maintaining and index of our own has several advantages: better search capabilities than
+LDAP has, faster, proper sorted subset queries, etc. Nevertheless maintaining and index
+has the disadvantage that modifications that happen to our backends don't find their way
+to the index at all.
+
+For LDAP, there's a tool called *clacks-ldap-monitor* in the tools directory. It uses the
+same configuration like the agent does and needs to be started in the background - or by
+the *supervisord*.
+
+If you use it, please add a section to the Clacks configuration::
+
+  [backend-monitor]
+  modifier = cn=agent,dc=example,dc=net
+  audit-log = /var/log/ldap-audit.log
+
+============ ==========================================================================
+Key          Description
+============ ==========================================================================
+modifier     Account that does modifications in the LDAP in behalf of the clacks-agent.
+audit-log    LDAP auditlog
+============ ==========================================================================
+
+In your OpenLDAP configuration you need to load the *auditlog* overlay and configure it
+to log to */var/log/ldap-audit.log*.
