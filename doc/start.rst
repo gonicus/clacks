@@ -12,9 +12,10 @@ Using pre-built packages
 Currently there are only Debian/Ubuntu packages available for the Clacks
 framework. Additionally you need at least Wheezy/12.04 to proceed.
 
-.. warning::
+.. information::
 
-    Older versions do not have the required package versions installed.
+    Older versions of Debian/Ubuntu do not have the required package versions
+    installed. Installations may work using backports and/or re-building
 
 
 APT repository
@@ -56,6 +57,9 @@ fine and can be configured to only run locally for now.
 
 To proceed, you have to perform the actions detailed in:
 
+:status: todo
+	Insert links
+
  * Setting up LDAP
  * Setting up QPID
 
@@ -75,6 +79,14 @@ No you can start the agent using::
 Watch out for errors in */var/log/clacks.log*. If everything went up well,
 the agent starts indexing your LDAP and you might see some warnings about
 not recognized objects.
+
+After the agent is up and running, you should define a couple of ACL sets
+in order to get rid of the initial ACL override in your Clacks configuration.
+
+:status: todo
+	Insert links
+
+Please take a look at 'Configuring access control'.
 
 
 Installing a Clacks client
