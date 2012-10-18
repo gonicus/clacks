@@ -65,6 +65,41 @@
 <p>Clacks is currently under heavy development, so there are no final versions around right
 now. What there is, actually, are preliminary Debian packages, OVAs for playing around and
 of course the obligatory github links.</p>
+<div class="section" id="packages">
+<h2>Packages<a class="headerlink" href="#packages" title="Permalink to this headline">¶</a></h2>
+<p>There are pre-build packages for Debian (wheezy+) and Ubuntu (12.04+) available. Please
+add</p>
+<div class="highlight-python"><pre>deb http://apt.gonicus.de/debian wheezy clacks</pre>
+</div>
+<p>in <em>/etc/apt/sources.list.d/clacks.list</em>, run</p>
+<div class="highlight-python"><pre>$ sudo apt-get update
+$ sudo apt-get install gonicus-keyring
+$ sudo apt-get update</pre>
+</div>
+<p>Then you can install the packages</p>
+<blockquote>
+<div><ul class="simple">
+<li>clacks-agent</li>
+<li>clacks-client</li>
+<li>clacks-shell</li>
+</ul>
+</div></blockquote>
+<p>Depending on what you want to do.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Note that <em>agent</em> and <em>client</em> packages are <strong>not</strong> combinable in the moment.</p>
+</div>
+</div>
+<div class="section" id="developers">
+<h2>Developers<a class="headerlink" href="#developers" title="Permalink to this headline">¶</a></h2>
+<p>The project is mirrored to github. This means that you can clone it using:</p>
+<div class="highlight-python"><pre>$ git clone git://github.com/gonicus/clacks.git</pre>
+</div>
+<p>Also initialize the submodules:</p>
+<div class="highlight-python"><pre>$ git submodules init
+$ git submodules update</pre>
+</div>
+</div>
 <div class="section" id="virtual-appliances">
 <h2>Virtual appliances<a class="headerlink" href="#virtual-appliances" title="Permalink to this headline">¶</a></h2>
 <p>There are two appliances that can be imported to your OVA capable virtualization solution
@@ -72,7 +107,7 @@ of course the obligatory github links.</p>
 of your home network. Everything is more or less ready to use.</p>
 <ul>
 <li><p class="first"><strong>Agent OVA (~1,2GiB)</strong></p>
-<p>The agent consists of: clacks-agent, LDAP, AMQP, DBXML, GOsa 2.7.x and some sample data to get stuff running.</p>
+<p>The agent consists of: clacks-agent, LDAP, AMQP, DBXML, GOsa and some sample data to get stuff running.</p>
 <p><a class="reference external" href="http://clacks-project.org/downloads/ClacksInfrastructureServer-20120424.ova">Download agent OVA (24. April 2012)</a></p>
 </li>
 <li><p class="first"><strong>Client OVA (~1,1GiB)</strong></p>
@@ -80,25 +115,6 @@ of your home network. Everything is more or less ready to use.</p>
 <p><a class="reference external" href="http://clacks-project.org/downloads/ClacksClient-20120204.ova">Download client OVA (04. February 2012)</a></p>
 </li>
 </ul>
-</div>
-<div class="section" id="packages">
-<h2>Packages<a class="headerlink" href="#packages" title="Permalink to this headline">¶</a></h2>
-<p>There are no pre-built packages available in the moment. This will be started from the first beta on.</p>
-<p>You can easily build your own packages using these commands:</p>
-<div class="highlight-python"><pre>$ git clone git://github.com/clacks/clacks.git
-$ cd clacks/contrib/packaging/debian/clacks
-$ ./package.sh
-$ cd clacks-&lt;version&gt;
-$ dpkg-buildpackage -us -uc -rfakeroot</pre>
-</div>
-<p>Keep in mind that these packages may not be 100% &#8220;in shape&#8221;, because the packaging is not updated
-regulary until the beta is out.</p>
-</div>
-<div class="section" id="developers">
-<h2>Developers<a class="headerlink" href="#developers" title="Permalink to this headline">¶</a></h2>
-<p>The project is mirrored to github. This means that you can clone it using:</p>
-<div class="highlight-python"><pre>git://github.com/clacks/clacks.git</pre>
-</div>
 </div>
 </div>
 

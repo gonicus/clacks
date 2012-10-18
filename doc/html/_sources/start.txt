@@ -845,6 +845,32 @@ Here is an example config file::
 	datefmt=
 	class=logging.Formatter
 
+You need to generate *agent.crt* and *agent.key* either from your existing
+CA or you can quickly generate a self-signed server cert/key pair::
+
+  $ openssl genrsa -des3 -out agent.key 1024
+  Generating RSA private key, 1024 bit long modulus
+  .........................................................++++++
+  ........++++++
+  e is 65537 (0x10001)
+  Enter PEM pass phrase:
+  Verifying password - Enter PEM pass phrase:
+
+Certificate signing request::
+
+  $ openssl req -new -key agent.key -out agent.csr
+
+Strip the password from the key::
+
+  $ cp agent.key agent.key.org
+  $ openssl rsa -in agent.key.org -out agent.key
+
+Generate the certificate::
+
+  $ openssl x509 -req -days 365 -in agent.csr -signkey agent.key -out agent.crt
+
+Install these files to a directory where *clacks-agent* can read them - i.e.
+like shown in the configuration above: */etc/clacks*
 
 
 Installing a Clacks shell

@@ -786,6 +786,28 @@ format=%(asctime)s %(levelname)s: %(module)s - %(message)s
 datefmt=
 class=logging.Formatter</pre>
 </div>
+<p>You need to generate <em>agent.crt</em> and <em>agent.key</em> either from your existing
+CA or you can quickly generate a self-signed server cert/key pair:</p>
+<div class="highlight-python"><pre>$ openssl genrsa -des3 -out agent.key 1024
+Generating RSA private key, 1024 bit long modulus
+.........................................................++++++
+........++++++
+e is 65537 (0x10001)
+Enter PEM pass phrase:
+Verifying password - Enter PEM pass phrase:</pre>
+</div>
+<p>Certificate signing request:</p>
+<div class="highlight-python"><pre>$ openssl req -new -key agent.key -out agent.csr</pre>
+</div>
+<p>Strip the password from the key:</p>
+<div class="highlight-python"><pre>$ cp agent.key agent.key.org
+$ openssl rsa -in agent.key.org -out agent.key</pre>
+</div>
+<p>Generate the certificate:</p>
+<div class="highlight-python"><pre>$ openssl x509 -req -days 365 -in agent.csr -signkey agent.key -out agent.crt</pre>
+</div>
+<p>Install these files to a directory where <em>clacks-agent</em> can read them - i.e.
+like shown in the configuration above: <em>/etc/clacks</em></p>
 </div>
 </div>
 <div class="section" id="installing-a-clacks-shell">
