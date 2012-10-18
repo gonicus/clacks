@@ -289,8 +289,8 @@ Python zope.interface
  
  
 
-Apache license base modules
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Apache license based modules
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. literalinclude:: apl.txt
 
@@ -338,8 +338,8 @@ Python openssl
   License: Apache-2.0
 
 
-BSD license base modules
-~~~~~~~~~~~~~~~~~~~~~~~~
+BSD license based modules
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 python-dumbnet
 """"""""""""""
