@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Documentation &mdash; Clacks Project</title>
+    <title>Clacks Framework Documentation &mdash; Clacks Project</title>
     
     <link rel="stylesheet" href="_static/clacks.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -60,40 +60,26 @@
       <div class="documentwrapper">
         <div class="body">
           
-  <div class="section" id="documentation">
-<h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="clacks-framework-documentation">
+<h1>Clacks Framework Documentation<a class="headerlink" href="#clacks-framework-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="what-is-it-all-about">
 <h2>What is it all about?<a class="headerlink" href="#what-is-it-all-about" title="Permalink to this headline">¶</a></h2>
-<p>If you get here, you probably know that GOsa (currently) is a PHP based framework
-for managing several aspects of your infrastructure. For more information, please
-go to the <a class="reference external" href="https://oss.gonicus.de/labs/gosa">GOsa Website</a>.</p>
-<p>While you can find information about the GOsa 2.x series on the website mentioned
-above, this document is more about the future. This is why:</p>
-<p>Starting with GOsa 2.6, we had introduced a simple perl based service called
-gosa-si, which was able to handle requests and actions where class PHP applications
-are not well suited for. This service had (has) many problems in design, scalability
-and so on. For that reason we started to redo the whole thing using new
-technologies like <a class="reference external" href="http://www.amqp.org">AMQP</a>, concentrating on the RedHat/Apache
-implementation <a class="reference external" href="http://qpid.apache.org/">QPID</a>.</p>
-<p>This service handles the <em>authentication</em>, the <em>message queueing</em>, the <em>clustering</em> and
+<p>The Clacks Framework is an AMQP based framework for infrastructure management that
+incorporates functionality known from the <cite>GOsa Project &lt;http://oss.gonicus.de/labs/gosa&gt;</cite>.</p>
+<p>AMQP handles the <em>authentication</em>, the <em>message queueing</em>, the <em>clustering</em> and
 <em>load balancing</em> for us. A client can subscribe to public events using
 <a class="reference external" href="http://en.wikipedia.org/wiki/XQuery">XQuery</a>, services (or third parties) can
 emit events in a simple manner. AMQP is used by the newly introduced <em>Clacks agent</em>
 to provide load balanced, clustered services and by several kind of <em>Clacks client</em>
-applications like a shell, an ordinary client (former GOto clients) and so on.</p>
+applications like a shell, an ordinary client and so on.</p>
 <p>Multiple <em>Clacks agents</em> create a domain where clients can join or participate in
 different ways. Functionality like the new abstraction layer <em>libinst</em>, an object
 description language, scheduling, etc. are spread over several agents and can be
 transparently accessed by clients, thanks to the routing possible with QPID queue
 models. The functionality is currently exposed by AMQP and by a HTTP/JSONRPC gateway,
 more methods like ReST or SOAP may follow if there&#8217;s an urgent need for that.</p>
-<p>Starting with PHP GOsa 2.7, there is built in support for the new Clacks core. 2.7
-series will be some kind of migration series where more and more functionality will
-be moved into the new core while keeping the original functionality inside. That
-allows <em>bleeding edge</em> users to try selected new functionality thru the new core and
-more <em>conservative</em> users can continue to use the current PHP core.</p>
-<p>The 1.0 release will be a PHP-Clacks with nearly no functionality residing in PHP, but
-in the new core. And - finally - this documentation is growing on the way to 1.0.</p>
+<p>Starting with GOsa 3, there is a <cite>qooxdoo &lt;http://qooxdoo.org&gt;</cite> based GUI component
+that is 100% build on Clacks.</p>
 <hr class="docutils" />
 <p><strong>Documentation TODO list:</strong></p>
 <p class="req-source"><em class="status todo">todo</em> Describe the init script / default usage<a class="reference internal" href="agent/index.html#req-0"> <em>→</em></a></p>
@@ -211,11 +197,17 @@ in the new core. And - finally - this documentation is growing on the way to 1.0
 <li class="toctree-l2"><a class="reference internal" href="packaging.html#rpm-build-service">RPM build service</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="license.html">History and License</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="license.html#history-of-the-software">History of the software</a></li>
-<li class="toctree-l2"><a class="reference internal" href="license.html#license">License</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="license.html#clacks-core">Clacks Core</a></li>
-<li class="toctree-l3"><a class="reference internal" href="license.html#jsonrpc-library">JSONRPC library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="license.html#clacks-license">Clacks License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="license.html#libraries-that-are-used-by-clacks">Libraries that are used by Clacks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="license.html#gpl-based-modules">GPL based modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="license.html#lgpl-based-modules">LGPL based modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="license.html#psf-based-modules">PSF based modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="license.html#zpl-based-modules">ZPL based modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="license.html#apache-license-base-modules">Apache license base modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="license.html#bsd-license-base-modules">BSD license base modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="license.html#public-domain-based-licenses">Public domain based licenses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="license.html#mit-based-licenses">MIT based licenses</a></li>
 </ul>
 </li>
 </ul>

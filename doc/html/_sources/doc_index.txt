@@ -1,29 +1,18 @@
-Documentation
-=============
+Clacks Framework Documentation
+==============================
 
 What is it all about?
 ---------------------
 
-If you get here, you probably know that GOsa (currently) is a PHP based framework
-for managing several aspects of your infrastructure. For more information, please
-go to the `GOsa Website <https://oss.gonicus.de/labs/gosa>`_.
+The Clacks Framework is an AMQP based framework for infrastructure management that
+incorporates functionality known from the `GOsa Project <http://oss.gonicus.de/labs/gosa>`.
 
-While you can find information about the GOsa 2.x series on the website mentioned
-above, this document is more about the future. This is why:
-
-Starting with GOsa 2.6, we had introduced a simple perl based service called
-gosa-si, which was able to handle requests and actions where class PHP applications
-are not well suited for. This service had (has) many problems in design, scalability
-and so on. For that reason we started to redo the whole thing using new
-technologies like `AMQP <http://www.amqp.org>`_, concentrating on the RedHat/Apache
-implementation `QPID <http://qpid.apache.org/>`_.
-
-This service handles the *authentication*, the *message queueing*, the *clustering* and
+AMQP handles the *authentication*, the *message queueing*, the *clustering* and
 *load balancing* for us. A client can subscribe to public events using
 `XQuery <http://en.wikipedia.org/wiki/XQuery>`_, services (or third parties) can
 emit events in a simple manner. AMQP is used by the newly introduced *Clacks agent*
 to provide load balanced, clustered services and by several kind of *Clacks client*
-applications like a shell, an ordinary client (former GOto clients) and so on.
+applications like a shell, an ordinary client and so on.
 
 Multiple *Clacks agents* create a domain where clients can join or participate in
 different ways. Functionality like the new abstraction layer *libinst*, an object
@@ -32,14 +21,8 @@ transparently accessed by clients, thanks to the routing possible with QPID queu
 models. The functionality is currently exposed by AMQP and by a HTTP/JSONRPC gateway,
 more methods like ReST or SOAP may follow if there's an urgent need for that.
 
-Starting with PHP GOsa 2.7, there is built in support for the new Clacks core. 2.7
-series will be some kind of migration series where more and more functionality will
-be moved into the new core while keeping the original functionality inside. That
-allows *bleeding edge* users to try selected new functionality thru the new core and
-more *conservative* users can continue to use the current PHP core.
-
-The 1.0 release will be a PHP-Clacks with nearly no functionality residing in PHP, but
-in the new core. And - finally - this documentation is growing on the way to 1.0.
+Starting with GOsa 3, there is a `qooxdoo <http://qooxdoo.org>` based GUI component
+that is 100% build on Clacks.
 
 ---------------------
 

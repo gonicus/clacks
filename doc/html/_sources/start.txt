@@ -507,7 +507,7 @@ APT repository
 Please create a new file under /etc/apt/sources.list.d/clacks.list and place
 the following content inside::
 
-   deb http://debian.gonicus.de/debian wheezy Clacks stable
+   deb http://apt.gonicus.de/debian wheezy clacks
 
 Now install the key package::
 
