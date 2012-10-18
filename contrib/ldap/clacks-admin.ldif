@@ -1,0 +1,6 @@
+dn: cn=clacks,dc=gonicus,dc=de
+objectClass: organizationalRole
+objectClass: simpleSecurityObject
+cn: clacks
+description: Clacks framework agent access
+userPassword: secret
