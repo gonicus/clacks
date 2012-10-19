@@ -603,6 +603,10 @@ class ObjectFactory(object):
 
                 # Ask base backends for a one level query
                 for c_type in o.Container.iterchildren():
+
+                    if c_type.text not in self.__xml_defs:
+                        continue
+
                     c = self.__xml_defs[c_type.text]
 
                     be = ObjectBackendRegistry.getBackend(c.Backend.text)

@@ -18,6 +18,7 @@ from zope.interface import implements
 from clacks.common.handler import IInterfaceHandler
 from clacks.agent.objects.proxy import ObjectProxy
 from clacks.common.components import PluginRegistry
+from clacks.common.error import ClacksErrorHandler as C
 
 
 class PasswordManager(Plugin):
@@ -40,11 +41,20 @@ class PasswordManager(Plugin):
             PasswordManager.instance = PasswordManager()
         return PasswordManager.instance
 
-    @Command(__help__=N_("Locks the account password for the given DN"))
-    def lockAccountPassword(self, object_dn):
+    @Command(needsUser=True, __help__=N_("Locks the account password for the given DN"))
+    def lockAccountPassword(self, user, object_dn):
         """
         Locks the account password for the given DN
         """
+
+        # Do we have read permissions for the requested attribute
+        topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, "userPassword")
+        aclresolver = PluginRegistry.getInstance("ACLResolver")
+        if not self.__acl_resolver.check(user, topic, "w", base=object_dn):
+
+            self.__log.debug("user '%s' has insufficient permissions to write %s on %s, required is %s:%s" % (
+                user, "isLocked", object_dn, topic, "w"))
+            raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=object_dn))
 
         # Get the object for the given dn
         user = ObjectProxy(object_dn)
@@ -64,11 +74,20 @@ class PasswordManager(Plugin):
         user.userPassword = pwd_o.lock_account(user.userPassword)
         user.commit()
 
-    @Command(__help__=N_("Unlocks the account password for the given DN"))
-    def unlockAccountPassword(self, object_dn):
+    @Command(needsUser=True, __help__=N_("Unlocks the account password for the given DN"))
+    def unlockAccountPassword(self, user, object_dn):
         """
         Unlocks the account password for the given DN
         """
+
+        # Do we have read permissions for the requested attribute
+        topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, "userPassword")
+        aclresolver = PluginRegistry.getInstance("ACLResolver")
+        if not self.__acl_resolver.check(user, topic, "w", base=object_dn):
+
+            self.__log.debug("user '%s' has insufficient permissions to write %s on %s, required is %s:%s" % (
+                user, "isLocked", object_dn, topic, "w"))
+            raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=object_dn))
 
         # Get the object for the given dn and its used password method
         user = ObjectProxy(object_dn)
@@ -88,9 +107,18 @@ class PasswordManager(Plugin):
         user.userPassword = pwd_o.unlock_account(user.userPassword)
         user.commit()
 
-    @Command(__help__=N_("Check whether the account can be locked or not"))
-    def accountLockable(self, object_dn):
+    @Command(needsUser=True, __help__=N_("Check whether the account can be locked or not"))
+    def accountLockable(self, user, object_dn):
         index = PluginRegistry.getInstance("ObjectIndex")
+
+        # Do we have read permissions for the requested attribute
+        topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, "isLocked")
+        aclresolver = PluginRegistry.getInstance("ACLResolver")
+        if not self.__acl_resolver.check(user, topic, "r", base=object_dn):
+
+            self.__log.debug("user '%s' has insufficient permissions to read %s on %s, required is %s:%s" % (
+                user, "isLocked", object_dn, topic, "r"))
+            raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=object_dn))
 
         # Get password hash
         res = index.search({'dn': object_dn, 'userPassword': {'$size': 1}}, {'userPassword': 1})
@@ -110,17 +138,27 @@ class PasswordManager(Plugin):
 
         return pwd_o.isLockable(hsh)
 
-    @Command(__help__=N_("Check whether the account can be unlocked or not"))
-    def accountUnlockable(self, object_dn):
+    @Command(needsUser=True, __help__=N_("Check whether the account can be unlocked or not"))
+    def accountUnlockable(self, user, object_dn):
         index = PluginRegistry.getInstance("ObjectIndex")
-        res = index.search({'dn': object_dn, 'userPassword': {'$size': 1}}, {'userPassword': 1})
 
+        # Do we have read permissions for the requested attribute
+        topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, "isLocked")
+        aclresolver = PluginRegistry.getInstance("ACLResolver")
+        if not self.__acl_resolver.check(user, topic, "r", base=object_dn):
+
+            self.__log.debug("user '%s' has insufficient permissions to read %s on %s, required is %s:%s" % (
+                user, "isLocked", object_dn, topic, "r"))
+            raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=object_dn))
+
+        res = index.search({'dn': object_dn, 'userPassword': {'$size': 1}}, {'userPassword': 1})
         if res.count():
             hsh = res[0]['userPassword'][0]
-
         else:
             # No password hash -> cannot lock/unlock account
             return False
+
+        raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=self.dn))
 
         # Try to detect the responsible password method-class
         pwd_o = self.detect_method_by_hash(hsh)
@@ -132,10 +170,19 @@ class PasswordManager(Plugin):
         return pwd_o.isUnlockable(hsh)
 
     @Command(__help__=N_("Changes the used password enryption method"))
-    def setUserPasswordMethod(self, object_dn, method, password):
+    def setUserPasswordMethod(self, user, object_dn, method, password):
         """
         Changes the used password encryption method
         """
+
+        # Do we have read permissions for the requested attribute
+        topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, "userPassword")
+        aclresolver = PluginRegistry.getInstance("ACLResolver")
+        if not self.__acl_resolver.check(user, topic, "w", base=object_dn):
+
+            self.__log.debug("user '%s' has insufficient permissions to write %s on %s, required is %s:%s" % (
+                user, "isLocked", object_dn, topic, "w"))
+            raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=object_dn))
 
         # Try to detect the responsible password method-class
         pwd_o = self.get_method_by_method_type(method)
@@ -150,11 +197,21 @@ class PasswordManager(Plugin):
         user.userPassword = pwd_str
         user.commit()
 
-    @Command(__help__=N_("Sets a new password for a user"))
-    def setUserPassword(self, object_dn, password):
+    @Command(needsUser=True, __help__=N_("Sets a new password for a user"))
+    def setUserPassword(self, user, object_dn, password):
         """
         Set a new password for a user
         """
+
+        # Do we have read permissions for the requested attribute
+        topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, "userPassword")
+        aclresolver = PluginRegistry.getInstance("ACLResolver")
+        if not self.__acl_resolver.check(user, topic, "w", base=object_dn):
+
+            self.__log.debug("user '%s' has insufficient permissions to write %s on %s, required is %s:%s" % (
+                user, "isLocked", object_dn, topic, "w"))
+            raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=object_dn))
+
         user = ObjectProxy(object_dn)
         method = user.passwordMethod
 
