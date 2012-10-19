@@ -173,7 +173,7 @@ class PasswordManager(Plugin):
 
         return pwd_o.isUnlockable(hsh)
 
-    @Command(__help__=N_("Changes the used password enryption method"))
+    @Command(needsUser=True, __help__=N_("Changes the used password enryption method"))
     def setUserPasswordMethod(self, user, object_dn, method, password):
         """
         Changes the used password encryption method
