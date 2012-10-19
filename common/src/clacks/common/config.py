@@ -105,7 +105,6 @@ class Config(object):
 
             self.__registry['core']['user'] = user
             self.__registry['core']['group'] = group
-            self.__registry['core']['workdir'] = userHome
 
     def __parseCmdOptions(self):
         parser = ArgumentParser(usage="%(prog)s - the clacks core daemon")
@@ -120,11 +119,6 @@ class Config(object):
                           metavar="URL")
         parser.add_argument("--profile", action="store_true", dest="profile",
                           help="write profiling information [%(default)s]")
-
-        group = parser.add_argument_group("Advanced options")
-        group.add_argument("--workdir", dest="workdir",
-                          help="change directory to DIR after starting up [%(default)s]",
-                          metavar="DIR")
 
         options = parser.parse_args()
 
