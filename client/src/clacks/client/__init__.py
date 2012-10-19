@@ -74,14 +74,8 @@ has a couple of command line arguments:
    Take a look at the :ref:`quickstart <quickstart>` to see how the client is
    controlled.
 
-.. requirement::
-   :status: todo
-
-   Describe the init script / default usage
-
-.. note::
-
-   On windows the binary is called *gcs*.
+For production environments, just start the client using the *supervisor*
+package.
 
 """
 __version__ = __import__('pkg_resources').get_distribution('clacks.client').version

@@ -36,7 +36,7 @@ Depending on what you want to do.
 Developers
 ----------
 
-The project is mirrored to github. This means that you can clone it using::
+The project is mirrored to `github <http://github.com/gonicus/clacks>`_. This means that you can clone it using::
 
     $ git clone git://github.com/gonicus/clacks.git
 

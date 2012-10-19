@@ -79,10 +79,8 @@ has a couple of command line arguments:
    Take a look at the :ref:`quickstart <quickstart>` to see how the agent is
    controlled.
 
-.. requirement::
-   :status: todo
-
-   Describe the init script / default usage
+For production environments, just start the agent using the *supervisor*
+package.
 
 """
 __version__ = __import__('pkg_resources').get_distribution('clacks.agent').version

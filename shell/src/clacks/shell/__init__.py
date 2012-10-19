@@ -70,19 +70,6 @@ The Clacks shell can be called in different ways.
 
    You can leave the interactive mode by pressing "Ctrl+D".
 
- * CLI mode
-
-   .. requirement::
-      :status: todo
-
-      Fix shell CLI mode and provide docs
-
- * Here document mode
-
-   .. requirement::
-      :status: todo
-
-      Fix shell here document mode and provide docs
 """
 __import__('pkg_resources').declare_namespace(__name__)
 __version__ = __import__('pkg_resources').get_distribution('clacks.shell').version
