@@ -12,6 +12,8 @@
 
 """
 
+.. _dbus-service:
+
 Clacks D-Bus System Service Plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -68,7 +70,7 @@ class DBusUnixServiceHandler(dbus.service.Object, Plugin):
         conn = get_system_bus()
         dbus.service.Object.__init__(self, conn, '/org/clacks/service')
         self.env = Environment.getInstance()
-        self.svc_command = self.env.config.get("unix.service-command", default="/usr/sbin/service")
+        self.svc_command = self.env.config.get("dbus.service-command", default="/usr/sbin/service")
         self.log = logging.getLogger(__name__)
 
     def _validate(self, name, action=None):

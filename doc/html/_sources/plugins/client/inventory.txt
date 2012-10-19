@@ -1,5 +1,5 @@
 Inventory
 ---------
 
-.. autoclass:: clacks.client.plugins.inventory.main.Inventory
+.. automodule:: clacks.client.plugins.inventory.main
   :members:

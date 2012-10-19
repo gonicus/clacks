@@ -11,8 +11,11 @@
 # See the LICENSE file in the project's top-level directory for details.
 
 """
+
+.. _client-notify:
+
 Clacks Client Notification Plugin
-=================================
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This plugin allows to send notification to a user or a list of users.
 

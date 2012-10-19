@@ -11,6 +11,11 @@
 # See the LICENSE file in the project's top-level directory for details.
 
 """
+.. _clacks-acl:
+
+ACL management
+==============
+
 This chapter details the way access control is handled within the clacks core
 engine.
 
@@ -931,7 +936,7 @@ class ACLResolver(Plugin):
         self.clear()
 
         # Load override admins from configuration
-        admins = self.env.config.get("core.admins", default=None)
+        admins = self.env.config.get("agent.admins", default=None)
         if admins:
             admins = re.sub(r'\s', '', admins)
             self.log.warning("adding users to the ACL override: %s" % admins)

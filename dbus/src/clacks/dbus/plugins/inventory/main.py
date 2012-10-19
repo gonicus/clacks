@@ -10,6 +10,15 @@
 #
 # See the LICENSE file in the project's top-level directory for details.
 
+"""
+.. _dbus-fusion::
+
+Fusioninventory module
+~~~~~~~~~~~~~~~~~~~~~~
+
+To. Do.
+"""
+
 import os
 import re
 import shutil

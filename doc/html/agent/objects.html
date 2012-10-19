@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Object abstraction &mdash; Clacks Project</title>
+    <title>Objects &mdash; Clacks Project</title>
     
     <link rel="stylesheet" href="../_static/clacks.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -27,6 +27,9 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="Clacks Project" href="../index.html" />
+    <link rel="up" title="Agent" href="index.html" />
+    <link rel="next" title="Client" href="../client/index.html" />
+    <link rel="prev" title="JSON RPC service" href="jsonrpc.html" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <!--[if lte IE 6]>
@@ -52,7 +55,10 @@
         <li class="right"><a href="downloads.html">Download</a>  |</li>
         <li class="right"><a href="doc_index.html">Documentation</a>  |</li>
         <li class="right"><a href="start.html">Getting started</a>  |</li>
-        <li><a href="../index.html">Clacks Project</a> &raquo;</li> 
+        <li><a href="../index.html">Clacks Project</a> &raquo;</li>
+          <li><a href="../doc_index.html" >Clacks Framework Documentation</a> &raquo;</li>
+          <li><a href="../development.html" >Development documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Agent</a> &raquo;</li> 
       </ul>
     </div>
 
@@ -60,10 +66,12 @@
       <div class="documentwrapper">
         <div class="body">
           
-  <span class="target" id="module-clacks.agent.objects"><span id="objects"></span></span><div class="section" id="object-abstraction">
-<h1>Object abstraction<a class="headerlink" href="#object-abstraction" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="objects">
+<span id="id1"></span><h1>Objects<a class="headerlink" href="#objects" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-clacks.agent.objects"></span><div class="section" id="object-abstraction">
+<h2>Object abstraction<a class="headerlink" href="#object-abstraction" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="basic-usage">
-<h2>Basic usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
+<h3>Basic usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h3>
 <p>The object abstraction module allows to access managed-information in an object oriented way.</p>
 <p>You can get an object instance like this:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">clacks.agent.objects</span> <span class="kn">import</span> <span class="n">ObjectFactory</span>
@@ -106,7 +114,7 @@ can then be caught later to perform different tasks, e.g. remove the mail-accoun
 a Mail extension is removed)</p>
 </div>
 <div class="section" id="how-does-it-work-xml-definition-for-objects">
-<h2>How does it work - XML definition for objects<a class="headerlink" href="#how-does-it-work-xml-definition-for-objects" title="Permalink to this headline">¶</a></h2>
+<h3>How does it work - XML definition for objects<a class="headerlink" href="#how-does-it-work-xml-definition-for-objects" title="Permalink to this headline">¶</a></h3>
 <p>What properties are managed and how they are managed is defined in a set of XML files.
 Each of these XML files can contain one or more object definition, you can find
 them here <tt class="docutils literal"><span class="pre">./clacks.common/src/clacks/common/data/objects/</span></tt>.</p>
@@ -158,7 +166,7 @@ them here <tt class="docutils literal"><span class="pre">./clacks.common/src/cla
 </tbody>
 </table>
 <div class="section" id="xml-definition-of-objects-in-detail">
-<h3>XML definition of objects in detail<a class="headerlink" href="#xml-definition-of-objects-in-detail" title="Permalink to this headline">¶</a></h3>
+<h4>XML definition of objects in detail<a class="headerlink" href="#xml-definition-of-objects-in-detail" title="Permalink to this headline">¶</a></h4>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">We try to keep this documentation up to date, but at the moment the
@@ -166,7 +174,7 @@ definition
 changes frequently.</p>
 </div>
 <div class="section" id="a-minimum-example">
-<h4>A minimum example<a class="headerlink" href="#a-minimum-example" title="Permalink to this headline">¶</a></h4>
+<h5>A minimum example<a class="headerlink" href="#a-minimum-example" title="Permalink to this headline">¶</a></h5>
 <p>All starts with an <tt class="docutils literal"><span class="pre">&lt;Object&gt;</span></tt> tag which introduces a new object, this
 <tt class="docutils literal"><span class="pre">&lt;Object&gt;</span></tt> tag must contain at least a <tt class="docutils literal"><span class="pre">&lt;Name&gt;</span></tt>, a <tt class="docutils literal"><span class="pre">&lt;Description&gt;</span></tt>, a <tt class="docutils literal"><span class="pre">&lt;DisplayName&gt;</span></tt> and a
 <tt class="docutils literal"><span class="pre">&lt;Backend&gt;</span></tt> tag. The name and the description are self-explaining.
@@ -192,7 +200,7 @@ methods nor attributes:</p>
 </div>
 </div>
 <div class="section" id="some-optional-properties-added">
-<h4>Some optional properties added<a class="headerlink" href="#some-optional-properties-added" title="Permalink to this headline">¶</a></h4>
+<h5>Some optional properties added<a class="headerlink" href="#some-optional-properties-added" title="Permalink to this headline">¶</a></h5>
 <p>Here is a more complete example which include some optional values, but still
 lacks attribute and method definitions:</p>
 <div class="highlight-xml"><div class="highlight"><pre><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
@@ -228,7 +236,7 @@ to some other objects, like described above in the <tt class="docutils literal">
 nor methods, but we could add a <tt class="docutils literal"><span class="pre">PosixUser</span></tt> and a <tt class="docutils literal"><span class="pre">Mail</span></tt> extension to it.</p>
 </div>
 <div class="section" id="adding-attributes-and-their-in-and-out-filters">
-<h4>Adding attributes and their in- and out-filters<a class="headerlink" href="#adding-attributes-and-their-in-and-out-filters" title="Permalink to this headline">¶</a></h4>
+<h5>Adding attributes and their in- and out-filters<a class="headerlink" href="#adding-attributes-and-their-in-and-out-filters" title="Permalink to this headline">¶</a></h5>
 <p>To be able to store a users name or its postal address we need to define object-attributes.</p>
 <p>Attributes can be access easily like this:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">person</span><span class="o">-&gt;</span><span class="n">givenName</span>
@@ -384,7 +392,7 @@ If you want an attribute to be multi value then just add the <tt class="docutils
 to true.</p>
 </div>
 <div class="section" id="writing-attribute-validators">
-<h4>Writing attribute validators<a class="headerlink" href="#writing-attribute-validators" title="Permalink to this headline">¶</a></h4>
+<h5>Writing attribute validators<a class="headerlink" href="#writing-attribute-validators" title="Permalink to this headline">¶</a></h5>
 <p>You can use validators to check the value of an attribute.</p>
 <p>Validators are defined in an <tt class="docutils literal"><span class="pre">&lt;Validators&gt;</span></tt> tag using either the <tt class="docutils literal"><span class="pre">&lt;Condition&gt;</span></tt> or the <tt class="docutils literal"><span class="pre">&lt;ConditionOperator&gt;</span></tt> tag.
 The <tt class="docutils literal"><span class="pre">&lt;Condition&gt;</span></tt> tag is a single check like shown below, where <tt class="docutils literal"><span class="pre">&lt;ConditionOperator&gt;</span></tt> are combined conditions:</p>
@@ -454,7 +462,7 @@ Right now there is a very limited set of conditions available - but there will b
 </div>
 </div>
 <div class="section" id="creating-in-and-out-filters">
-<h4>Creating in and out filters<a class="headerlink" href="#creating-in-and-out-filters" title="Permalink to this headline">¶</a></h4>
+<h5>Creating in and out filters<a class="headerlink" href="#creating-in-and-out-filters" title="Permalink to this headline">¶</a></h5>
 <p>Normally attributes are stored and read from the defined backend directly without any modification.
 If you want to manipulate the value before it gets saved or read, then you&#8217;ve to use in- and out-filters.</p>
 <p>This is usefull for values like passwords or value that have to be converted before they get saved.</p>
@@ -673,7 +681,7 @@ boolean value like this:</p>
 <p>When saving the flagList again, it will be created out of the flag states.</p>
 </div>
 <div class="section" id="introduction-of-methods">
-<h4>Introduction of methods<a class="headerlink" href="#introduction-of-methods" title="Permalink to this headline">¶</a></h4>
+<h5>Introduction of methods<a class="headerlink" href="#introduction-of-methods" title="Permalink to this headline">¶</a></h5>
 <p>We can also define methods for objects within the XML definition, these methods can
 then be called directly on an instance of these object:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">person</span><span class="o">-&gt;</span><span class="n">notify</span><span class="p">(</span><span class="s">u&quot;Shutdown of your client&quot;</span><span class="p">,</span> <span class="s">u&quot;Please prepare yourselves for a system reboot!&quot;</span><span class="p">)</span>
@@ -767,13 +775,13 @@ parameters of the method as placeholders.</p>
 </div>
 <hr class="docutils" />
 <span class="target" id="module-clacks.agent.objects.factory"></span><div class="section" id="object-factory">
-<h1>Object Factory<a class="headerlink" href="#object-factory" title="Permalink to this headline">¶</a></h1>
+<h2>Object Factory<a class="headerlink" href="#object-factory" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="short-description">
-<h2>Short description<a class="headerlink" href="#short-description" title="Permalink to this headline">¶</a></h2>
+<h3>Short description<a class="headerlink" href="#short-description" title="Permalink to this headline">¶</a></h3>
 <p>The object factory provides access to backend-data in an object
 oriented way. You can create, read, update and delete objects easily.</p>
 <p>What object-types are avaialable is configured using XML files, these files
-are located here: <tt class="docutils literal"><span class="pre">./clacks.common/src/clacks/common/data/objects/</span></tt>.</p>
+are located here: &#8221;./clacks.common/src/clacks/common/data/objects/&#8221;.</p>
 <p>Each XML file can contain multiple object definitions, with object related
 information, like attributes, methods, how to store and read
 objects.</p>
@@ -938,8 +946,8 @@ to generate meta-classes for each object.</p>
 </div>
 <hr class="docutils" />
 <span class="target" id="module-clacks.agent.objects.proxy"></span><div class="section" id="object-proxy">
-<h1>Object Proxy<a class="headerlink" href="#object-proxy" title="Permalink to this headline">¶</a></h1>
-<p>The object proxy sits on top of the <em class="xref std std-ref">clacks.agent.object.factory:ObjectFactory</em>
+<h2>Object Proxy<a class="headerlink" href="#object-proxy" title="Permalink to this headline">¶</a></h2>
+<p>The object proxy sits on top of the <tt class="xref py py-class docutils literal"><span class="pre">clacks.agent.objects.factory:ObjectFactory</span></tt>
 and is the glue between objects that are defined via XML descriptions. The proxy should
 be used to load, remove and modify objects.</p>
 <p>Here are some examples:</p>
@@ -964,9 +972,8 @@ be used to load, remove and modify objects.</p>
 <p>will list the available extension types for that specific object.</p>
 </div>
 <hr class="docutils" />
-<hr class="docutils" />
 <span class="target" id="module-clacks.agent.objects.index"></span><div class="section" id="object-index">
-<h1>Object Index<a class="headerlink" href="#object-index" title="Permalink to this headline">¶</a></h1>
+<h2>Object Index<a class="headerlink" href="#object-index" title="Permalink to this headline">¶</a></h2>
 <p>The Object Index is the search engine in clacks. It keeps track about
 all defined object types and can find references to it inside of its
 local index database</p>
@@ -1036,6 +1043,7 @@ existance flag.</p>
 
 </dd></dl>
 
+</div>
 </div>
 
 

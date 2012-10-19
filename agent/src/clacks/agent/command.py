@@ -598,7 +598,7 @@ class CommandRegistry(Plugin):
         in the configured interval.
         """
         nodes = {}
-        timeout = self.env.config.get('core.node-timeout', 60)
+        timeout = self.env.config.get('agent.node-timeout', 60)
 
         for node, info in self.nodes.iteritems():
             t = datetime.datetime.utcnow()

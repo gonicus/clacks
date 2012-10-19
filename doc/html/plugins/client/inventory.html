@@ -27,6 +27,9 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="Clacks Project" href="../../index.html" />
+    <link rel="up" title="Plugin development" href="../index.html" />
+    <link rel="next" title="Notify" href="notify.html" />
+    <link rel="prev" title="libinst" href="libinst.html" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <!--[if lte IE 6]>
@@ -52,7 +55,10 @@
         <li class="right"><a href="downloads.html">Download</a>  |</li>
         <li class="right"><a href="doc_index.html">Documentation</a>  |</li>
         <li class="right"><a href="start.html">Getting started</a>  |</li>
-        <li><a href="../../index.html">Clacks Project</a> &raquo;</li> 
+        <li><a href="../../index.html">Clacks Project</a> &raquo;</li>
+          <li><a href="../../doc_index.html" >Clacks Framework Documentation</a> &raquo;</li>
+          <li><a href="../../development.html" >Development documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Plugin development</a> &raquo;</li> 
       </ul>
     </div>
 
@@ -60,8 +66,25 @@
       <div class="documentwrapper">
         <div class="body">
           
-  <div class="section" id="inventory">
-<h1>Inventory<a class="headerlink" href="#inventory" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-clacks.client.plugins.inventory.main">
+<span id="inventory"></span><h1>Inventory<a class="headerlink" href="#module-clacks.client.plugins.inventory.main" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="description">
+<span id="client-fusion"></span><h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<p>This plugin is used to create inventory information for the client.</p>
+<p>It uses the dbus method <tt class="docutils literal"><span class="pre">inventory</span></tt> which is exported by the
+clacks-dbus-plugin <tt class="xref py py-class docutils literal"><span class="pre">clacks.dbus.plugins.inventory.main.DBusInventoryHandler</span></tt> to receive client inventory
+information for the client.</p>
+<p>With the method <tt class="docutils literal"><span class="pre">request_inventory</span></tt> you can trigger an update of the client inventory
+dataset on the server. The client will then collect all information and then send them
+to the clacks-agent.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">proxy</span><span class="o">.</span><span class="n">clientDispatch</span><span class="p">(</span><span class="s">&quot;49cb1287-db4b-4ddf-bc28-5f4743eac594&quot;</span><span class="p">,</span> <span class="s">&quot;request_inventory&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you just want to see the inventory result without sending the result to the server, you
+can call the dbus method directly:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">proxy</span><span class="o">.</span><span class="n">clientDispatch</span><span class="p">(</span><span class="s">&quot;49cb1287-db4b-4ddf-bc28-5f4743eac594&quot;</span><span class="p">,</span> <span class="s">&quot;dbus_inventory&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="class">
 <dt id="clacks.client.plugins.inventory.main.Inventory">
 <em class="property">class </em><tt class="descclassname">clacks.client.plugins.inventory.main.</tt><tt class="descname">Inventory</tt><a class="headerlink" href="#clacks.client.plugins.inventory.main.Inventory" title="Permalink to this definition">¶</a></dt>
@@ -75,6 +98,7 @@ notification functionality.</p>
 
 </dd></dl>
 
+</div>
 </div>
 
 

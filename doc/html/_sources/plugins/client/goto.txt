@@ -4,11 +4,11 @@ GOto
 Powermanagement
 ---------------
 
-.. autoclass:: clacks.client.plugins.powermanagement.main.PowerManagement
+.. automodule:: clacks.client.plugins.powermanagement.main
   :members:
 
 Sessions
 --------
 
-.. autoclass:: clacks.client.plugins.sessions.main.SessionKeeper
+.. automodule:: clacks.client.plugins.sessions.main
   :members:

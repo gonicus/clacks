@@ -6,7 +6,7 @@ License
 =======
 
 Clacks License
---------------
+**************
 
 The Clacks framework itself is licensed under the GNU General Public
 license as follows::
@@ -32,20 +32,20 @@ For license details, please see :ref:`gpl`.
 
 
 Libraries that are used by Clacks
----------------------------------
+*********************************
 
 
 .. _gpl:
 
 GPL based modules
-~~~~~~~~~~~~~~~~~~
+-----------------
 
 .. literalinclude:: gpl.txt
 
 ----
 
 python-smbpasswd
-""""""""""""""""
+~~~~~~~~~~~~~~~~
 
 Copyright:
 	\(C\) 2002 Barry Pederson. All rights reserved.
@@ -65,7 +65,7 @@ License: :ref:`GPL <gpl>`
 -----
 
 python-unidecode
-""""""""""""""""
+~~~~~~~~~~~~~~~~
 
 Copyright:
 	| \(C\) 2001 Sean M. Burke <sburke@cpan.org>
@@ -85,7 +85,7 @@ License: :ref:`GPL <gpl>`
 -----
 
 python-dmidecode
-""""""""""""""""
+~~~~~~~~~~~~~~~~
 
 Copyright:
 	| \(C\) 2000-2002 Alan Cox <alan@redhat.com>
@@ -111,14 +111,14 @@ License: :ref:`GPL <gpl>`
 .. _lgpl:
 
 LGPL based modules
-~~~~~~~~~~~~~~~~~~
+------------------
 
 .. literalinclude:: lgpl.txt
 
 ----
 
 Python pyside
-"""""""""""""
+~~~~~~~~~~~~~
 
 Copyright:
   
@@ -142,7 +142,7 @@ License: :ref:`LGPL <lgpl>`
 -----
 
 Python avahi
-"""""""""""""
+~~~~~~~~~~~~
 
 Copyright:
  
@@ -171,7 +171,7 @@ License: :ref:`LGPL <lgpl>`
 -----
 
 Python cjson
-""""""""""""
+~~~~~~~~~~~~
 
 Copyright: 
 	\(C\) 2006-2007 Dan Pascu <dan@ag-projects.com>
@@ -194,7 +194,7 @@ License: :ref:`LGPL <lgpl>`
 -----
 
 Python gtk2
-"""""""""""
+~~~~~~~~~~~
 
 Copyright:
 	| \(C\) 1998-2006  James Henstridge
@@ -221,7 +221,7 @@ License: :ref:`LGPL <lgpl>`
 -----
 
 Python notify
-"""""""""""""
+~~~~~~~~~~~~~
 
 Copyright:
 	\(C\) 2006 Christian Hammond <chipx86@chipx86.com>
@@ -244,7 +244,7 @@ License: :ref:`LGPL <lgpl>`
 ----
 
 Python newt
-"""""""""""
+~~~~~~~~~~~
 
 Copyright:
 	\(C\) Erik Troan <ewt@redhat.com>.
@@ -261,14 +261,14 @@ License: :ref:`LGPL <lgpl>`
 .. _psf:
 
 PSF based modules
-~~~~~~~~~~~~~~~~~
+-----------------
 
 .. literalinclude:: psf.txt
 
 ----
 
 Python 2.6+
-"""""""""""
+~~~~~~~~~~~
 
 Copyright:
 	\(C\) Guido van Rossum <guido@cwi.nl> and others
@@ -278,7 +278,7 @@ License: :ref:`PSF <psf>`
 ----
 
 Python setuptools
-"""""""""""""""""
+~~~~~~~~~~~~~~~~~
 
 Copyright:
 	\(C\) Phillip J. Eby, Tarek Ziade and the distutils SIG
@@ -288,7 +288,7 @@ License: :ref:`PSF <psf>`
 ----
 
 Python daemon
-"""""""""""""
+~~~~~~~~~~~~~
 
 Copyright:
 	\(C\) Ben Finney <ben+python@benfinney.id.au>
@@ -298,7 +298,7 @@ License: :ref:`PSF <psf>`
 ----
 
 Python dateutil
-"""""""""""""""
+~~~~~~~~~~~~~~~
 
 Copyright:
 	\(C\) Gustavo Niemeyer <gustavo@niemeyer.net>    
@@ -310,14 +310,14 @@ License: :ref:`PSF <psf>`
 .. _zpl:
 
 ZPL based modules
-~~~~~~~~~~~~~~~~~
+-----------------
 
 .. literalinclude:: zpl.txt
 
 ----
 
 Python zope.event
-"""""""""""""""""
+~~~~~~~~~~~~~~~~~
 
 Copyright:
 	\(C\) 2004, 2006 Zope Foundation and Contributors
@@ -328,7 +328,7 @@ License: :ref:`ZPL <zpl>`
  
 
 Python zope.interface
-"""""""""""""""""""""
+~~~~~~~~~~~~~~~~~~~~~
 
 Copyright:
 	\(C\) 2004, 2006 Zope Foundation and Contributors
@@ -340,12 +340,12 @@ License: :ref:`ZPL <zpl>`
 .. _apl:
 
 Apache license based modules
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------
 
 .. literalinclude:: apl.txt
 
 Python tornado
-""""""""""""""
+~~~~~~~~~~~~~~
 
 Copyright:
   
@@ -356,7 +356,7 @@ License: :ref:`APL <apl>`
 ----
   
 Python Qpid
-"""""""""""
+~~~~~~~~~~~
 
 Copyright:
 	\(C\) 2006 QPID Apache team
@@ -366,7 +366,7 @@ License: :ref:`APL <apl>`
 ----
 
 Python mongodb
-""""""""""""""
+~~~~~~~~~~~~~~
 
 Copyright: 
   
@@ -378,7 +378,7 @@ License: :ref:`APL <apl>`
 ----
 
 Python openssl
-""""""""""""""
+~~~~~~~~~~~~~~
 
 Copyright:
    
@@ -389,10 +389,10 @@ License: :ref:`APL <apl>`
 
 
 BSD license based modules
-~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------
 
 python-dumbnet
-""""""""""""""
+~~~~~~~~~~~~~~
 
 Copyright:
 	| \(C\) 1991, 1993 The Regents of the University of California.
@@ -440,7 +440,7 @@ Note:
 ----
 
 python-setproctitle
-"""""""""""""""""""
+~~~~~~~~~~~~~~~~~~~
 
 Copyright:
 	\(C\)Daniele Varrazzo <daniele.varrazzo@gmail.com>
@@ -463,10 +463,10 @@ License:
 
 
 Public domain based licenses
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------
 
 Python LDAP
-"""""""""""
+~~~~~~~~~~~
 
 License:
 
@@ -547,7 +547,7 @@ Acknowledgements:
 ----
 
 Python crypto
-""""""""""""""
+~~~~~~~~~~~~~
 
 Copyright and licensing of the Python Cryptography Toolkit ("PyCrypto"):
 
@@ -619,10 +619,10 @@ source code may be subject to regulation in your jurisdiction.
 
 
 MIT based licenses
-~~~~~~~~~~~~~~~~~~
+------------------
 
 Python babel
-""""""""""""
+~~~~~~~~~~~~
 
 Copyright: 
 	\(C\) 2007-2011 Edgewall Software, All rights reserved.
@@ -657,7 +657,7 @@ License:
 ----
 
 Python dbus
-"""""""""""
+~~~~~~~~~~~
 
 Copyright:
 	| \(C\) 2003-2006 Red Hat Inc. <http://www.redhat.com/>
@@ -691,7 +691,7 @@ License:
 ----
 
 Python lxml
-"""""""""""
+~~~~~~~~~~~
 
 Copyright:
 	\(C\) 2004 Infrae. All rights reserved.
@@ -728,7 +728,7 @@ License:
 ----
 
 Python libxml2
-""""""""""""""
+~~~~~~~~~~~~~~
 
   Except where otherwise noted in the source code (trio files, hash.c and list.c)
   covered by a similar licence but with different Copyright notices:
@@ -837,7 +837,7 @@ Python libxml2
 -----
 
 Python sqlalchemy
-"""""""""""""""""
+~~~~~~~~~~~~~~~~~
 
 Copyright:
 	\(C\) 2005-2011 Michael Bayer and contributors
@@ -867,7 +867,7 @@ License:
 ----
 
 Python netifaces
-""""""""""""""""
+~~~~~~~~~~~~~~~~
 
 Copyright:
 

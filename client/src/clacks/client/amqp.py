@@ -71,9 +71,7 @@ class AMQPClientHandler(AMQPHandler):
             self.domain = o.path[1::]
 
         # Configure system
-        user = self.env.config.get('amqp.id', default=None)
-        if not user:
-            user = self.env.uuid
+        user = self.env.uuid
 
         key = self.env.config.get('amqp.key')
         if key:
@@ -116,9 +114,7 @@ class AMQPClientHandler(AMQPHandler):
         self.log.debug("enabling AMQP queueing")
 
         # Evaluate username
-        user = self.env.config.get("amqp.id", default=None)
-        if not user:
-            user = self.env.uuid
+        user = self.env.uuid
 
         # Create initial broker connection
         url = "%s:%s" % (self.url['host'], self.url['port'])

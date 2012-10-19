@@ -1,5 +1,8 @@
 .. _objects:
 
+Objects
+=======
+
 .. automodule:: clacks.agent.objects
    :members:
 

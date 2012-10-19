@@ -67,3 +67,9 @@ Key features
    Every exported method can be easily used inside the Clacks shell or from simple Python
    scripts. Other languages can be used, too. They just need to be able to speak JSONRPC over
    HTTP[S] or AMQP[S].
+
+.. toctree::
+   :hidden:
+
+   doc_index
+   cindex

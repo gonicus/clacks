@@ -12,6 +12,8 @@
 
 """
 
+.. _client-fusion:
+
 Description
 ^^^^^^^^^^^
 

@@ -76,8 +76,11 @@ Client plugins
 .. toctree::
    :maxdepth: 2
 
+   client/dbus
    client/goto
    client/libinst
+   client/inventory
+   client/notify
 
 
 DBUS plugins

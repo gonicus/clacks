@@ -1,0 +1,826 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Configuration reference &mdash; Clacks Project</title>
+    
+    <link rel="stylesheet" href="_static/clacks.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/cindex.css" type="text/css" />
+    <link rel="stylesheet" href="_static/requirements.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Clacks Project" href="index.html" />
+    <link rel="up" title="Clacks Framework Documentation" href="doc_index.html" />
+    <link rel="next" title="Development documentation" href="development.html" />
+    <link rel="prev" title="Downloads" href="downloads.html" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
+  </head>
+  <body>
+<script src="_static/jquery.msCarousel-min.js"></script>
+<link rel="stylesheet" type="text/css" href="_static/mscarousel.css" />
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right"><form class="search" style="display:inline" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Type your search..."/>
+  <input type="submit" value="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+<script type="text/javascript">$('#searchbox').show(0);</script></li>
+        <li class="right"><a href="http://oss.gonicus.de">Issues</a>  |</li>
+        <li class="right"><a href="downloads.html">Download</a>  |</li>
+        <li class="right"><a href="doc_index.html">Documentation</a>  |</li>
+        <li class="right"><a href="start.html">Getting started</a>  |</li>
+        <li><a href="index.html">Clacks Project</a> &raquo;</li>
+          <li><a href="doc_index.html" accesskey="U">Clacks Framework Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="body">
+          
+  <div class="section" id="configuration-reference">
+<h1>Configuration reference<a class="headerlink" href="#configuration-reference" title="Permalink to this headline">¶</a></h1>
+<p>This section details static configuration switches and runtime settings that
+can be used to control the behaviour of the Clacks framework.</p>
+<div class="section" id="common">
+<h2>Common<a class="headerlink" href="#common" title="Permalink to this headline">¶</a></h2>
+<p>All configuration flags detailed in this section (can) affect every component
+of Clacks: they can be used to configure the <em>agent</em> or the <em>client</em>, etc.</p>
+<div class="section" id="command-line">
+<h3>Command line<a class="headerlink" href="#command-line" title="Permalink to this headline">¶</a></h3>
+<p>These are the common command line flags:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="18%" />
+<col width="72%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">Short</th>
+<th class="head" rowspan="2">Long option</th>
+<th class="head" rowspan="2">Description</th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="6">-c</td>
+<td rowspan="6">&#8212;-config</td>
+<td rowspan="6">Path to the configuration file used for this instance of
+Clacks. Note that this is only the base path: it is
+extended by  config  as a plain file and  config.d  as a
+directory containing configuration snippets i.e. for
+specific plugins.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">&nbsp;</td>
+<td rowspan="2">&#8212;-url</td>
+<td rowspan="2">URL to the AMQP broker to use.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="3">&nbsp;</td>
+<td rowspan="3">&#8212;-profile</td>
+<td rowspan="3">If specified a performance analysis profile is written on
+shutdown.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="configuration">
+<h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h3>
+<p>Clacks configuration files are written in <em>ini</em>-Style. This simplifies editing and
+enhances the overview. The common configuration covers a couple of sections detailed
+here.</p>
+<div class="section" id="section-core">
+<h4>Section <strong>core</strong><a class="headerlink" href="#section-core" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="13%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">Key</th>
+<th class="head" rowspan="2">Format</th>
+<th class="head" rowspan="2">Description</th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="3">base</td>
+<td rowspan="3">String</td>
+<td rowspan="3">The base is the LDAP style base DN where this Clacks
+entity is responsible for. Example: dc=example,dc=net</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"><td rowspan="7">domain</td>
+<td rowspan="7">String</td>
+<td rowspan="7"><p class="first">Domain is the prefix that is used to address AMQP queues
+and describe access control rules. In contrast to the base
+keyword, it must only contain plain ASCII characters.</p>
+<p class="last">As a rule of thumb, we use a reversed domain notation i.e.
+net.example</p>
+</td>
+</tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="3">id</td>
+<td rowspan="3">String</td>
+<td rowspan="3">This is the instance ID. It is mandatory and used to connect
+to the AMQP broker.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"><td rowspan="2">profile</td>
+<td rowspan="2">Boolean</td>
+<td rowspan="2">Flag to enable profiling.</td>
+</tr>
+<tr class="row-odd"></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="section-amqp">
+<h4>Section <strong>amqp</strong><a class="headerlink" href="#section-amqp" title="Permalink to this headline">¶</a></h4>
+<p>Common AMQP related settings go to the [amqp] section.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="13%" />
+<col width="66%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">Key</th>
+<th class="head" rowspan="2">Format</th>
+<th class="head" rowspan="2">Description</th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="2">failover</td>
+<td rowspan="2">Boolean</td>
+<td rowspan="2">Flag to determine if automatic failover should be used.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">key</td>
+<td rowspan="2">String</td>
+<td rowspan="2">The credentials used to connect to the AMQP broker(s).</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">reconnect</td>
+<td rowspan="2">Boolean</td>
+<td rowspan="2">Flag to determine if automatic reconnects should happen.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">reconnect_interval</td>
+<td rowspan="2">Integer</td>
+<td rowspan="2">Time interval to reconnect.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">reconnect_limit</td>
+<td rowspan="2">Integer</td>
+<td rowspan="2">Number of maximum reconnect tries.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="4">url</td>
+<td rowspan="4">String</td>
+<td rowspan="4">The AMQP URL used to connect to a broker - initially.
+Fallback is done automatically. Format is:
+amqp[s]://host.dns-domain:port/clacks-domain</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">worker</td>
+<td rowspan="2">Integer</td>
+<td rowspan="2">Number of workers to process commands.</td>
+</tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="section-mongo">
+<h4>Section <strong>mongo</strong><a class="headerlink" href="#section-mongo" title="Permalink to this headline">¶</a></h4>
+<p>The index is maintained in a MongoDB. These are the keys related to connecting
+the NoSQL database.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="13%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">Key</th>
+<th class="head" rowspan="2">Format</th>
+<th class="head" rowspan="2">Description</th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="3">uri</td>
+<td rowspan="3">String</td>
+<td rowspan="3">The hostname / port combination used to connect to the
+MongoDB. Example: localhost:27017</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"><td rowspan="2">user</td>
+<td rowspan="2">String</td>
+<td rowspan="2">Username used to connect to MongoDB - if required</td>
+</tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"><td rowspan="2">password</td>
+<td rowspan="2">String</td>
+<td rowspan="2">Password used to connect to MongoDB - if required</td>
+</tr>
+<tr class="row-odd"></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="section" id="agent">
+<h2>Agent<a class="headerlink" href="#agent" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>Configuration<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="section-agent">
+<h4>Section <strong>agent</strong><a class="headerlink" href="#section-agent" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="13%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">Key</th>
+<th class="head" rowspan="2">Format</th>
+<th class="head" rowspan="2">Description</th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="3">admins</td>
+<td rowspan="3">String</td>
+<td rowspan="3">Comma separated list of users where the ACL engine is
+overridden.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"><td rowspan="2">index</td>
+<td rowspan="2">Boolean</td>
+<td rowspan="2">Flag to enable/disable indexing.</td>
+</tr>
+<tr class="row-odd"></tr>
+<tr class="row-even"><td rowspan="2">node-timeout</td>
+<td rowspan="2">Integer</td>
+<td rowspan="2">Timeout in seconds when an agent is considered &#8216;dead&#8217;.</td>
+</tr>
+<tr class="row-odd"></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id2">
+<h4>Section <strong>amqp</strong><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<p>Common AMQP related settings go to the [amqp] section.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="13%" />
+<col width="66%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">Key</th>
+<th class="head" rowspan="2">Format</th>
+<th class="head" rowspan="2">Description</th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="2">announce</td>
+<td rowspan="2">Boolean</td>
+<td rowspan="2">Publish the service via Zeroconf.</td>
+</tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="section-jsonrpc">
+<h4>Section <strong>jsonrpc</strong><a class="headerlink" href="#section-jsonrpc" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="13%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">Key</th>
+<th class="head" rowspan="2">Format</th>
+<th class="head" rowspan="2">Description</th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="2">path</td>
+<td rowspan="2">String</td>
+<td rowspan="2">Path where JSONRPC over HTTP is hooked in.</td>
+</tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="section-http">
+<h4>Section <strong>http</strong><a class="headerlink" href="#section-http" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="13%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">Key</th>
+<th class="head" rowspan="2">Format</th>
+<th class="head" rowspan="2">Description</th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="2">announce</td>
+<td rowspan="2">Boolean</td>
+<td rowspan="2">Publish the service via Zeroconf.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">cookie-lifetime</td>
+<td rowspan="2">Integer</td>
+<td rowspan="2">Lifetime of the cookie in seconds.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">cookie-secret</td>
+<td rowspan="2">String</td>
+<td rowspan="2">Key used to encrypt the cookie.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">host</td>
+<td rowspan="2">String</td>
+<td rowspan="2">Hostname to bind to / IP to bind to.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">port</td>
+<td rowspan="2">Integer</td>
+<td rowspan="2">Portnumber to bind to.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">ssl</td>
+<td rowspan="2">Boolean</td>
+<td rowspan="2">Flag to tell that we want SSL.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">certfile</td>
+<td rowspan="2">String</td>
+<td rowspan="2">Path to the certificate.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">keyfile</td>
+<td rowspan="2">String</td>
+<td rowspan="2">Path to the key file.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">ca-certs</td>
+<td rowspan="2">String</td>
+<td rowspan="2">Path to the CA file.</td>
+</tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="section-scheduler">
+<h4>Section <strong>scheduler</strong><a class="headerlink" href="#section-scheduler" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="13%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">Key</th>
+<th class="head" rowspan="2">Format</th>
+<th class="head" rowspan="2">Description</th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="2">gracetime</td>
+<td rowspan="2">Integer</td>
+<td rowspan="2">Gracetime for foreign jobs before they&#8217;re assimilated.</td>
+</tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="section-ldap">
+<h4>Section <strong>ldap</strong><a class="headerlink" href="#section-ldap" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="13%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">Key</th>
+<th class="head" rowspan="2">Format</th>
+<th class="head" rowspan="2">Description</th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="2">bind-secret</td>
+<td rowspan="2">String</td>
+<td rowspan="2">Credentials for the bind user.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">bind-user</td>
+<td rowspan="2">String</td>
+<td rowspan="2">DN of the bind user.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">retry-delay</td>
+<td rowspan="2">String</td>
+<td rowspan="2">Delay before a retry should be done.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">retry-max</td>
+<td rowspan="2">String</td>
+<td rowspan="2">Maximum of retries before considering connection &#8216;dead&#8217;.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">tls</td>
+<td rowspan="2">Boolean</td>
+<td rowspan="2">Use TLS to connect to the LDAP server.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">url</td>
+<td rowspan="2">String</td>
+<td rowspan="2">URL to connect to - includes the LDAP base.</td>
+</tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="backends">
+<h3>Backends<a class="headerlink" href="#backends" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="section-backend-sql">
+<h4>Section <strong>backend-sql</strong><a class="headerlink" href="#section-backend-sql" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="13%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">Key</th>
+<th class="head" rowspan="2">Format</th>
+<th class="head" rowspan="2">Description</th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="2">connection</td>
+<td rowspan="2">String</td>
+<td rowspan="2">SQLAlchemy string to connect to a SQL database.</td>
+</tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="section-backend-json">
+<h4>Section <strong>backend-json</strong><a class="headerlink" href="#section-backend-json" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="13%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">Key</th>
+<th class="head" rowspan="2">Format</th>
+<th class="head" rowspan="2">Description</th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="2">database-file</td>
+<td rowspan="2">String</td>
+<td rowspan="2">Path to the database file that keeps the JSON information.</td>
+</tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="section-backend-ldap">
+<h4>Section <strong>backend-ldap</strong><a class="headerlink" href="#section-backend-ldap" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="13%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">Key</th>
+<th class="head" rowspan="2">Format</th>
+<th class="head" rowspan="2">Description</th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="2">uuid-attribute</td>
+<td rowspan="2">String</td>
+<td rowspan="2">Attribute that keeps the object UUID.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">create-attribute</td>
+<td rowspan="2">String</td>
+<td rowspan="2">Attribute that keeps the creation date.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">modify-attribute</td>
+<td rowspan="2">String</td>
+<td rowspan="2">Attribute that keeps the modification date.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">pool-filter</td>
+<td rowspan="2">String</td>
+<td rowspan="2">Filter to find nex ID.</td>
+</tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="section-backend-mongodb">
+<h4>Section <strong>backend-mongodb</strong><a class="headerlink" href="#section-backend-mongodb" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="13%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">Key</th>
+<th class="head" rowspan="2">Format</th>
+<th class="head" rowspan="2">Description</th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="2">database</td>
+<td rowspan="2">String</td>
+<td rowspan="2">Name of the MongoDB database.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">collection</td>
+<td rowspan="2">String</td>
+<td rowspan="2">Name of the MongoDB collection inside the database.</td>
+</tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="backend-monitor">
+<h3>Backend monitor<a class="headerlink" href="#backend-monitor" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="section-backend-monitor">
+<h4>Section <strong>backend-monitor</strong><a class="headerlink" href="#section-backend-monitor" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="13%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">Key</th>
+<th class="head" rowspan="2">Format</th>
+<th class="head" rowspan="2">Description</th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="2">audit-log</td>
+<td rowspan="2">String</td>
+<td rowspan="2">LDAP audit log file which is scanned for updates.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">modifier</td>
+<td rowspan="2">String</td>
+<td rowspan="2">DN of Clacks configured LDAP managing user.</td>
+</tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="acl">
+<h3>ACL<a class="headerlink" href="#acl" title="Permalink to this headline">¶</a></h3>
+<p>Managing access control is configuration in the broader sense. You can read more on
+this topic in the section <a class="reference internal" href="agent/acl.html#clacks-acl"><em>ACL management</em></a>.</p>
+</div>
+</div>
+<div class="section" id="client">
+<h2>Client<a class="headerlink" href="#client" title="Permalink to this headline">¶</a></h2>
+<p>The Clacks client is divided into two parts: the main part and the DBUS part. The client can
+be extended thru plugins that may have separate configuration parameters, too:</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference internal" href="plugins/client/dbus.html#client-dbus"><em>Generic DBUS support</em></a></li>
+<li><a class="reference internal" href="plugins/client/notify.html#client-notify"><em>DBUS libnotify user notifications</em></a></li>
+<li><a class="reference internal" href="plugins/client/inventory.html#client-fusion"><em>Fusioninventory integration</em></a></li>
+<li><a class="reference internal" href="plugins/client/goto.html#client-power"><em>Powermanagement related methods</em></a></li>
+<li><a class="reference internal" href="plugins/client/goto.html#client-session"><em>Session notifications</em></a></li>
+</ul>
+</div></blockquote>
+<div class="section" id="id3">
+<h3>Configuration<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="section-client">
+<h4>Section <strong>client</strong><a class="headerlink" href="#section-client" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="13%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">Key</th>
+<th class="head" rowspan="2">Format</th>
+<th class="head" rowspan="2">Description</th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="2">ping-interval</td>
+<td rowspan="2">Integer</td>
+<td rowspan="2">Update ping to the Clacks framework to show: I&#8217;m still here.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">spool</td>
+<td rowspan="2">String</td>
+<td rowspan="2">Spool directory used for several temporary files.</td>
+</tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="section" id="dbus">
+<h2>DBUS<a class="headerlink" href="#dbus" title="Permalink to this headline">¶</a></h2>
+<p>The DBUS component is the root-component of the Clacks client side. It allows the client
+to trigger certain commands as root, but grants non-root operation for the client itself. By
+default it comes with a couple of plugins that may have parameters of their own.</p>
+<blockquote>
+<div><ul class="simple">
+<li>ref:<cite>Fusioninventory integration &lt;dbus-fusion&gt;</cite></li>
+<li>ref:<cite>DBUS libnotify user notifications &lt;dbus-notify&gt;</cite></li>
+<li>ref:<cite>Managing unix services &lt;dbus-service&gt;</cite></li>
+<li>ref:<cite>Executing shell commands &lt;dbus-shell&gt;</cite></li>
+<li>ref:<cite>Wake on lan client &lt;dbus-wakeonlan&gt;</cite></li>
+</ul>
+</div></blockquote>
+<div class="section" id="id4">
+<h3>Configuration<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="section-dbus">
+<h4>Section <strong>dbus</strong><a class="headerlink" href="#section-dbus" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="13%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">Key</th>
+<th class="head" rowspan="2">Format</th>
+<th class="head" rowspan="2">Description</th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="2">script-path</td>
+<td rowspan="2">String</td>
+<td rowspan="2">Script directory that is scanned for DBUS exported scripts.</td>
+</tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
+<hr class="docutils" />
+<p>TODO</p>
+<p>By default it comes with a couple of plugins that may have parameters of their own.</p>
+<p>Agent:</p>
+<p>Cleanup and add to the documentation</p>
+<p>agent/src/clacks/agent/plugins/gosa/methods.py:                cache_path = self.env.config.get(&#8216;gosa.cache_path&#8217;, default=&#8221;/cache&#8221;)
+agent/src/clacks/agent/plugins/gosa/service.py:        self.path = self.env.config.get(&#8216;gosa.path&#8217;, default=&#8221;/admin&#8221;)
+agent/src/clacks/agent/plugins/gosa/service.py:        self.static_path = self.env.config.get(&#8216;gosa.static_path&#8217;, default=&#8221;/static&#8221;)
+agent/src/clacks/agent/plugins/gosa/service.py:        self.cache_path = self.env.config.get(&#8216;gosa.cache_path&#8217;, default=&#8221;/cache&#8221;)
+agent/src/clacks/agent/plugins/gosa/service.py:        self.ws_path = self.env.config.get(&#8216;gosa.websocket&#8217;, default=&#8221;/ws&#8221;)
+agent/src/clacks/agent/plugins/gosa/service.py:        self.local_path = self.env.config.get(&#8216;gosa.local&#8217;, default=spath)
+agent/src/clacks/agent/plugins/gosa/service.py:        self.__secret = env.config.get(&#8216;http.cookie-secret&#8217;, default=&#8221;TecloigJink4&#8221;)
+agent/src/clacks/agent/plugins/gosa/service.py:        self.__secret = self.env.config.get(&#8216;http.cookie-secret&#8217;, default=&#8221;TecloigJink4&#8221;)
+agent/src/clacks/agent/plugins/samba/sid.py:            ridbase = int(self.env.config.get(&#8216;samba.ridbase&#8217;, default=1000))
+agent/src/clacks/agent/plugins/goto/client_service.py:            dn = &#8221;,&#8221;.join([&#8220;cn=&#8221; + cn, self.env.config.get(&#8220;goto.machine-rdn&#8221;,
+agent/src/clacks/agent/plugins/goto/client_service.py:        interval = int(self.env.config.get(&#8220;goto.timeout&#8221;, default=&#8221;600&#8221;))
+agent/src/clacks/agent/plugins/posix/shells.py:        source = env.config.get(&#8216;goto.shells&#8217;, default=&#8221;/etc/shells&#8221;)</p>
+<p>plugins/libinst.boot.preseed/src/libinst/boot/preseed/methods.py:        self.path = self.env.config.get(&#8216;libinst.path&#8217;, default=&#8221;/preseed&#8221;)
+plugins/libinst.boot.preseed/src/libinst/boot/preseed/methods.py:        url = urlparse(self.env.config.get(&#8216;repository.http_base_url&#8217;))
+plugins/libinst/src/libinst/manage.py:        self.path = env.config.get(&#8216;repository.path&#8217;)
+plugins/libinst/src/libinst/manage.py:        db_purge = env.config.get(&#8216;repository.db_purge&#8217;)
+plugins/libinst/src/libinst/manage.py:            if not self.env.config.get(&#8216;repository.http_base_url&#8217;):
+plugins/libinst/src/libinst/manage.py:            result = self.env.config.get(&#8216;repository.http_base_url&#8217;)
+plugins/libinst/src/libinst/manage.py:        if self.env.config.get(&#8220;goto.send_uri&#8221;, &#8220;False&#8221;).upper() == &#8220;TRUE&#8221;:
+plugins/libinst/src/libinst/manage.py:            url = parseURL(self.env.config.get(&#8220;amqp.url&#8221;))
+plugins/libinst/src/libinst/manage.py:                    self.env.config.get(&#8220;libinst.template-rdn&#8221;, &#8220;cn=templates,cn=libinst,cn=config&#8221;),
+plugins/libinst/src/libinst/interface/base.py:            res = conn.search_s(&#8221;,&#8221;.join([self.env.config.get(&#8220;libinst.template-rdn&#8221;,
+plugins/libinst/src/main.py:    repo_path = env.config.get(&#8216;repository.path&#8217;)
+plugins/libinst.cfg.puppet/src/libinst/cfg/puppet/methods.py:        db_purge = self.env.config.get(&#8216;repository.db_purge&#8217;,)
+plugins/libinst.cfg.puppet/src/libinst/cfg/puppet/methods.py:            logdir = self.env.config.get(&#8220;puppet.report-dir&#8221;,
+plugins/libinst.cfg.puppet/src/libinst/cfg/puppet/methods.py:            with open(self.env.config.get(&#8220;puppet.public_key&#8221;, default)) as f:
+plugins/amires/src/amires/resolver.py:            for opt in env.config.getOptions(&#8220;resolver-replace&#8221;):
+plugins/amires/src/amires/resolver.py:                itm = env.config.get(&#8220;resolver-replace.%s&#8221; % opt)
+plugins/amires/src/amires/modules/telekom_res.py:            self.priority = float(self.env.config.get(&#8220;resolver-telekom.priority&#8221;,
+plugins/amires/src/amires/modules/xml_res.py:        filename = self.env.config.get(&#8220;resolver-xml.filename&#8221;,
+plugins/amires/src/amires/modules/xml_res.py:            self.priority = float(self.env.config.get(&#8220;resolver-xml.priority&#8221;,
+plugins/amires/src/amires/modules/sugar_res.py:        self.priority = float(self.env.config.get(&#8220;resolver-sugar.priority&#8221;,
+plugins/amires/src/amires/modules/sugar_res.py:        self.sugar_url = self.env.config.get(&#8220;resolver-sugar.site_url&#8221;,
+plugins/amires/src/amires/modules/goforge_render.py:        self.forge_url = self.env.config.get(&#8220;fetcher-goforge.site_url&#8221;,
+plugins/amires/src/amires/modules/ldap_res.py:            self.priority = float(self.env.config.get(&#8220;resolver-ldap.priority&#8221;,
+plugins/amires/src/amires/modules/doingreport_render.py:        self.whitelisted_users = self.env.config.get(&#8220;doingreport.users&#8221;)
+plugins/amires/src/amires/modules/doingreport_render.py:        self.forge_url = self.env.config.get(&#8220;fetcher-goforge.site_url&#8221;,
+plugins/amires/src/amires/modules/clacks_res.py:            self.priority = float(self.env.config.get(&#8220;resolver-clacks.priority&#8221;,
+plugins/amires/src/amires/main.py:        mw = int(self.env.config.get(&#8220;amires.avatar_size&#8221;, default=&#8221;96&#8221;))
+plugins/libinst.repo.deb/src/libinst/repo/deb/main.py:                    if not self.env.config.get(&#8216;repository.rollback&#8217;) == False and not os.path.exists(rollback_path):
+plugins/libinst.repo.deb/src/libinst/repo/deb/main.py:                                    if not self.env.config.get(&#8216;repository.rollback&#8217;) == False:
+plugins/libinst.repo.deb/src/libinst/repo/deb/main.py:        repository = session.query(Repository).filter_by(path=self.env.config.get(&#8216;repository.path&#8217;)).one()
+plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/dbus_main.py:        self.logdir = self.env.config.get(&#8220;puppet.report-dir&#8221;,
+plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/dbus_main.py:            if config.get(&#8220;main&#8221;, &#8220;report&#8221;, &#8220;false&#8221;) != &#8220;true&#8221;:
+plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/dbus_main.py:            if config.get(&#8220;main&#8221;, &#8220;reportdir&#8221;, &#8220;&#8221;) != self.logdir:
+plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/dbus_main.py:            if config.get(&#8220;main&#8221;, &#8220;reports&#8221;, &#8220;&#8221;) != &#8220;store_clacks&#8221;:
+plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/dbus_main.py:            self.env.config.get(&#8220;puppet.command&#8221;, default=&#8221;/usr/bin/puppet&#8221;),
+plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/dbus_main.py:            self.env.config.get(&#8220;puppet.manifest&#8221;, default=&#8221;/etc/puppet/manifests/site.pp&#8221;),
+plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/main.py:        self.__puppet_user = env.config.get(&#8220;puppet.user&#8221;,
+plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/main.py:            default=env.config.get(&#8220;client.user&#8221;, default=&#8221;clacks&#8221;))
+plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/main.py:        self.__target_dir = env.config.get(&#8220;puppet.target&#8221;, default=&#8221;/etc/puppet&#8221;)
+plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/main.py:        self.__puppet_command = env.config.get(&#8220;puppet.command&#8221;, default=&#8221;/usr/bin/puppet&#8221;)
+plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/main.py:        self.__report_dir = env.config.get(&#8220;puppet.report-dir&#8221;, default=&#8221;/var/log/puppet&#8221;)
+plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/main.py:            &#8216;distribution&#8217;: config.get(&#8216;release&#8217;, &#8216;distribution&#8217;),
+plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/main.py:            &#8216;version&#8217;: config.get(&#8216;release&#8217;, &#8216;version&#8217;),
+plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/main.py:            &#8216;description&#8217;: config.get(&#8216;release&#8217;, &#8216;description&#8217;),
+plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/main.py:        user = self.env.config.get(&#8216;client.user&#8217;, default=&#8221;clacks&#8221;)</p>
+<p>TODO: Fix sample configurations
+TODO: gosa plugin data -&gt; qooxdoo-build</p>
+</div>
+</div>
+</div>
+</div>
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="footer">
+        &copy; Copyright 2012, GONICUS GmbH.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

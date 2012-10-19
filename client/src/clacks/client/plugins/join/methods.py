@@ -142,7 +142,7 @@ class join_method(object):
 
     def get_service_from_config(self):
         url = self.env.config.get("amqp.url", default=None)
-        sys_id = self.env.config.get("core.id", default=None)
+        sys_id = self.env.config.get("client.id", default=None)
         key = self.env.config.get("amqp.key", default=None)
         return (url, sys_id, key)
 

@@ -14,7 +14,7 @@
 Object Proxy
 ============
 
-The object proxy sits on top of the :ref:`clacks.agent.object.factory:ObjectFactory`
+The object proxy sits on top of the :class:`clacks.agent.objects.factory:ObjectFactory`
 and is the glue between objects that are defined via XML descriptions. The proxy should
 be used to load, remove and modify objects.
 
@@ -39,7 +39,6 @@ This fragment will add the *PosixUser* extension to the object, while
 
 will list the available extension types for that specific object.
 
-----
 """
 import pkg_resources
 import re

@@ -27,6 +27,8 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="Clacks Project" href="index.html" />
+    <link rel="next" title="Getting started" href="start.html" />
+    <link rel="prev" title="About" href="index.html" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <!--[if lte IE 6]>
@@ -84,11 +86,7 @@ that is 100% build on Clacks.</p>
 <p><strong>Documentation TODO list:</strong></p>
 <p class="req-source"><em class="status todo">todo</em> Describe the init script / default usage<a class="reference internal" href="agent/index.html#req-0"> <em>→</em></a></p>
 <p class="req-source"><em class="status todo">todo</em> Describe the init script / default usage<a class="reference internal" href="client/index.html#req-0"> <em>→</em></a></p>
-<p class="req-source"><em class="status todo">todo</em> Describe how to build the debian packages.<a class="reference internal" href="packaging.html#req-0"> <em>→</em></a></p>
-<p class="req-source"><em class="status todo">todo</em> Find a way to build the stuff for various RPM based distributions.<a class="reference internal" href="packaging.html#req-1"> <em>→</em></a></p>
-<p class="req-source"><em class="status todo">todo</em> Document client plugins<a class="reference internal" href="plugins/client/index.html#req-0"> <em>→</em></a></p>
 <p class="req-source"><em class="status todo">todo</em> Document DBUS plugins<a class="reference internal" href="plugins/dbus/index.html#req-0"> <em>→</em></a></p>
-<p class="req-source"><em class="status todo">todo</em> Create brief documentation for installing and setup<a class="reference internal" href="production.html#req-0"> <em>→</em></a></p>
 <p class="req-source"><em class="status todo">todo</em> Fix shell CLI mode and provide docs<a class="reference internal" href="shell/index.html#req-0"> <em>→</em></a></p>
 <p class="req-source"><em class="status todo">todo</em> Fix shell here document mode and provide docs<a class="reference internal" href="shell/index.html#req-1"> <em>→</em></a></p>
 <p><strong>Contents:</strong></p>
@@ -126,7 +124,38 @@ that is 100% build on Clacks.</p>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="production.html">Installation and configuration guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="downloads.html">Downloads</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="downloads.html#packages">Packages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="downloads.html#debian-ubuntu">Debian / Ubuntu</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="downloads.html#developers">Developers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="downloads.html#virtual-appliances">Virtual appliances</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#common">Common</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#command-line">Command line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#configuration">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#agent">Agent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#id1">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#backends">Backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#backend-monitor">Backend monitor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#acl">ACL</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#client">Client</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#id3">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#dbus">DBUS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration.html#id4">Configuration</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="concepts.html">Concepts</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="concepts.html#messaging-with-amqp">Messaging with AMQP</a></li>
@@ -154,10 +183,7 @@ that is 100% build on Clacks.</p>
 <li class="toctree-l3"><a class="reference internal" href="agent/ldap.html">LDAP Handler</a></li>
 <li class="toctree-l3"><a class="reference internal" href="agent/jsonrpc.html">JSON RPC service</a></li>
 <li class="toctree-l3"><a class="reference internal" href="agent/jsonrpc.html#module-clacks.agent.jsonrpc_objects">JSON RPC objects</a></li>
-<li class="toctree-l3"><a class="reference internal" href="agent/objects.html">Object abstraction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="agent/objects.html#object-factory">Object Factory</a></li>
-<li class="toctree-l3"><a class="reference internal" href="agent/objects.html#object-proxy">Object Proxy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="agent/objects.html#object-index">Object Index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="agent/objects.html">Objects</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="client/index.html">Client</a><ul>
@@ -192,9 +218,9 @@ that is 100% build on Clacks.</p>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="packaging.html">Packaging and deployment</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="packaging.html">Packaging</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="packaging.html#ubuntu-debian">Ubuntu / Debian</a></li>
-<li class="toctree-l2"><a class="reference internal" href="packaging.html#rpm-build-service">RPM build service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packaging.html#rpm-based-distributions">RPM based distributions</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a><ul>

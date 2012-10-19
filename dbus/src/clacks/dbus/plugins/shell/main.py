@@ -11,6 +11,8 @@
 # See the LICENSE file in the project's top-level directory for details.
 
 """
+.. _dbus-shell:
+
 Clacks D-Bus Shell plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -163,7 +165,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         # Initialize paths and logging
         self.log = logging.getLogger(__name__)
         self.env = Environment.getInstance()
-        self.script_path = self.env.config.get("dbus.script_path", "/etc/clacks/shell.d").strip("'\"")
+        self.script_path = self.env.config.get("dbus.script-path", "/etc/clacks/shell.d").strip("'\"")
 
         # Start notifier for file changes in /etc/clacks/shell.d
         try:
@@ -184,7 +186,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
 
     def __notifier_callback(self, fullpath=None):
         """
-        This method reads scripts found in the 'dbus.script_path' and
+        This method reads scripts found in the 'dbus.script-path' and
         exports them as callable dbus-method.
         """
         # Check if we've the required permissions to access the shell.d directory
@@ -335,7 +337,7 @@ class DBusShellHandler(dbus.service.Object, Plugin):
         cmd = self.scripts[action][2]
 
         # Execute the script and return the results
-        args = map(lambda x: str(x), [os.path.join(self.script_path, cmd)] + args)
+        args = map(lambda x: str(x), [os.path.join(self.script-path, cmd)] + args)
         res = Popen(args, stdout=PIPE, stderr=PIPE)
         res.wait()
         return ({'code': res.returncode,

@@ -27,6 +27,9 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="Clacks Project" href="../../index.html" />
+    <link rel="up" title="Plugin development" href="../index.html" />
+    <link rel="next" title="Notify" href="notify.html" />
+    <link rel="prev" title="Shell" href="shell.html" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <!--[if lte IE 6]>
@@ -52,7 +55,10 @@
         <li class="right"><a href="downloads.html">Download</a>  |</li>
         <li class="right"><a href="doc_index.html">Documentation</a>  |</li>
         <li class="right"><a href="start.html">Getting started</a>  |</li>
-        <li><a href="../../index.html">Clacks Project</a> &raquo;</li> 
+        <li><a href="../../index.html">Clacks Project</a> &raquo;</li>
+          <li><a href="../../doc_index.html" >Clacks Framework Documentation</a> &raquo;</li>
+          <li><a href="../../development.html" >Development documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Plugin development</a> &raquo;</li> 
       </ul>
     </div>
 
@@ -63,7 +69,7 @@
   <div class="section" id="module-clacks.dbus.plugins.wakeonlan.main">
 <span id="wake-on-lan"></span><h1>Wake On LAN<a class="headerlink" href="#module-clacks.dbus.plugins.wakeonlan.main" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="clacks-d-bus-wake-on-lan">
-<h2>Clacks D-Bus Wake on LAN<a class="headerlink" href="#clacks-d-bus-wake-on-lan" title="Permalink to this headline">¶</a></h2>
+<span id="dbus-wakeonlan"></span><h2>Clacks D-Bus Wake on LAN<a class="headerlink" href="#clacks-d-bus-wake-on-lan" title="Permalink to this headline">¶</a></h2>
 <p>This Clacks-DBus plugin provides wake on lan functionality.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">proxy</span><span class="o">.</span><span class="n">clientDispatch</span><span class="p">(</span><span class="s">&quot;49cb1287-db4b-4ddf-bc28-5f4743eac594&quot;</span><span class="p">,</span> <span class="s">&quot;dbus_wake_on_lan&quot;</span><span class="p">,</span> <span class="s">&quot;&lt;mac&gt;&quot;</span><span class="p">)</span>
 </pre></div>

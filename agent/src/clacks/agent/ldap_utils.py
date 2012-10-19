@@ -96,10 +96,10 @@ class LDAPHandler(object):
         # Initialize from configuration
         get = self.env.config.get
         self.__url = ldapurl.LDAPUrl(get("ldap.url"))
-        self.__bind_user = get('ldap.bind_user', default=None)
-        self.__bind_dn = get('ldap.bind_dn', default=None)
-        self.__bind_secret = get('ldap.bind_secret', default=None)
-        self.__pool = int(get('ldap.pool_size', default=10))
+        self.__bind_user = get('ldap.bind-user', default=None)
+        self.__bind_dn = get('ldap.bind-dn', default=None)
+        self.__bind_secret = get('ldap.bind-secret', default=None)
+        self.__pool = int(get('ldap.pool-size', default=10))
 
         # Sanity check
         if self.__bind_user and not ldap.SASL_AVAIL:
@@ -139,8 +139,8 @@ class LDAPHandler(object):
                     str(self.__url))
             conn = ldap.ldapobject.ReconnectLDAPObject("%s://%s" % (self.__url.urlscheme,
                 self.__url.hostport),
-                retry_max=int(get("ldap.retry_max", default=3)),
-                retry_delay=int(get("ldap.retry_delay", default=5)))
+                retry_max=int(get("ldap.retry-max", default=3)),
+                retry_delay=int(get("ldap.retry-delay", default=5)))
 
             # We only want v3
             conn.protocol_version = ldap.VERSION3
