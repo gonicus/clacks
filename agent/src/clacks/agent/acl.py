@@ -907,7 +907,7 @@ class ACLResolver(Plugin):
         if isinstance(event, ObjectChanged):
 
             # Only act on these events
-            if not event.reason in ["post object create", "post object update", "post object remove"]:
+            if not event.reason in ["post object create", "post object update", "post object remove", "post remove"]:
                 return
 
             reload = False
