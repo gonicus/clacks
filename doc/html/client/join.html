@@ -88,64 +88,6 @@ to the server. Because it is only readable by root, it can be used later on
 to pass an initial encrypted secret to the client after a reboot happened.</p>
 </div>
 <hr class="docutils" />
-<dl class="class">
-<dt id="clacks.client.plugins.join.methods.join_method">
-<em class="property">class </em><tt class="descclassname">clacks.client.plugins.join.methods.</tt><tt class="descname">join_method</tt><a class="headerlink" href="#clacks.client.plugins.join.methods.join_method" title="Permalink to this definition">¶</a></dt>
-<dd><p>There are several ways to present the join process, that are</p>
-<blockquote>
-<div><ul class="simple">
-<li>CLI</li>
-<li>Curses</li>
-<li>QT</li>
-</ul>
-</div></blockquote>
-<p>in the moment. By implementing the <a class="reference internal" href="#clacks.client.plugins.join.methods.join_method" title="clacks.client.plugins.join.methods.join_method"><tt class="xref py py-class docutils literal"><span class="pre">clacks.client.plugins.join.methods.join_method</span></tt></a> interface,
-new ones (i.e. graphical) can simply be added. The resulting modules have to be
-registerd in the setuptools <tt class="docutils literal"><span class="pre">[join.module]</span></tt> section.</p>
-<p>The <strong>priority</strong> class member is used to order the join methods.</p>
-<dl class="staticmethod">
-<dt id="clacks.client.plugins.join.methods.join_method.available">
-<em class="property">static </em><tt class="descname">available</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.client.plugins.join.methods.join_method.available" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method can check if the current method is available
-on the system. It is used to avoid that i.e. a framebuffer
-dialog will show up when there&#8217;s no framebuffer.</p>
-<p><tt class="docutils literal"><span class="pre">Returns</span></tt>: True if available</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="clacks.client.plugins.join.methods.join_method.join_dialog">
-<tt class="descname">join_dialog</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.client.plugins.join.methods.join_method.join_dialog" title="Permalink to this definition">¶</a></dt>
-<dd><p>This dialog presents the join dialog aquiring the username
-and the password of a person capable to join the client. It
-must call the <tt class="xref py py-meth docutils literal"><span class="pre">clacks.client.plugins.join.methods.join_method.join()</span></tt>
-method and loop until success or abort itself.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="clacks.client.plugins.join.methods.join_method.show_error">
-<tt class="descname">show_error</tt><big>(</big><em>error</em><big>)</big><a class="headerlink" href="#clacks.client.plugins.join.methods.join_method.show_error" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>show_error</em> is the function used to show messages to the user. It
-needs to be implemented.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="38%" />
-<col width="62%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Parameter</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>error</td>
-<td>The error string</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 
 

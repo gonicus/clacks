@@ -66,39 +66,8 @@
       <div class="documentwrapper">
         <div class="body">
           
-  <div class="section" id="module-clacks.client.plugins.inventory.main">
-<span id="inventory"></span><h1>Inventory<a class="headerlink" href="#module-clacks.client.plugins.inventory.main" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="description">
-<span id="client-fusion"></span><h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
-<p>This plugin is used to create inventory information for the client.</p>
-<p>It uses the dbus method <tt class="docutils literal"><span class="pre">inventory</span></tt> which is exported by the
-clacks-dbus-plugin <tt class="xref py py-class docutils literal"><span class="pre">clacks.dbus.plugins.inventory.main.DBusInventoryHandler</span></tt> to receive client inventory
-information for the client.</p>
-<p>With the method <tt class="docutils literal"><span class="pre">request_inventory</span></tt> you can trigger an update of the client inventory
-dataset on the server. The client will then collect all information and then send them
-to the clacks-agent.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">proxy</span><span class="o">.</span><span class="n">clientDispatch</span><span class="p">(</span><span class="s">&quot;49cb1287-db4b-4ddf-bc28-5f4743eac594&quot;</span><span class="p">,</span> <span class="s">&quot;request_inventory&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>If you just want to see the inventory result without sending the result to the server, you
-can call the dbus method directly:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">proxy</span><span class="o">.</span><span class="n">clientDispatch</span><span class="p">(</span><span class="s">&quot;49cb1287-db4b-4ddf-bc28-5f4743eac594&quot;</span><span class="p">,</span> <span class="s">&quot;dbus_inventory&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="class">
-<dt id="clacks.client.plugins.inventory.main.Inventory">
-<em class="property">class </em><tt class="descclassname">clacks.client.plugins.inventory.main.</tt><tt class="descname">Inventory</tt><a class="headerlink" href="#clacks.client.plugins.inventory.main.Inventory" title="Permalink to this definition">¶</a></dt>
-<dd><p>Utility class that contains methods needed to handle WakeOnLAN
-notification functionality.</p>
-<dl class="method">
-<dt id="clacks.client.plugins.inventory.main.Inventory.request_inventory">
-<tt class="descname">request_inventory</tt><big>(</big><em>old_checksum=None</em><big>)</big><a class="headerlink" href="#clacks.client.plugins.inventory.main.Inventory.request_inventory" title="Permalink to this definition">¶</a></dt>
-<dd><p>Request client inventory information</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
+  <div class="section" id="inventory">
+<h1>Inventory<a class="headerlink" href="#inventory" title="Permalink to this headline">¶</a></h1>
 </div>
 
 

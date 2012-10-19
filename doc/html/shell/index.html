@@ -71,79 +71,8 @@
 directly in python, there&#8217;s sometimes the need to trigger calls from
 within the ordinary shell - maybe inside a <em>bash</em> script. For that reason,
 there&#8217;s the <em>clacksh</em> binary, which can assist you in this case.</p>
-<div class="section" id="module-clacks.shell">
-<span id="using-the-shell"></span><h2>Using the shell<a class="headerlink" href="#module-clacks.shell" title="Permalink to this headline">¶</a></h2>
-<p>The Clacks shell can be called in different ways.</p>
-<blockquote>
-<div><ul>
-<li><p class="first">Interactive mode:</p>
-<div class="highlight-python"><pre>$ clacksh
-Searching service provider...
-Connected to amqps://amqp.example.net:5671/org.clacks
-Username [cajus]:
-Password:
-Clacks service shell. Use Ctrl+D to exit.
-&gt;&gt;&gt;</pre>
-</div>
-<p>The shell will automatically try to find the service by DNS
-or zeroconf and will ask for your credentials. Sometimes, you
-may need to connect a special system or even provide your
-credentials in the URI like</p>
-<div class="highlight-python"><pre>$ clacksh amqps://user:password@amqp.example.net/org.clacks</pre>
-</div>
-<p>but keep in mind that this will expose your credentials in the
-history, and maybe in the history or the process list.</p>
-<p>Nevertheless you&#8217;re presented a python prompt which can be used
-to get the list of commands using the <em>proxy</em> object:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">clacks</span><span class="o">.</span><span class="n">help</span><span class="p">()</span>
-<span class="go">createDistribution()</span>
-<span class="go">    Create a new distribution based on type, mirror and installation</span>
-<span class="go">    method</span>
-
-<span class="go">getTimezones(self)</span>
-<span class="go">    Get supported time zones</span>
-<span class="gp">...</span>
-</pre></div>
-</div>
-<p>The <em>proxy</em> object acts as a proxy for the commands, so you can i.e. start
-asking for the registered Clacks clients</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">getClients</span><span class="p">()</span>
-<span class="go">{u&#39;2daf7cbf-75c2-4ea3-bfec-606fe9f07051&#39;: {</span>
-<span class="go">    u&#39;received&#39;: 1313159425.0,</span>
-<span class="go">    u&#39;name&#39;: u&#39;dyn-10&#39;},</span>
-<span class="go"> u&#39;eb5e72d4-c53f-4612-81a3-602b14a8da69&#39;: {</span>
-<span class="go">     u&#39;received&#39;: 1313467229.0,</span>
-<span class="go">     u&#39;name&#39;: u&#39;ws-2&#39;},</span>
-<span class="go"> u&#39;4f0dbdaa-05de-4632-bcba-b6fe8a9e2e09&#39;: {</span>
-<span class="go">     u&#39;received&#39;: 1313463859.0,</span>
-<span class="go">     u&#39;name&#39;: u&#39;dyn-85&#39;}}</span>
-</pre></div>
-</div>
-<p>or just do simple multi-liners:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">client</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">getClients</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<span class="gp">... </span>  <span class="k">print</span> <span class="n">info</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
-<span class="gp">...</span>
-<span class="go">dyn-10</span>
-<span class="go">ws-2</span>
-<span class="go">dyn-85</span>
-</pre></div>
-</div>
-<p>You can leave the interactive mode by pressing &#8220;Ctrl+D&#8221;.</p>
-</li>
-<li><p class="first">CLI mode</p>
-<div class="admonition-requirement admonition" id="req-0">
-<p class="first admonition-title">Requirement</p>
-<p class="last"><em class="status todo">todo</em> Fix shell CLI mode and provide docs</p>
-</div>
-</li>
-<li><p class="first">Here document mode</p>
-<div class="admonition-requirement admonition" id="req-1">
-<p class="first admonition-title">Requirement</p>
-<p class="last"><em class="status todo">todo</em> Fix shell here document mode and provide docs</p>
-</div>
-</li>
-</ul>
-</div></blockquote>
+<div class="section" id="using-the-shell">
+<h2>Using the shell<a class="headerlink" href="#using-the-shell" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="using-the-api">
 <h2>Using the API<a class="headerlink" href="#using-the-api" title="Permalink to this headline">¶</a></h2>

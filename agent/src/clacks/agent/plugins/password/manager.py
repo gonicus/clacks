@@ -19,6 +19,8 @@ from clacks.common.handler import IInterfaceHandler
 from clacks.agent.objects.proxy import ObjectProxy
 from clacks.common.components import PluginRegistry
 from clacks.common.error import ClacksErrorHandler as C
+from clacks.common import Environment
+from clacks.agent.exceptions import ACLException
 
 
 class PasswordManager(Plugin):
@@ -48,9 +50,10 @@ class PasswordManager(Plugin):
         """
 
         # Do we have read permissions for the requested attribute
-        topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, "userPassword")
+        env = Environment.getInstance()
+        topic = "%s.objects.%s.attributes.%s" % (env.domain, "User", "userPassword")
         aclresolver = PluginRegistry.getInstance("ACLResolver")
-        if not self.__acl_resolver.check(user, topic, "w", base=object_dn):
+        if not aclresolver.check(user, topic, "w", base=object_dn):
 
             self.__log.debug("user '%s' has insufficient permissions to write %s on %s, required is %s:%s" % (
                 user, "isLocked", object_dn, topic, "w"))
@@ -81,9 +84,10 @@ class PasswordManager(Plugin):
         """
 
         # Do we have read permissions for the requested attribute
-        topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, "userPassword")
+        env = Environment.getInstance()
+        topic = "%s.objects.%s.attributes.%s" % (env.domain, "User", "userPassword")
         aclresolver = PluginRegistry.getInstance("ACLResolver")
-        if not self.__acl_resolver.check(user, topic, "w", base=object_dn):
+        if not aclresolver.check(user, topic, "w", base=object_dn):
 
             self.__log.debug("user '%s' has insufficient permissions to write %s on %s, required is %s:%s" % (
                 user, "isLocked", object_dn, topic, "w"))
@@ -112,9 +116,10 @@ class PasswordManager(Plugin):
         index = PluginRegistry.getInstance("ObjectIndex")
 
         # Do we have read permissions for the requested attribute
-        topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, "isLocked")
+        env = Environment.getInstance()
+        topic = "%s.objects.%s.attributes.%s" % (env.domain, "User", "isLocked")
         aclresolver = PluginRegistry.getInstance("ACLResolver")
-        if not self.__acl_resolver.check(user, topic, "r", base=object_dn):
+        if not aclresolver.check(user, topic, "r", base=object_dn):
 
             self.__log.debug("user '%s' has insufficient permissions to read %s on %s, required is %s:%s" % (
                 user, "isLocked", object_dn, topic, "r"))
@@ -143,9 +148,10 @@ class PasswordManager(Plugin):
         index = PluginRegistry.getInstance("ObjectIndex")
 
         # Do we have read permissions for the requested attribute
-        topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, "isLocked")
+        env = Environment.getInstance()
+        topic = "%s.objects.%s.attributes.%s" % (env.domain, "User", "isLocked")
         aclresolver = PluginRegistry.getInstance("ACLResolver")
-        if not self.__acl_resolver.check(user, topic, "r", base=object_dn):
+        if not aclresolver.check(user, topic, "r", base=object_dn):
 
             self.__log.debug("user '%s' has insufficient permissions to read %s on %s, required is %s:%s" % (
                 user, "isLocked", object_dn, topic, "r"))
@@ -158,7 +164,7 @@ class PasswordManager(Plugin):
             # No password hash -> cannot lock/unlock account
             return False
 
-        raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=self.dn))
+        raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=object_dn))
 
         # Try to detect the responsible password method-class
         pwd_o = self.detect_method_by_hash(hsh)
@@ -176,9 +182,10 @@ class PasswordManager(Plugin):
         """
 
         # Do we have read permissions for the requested attribute
-        topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, "userPassword")
+        env = Environment.getInstance()
+        topic = "%s.objects.%s.attributes.%s" % (env.domain, "User", "userPassword")
         aclresolver = PluginRegistry.getInstance("ACLResolver")
-        if not self.__acl_resolver.check(user, topic, "w", base=object_dn):
+        if not aclresolver.check(user, topic, "w", base=object_dn):
 
             self.__log.debug("user '%s' has insufficient permissions to write %s on %s, required is %s:%s" % (
                 user, "isLocked", object_dn, topic, "w"))
@@ -204,9 +211,10 @@ class PasswordManager(Plugin):
         """
 
         # Do we have read permissions for the requested attribute
-        topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, "userPassword")
+        env = Environment.getInstance()
+        topic = "%s.objects.%s.attributes.%s" % (env.domain, "User", "userPassword")
         aclresolver = PluginRegistry.getInstance("ACLResolver")
-        if not self.__acl_resolver.check(user, topic, "w", base=object_dn):
+        if not aclresolver.check(user, topic, "w", base=object_dn):
 
             self.__log.debug("user '%s' has insufficient permissions to write %s on %s, required is %s:%s" % (
                 user, "isLocked", object_dn, topic, "w"))
