@@ -931,7 +931,7 @@ class ACLResolver(Plugin):
         self.clear()
 
         # Load override admins from configuration
-        admins = self.env.config.get("core.admins", default=None)
+        admins = self.env.config.get("agent.admins", default=None)
         if admins:
             admins = re.sub(r'\s', '', admins)
             self.log.warning("adding users to the ACL override: %s" % admins)
