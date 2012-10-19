@@ -81,8 +81,8 @@ Common AMQP related settings go to the [amqp] section.
 + reconnect_limit   | Integer    + Number of maximum reconnect tries.                          |
 +-------------------+------------+-------------------------------------------------------------+
 + url               | String     + The AMQP URL used to connect to a broker - initially.       |
-+                   |            + Fallback is done automatically. Format is::                 |
-+                   |            +   amqp[s]://host.dns-domain:port/clacks-domain              |
++                   |            + Fallback is done automatically. Format is:                  |
++                   |            + amqp[s]://host.dns-domain:port/clacks-domain                |
 +-------------------+------------+-------------------------------------------------------------+
 + worker            | Integer    + Number of workers to process commands.                      + 
 +-------------------+------------+-------------------------------------------------------------+
@@ -249,101 +249,100 @@ Section **backend-mongodb**
 Backend monitor
 ---------------
 
-+------------------+------------+-------------------------------------------------------------+
-+ Key              | Format     +  Description                                                |
-+==================+============+=============================================================+
-+                  |            +                                                             |
-+------------------+------------+-------------------------------------------------------------+
-+                  |            +                                                             |
-+------------------+------------+-------------------------------------------------------------+
-+                  |            +                                                             |
-+------------------+------------+-------------------------------------------------------------+
-tools/clacks-ldap-monitor:    path = config.get('backend-monitor.audit-log', default='/var/lib/clacks/ldap-audit.log')
-tools/clacks-ldap-monitor:    modifier = config.get('backend-monitor.modifier')
-tools/clacks-ldap-monitor:    user = config.get('amqp.id')
-tools/clacks-ldap-monitor:    password = config.get('amqp.key')
-tools/clacks-ldap-monitor:    url = parseURL(makeAuthURL(config.get('amqp.url'), user, password))
-
-Plugins
--------
+Section **backend-monitor**
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 +------------------+------------+-------------------------------------------------------------+
 + Key              | Format     +  Description                                                |
 +==================+============+=============================================================+
-+                  |            +                                                             |
++ audit-log        | String     + LDAP audit log file which is scanned for updates.           |
 +------------------+------------+-------------------------------------------------------------+
-+                  |            +                                                             |
++ modifier         | String     + DN of Clacks configured LDAP managing user.                 |
 +------------------+------------+-------------------------------------------------------------+
-+                  |            +                                                             |
+
+ACL
+---
+
+Managing access control is configuration in the broader sense. You can read more on
+this topic in the section :ref:`clacks-acl`.
+
+
+Client
+******
+
+The Clacks client is divided into two parts: the main part and the DBUS part. The client can
+be extended thru plugins that may have separate configuration parameters, too:
+
+ * :ref:`Generic DBUS support <client-dbus>`
+ * :ref:`DBUS libnotify user notifications <client-notify>`
+ * :ref:`Fusioninventory integration <client-fusion>`
+ * :ref:`Powermanagement related methods <client-power>`
+ * :ref:`Session notifications <client-session>`
+
+Configuration
+-------------
+
+Section **client**
+~~~~~~~~~~~~~~~~~~
+
 +------------------+------------+-------------------------------------------------------------+
++ Key              | Format     +  Description                                                |
++==================+============+=============================================================+
++ ping-interval    | Integer    + Update ping to the Clacks framework to show: I'm still here.|
++------------------+------------+-------------------------------------------------------------+
++ spool            | String     + Spool directory used for several temporary files.           |
++------------------+------------+-------------------------------------------------------------+
+
+DBUS
+****
+
+The DBUS component is the root-component of the Clacks client side. It allows the client
+to trigger certain commands as root, but grants non-root operation for the client itself. By
+default it comes with a couple of plugins that may have parameters of their own.
+
+ * ref:`Fusioninventory integration <dbus-fusion>`
+ * ref:`DBUS libnotify user notifications <dbus-notify>`
+ * ref:`Managing unix services <dbus-service>`
+ * ref:`Executing shell commands <dbus-shell>`
+ * ref:`Wake on lan client <dbus-wakeonlan>`
+
+Configuration
+-------------
+
+Section **dbus**
+~~~~~~~~~~~~~~~~
+
++------------------+------------+-------------------------------------------------------------+
++ Key              | Format     +  Description                                                |
++==================+============+=============================================================+
++ script-path      | String     + Script directory that is scanned for DBUS exported scripts. |
++------------------+------------+-------------------------------------------------------------+
+
+
+--------
+
+TODO
+
+
+By default it comes with a couple of plugins that may have parameters of their own. 
+ 
+Agent:
+
+
+Cleanup and add to the documentation 
+
 agent/src/clacks/agent/plugins/gosa/methods.py:                cache_path = self.env.config.get('gosa.cache_path', default="/cache")
 agent/src/clacks/agent/plugins/gosa/service.py:        self.path = self.env.config.get('gosa.path', default="/admin")
 agent/src/clacks/agent/plugins/gosa/service.py:        self.static_path = self.env.config.get('gosa.static_path', default="/static")
 agent/src/clacks/agent/plugins/gosa/service.py:        self.cache_path = self.env.config.get('gosa.cache_path', default="/cache")
 agent/src/clacks/agent/plugins/gosa/service.py:        self.ws_path = self.env.config.get('gosa.websocket', default="/ws")
 agent/src/clacks/agent/plugins/gosa/service.py:        self.local_path = self.env.config.get('gosa.local', default=spath)
-agent/src/clacks/agent/plugins/gosa/service.py:        self.__secret = env.config.get('http.cookie_secret', default="TecloigJink4")
-agent/src/clacks/agent/plugins/gosa/service.py:        self.__secret = self.env.config.get('http.cookie_secret', default="TecloigJink4")
+agent/src/clacks/agent/plugins/gosa/service.py:        self.__secret = env.config.get('http.cookie-secret', default="TecloigJink4")
+agent/src/clacks/agent/plugins/gosa/service.py:        self.__secret = self.env.config.get('http.cookie-secret', default="TecloigJink4")
 agent/src/clacks/agent/plugins/samba/sid.py:            ridbase = int(self.env.config.get('samba.ridbase', default=1000))
 agent/src/clacks/agent/plugins/goto/client_service.py:            dn = ",".join(["cn=" + cn, self.env.config.get("goto.machine-rdn",
 agent/src/clacks/agent/plugins/goto/client_service.py:        interval = int(self.env.config.get("goto.timeout", default="600"))
 agent/src/clacks/agent/plugins/posix/shells.py:        source = env.config.get('goto.shells', default="/etc/shells")
-
-ACL
----
-
-Client
-******
-
-Configuration
--------------
-
-+------------------+------------+-------------------------------------------------------------+
-+ Key              | Format     +  Description                                                |
-+==================+============+=============================================================+
-+                  |            +                                                             |
-+------------------+------------+-------------------------------------------------------------+
-+                  |            +                                                             |
-+------------------+------------+-------------------------------------------------------------+
-+                  |            +                                                             |
-+------------------+------------+-------------------------------------------------------------+
-client/src/clacks/client/join.py:    group = env.config.get("client.group", default="clacks")
-client/src/clacks/client/amqp_service.py:        timeout = float(self.env.config.get('client.ping-interval', default=600))
-client/src/clacks/client/plugins/join/methods.py:        url = self.env.config.get("amqp.url", default=None)
-client/src/clacks/client/plugins/join/methods.py:        key = self.env.config.get("amqp.key", default=None)
-client/src/clacks/client/plugins/notify/main.py:        self.spool = env.config.get("client.spool", default="/var/spool/clacks")
-client/src/clacks/client/amqp.py:        self.url = parseURL(self.env.config.get('amqp.url', None))
-client/src/clacks/client/amqp.py:        self.domain = self.env.config.get('ampq.domain', default="org.clacks")
-client/src/clacks/client/amqp.py:        user = self.env.config.get('amqp.id', default=None)
-client/src/clacks/client/amqp.py:        key = self.env.config.get('amqp.key')
-client/src/clacks/client/amqp.py:        self.reconnect = self.env.config.get('amqp.reconnect', True)
-client/src/clacks/client/amqp.py:        self.reconnect_interval = self.env.config.get('amqp.reconnect-interval', 3)
-client/src/clacks/client/amqp.py:        self.reconnect_limit = self.env.config.get('amqp.reconnect-limit', 0)
-client/src/clacks/client/amqp.py:        if not self.env.config.get("amqp.key"):
-client/src/clacks/client/amqp.py:        user = self.env.config.get("amqp.id", default=None)
-client/src/clacks/client/amqp.py:            password=self.env.config.get("amqp.key"),
-client/src/clacks/client/amqp.py:        if self.env.config.get('amqp.failover', default=False):
-
-DBUS
-****
-
-Configuration
--------------
-
-+------------------+------------+-------------------------------------------------------------+
-+ Key              | Format     +  Description                                                |
-+==================+============+=============================================================+
-+                  |            +                                                             |
-+------------------+------------+-------------------------------------------------------------+
-+                  |            +                                                             |
-+------------------+------------+-------------------------------------------------------------+
-+                  |            +                                                             |
-+------------------+------------+-------------------------------------------------------------+
-dbus/src/clacks/dbus/plugins/shell/main.py:        self.script_path = self.env.config.get("dbus.script_path", "/etc/clacks/shell.d").strip("'\"")
-dbus/src/clacks/dbus/plugins/services/main.py:        self.svc_command = self.env.config.get("unix.service-command", default="/usr/sbin/service")
-
-Plugins
-*******
 
 plugins/libinst.boot.preseed/src/libinst/boot/preseed/methods.py:        self.path = self.env.config.get('libinst.path', default="/preseed")
 plugins/libinst.boot.preseed/src/libinst/boot/preseed/methods.py:        url = urlparse(self.env.config.get('repository.http_base_url'))
@@ -390,3 +389,7 @@ plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/main.py:        
 plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/main.py:            'version': config.get('release', 'version'),
 plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/main.py:            'description': config.get('release', 'description'),
 plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/main.py:        user = self.env.config.get('client.user', default="clacks")
+
+
+TODO: Fix sample configurations
+TODO: gosa plugin data -> qooxdoo-build

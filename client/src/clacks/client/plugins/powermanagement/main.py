@@ -10,6 +10,15 @@
 #
 # See the LICENSE file in the project's top-level directory for details.
 
+"""
+.. _client-power:
+
+Power management
+================
+
+To. Do.
+"""
+
 import logging
 from clacks.common.components import Plugin
 from clacks.common.components import PluginRegistry

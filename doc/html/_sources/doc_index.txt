@@ -36,6 +36,7 @@ that is 100% build on Clacks.
    :maxdepth: 3
 
    start
+   downloads
    configuration
    development
    packaging

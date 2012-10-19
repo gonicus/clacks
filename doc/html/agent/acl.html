@@ -27,6 +27,9 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="Clacks Project" href="../index.html" />
+    <link rel="up" title="Agent" href="index.html" />
+    <link rel="next" title="Scheduler service" href="scheduler.html" />
+    <link rel="prev" title="Command registry" href="command.html" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <!--[if lte IE 6]>
@@ -52,7 +55,10 @@
         <li class="right"><a href="downloads.html">Download</a>  |</li>
         <li class="right"><a href="doc_index.html">Documentation</a>  |</li>
         <li class="right"><a href="start.html">Getting started</a>  |</li>
-        <li><a href="../index.html">Clacks Project</a> &raquo;</li> 
+        <li><a href="../index.html">Clacks Project</a> &raquo;</li>
+          <li><a href="../doc_index.html" >Clacks Framework Documentation</a> &raquo;</li>
+          <li><a href="../development.html" >Development documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Agent</a> &raquo;</li> 
       </ul>
     </div>
 
@@ -62,10 +68,12 @@
           
   <div class="section" id="module-clacks.agent.acl">
 <span id="acl-handling"></span><h1>ACL handling<a class="headerlink" href="#module-clacks.agent.acl" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="acl-management">
+<span id="clacks-acl"></span><h2>ACL management<a class="headerlink" href="#acl-management" title="Permalink to this headline">¶</a></h2>
 <p>This chapter details the way access control is handled within the clacks core
 engine.</p>
 <div class="section" id="how-an-acl-assigment-could-look-like">
-<h2>How an ACL assigment could look like<a class="headerlink" href="#how-an-acl-assigment-could-look-like" title="Permalink to this headline">¶</a></h2>
+<h3>How an ACL assigment could look like<a class="headerlink" href="#how-an-acl-assigment-could-look-like" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><pre>ACLRole (test1)
  |-&gt; ACLRoleEntry
  |-&gt; ACLRoleEntry
@@ -1481,6 +1489,7 @@ acls, is valid for. E.g. dc=example,dc=net</p>
 
 </dd></dl>
 
+</div>
 </div>
 </div>
 

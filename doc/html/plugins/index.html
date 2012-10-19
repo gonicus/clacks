@@ -27,6 +27,9 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="Clacks Project" href="../index.html" />
+    <link rel="up" title="Development documentation" href="../development.html" />
+    <link rel="next" title="Agent plugins" href="agent/index.html" />
+    <link rel="prev" title="Shell and scripting" href="../shell/index.html" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <!--[if lte IE 6]>
@@ -52,7 +55,9 @@
         <li class="right"><a href="downloads.html">Download</a>  |</li>
         <li class="right"><a href="doc_index.html">Documentation</a>  |</li>
         <li class="right"><a href="start.html">Getting started</a>  |</li>
-        <li><a href="../index.html">Clacks Project</a> &raquo;</li> 
+        <li><a href="../index.html">Clacks Project</a> &raquo;</li>
+          <li><a href="../doc_index.html" >Clacks Framework Documentation</a> &raquo;</li>
+          <li><a href="../development.html" accesskey="U">Development documentation</a> &raquo;</li> 
       </ul>
     </div>
 
@@ -132,12 +137,25 @@ If you find missing plugins, please send patches to these documentation files.</
 <h2>Client plugins<a class="headerlink" href="#client-plugins" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="client/dbus.html">D-Bus Proxy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="client/dbus.html#d-bus-command-proxy">D-Bus Command Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client/dbus.html#which-methods-are-exported">Which methods are exported?</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="client/goto.html">GOto</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="client/goto.html#powermanagement">Powermanagement</a></li>
-<li class="toctree-l2"><a class="reference internal" href="client/goto.html#sessions">Sessions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client/goto.html#module-clacks.client.plugins.powermanagement.main">Powermanagement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client/goto.html#module-clacks.client.plugins.sessions.main">Sessions</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="client/libinst.html">libinst</a></li>
+<li class="toctree-l1"><a class="reference internal" href="client/inventory.html">Inventory</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="client/inventory.html#description">Description</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="client/notify.html">Notify</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="client/notify.html#clacks-client-notification-plugin">Clacks Client Notification Plugin</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>

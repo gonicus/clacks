@@ -11,6 +11,11 @@
 # See the LICENSE file in the project's top-level directory for details.
 
 """
+.. _clacks-acl:
+
+ACL management
+==============
+
 This chapter details the way access control is handled within the clacks core
 engine.
 

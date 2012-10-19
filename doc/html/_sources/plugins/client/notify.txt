@@ -1,5 +1,6 @@
+
 Notify
 ------
 
-.. autoclass:: clacks.client.plugins.notify.main.Notify
+.. automodule:: clacks.client.plugins.notify.main
   :members:

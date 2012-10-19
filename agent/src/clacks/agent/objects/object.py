@@ -10,6 +10,10 @@
 #
 # See the LICENSE file in the project's top-level directory for details.
 
+"""
+The object base class.
+"""
+
 import copy
 import zope.event
 import pkg_resources
