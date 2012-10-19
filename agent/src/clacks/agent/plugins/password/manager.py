@@ -164,8 +164,6 @@ class PasswordManager(Plugin):
             # No password hash -> cannot lock/unlock account
             return False
 
-        raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=object_dn))
-
         # Try to detect the responsible password method-class
         pwd_o = self.detect_method_by_hash(hsh)
         if not pwd_o:
