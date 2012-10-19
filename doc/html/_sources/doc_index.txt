@@ -5,7 +5,7 @@ What is it all about?
 ---------------------
 
 The Clacks Framework is an AMQP based framework for infrastructure management that
-incorporates functionality known from the `GOsa Project <http://oss.gonicus.de/labs/gosa>`.
+incorporates functionality known from the `GOsa Project <http://oss.gonicus.de/labs/gosa>`_.
 
 AMQP handles the *authentication*, the *message queueing*, the *clustering* and
 *load balancing* for us. A client can subscribe to public events using
@@ -21,7 +21,7 @@ transparently accessed by clients, thanks to the routing possible with QPID queu
 models. The functionality is currently exposed by AMQP and by a HTTP/JSONRPC gateway,
 more methods like ReST or SOAP may follow if there's an urgent need for that.
 
-Starting with GOsa 3, there is a `qooxdoo <http://qooxdoo.org>` based GUI component
+Starting with GOsa 3, there is a `qooxdoo <http://qooxdoo.org>`_ based GUI component
 that is 100% build on Clacks.
 
 ---------------------
