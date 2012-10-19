@@ -47,9 +47,9 @@ class JSON(ObjectBackend):
         self.scope_map[ldap.SCOPE_ONELEVEL] = "one"
 
         # Read storage path from config
-        self._file_path = self.env.config.get("json.database_file", None)
+        self._file_path = self.env.config.get("backend-json.database-file", None)
         if not self._file_path:
-            raise BackendError(C.make_error("DB_CONFIG_MISSING", target="json.database_file"))
+            raise BackendError(C.make_error("DB_CONFIG_MISSING", target="backend-json.database-file"))
 
         # Create a json file on demand
         if not os.path.exists(self._file_path):

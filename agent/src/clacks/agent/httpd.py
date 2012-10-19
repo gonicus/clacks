@@ -156,7 +156,7 @@ class HTTPService(object):
             ssl_options = dict(
                 certfile=self.env.config.get('http.certfile', default=None),
                 keyfile=self.env.config.get('http.keyfile', default=None),
-                ca_certs=self.env.config.get('http.ca_certs', default=None))
+                ca_certs=self.env.config.get('http.ca-certs', default=None))
         else:
             self.scheme = "http"
             ssl_options = None

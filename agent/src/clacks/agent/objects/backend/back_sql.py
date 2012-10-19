@@ -54,9 +54,9 @@ class SQL(ObjectBackend):
     def connect(self):
 
         # Read storage path from config
-        con_str = self.env.config.get("sql.backend_connection", None)
+        con_str = self.env.config.get("backend-sql.connection", None)
         if not con_str:
-            raise BackendError(C.make_error("DB_CONFIG_MISSING", target="sql.backend_connection"))
+            raise BackendError(C.make_error("DB_CONFIG_MISSING", target="backend-sql.connection"))
 
         # Create table definition
         self.engine = create_engine(con_str, echo=False)

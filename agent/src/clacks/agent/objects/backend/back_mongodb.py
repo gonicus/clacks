@@ -44,8 +44,8 @@ class MongoDB(ObjectBackend):
         self.scope_map[ldap.SCOPE_ONELEVEL] = "one"
 
         # Get database collection
-        db_name = self.env.config.get("mongodb.database", "storage")
-        collection = self.env.config.get("mongodb.collection", "objects")
+        db_name = self.env.config.get("backend-mongodb.database", "storage")
+        collection = self.env.config.get("backend-mongodb.collection", "objects")
         db = self.env.get_mongo_db(db_name)
         self.db = db[collection]
 

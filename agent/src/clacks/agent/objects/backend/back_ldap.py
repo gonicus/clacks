@@ -42,9 +42,9 @@ class LDAP(ObjectBackend):
 
         self.lh = LDAPHandler.get_instance()
         self.con = self.lh.get_connection()
-        self.uuid_entry = self.env.config.get("ldap.uuid_attribute", "entryUUID")
-        self.create_ts_entry = self.env.config.get("ldap.create_attribute", "createTimestamp")
-        self.modify_ts_entry = self.env.config.get("ldap.modify_attribute", "modifyTimestamp")
+        self.uuid_entry = self.env.config.get("backend-ldap.uuid-attribute", "entryUUID")
+        self.create_ts_entry = self.env.config.get("backend-ldap.create-attribute", "createTimestamp")
+        self.modify_ts_entry = self.env.config.get("backend-ldap.modify-attribute", "modifyTimestamp")
 
         # Internal identify cache
         self.__i_cache = {}
@@ -428,7 +428,7 @@ class LDAP(ObjectBackend):
         return sorted(dn_list, key=len)
 
     def get_next_id(self, attr):
-        fltr = self.env.config.get("posix.pool_filter", "(objectClass=sambaUnixIdPool)")
+        fltr = self.env.config.get("backend-ldap.pool-filter", "(objectClass=sambaUnixIdPool)")
         res = self.con.search_s(self.lh.get_base(False), ldap.SCOPE_SUBTREE, fltr, [attr])
 
         if not res:

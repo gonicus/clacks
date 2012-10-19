@@ -93,9 +93,9 @@ class JSONRPCService(object):
         # Register ourselves
         self.__app = JsonRpcApp(cr)
         self.__http.app.register(self.path, AuthCookieHandler(self.__app,
-            timeout=self.env.config.get('jsonrpc.cookie-lifetime',
+            timeout=self.env.config.get('http.cookie-lifetime',
             default=1800), cookie_name='ClacksRPC',
-            secret=self.env.config.get('http.cookie_secret',
+            secret=self.env.config.get('http.cookie-secret',
                 default="TecloigJink4")))
 
         # Announce service

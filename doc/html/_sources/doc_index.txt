@@ -36,7 +36,7 @@ that is 100% build on Clacks.
    :maxdepth: 3
 
    start
-   production
+   configuration
    development
    packaging
    license

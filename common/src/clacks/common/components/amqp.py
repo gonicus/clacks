@@ -52,9 +52,7 @@ class AMQPHandler(object):
         self._parser = objectify.makeparser(schema=schema)
 
         # Evaluate username
-        user = self.config.get("amqp.id", default=None)
-        if not user:
-            user = self.env.uuid
+        user = self.env.uuid
         password = self.config.get("amqp.key")
 
         # Load configuration
@@ -78,9 +76,7 @@ class AMQPHandler(object):
         self.log.debug("enabling AMQP queueing")
 
         # Evaluate username
-        user = self.config.get("amqp.id", default=None)
-        if not user:
-            user = self.env.uuid
+        user = self.env.uuid
         password = self.config.get("amqp.key")
 
         # Create initial broker connection
@@ -100,9 +96,7 @@ class AMQPHandler(object):
         socket = connect(self.url['host'], self.url['port'])
         if self.url['scheme'][-1] == 's':
             socket = ssl(socket)
-        user = self.config.get("amqp.id", default=None)
-        if not user:
-            user = self.env.uuid
+        user = self.env.uuid
         connection = DirectConnection(sock=socket,
                 username=user,
                 password=self.config.get("amqp.key"))

@@ -116,7 +116,7 @@ def main():
     # Load configuration
     path = config.get('backend-monitor.audit-log', default='/var/lib/clacks/ldap-audit.log')
     modifier = config.get('backend-monitor.modifier')
-    user = config.get('amqp.id')
+    user = config.get('core.id')
     password = config.get('amqp.key')
     url = parseURL(makeAuthURL(config.get('amqp.url'), user, password))
 

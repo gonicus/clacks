@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Packaging and deployment &mdash; Clacks Project</title>
+    <title>Packaging &mdash; Clacks Project</title>
     
     <link rel="stylesheet" href="_static/clacks.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -60,43 +60,28 @@
       <div class="documentwrapper">
         <div class="body">
           
-  <div class="section" id="packaging-and-deployment">
-<span id="packaging"></span><h1>Packaging and deployment<a class="headerlink" href="#packaging-and-deployment" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="packaging">
+<span id="id1"></span><h1>Packaging<a class="headerlink" href="#packaging" title="Permalink to this headline">¶</a></h1>
+<p>The documentation should expose the most important steps to get packages for your
+favorite distribution. Packaging help is appreciated - we&#8217;re a little bit Debian
+focused ;-)</p>
 <div class="section" id="ubuntu-debian">
 <h2>Ubuntu / Debian<a class="headerlink" href="#ubuntu-debian" title="Permalink to this headline">¶</a></h2>
 <p>In the moment, there&#8217;s contributed packaging stuff inside of the <tt class="docutils literal"><span class="pre">contrib/packaging/debian</span></tt>
 directory. The following package stubs are available:</p>
 <blockquote>
-<div><ul class="simple">
-<li>clacks.agent</li>
-<li>clacks.common</li>
-<li>clacks.shell</li>
-<li>clacks.client</li>
-<li>clacks.dbus</li>
-<li>libinst</li>
-<li>libinst.boot.preseed</li>
-<li>libinst.cfg.puppet</li>
-<li>libinst.cfg.puppet.client</li>
-<li>libinst.repo.deb</li>
-<li>python-gnupg</li>
-<li>python-jsonrpc</li>
-<li>python-nosexunit</li>
-<li>python-qpid</li>
-<li>python-unidecode</li>
-<li>qpidc</li>
+<div><ul>
+<li><p class="first">clacks</p>
+<p>It is possible to generate all files needed for packaging out of
+the <em>git</em> tree. Just call <em>package.sh</em> in the <em>clacks</em> directory. It
+will create an <em>orig.tar.gz</em> and a <em>.dsc</em> file.</p>
+</li>
 </ul>
 </div></blockquote>
-<div class="admonition-requirement admonition" id="req-0">
-<p class="first admonition-title">Requirement</p>
-<p class="last"><em class="status todo">todo</em> Describe how to build the debian packages.</p>
 </div>
-</div>
-<div class="section" id="rpm-build-service">
-<h2>RPM build service<a class="headerlink" href="#rpm-build-service" title="Permalink to this headline">¶</a></h2>
-<div class="admonition-requirement admonition" id="req-1">
-<p class="first admonition-title">Requirement</p>
-<p class="last"><em class="status todo">todo</em> Find a way to build the stuff for various RPM based distributions.</p>
-</div>
+<div class="section" id="rpm-based-distributions">
+<h2>RPM based distributions<a class="headerlink" href="#rpm-based-distributions" title="Permalink to this headline">¶</a></h2>
+<p>There is no packaging done yet.</p>
 </div>
 </div>
 

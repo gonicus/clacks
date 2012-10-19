@@ -98,7 +98,7 @@ class ObjectIndex(Plugin):
             self.db.index.save({'schema': {'checksum': md5sum}})
 
         # Sync index
-        if self.env.config.get("index.disable", "False").lower() != "true":
+        if self.env.config.get("agent.index", "True").lower() == "true":
             sobj = PluginRegistry.getInstance("SchedulerService")
             sobj.getScheduler().add_date_job(self.sync_index,
                     datetime.datetime.now() + datetime.timedelta(seconds=30),

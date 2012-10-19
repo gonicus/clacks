@@ -111,7 +111,6 @@ setup(
         goto.client_service = clacks.agent.plugins.goto.client_service:ClientService
         inventory = clacks.agent.plugins.inventory.consumer:InventoryConsumer
         password = clacks.agent.plugins.password.manager:PasswordManager
-        gofon = clacks.agent.plugins.gofon.gofon:goFonAccount
         gosa = clacks.agent.plugins.gosa.service:GOsaService
 
         [object.type]
@@ -130,12 +129,11 @@ setup(
 
         [object.backend]
         ldap = clacks.agent.objects.backend.back_ldap:LDAP
-        Object_handler = clacks.agent.objects.backend.back_object:ObjectHandler
+        object_handler = clacks.agent.objects.backend.back_object:ObjectHandler
         null = clacks.agent.objects.backend.back_null:NULL
         json = clacks.agent.objects.backend.back_json:JSON
         mongo = clacks.agent.objects.backend.back_mongodb:MongoDB
         sql = clacks.agent.objects.backend.back_sql:SQL
-        dbmap = clacks.agent.objects.backend.back_db_map:DBMAP
 
         [object.comparator]
         like = clacks.agent.objects.comparator.strings:Like

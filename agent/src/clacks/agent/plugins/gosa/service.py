@@ -113,7 +113,7 @@ class CacheHandler(object):
         env = Environment.getInstance()
         self.env = env
         self.__path = path
-        self.__secret = env.config.get('http.cookie_secret', default="TecloigJink4")
+        self.__secret = env.config.get('http.cookie-secret', default="TecloigJink4")
         self.db = env.get_mongo_db('clacks')
 
     def __call__(self, environ, start_response):
@@ -210,7 +210,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
     def __init__(self, *args, **kwargs):
         self.log = logging.getLogger(__name__)
         self.env = Environment.getInstance()
-        self.__secret = self.env.config.get('http.cookie_secret', default="TecloigJink4")
+        self.__secret = self.env.config.get('http.cookie-secret', default="TecloigJink4")
         self.__consumer = None
 
         super(WSHandler, self).__init__(*args, **kwargs)

@@ -145,13 +145,13 @@ class AMQPService(object):
             # Add round robin processor for queue
             self.__cmdWorker = AMQPWorker(self.env, connection=amqp.getConnection(),
                 r_address='%s.command.%s; { create:always, node:{ type:queue, x-bindings:[ { exchange:"amq.direct", queue:"%s.command.%s" } ] } }' % (self.env.domain, queue, self.env.domain, queue),
-                workers=int(self.env.config.get('amqp.command-worker', default=1)),
+                workers=int(self.env.config.get('amqp.worker', default=1)),
                 callback=self.commandReceived)
 
             # Add private processor for queue
             self.__cmdWorker = AMQPWorker(self.env, connection=amqp.getConnection(),
                     r_address='%s.command.%s.%s; { create:always, delete:receiver, node:{ type:queue, x-bindings:[ { exchange:"amq.direct", queue:"%s.command.%s.%s" } ] } }' % (self.env.domain, queue, self.env.id, self.env.domain, queue, self.env.id),
-                workers=int(self.env.config.get('amqp.command-worker', default=1)),
+                workers=int(self.env.config.get('amqp.worker', default=1)),
                 callback=self.commandReceived)
 
         # Announce service

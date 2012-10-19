@@ -38,6 +38,7 @@ import re
 import platform
 import ConfigParser
 import logging.config
+import getpass
 from argparse import ArgumentParser
 from clacks.common import __version__ as VERSION
 
@@ -99,9 +100,9 @@ class Config(object):
             self.__parseCmdOptions()
 
         if platform.system() != "Windows":
-            user = self.get('core.user', 'clacks')
-            userHome = pwd.getpwnam(self.get('core.user', 'clacks')).pw_dir
-            group = self.get('core.group', grp.getgrgid(pwd.getpwnam(self.get('core.user', 'clacks')).pw_gid).gr_name)
+            user = getpass.getuser()
+            userHome = pwd.getpwnam(user).pw_dir
+            group = grp.getgrgid(pwd.getpwnam(user).pw_gid).gr_name
 
             self.__registry['core']['user'] = user
             self.__registry['core']['group'] = group
