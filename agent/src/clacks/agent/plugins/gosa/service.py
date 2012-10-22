@@ -182,7 +182,7 @@ class CacheHandler(object):
         # Tell the client that we've no modification?
         lm = req.headers.get('If-Modified-Since')
         if lm:
-            lm = rfc822.parsedate(lm)
+            lm = time.mktime(rfc822.parsedate(lm))
             if data['modified'] > lm:
                 raise exc.HTTPNotModified().exception
 

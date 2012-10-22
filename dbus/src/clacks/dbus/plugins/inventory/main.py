@@ -11,7 +11,7 @@
 # See the LICENSE file in the project's top-level directory for details.
 
 """
-.. _dbus-fusion::
+.. _dbus-fusion:
 
 Fusioninventory module
 ~~~~~~~~~~~~~~~~~~~~~~

@@ -51,7 +51,7 @@
   <input type="hidden" name="area" value="default" />
 </form>
 <script type="text/javascript">$('#searchbox').show(0);</script></li>
-        <li class="right"><a href="http://oss.gonicus.de">Issues</a>  |</li>
+        <li class="right"><a href="http://labs.intranet.gonicus.de/projects/gosa/issues">Issues</a>  |</li>
         <li class="right"><a href="downloads.html">Download</a>  |</li>
         <li class="right"><a href="doc_index.html">Documentation</a>  |</li>
         <li class="right"><a href="start.html">Getting started</a>  |</li>
@@ -68,6 +68,7 @@
 <h1>Configuration reference<a class="headerlink" href="#configuration-reference" title="Permalink to this headline">¶</a></h1>
 <p>This section details static configuration switches and runtime settings that
 can be used to control the behaviour of the Clacks framework.</p>
+<p>HIER -&gt; Describe configuration file layout with examples</p>
 <div class="section" id="common">
 <h2>Common<a class="headerlink" href="#common" title="Permalink to this headline">¶</a></h2>
 <p>All configuration flags detailed in this section (can) affect every component
@@ -276,6 +277,20 @@ MongoDB. Example: localhost:27017</td>
 </div>
 <div class="section" id="agent">
 <h2>Agent<a class="headerlink" href="#agent" title="Permalink to this headline">¶</a></h2>
+<p>The agent has a set of configuration parameters that are detailed below. By default it comes with
+a couple of plugins that may have parameters of their own.</p>
+<blockquote>
+<div><ul class="simple">
+<li><em class="xref std std-ref">Generic plugins</em></li>
+<li><em class="xref std std-ref">GOsa GUI plugin</em></li>
+<li><em class="xref std std-ref">GOto system management</em></li>
+<li><em class="xref std std-ref">Inventory handler</em></li>
+<li><em class="xref std std-ref">Password handler</em></li>
+<li><em class="xref std std-ref">POSIX related plugin</em></li>
+<li><em class="xref std std-ref">Samba related plugin</em></li>
+<li><em class="xref std std-ref">Generic user plugin</em></li>
+</ul>
+</div></blockquote>
 <div class="section" id="id1">
 <h3>Configuration<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="section-agent">
@@ -711,11 +726,11 @@ to trigger certain commands as root, but grants non-root operation for the clien
 default it comes with a couple of plugins that may have parameters of their own.</p>
 <blockquote>
 <div><ul class="simple">
-<li>ref:<cite>Fusioninventory integration &lt;dbus-fusion&gt;</cite></li>
-<li>ref:<cite>DBUS libnotify user notifications &lt;dbus-notify&gt;</cite></li>
-<li>ref:<cite>Managing unix services &lt;dbus-service&gt;</cite></li>
-<li>ref:<cite>Executing shell commands &lt;dbus-shell&gt;</cite></li>
-<li>ref:<cite>Wake on lan client &lt;dbus-wakeonlan&gt;</cite></li>
+<li><a class="reference internal" href="plugins/dbus/fusion.html#dbus-fusion"><em>Fusioninventory integration</em></a></li>
+<li><a class="reference internal" href="plugins/dbus/notify.html#dbus-notify"><em>DBUS libnotify user notifications</em></a></li>
+<li><a class="reference internal" href="plugins/dbus/services.html#dbus-service"><em>Managing unix services</em></a></li>
+<li><a class="reference internal" href="plugins/dbus/shell.html#dbus-shell"><em>Executing shell commands</em></a></li>
+<li><a class="reference internal" href="plugins/dbus/wakeonlan.html#dbus-wakeonlan"><em>Wake on lan client</em></a></li>
 </ul>
 </div></blockquote>
 <div class="section" id="id4">

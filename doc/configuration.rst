@@ -5,6 +5,9 @@ This section details static configuration switches and runtime settings that
 can be used to control the behaviour of the Clacks framework.
 
 
+HIER -> Describe configuration file layout with examples
+
+
 Common
 ******
 
@@ -107,6 +110,19 @@ the NoSQL database.
 
 Agent
 *****
+
+The agent has a set of configuration parameters that are detailed below. By default it comes with
+a couple of plugins that may have parameters of their own. 
+
+ * :ref:`Generic plugins <agent-misc>`
+ * :ref:`GOsa GUI plugin <agent-gosa>`
+ * :ref:`GOto system management <agent-goto>`
+ * :ref:`Inventory handler <agent-inventory>`
+ * :ref:`Password handler <agent-password>`
+ * :ref:`POSIX related plugin <agent-posix>`
+ * :ref:`Samba related plugin <agent-samba>`
+ * :ref:`Generic user plugin <agent-user>`
+
 
 Configuration
 -------------
@@ -300,11 +316,11 @@ The DBUS component is the root-component of the Clacks client side. It allows th
 to trigger certain commands as root, but grants non-root operation for the client itself. By
 default it comes with a couple of plugins that may have parameters of their own.
 
- * ref:`Fusioninventory integration <dbus-fusion>`
- * ref:`DBUS libnotify user notifications <dbus-notify>`
- * ref:`Managing unix services <dbus-service>`
- * ref:`Executing shell commands <dbus-shell>`
- * ref:`Wake on lan client <dbus-wakeonlan>`
+ * :ref:`Fusioninventory integration <dbus-fusion>`
+ * :ref:`DBUS libnotify user notifications <dbus-notify>`
+ * :ref:`Managing unix services <dbus-service>`
+ * :ref:`Executing shell commands <dbus-shell>`
+ * :ref:`Wake on lan client <dbus-wakeonlan>`
 
 Configuration
 -------------

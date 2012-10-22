@@ -59,7 +59,6 @@
       <Type>DeviceContainer</Type>
       <Type>OrganizationalRoleContainer</Type>
       <Type>AclRole</Type>
-      <Type>PhoneContainer</Type>
 		</Container>
 		<BaseObject>true</BaseObject>
 	</Object>

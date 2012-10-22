@@ -26,10 +26,6 @@ that is 100% build on Clacks.
 
 ---------------------
 
-**Documentation TODO list:**
-
-.. reqlist::
-
 **Contents:**
 
 .. toctree::

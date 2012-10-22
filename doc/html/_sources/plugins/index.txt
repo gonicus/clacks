@@ -89,6 +89,7 @@ DBUS plugins
 .. toctree::
    :maxdepth: 2
 
+   dbus/fusion
    dbus/libinst
    dbus/shell
    dbus/wakeonlan
