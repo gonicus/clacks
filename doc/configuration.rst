@@ -358,7 +358,7 @@ ACL
 ---
 
 Managing access control is configuration in the broader sense. You can read more on
-this topic in the section :ref:`clacks-acl`.
+this topic in the section :ref:`acl-handling`.
 
 
 Client

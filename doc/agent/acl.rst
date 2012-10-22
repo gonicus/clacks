@@ -1,3 +1,5 @@
+.. _acl-handling:
+
 ACL handling
 ============
 
@@ -75,8 +77,8 @@ Now you can check for permissions like this:
 >>> resolver.check('user1', 'org.clacks.event.ClientLeave', 'x')
 
 
-ACLs in details
-^^^^^^^^^^^^^^^
+ACLs in detail
+^^^^^^^^^^^^^^
 
 As the explanation above shows how acls are used, this section explains each option in detail. 
 
@@ -329,8 +331,7 @@ Remove all acls from a role
 >>> ./acl-admin remove roleacls "name=TEST,dc=example,dc=net"
 
 
-For more details take a look at the acl module
-^^^^^^^^^
+For details take a look at the :ref:`ACL module <clacks-acl>`
 
-ACL-Module: :class:`clacks.agent.acl.ACLSet`
-
+.. automodule:: clacks.agent.acl
+   :members:
