@@ -1,0 +1,8 @@
+usr/lib/python*/dist-packages/clacks/utils
+usr/lib/python*/dist-packages/clacks.utils-*.egg-info
+usr/lib/python*/dist-packages/clacks.utils-*-nspkg.pth
+usr/bin/schema2xml
+usr/bin/clacks-ldap-monitor
+usr/bin/acl-admin
+usr/bin/update-i18n
+usr/bin/clacks-plugin-skel
