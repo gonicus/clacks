@@ -65,10 +65,14 @@ Agent plugins
    :maxdepth: 2
 
    agent/goto
-   agent/gravatar
+   agent/gosa
+   agent/password
+   agent/posix
+   agent/fusion
    agent/libinst
    agent/misc
    agent/samba
+   agent/user
 
 Client plugins
 --------------

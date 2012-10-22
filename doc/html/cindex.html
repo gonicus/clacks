@@ -139,7 +139,7 @@ Get the client Interface/IP/Netmask/Broadcast/MAC list.</div>
 List available clients.</div>
 </td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="plugins/agent/gravatar.html#cmd-0">getGravatarURL</a></td>
+<tr class="row-odd"><td><a class="reference internal" href="plugins/agent/misc.html#cmd-2">getGravatarURL</a></td>
 <td><div class="first last container">
 Generate samba lm:nt hash combination from the supplied password.</div>
 </td>
@@ -164,9 +164,19 @@ List available methods that are registered on the bus.</div>
 List available service nodes on the bus.</div>
 </td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="agent/jsonrpc.html#cmd-2">getObjectProperty</a></td>
+<tr class="row-even"><td><a class="reference internal" href="plugins/agent/gosa.html#cmd-0">getObjectDetails</a></td>
+<td><div class="first last container">
+Resolves object information</div>
+</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="agent/jsonrpc.html#cmd-2">getObjectProperty</a></td>
 <td><div class="first last container">
 Get property from object on stack</div>
+</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="plugins/agent/posix.html#cmd-0">getShellList</a></td>
+<td><div class="first last container">
+Return list of supported shells</div>
 </td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="plugins/agent/goto.html#cmd-4">getUserClients</a></td>
@@ -187,6 +197,16 @@ Join a client to the clacks infrastructure.</div>
 <tr class="row-even"><td><a class="reference internal" href="agent/jsonrpc.html#cmd-3">listObjectOIDs</a></td>
 <td><div class="first last container">
 List available object OIDs</div>
+</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="plugins/agent/password.html#cmd-0">listPasswordMethods</a></td>
+<td><div class="first last container">
+List all password hashing-methods</div>
+</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="plugins/agent/password.html#cmd-1">lockAccountPassword</a></td>
+<td><div class="first last container">
+Locks the account password for the given DN</div>
 </td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="plugins/agent/goto.html#cmd-11">networkCompletion</a></td>
@@ -254,6 +274,16 @@ Add a new interval job to the scheduler.</div>
 Remove job from the scheduler.</div>
 </td>
 </tr>
+<tr class="row-even"><td><a class="reference internal" href="plugins/agent/gosa.html#cmd-1">search</a></td>
+<td><div class="first last container">
+Filter for indexed attributes and return the matches.</div>
+</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="plugins/agent/gosa.html#cmd-2">searchForObjectDetails</a></td>
+<td><div class="first last container">
+Search for object information</div>
+</td>
+</tr>
 <tr class="row-even"><td><a class="reference internal" href="agent/command.html#cmd-3">sendEvent</a></td>
 <td><div class="first last container">
 Send event to the bus.</div>
@@ -262,6 +292,16 @@ Send event to the bus.</div>
 <tr class="row-odd"><td><a class="reference internal" href="agent/jsonrpc.html#cmd-7">setObjectProperty</a></td>
 <td><div class="first last container">
 Set property for object on stack</div>
+</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="plugins/agent/password.html#cmd-2">setUserPassword</a></td>
+<td><div class="first last container">
+Sets a new password for a user</div>
+</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="plugins/agent/password.html#cmd-3">setUserPasswordMethod</a></td>
+<td><div class="first last container">
+Changes the used password enryption method</div>
 </td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="agent/command.html#cmd-4">shutdown</a></td>
@@ -284,12 +324,17 @@ Set system status</div>
 Transliterate a given string</div>
 </td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="agent/acl.html#cmd-8">updateACL</a></td>
+<tr class="row-even"><td><a class="reference internal" href="plugins/agent/password.html#cmd-4">unlockAccountPassword</a></td>
+<td><div class="first last container">
+Unlocks the account password for the given DN</div>
+</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="agent/acl.html#cmd-8">updateACL</a></td>
 <td><div class="first last container">
 Refresh existing ACL by ID.</div>
 </td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="agent/acl.html#cmd-9">updateACLRole</a></td>
+<tr class="row-even"><td><a class="reference internal" href="agent/acl.html#cmd-9">updateACLRole</a></td>
 <td><div class="first last container">
 Refresh existing role by ID.</div>
 </td>
@@ -301,7 +346,30 @@ Refresh existing role by ID.</div>
 </div>
 <div class="section" id="client-command-index">
 <h1>Client command index<a class="headerlink" href="#client-command-index" title="Permalink to this headline">¶</a></h1>
-No entries<p>
+<table border="1" class="docutils">
+<colgroup>
+<col class="rst-raw" width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Method</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="client/command.html#cmd-0">getMethods</a></td>
+<td><div class="first last container">
+List all available client commands </div>
+</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="plugins/client/goto.html#cmd-0">getSessions</a></td>
+<td><div class="first last container">
+Return the list of active sessions </div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>
  </p>
 </div>
 

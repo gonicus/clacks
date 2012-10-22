@@ -66,8 +66,19 @@
       <div class="documentwrapper">
         <div class="body">
           
-  <div class="section" id="notify">
-<h1>Notify<a class="headerlink" href="#notify" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-clacks.client.plugins.notify.main">
+<span id="notify"></span><h1>Notify<a class="headerlink" href="#module-clacks.client.plugins.notify.main" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="clacks-client-notification-plugin">
+<span id="client-notify"></span><h2>Clacks Client Notification Plugin<a class="headerlink" href="#clacks-client-notification-plugin" title="Permalink to this headline">¶</a></h2>
+<p>This plugin allows to send notification to a user or a list of users.</p>
+<p>e.g.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">proxy</span><span class="o">.</span><span class="n">clientDispatch</span><span class="p">(</span><span class="s">&quot;49cb1287-db4b-4ddf-bc28-5f4743eac594&quot;</span><span class="p">,</span> <span class="s">&quot;notify&quot;</span><span class="p">,</span> <span class="s">&quot;user1&quot;</span><span class="p">,</span> <span class="s">&quot;Hallo&quot;</span><span class="p">,</span> <span class="s">&quot;This is a message&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">proxy</span><span class="o">.</span><span class="n">clientDispatch</span><span class="p">(</span><span class="s">&quot;49cb1287-db4b-4ddf-bc28-5f4743eac594&quot;</span><span class="p">,</span> <span class="s">&quot;notify_all&quot;</span><span class="p">,</span> <span class="s">&quot;Hallo&quot;</span><span class="p">,</span> <span class="s">&quot;This is a message&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </div>
 
 

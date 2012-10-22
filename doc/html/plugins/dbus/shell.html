@@ -66,8 +66,135 @@
       <div class="documentwrapper">
         <div class="body">
           
-  <div class="section" id="shell">
-<h1>Shell<a class="headerlink" href="#shell" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-clacks.dbus.plugins.shell.main">
+<span id="shell"></span><h1>Shell<a class="headerlink" href="#module-clacks.dbus.plugins.shell.main" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="clacks-d-bus-shell-plugin">
+<span id="dbus-shell"></span><h2>Clacks D-Bus Shell plugin<a class="headerlink" href="#clacks-d-bus-shell-plugin" title="Permalink to this headline">¶</a></h2>
+<p>The clacks-dbus shell plugin allows to execute shell scripts
+on the client side with root privileges.</p>
+<p>Scripts can be executed like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">clacksh</span>
+<span class="gp">&gt;&gt;&gt; </span> <span class="n">Suche</span> <span class="n">Dienstanbieter</span><span class="o">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">clientDispatch</span><span class="p">(</span><span class="s">&quot;49cb1287-db4b-4ddf-bc28-5f4743eac594&quot;</span><span class="p">,</span> <span class="s">&quot;dbus_shell_list&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="s">u&#39;script1.sh&#39;</span><span class="p">,</span> <span class="s">u&#39;test.py&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">clientDispatch</span><span class="p">(</span><span class="s">&quot;49cb1287-db4b-4ddf-bc28-5f4743eac594&quot;</span><span class="p">,</span> <span class="s">&quot;dbus_shell_exec&quot;</span><span class="p">,</span> <span class="s">&quot;script1.sh&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;param1&#39;</span><span class="p">,</span> <span class="s">&#39;param2&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">{</span><span class="s">u&#39;code&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s">u&#39;stderr&#39;</span><span class="p">:</span> <span class="s">u&#39;&#39;</span><span class="p">,</span> <span class="s">u&#39;stdout&#39;</span><span class="p">:</span> <span class="s">u&#39;result&#39;</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="creating-scripts">
+<h2>Creating scripts<a class="headerlink" href="#creating-scripts" title="Permalink to this headline">¶</a></h2>
+<p>Create a new executable file in <tt class="docutils literal"><span class="pre">/etc/clacks/shell.d</span></tt> and ensure that its name match the
+following expression <tt class="docutils literal"><span class="pre">^[a-zA-Z0-9][a-zA-Z0-9_\.]*$</span></tt>.</p>
+<p>The script can contain any programming language you want, it just has to be executable
+and has to act on the parameter &#8216;&#8211; &#8211;signature&#8217;, see below.</p>
+<div class="section" id="the-parameter-signature">
+<h3>The parameter &#8211; &#8211;signature<a class="headerlink" href="#the-parameter-signature" title="Permalink to this headline">¶</a></h3>
+<p>Each script has to return a signature when it is used with the parameter &#8216;&#8211; &#8211;signature&#8217;.
+This is required to populate the method to the clacks-dbus process.</p>
+<p>A signature is a json string describing what is required and what is returned by the
+script. See <a class="reference external" href="http://dbus.freedesktop.org/doc/dbus-python/doc/tutorial.html">dbus-python tutorial from freedesktop.org</a>
+for details on signatures.</p>
+<p>Usually you&#8217;ll pass strings to the script and it will return a string again:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="p">{</span><span class="s">&quot;in&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s">&quot;param1&quot;</span><span class="p">:</span> <span class="s">&quot;s&quot;</span><span class="p">},{</span><span class="s">&quot;param2&quot;</span><span class="p">:</span> <span class="s">&quot;s&quot;</span><span class="p">}],</span> <span class="s">&quot;out&quot;</span><span class="p">:</span> <span class="s">&quot;s&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-script">
+<h3>Example script<a class="headerlink" href="#example-script" title="Permalink to this headline">¶</a></h3>
+<p>Here is an example script:</p>
+<div class="highlight-python"><pre>&gt;&gt;&gt;   #!/bin/bash
+&gt;&gt;&gt;   detail="-1"
+&gt;&gt;&gt;   dir=$HOME
+&gt;&gt;&gt;
+&gt;&gt;&gt;   usage() {
+&gt;&gt;&gt;       echo $(basename $0) [--detail] [--directory DIR]
+&gt;&gt;&gt;       exit 0
+&gt;&gt;&gt;   }
+&gt;&gt;&gt;
+&gt;&gt;&gt;   set -- `getopt -n$0 -u -a --longoptions="signature detail directory:" "h" "$@"` || usage
+&gt;&gt;&gt;   [ $# -eq 0 ] &amp;&amp; usage
+&gt;&gt;&gt;
+&gt;&gt;&gt;   while [ $# -gt 0 ]
+&gt;&gt;&gt;   do
+&gt;&gt;&gt;       case "$1" in
+&gt;&gt;&gt;          --signature)
+&gt;&gt;&gt;              echo '{"in": [{"detail": "b"},{"directory": "s"}], "out": "s"}'
+&gt;&gt;&gt;              exit 0
+&gt;&gt;&gt;              ;;
+&gt;&gt;&gt;          --detail)
+&gt;&gt;&gt;              detail="-la"
+&gt;&gt;&gt;              ;;
+&gt;&gt;&gt;          --directory)
+&gt;&gt;&gt;              dir=$2
+&gt;&gt;&gt;              shift
+&gt;&gt;&gt;              ;;
+&gt;&gt;&gt;          -h)        usage;;
+&gt;&gt;&gt;          --)        shift;break;;
+&gt;&gt;&gt;          -*)        usage;;
+&gt;&gt;&gt;          *)         break;;
+&gt;&gt;&gt;       esac
+&gt;&gt;&gt;       shift
+&gt;&gt;&gt;   done
+&gt;&gt;&gt; ls $detail $dir</pre>
+</div>
+<dl class="exception">
+<dt id="clacks.dbus.plugins.shell.main.DBusShellException">
+<em class="property">exception </em><tt class="descclassname">clacks.dbus.plugins.shell.main.</tt><tt class="descname">DBusShellException</tt><a class="headerlink" href="#clacks.dbus.plugins.shell.main.DBusShellException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception thrown for generic errors</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="clacks.dbus.plugins.shell.main.DBusShellHandler">
+<em class="property">class </em><tt class="descclassname">clacks.dbus.plugins.shell.main.</tt><tt class="descname">DBusShellHandler</tt><a class="headerlink" href="#clacks.dbus.plugins.shell.main.DBusShellHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>The DBus shell handler exports shell scripts to the DBus.</p>
+<p>Scripts placed in &#8216;/etc/clacks/shell.d&#8217; can then be executed using the
+&#8216;shell_exec()&#8217; method.</p>
+<p>Exported scripts can be listed using the &#8216;shell_list()&#8217; method.</p>
+<dl class="docutils">
+<dt>e.g.</dt>
+<dd>print proxy.clientDispatch(&#8220;&lt;clientUUID&gt;&#8221;, &#8220;dbus_shell_exec&#8221;, &#8220;myScript.sh&#8221;, [])</dd>
+</dl>
+<p>(The &#8216;_dbus&#8217; prefix in the above example was added by the clacks-client dbus-proxy
+plugin to mark exported dbus methods - See clacks-client proxy  plugin for details)</p>
+<dl class="method">
+<dt id="clacks.dbus.plugins.shell.main.DBusShellHandler.register_dbus_method">
+<tt class="descname">register_dbus_method</tt><big>(</big><em>func</em>, <em>dbus_interface</em>, <em>in_sig</em>, <em>out_sig</em><big>)</big><a class="headerlink" href="#clacks.dbus.plugins.shell.main.DBusShellHandler.register_dbus_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>Marks the given method as exported to the dbus.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="clacks.dbus.plugins.shell.main.DBusShellHandler.shell_exec">
+<tt class="descname">shell_exec</tt><big>(</big><em>action</em>, <em>args</em><big>)</big><a class="headerlink" href="#clacks.dbus.plugins.shell.main.DBusShellHandler.shell_exec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes a shell command and returns the result with its return code
+stderr and stdout strings.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="clacks.dbus.plugins.shell.main.DBusShellHandler.shell_list">
+<tt class="descname">shell_list</tt><big>(</big><big>)</big><a class="headerlink" href="#clacks.dbus.plugins.shell.main.DBusShellHandler.shell_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all availabe scripts and their signatures.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="clacks.dbus.plugins.shell.main.DBusShellHandler.unregister_dbus_method">
+<tt class="descname">unregister_dbus_method</tt><big>(</big><em>method</em><big>)</big><a class="headerlink" href="#clacks.dbus.plugins.shell.main.DBusShellHandler.unregister_dbus_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unmarks the given method as exported to the dbus.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="clacks.dbus.plugins.shell.main.NoSuchScriptException">
+<em class="property">exception </em><tt class="descclassname">clacks.dbus.plugins.shell.main.</tt><tt class="descname">NoSuchScriptException</tt><a class="headerlink" href="#clacks.dbus.plugins.shell.main.NoSuchScriptException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception thrown for unknown scripts</p>
+</dd></dl>
+
+</div>
+</div>
 </div>
 
 

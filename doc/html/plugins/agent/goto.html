@@ -28,7 +28,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="Clacks Project" href="../../index.html" />
     <link rel="up" title="Plugin development" href="../index.html" />
-    <link rel="next" title="Gravatar" href="gravatar.html" />
+    <link rel="next" title="GOsa" href="gosa.html" />
     <link rel="prev" title="DBUS plugins" href="../dbus/index.html" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
@@ -67,12 +67,39 @@
         <div class="body">
           
   <div class="section" id="goto">
-<h1>GOto<a class="headerlink" href="#goto" title="Permalink to this headline">¶</a></h1>
+<span id="agent-goto"></span><h1>GOto<a class="headerlink" href="#goto" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="clacks.agent.plugins.goto.client_service.ClientService">
 <em class="property">class </em><tt class="descclassname">clacks.agent.plugins.goto.client_service.</tt><tt class="descname">ClientService</tt><a class="headerlink" href="#clacks.agent.plugins.goto.client_service.ClientService" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plugin to register clients and expose their functionality
 to the users.</p>
+<p>Keys for configuration section <strong>goto</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="13%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">Key</th>
+<th class="head" rowspan="2">Format</th>
+<th class="head" rowspan="2">Description</th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="2">machine-rdn</td>
+<td rowspan="2">String</td>
+<td rowspan="2">RDN to initially place new machines in.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"><td rowspan="2">timeout</td>
+<td rowspan="2">Integer</td>
+<td rowspan="2">Client ping interval.</td>
+</tr>
+<tr class="row-even"></tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="clacks.agent.plugins.goto.client_service.ClientService.clientDispatch">
 <tt class="descname">clientDispatch</tt><big>(</big><em>client</em>, <em>method</em>, <em>*arg</em>, <em>**larg</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.goto.client_service.ClientService.clientDispatch" title="Permalink to this definition">¶</a></dt>

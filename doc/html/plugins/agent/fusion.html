@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>libinst &mdash; Clacks Project</title>
+    <title>Inventory &mdash; Clacks Project</title>
     
     <link rel="stylesheet" href="../../_static/clacks.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -28,8 +28,8 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="Clacks Project" href="../../index.html" />
     <link rel="up" title="Plugin development" href="../index.html" />
-    <link rel="next" title="Misc plugins" href="misc.html" />
-    <link rel="prev" title="Inventory" href="fusion.html" />
+    <link rel="next" title="libinst" href="libinst.html" />
+    <link rel="prev" title="POSIX" href="posix.html" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <!--[if lte IE 6]>
@@ -66,9 +66,46 @@
       <div class="documentwrapper">
         <div class="body">
           
-  <div class="section" id="libinst">
-<h1>libinst<a class="headerlink" href="#libinst" title="Permalink to this headline">¶</a></h1>
-<p>Please consult the <a class="reference external" href="http://oss.gonicus.de/docs/libinst">Plugin documentation</a> for more details.</p>
+  <div class="section" id="module-clacks.agent.plugins.inventory.consumer">
+<span id="inventory"></span><span id="agent-inventory"></span><h1>Inventory<a class="headerlink" href="#module-clacks.agent.plugins.inventory.consumer" title="Permalink to this headline">¶</a></h1>
+<p>Consumer description</p>
+<dl class="class">
+<dt id="clacks.agent.plugins.inventory.consumer.InventoryConsumer">
+<em class="property">class </em><tt class="descclassname">clacks.agent.plugins.inventory.consumer.</tt><tt class="descname">InventoryConsumer</tt><a class="headerlink" href="#clacks.agent.plugins.inventory.consumer.InventoryConsumer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Consumer for inventory events emitted from clients.</p>
+<dl class="method">
+<dt id="clacks.agent.plugins.inventory.consumer.InventoryConsumer.addClientInventoryData">
+<tt class="descname">addClientInventoryData</tt><big>(</big><em>huuid</em>, <em>data</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.inventory.consumer.InventoryConsumer.addClientInventoryData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds client inventory data to the database.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="clacks.agent.plugins.inventory.consumer.InventoryConsumer.getChecksumByHardwareUUID">
+<tt class="descname">getChecksumByHardwareUUID</tt><big>(</big><em>huuid</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.inventory.consumer.InventoryConsumer.getChecksumByHardwareUUID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the checksum of a specific entry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="clacks.agent.plugins.inventory.consumer.InventoryConsumer.getClientUUIDByHardwareUUID">
+<tt class="descname">getClientUUIDByHardwareUUID</tt><big>(</big><em>huuid</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.inventory.consumer.InventoryConsumer.getClientUUIDByHardwareUUID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the ClientUUID used by the given HardwareUUID.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="clacks.agent.plugins.inventory.consumer.InventoryConsumer.hardwareUUIDExists">
+<tt class="descname">hardwareUUIDExists</tt><big>(</big><em>huuid</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.inventory.consumer.InventoryConsumer.hardwareUUIDExists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks whether an inventory exists for the given client ID or not.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="clacks.agent.plugins.inventory.consumer.InventoryConsumer.process">
+<tt class="descname">process</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.inventory.consumer.InventoryConsumer.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Receives a new inventory-event and updates the corresponding
+database entries (MySql and dbxml)</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 

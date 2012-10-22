@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Gravatar &mdash; Clacks Project</title>
+    <title>Generic user support &mdash; Clacks Project</title>
     
     <link rel="stylesheet" href="../../_static/clacks.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -28,8 +28,8 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="Clacks Project" href="../../index.html" />
     <link rel="up" title="Plugin development" href="../index.html" />
-    <link rel="next" title="libinst" href="libinst.html" />
-    <link rel="prev" title="GOto" href="goto.html" />
+    <link rel="next" title="D-Bus Proxy" href="../client/dbus.html" />
+    <link rel="prev" title="Samba" href="samba.html" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <!--[if lte IE 6]>
@@ -66,49 +66,36 @@
       <div class="documentwrapper">
         <div class="body">
           
-  <div class="section" id="gravatar">
-<h1>Gravatar<a class="headerlink" href="#gravatar" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-clacks.agent.plugins.user.filters">
+<span id="generic-user-support"></span><span id="agent-user"></span><h1>Generic user support<a class="headerlink" href="#module-clacks.agent.plugins.user.filters" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="clacks.agent.plugins.misc.gravatar.Gravatar">
-<em class="property">class </em><tt class="descclassname">clacks.agent.plugins.misc.gravatar.</tt><tt class="descname">Gravatar</tt><a class="headerlink" href="#clacks.agent.plugins.misc.gravatar.Gravatar" title="Permalink to this definition">¶</a></dt>
-<dd><p>Utility class that contains methods needed to retrieve gravatar
-URLs.</p>
-<dl class="method">
-<dt id="clacks.agent.plugins.misc.gravatar.Gravatar.getGravatarURL">
-<tt class="descname">getGravatarURL</tt><big>(</big><em>mail</em>, <em>size=40</em>, <em>url='http://www.gonicus.de'</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.misc.gravatar.Gravatar.getGravatarURL" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition" id="cmd-0">
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last"><strong>This method will be exported by the CommandRegistry.</strong></p>
-</div>
-<p>Generate the gravatar URL to be used for user pictures on
-demand.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="19%" />
-<col width="81%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Parameter</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>mail</td>
-<td>Gravatar&#8217;s mail address</td>
-</tr>
-<tr class="row-odd"><td>size</td>
-<td>desired image size</td>
-</tr>
-<tr class="row-even"><td>url</td>
-<td>Clickable URL</td>
-</tr>
-</tbody>
-</table>
-<p><tt class="docutils literal"><span class="pre">Return:</span></tt> Image URL</p>
+<dt id="clacks.agent.plugins.user.filters.GenerateDisplayName">
+<em class="property">class </em><tt class="descclassname">clacks.agent.plugins.user.filters.</tt><tt class="descname">GenerateDisplayName</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.user.filters.GenerateDisplayName" title="Permalink to this definition">¶</a></dt>
+<dd><p>An object filter which automatically generates the displayName entry.</p>
+<dl class="staticmethod">
+<dt id="clacks.agent.plugins.user.filters.GenerateDisplayName.generateDisplayName">
+<em class="property">static </em><tt class="descname">generateDisplayName</tt><big>(</big><em>valDict</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.user.filters.GenerateDisplayName.generateDisplayName" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method genereates a new displayName value out of the given properties list.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="clacks.agent.plugins.user.filters.GenerateDisplayName.process">
+<tt class="descname">process</tt><big>(</big><em>obj</em>, <em>key</em>, <em>valDict</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.user.filters.GenerateDisplayName.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>The out-filter that generates the new displayName value</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="clacks.agent.plugins.user.filters.ImageProcessor">
+<em class="property">class </em><tt class="descclassname">clacks.agent.plugins.user.filters.</tt><tt class="descname">ImageProcessor</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.user.filters.ImageProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a couple of pre-sized images and place them in the cache.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="clacks.agent.plugins.user.filters.LoadDisplayNameState">
+<em class="property">class </em><tt class="descclassname">clacks.agent.plugins.user.filters.</tt><tt class="descname">LoadDisplayNameState</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.user.filters.LoadDisplayNameState" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detects the state of the autoDisplayName attribute</p>
 </dd></dl>
 
 </div>

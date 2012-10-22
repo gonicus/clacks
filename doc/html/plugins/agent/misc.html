@@ -67,7 +67,7 @@
         <div class="body">
           
   <div class="section" id="misc-plugins">
-<h1>Misc plugins<a class="headerlink" href="#misc-plugins" title="Permalink to this headline">¶</a></h1>
+<span id="agent-misc"></span><h1>Misc plugins<a class="headerlink" href="#misc-plugins" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="clacks.agent.plugins.misc.transliterate.Transliterate">
 <em class="property">class </em><tt class="descclassname">clacks.agent.plugins.misc.transliterate.</tt><tt class="descname">Transliterate</tt><a class="headerlink" href="#clacks.agent.plugins.misc.transliterate.Transliterate" title="Permalink to this definition">¶</a></dt>
@@ -119,6 +119,49 @@ by their ASCII versions.</p>
 <p>Deliver a dictionary of language code/display name
 mapping for all supported languages.</p>
 <p><tt class="docutils literal"><span class="pre">Return:</span></tt> Dictionary</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="clacks.agent.plugins.misc.gravatar.Gravatar">
+<em class="property">class </em><tt class="descclassname">clacks.agent.plugins.misc.gravatar.</tt><tt class="descname">Gravatar</tt><a class="headerlink" href="#clacks.agent.plugins.misc.gravatar.Gravatar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility class that contains methods needed to retrieve gravatar
+URLs.</p>
+<dl class="method">
+<dt id="clacks.agent.plugins.misc.gravatar.Gravatar.getGravatarURL">
+<tt class="descname">getGravatarURL</tt><big>(</big><em>mail</em>, <em>size=40</em>, <em>url='http://www.gonicus.de'</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.misc.gravatar.Gravatar.getGravatarURL" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition" id="cmd-2">
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>This method will be exported by the CommandRegistry.</strong></p>
+</div>
+<p>Generate the gravatar URL to be used for user pictures on
+demand.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>mail</td>
+<td>Gravatar&#8217;s mail address</td>
+</tr>
+<tr class="row-odd"><td>size</td>
+<td>desired image size</td>
+</tr>
+<tr class="row-even"><td>url</td>
+<td>Clickable URL</td>
+</tr>
+</tbody>
+</table>
+<p><tt class="docutils literal"><span class="pre">Return:</span></tt> Image URL</p>
 </dd></dl>
 
 </dd></dl>

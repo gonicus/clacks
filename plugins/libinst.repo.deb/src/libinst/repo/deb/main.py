@@ -72,7 +72,7 @@ class DebianHandler(DistributionHandler):
     +------------------+------------+-------------------------------------------------------------+
     + Key              | Format     +  Description                                                |
     +==================+============+=============================================================+
-    + rollback         | Boolean    + Size for the images that get transferred to clients.        |
+    + rollback         | Boolean    + Keep packages to be able to roll back in certain cases.     |
     +------------------+------------+-------------------------------------------------------------+
     + path             | String     + Base path to the repository.                                |
     +------------------+------------+-------------------------------------------------------------+
