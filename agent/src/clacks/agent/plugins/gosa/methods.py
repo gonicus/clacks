@@ -122,8 +122,8 @@ class GuiMethods(Plugin):
 
         return None
 
-    @Command(__help__=N_("Search for object information"))
-    def searchForObjectDetails(self, extension, attribute, fltr, attributes, skip_values):
+    @Command(needsUser=True, __help__=N_("Search for object information"))
+    def searchForObjectDetails(self, user, extension, attribute, fltr, attributes, skip_values):
         """
         Search selectable items valid for the attribute "extension.attribute".
 
@@ -144,6 +144,8 @@ class GuiMethods(Plugin):
         if oattr not in attributes:
             attributes.append(oattr)
         attrs = dict([(x, 1) for x in attributes])
+        if not "dn" in attrs:
+            attrs.update({'dn': 1})
 
         # Start the query and brind the result in a usable form
         index = PluginRegistry.getInstance("ObjectIndex")
@@ -153,7 +155,16 @@ class GuiMethods(Plugin):
             }, attrs)
         result = []
 
+        # Do we have read permissions for the requested attribute
+        env = Environment.getInstance()
+        topic = "%s.objects.%s" % (env.domain, otype)
+        aclresolver = PluginRegistry.getInstance("ACLResolver")
+
         for entry in res:
+
+            if not aclresolver.check(user, topic, "s", base=entry['dn']):
+                continue
+
             item = {}
             for attr in attributes:
                 if attr in entry and len(entry[attr]):
