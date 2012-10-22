@@ -1,3 +1,50 @@
+Plugins
+=======
+
+This section contains documentation for available Clacks plugins. These may
+come as standalone plugins or may be included in the core Clacks modules.
+If you find missing plugins, please send patches to these documentation files.
+
+Agent plugins
+-------------
+
+.. toctree::
+   :maxdepth: 2
+
+   agent/goto
+   agent/gosa
+   agent/password
+   agent/posix
+   agent/fusion
+   agent/misc
+   agent/samba
+   agent/user
+
+Client plugins
+--------------
+
+.. toctree::
+   :maxdepth: 2
+
+   client/dbus
+   client/goto
+   client/inventory
+   client/notify
+
+
+DBUS plugins
+------------
+
+.. toctree::
+   :maxdepth: 2
+
+   dbus/fusion
+   dbus/shell
+   dbus/wakeonlan
+   dbus/notify
+   dbus/services
+
+
 Plugin development
 ==================
 
@@ -51,51 +98,3 @@ Here's the resulting directory structure::
    client/index
    dbus/index
 
-Plugins
-=======
-
-This section contains documentation for available Clacks plugins. These may
-come as standalone plugins or may be included in the core Clacks modules.
-If you find missing plugins, please send patches to these documentation files.
-
-Agent plugins
--------------
-
-.. toctree::
-   :maxdepth: 2
-
-   agent/goto
-   agent/gosa
-   agent/password
-   agent/posix
-   agent/fusion
-   agent/libinst
-   agent/misc
-   agent/samba
-   agent/user
-
-Client plugins
---------------
-
-.. toctree::
-   :maxdepth: 2
-
-   client/dbus
-   client/goto
-   client/libinst
-   client/inventory
-   client/notify
-
-
-DBUS plugins
-------------
-
-.. toctree::
-   :maxdepth: 2
-
-   dbus/fusion
-   dbus/libinst
-   dbus/shell
-   dbus/wakeonlan
-   dbus/notify
-   dbus/services
