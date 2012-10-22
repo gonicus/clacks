@@ -17,7 +17,16 @@ from clacks.common.components.cache import cache
 
 
 class LDAPNumberResolver(PhoneNumberResolver):
+    """
+    Configuration keys for section **resolver-ldap**
 
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + priority         | Integer    + Priority for this resolver.                                 |
+    +------------------+------------+-------------------------------------------------------------+
+
+    """
     priority = 4
 
     def __init__(self):

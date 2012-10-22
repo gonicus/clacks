@@ -46,9 +46,24 @@ class PuppetClient(Plugin):
     This class provides the client side of being puppet enabled. That
     is mainly
 
-     - provide a git data store
-     - provide an update hook to move the changes to the target dir
-     - add ssh keys that are allowed to push config data
+     * provide a git data store
+     * provide an update hook to move the changes to the target dir
+     * add SSH keys that are allowed to push config data
+
+    Configuration keys for section **puppet**
+
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + user             | String     + User to run puppet as.                                      |
+    +------------------+------------+-------------------------------------------------------------+
+    + target           | String     + Path to the puppet configuration directory.                 |
+    +------------------+------------+-------------------------------------------------------------+
+    + command          | String     + Command to run puppet.                                      |
+    +------------------+------------+-------------------------------------------------------------+
+    + report-dir       | String     + Path where to expect puppet reports to pop up.              |
+    +------------------+------------+-------------------------------------------------------------+
+
     """
 
     _target_ = 'puppet'

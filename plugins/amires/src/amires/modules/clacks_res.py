@@ -17,7 +17,16 @@ from clacks.agent.objects import ObjectProxy
 
 
 class ClacksNumberResolver(PhoneNumberResolver):
+    """
+    Configuration keys for section **resolver-clacks**
 
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + priority         | Integer    + Priority for this resolver.                                 |
+    +------------------+------------+-------------------------------------------------------------+
+
+    """
     priority = 4
 
     def __init__(self):

@@ -66,6 +66,19 @@ _ = t.ugettext
 
 
 class DebianHandler(DistributionHandler):
+    """
+    Configuration keys for section **repository**
+
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + rollback         | Boolean    + Size for the images that get transferred to clients.        |
+    +------------------+------------+-------------------------------------------------------------+
+    + path             | String     + Base path to the repository.                                |
+    +------------------+------------+-------------------------------------------------------------+
+
+    """
+
 
     def __init__(self, LibinstManager):
         self.env = Environment.getInstance()

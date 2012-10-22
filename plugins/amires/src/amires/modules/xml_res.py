@@ -16,7 +16,18 @@ from amires.resolver import PhoneNumberResolver
 
 
 class XMLNumberResolver (PhoneNumberResolver):
+    """
+    Configuration keys for section **resolver-xml**
 
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + priority         | Integer    + Priority of this resolver.                                  |
+    +------------------+------------+-------------------------------------------------------------+
+    + filename         | String     + Filename for the configuration file.                        |
+    +------------------+------------+-------------------------------------------------------------+
+
+    """
     priority = 2
 
     def __init__(self):
