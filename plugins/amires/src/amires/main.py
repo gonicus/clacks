@@ -39,6 +39,16 @@ _ = t.ugettext
 
 
 class AsteriskNotificationReceiver(object):
+    """
+    Configuration keys for section **amires**
+
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + avatar-size      | Integer    + Size for the images that get transferred to clients.        |
+    +------------------+------------+-------------------------------------------------------------+
+
+    """
     implements(IInterfaceHandler)
     _priority_ = 99
 
@@ -165,7 +175,7 @@ class AsteriskNotificationReceiver(object):
             t_img = self.__default_image
 
         # Scale image to a reasonable size and convert it to base64
-        mw = int(self.env.config.get("amires.avatar_size", default="96"))
+        mw = int(self.env.config.get("amires.avatar-size", default="96"))
         sx, sy = f_img.size
         if sx >= sy:
             f_img.thumbnail((mw, int(sy * mw / sx)))

@@ -20,6 +20,24 @@ from libinst.boot.preseed.disk import DebianDiskDefinition
 
 
 class DebianPreseed(BaseInstallMethod):
+    """
+    Configuration keys for section **repository**
+
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + http-base-url    | String     + Base download path for the repository files.                |
+    +------------------+------------+-------------------------------------------------------------+
+
+    Configuration keys for section **libinst**
+
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + path             | String     + Base path for preseeding.                                   |
+    +------------------+------------+-------------------------------------------------------------+
+
+    """
 
     http_subtree = True
 

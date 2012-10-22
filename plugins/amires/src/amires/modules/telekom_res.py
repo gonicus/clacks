@@ -19,6 +19,16 @@ from clacks.common.components.cache import cache
 
 
 class TelekomNumberResolver(PhoneNumberResolver):
+    """
+    Configuration keys for section **resolver-telekom**
+
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + priority         | Integer    + Priority of this resolver.                                  |
+    +------------------+------------+-------------------------------------------------------------+
+
+    """
     priority = 99
 
     def __init__(self):

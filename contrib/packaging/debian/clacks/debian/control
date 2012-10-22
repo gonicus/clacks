@@ -51,6 +51,14 @@ Description: clacks infrastructure service - shell
  .
  This package provides the shell interface.
 
+Package: clacks-utils
+Architecture: all
+Depends: ${python:Depends}, ${misc:Depends}, clacks-common
+Description: clacks infrastructure service - utilities
+ Brief description is missing.
+ .
+ This package provides the utilities.
+
 Package: clacks-agent
 Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, clacks-common,

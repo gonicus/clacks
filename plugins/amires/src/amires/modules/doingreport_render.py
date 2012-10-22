@@ -26,7 +26,25 @@ _ = t.ugettext
 
 
 class DoingReportRenderer(BaseRenderer):
+    """
+    Configuration keys for section **resolver-ldap**
 
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + users            | String     + Comma separated list of user IDs that get automatic report  |
+    +                  |            + entries on phone calls.                                     |
+    +------------------+------------+-------------------------------------------------------------+
+
+    Configuration keys for section **fetcher-goforge**
+
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + site-url         | String     + URL to the goforge setup.                                   |
+    +------------------+------------+-------------------------------------------------------------+
+
+    """
     priority = 20
 
     def __init__(self):
@@ -36,7 +54,7 @@ class DoingReportRenderer(BaseRenderer):
         if self.whitelisted_users:
             self.whitelisted_users = [s.strip() for s in self.whitelisted_users.split(",")]
 
-        self.forge_url = self.env.config.get("fetcher-goforge.site_url",
+        self.forge_url = self.env.config.get("fetcher-goforge.site-url",
             default="http://localhost/")
 
     def getHTML(self, particiantInfo, selfInfo, event):

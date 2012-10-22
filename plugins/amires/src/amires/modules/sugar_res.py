@@ -18,7 +18,19 @@ from sqlalchemy.sql import select, or_
 
 
 class SugarNumberResolver(PhoneNumberResolver):
+    """
 
+    Configuration keys for section **resolver-suger**
+
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + priority         | Integer    + Priority of this resolver.                                  |
+    +------------------+------------+-------------------------------------------------------------+
+    + site-url         | String     + URL for the sugar API.                                      |
+    +------------------+------------+-------------------------------------------------------------+
+
+    """
     priority = 5
 
     def __init__(self):
@@ -26,7 +38,7 @@ class SugarNumberResolver(PhoneNumberResolver):
 
         self.priority = float(self.env.config.get("resolver-sugar.priority",
             default=str(self.priority)))
-        self.sugar_url = self.env.config.get("resolver-sugar.site_url",
+        self.sugar_url = self.env.config.get("resolver-sugar.site-url",
             default="http://localhost/sugarcrm")
 
     @cache(ttl=3600)

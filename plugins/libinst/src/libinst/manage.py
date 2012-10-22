@@ -82,6 +82,35 @@ pp = pprint.PrettyPrinter()
 class LibinstManager(Plugin):
     """
     Manage repositories, base install and configuration of clients.
+
+    Configuration keys for section **libinst**
+
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + template-rdn     | String     + RDN to lookf for templates.                                 |
+    +------------------+------------+-------------------------------------------------------------+
+
+    Configuration keys for section **goto**
+
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + send-uri         | Boolean    + Wether to embed a connection URI in client boot strings.    |
+    +------------------+------------+-------------------------------------------------------------+
+
+    Configuration keys for section **repository**
+
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + path             | String     + Local repository base directory.                            |
+    +------------------+------------+-------------------------------------------------------------+
+    + db-purge         | Boolean    + Purge database on startup (development only).               |
+    +------------------+------------+-------------------------------------------------------------+
+    + http-base-url    | String     + Base download path for the repository files.                |
+    +------------------+------------+-------------------------------------------------------------+
+
     """
     _target_ = 'libinst'
     recipeRecursionDepth = 3
@@ -129,7 +158,7 @@ class LibinstManager(Plugin):
             self.base_install_method_reg[module.getInfo()['name'].lower()] = module()
 
         # Purge DB if wanted
-        db_purge = env.config.get('repository.db_purge')
+        db_purge = env.config.get('repository.db-purge')
         if db_purge == "True":
             self.initializeDatabase(engine)
 
@@ -2173,7 +2202,7 @@ class LibinstManager(Plugin):
             params.append("svc_key=%s" % encode(data["deviceKey"][0]))
 
         # Optionally add the service URL
-        if self.env.config.get("goto.send_uri", "False").upper() == "TRUE":
+        if self.env.config.get("goto.send-uri", "False").upper() == "TRUE":
             url = parseURL(self.env.config.get("amqp.url"))
             params.append("svn_url={scheme}://{host}:{port}{path}".format(**url))
 

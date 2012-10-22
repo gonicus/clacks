@@ -51,7 +51,7 @@ else:
 
 setup(
     name = "clacks.common",
-    version = "1.0",
+    version = "0.8",
     author = "Cajus Pollmeier",
     author_email = "pollmeier@gonicus.de",
     description = "Identity-, system- and configmanagement middleware",

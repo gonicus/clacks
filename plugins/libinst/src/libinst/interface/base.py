@@ -22,6 +22,15 @@ class BaseInstallMethod(object):
     This is the base install method interface class. It defines all relevant methods
     needed to interact with any install method. Implementations of this interface
     must implement all methods.
+
+    Configuration keys for section **libinst**
+
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + template-rdn     | String     + RDN where to find templates.                                |
+    +------------------+------------+-------------------------------------------------------------+
+
     """
     attributes = {
             'installNTPServer': 'ntp-servers',

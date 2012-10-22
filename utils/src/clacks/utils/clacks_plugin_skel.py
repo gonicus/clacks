@@ -41,9 +41,11 @@ p_clazz = "%sPlugin" % name.lower().capitalize()
 #TODO: dbus plugins are different
 #TODO: clacks agent handler plugins are different
 
-# Write setup.py
-with open(os.path.join(name, "setup.py"), "w") as f:
-    f.write("""#!/usr/bin/env python
+
+def main():
+    # Write setup.py
+    with open(os.path.join(name, "setup.py"), "w") as f:
+        f.write("""#!/usr/bin/env python
 from setuptools import setup, find_packages
 import os
 import platform
@@ -92,9 +94,9 @@ setup(
 """.format(name=name, p_type=p_type, mod=mod, req=req, a_email=a_email,
     a_name=a_name, p_clazz=p_clazz, version=version))
 
-# Write config
-with open(os.path.join(name, "setup.cfg"), "w") as f:
-    f.write("""[egg_info]
+    # Write config
+    with open(os.path.join(name, "setup.cfg"), "w") as f:
+        f.write("""[egg_info]
 tag_build = dev
 tag_date = false
 tag_svn_revision = false
@@ -138,17 +140,17 @@ output_dir = {base_path}/locale
 input_file = {base_path}/locale/messages.pot
 """.format(base_path=base_path, a_name=a_name, a_email=a_email))
 
-# Write __init__ stubs
-for fname in [os.path.join(name, "src", "clacks"),
-        os.path.join(name, "src", "clacks", p_type),
-        os.path.join(name, "src", "clacks", p_type, "plugins"),
-        os.path.join(name, "src", "clacks", p_type, "plugins", name)]:
-    with open(os.path.join(fname, "__init__.py"), "w") as f:
-        f.write("__import__('pkg_resources').declare_namespace(__name__)\n")
+    # Write __init__ stubs
+    for fname in [os.path.join(name, "src", "clacks"),
+            os.path.join(name, "src", "clacks", p_type),
+            os.path.join(name, "src", "clacks", p_type, "plugins"),
+            os.path.join(name, "src", "clacks", p_type, "plugins", name)]:
+        with open(os.path.join(fname, "__init__.py"), "w") as f:
+            f.write("__import__('pkg_resources').declare_namespace(__name__)\n")
 
-# Write sample module
-with open(os.path.join(name, "src", "clacks", p_type, "plugins", name, "main.py"), "w") as f:
-    f.write("""# -*- coding: utf-8 -*-
+    # Write sample module
+    with open(os.path.join(name, "src", "clacks", p_type, "plugins", name, "main.py"), "w") as f:
+        f.write("""# -*- coding: utf-8 -*-
 import gettext
 from clacks.common import Environment
 from clacks.common.components import Command, Plugin
@@ -170,9 +172,9 @@ class {p_clazz}(Plugin):
         return _("Hello %s!") % name
 """.format(name=name, p_clazz=p_clazz))
 
-# Write README
-with open(os.path.join(name, "README"), "w") as f:
-    f.write("""{p_clazz} README
+    # Write README
+    with open(os.path.join(name, "README"), "w") as f:
+        f.write("""{p_clazz} README
 {line}
 
 This is a GOsa {p_type} plugin. It should be installed using the .egg or
@@ -188,4 +190,7 @@ $ ./setup.py develop
 {p_name} <{p_email}>
 """.format(p_clazz=p_clazz, line="-"*len(p_clazz + " README"), p_email=a_email, p_name=a_name, p_type=p_type))
 
-print("Done. Please check out the '%s' directory." % name)
+    print("Done. Please check out the '%s' directory." % name)
+
+if __name__ == '__main__':
+    main()

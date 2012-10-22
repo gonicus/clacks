@@ -28,7 +28,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="Clacks Project" href="../../index.html" />
     <link rel="up" title="Plugin development" href="../index.html" />
-    <link rel="next" title="D-Bus Proxy" href="../client/dbus.html" />
+    <link rel="next" title="Generic user support" href="user.html" />
     <link rel="prev" title="Misc plugins" href="misc.html" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
@@ -67,7 +67,7 @@
         <div class="body">
           
   <div class="section" id="samba">
-<h1>Samba<a class="headerlink" href="#samba" title="Permalink to this headline">¶</a></h1>
+<span id="agent-samba"></span><h1>Samba<a class="headerlink" href="#samba" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="clacks.agent.plugins.samba.domain.IsValidSambaDomainName">
 <em class="property">class </em><tt class="descclassname">clacks.agent.plugins.samba.domain.</tt><tt class="descname">IsValidSambaDomainName</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.samba.domain.IsValidSambaDomainName" title="Permalink to this definition">¶</a></dt>
@@ -200,7 +200,31 @@ format for the sambaMungedDial attribute.</p>
 <dl class="class">
 <dt id="clacks.agent.plugins.samba.sid.GenerateSambaSid">
 <em class="property">class </em><tt class="descclassname">clacks.agent.plugins.samba.sid.</tt><tt class="descname">GenerateSambaSid</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#clacks.agent.plugins.samba.sid.GenerateSambaSid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Out filter to generate a new sambaSID</p>
+<dd><p>Out filter to generate a new sambaSID.</p>
+<p>Section <strong>samba</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="13%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" rowspan="2">Key</th>
+<th class="head" rowspan="2">Format</th>
+<th class="head" rowspan="2">Description</th>
+</tr>
+<tr class="row-even"></tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td rowspan="3">ridbase</td>
+<td rowspan="3">Integer</td>
+<td rowspan="3">Use this as a base for generating SIDs if no pool object
+is available.</td>
+</tr>
+<tr class="row-even"></tr>
+<tr class="row-odd"></tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>

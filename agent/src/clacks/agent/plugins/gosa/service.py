@@ -69,6 +69,37 @@ def extract_cookie(name, secret, data):
 
 
 class GOsaService(object):
+    """
+
+    Keys for configuration section **gosa**
+
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + path             | String     + Path where to hook in the administrative web GUI in the     |
+    +                  |            + web space.                                                  |
+    +------------------+------------+-------------------------------------------------------------+
+    + static-path      | String     + Path where to hook in the static file serve area in the     |
+    +                  |            + web space.                                                  |
+    +------------------+------------+-------------------------------------------------------------+
+    + cache-path       | String     + Path where the GOsa module will hook in it's cache          |
+    +                  |            + path to the web space.                                      |
+    +------------------+------------+-------------------------------------------------------------+
+    + websocket        | String     + Path where to hook in the websockets in the web space.      |
+    +------------------+------------+-------------------------------------------------------------+
+    + local            | String     + Local path from where to serve GUI web GUI.                 |
+    +------------------+------------+-------------------------------------------------------------+
+
+
+    Keys for configuration section **http**
+
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + cookie-secret    | String     + Key used to encrypt the cookie.                             |
+    +------------------+------------+-------------------------------------------------------------+
+
+    """
     implements(IInterfaceHandler)
     _priority_ = 9
 
@@ -78,8 +109,8 @@ class GOsaService(object):
         self.log = logging.getLogger(__name__)
         self.log.info("initializing GOsa static HTTP and WebSocket service")
         self.path = self.env.config.get('gosa.path', default="/admin")
-        self.static_path = self.env.config.get('gosa.static_path', default="/static")
-        self.cache_path = self.env.config.get('gosa.cache_path', default="/cache")
+        self.static_path = self.env.config.get('gosa.static-path', default="/static")
+        self.cache_path = self.env.config.get('gosa.cache-path', default="/cache")
         self.resource_path = pkg_resources.resource_filename('clacks.agent', 'data/templates') #@UndefinedVariable
         self.ws_path = self.env.config.get('gosa.websocket', default="/ws")
 

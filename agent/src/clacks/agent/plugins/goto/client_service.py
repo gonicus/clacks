@@ -58,6 +58,17 @@ class ClientService(Plugin):
     """
     Plugin to register clients and expose their functionality
     to the users.
+
+    Keys for configuration section **goto**
+
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + machine-rdn      | String     + RDN to initially place new machines in.                     |
+    +------------------+------------+-------------------------------------------------------------+
+    + timeout          | Integer    + Client ping interval.                                       |
+    +------------------+------------+-------------------------------------------------------------+
+
     """
     implements(IInterfaceHandler)
     _priority_ = 90

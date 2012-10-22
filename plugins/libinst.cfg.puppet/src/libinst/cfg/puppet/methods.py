@@ -44,6 +44,26 @@ puppet_lock = RLock()
 
 
 class PuppetInstallMethod(InstallMethod):
+    """
+    Configuration keys for section **repository**
+
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + db-purge         | Boolean    + Wether to purge the database on startup.                    |
+    +------------------+------------+-------------------------------------------------------------+
+
+    Configuration keys for section **puppet**
+
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + report-dir       | String     + Directory to expect puppet reports to pop up.               |
+    +------------------+------------+-------------------------------------------------------------+
+    + public-key       | String     + Path to GPG public key.                                     |
+    +------------------+------------+-------------------------------------------------------------+
+
+    """
 
     _supportedTypes = ["deb"]
     _root = "PuppetRoot"
@@ -496,7 +516,7 @@ reportdir=$logdir
         default = os.path.join(os.path.expanduser('~'), ".ssh", "id_dsa.pub")
 
         try:
-            with open(self.env.config.get("puppet.public_key", default)) as f:
+            with open(self.env.config.get("puppet.public-key", default)) as f:
                 content = f.read()
         except IOError:
                 return ""

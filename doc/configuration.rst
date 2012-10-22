@@ -4,10 +4,6 @@ Configuration reference
 This section details static configuration switches and runtime settings that
 can be used to control the behaviour of the Clacks framework.
 
-
-HIER -> Describe configuration file layout with examples
-
-
 Common
 ******
 
@@ -41,6 +37,84 @@ Configuration
 Clacks configuration files are written in *ini*-Style. This simplifies editing and
 enhances the overview. The common configuration covers a couple of sections detailed
 here.
+
+The frameworks configuration reader looks for two different styles of configuration:
+
+ * single configuration file called 'config'
+ * a directory with configuration snippets called 'config.d'
+
+Splitting configuration makes sense if multiple plugins have been installed: they can
+bring their own default configuration file without the need of modifying the main
+configuration file.
+
+The default base path where Clacks does look for configurations is **/etc/clacks**. It
+scans for **/etc/clacks/config** and files matching **/etc/clacks/config.d/*.conf**. You
+can override the base path using the *--config* switch.
+
+Here is a sample of a clacks configuration (*/etc/clacks/config*)::
+
+  [core]
+  domain = net.example
+  id = amqp
+  base = dc=example,dc=net
+
+  # Admin override for the user "admin"
+  admins = admin
+  
+  [amqp]
+  url = amqps://amqp.example.net:5671
+  key = secret
+  command-worker = 10
+  
+  [http]
+  host = amqp.example.net
+  port = 8080
+  ssl = true
+  keyfile = /etc/clacks/agent.key
+  certfile = /etc/clacks/agent.crt
+  
+  [ldap]
+  url = ldap://ldap.example.net/dc=example,dc=net
+  bind-dn = cn=clacks,dc=example,dc=net
+  bind-secret = secret
+  pool-size = 10
+  
+  [backend-monitor]
+  modifier = cn=clacks,dc=example,dc=net
+  audit-log = /tmp/ldap-audit.log
+
+This is an example of a split out logging configuration (*/etc/clacks/config.d/logging.conf*)::
+
+  [loggers]
+  keys=root,clacks
+  
+  [handlers]
+  keys=console
+  
+  [formatters]
+  keys=console
+  
+  
+  [logger_root]
+  level=WARNING
+  handlers=console
+  
+  [logger_clacks]
+  level=DEBUG
+  handlers=console
+  qualname=clacks
+  propagate=0
+  
+  [handler_console]
+  class=StreamHandler
+  formatter=console
+  args=(sys.stderr,)
+  
+  [formatter_console]
+  format=%(asctime)s %(levelname)s: %(module)s - %(message)s
+  datefmt=
+  class=logging.Formatter
+
 
 Section **core**
 ~~~~~~~~~~~~~~~~
@@ -107,6 +181,10 @@ the NoSQL database.
 + password         | String     + Password used to connect to MongoDB - if required           |
 +------------------+------------+-------------------------------------------------------------+
 
+Logging
+~~~~~~~
+
+Sections related to logging are using :ref:`the Python logging mechanism <python:logger>`.
 
 Agent
 *****
@@ -333,79 +411,3 @@ Section **dbus**
 +==================+============+=============================================================+
 + script-path      | String     + Script directory that is scanned for DBUS exported scripts. |
 +------------------+------------+-------------------------------------------------------------+
-
-
---------
-
-TODO
-
-
-By default it comes with a couple of plugins that may have parameters of their own. 
- 
-Agent:
-
-
-Cleanup and add to the documentation 
-
-agent/src/clacks/agent/plugins/gosa/methods.py:                cache_path = self.env.config.get('gosa.cache_path', default="/cache")
-agent/src/clacks/agent/plugins/gosa/service.py:        self.path = self.env.config.get('gosa.path', default="/admin")
-agent/src/clacks/agent/plugins/gosa/service.py:        self.static_path = self.env.config.get('gosa.static_path', default="/static")
-agent/src/clacks/agent/plugins/gosa/service.py:        self.cache_path = self.env.config.get('gosa.cache_path', default="/cache")
-agent/src/clacks/agent/plugins/gosa/service.py:        self.ws_path = self.env.config.get('gosa.websocket', default="/ws")
-agent/src/clacks/agent/plugins/gosa/service.py:        self.local_path = self.env.config.get('gosa.local', default=spath)
-agent/src/clacks/agent/plugins/gosa/service.py:        self.__secret = env.config.get('http.cookie-secret', default="TecloigJink4")
-agent/src/clacks/agent/plugins/gosa/service.py:        self.__secret = self.env.config.get('http.cookie-secret', default="TecloigJink4")
-agent/src/clacks/agent/plugins/samba/sid.py:            ridbase = int(self.env.config.get('samba.ridbase', default=1000))
-agent/src/clacks/agent/plugins/goto/client_service.py:            dn = ",".join(["cn=" + cn, self.env.config.get("goto.machine-rdn",
-agent/src/clacks/agent/plugins/goto/client_service.py:        interval = int(self.env.config.get("goto.timeout", default="600"))
-agent/src/clacks/agent/plugins/posix/shells.py:        source = env.config.get('goto.shells', default="/etc/shells")
-
-plugins/libinst.boot.preseed/src/libinst/boot/preseed/methods.py:        self.path = self.env.config.get('libinst.path', default="/preseed")
-plugins/libinst.boot.preseed/src/libinst/boot/preseed/methods.py:        url = urlparse(self.env.config.get('repository.http_base_url'))
-plugins/libinst/src/libinst/manage.py:        self.path = env.config.get('repository.path')
-plugins/libinst/src/libinst/manage.py:        db_purge = env.config.get('repository.db_purge')
-plugins/libinst/src/libinst/manage.py:            if not self.env.config.get('repository.http_base_url'):
-plugins/libinst/src/libinst/manage.py:            result = self.env.config.get('repository.http_base_url')
-plugins/libinst/src/libinst/manage.py:        if self.env.config.get("goto.send_uri", "False").upper() == "TRUE":
-plugins/libinst/src/libinst/manage.py:            url = parseURL(self.env.config.get("amqp.url"))
-plugins/libinst/src/libinst/manage.py:                    self.env.config.get("libinst.template-rdn", "cn=templates,cn=libinst,cn=config"),
-plugins/libinst/src/libinst/interface/base.py:            res = conn.search_s(",".join([self.env.config.get("libinst.template-rdn",
-plugins/libinst/src/main.py:    repo_path = env.config.get('repository.path')
-plugins/libinst.cfg.puppet/src/libinst/cfg/puppet/methods.py:        db_purge = self.env.config.get('repository.db_purge',)
-plugins/libinst.cfg.puppet/src/libinst/cfg/puppet/methods.py:            logdir = self.env.config.get("puppet.report-dir",
-plugins/libinst.cfg.puppet/src/libinst/cfg/puppet/methods.py:            with open(self.env.config.get("puppet.public_key", default)) as f:
-plugins/amires/src/amires/resolver.py:            for opt in env.config.getOptions("resolver-replace"):
-plugins/amires/src/amires/resolver.py:                itm = env.config.get("resolver-replace.%s" % opt)
-plugins/amires/src/amires/modules/telekom_res.py:            self.priority = float(self.env.config.get("resolver-telekom.priority",
-plugins/amires/src/amires/modules/xml_res.py:        filename = self.env.config.get("resolver-xml.filename",
-plugins/amires/src/amires/modules/xml_res.py:            self.priority = float(self.env.config.get("resolver-xml.priority",
-plugins/amires/src/amires/modules/sugar_res.py:        self.priority = float(self.env.config.get("resolver-sugar.priority",
-plugins/amires/src/amires/modules/sugar_res.py:        self.sugar_url = self.env.config.get("resolver-sugar.site_url",
-plugins/amires/src/amires/modules/goforge_render.py:        self.forge_url = self.env.config.get("fetcher-goforge.site_url",
-plugins/amires/src/amires/modules/ldap_res.py:            self.priority = float(self.env.config.get("resolver-ldap.priority",
-plugins/amires/src/amires/modules/doingreport_render.py:        self.whitelisted_users = self.env.config.get("doingreport.users")
-plugins/amires/src/amires/modules/doingreport_render.py:        self.forge_url = self.env.config.get("fetcher-goforge.site_url",
-plugins/amires/src/amires/modules/clacks_res.py:            self.priority = float(self.env.config.get("resolver-clacks.priority",
-plugins/amires/src/amires/main.py:        mw = int(self.env.config.get("amires.avatar_size", default="96"))
-plugins/libinst.repo.deb/src/libinst/repo/deb/main.py:                    if not self.env.config.get('repository.rollback') == False and not os.path.exists(rollback_path):
-plugins/libinst.repo.deb/src/libinst/repo/deb/main.py:                                    if not self.env.config.get('repository.rollback') == False:
-plugins/libinst.repo.deb/src/libinst/repo/deb/main.py:        repository = session.query(Repository).filter_by(path=self.env.config.get('repository.path')).one()
-plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/dbus_main.py:        self.logdir = self.env.config.get("puppet.report-dir",
-plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/dbus_main.py:            if config.get("main", "report", "false") != "true":
-plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/dbus_main.py:            if config.get("main", "reportdir", "") != self.logdir:
-plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/dbus_main.py:            if config.get("main", "reports", "") != "store_clacks":
-plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/dbus_main.py:            self.env.config.get("puppet.command", default="/usr/bin/puppet"),
-plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/dbus_main.py:            self.env.config.get("puppet.manifest", default="/etc/puppet/manifests/site.pp"),
-plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/main.py:        self.__puppet_user = env.config.get("puppet.user",
-plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/main.py:            default=env.config.get("client.user", default="clacks"))
-plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/main.py:        self.__target_dir = env.config.get("puppet.target", default="/etc/puppet")
-plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/main.py:        self.__puppet_command = env.config.get("puppet.command", default="/usr/bin/puppet")
-plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/main.py:        self.__report_dir = env.config.get("puppet.report-dir", default="/var/log/puppet")
-plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/main.py:            'distribution': config.get('release', 'distribution'),
-plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/main.py:            'version': config.get('release', 'version'),
-plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/main.py:            'description': config.get('release', 'description'),
-plugins/libinst.cfg.puppet.client/src/libinst/cfg/puppet/client/main.py:        user = self.env.config.get('client.user', default="clacks")
-
-
-TODO: Fix sample configurations
-TODO: gosa plugin data -> qooxdoo-build

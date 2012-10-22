@@ -852,4 +852,3 @@ def connect(service_uri='', username='', password=''):
 
 if __name__ == '__main__':
     main()
-

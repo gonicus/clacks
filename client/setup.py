@@ -64,13 +64,13 @@ else:
 
 setup(
     name = "clacks.client",
-    version = "1.0",
-    author = "Cajus Pollmeier",
-    author_email = "pollmeier@gonicus.de",
+    version = "0.8",
+    author = "GONICUS GmbH",
+    author_email = "info@gonicus.de",
     description = "Identity-, system- and configmanagement middleware",
     long_description = README + "\n\n" + CHANGES,
     keywords = "system config management ldap groupware",
-    license = "LGPL",
+    license = "GPL",
     url = "http://www.gosa-project.org",
     classifiers = [
         'Development Status :: 4 - Beta',

@@ -28,7 +28,22 @@ class OptionMissing(Exception):
 
 
 class PuppetDBusHandler(dbus.service.Object, Plugin):
-    """ Puppet handler containing methods to be exported to DBUS """
+    """
+    Puppet handler containing methods to be exported to DBUS.
+
+    Configuration keys for section **puppet**
+
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + report-dir       | String     + Directory where to expect puppet reports to pop up.         |
+    +------------------+------------+-------------------------------------------------------------+
+    + command          | String     + Path and command to reach puppet.                           |
+    +------------------+------------+-------------------------------------------------------------+
+    + manifest         | String     + Path to base site manifest.                                 |
+    +------------------+------------+-------------------------------------------------------------+
+
+    """
 
     def __init__(self):
         conn = get_system_bus()

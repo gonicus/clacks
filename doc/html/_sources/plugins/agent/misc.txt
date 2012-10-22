@@ -1,3 +1,5 @@
+.. _agent-misc:
+
 Misc plugins
 ============
 
@@ -5,4 +7,7 @@ Misc plugins
    :members:
 
 .. autoclass:: clacks.agent.plugins.misc.locales.Locales
+   :members:
+
+.. autoclass:: clacks.agent.plugins.misc.gravatar.Gravatar
    :members:

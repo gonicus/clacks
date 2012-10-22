@@ -1,3 +1,5 @@
+.. _agent-goto:
+
 GOto
 ====
 

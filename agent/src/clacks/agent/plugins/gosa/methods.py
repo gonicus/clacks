@@ -30,6 +30,17 @@ from json import loads, dumps
 
 
 class GuiMethods(Plugin):
+    """
+    Key for configuration section **gosa**
+
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + cache-path       | String     + Path where the GOsa module will hook in it's cache          |
+    +                  |            + path to the web space.                                      |
+    +------------------+------------+-------------------------------------------------------------+
+
+    """
     implements(IInterfaceHandler)
     _target_ = 'gosa'
     _priority_ = 80
@@ -477,7 +488,7 @@ class GuiMethods(Plugin):
 
             icon_attribute = self.__search_aid['mapping'][item['_type']]['icon']
             if icon_attribute and icon_attribute in item and item[icon_attribute]:
-                cache_path = self.env.config.get('gosa.cache_path', default="/cache")
+                cache_path = self.env.config.get('gosa.cache-path', default="/cache")
                 entry['icon'] = os.path.join(cache_path, item['_uuid'],
                         icon_attribute, "0", "64.jpg?c=%s" %
                         item['_last_changed'])

@@ -60,7 +60,17 @@ class DetectSambaDomainFromSID(ElementFilter):
 
 class GenerateSambaSid(ElementFilter):
     """
-    Out filter to generate a new sambaSID
+    Out filter to generate a new sambaSID.
+
+    Section **samba**
+
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + ridbase          | Integer    + Use this as a base for generating SIDs if no pool object    |
+    +                  |            + is available.                                               |
+    +------------------+------------+-------------------------------------------------------------+
+
     """
 
     def __init__(self, obj):

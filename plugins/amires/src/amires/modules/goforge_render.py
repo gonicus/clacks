@@ -25,7 +25,16 @@ _ = t.ugettext
 
 
 class GOForgeRenderer(BaseRenderer):
+    """
+    Configuration keys for section **fetcher-goforge**
 
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + site-url         | String     + URL to the goforge site.                                    |
+    +------------------+------------+-------------------------------------------------------------+
+
+    """
     priority = 10
 
     def __init__(self):
