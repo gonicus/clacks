@@ -329,6 +329,8 @@ Remove all acls from a role
 >>> ./acl-admin remove roleacls "name=TEST,dc=example,dc=net"
 
 
-.. automodule:: clacks.agent.acl
-   :members:
+For more details take a look at the acl module
+^^^^^^^^^
+
+ACL-Module: :class:`clacks.agent.acl.ACLSet`
 
