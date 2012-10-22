@@ -27,7 +27,9 @@ def mr(data):
 
 
 class BaseRenderer(object):
-
+    """
+    TODO
+    """
     priority = 1
 
     def __init__(self):
