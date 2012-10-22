@@ -28,7 +28,10 @@ def mr(data):
 
 class BaseRenderer(object):
     """
-    TODO
+    This is the base class for all render modules. Render modules retrieve
+    additional information about the given phone number by utilizing a data
+    source they are dedicated to (e.g. a CRM) and produce HTML output that
+    will be used for the notification-bubble popup on the agents screen.
     """
     priority = 1
 

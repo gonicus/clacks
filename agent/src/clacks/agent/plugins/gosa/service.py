@@ -213,7 +213,7 @@ class CacheHandler(object):
         # Tell the client that we've no modification?
         lm = req.headers.get('If-Modified-Since')
         if lm:
-            lm = time.mktime(rfc822.parsedate(lm))
+            lm = datetime(*rfc822.parsedate(lm)[0:6])
             if data['modified'] > lm:
                 raise exc.HTTPNotModified().exception
 
@@ -222,7 +222,7 @@ class CacheHandler(object):
             body=str(data[subindex][int(index)]))
         resp.cache_control.max_age = 3600
         resp.cache_control.private = 1
-        resp.last_modified = datetime(2007, 1, 1, 12, 0)
+        resp.last_modified = data['modified']
 
         return resp
 

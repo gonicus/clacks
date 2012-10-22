@@ -16,16 +16,24 @@ from clacks.common import Environment
 
 class PhoneNumberResolver(object):
     """
-    TODO
+    This is the mainclass for any PhoneNumberResolver module. PhoneNumberResolver
+    modules try to retrieve basic information about a phone number (such as the
+    callers name or company) from a certain information source they are dedicated
+    to (e.g. a phonebook database or LDAP directory). Some of this information
+    will be printet by the common renderer module (common_render.py) or can be
+    used for retrieving more detailed information by some dedicated renderer module.
 
-    Configuration keys for section **resolver-replace**
+    The configuration happens to be in the **resolver-replace** section of your
+    configuration files and is dynamic:
 
-    +------------------+------------+-------------------------------------------------------------+
-    + Key              | Format     +  Description                                                |
-    +==================+============+=============================================================+
-    +                  |            +                                                             |
-    +------------------+------------+-------------------------------------------------------------+
+    Any key-value pair in this section manipulates the original phone number by
+    applying a substitution on it (see :ref:`python:re.sub`). This is neccessary
+    in order to bring a phone number from a format that is location specific
+    (e.g. an internal company number) into a format that is understood by the
+    resolver module (usually the international number format: *+490123456789*).
 
+    The key-value paires in this section are applied in top to buttom order -
+    the key has just a label function in this case.
     """
     priority = 10
     replace = []

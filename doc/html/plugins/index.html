@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Plugin development &mdash; Clacks Project</title>
+    <title>Plugins &mdash; Clacks Project</title>
     
     <link rel="stylesheet" href="../_static/clacks.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -28,7 +28,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="Clacks Project" href="../index.html" />
     <link rel="up" title="Development documentation" href="../development.html" />
-    <link rel="next" title="Agent plugins" href="agent/index.html" />
+    <link rel="next" title="GOto" href="agent/goto.html" />
     <link rel="prev" title="Shell and scripting" href="../shell/index.html" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
@@ -65,12 +65,86 @@
       <div class="documentwrapper">
         <div class="body">
           
-  <div class="section" id="plugin-development">
+  <div class="section" id="plugins">
+<h1>Plugins<a class="headerlink" href="#plugins" title="Permalink to this headline">¶</a></h1>
+<p>This section contains documentation for available Clacks plugins. These may
+come as standalone plugins or may be included in the core Clacks modules.
+If you find missing plugins, please send patches to these documentation files.</p>
+<div class="section" id="agent-plugins">
+<h2>Agent plugins<a class="headerlink" href="#agent-plugins" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="agent/goto.html">GOto</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agent/gosa.html">GOsa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agent/password.html">Password handlers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agent/posix.html">POSIX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agent/fusion.html">Inventory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agent/misc.html">Misc plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agent/samba.html">Samba</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agent/user.html">Generic user support</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="client-plugins">
+<h2>Client plugins<a class="headerlink" href="#client-plugins" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="client/dbus.html">D-Bus Proxy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="client/dbus.html#d-bus-command-proxy">D-Bus Command Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client/dbus.html#which-methods-are-exported">Which methods are exported?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="client/goto.html">GOto</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="client/goto.html#module-clacks.client.plugins.powermanagement.main">Powermanagement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client/goto.html#module-clacks.client.plugins.sessions.main">Sessions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="client/inventory.html">Inventory</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="client/inventory.html#description">Description</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="client/notify.html">Notify</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="client/notify.html#clacks-client-notification-plugin">Clacks Client Notification Plugin</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="dbus-plugins">
+<h2>DBUS plugins<a class="headerlink" href="#dbus-plugins" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dbus/fusion.html">Inventory</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dbus/fusion.html#fusioninventory-module">Fusioninventory module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dbus/shell.html">Shell</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dbus/shell.html#clacks-d-bus-shell-plugin">Clacks D-Bus Shell plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbus/shell.html#creating-scripts">Creating scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dbus/wakeonlan.html">Wake On LAN</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dbus/wakeonlan.html#clacks-d-bus-wake-on-lan">Clacks D-Bus Wake on LAN</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dbus/notify.html">Notify</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dbus/notify.html#clacks-d-bus-notification-plugin">Clacks D-Bus Notification Plugin</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dbus/services.html">Services</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dbus/services.html#clacks-d-bus-system-service-plugin">Clacks D-Bus System Service Plugin</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="plugin-development">
 <h1>Plugin development<a class="headerlink" href="#plugin-development" title="Permalink to this headline">¶</a></h1>
 <p>Basically there are four plugin types that are used inside of Clacks. Two of
 them are <em>agent</em> plugins - namely handlers and ordinary plugins, one flavor
 of <em>client</em> plugins and one flavor of <em>dbus</em> plugins.</p>
-<p id="plugins">In order to help with quick plugin templating, there&#8217;s a helper script <strong>tools/clacks-plugin-skel</strong>
+<p id="id1">In order to help with quick plugin templating, there&#8217;s a helper script <strong>tools/clacks-plugin-skel</strong>
 which asks a couple of questions and generates a quickstart for you:</p>
 <div class="highlight-python"><pre>$ tools/clacks-plugin-skel
 Generate plugin skeleton. Please provide some information:
@@ -114,83 +188,6 @@ sample/src/clacks/agent/plugins/sample/main.py</pre>
 <li class="toctree-l1"><a class="reference internal" href="client/index.html">Client plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dbus/index.html">DBUS plugins</a></li>
 </ul>
-</div>
-</div>
-<div class="section" id="id1">
-<h1>Plugins<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
-<p>This section contains documentation for available Clacks plugins. These may
-come as standalone plugins or may be included in the core Clacks modules.
-If you find missing plugins, please send patches to these documentation files.</p>
-<div class="section" id="agent-plugins">
-<h2>Agent plugins<a class="headerlink" href="#agent-plugins" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="agent/goto.html">GOto</a></li>
-<li class="toctree-l1"><a class="reference internal" href="agent/gosa.html">GOsa</a></li>
-<li class="toctree-l1"><a class="reference internal" href="agent/password.html">Password handlers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="agent/posix.html">POSIX</a></li>
-<li class="toctree-l1"><a class="reference internal" href="agent/fusion.html">Inventory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="agent/libinst.html">libinst</a></li>
-<li class="toctree-l1"><a class="reference internal" href="agent/misc.html">Misc plugins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="agent/samba.html">Samba</a></li>
-<li class="toctree-l1"><a class="reference internal" href="agent/user.html">Generic user support</a></li>
-</ul>
-</div>
-</div>
-<div class="section" id="client-plugins">
-<h2>Client plugins<a class="headerlink" href="#client-plugins" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="client/dbus.html">D-Bus Proxy</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="client/dbus.html#d-bus-command-proxy">D-Bus Command Proxy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="client/dbus.html#which-methods-are-exported">Which methods are exported?</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="client/goto.html">GOto</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="client/goto.html#module-clacks.client.plugins.powermanagement.main">Powermanagement</a></li>
-<li class="toctree-l2"><a class="reference internal" href="client/goto.html#module-clacks.client.plugins.sessions.main">Sessions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="client/libinst.html">libinst</a></li>
-<li class="toctree-l1"><a class="reference internal" href="client/inventory.html">Inventory</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="client/inventory.html#description">Description</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="client/notify.html">Notify</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="client/notify.html#clacks-client-notification-plugin">Clacks Client Notification Plugin</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-<div class="section" id="dbus-plugins">
-<h2>DBUS plugins<a class="headerlink" href="#dbus-plugins" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="dbus/fusion.html">Inventory</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dbus/fusion.html#fusioninventory-module">Fusioninventory module</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="dbus/libinst.html">Libinst</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dbus/shell.html">Shell</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dbus/shell.html#clacks-d-bus-shell-plugin">Clacks D-Bus Shell plugin</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dbus/shell.html#creating-scripts">Creating scripts</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="dbus/wakeonlan.html">Wake On LAN</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dbus/wakeonlan.html#clacks-d-bus-wake-on-lan">Clacks D-Bus Wake on LAN</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="dbus/notify.html">Notify</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dbus/notify.html#clacks-d-bus-notification-plugin">Clacks D-Bus Notification Plugin</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="dbus/services.html">Services</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dbus/services.html#clacks-d-bus-system-service-plugin">Clacks D-Bus System Service Plugin</a></li>
-</ul>
-</li>
-</ul>
-</div>
 </div>
 </div>
 
