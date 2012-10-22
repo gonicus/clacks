@@ -17,6 +17,17 @@ from clacks.common import Environment
 
 
 class ShellSupport(Plugin):
+    """
+
+    Section **posix**
+
+    +------------------+------------+-------------------------------------------------------------+
+    + Key              | Format     +  Description                                                |
+    +==================+============+=============================================================+
+    + shells           | String     + Path to a file containing one shell perl line.              |
+    +------------------+------------+-------------------------------------------------------------+
+
+    """
     _target_ = 'misc'
 
     def __init__(self):
@@ -24,7 +35,7 @@ class ShellSupport(Plugin):
 
         # Use a shell source file
         env = Environment.getInstance()
-        source = env.config.get('goto.shells', default="/etc/shells")
+        source = env.config.get('posix.shells', default="/etc/shells")
 
         with open(source) as f:
             self.__shells = filter(lambda y: not y.startswith("#"), [x.strip() for x in f.read().split("\n")])

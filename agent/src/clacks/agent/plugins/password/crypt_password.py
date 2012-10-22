@@ -19,12 +19,12 @@ import re
 
 class PasswordMethodCrypt(PasswordMethod):
     """
-    Crypt password method.
-    It support the following hashing-methods:
-     * crypt/standard-des
-     * crypt/enhanced-des
-     * crypt/md5
-     * crypt/blowfish
+    Crypt password method.  It support the following hashing-methods:
+
+       * crypt/standard-des
+       * crypt/enhanced-des
+       * crypt/md5
+       * crypt/blowfish
     """
 
     hash_name = "CRYPT"

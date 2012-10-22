@@ -252,8 +252,7 @@ class PasswordManager(Plugin):
 
     def get_method_by_method_type(self, method_type):
         """
-        Returns the passwod-method that is responsible for the given hashing-method
-
+        Returns the passwod-method that is responsible for the given hashing-method,
         e.g. get_method_by_method_type('crypt/blowfish')
         """
         methods = self.list_methods()
