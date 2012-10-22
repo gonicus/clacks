@@ -1027,10 +1027,11 @@ roles that make sense::
   add acl with-role dc=example,dc=net 0 '^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$' Clients
   
   # Create GUI ACL role that allows login to a GUI
-  add role "dc=example,dc=net" GUI
-  add roleacl with-actions name=GUI,dc=example,dc=net 0 sub "^net\.example\.command\.core\.(getSessionUser|getBase|search):x"
-  add roleacl with-actions name=GUI,dc=example,dc=net 0 sub "^net\.example\.command\.gosa\..*:x"
-  
+  add role dc=example,dc=net GUI
+  add roleacl with-actions "name=GUI,dc=example,dc=net" 1 sub "^net\.example\.command\.core\.(getSessionUser|get_error|getBase|search|openObject|dispatchObjectMethod|setObjectProperty|closeObject|reloadObject)$:x"
+  add roleacl with-actions "name=GUI,dc=example,dc=net" 1 sub "^net\.example\.command\.gosa\.(getTemplateI18N|getAvailableObjectNames|getGuiTemplates|getUserDetails|search|getObjectDetails|searchForObjectDetails|loadUserPreferences|saveUserPreferences)$:x"
+  add roleacl with-actions "name=GUI,dc=example,dc=net" 1 sub "^net\.example\.command\.password\.(accountUnlockable|accountLockable|listPasswordMethods)$:x"
+
   # Create SelfService role that allows occupants to modify some of their attributes
   add role "dc=example,dc=net" SelfService
   add roleacl with-actions name=SelfService,dc=example,dc=net 0 sub "^net\.example\.command\.core\.(openObject|dispatchObjectMethod|setObjectProperty|closeObject):x"
