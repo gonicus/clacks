@@ -598,7 +598,6 @@ class ObjectIndex(Plugin):
 
                 res.append(item)
 
-        print res
         return res
 
     def search(self, query, conditions):
