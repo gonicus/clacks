@@ -130,7 +130,7 @@ class MyConsole(code.InteractiveConsole):
                 info = self.proxy.get_error(error_id.groups()[0], ".".join(locale.getdefaultlocale()))
                 detail = ""
                 if info['details']:
-                    detail = " - %s [%s]" % (info['details']['detail'], info['details']['index'])
+                    detail = " - %s [%s]" % (info['details'][0]['detail'], info['details'][0]['index'])
                 if info['topic']:
                     print info['text'] + detail + ": " + info['topic']
                 else:
