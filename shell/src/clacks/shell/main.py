@@ -53,6 +53,7 @@ import gettext
 import textwrap
 import locale
 import thread
+import qpid.messaging
 from urllib2 import HTTPError
 from pkg_resources import resource_filename #@UnresolvedImport
 from dbus.exceptions import DBusException
@@ -227,7 +228,11 @@ class ClacksService():
                 url['port'],
                 url['path'])
 
-            self.proxy = AMQPServiceProxy(connection)
+            try:
+                self.proxy = AMQPServiceProxy(connection)
+            except qpid.messaging.exceptions.ConnectionError:
+                print _("Login of user '%s' failed") % username
+                sys.exit(1)
 
         # Default and HTTP
         elif url['scheme'][0:4] == "http":
@@ -353,7 +358,6 @@ except:
     traceback.print_exc()
     sys.exit(1)
 """
-
     startup = """
 import readline
 import rlcompleter
@@ -392,6 +396,9 @@ for i in clacks.getMethods().keys():
         try:
             commands = command.split(';')
             for cake in commands:
+                if not cake:
+                    continue
+
                 pyconsole.runcode(wrap % cake)
             letRun = 0
         except Exception:
