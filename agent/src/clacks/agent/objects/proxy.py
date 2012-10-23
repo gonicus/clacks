@@ -811,7 +811,7 @@ class ObjectProxy(object):
         if self.__base.modifyTimestamp:
             res['_last_changed'] = time.mktime(self.__base.modifyTimestamp.timetuple())
 
-        res['_extensions'] = self.__extensions.keys()
+        res['_extensions'] = [k for k in self.__extensions.keys() if self.__extensions[k]]
 
         props = self.__property_map
         for propname in self.__property_map:
