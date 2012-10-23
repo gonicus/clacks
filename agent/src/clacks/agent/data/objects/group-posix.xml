@@ -62,7 +62,7 @@
         <Validators>
           <Condition>
             <Name>ObjectWithPropertyExists</Name>
-            <Param>User</Param>
+            <Param>PosixUser</Param>
             <Param>uid</Param>
           </Condition>
         </Validators>
