@@ -28,6 +28,8 @@ import md5
 import time
 import itertools
 from zope.interface import implements
+from bson.binary import Binary
+from clacks.common.components.jsonrpc_utils import Binary as CBinary
 from clacks.common import Environment
 from clacks.common.utils import N_
 from clacks.common.event import EventMaker
@@ -541,6 +543,64 @@ class ObjectIndex(Plugin):
 
         return ret
 
+    @Command(needsUser=True, __help__=N_("Query the index for entries."))
+    def find(self, user, query, conditions=None):
+        """
+        Perform a raw mongodb find call.
+
+        ========== ==================
+        Parameter  Description
+        ========== ==================
+        query      Query hash
+        conditions Conditions hash
+        ========== ==================
+
+        For more information on the query format, consult the mongodb documentation.
+
+        ``Return``: List of dicts
+        """
+        res = []
+
+        # Always return dn and _type - we need it for ACL control
+        if isinstance(conditions, dict):
+            conditions['dn'] = 1
+            conditions['_type'] = 1
+
+        else:
+            conditions = None
+
+        if not isinstance(query, dict):
+            raise FilterException(C.make_error('INVALID_QUERY'))
+
+        # Create result-set
+        for item in self.search(query, conditions):
+
+            # Filter out what the current use is not allowed to see
+            item = self.__filter_entry(user, item)
+            if item and item['dn'] != None:
+                del item['_id']
+
+                # Convert binary (bson) to Binary
+                for key in item.keys():
+                    if isinstance(item[key], list):
+
+                        n = []
+                        for v in item[key]:
+                            if isinstance(v, Binary):
+                                v = CBinary(v)
+
+                            n.append(v)
+
+                        item[key] = n
+
+                    elif isinstance(item[key], Binary):
+                        item[key] = CBinary(item[key])
+
+                res.append(item)
+
+        print res
+        return res
+
     def search(self, query, conditions):
         """
         Perform a raw mongodb find call.
@@ -561,3 +621,40 @@ class ObjectIndex(Plugin):
             raise FilterException(C.make_error('INDEXING', "base"))
 
         return self.db.index.find(query, conditions)
+
+    def __filter_entry(self, user, entry):
+        """
+        Takes a query entry and decides based on the user what to do
+        with the result set.
+
+        ========== ===========================
+        Parameter  Description
+        ========== ===========================
+        user       User ID
+        entry      Search entry as hash
+        ========== ===========================
+
+        ``Return``: Filtered result entry
+        """
+
+        res = {}
+        for attr in entry.keys():
+           if attr in ['dn', '_type', '_uuid', '_last_changed']:
+                res[attr] = entry[attr]
+                continue
+
+           if self.__has_access_to(user, entry['dn'], entry['_type'], attr):
+                res[attr] = entry[attr]
+
+        return res
+
+    def __has_access_to(self, user, object_dn, object_type, attr):
+        """
+        Checks whether the given user has access to the given object/attribute or not.
+        """
+        aclresolver = PluginRegistry.getInstance("ACLResolver")
+        if user:
+            topic = "%s.objects.%s.attributes.%s" % (self.env.domain, object_type, attr)
+            return aclresolver.check(user, topic, "r", base=object_dn)
+        else:
+            return True
