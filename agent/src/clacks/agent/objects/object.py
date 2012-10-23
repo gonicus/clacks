@@ -719,7 +719,7 @@ class Object(object):
 
         # Skip the whole process if there's no change at all
         if not toStore:
-            return
+            return {}
 
         # Update references using the toStore information
         changes = {}
