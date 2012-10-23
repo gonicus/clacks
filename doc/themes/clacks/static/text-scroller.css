@@ -1,0 +1,37 @@
+
+span.comment {
+	color: #008000;
+}
+
+span.code {
+	color: #000000;
+}
+
+div#controls {
+	color: #808080;
+}
+
+span.comment {
+	color: #008000;
+}
+
+span.code {
+	color: #000000;
+}
+
+div#controls {
+	color: #808080;
+	background-color: #f8f8f8;
+}
+
+
+div#tt {
+	height: 475px;
+	width: 990px;
+	overflow: auto;
+	background-color: #f8f8f8;
+	padding: 5px;
+	margin-right: 10px;
+	font-family: monospace;
+	color: #808080;
+}
