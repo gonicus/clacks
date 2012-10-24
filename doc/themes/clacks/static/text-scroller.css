@@ -10,9 +10,9 @@ span.code {
 div#tt {
 	height: 480px;
 	padding: 0px;
-	width: 990px;
+	width: 920px;
 	overflow: auto;
-	background-color: #000;
+	background-color: #222;
 	margin: 10px;
 	font-family: monospace;
 	color: #808080;
