@@ -130,8 +130,7 @@
         <Description>preferred name of a person to be used when displaying entries</Description>
         <Type>UnicodeString</Type>
         <BlockedBy>
-          <Name>autoDisplayName</Name>
-          <Value>true</Value>
+          <Attribute value="true">autoDisplayName</Attribute>
         </BlockedBy>
         <DependsOn>
           <Attribute>autoDisplayName</Attribute>

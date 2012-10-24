@@ -409,10 +409,9 @@
 				<Type>String</Type>
 				<Default></Default>
 				<Mandatory>true</Mandatory>
-				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
-				</BlockedBy>
+        <BlockedBy>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
+        </BlockedBy>
 			</Attribute>
 
 			<Attribute>
@@ -423,8 +422,7 @@
 				<Default></Default>
 				<Mandatory>true</Mandatory>
 				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
 				</BlockedBy>
 			</Attribute>
 
@@ -436,8 +434,7 @@
 				<Default></Default>
 				<Mandatory>true</Mandatory>
 				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
 				</BlockedBy>
 			</Attribute>
 
@@ -450,8 +447,7 @@
 				<ReadOnly>true</ReadOnly>
 				<Mandatory>true</Mandatory>
 				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
 				</BlockedBy>
 			</Attribute>
 
@@ -463,8 +459,7 @@
 				<Default></Default>
 				<Mandatory>true</Mandatory>
 				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
 				</BlockedBy>
 			</Attribute>
 
@@ -486,8 +481,7 @@
 				<Default>true</Default>
 				<Mandatory>true</Mandatory>
 				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
 				</BlockedBy>
 			</Attribute>
 
@@ -499,8 +493,7 @@
 				<Default></Default>
 				<Mandatory>true</Mandatory>
 				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
 				</BlockedBy>
 				<Values populate="getSambaDriveLetters" />
 			</Attribute>
@@ -513,8 +506,7 @@
 				<Default>0</Default>
 				<Mandatory>true</Mandatory>
 				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
 				</BlockedBy>
 			</Attribute>
 
@@ -530,8 +522,7 @@
 					<Value key="1">reset</Value>
 				</Values>
 				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
 				</BlockedBy>
 			</Attribute>
 
@@ -543,8 +534,7 @@
 				<Default>551e0bb0</Default>
 				<Mandatory>true</Mandatory>
 				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
 				</BlockedBy>
 			</Attribute>
 
@@ -556,8 +546,7 @@
 				<Default></Default>
 				<Mandatory>true</Mandatory>
 				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
 				</BlockedBy>
 			</Attribute>
 
@@ -569,8 +558,7 @@
 				<Default>true</Default>
 				<Mandatory>true</Mandatory>
 				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
 				</BlockedBy>
 			</Attribute>
 
@@ -582,8 +570,7 @@
 				<Default></Default>
 				<Mandatory>true</Mandatory>
 				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
 				</BlockedBy>
 			</Attribute>
 
@@ -595,8 +582,7 @@
 				<Default></Default>
 				<Mandatory>true</Mandatory>
 				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
 				</BlockedBy>
 			</Attribute>
 
@@ -608,8 +594,7 @@
 				<Default>0</Default>
 				<Mandatory>true</Mandatory>
 				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
 				</BlockedBy>
 			</Attribute>
 
@@ -621,8 +606,7 @@
 				<Default>0</Default>
 				<Mandatory>true</Mandatory>
 				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
 				</BlockedBy>
 			</Attribute>
 
@@ -634,8 +618,7 @@
 				<Default></Default>
 				<Mandatory>true</Mandatory>
 				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
 				</BlockedBy>
 			</Attribute>
 
@@ -648,8 +631,7 @@
 				<ReadOnly>true</ReadOnly>
 				<Mandatory>true</Mandatory>
 				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
 				</BlockedBy>
 			</Attribute>
 
@@ -665,8 +647,7 @@
 					<Value key="1">from previous client only</Value>
 				</Values>
 				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
 				</BlockedBy>
 			</Attribute>
 
@@ -678,8 +659,7 @@
 				<Default>true</Default>
 				<Mandatory>true</Mandatory>
 				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
 				</BlockedBy>
 			</Attribute>
 
@@ -691,8 +671,7 @@
 				<Default>0</Default>
 				<Mandatory>true</Mandatory>
 				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
 				</BlockedBy>
 			</Attribute>
 
@@ -711,8 +690,7 @@
 					<Value key="4">input off, notify off</Value>					
 				</Values>
 				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
 				</BlockedBy>
 			</Attribute>
 
@@ -724,8 +702,7 @@
 				<Default>false</Default>
 				<Mandatory>true</Mandatory>
 				<BlockedBy>
-					<Name>Ctx_flag_tsLogin</Name>
-					<Value>False</Value>
+          <Attribute value="false">Ctx_flag_tsLogin</Attribute>
 				</BlockedBy>
 			</Attribute>
 

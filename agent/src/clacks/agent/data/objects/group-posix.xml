@@ -34,8 +34,7 @@
         <Description>The primary group number  number</Description>
         <Type>Integer</Type>
         <BlockedBy>
-          <Name>autoGid</Name>
-          <Value>true</Value>
+          <Attribute value="true">autoGid</Attribute>
         </BlockedBy>
         <DependsOn>
           <Attribute>autoGid</Attribute>

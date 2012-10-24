@@ -848,9 +848,8 @@ class ObjectFactory(object):
 
                     # Read blocked by settings - When they are fullfilled, these property cannot be changed.
                     if "BlockedBy" in prop.__dict__:
-                        bname = prop['BlockedBy'].Name.text
-                        bvalue = prop['BlockedBy'].Value.text
-                        blocked_by.append({'name': bname, 'value': bvalue})
+                        for d in prop.__dict__['BlockedBy'].iterchildren():
+                            blocked_by.append({'name': d.text, 'value': d.attrib['value']})
 
                     # Convert the default to the corresponding type.
                     if "Default" in prop.__dict__:

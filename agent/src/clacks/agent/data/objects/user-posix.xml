@@ -62,8 +62,7 @@
           </Condition>
         </Validators>
         <BlockedBy>
-          <Name>autoIDs</Name>
-          <Value>true</Value>
+          <Attribute value="true">autoIDs</Attribute>
         </BlockedBy>
         <DependsOn>
           <Attribute>autoIDs</Attribute>
@@ -76,8 +75,7 @@
         <Type>Integer</Type>
         <Mandatory>true</Mandatory>
         <BlockedBy>
-          <Name>autoIDs</Name>
-          <Value>true</Value>
+          <Attribute value="true">autoIDs</Attribute>
         </BlockedBy>
         <Validators>
           <Condition>
@@ -109,8 +107,7 @@
         <Description>The GECOS field; the common name</Description>
         <Type>UnicodeString</Type>
         <BlockedBy>
-          <Name>autoGECOS</Name>
-          <Value>true</Value>
+          <Attribute value="true">autoGECOS</Attribute>
         </BlockedBy>
         <DependsOn>
           <Attribute>autoGECOS</Attribute>
