@@ -60,8 +60,14 @@
        manage. infrastructure. objects.
     </div>
 
-    <div style="border-right:1px solid rgba(40, 40, 40, 0.3); border-bottom:1px solid rgba(40, 40, 40, 0.3); width: 1008px; margin-left: auto; margin-right: auto;">
-      <div id="infobar" style="border:4px solid #FFF; background-color:#000;">
+
+
+    <div style="border-right:1px solid rgba(40, 40, 40, 0.3); border-bottom:1px solid rgba(40, 40, 40, 0.3); width: 1008px; margin-left: auto; margin-right: auto; height: 508px;"  >
+
+      <div name="previous" id="previous" style="background-color: white; width: 30px; 
+        float: left; text-align: center; padding-top: 240px; height: 268px; cursor: pointer;"><font size="20px">&lt;</font></div>
+
+      <div id="infobar" style="border:4px solid #FFF; background-color:#000; float: left;">
         <div class="box">
           <img src="_static/slide-gosa-search.png">
         </div>
@@ -70,16 +76,78 @@
         </div>
         <div class="box">
           <div id="tt" onClick='stopStart();'></div>
-          <div id="controls">
-            <span id="complete" onClick='complete();'>Show all</span> | <span id="pause" onClick='stopStart();'></span>
-          </div>
         </div>
       </div>
+      <div name="next" id="next" style="background-color: white; width: 30px; 
+        float: left; text-align: center; padding-top: 240px; height: 268px; cursor: pointer;"><font size="20px">&gt;</font></div>
+      <div style="clear: both;"></div>
     </div>
-  
-    <script type="text/javascript">
-         $("#infobar").msCarousel({boxClass:'div.box', width:1000, height:500, scrollSpeed:500, autoSlide:10000}).data("msCarousel");
-    </script>
+ 
+<script type="text/javascript">
+
+  function highlightNo(arg) {
+    var caller = arg;
+    var number = caller.getCurrentID();
+
+    if(number == 2){
+      if(paused){
+        stopStart();
+      }
+    }else{
+      if(!paused){
+        stopStart();
+      }
+    }
+    if(number==0) {
+      $("#previous").attr("disabled", "disabled");
+      $("#next").removeAttr("disabled");
+    } else {
+      $("#next, #previous").removeAttr("disabled");
+    }
+
+    $("#counter li").removeClass("active");
+    $("#counter li:eq("+(number+1)+")").addClass("active");
+  }     
+
+
+  $(document).ready(function() {
+
+    mcarousel = $("#infobar").msCarousel({boxClass:'div.box', width:940, height:500, scrollSpeed:500, autoSlide:10000, callback:highlightNo}).data("msCarousel");
+
+    $("#next").click(function() {
+        mcarousel.next();
+      });
+    $("#previous").click(function() {
+        mcarousel.previous();
+      });    
+
+    $("#next, #previous").attr("disabled","disabled");
+
+    //var html = mcarousel.getNumbers(true, '', '');
+
+    //$("#counter").after(html);
+
+    $("#counter li:not('.buttons')").click(function() {
+      if(mcarousel!=undefined) {
+        var no = $(this).html();
+        mcarousel.goto(parseInt(no)-1);
+      }
+    });
+    $("#counter li, #next, #previous").mouseover(function() {
+        if(mcarousel!=undefined) {
+          mcarousel.pause();
+        }
+      });
+
+    $("#counter li, #next, #previous").mouseout(function() {
+        if(mcarousel!=undefined) {
+          mcarousel.play();
+        }
+      });
+  });
+
+</script>
+
 
     <div class="document" style="width: 1008px; margin-left: auto; margin-right: auto; margin-bottom: 10px;">
       <div class="documentwrapper">
