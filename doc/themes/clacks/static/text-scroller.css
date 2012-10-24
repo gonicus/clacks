@@ -9,13 +9,11 @@ span.code {
 
 div#tt {
 	height: 480px;
-	padding-left: 5px;
-	padding-top: 5px;
+	padding: 0px;
 	width: 990px;
 	overflow: auto;
 	background-color: #000;
-	padding: 0px;
-	margin-right: 10px;
+	margin: 10px;
 	font-family: monospace;
 	color: #808080;
 }
