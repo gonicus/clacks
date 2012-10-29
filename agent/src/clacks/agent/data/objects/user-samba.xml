@@ -423,6 +423,7 @@
 				<Mandatory>true</Mandatory>
 				<BlockedBy>
           <Attribute value="false">Ctx_flag_tsLogin</Attribute>
+          <Attribute value="true">Ctx_flag_inheritMode</Attribute>
 				</BlockedBy>
 			</Attribute>
 
@@ -571,6 +572,7 @@
 				<Mandatory>true</Mandatory>
 				<BlockedBy>
           <Attribute value="false">Ctx_flag_tsLogin</Attribute>
+          <Attribute value="true">Ctx_flag_inheritMode</Attribute>
 				</BlockedBy>
 			</Attribute>
 

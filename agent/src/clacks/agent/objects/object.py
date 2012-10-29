@@ -301,7 +301,7 @@ class Object(object):
         if name in self.attributesInSaveOrder:
 
             # Check if this attribute is blocked by another attribute and its value.
-            for bb in  self.myProperties[name]['blocked_by']:
+            for bb in self.myProperties[name]['blocked_by']:
                 if bb['value'] in self.myProperties[bb['name']]['value']:
                     raise AttributeError(C.make_error(
                         'ATTRIBUTE_BLOCKED_BY', name,
