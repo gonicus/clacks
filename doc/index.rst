@@ -22,7 +22,7 @@ Key features
  * **Agent infrastructure with varying plugin set**
   
    Multiple agents can connect to the AMQP infrastructure of your domain but do not
-   nessesarily need to provide the same functionality. Message routing will push the
+   necessarily need to provide the same functionality. Message routing will push the
    message to the correct agent.  
 
  * **Automatic load balancing**
@@ -34,7 +34,7 @@ Key features
 
    Additionally to agents, clients can be registered/joined to your domain. You can
    simply provide new client functionality by a DBUS/shell proxy. Your clients get
-   an automatic inventory which can be stored by an agent interrested in it.
+   an automatic inventory which can be stored by an agent interested in it.
 
  * **Easy to register RPC methods**
 

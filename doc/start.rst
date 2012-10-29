@@ -5,7 +5,7 @@ Getting started
 
 This document contains information on *how to get started* with
 the Clacks framework. It covers package based installations (Debian/Ubuntu),
-package less installtions and the common tasks that are needed to
+package less installations and the common tasks that are needed to
 operate an agent.
 
 
@@ -33,7 +33,7 @@ malicious use of AMQP queues.
 Choosing a domain
 -----------------
 
-The first step - however - is to choose a domain where Clacks should operate
+The first step is to choose a domain where Clacks should operate
 on. It is recommended to use a reversed form of the DNS domain name that is
 valid for your current setup.
 
@@ -53,7 +53,7 @@ Choosing a hostname
 
 Be sure that your current hostname is the one you're going to use later on
 and that *hostname* returns different output than *hostname -f*: hostname
-alone should not return the fully quallified domain name.
+alone should not return the fully qualified domain name.
 
 Below, we use **agent** for the Clacks agent hostname and **client** for the
 Clacks client hostname.
@@ -115,12 +115,12 @@ After reloading your DNS, you may test your setup with::
 Installing MongoDB
 ------------------
 
-The Clacks framework maintains an index of all objects of its one. The reason for
+The Clacks framework maintains an index of all objects of its own. The reason for
 this is that you can combine several backends like LDAP, JSON, Opsi, SQL, etc. to
-assemble a single object. Searching in all backends is expensive and uses the
-local index.
+assemble a single object. Searching in all backends is expensive and therefore we
+use the local index.
 
-Indexing is done with MongoDB which needs a basic, local install for the simpliest
+Indexing is done with MongoDB which needs a basic, local install for the simplest
 case::
 
   $ sudo apt-get install mongodb-server
@@ -214,7 +214,7 @@ to fit the clacks-agent needs. A starting point could be a
 .. note::
 
    Remember that you've to adjust the domain from *net.example* to whatever you've
-   choosen in the beginning. Same for *agent* which is the hostname of your Clacks
+   chosen in the beginning. Same for *agent* which is the hostname of your Clacks
    agent and *admin* which is the *cn* of your LDAP administrator.
 
 
@@ -274,7 +274,7 @@ Installing the LDAP service
 ---------------------------
 
 In the base setup you need to setup an LDAP server. It contains the very basic
-structure you're going to mainain with Clacks. Your distribution has LDAP packages
+structure you're going to maintain with Clacks. Your distribution has LDAP packages
 for sure. We're using OpenLDAP in this case::
 
   $ sudo DEBIAN_PRIORITY=low apt-get install slapd ldap-utils
@@ -293,7 +293,7 @@ Except if you plan to use Clacks *clients*.
 
 To use the client mechanisms, a couple of schema files have to be added to
 your configuration. The following text assumes that you've a plain / empty
-stock debian configuration on your system. If it's not the case, you've to
+stock Debian configuration on your system. If it's not the case, you've to
 know what to do yourself.
 
 First, install the provided schema files. These commands have to be executed
@@ -589,7 +589,7 @@ Clacks domain. May sound familiar to Microsoft users.
 .. warning::
 
   In the current version, it is only possible to do an *active* join. The former
-  GOsa client *incoming* mechanism is currently beeing implemented and not usable
+  GOsa client *incoming* mechanism is currently being implemented and not usable
   right now.
 
 Joining is easy::
@@ -1017,7 +1017,7 @@ the service discovery feature and asks for a username and password if it finds a
     $ acl-admin --user agent --password secret --url https://agent.example.net:8080/rpc
 
 The *acl-admin* is in development. Currently, you need to fire one subcommand per call,
-which makes it a bit unconfortable for the first time. Here are a couple of ACLs and
+which makes it a bit uncomfortable for the first time. Here are a couple of ACLs and
 roles that make sense::
 
   # Allow clients to send certain events
@@ -1053,7 +1053,7 @@ roles that make sense::
 Configuring an LDAP update hook
 -------------------------------
 
-Maintaining and index of our own has several advantages: better search capabilities than
+Maintaining an index of our own has several advantages: better search capabilities than
 LDAP has, faster, proper sorted subset queries, etc. Nevertheless maintaining and index
 has the disadvantage that modifications that happen to our backends don't find their way
 to the index at all.
