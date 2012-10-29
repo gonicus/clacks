@@ -1,21 +1,21 @@
 $ clacksh
 Searching service provider...
-Connected to https://localhost:8080/rpc
+Connected to amqps://localhost/net.example
 Username [devel]: superadmin
 Password: 
 Clacks infrastructure shell. Use Ctrl+D to exit.
 
 
-# This is the clacksh - the clacks shell - which allows to interact with
-# the clacks-agent in different ways, execute commands, modify objects or
-# send notification events to users, execute methods on clients and much
-# more.
+# This is the Clacks Shell - which is in fact an interactive Python
+# shell that allows to interact with the clacks-agent in different
+# ways: execute commands, modify objects, send notification events
+# to users, execute methods on clients and much more...
 
-# The following code examples will show you some basics that will hopefully 
-# give you an idea about how to use the clacks-shell.
+# The following code examples will introduce some basics that will
+# give you an idea about how to use the Clacks-Shell.
 
-# Lets start with some simple stuff, print the clacks help which lists 
-# all executable commands:
+# Lets start with some simple stuff, print the Clacks help which lists 
+# all available executable commands:
 
 >>> clacks.help()
 CORE
@@ -35,7 +35,10 @@ CORE
   ...  
 
 
-# Here is the result of a command execution:
+# The Clacks namespace is mapped to the top level - that means that
+# you can just call methods as they're named in the help. Without
+# the need of adding a "clacks." prefix. Here we want to list all
+# currently known clients:
 >>> getClients()
 {u'2daf7cbf-75c2-4ea3-bfec-606fe9f07051': {
     u'received': 1313159425.0,
@@ -48,7 +51,7 @@ CORE
      u'name': u'dyn-85'}}
 
 
-# ... and here another that lists all available password methods
+# ... and here we retrieve a list of all available password methods:
 >>> listPasswordMethods()
 [u'crypt/standard-des', u'crypt/md5', u'crypt/enhanced-des', u'crypt/blowfish']
 
@@ -66,8 +69,9 @@ dyn-85
 
 # Besides executing commands, the shell is also able to handle objects, here
 # for example an user object.
+#
 # We iterate through all properties of the object and print those that are not
-# empty.
+# empty:
 >>> user = openObject('object', "cn=Admin Super,ou=people,dc=example,dc=net")
 >>> for attribute in user.get_attributes():
 ...     if getattr(user, attribute):
@@ -91,7 +95,7 @@ groupMembership: [u'grp122', u'ganz-tolle-gruppe']
 homeDirectory: /home/superadmin
 
 
-# Lets search the object-index for user objects
+# Lets search the built in object index for user objects:
 >>> res = find({'_type': 'User'}, {'dn': 1, 'uid': 1})
 >>> for entry in res:
 ...     print entry
@@ -116,14 +120,15 @@ homeDirectory: /home/superadmin
 ...
 
 
-# We can also create new objects. Here a group
+# We can also create new objects. First, we create a new group
+# named "sales":
 >>> group = openObject('object', "ou=groups,dc=example,dc=net", "PosixGroup")
->>> group.cn = "vertrieb"
->>> group.description = "Vertrieb"
+>>> group.cn = "sales"
+>>> group.description = "Sales"
 >>> group.commit()
 
 
-# ... or a user
+# Then we create a basic user with the user ID 'frank':
 >>> user = openObject('object', "ou=people,dc=example,dc=net", "User")
 >>> user.uid = "frank"
 >>> user.sn = "Frink"
@@ -131,37 +136,42 @@ homeDirectory: /home/superadmin
 >>> user.commit()
 
 
-# ... and extend objects with additional information sets.
+# To enable POSIX extensions for that user, just extend it:
 >>> user = openObject('object', "cn=Frank Frink,ou=people,dc=example,dc=net")
 >>> user.extend("PosixUser")
 >>> user.homeDirectory = "/home/frank"
 >>> user.commit()
 
+# Note that everything else needed for that user (i.e. a uidNumber) is
+# done automatically if not configured differently.
 
-# Lets check the object index for changes and lets see if we can find our objects
+
+# Lets check the object index for changes and lets see if we can
+# find our newly created objects:
 >>> find({'_type': 'User', 'uid': 'frank'}, {'dn': 1, 'uid': 1})
 [{u'dn': u'cn=Frank Frink,ou=people,dc=example,dc=net', u'_type': u'User', u'uid': [u'frank']}]
 
-
-# and groups:
->>> find({'_type': 'PosixGroup', 'cn': 'vertrieb'}, {'dn': 1})
-[{u'dn': u'cn=vertrieb,ou=groups,dc=example,dc=net', u'_type': u'PosixGroup'}]
+>>> find({'_type': 'PosixGroup', 'cn': 'sales'}, {'dn': 1})
+[{u'dn': u'cn=sales,ou=groups,dc=example,dc=net', u'_type': u'PosixGroup'}]
 
 
-# Here we add the user 'frank' to the group 'Vertrieb'.
+# Lets add the user 'frank' to the group 'sales'.
+
 # There are two ways to do it, one is to add the user to the group directly.
 # Another way is to add the group to the mapped property groupMembership
 # of the user object.
->>> group = openObject('object', "cn=vertrieb,ou=groups,dc=example,dc=net")
+>>> group = openObject('object', "cn=sales,ou=groups,dc=example,dc=net")
 >>> group.memberUid = ['frank']
 >>> group.commit()
 
-# Lets check if the user is really part of the group
+# Lets check if the user is really part of the group by opening the
+# the object and take a look at the mentioned "groupMembership" pseudo
+# attribute:
 >>> user = openObject('object', "cn=Frank Frink,ou=people,dc=example,dc=net")
 >>> user.groupMembership
-[u'vertrieb']
+[u'sales']
 
-# We can also add all users to the group "Vertrieb"
+# We can also add all users to the group "Sales" - if that makes sense:
 >>> res = find({'_type': 'User'}, {'dn': 1, 'uid': 1})
 >>> for u in res:
 ...     if not u['uid'][0] in group.memberUid:
@@ -169,9 +179,18 @@ homeDirectory: /home/superadmin
 ... group.commit()
 
 
-# And, sure, we can remove objects again.
+# To clean up, this little tutorial, we can remove our demo objects:
 >>> user = openObject('object', "cn=Frank Frink,ou=people,dc=example,dc=net")
 >>> user.remove()
 
->>> group = openObject('object', "cn=vertrieb,ou=groups,dc=example,dc=net")
+# This will automatically update the group and remove the user
+# from the 'sales' group.
+
+# Lets remove the group:
+>>> group = openObject('object', "cn=sales,ou=groups,dc=example,dc=net")
 >>> group.remove()
+
+# Ok. That's the end of this short introduction. If you've feedback,
+# feel free to open a ticket or join us on the mailinglist.
+#
+# Thanks for watching!
