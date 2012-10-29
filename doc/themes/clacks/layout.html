@@ -71,6 +71,9 @@
 
       <div id="infobar" style="border:4px solid #FFF; background-color:#000; float: left;">
         <div class="box">
+          <div id="tt" onClick='stopStart();'></div>
+        </div>
+        <div class="box">
           <img src="_static/slide-overview.png">
         </div>
         <div class="box">
@@ -78,9 +81,6 @@
         </div>
         <div class="box">
           <img src="_static/slide-gosa-objects.png">
-        </div>
-        <div class="box">
-          <div id="tt" onClick='stopStart();'></div>
         </div>
       </div>
       <div name="next" id="next" style="background-color: #F8F8F8; width: 29px; 
@@ -96,7 +96,7 @@
     var caller = arg;
     var number = caller.getCurrentID();
 
-    if(number == 3){
+    if(number == 0){
       if(paused){
         stopStart();
       }
@@ -119,7 +119,7 @@
 
   $(document).ready(function() {
 
-    mcarousel = $("#infobar").msCarousel({boxClass:'div.box', width:940, height:500, scrollSpeed:500, autoSlide:10000, callback:highlightNo}).data("msCarousel");
+    mcarousel = $("#infobar").msCarousel({boxClass:'div.box', width:940, height:500, scrollSpeed:500, autoSlide:15000, callback:highlightNo}).data("msCarousel");
 
     $("#next").click(function() {
         mcarousel.next();
