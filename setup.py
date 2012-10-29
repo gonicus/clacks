@@ -6,7 +6,8 @@ modules = ['common',
     'agent',
     'dbus',
     'client',
-    'shell']
+    'shell',
+    'utils']
 
 for module in modules:
     os.system("cd %s && ./setup.py %s" % (module, " ".join(sys.argv[1:])))
