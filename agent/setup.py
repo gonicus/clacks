@@ -24,6 +24,11 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README')).read()
 CHANGES = open(os.path.join(here, 'CHANGES')).read()
 
+data_files = []
+for path, dirs, files in os.walk("src/clacks/agent/data"):
+    for f in files:
+            data_files.append(os.path.join(path[17:], f))
+
 
 setup(
     name = "clacks.agent",
@@ -55,7 +60,7 @@ setup(
 
     include_package_data = True,
     package_data = {
-        'clacks.agent': ['data/agent.conf', 'data/*xsd', 'data/*xsl', 'data/events/*', 'data/objects/*'],
+        'clacks.agent': data_files,
         'clacks.agent.plugins.goto': ['data/events/*'],
     },
 
