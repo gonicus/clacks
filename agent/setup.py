@@ -55,7 +55,7 @@ setup(
 
     include_package_data = True,
     package_data = {
-        'clacks.agent': ['data/agent.conf', 'data/*xsl', 'data/events/*', 'data/objects/*'],
+        'clacks.agent': ['data/agent.conf', 'data/*xsd', 'data/*xsl', 'data/events/*', 'data/objects/*'],
         'clacks.agent.plugins.goto': ['data/events/*'],
     },
 
