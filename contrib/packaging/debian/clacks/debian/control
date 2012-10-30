@@ -72,10 +72,10 @@ Description: clacks infrastructure service - agent
  .
  This package provides the agent.
 
-Package: clacks-doc
-Architecture: all
-Depends: ${misc:Depends}
-Description: clacks infrastructure service - documentation
- Brief description is missing.
- .
- This package provides the documentation.
+#Package: clacks-doc
+#Architecture: all
+#Depends: ${misc:Depends}
+#Description: clacks infrastructure service - documentation
+# Brief description is missing.
+# .
+# This package provides the documentation.
