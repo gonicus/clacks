@@ -31,7 +31,9 @@ class Line(object):
             else:
                 result = result + item.process()
 
-        return result
+        # Tell the generator about the newly created attribute
+        self.generator.current_object[self.attrName] = result
+        return self.attrName + ": " + result
 
 
 class getFunction(object):
@@ -92,7 +94,11 @@ class getAttr(object):
         return "["+self.name+"]"
 
     def process(self):
-        return self.name
+
+        if not self.name in self.generator.current_object:
+            raise Exception("unknown attribute %s" % (self.name))
+
+        return self.generator.current_object[self.name]
 
 class LdifGenerator(object):
 
@@ -105,6 +111,9 @@ class LdifGenerator(object):
 
     def generate_unique_uid(self, args):
         return "called"
+
+    def generate_unique_name(self, args):
+        return "Fabian"
 
     def __init__(self, templatePath):
         self._templatePath = templatePath
@@ -169,9 +178,35 @@ class LdifGenerator(object):
 
         for template in self._templates:
 
+            self.current_object = {'base' : "dc=gonicus,dc=de"}
             print "##" + template+ "##"
-            for line in self._templates[template]:
-                print line.process()
+
+            first = True
+            last_error = 0
+            last_exception = None
+            error = 0
+            max = 20
+            while error or first or max == 0:
+                first = False
+                last_error = error
+                error = 0
+                max = max - 1
+
+                if last_error == error and error:
+                    print self.current_object
+                    raise last_exception
+                    break
+
+                object_result = ""
+                for line in self._templates[template]:
+                    try:
+                        object_result += line.process() + "\n"
+                    except Exception as e:
+                        error += 1
+                        last_exception = e
+
+            print object_result
+
 
 
 def main():
