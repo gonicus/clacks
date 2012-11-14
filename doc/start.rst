@@ -235,7 +235,7 @@ At the prompt, answer:
 
 ::
 
-  $ certutil -L -d CA_db -n "MyRootCA" -a -o CA_db/rootca.crt
+  $ certutil -L -d CA_db -n "ExampleCA" -a -o CA_db/rootca.crt
   $ mkdir server_db
   $ certutil -N -d server_db
   $ certutil -A -d server_db -n "ExampleCA" -t "TC,," -a -i CA_db/rootca.crt
@@ -362,7 +362,7 @@ to the AMQP service. Create this entry - again inside an LDIF file like this::
 
 Save that file to *agent.ldif* and apply it to your LDAP using::
 
-  $ sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f agent.ldif
+  $ sudo ldapadd -Y EXTERNAL -H ldapi:/// -f agent.ldif
 
 The password is unencrypted in the moment, that can be changed using::
 
@@ -471,7 +471,7 @@ Start the service and test it::
   $ sudo testsaslauthd -u agent -p secret -r QPID
 
 If that works pretty well, connect the Qpid SASL mechaism to *saslauthd* by editing
-*/etc/qpid/sasl/qpidd.conf* like this::
+*/etc/sasl2/qpidd.conf* like this::
 
   pwcheck_method: saslauthd
   mech_list: PLAIN LOGIN
