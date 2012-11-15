@@ -1,9 +1,12 @@
 [core]
+domain = net.example
 id = clacks-agent
 profile = False
 
-[amqp]
+[agent]
+admins = admin
 
+[amqp]
 # Keyword url: URL to one of your AMQP servers
 #
 # Examples:
