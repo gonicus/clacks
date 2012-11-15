@@ -49,7 +49,7 @@ keys=syslog,console
 keys=syslog,console
 
 [logger_root]
-level=NOTSET
+level=CRITICAL
 handlers=console
 
 [logger_clacks]
@@ -79,3 +79,9 @@ class=logging.Formatter
 format=%(asctime)s %(levelname)s: %(module)s - %(message)s
 datefmt=
 class=logging.Formatter
+
+[backend-json]
+database-file = /var/lib/clacks/clacks.json
+
+[backend-sql]
+connection = sqlite:////var/lib/clacks/clacks.db
