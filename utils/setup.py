@@ -43,7 +43,6 @@ setup(
         'Topic :: System :: Monitoring',
     ],
 
-    download_url = "http://oss.gonicus.de",
     packages = find_packages('src', exclude=['examples', 'tests']),
     package_dir = {'': 'src'},
     namespace_packages = ['clacks'],

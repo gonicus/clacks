@@ -34,7 +34,7 @@ setup(
     long_description = README + "\n\n" + CHANGES,
     keywords = "system config management ldap groupware",
     license = "GPL",
-    url = "http://www.gosa-project.org",
+    url = "http://clacks-project.org",
     classifiers = [
         'Development Status :: 4 - Beta',
         'Environment :: Console',
@@ -48,7 +48,6 @@ setup(
         'Topic :: System :: Monitoring',
     ],
 
-    download_url = "http://oss.gonicus.de/pub/gosa",
     packages = find_packages('src', exclude=['examples', 'tests']),
     package_dir = {'': 'src'},
     namespace_packages = ['clacks'],
