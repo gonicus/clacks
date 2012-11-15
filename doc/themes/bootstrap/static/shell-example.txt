@@ -1,0 +1,196 @@
+$ clacksh
+Searching service provider...
+Connected to amqps://localhost/net.example
+Username [devel]: superadmin
+Password: 
+Clacks infrastructure shell. Use Ctrl+D to exit.
+
+
+# This is the Clacks Shell - which is in fact an interactive Python
+# shell that allows to interact with the clacks-agent in different
+# ways: execute commands, modify objects, send notification events
+# to users, execute methods on clients and much more...
+
+# The following code examples will introduce some basics that will
+# give you an idea about how to use the Clacks-Shell.
+
+# Lets start with some simple stuff, print the Clacks help which lists 
+# all available executable commands:
+
+>>> clacks.help()
+CORE
+====
+  addACL(user, base, priority, members, actions, scope, rolename)
+    Add a new ACL.
+
+  addACLRole(user, rolename)
+    Add new role.
+
+  addACLToRole(user, rolename, priority, actions, scope, use_role)
+    Add new acl to an existing role.
+
+  closeObject(ref)
+    Close object and remove it from stack
+
+  ...  
+
+
+# The Clacks namespace is mapped to the top level - that means that
+# you can just call methods as they're named in the help. Without
+# the need of adding a "clacks." prefix. Here we want to list all
+# currently known clients:
+>>> getClients()
+{u'2daf7cbf-75c2-4ea3-bfec-606fe9f07051': {
+    u'received': 1313159425.0,
+    u'name': u'dyn-10'},
+ u'eb5e72d4-c53f-4612-81a3-602b14a8da69': {
+     u'received': 1313467229.0,
+     u'name': u'ws-2'},
+ u'4f0dbdaa-05de-4632-bcba-b6fe8a9e2e09': {
+     u'received': 1313463859.0,
+     u'name': u'dyn-85'}}
+
+
+# ... and here we retrieve a list of all available password methods:
+>>> listPasswordMethods()
+[u'crypt/standard-des', u'crypt/md5', u'crypt/enhanced-des', u'crypt/blowfish']
+
+
+# You can also use the commands for scripting. Here is a small listing which
+# iterates over the list of available clients and prints their names.
+>>> c = getClients()
+>>> for client in getClients().values():
+...     print client['name']
+... 
+dyn-10
+ws-2
+dyn-85
+
+
+# Besides executing commands, the shell is also able to handle objects, here
+# for example an user object.
+#
+# We iterate through all properties of the object and print those that are not
+# empty:
+>>> user = openObject('object', "cn=Admin Super,ou=people,dc=example,dc=net")
+>>> for attribute in user.get_attributes():
+...     if getattr(user, attribute):
+...         print "%s: %s" % (attribute, getattr(user, attribute))
+... 
+uid: superadmin
+passwordMethod: crypt/md5
+autoDisplayName: True
+cn: Admin Super
+userPassword: {CRYPT}$1$ALjq5g4j$7dXaoQiSsHf7d.tVrSLmG.
+telephoneNumber: [u'142', u'421', u'241']
+displayName: Admin Super
+sn: Super
+givenName: Admin
+autoGECOS: True
+uidNumber: 1000
+autoIDs: True
+gidNumber: 1000
+gecos: Super Admin,,142,
+groupMembership: [u'grp122', u'ganz-tolle-gruppe']
+homeDirectory: /home/superadmin
+
+
+# Lets search the built in object index for user objects:
+>>> res = find({'_type': 'User'}, {'dn': 1, 'uid': 1})
+>>> for entry in res:
+...     print entry
+...
+{u'dn': u'cn=Kein Admin,ou=people,dc=example,dc=net', u'_type': u'User', u'uid': [u'nadminn']}
+{u'dn': u'cn=AMQP Agent,ou=people,dc=example,dc=net', u'_type': u'User', u'uid': [u'agent']}
+{u'dn': u'cn=Robert Tester,ou=people,dc=example,dc=net', u'_type': u'User', u'uid': [u'robert']}
+{u'dn': u'cn=Auch Kein Admin,ou=people,dc=example,dc=net', u'_type': u'User', u'uid': [u'dmig']}
+{u'dn': u'cn=Beispiel 21 Benutzer 21,ou=people,dc=example,dc=net', u'_type': u'User', u'uid': [u'user21']}
+{u'dn': u'cn=System Administrator,ou=people,dc=example,dc=net', u'_type': u'User', u'uid': [u'admin']}
+...
+
+
+# and groups:
+>>> res = find({'_type': 'PosixGroup'}, {'dn': 1})
+>>> for entry in res:
+...     print entry
+...
+{u'dn': u'cn=acltest,ou=groups,dc=example,dc=net', u'_type': u'PosixGroup'}
+{u'dn': u'cn=test-group,ou=groups,dc=example,dc=net', u'_type': u'PosixGroup'}
+{u'dn': u'cn=posix-gruppe1,ou=groups,dc=example,dc=net', u'_type': u'PosixGroup'}
+...
+
+
+# We can also create new objects. First, we create a new group
+# named "sales":
+>>> group = openObject('object', "ou=groups,dc=example,dc=net", "PosixGroup")
+>>> group.cn = "sales"
+>>> group.description = "Sales"
+>>> group.commit()
+
+
+# Then we create a basic user with the user ID 'frank':
+>>> user = openObject('object', "ou=people,dc=example,dc=net", "User")
+>>> user.uid = "frank"
+>>> user.sn = "Frink"
+>>> user.givenName = "Frank"
+>>> user.commit()
+
+
+# To enable POSIX extensions for that user, just extend it:
+>>> user = openObject('object', "cn=Frank Frink,ou=people,dc=example,dc=net")
+>>> user.extend("PosixUser")
+>>> user.homeDirectory = "/home/frank"
+>>> user.commit()
+
+# Note that everything else needed for that user (i.e. a uidNumber) is
+# done automatically if not configured differently.
+
+
+# Lets check the object index for changes and lets see if we can
+# find our newly created objects:
+>>> find({'_type': 'User', 'uid': 'frank'}, {'dn': 1, 'uid': 1})
+[{u'dn': u'cn=Frank Frink,ou=people,dc=example,dc=net', u'_type': u'User', u'uid': [u'frank']}]
+
+>>> find({'_type': 'PosixGroup', 'cn': 'sales'}, {'dn': 1})
+[{u'dn': u'cn=sales,ou=groups,dc=example,dc=net', u'_type': u'PosixGroup'}]
+
+
+# Lets add the user 'frank' to the group 'sales'.
+
+# There are two ways to do it, one is to add the user to the group directly.
+# Another way is to add the group to the mapped property groupMembership
+# of the user object.
+>>> group = openObject('object', "cn=sales,ou=groups,dc=example,dc=net")
+>>> group.memberUid = ['frank']
+>>> group.commit()
+
+# Lets check if the user is really part of the group by opening the
+# the object and take a look at the mentioned "groupMembership" pseudo
+# attribute:
+>>> user = openObject('object', "cn=Frank Frink,ou=people,dc=example,dc=net")
+>>> user.groupMembership
+[u'sales']
+
+# We can also add all users to the group "Sales" - if that makes sense:
+>>> res = find({'_type': 'User'}, {'dn': 1, 'uid': 1})
+>>> for u in res:
+...     if not u['uid'][0] in group.memberUid:
+...         group.memberUid.append(u['uid'][0])
+... group.commit()
+
+
+# To clean up, this little tutorial, we can remove our demo objects:
+>>> user = openObject('object', "cn=Frank Frink,ou=people,dc=example,dc=net")
+>>> user.remove()
+
+# This will automatically update the group and remove the user
+# from the 'sales' group.
+
+# Lets remove the group:
+>>> group = openObject('object', "cn=sales,ou=groups,dc=example,dc=net")
+>>> group.remove()
+
+# Ok. That's the end of this short introduction. If you've feedback,
+# feel free to open a ticket or join us on the mailinglist.
+#
+# Thanks for watching!
