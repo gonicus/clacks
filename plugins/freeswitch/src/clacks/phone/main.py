@@ -197,8 +197,6 @@ class PhoneNotificationReceiver(object):
 
         # Send from/to messages as needed
         amqp = PluginRegistry.getInstance('AMQPHandler')
-        print "---->", event['Type']
-        print "  -->", type(event['Type'])
         if from_msg:
             # Messaging notification
             if event['Type'] in self.TYPE_MAP:
@@ -220,15 +218,15 @@ class PhoneNotificationReceiver(object):
 
     def set_xmpp_status(self, jid, status):
         domain = self.env.config.get("phone.jabber_domain", default=None)
-        if domain:
-            jid = jid + "@" + domain
+        url = self.env.config.get("phone.jabber_url", default=None)
 
-        print "---> JID", jid, status
-        return
-        #print self.env.config.get("phone.jabber_url", default=None)
-        #print self.env.config.get("phone.jabber_domain", default=None)
+        if not domain or not url:
+            return
+
+        jid = jid + "@" + domain + "/phone"
+
         curl = pycurl.Curl()
-        curl.setopt(pycurl.URL, 'https://jabber:kuebnoosHed6@xmpp.gonicus.de:8888/%s/status' % jid)
+        curl.setopt(pycurl.URL, url % jid)
         curl.setopt(pycurl.POST,1)
         curl.setopt(pycurl.POSTFIELDS, "status=%s" % status)
         curl.perform()

@@ -47,6 +47,10 @@ class ClacksNumberResolver(PhoneNumberResolver):
         res = index.search({'_type': 'User', 'telephoneNumber': str(number)},
             {'dn': 1})
 
+        if res.count() != 1:
+            res = index.search({'_type': 'User', 'uid': str(number)},
+                {'dn': 1})
+
         if res.count() == 1:
             obj = ObjectProxy(res[0]['dn'])
             result = {
