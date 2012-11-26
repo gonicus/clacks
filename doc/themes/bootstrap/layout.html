@@ -68,7 +68,6 @@
       });
     };
 
-    console.log("HERE");
     findA($ul);
   };
 
@@ -111,7 +110,7 @@
 {%- block content %}
 <div class="container">
    {%- if title == 'About' %}
-    <div class="hero-unit">
+    <div class="hero-unit" style="padding: 30px; margin-bottom:10px;">
       <h1 align="center">The Clacks Project</h1>
       <center>manage. infrastructure. objects.</center>
     </div>
@@ -129,9 +128,23 @@
     </div>
 
     <script type="text/javascript">
+        var lastIndex = 0;
+
         $('.carousel').carousel({
           interval: 10000
         })
+
+        $('#myCarousel').bind('slid', function(e) {
+          var index = $('#myCarousel .active').index('#myCarousel .item');
+
+          if (index == 0 || lastIndex == 0) {
+            stopStart();
+          }
+
+          lastIndex = index;
+        });
+
+        //$('.carousel').carousel('pause');
     </script>
    {% endif %}
 

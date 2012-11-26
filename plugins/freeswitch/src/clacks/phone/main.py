@@ -203,18 +203,18 @@ class PhoneNotificationReceiver(object):
                 self.__cr.call("notifyUser", i_from['ldap_uid'],
                     self.TYPE_MAP[event['Type']], from_msg.strip(), timeout=10, level='normal', icon=t_image_data)
 
-            # XMPP status update
-            if self.env.config.get("phone.jabber", default="False") == "True":
-                self.set_xmpp_status(i_from['ldap_uid'], "DND" if event['Type'] == "CallActive" else "CHAT")
+        # XMPP status update
+        if self.env.config.get("phone.jabber", default="False") == "True" and 'ldap_uid' in i_from:
+            self.set_xmpp_status(i_from['ldap_uid'], "DND" if event['Type'] == "CallActive" else "CHAT")
 
         if to_msg:
             if event['Type'] in self.TYPE_MAP:
                 self.__cr.call("notifyUser", i_to['ldap_uid'],
                     self.TYPE_MAP[event['Type']], to_msg.strip(), timeout=10, level='normal', icon=f_image_data)
 
-            # XMPP status update
-            if self.env.config.get("phone.jabber", default="False") == "True":
-                self.set_xmpp_status(i_to['ldap_uid'], "DND" if event['Type'] == "CallActive" else "CHAT")
+        # XMPP status update
+        if self.env.config.get("phone.jabber", default="False") == "True" and 'ldap_uid' in i_to:
+            self.set_xmpp_status(i_to['ldap_uid'], "DND" if event['Type'] == "CallActive" else "CHAT")
 
     def set_xmpp_status(self, jid, status):
         domain = self.env.config.get("phone.jabber_domain", default=None)
