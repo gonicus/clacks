@@ -130,9 +130,15 @@
     <script type="text/javascript">
         var lastIndex = 0;
 
-        $('.carousel').carousel({
+        $('#myCarousel').carousel({
           interval: 10000
-        })
+        });
+
+        // Make us pause
+        //$('div.carousel-inner').mouseenter(function(e) {
+        //$('.carousel').carousel('pause');
+	//}).mouseleave(function(e) {
+	//});
 
         $('#myCarousel').bind('slid', function(e) {
           var index = $('#myCarousel .active').index('#myCarousel .item');
@@ -144,7 +150,6 @@
           lastIndex = index;
         });
 
-        //$('.carousel').carousel('pause');
     </script>
    {% endif %}
 

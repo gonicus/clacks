@@ -204,7 +204,7 @@ class PhoneNotificationReceiver(object):
                     self.TYPE_MAP[event['Type']], from_msg.strip(), timeout=10, level='normal', icon=t_image_data)
 
         # XMPP status update
-        if self.env.config.get("phone.jabber", default="False") == "True" and 'ldap_uid' in i_from:
+        if self.env.config.get("phone.jabber", default="False") == "True" and 'ldap_uid' in i_from and event['Type'] != "CallMissed":
             self.set_xmpp_status(i_from['ldap_uid'], "DND" if event['Type'] == "CallActive" else "CHAT")
 
         if to_msg:
@@ -213,7 +213,7 @@ class PhoneNotificationReceiver(object):
                     self.TYPE_MAP[event['Type']], to_msg.strip(), timeout=10, level='normal', icon=f_image_data)
 
         # XMPP status update
-        if self.env.config.get("phone.jabber", default="False") == "True" and 'ldap_uid' in i_to:
+        if self.env.config.get("phone.jabber", default="False") == "True" and 'ldap_uid' in i_to and event['Type'] != "CallMissed":
             self.set_xmpp_status(i_to['ldap_uid'], "DND" if event['Type'] == "CallActive" else "CHAT")
 
     def set_xmpp_status(self, jid, status):
