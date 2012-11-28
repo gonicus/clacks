@@ -16,7 +16,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.3.1 r9886"
-   sodipodi:docname="clacks-web.svg">
+   sodipodi:docname="clacks.web.source.svg">
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -25,10 +25,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.70710679"
-     inkscape:cx="807.27781"
+     inkscape:cx="496.85794"
      inkscape:cy="449.9869"
      inkscape:document-units="px"
-     inkscape:current-layer="layer2"
+     inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1680"
      inkscape:window-height="990"
@@ -133,21 +133,21 @@
          x="624.26562"
          y="402.77628">of four parts:</tspan></text>
     <rect
-       style="opacity:0.9;fill:#008000;fill-opacity:1;stroke:none;display:inline"
+       style="opacity:0.90000000000000002;fill:#cccccc;fill-opacity:1;stroke:none;display:inline"
        id="rect3159-8"
        width="104.1463"
        height="13.673305"
        x="507.73581"
        y="475.32861" />
     <rect
-       style="opacity:0.9;fill:#d40000;fill-opacity:1;stroke:none;display:inline"
+       style="opacity:0.90000000000000002;fill:#b3b3b3;fill-opacity:1;stroke:none;display:inline"
        id="rect3159"
        width="101.66683"
        height="13.673305"
        x="406.51752"
        y="475.32861" />
     <rect
-       style="fill:#ffcc00;fill-opacity:1;stroke:none;display:inline"
+       style="fill:#e6e6e6;fill-opacity:1;stroke:none;display:inline"
        id="rect3159-3"
        width="103.15454"
        height="13.673305"
@@ -173,7 +173,7 @@
        width="27.51725"
        style="display:inline" />
     <rect
-       style="fill:#008080;fill-opacity:1;stroke:none;display:inline"
+       style="fill:#ececec;fill-opacity:1;stroke:none;display:inline"
        id="rect3159-83"
        width="102.65864"
        height="13.673305"
@@ -871,7 +871,8 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Navigation"
-     style="display:inline">
+     style="display:none"
+     sodipodi:insensitive="true">
     <rect
        y="1.3026162"
        x="-4.6512389"
