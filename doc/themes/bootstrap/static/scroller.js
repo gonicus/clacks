@@ -10,7 +10,6 @@ var currentLine = '';
 
 function startDisplay(tt) {
   paused = true;
-  stopStart();
   displayNextLine(1, tt);
 }
 
