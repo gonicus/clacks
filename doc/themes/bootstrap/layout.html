@@ -115,8 +115,7 @@
     <div id="myCarousel" class="carousel slide" style="border:10px solid #EEE; background-color:#222222">
       <!-- Carousel items -->
       <div class="carousel-inner">
-        <div class="active item" style="background-color:white"><iframe style="border:0;" src="_static/clacks-web-compiled.svg" width="920" height="490"></iframe></div>
-        <div class="item"><div id="tt" onClick='stopStart();'></div></div>
+        <div class="item active"><div id="tt" onClick='stopStart();'></div></div>
         <div class="item"><img src="_static/slide-gosa-search.png"></div>
         <div class="item"><img src="_static/slide-gosa-objects.png"></div>
       </div>
@@ -127,12 +126,13 @@
 
     <script type="text/javascript">
         var lastIndex = 0;
+	stopStart();
 
         $('#myCarousel').carousel('pause');
         $('#myCarousel').bind('slid', function(e) {
           var index = $('#myCarousel .active').index('#myCarousel .item');
 
-          if (index == 1 || lastIndex == 1) {
+          if (index == 0 || lastIndex == 0) {
             stopStart();
           }
 

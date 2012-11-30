@@ -1,6 +1,10 @@
 Clacks Framework Documentation
 ==============================
 
+.. raw:: html
+
+   <div class="active item" style="background-color:white; border: 1px solid #F2F2F2"><iframe style="border:0;" src="_static/clacks-web-compiled.svg" width="920" height="490"></iframe></div>
+
 What is it all about?
 ---------------------
 

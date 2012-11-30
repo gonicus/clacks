@@ -9,7 +9,7 @@ var linePause = linePause0;
 var currentLine = '';
 
 function startDisplay(tt) {
-  paused = true;
+  paused = false;
   displayNextLine(1, tt);
 }
 
