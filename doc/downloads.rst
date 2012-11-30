@@ -13,7 +13,7 @@ Debian / Ubuntu
 There are pre-build packages for Debian (wheezy+) and Ubuntu (12.04+) available. Please
 add ::
 
-  deb http://apt.gonicus.de/debian wheezy clacks
+  deb http://apt.gonicus.de/debian wheezy gonicus
 
 in */etc/apt/sources.list.d/clacks.list*, run ::
 
