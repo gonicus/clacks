@@ -224,6 +224,13 @@ class ObjectFactory(object):
         names = self.getObjectTemplateNames(objectType)
         return Object.getNamedTemplate(self.env, names, theme)
 
+    def getObjectDialogs(self, objectType, theme="default"):
+        """
+        Returns a list of templates for this object.
+        """
+        names = self.getObjectDialogNames(objectType)
+        return Object.getNamedTemplate(self.env, names, theme)
+
     def getObjectTemplateNames(self, objectType):
         """
         Returns a list of template filenames for this object.
@@ -233,6 +240,21 @@ class ObjectFactory(object):
 
         res = []
         find = objectify.ObjectPath("Object.Templates.Template")
+        if find.hasattr(self.__xml_defs[objectType]):
+            for attr in find(self.__xml_defs[objectType]):
+                res.append(attr.text)
+
+        return res
+
+    def getObjectDialogNames(self, objectType):
+        """
+        Returns a list of template filenames for this object.
+        """
+        if not objectType in self.__xml_defs:
+            raise KeyError(C.make_error("OBJECT_TYPE_NOT_FOUND", type=objectType))
+
+        res = []
+        find = objectify.ObjectPath("Object.Dialogs.Dialog")
         if find.hasattr(self.__xml_defs[objectType]):
             for attr in find(self.__xml_defs[objectType]):
                 res.append(attr.text)
