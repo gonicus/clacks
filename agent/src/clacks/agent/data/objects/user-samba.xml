@@ -9,6 +9,9 @@
 			<Template>user-samba.ui</Template>
 			<Template>user-samba-ts.ui</Template>
 		</Templates>
+		<Dialogs>
+			<Dialog>sambaLogonHours.ui</Dialog>
+		</Dialogs>
 		<BackendParameters>
 			<Backend sambaPrimaryGroupSID="SambaGroup:sambaSID" objectClasses="sambaSamAccount">LDAP</Backend>
 		</BackendParameters>

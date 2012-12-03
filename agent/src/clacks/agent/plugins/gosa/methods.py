@@ -69,6 +69,14 @@ class GuiMethods(Plugin):
 
         return factory.getObjectTemplates(objectType, theme)
 
+    @Command(__help__=N_("Returns all dialog-templates used by the given object type."))
+    def getGuiDialogs(self, objectType, theme="default"):
+        factory = ObjectFactory.getInstance()
+        if objectType not in factory.getObjectTypes():
+            raise Exception("No such object type: %s" % (objectType))
+
+        return factory.getObjectDialogs(objectType, theme)
+
     @Command(__help__=N_("Get all translations bound to templates."))
     def getTemplateI18N(self, language, theme="default"):
         templates = []

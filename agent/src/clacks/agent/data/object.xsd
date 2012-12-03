@@ -16,6 +16,13 @@
           </sequence>
         </complexType>
       </element>
+      <element name="Dialogs" maxOccurs="1" minOccurs="0">
+        <complexType>
+          <sequence>
+            <element name="Dialog" type="string" maxOccurs="unbounded" minOccurs="1"></element>
+          </sequence>
+        </complexType>
+      </element>
       <element name="BackendParameters" type="o:BackendParameters" maxOccurs="1" minOccurs="0"></element>
       <element name="Backend" type="token" maxOccurs="1" minOccurs="1"></element>
       <element name="Attributes" type="o:Attributes" maxOccurs="1" minOccurs="0"></element>
