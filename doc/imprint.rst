@@ -15,6 +15,8 @@ Legal Contact
      <abbr title="Phone">P:</abbr> +49 2932 916 0 
    </address>
 
+------------
+
 Managing Directors
 ------------------
 
@@ -25,7 +27,13 @@ Managing Directors
 | Finanzamt Arnsberg - Steuernummer 303/5712/0273
 | VAT-Id.: DE 813 159 308
 
+------------
+
 Disclaimer
 ----------
 
 The Clacks project accepts no liability for the content of external links though we do aim to review them. Reponsibility for external content remains with the content provider.
+
+.. raw:: html
+
+   <hr>
