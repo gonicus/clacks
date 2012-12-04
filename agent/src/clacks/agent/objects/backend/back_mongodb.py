@@ -22,11 +22,6 @@ from clacks.agent.objects.backend import ObjectBackend
 from clacks.agent.exceptions import DNGeneratorError, RDNNotSpecified, BackendError
 
 
-C.register_codes(dict(
-    FILTER_NO_INSTANCE=N_("No filter instance for '%(filter)s' found")
-    ))
-
-
 class MongoDB(ObjectBackend):
 
     data = None
