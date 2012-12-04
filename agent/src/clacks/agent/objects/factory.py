@@ -21,7 +21,7 @@ Short description
 The object factory provides access to backend-data in an object
 oriented way. You can create, read, update and delete objects easily.
 
-What object-types are avaialable is configured using XML files, these files
+What object-types are available is configured using XML files, these files
 are located here: "./clacks.common/src/clacks/common/data/objects/".
 
 Each XML file can contain multiple object definitions, with object related
@@ -35,7 +35,7 @@ A python meta-class will be created for each object-definition.
 Those meta-classes will then be used to instantiate a new python object,
 which will then provide the defined attributes, methods, aso.
 
-Here are some examples on how to instatiate on new object:
+Here are some examples on how to instantiate on new object:
 
 >>> from clacks.agent.objects import ObjectFactory
 >>> f = ObjectFactory.getInstance()
@@ -104,7 +104,7 @@ def load(attr, element, default=None):
 
 class ObjectFactory(object):
     """
-    This class reads object defintions and generates python-meta classes
+    This class reads object definitions and generates python-meta classes
     for each object, which can then be instantiated using
     :meth:`clacks.agent.objects.factory.ObjectFactory.getObject`.
     """
@@ -123,7 +123,7 @@ class ObjectFactory(object):
         # Initialize backend registry
         ObjectBackendRegistry.getInstance()
 
-        # Loade attribute type mapping
+        # Load attribute type mapping
         for entry in pkg_resources.iter_entry_points("object.type"):
             module = entry.load()
             self.log.info("attribute type %s included" % module.__alias__)
@@ -160,7 +160,7 @@ class ObjectFactory(object):
         self.load_object_types()
 
     def getAttributeTypes(self):
-        return(self.__attribute_type)
+        return self.__attribute_type
 
     def getObjectBackendProperties(self, name):
         if not name in self.__classes:
@@ -213,7 +213,7 @@ class ObjectFactory(object):
 
     def getAvailableObjectNames(self):
         """
-        Retuns a list with all available object names
+        Returns a list with all available object names
         """
         return self.__xml_defs.keys()
 
@@ -233,7 +233,7 @@ class ObjectFactory(object):
 
     def getObjectTemplateNames(self, objectType):
         """
-        Returns a list of template filenames for this object.
+        Returns a list of template file names for this object.
         """
         if not objectType in self.__xml_defs:
             raise KeyError(C.make_error("OBJECT_TYPE_NOT_FOUND", type=objectType))
@@ -248,7 +248,7 @@ class ObjectFactory(object):
 
     def getObjectDialogNames(self, objectType):
         """
-        Returns a list of template filenames for this object.
+        Returns a list of template file names for this object.
         """
         if not objectType in self.__xml_defs:
             raise KeyError(C.make_error("OBJECT_TYPE_NOT_FOUND", type=objectType))
@@ -313,7 +313,7 @@ class ObjectFactory(object):
         if find.hasattr(self.__xml_defs[objectType]):
             for attr in find(self.__xml_defs[objectType]):
                 res.append(attr.text)
-        return(res)
+        return res
 
     def getAttributeTypeMap(self, objectType):
         """
@@ -365,7 +365,7 @@ class ObjectFactory(object):
 
                         # Append the result if it matches the given parameters.
                         for ref in attr.References.iterchildren():
-                            if (s_obj == None or s_obj == ref.Object.text) and (s_attr == None or s_attr == ref.Attribute.text):
+                            if (s_obj is None or s_obj == ref.Object.text) and (s_attr is None or s_attr == ref.Attribute.text):
 
                                 # Ensure that values are initialized
                                 if obj not in res:
@@ -589,12 +589,12 @@ class ObjectFactory(object):
                     if info['base']:
                         if fixed_rdn:
                             if id_base_fixed:
-                                raise FactoryException(C.make_error("FACTORY_TYPE_MISMATCH", dn, type1=id_base, type2=name))
+                                raise FactoryException("FACTORY_TYPE_MISMATCH", dn, type1=id_base, type2=name)
                             id_base_fixed = name
 
                         else:
                             if id_base:
-                                raise FactoryException(C.make_error("FACTORY_TYPE_MISMATCH", dn, type1=id_base, type2=name))
+                                raise FactoryException("FACTORY_TYPE_MISMATCH", dn, type1=id_base, type2=name)
                             id_base = name
 
         # .. then find all active extensions
@@ -603,12 +603,12 @@ class ObjectFactory(object):
                 be = ObjectBackendRegistry.getBackend(info['backend'])
                 classr = self.__xml_defs[name]
                 fixed_rdn = classr.FixedRDN.text if 'FixedRDN' in classr.__dict__ else None
-                if not info['base'] and (be.identify(dn, info['backend_attrs'], fixed_rdn) or \
-                        be.identify_by_uuid(uuid, info['backend_attrs'])):
+                if not info['base'] and (be.identify(dn, info['backend_attrs'], fixed_rdn) or
+                                         be.identify_by_uuid(uuid, info['backend_attrs'])):
                     id_extend.append(name)
 
         if id_base or id_base_fixed:
-            return (id_base_fixed or id_base, id_extend)
+            return id_base_fixed or id_base, id_extend
 
         return None, None
 
@@ -660,7 +660,7 @@ class ObjectFactory(object):
 
     def load_schema(self):
         """
-        This method reads all object defintion files (xml) and combines
+        This method reads all object definition files (xml) and combines
         into one single xml-dump.
 
         This combined-xml-dump will then be forwarded to
@@ -707,19 +707,19 @@ class ObjectFactory(object):
             if find.hasattr(xml):
                 for attr in find(xml):
                     self.__xml_defs[attr['Name'].text] = attr
-                    self.log.info("loaded schema for '%s'" % (attr['Name'].text))
+                    self.log.info("loaded schema for '%s'" % attr['Name'].text)
 
         except etree.XMLSyntaxError as e:
             self.log.error("error loading object schema: %s" % str(e))
-            raise FactoryException(C.make_error("FACTORY_SCHEMA_ERROR"))
+            raise FactoryException("FACTORY_SCHEMA_ERROR")
 
     def __build_class(self, name):
         """
-        This method builds a meta-class for each object defintion read from the
-        xml defintion files.
+        This method builds a meta-class for each object definition read from the
+        xml definition files.
 
         It uses a base-meta-class which will be extended by the define
-        attributes and mehtods of the object.
+        attributes and methods of the object.
 
         The final meta-class will be stored and can then be requested using:
         :meth:`clacks.agent.objects.factory.ObjectFactory.getObject`
@@ -762,7 +762,6 @@ class ObjectFactory(object):
                 container.append(entry.Type.text)
 
         # Load FixedRDN value
-        fixed_rdn = None
         if "FixedRDN" in classr.__dict__:
             fixed_rdn = classr.FixedRDN.text
             back_attrs[classr.Backend.text]['FixedRDN'] = fixed_rdn
@@ -868,7 +867,7 @@ class ObjectFactory(object):
                     if "BackendType" in prop.__dict__:
                         backend_syntax = prop['BackendType'].text
 
-                    # Read blocked by settings - When they are fullfilled, these property cannot be changed.
+                    # Read blocked by settings - When they are fulfilled, these property cannot be changed.
                     if "BlockedBy" in prop.__dict__:
                         for d in prop.__dict__['BlockedBy'].iterchildren():
                             blocked_by.append({'name': d.text, 'value': d.attrib['value']})
@@ -941,7 +940,7 @@ class ObjectFactory(object):
 
                 # Does the blocking property exists?
                 if bentry['name'] not in props:
-                    raise FactoryException(C.make_error("FACTORY_BLOCK_BY_NON_EXISTING", pname, blocker=bentry['name']))
+                    raise FactoryException("FACTORY_BLOCK_BY_NON_EXISTING", pname, blocker=bentry['name'])
 
                 # Convert the blocking condition to its expected value-type
                 syntax = props[bentry['name']]['type']
@@ -950,7 +949,7 @@ class ObjectFactory(object):
             # Depends on
             for dentry in props[pname]['depends_on']:
                 if dentry not in props:
-                    raise FactoryException(C.make_error("FACTORY_DEPEND_NON_EXISTING", pname, dependency=dentry))
+                    raise FactoryException("FACTORY_DEPEND_NON_EXISTING", pname, dependency=dentry)
 
         # Build up a list of callable methods
         if 'Methods' in classr.__dict__:
@@ -1014,7 +1013,7 @@ class ObjectFactory(object):
 
     def __create_hook(self, klass, m_type, command, cParams):
         """
-        Creates a new executeable hook-method for the current objekt.
+        Creates a new executable hook-method for the current object.
         """
 
         # Now add the method to the object
@@ -1041,7 +1040,7 @@ class ObjectFactory(object):
                 elif value in ['dn', 'uuid']:
                     parmList.append(getattr(caller_object, value))
                 else:
-                    raise FactoryException(C.make_error("FACTORY_INVALID_METHOD_DEPENDS", method=command, attribute=value))
+                    raise FactoryException("FACTORY_INVALID_METHOD_DEPENDS", method=command, attribute=value)
 
             cr = PluginRegistry.getInstance('CommandRegistry')
             self.log.info("Executed %s-hook for class %s which invoked %s(...)" % (m_type, klass.__name__, command))
@@ -1052,7 +1051,7 @@ class ObjectFactory(object):
 
     def __create_class_method(self, klass, methodName, command, mParams, cParams):
         """
-        Creates a new klass-method for the current objekt.
+        Creates a new class-method for the current object.
         """
 
         # Now add the method to the object
@@ -1074,11 +1073,11 @@ class ObjectFactory(object):
                 elif mDefault:
                     arguments[mName] = mDefault
                 else:
-                    raise FactoryException(C.make_error("FACTORY_PARAMETER_MISSING", command=command, parameter=mName))
+                    raise FactoryException("FACTORY_PARAMETER_MISSING", command=command, parameter=mName)
 
                 # Convert value to its required type.
                 arguments[mName] = self.__attribute_type['String'].convert_to(mType, [arguments[mName]])[0]
-                cnt = cnt + 1
+                cnt += 1
 
             # Build the command-parameter list.
             # Collect all property values of this object to be able to fill in
@@ -1102,7 +1101,7 @@ class ObjectFactory(object):
                 elif value in ['dn']:
                     parmList.append(getattr(caller_object, value))
                 else:
-                    raise FactoryException(C.make_error("FACTORY_INVALID_METHOD_DEPENDS", method=command, attribute=value))
+                    raise FactoryException("FACTORY_INVALID_METHOD_DEPENDS", method=command, attribute=value)
 
             cr = PluginRegistry.getInstance('CommandRegistry')
             self.log.info("Executed %s.%s which invoked %s(...)" % (klass.__name__, methodName, command))
@@ -1116,7 +1115,7 @@ class ObjectFactory(object):
         the backend or they can manipulate values that have to be written to
         the backend.
 
-        This method converts the read XML filter-elements of the defintion into
+        This method converts the read XML filter-elements of the definition into
         a process lists. This list can then be easily executed line by line for
         each property, using the method:
 
@@ -1148,7 +1147,7 @@ class ObjectFactory(object):
         if not out:
             out = {}
 
-        # FilterChains can contain muliple "FilterEntry" tags.
+        # FilterChains can contain multiple "FilterEntry" tags.
         # But at least one.
         # Here we forward these elements to their handler.
         for el in element.iterchildren():
@@ -1212,7 +1211,7 @@ class ObjectFactory(object):
         for el in element.iterchildren():
             if el.tag == "{http://www.gonicus.de/Objects}When":
                 out = self.__handleWhen(el, out)
-        return(out)
+        return out
 
     def __handleWhen(self, element, out):
         """
@@ -1254,7 +1253,7 @@ class ObjectFactory(object):
         # Add the <FilterChain> process.
         cnt = len(out)
         for entry in filterChain:
-            cnt = cnt + 1
+            cnt += 1
             out[cnt] = filterChain[entry]
 
         # Add jump point to jump over the else chain
@@ -1264,10 +1263,10 @@ class ObjectFactory(object):
         # Add the <Else> process.
         cnt = len(out)
         for entry in elseChain:
-            cnt = cnt + 1
+            cnt += 1
             out[cnt] = elseChain[entry]
 
-        return(out)
+        return out
 
     def __handleElse(self, element, out):
         """
@@ -1340,7 +1339,7 @@ class ObjectFactory(object):
 
         # Get the condition name and the parameters to use.
         # The name of the condition specifies which ElementComparator
-        # we schould use.
+        # we should use.
         name = element.__dict__['Name'].text
         params = []
         for entry in element.iterchildren():
@@ -1350,7 +1349,7 @@ class ObjectFactory(object):
         # Append the condition to the process list.
         cnt = len(out) + 1
         out[cnt] = {'condition': get_comparator(name)(self), 'params': params}
-        return(out)
+        return out
 
     @staticmethod
     def getInstance():
@@ -1381,7 +1380,7 @@ class ObjectFactory(object):
         Returns a xml-schema definition that can be used to validate the
         xml-objects returned by 'asXML()'
         """
-        # Transform xml-combination into a useable xml-class representation
+        # Transform xml-combination into a usable xml-class representation
         xmldefs = self.getXMLDefinitionsCombined()
         xslt_doc = etree.parse(pkg_resources.resource_filename('clacks.agent', 'data/xml_object_schema.xsl')) #@UndefinedVariable
         transform = etree.XSLT(xslt_doc)

@@ -103,7 +103,7 @@ class LDAPHandler(object):
 
         # Sanity check
         if self.__bind_user and not ldap.SASL_AVAIL:
-            raise LDAPException(C.make_error("NO_SASL_SUPPORT"))
+            raise LDAPException("NO_SASL_SUPPORT")
 
         # Initialize static pool
         LDAPHandler.connection_handle = [None] * self.__pool
@@ -130,7 +130,7 @@ class LDAPHandler(object):
         try:
             next_free = LDAPHandler.connection_usage.index(False)
         except ValueError:
-            raise LDAPException(C.make_error("LDAP_NO_CONNECTIONS"))
+            raise LDAPException("LDAP_NO_CONNECTIONS")
 
         # Need to initialize?
         if not LDAPHandler.connection_handle[next_free]:
@@ -149,7 +149,7 @@ class LDAPHandler(object):
             if get("ldap.tls", default="True").lower() == "true" and ldap.TLS_AVAIL and self.__url.urlscheme != "ldaps":
                 try:
                     conn.start_tls_s()
-                except ldap.PROTOCOL_ERROR as detail:
+                except ldap.PROTOCOL_ERROR:
                     self.log.debug("cannot use TLS, falling back to unencrypted session")
 
             try:
