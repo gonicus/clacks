@@ -11,12 +11,11 @@
 # See the LICENSE file in the project's top-level directory for details.
 
 __import__('pkg_resources').declare_namespace(__name__)
-import re
 import ldap
 from itertools import permutations
 from clacks.common.utils import N_
 from clacks.common.error import ClacksErrorHandler as C
-from clacks.agent.exceptions import EntryNotUnique, EntryNotFound, DNGeneratorError, RDNNotSpecified, BackendError
+from clacks.agent.exceptions import DNGeneratorError
 
 
 # Register the errors handled  by us
@@ -53,7 +52,7 @@ class ObjectBackend(object):
         """
         Return a tuple (createdTimestamp, modifyTimestamp)
         """
-        return (None, None)
+        return None, None
 
     def load(self, uuid, keys, back_attrs=None):
         """
@@ -138,11 +137,11 @@ class ObjectBackend(object):
 
         # Check if we've have to use a fixed RDN.
         if FixedRDN:
-            return(["%s,%s" % (FixedRDN, base)])
+            return["%s,%s" % (FixedRDN, base)]
 
         # Bail out if fix part is not in data
         if not fix in data:
-            raise DNGeneratorError(C.make_error("GENERATOR_RDN_ATTRIBUTE_MISSING", fix))
+            raise DNGeneratorError("GENERATOR_RDN_ATTRIBUTE_MISSING", fix)
 
         # Append possible variations of RDN attributes
         if var:

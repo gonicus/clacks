@@ -33,7 +33,7 @@ class PasswordMethodCrypt(PasswordMethod):
         """
         See PasswordMethod Interface for details
         """
-        if not(hash_value):
+        if not hash_value:
             return False
 
         return not(self.is_locked(hash_value))
@@ -42,7 +42,7 @@ class PasswordMethodCrypt(PasswordMethod):
         """
         See PasswordMethod Interface for details
         """
-        if not(hash_value):
+        if not hash_value:
             return False
 
         return self.is_locked(hash_value)
@@ -81,7 +81,7 @@ class PasswordMethodCrypt(PasswordMethod):
         """
         See PasswordMethod Interface for details
         """
-        return re.match("\{[^\}]*\}!", password_hash) != None
+        return re.match("\{[^\}]*\}!", password_hash) is not None
 
     def lock_account(self, password_hash):
         """

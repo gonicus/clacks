@@ -126,7 +126,7 @@ class ClientService(Plugin):
         # Get registry - we need it later on
         self.__cr = PluginRegistry.getInstance("CommandRegistry")
 
-        # Start maintainence with a delay of 5 seconds
+        # Start maintenance with a delay of 5 seconds
         timer = Timer(5.0, self.__refresh)
         timer.start()
         self.env.threads.append(timer)
@@ -149,13 +149,13 @@ class ClientService(Plugin):
                 e = EventMaker()
                 amqp.sendEvent(e.Event(e.ClientPoll()))
 
-            # Elseways, ask other servers for more client info
+            # Else ask other servers for more client info
             else:
                 #TODO: get from host
                 #take a random node and:
                 # ... for all clients
-                #     ... load client capabilities and store them localy
-                raise NotImplementedError("getting client information from other nodes is not implmeneted!")
+                #     ... load client capabilities and store them locally
+                raise NotImplementedError("getting client information from other nodes is not implemented!")
 
     def stop(self):
         pass
@@ -165,7 +165,7 @@ class ClientService(Plugin):
         """
         List available domain clients.
 
-        ``Return:`` dict with name and timestamp informatio, indexed by UUID
+        ``Return:`` dict with name and timestamp information, indexed by UUID
         """
         res = {}
         for uuid, info in self.__client.iteritems():
@@ -276,7 +276,7 @@ class ClientService(Plugin):
         Send a notification request to the user client.
         """
 
-        if icon == None:
+        if icon is None:
             icon = "_no_icon_"
 
         if users:
@@ -299,7 +299,7 @@ class ClientService(Plugin):
                 else:
                     self.log.error("sending message failed: no client found for user '%s'" % user)
 
-                # Notify websession user if available
+                # Notify web session user if available
                 jsrpc = PluginRegistry.getInstance("JSONRPCService")
                 if jsrpc.user_sessions_available(user):
                     amqp = PluginRegistry.getInstance("AMQPHandler")
@@ -315,7 +315,7 @@ class ClientService(Plugin):
                 except Exception:
                     pass
 
-            # Notify all websession users if any
+            # Notify all web session users if any
             jsrpc = PluginRegistry.getInstance("JSONRPCService")
             if jsrpc.user_sessions_available():
                 amqp = PluginRegistry.getInstance("AMQPHandler")
@@ -447,7 +447,7 @@ class ClientService(Plugin):
                     try:
                         conn.search_s(info["owner"], ldap.SCOPE_BASE, attrlist=['dn'])
                         more_info.append(("owner", info["owner"]))
-                    except Exception as e:
+                    except Exception:
                         raise ValueError(C.make_error("CLIENT_OWNER_NOT_FOUND", device_uuid, owner=info["owner"]))
 
         # Generate random client key
@@ -615,7 +615,7 @@ class ClientService(Plugin):
                 'Netmask': interface.Netmask.text,
                 'Broadcast': interface.Broadcast.text}
 
-        # Add recieve time to be able to sort out dead nodes
+        # Add receive time to be able to sort out dead nodes
         t = datetime.datetime.utcnow()
         info = {
             'name': data.Name.text,

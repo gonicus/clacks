@@ -104,7 +104,7 @@ class LDAP(ObjectBackend):
         fixed_rdn_filter = ""
         attr = None
         if fixed_rdn:
-            attr, value, nocare = ldap.dn.str2dn(fixed_rdn.encode('utf-8'), flags=ldap.DN_FORMAT_LDAPV3)[0][0] #@UnusedVariable
+            attr, value, _ = ldap.dn.str2dn(fixed_rdn.encode('utf-8'), flags=ldap.DN_FORMAT_LDAPV3)[0][0] #@UnusedVariable
             fixed_rdn_filter = ldap.filter.filter_format("(%s=*)", [attr])
 
         # If we just query for an objectClass, try to get the
@@ -114,7 +114,7 @@ class LDAP(ObjectBackend):
             if fixed_rdn:
                 if dn in self.__i_cache and attr in self.__i_cache[dn]:
                     self.__i_cache_ttl[dn] = time.time()
-                    return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0 and len(set([value]) - set(self.__i_cache[dn][attr])) == 0
+                    return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0 and len({value} - set(self.__i_cache[dn][attr])) == 0
 
             else:
                 self.__i_cache_ttl[dn] = time.time()
@@ -139,7 +139,7 @@ class LDAP(ObjectBackend):
                     self.__i_cache[dn][attr] = [x.decode('utf-8') for x in res[0][1][attr]]
                 else:
                     self.__i_cache[dn][attr] = []
-                return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0 and len(set([value]) - set(self.__i_cache[dn][attr])) == 0
+                return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0 and len({value} - set(self.__i_cache[dn][attr])) == 0
             else:
                 return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0
 
@@ -236,7 +236,7 @@ class LDAP(ObjectBackend):
                 items.append(cnv(lvalue))
 
             self.log.debug(" * add attribute '%s' with value %s" % (attr, items))
-            if foreign_keys == None:
+            if foreign_keys is None:
                 mod_attrs.append((attr, items))
             else:
                 mod_attrs.append((ldap.MOD_ADD, attr, items))
@@ -244,16 +244,16 @@ class LDAP(ObjectBackend):
         # We know about object classes - add them if possible
         if 'objectClasses' in params:
             ocs = [o.strip() for o in params['objectClasses'].split(",")]
-            if foreign_keys == None:
+            if foreign_keys is None:
                 mod_attrs.append(('objectClass', ocs))
             else:
                 mod_attrs.append((ldap.MOD_ADD, 'objectClass', ocs))
 
-        if foreign_keys == None:
+        if foreign_keys is None:
             # Check if obligatory information for assembling the DN are
             # provided
             if not 'RDN' in params:
-                raise RDNNotSpecified(C.make_error("RDN_NOT_SPECIFIED"))
+                raise RDNNotSpecified("RDN_NOT_SPECIFIED")
 
             # Build unique DN using maybe optional RDN parameters
             rdns = [d.strip() for d in params['RDN'].split(",")]
@@ -261,18 +261,18 @@ class LDAP(ObjectBackend):
             FixedRDN = params['FixedRDN'] if 'FixedRDN' in params else None
             dn = self.get_uniq_dn(rdns, base, data, FixedRDN)
             if not dn:
-                raise DNGeneratorError(C.make_error("NO_UNIQUE_DN", base=base, rdns=", ".join(rdns)))
+                raise DNGeneratorError("NO_UNIQUE_DN", base=base, rdns=", ".join(rdns))
             dn = dn.encode('utf-8')
 
         else:
             dn = base
 
-        self.log.debug("evaulated new entry DN to '%s'" % dn)
+        self.log.debug("evaluated new entry DN to '%s'" % dn)
 
         # Write...
         self.log.debug("saving entry '%s'" % dn)
 
-        if foreign_keys == None:
+        if foreign_keys is None:
             self.con.add_s(dn, mod_attrs)
         else:
             self.con.modify_s(dn, mod_attrs)
@@ -370,7 +370,7 @@ class LDAP(ObjectBackend):
         cts = self._convert_from_timestamp(res[0][1][self.create_ts_entry][0])
         mts = self._convert_from_timestamp(res[0][1][self.modify_ts_entry][0])
 
-        return (cts, mts)
+        return cts, mts
 
     def get_uniq_dn(self, rdns, base, data, FixedRDN):
 
@@ -405,11 +405,11 @@ class LDAP(ObjectBackend):
 
         # Check if we've have to use a fixed RDN.
         if FixedRDN:
-            return(["%s,%s" % (FixedRDN, base)])
+            return["%s,%s" % (FixedRDN, base)]
 
         # Bail out if fix part is not in data
         if not fix in data:
-            raise DNGeneratorError(C.make_error("ATTRIBUTE_NOT_FOUND", attribute=fix))
+            raise DNGeneratorError("ATTRIBUTE_NOT_FOUND", attribute=fix)
 
         # Append possible variations of RDN attributes
         if var:
@@ -432,10 +432,10 @@ class LDAP(ObjectBackend):
         res = self.con.search_s(self.lh.get_base(False), ldap.SCOPE_SUBTREE, fltr, [attr])
 
         if not res:
-            raise EntryNotFound(C.make_error("NO_POOL_ID"))
+            raise EntryNotFound("NO_POOL_ID")
 
         if len(res) != 1:
-            raise EntryNotFound(C.make_error("MULTIPLE_ID_POOLS"))
+            raise EntryNotFound("MULTIPLE_ID_POOLS")
 
         # Current value
         old_value = res[0][1][attr][0]
@@ -453,10 +453,10 @@ class LDAP(ObjectBackend):
 
     def __check_res(self, uuid, res):
         if not res:
-            raise EntryNotFound(C.make_error("ENTRY_UUID_NOT_FOUND", uuid=uuid))
+            raise EntryNotFound("ENTRY_UUID_NOT_FOUND", uuid=uuid)
 
         if len(res) != 1:
-            raise EntryNotFound(C.make_error("ENTRY_UUID_NOT_UNIQUE", uuid=uuid))
+            raise EntryNotFound("ENTRY_UUID_NOT_UNIQUE", uuid=uuid)
 
     def _convert_from_boolean(self, value):
         return value == "TRUE"

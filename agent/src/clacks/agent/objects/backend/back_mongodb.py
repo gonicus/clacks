@@ -16,8 +16,7 @@ import ldap
 import datetime
 from logging import getLogger
 from clacks.common import Environment
-from clacks.common.utils import is_uuid, N_
-from clacks.common.error import ClacksErrorHandler as C
+from clacks.common.utils import is_uuid
 from clacks.agent.objects.backend import ObjectBackend
 from clacks.agent.exceptions import DNGeneratorError, RDNNotSpecified, BackendError
 
@@ -33,10 +32,7 @@ class MongoDB(ObjectBackend):
         self.log = getLogger(__name__)
 
         # Create scope map
-        self.scope_map = {}
-        self.scope_map[ldap.SCOPE_SUBTREE] = "sub"
-        self.scope_map[ldap.SCOPE_BASE] = "base"
-        self.scope_map[ldap.SCOPE_ONELEVEL] = "one"
+        self.scope_map = {ldap.SCOPE_SUBTREE: "sub", ldap.SCOPE_BASE: "base", ldap.SCOPE_ONELEVEL: "one"}
 
         # Get database collection
         db_name = self.env.config.get("backend-mongodb.database", "storage")
@@ -74,7 +70,7 @@ class MongoDB(ObjectBackend):
         """
         Identify an object by uuid
         """
-        return self.db.find_one({'_uuid': item_uuid, '_type': params['type']}) != None
+        return self.db.find_one({'_uuid': item_uuid, '_type': params['type']}) is not None
 
     def retract(self, item_uuid, data, params):
         """
@@ -141,7 +137,7 @@ class MongoDB(ObjectBackend):
 
         # All entries require a naming attribute, if it's not available we cannot generate a dn for the entry
         if not 'rdn' in params:
-            raise RDNNotSpecified(C.make_error("RDN_NOT_SPECIFIED"))
+            raise RDNNotSpecified("RDN_NOT_SPECIFIED")
 
         # Split given rdn-attributes into a list.
         rdns = [d.strip() for d in params['rdn'].split(",")]
@@ -152,7 +148,7 @@ class MongoDB(ObjectBackend):
         # Get a unique dn for this entry, if there was no free dn left (None) throw an error
         object_dn = self.get_uniq_dn(rdns, base, data, FixedRDN)
         if not object_dn:
-            raise DNGeneratorError(C.make_error("NO_UNIQUE_DN", base=base, rdns=", ".join(rdns)))
+            raise DNGeneratorError("NO_UNIQUE_DN", base=base, rdns=", ".join(rdns))
 
         # Build the entry that will be written to the json-database
         _uuid = str(uuid.uuid1())
@@ -181,9 +177,9 @@ class MongoDB(ObjectBackend):
         """
         entry = self.db.find_one({'dn': object_dn}, {'_created': 1, '_last_changed': 1})
         if entry:
-            return (entry['_created'], entry['_last_changed'])
+            return entry['_created'], entry['_last_changed']
 
-        return (None, None)
+        return None, None
 
     def get_uniq_dn(self, rdns, base, data, FixedRDN):
         """
@@ -249,7 +245,7 @@ class MongoDB(ObjectBackend):
 
             # Check if we can move the entry
             if self.exists(dn):
-                raise BackendError(C.make_error("TARGET_EXISTS", target=dn))
+                raise BackendError("TARGET_EXISTS", target=dn)
 
             entry = dict(dn=dn, _parent_dn=new_base)
             self.db.update({'_uuid': item_uuid}, {"$set": entry})

@@ -11,6 +11,7 @@
 # See the LICENSE file in the project's top-level directory for details.
 
 import pkg_resources
+import logging
 from clacks.common.components import Plugin
 from clacks.common.components.command import Command
 from clacks.common.utils import N_
@@ -47,6 +48,10 @@ class PasswordManager(Plugin):
     instance = None
     implements(IInterfaceHandler)
 
+    def __init__(self):
+        super(PasswordManager, self).__init__()
+        self.__log = logging.getLogger(__name__)
+
     @staticmethod
     def get_instance():
         """
@@ -70,12 +75,12 @@ class PasswordManager(Plugin):
 
             self.__log.debug("user '%s' has insufficient permissions to write %s on %s, required is %s:%s" % (
                 user, "isLocked", object_dn, topic, "w"))
-            raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=object_dn))
+            raise ACLException('PERMISSION_ACCESS', object_dn, topic=topic)
 
         # Get the object for the given dn
         user = ObjectProxy(object_dn)
 
-        # Check if there is a userPasswort available and set
+        # Check if there is a userPassword available and set
         if not "userPassword" in user.get_attributes():
             raise PasswordException("PASSWORD_NO_ATTRIBUTE")
 
@@ -105,12 +110,12 @@ class PasswordManager(Plugin):
 
             self.__log.debug("user '%s' has insufficient permissions to write %s on %s, required is %s:%s" % (
                 user, "isLocked", object_dn, topic, "w"))
-            raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=object_dn))
+            raise ACLException('PERMISSION_ACCESS', object_dn, topic=topic)
 
         # Get the object for the given dn and its used password method
         user = ObjectProxy(object_dn)
 
-        # Check if there is a userPasswort available and set
+        # Check if there is a userPassword available and set
         if not "userPassword" in user.get_attributes():
             raise PasswordException("PASSWORD_NO_ATTRIBUTE")
         if not user.userPassword:
@@ -137,7 +142,7 @@ class PasswordManager(Plugin):
 
             self.__log.debug("user '%s' has insufficient permissions to read %s on %s, required is %s:%s" % (
                 user, "isLocked", object_dn, topic, "r"))
-            raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=object_dn))
+            raise ACLException('PERMISSION_ACCESS', object_dn, topic=topic)
 
         # Get password hash
         res = index.search({'dn': object_dn, 'userPassword': {'$size': 1}}, {'userPassword': 1})
@@ -169,7 +174,7 @@ class PasswordManager(Plugin):
 
             self.__log.debug("user '%s' has insufficient permissions to read %s on %s, required is %s:%s" % (
                 user, "isLocked", object_dn, topic, "r"))
-            raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=object_dn))
+            raise ACLException('PERMISSION_ACCESS', object_dn, topic=topic)
 
         res = index.search({'dn': object_dn, 'userPassword': {'$size': 1}}, {'userPassword': 1})
         if res.count():
@@ -187,7 +192,7 @@ class PasswordManager(Plugin):
 
         return pwd_o.isUnlockable(hsh)
 
-    @Command(needsUser=True, __help__=N_("Changes the used password enryption method"))
+    @Command(needsUser=True, __help__=N_("Changes the used password encryption method"))
     def setUserPasswordMethod(self, user, object_dn, method, password):
         """
         Changes the used password encryption method
@@ -201,14 +206,14 @@ class PasswordManager(Plugin):
 
             self.__log.debug("user '%s' has insufficient permissions to write %s on %s, required is %s:%s" % (
                 user, "isLocked", object_dn, topic, "w"))
-            raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=object_dn))
+            raise ACLException('PERMISSION_ACCESS', object_dn, topic=topic)
 
         # Try to detect the responsible password method-class
         pwd_o = self.get_method_by_method_type(method)
         if not pwd_o:
             raise PasswordException("PASSWORD_UNKNOWN_HASH", type=method)
 
-        # Generate the new password hash usind the detected method
+        # Generate the new password hash using the detected method
         pwd_str = pwd_o.generate_password_hash(password, method)
 
         # Set the password and commit the changes
@@ -230,7 +235,7 @@ class PasswordManager(Plugin):
 
             self.__log.debug("user '%s' has insufficient permissions to write %s on %s, required is %s:%s" % (
                 user, "isLocked", object_dn, topic, "w"))
-            raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=object_dn))
+            raise ACLException('PERMISSION_ACCESS', object_dn, topic=topic)
 
         user = ObjectProxy(object_dn)
         method = user.passwordMethod
@@ -240,7 +245,7 @@ class PasswordManager(Plugin):
         if not pwd_o:
             raise PasswordException("PASSWORD_UNKNOWN_HASH", type=method)
 
-        # Generate the new password hash usind the detected method
+        # Generate the new password hash using the detected method
         pwd_str = pwd_o.generate_password_hash(password, method)
 
         # Set the password and commit the changes
@@ -260,13 +265,13 @@ class PasswordManager(Plugin):
         """
         methods = self.list_methods()
         for hash_name in methods:
-            if(methods[hash_name].is_responsible_for_password_hash(hash_value)):
+            if methods[hash_name].is_responsible_for_password_hash(hash_value):
                 return methods[hash_name]
         return None
 
     def get_method_by_method_type(self, method_type):
         """
-        Returns the passwod-method that is responsible for the given hashing-method,
+        Returns the password-method that is responsible for the given hashing-method,
         e.g. get_method_by_method_type('crypt/blowfish')
         """
         methods = self.list_methods()
@@ -274,7 +279,7 @@ class PasswordManager(Plugin):
 
     def list_methods(self):
         """
-        Return a list of all useable password-hashing methods
+        Return a list of all usable password-hashing methods
         """
 
         # Build up a method hash map if not done before

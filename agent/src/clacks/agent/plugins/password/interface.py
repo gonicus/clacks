@@ -9,6 +9,7 @@
 #  GPL-2: http://www.gnu.org/licenses/gpl-2.0.html
 #
 # See the LICENSE file in the project's top-level directory for details.
+from clacks.common.error import ClacksErrorHandler as C
 
 
 class PasswordMethod(object):
@@ -33,19 +34,19 @@ class PasswordMethod(object):
         """
         Checks whether the account is locked or not.
         """
-        raise NotImplementedError("password method is not capable of locking accounts")
+        raise NotImplementedError(C.make_error('NOT_IMPLEMENTED', method="is_locked"))
 
     def lock_account(self, hash_value):
         """
         Locks the given account.
         """
-        raise NotImplementedError("password method is not capable of locking accounts")
+        raise NotImplementedError(C.make_error('NOT_IMPLEMENTED', method="lock_account"))
 
     def unlock_account(self, hash_value):
         """
         Unlocks the given account.
         """
-        raise NotImplementedError("password method is not capable of locking accounts")
+        raise NotImplementedError(C.make_error('NOT_IMPLEMENTED', method="unlock_account"))
 
     def get_hash_names(self):
         """
@@ -55,12 +56,12 @@ class PasswordMethod(object):
 
     def is_responsible_for_password_hash(self, password_hash):
         """
-        Checks whether this class is responsilbe for this kind of password hashes of not.
+        Checks whether this class is responsible for this kind of password hashes of not.
         """
-        raise NotImplementedError("is_responsible_for_password_hash method is not implemented")
+        raise NotImplementedError(C.make_error('NOT_IMPLEMENTED', method="is_responsible_for_password_hash"))
 
     def generate_password_hash(self, new_password, method=None):
         """
         Generates a password hash for the given password and method
         """
-        raise NotImplementedError("is_responsible_for_password_hash method is not implemented")
+        raise NotImplementedError(C.make_error('NOT_IMPLEMENTED', method="generate_password_hash"))

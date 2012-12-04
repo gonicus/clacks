@@ -21,7 +21,7 @@ from clacks.common.components import Plugin
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components.amqp import EventConsumer
 from clacks.common.components.registry import PluginRegistry
-from clacks.common.error import ClacksErrorHandler as C, ClacksException
+from clacks.common.error import ClacksErrorHandler as C
 from clacks.common.utils import N_
 
 
@@ -110,11 +110,11 @@ class InventoryConsumer(Plugin):
 
         except Exception as e:
             self.log.error("failed to extract information from received inventory data: %s" % str(e))
-            raise InventoryException(C.make_error("INVENTORY_DATA_INVALID"))
+            raise InventoryException("INVENTORY_DATA_INVALID")
 
         # Get the Inventory part of the event only
-        inv_only = xml2dict(data.xpath('/e:Event/e:Inventory', \
-                namespaces={'e': 'http://www.gonicus.de/Events'})[0])
+        inv_only = xml2dict(data.xpath('/e:Event/e:Inventory',
+            namespaces={'e': 'http://www.gonicus.de/Events'})[0])
 
         # The given hardware-uuid is already part of our inventory database
         if self.hardwareUUIDExists(huuid):
@@ -150,9 +150,9 @@ class InventoryConsumer(Plugin):
 
         # Walk through results and return the ClientUUID
         if results.count() == 1:
-            return(results[0]['ClientUUID'])
+            return results[0]['ClientUUID']
         else:
-            raise InventoryException(C.make_error("INVENTORY_CLIENT_MISMATCH"), huuid)
+            raise InventoryException("INVENTORY_CLIENT_MISMATCH", huuid)
 
     def getChecksumByHardwareUUID(self, huuid):
         """
@@ -162,9 +162,9 @@ class InventoryConsumer(Plugin):
 
         # Walk through results and return the found checksum
         if results.count() == 1:
-            return(results[0]['Checksum'])
+            return results[0]['Checksum']
         else:
-            raise InventoryException(C.make_error("INVENTORY_CHECKSUM_MISMATCH", huuid))
+            raise InventoryException("INVENTORY_CHECKSUM_MISMATCH", huuid)
 
     def hardwareUUIDExists(self, huuid):
         """

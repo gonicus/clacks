@@ -27,7 +27,7 @@ class AclSet(AttributeType):
         """
         Checks whether the given values are equal
         """
-        return(str(value1) == str(value2))
+        return str(value1) == str(value2)
 
     def is_valid_value(self, value):
         """
@@ -51,9 +51,9 @@ class AclSet(AttributeType):
 
                 # Add scope and priority (scope is not available for role based acls)
                 if "rolename" in entry and entry["rolename"]:
-                    item = "\n%(priority)s\n" % (entry)
+                    item = "\n%(priority)s\n" % entry
                 else:
-                    item = "%(scope)s\n%(priority)s\n" % (entry)
+                    item = "%(scope)s\n%(priority)s\n" % entry
 
                 # Add members
                 if not "members" in entry:
@@ -72,7 +72,7 @@ class AclSet(AttributeType):
 
                 res.append(item)
             return res
-        return(value)
+        return value
 
     def _convert_from_string(self, value):
         """
@@ -103,9 +103,7 @@ class AclSet(AttributeType):
                     members.remove("")
 
                 # Build entry list
-                new_entry = {}
-                new_entry['priority'] = priority
-                new_entry['members'] = members
+                new_entry = {'priority': priority, 'members': members}
                 new_value.append(new_entry)
 
                 # Do we have a role or action-based acl
@@ -129,4 +127,4 @@ class AclSet(AttributeType):
 
                         new_entry['actions'].append({"topic": topic, "acl": acl, "options": options})
 
-        return(new_value)
+        return new_value
