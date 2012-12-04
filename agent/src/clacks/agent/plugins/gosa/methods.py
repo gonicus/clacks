@@ -370,7 +370,7 @@ class GuiMethods(Plugin):
             query = {"dn": re.compile("^(.*,)?" + re.escape(base) + "$"), "$or": queries}
 
         elif scope == "ONE":
-            query = {"$or": [{"dn": base}, {"_parent_dn": base}], "$or": queries}
+            query = {"$or": [{"dn": base}, {"_parent_dn": base}] + queries}
 
         else:
             query = {"dn": base, "$or": queries}
@@ -482,7 +482,7 @@ class GuiMethods(Plugin):
 
         # Filter out what the current use is not allowed to see
         item = self.__filter_entry(user, item)
-        if not item or item['dn'] == None:
+        if not item or item['dn'] is None:
             # We've obviously no permission to see thins one - skip it
             return
 
@@ -567,7 +567,7 @@ class GuiMethods(Plugin):
         attrs = self.__search_aid['mapping'][entry['_type']].values()
 
         for attr in attrs:
-            if attr != None and self.__has_access_to(user, entry['dn'], entry['_type'], attr):
+            if attr is not None and self.__has_access_to(user, entry['dn'], entry['_type'], attr):
                 ne[attr] = entry[attr] if attr in entry else None
             else:
                 ne[attr] = None

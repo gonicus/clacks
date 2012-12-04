@@ -155,7 +155,7 @@ class ClientService(Plugin):
                 #take a random node and:
                 # ... for all clients
                 #     ... load client capabilities and store them localy
-                raise Exception("getting client information from other nodes is not implmeneted!")
+                raise NotImplementedError("getting client information from other nodes is not implmeneted!")
 
     def stop(self):
         pass

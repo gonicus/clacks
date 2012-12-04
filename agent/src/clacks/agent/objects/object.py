@@ -47,7 +47,7 @@ C.register_codes(dict(
     ATTRIBUTE_INVALID=N_("Value is invalid - expected value of type '%(type)s'"),
     ATTRIBUTE_CHECK_FAILED=N_("Value is invalid"),
     ATTRIBUTE_NOT_UNIQUE=N_("Value is not unique (%(value)s)"),
-    ATTRIBUTE_NOT_FOUND=N_("Attribute not found"),
+    ATTRIBUTE_NOT_FOUND=N_("Attribute %(target)s not found"),
     OBJECT_MODE_NOT_AVAILABLE=N_("Mode '%(mode)s' is not available for base objects"),
     OBJECT_MODE_BASE_AVAILABLE=N_("Mode '%(mode)s' is only available for base objects"),
     OBJECT_NOT_SUB_FOR=N_("Object of type '%(type)s' cannot be added as to the '%s' container"),
