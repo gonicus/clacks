@@ -29,4 +29,5 @@ class DetectAccountLockStatus(ElementFilter):
         if len(valDict['userPassword']['in_value']):
             pwdh = valDict['userPassword']['in_value'][0]
             valDict[key]['value'] = [re.match(r'^{[^\}]+}!', pwdh) != None]
+
         return key, valDict

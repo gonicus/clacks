@@ -22,7 +22,6 @@ from clacks.common import Environment
 from clacks.common.components import Command
 from clacks.common.components import Plugin
 from clacks.common.utils import N_
-from clacks.common.error import ClacksException
 from clacks.common.components import PluginRegistry
 from clacks.agent.objects import ObjectProxy
 from clacks.agent.objects.factory import ObjectFactory

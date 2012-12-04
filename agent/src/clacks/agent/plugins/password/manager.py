@@ -18,9 +18,22 @@ from zope.interface import implements
 from clacks.common.handler import IInterfaceHandler
 from clacks.agent.objects.proxy import ObjectProxy
 from clacks.common.components import PluginRegistry
-from clacks.common.error import ClacksErrorHandler as C
 from clacks.common import Environment
 from clacks.agent.exceptions import ACLException
+from clacks.common.error import ClacksErrorHandler as C, ClacksException
+
+
+# Register the errors handled  by us
+C.register_codes(dict(
+    PASSWORD_METHOD_UNKNOWN=N_("Cannot detect password method"),
+    PASSWORD_UNKNOWN_HASH=N_("No password method to generate hash of type '%(type)s' available"),
+    PASSWORD_INVALID_HASH=N_("Invalid hash type for password method '%(method)s'"),
+    PASSWORD_NO_ATTRIBUTE=N_("Object has no 'userPassword' attribute"),
+    PASSWORD_NOT_AVAILABLE=N_("No password to lock.")))
+
+
+class PasswordException(ClacksException):
+    pass
 
 
 class PasswordManager(Plugin):
@@ -64,14 +77,15 @@ class PasswordManager(Plugin):
 
         # Check if there is a userPasswort available and set
         if not "userPassword" in user.get_attributes():
-            raise Exception("object does not support userPassword attributes!")
+            raise PasswordException("PASSWORD_NO_ATTRIBUTE")
+
         if not user.userPassword:
-            raise Exception("no password set, cannot lock it")
+            raise PasswordException("PASSWORD_NOT_AVAILABLE")
 
         # Try to detect the responsible password method-class
         pwd_o = self.detect_method_by_hash(user.userPassword)
         if not pwd_o:
-            raise Exception("Could not identify password method!")
+            raise PasswordException("PASSWORD_METHOD_UNKNOWN")
 
         # Lock the hash and save it
         user.userPassword = pwd_o.lock_account(user.userPassword)
@@ -98,14 +112,14 @@ class PasswordManager(Plugin):
 
         # Check if there is a userPasswort available and set
         if not "userPassword" in user.get_attributes():
-            raise Exception("object does not support userPassword attributes!")
+            raise PasswordException("PASSWORD_NO_ATTRIBUTE")
         if not user.userPassword:
-            raise Exception("no password set, cannot lock it")
+            raise PasswordException("PASSWORD_NOT_AVAILABLE")
 
         # Try to detect the responsible password method-class
         pwd_o = self.detect_method_by_hash(user.userPassword)
         if not pwd_o:
-            raise Exception("Could not identify password method!")
+            raise PasswordException("PASSWORD_METHOD_UNKNOWN")
 
         # Unlock the hash and save it
         user.userPassword = pwd_o.unlock_account(user.userPassword)
@@ -192,7 +206,7 @@ class PasswordManager(Plugin):
         # Try to detect the responsible password method-class
         pwd_o = self.get_method_by_method_type(method)
         if not pwd_o:
-            raise Exception("No password method found to generate hash of type '%s'!" % (method,))
+            raise PasswordException("PASSWORD_UNKNOWN_HASH", type=method)
 
         # Generate the new password hash usind the detected method
         pwd_str = pwd_o.generate_password_hash(password, method)
@@ -224,7 +238,7 @@ class PasswordManager(Plugin):
         # Try to detect the responsible password method-class
         pwd_o = self.get_method_by_method_type(method)
         if not pwd_o:
-            raise Exception("No password method found to generate hash of type '%s'!" % (method,))
+            raise PasswordException("PASSWORD_UNKNOWN_HASH", type=method)
 
         # Generate the new password hash usind the detected method
         pwd_str = pwd_o.generate_password_hash(password, method)
@@ -272,7 +286,7 @@ class PasswordManager(Plugin):
                 module = entry.load()()
                 names = module.get_hash_names()
                 if not names:
-                    raise Exception("invalid hash-type for password method '%s' given!" % module.__class__.__name__)
+                    raise PasswordException("PASSWORD_INVALID_HASH", method=module.__class__.__name__)
 
                 for name in names:
                     methods[name] = module

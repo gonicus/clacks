@@ -28,7 +28,7 @@ from clacks.common.utils import N_
 # Register the errors handled  by us
 C.register_codes(dict(
         INVENTORY_CLIENT_MISMATCH=N_("No client UUID for hardware UUID '%(target)s' found"),
-        NVENTORY_CHECKSUM_MISMATCH=N_("No hardware checksum found for client %(target)s"),
+        INVENTORY_CHECKSUM_MISMATCH=N_("No hardware checksum found for client %(target)s"),
         INVENTORY_DATA_INVALID=N_("Inventory data invalid")))
 
 
