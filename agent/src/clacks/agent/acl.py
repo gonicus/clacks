@@ -61,7 +61,7 @@ from clacks.agent.exceptions import ACLException
 C.register_codes(dict(
     ACL_NOT_FOUND=N_("ACL not found"),
     ACL_ITEM_INVALID_TYPE=N_("Item is not of type '%(type)s'"),
-    ACL_INVALID_SCOPEN=N_("Invalid ACL scope '%(scope)s'"),
+    ACL_INVALID_SCOPE=N_("Invalid ACL scope '%(scope)s'"),
     ROLE_NOT_FOUND=N_("Role '%(role)s' not found"),
     ACL_INVALID_SCOPE_TARGET=N_("Cannot set scope for role ACLs"),
     ACL_TYPE_MISMATCH=N_("ACL and Role objects are not combinable"),
