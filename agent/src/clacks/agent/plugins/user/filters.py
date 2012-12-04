@@ -17,6 +17,7 @@ from clacks.common import Environment
 from clacks.agent.objects.filter import ElementFilter
 from clacks.agent.exceptions import ElementFilterException
 from clacks.common.error import ClacksErrorHandler as C
+from clacks.common.utils import N_
 
 
 # Register the errors handled  by us
