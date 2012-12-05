@@ -56,7 +56,7 @@ C.register_codes(dict(
     OBJECT_BASE_NO_RETRACT=N_("Base object cannot be retracted"),
     FILTER_INVALID_KEY=N_("Invalid key '%(key)s' for filter '%(filter)s'"),
     FILTER_MISSING_KEY=N_("Missing key '%(key)s' after processing filter '%(filter)s'"),
-    FILTER_NO_LIST=N_("Filter '%(filter)s' did not return a %(type)s value - a list was expected"),
+    FILTER_NO_LIST=N_("Filter '%(filter)s' did return a %(type)s value - a list was expected"),
     ATTRIBUTE_DEPEND_LOOP=N_("Potential loop in attribute dependencies")
 ))
 
