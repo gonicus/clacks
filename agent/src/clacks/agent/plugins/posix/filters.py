@@ -12,20 +12,6 @@
 
 from clacks.agent.objects.filter import ElementFilter
 from clacks.agent.objects.backend.registry import ObjectBackendRegistry
-from clacks.common.error import ClacksErrorHandler as C, ClacksException
-from clacks.common.utils import N_
-
-
-# Register the errors handled  by us
-C.register_codes(dict(
-    PARAMETER_NOT_NUMERIC=N_("Parameter for '%(target)s' have to be numeric"),
-    BACKEND_TOO_MANY=N_("Too many backends for %(target)s specified"),
-    POSIX_ID_POOL_EMPTY=N_("ID pool for attribute %(target)s is empty [> %(max)s]")
-))
-
-
-class PosixException(ClacksException):
-    pass
 
 
 class GenerateIDs(ElementFilter):
@@ -41,29 +27,29 @@ class GenerateIDs(ElementFilter):
             maxUidValue = int(maxUidValue)
             maxGidValue = int(maxGidValue)
         except ValueError:
-            raise PosixException("PARAMETER_NOT_NUMERIC", "GenerateIDs")
+            raise Exception("Parameters to filter GenerateIDs have to be numeric")
 
         if "uidNumber" in valDict:
             if not(len(valDict['uidNumber']['value'])):
                 if len(valDict["uidNumber"]['backend']) > 1:
-                    raise PosixException("BACKEND_TOO_MANY", "GenerateIDs")
+                    raise Exception("GetNextID filter does not support multiple backends!")
 
                 be = ObjectBackendRegistry.getBackend(valDict["uidNumber"]['backend'][0])
                 uid = be.get_next_id("uidNumber")
                 if uid > maxUidValue:
-                    raise PosixException("POSIX_ID_POOL_EMPTY", "uidNumber", max=maxUidValue)
+                    raise Exception("ID generation for %s exceeded limitation of %s!" % ("uidNumber", maxUidValue,))
 
                 valDict["uidNumber"]['value'] = [uid]
 
         if "gidNumber" in valDict:
             if not(len(valDict['gidNumber']['value'])):
                 if len(valDict["gidNumber"]['backend']) > 1:
-                    raise PosixException("BACKEND_TOO_MANY", "GenerateIDs")
+                    raise Exception("GetNextID filter does not support multiple backends!")
 
                 be = ObjectBackendRegistry.getBackend(valDict["gidNumber"]['backend'][0])
                 gid = be.get_next_id("gidNumber")
                 if gid > maxGidValue:
-                    raise PosixException("POSIX_ID_POOL_EMPTY", "gidNumber", max=maxGidValue)
+                    raise Exception("ID generation for %s exceeded limitation of %s!" % ("gidNumber", maxGidValue,))
 
                 valDict["gidNumber"]['value'] = [gid]
 
@@ -161,12 +147,12 @@ class GetNextID(ElementFilter):
             maxValue = int(maxValue)
 
             if len(valDict[key]['backend']) > 1:
-                raise PosixException("BACKEND_TOO_MANY", "GetNextID")
+                raise Exception("GetNextID filter does not support multiple backends!")
 
             be = ObjectBackendRegistry.getBackend(valDict[key]['backend'][0])
             gid = be.get_next_id(attributeName)
             if gid > maxValue:
-                raise PosixException("POSIX_ID_POOL_EMPTY", attributeName, max=maxValue)
+                raise Exception("GID number generation exceeded limitation of %s!" % (maxValue,))
             valDict[key]['value'] = [gid]
 
         return key, valDict

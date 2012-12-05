@@ -24,7 +24,7 @@ import logging
 import zope.event
 import datetime
 import re
-import hashlib
+import md5
 import time
 import itertools
 from zope.interface import implements
@@ -57,7 +57,7 @@ class IndexScanFinished():
 class ObjectIndex(Plugin):
     """
     The *ObjectIndex* keeps track of objects and their indexed attributes. It
-    is the search engine that allows quick queries on the data set with
+    is the search engine that allows quick querries on the data set with
     paged results and wildcards.
     """
     implements(IInterfaceHandler)
@@ -93,7 +93,7 @@ class ObjectIndex(Plugin):
         # Create the initial schema information if required
         if not "index" in self.db.collection_names():
             self.log.info('created object index collection')
-            md5s = hashlib.md5()
+            md5s = md5.new()
             md5s.update(schema)
             md5sum = md5s.hexdigest()
 
@@ -208,6 +208,7 @@ class ObjectIndex(Plugin):
         new_dn = data.NewDN.text if hasattr(data, 'NewDN') else None
         change_type = data.ChangeType.text
         _uuid = data.UUID.text if hasattr(data, 'UUID') else None
+        _last_changed = datetime.datetime.strptime(data.ModificationTime.text, "%Y%m%d%H%M%SZ")
 
         # Resolve dn from uuid if needed
         if not dn:
@@ -271,11 +272,11 @@ class ObjectIndex(Plugin):
             obj = ObjectProxy(dn)
 
         except ProxyException as e:
-            self.log.warning("not found %s: %s" % (dn, str(e)))
+            self.log.warning("not found %s: %s" % (obj, str(e)))
             obj = None
 
         except ObjectException as e:
-            self.log.warning("not indexing %s: %s" % (dn, str(e)))
+            self.log.warning("not indexing %s: %s" % (obj, str(e)))
             obj = None
 
         return obj
@@ -285,7 +286,7 @@ class ObjectIndex(Plugin):
 
     def isSchemaUpdated(self, collection, schema):
         # Calculate md5 checksum for potentially new schema
-        md5s = hashlib.md5()
+        md5s = md5.new()
         md5s.update(schema)
         md5sum = md5s.hexdigest()
 
@@ -475,7 +476,7 @@ class ObjectIndex(Plugin):
 
         # If this is the root node, add the root document
         if self.db.index.find_one({'_uuid': obj.uuid}, {'_uuid': 1}):
-            raise IndexException('OBJECT_EXISTS', "base", uuid=obj.uuid)
+            raise IndexException(C.make_error('OBJECT_EXISTS', "base", uuid=obj.uuid))
 
         self.db.index.save(obj.asJSON(True))
 
@@ -492,7 +493,7 @@ class ObjectIndex(Plugin):
         current = obj.asJSON(True)
         saved = self.db.index.find_one({'_uuid': obj.uuid})
         if not saved:
-            raise IndexException('OBJECT_NOT_FOUND', "base", id=obj.uuid)
+            raise IndexException(C.make_error('OBJECT_NOT_FOUND', "base", id=obj.uuid))
 
         # Remove old entry and insert new
         self.remove_by_uuid(obj.uuid)
@@ -521,7 +522,7 @@ class ObjectIndex(Plugin):
     def exists(self, uuid):
         """
         Do a database query for the given UUID and return an
-        existence flag.
+        existance flag.
 
         ========== ==================
         Parameter  Description
@@ -531,13 +532,13 @@ class ObjectIndex(Plugin):
 
         ``Return``: True/False
         """
-        return self.db.index.find_one({'_uuid': uuid}, {'_uuid': 1}) is not None
+        return self.db.index.find_one({'_uuid': uuid}, {'_uuid': 1}) != None
 
     @Command(__help__=N_("Get list of defined base object types."))
     def getBaseObjectTypes(self):
         ret = []
         for k, v in self.factory.getObjectTypes().items():
-            if v['base']:
+            if v['base'] == True:
                 ret.append(k)
 
         return ret
@@ -569,14 +570,14 @@ class ObjectIndex(Plugin):
             conditions = None
 
         if not isinstance(query, dict):
-            raise FilterException('INVALID_QUERY')
+            raise FilterException(C.make_error('INVALID_QUERY'))
 
         # Create result-set
         for item in self.search(query, conditions):
 
             # Filter out what the current use is not allowed to see
             item = self.__filter_entry(user, item)
-            if item and item['dn'] is not None:
+            if item and item['dn'] != None:
                 del item['_id']
 
                 # Convert binary (bson) to Binary
@@ -616,7 +617,7 @@ class ObjectIndex(Plugin):
         """
 
         if GlobalLock.exists("scan_index"):
-            raise FilterException('INDEXING', "base")
+            raise FilterException(C.make_error('INDEXING', "base"))
 
         return self.db.index.find(query, conditions)
 

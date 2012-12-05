@@ -32,7 +32,7 @@ class PluginRegistry(object):
     =============== ============
     Parameter       Description
     =============== ============
-    component       What setuptools entry point to use when looking for :class:`clacks.common.components.plugin.Plugin`.
+    component       What setuptools entrypoint to use when looking for :class:`clacks.common.components.plugin.Plugin`.
     =============== ============
     """
     modules = {}
@@ -43,7 +43,7 @@ class PluginRegistry(object):
         env = Environment.getInstance()
         self.env = env
         self.log = logging.getLogger(__name__)
-        self.log.debug("initializing plugin registry")
+        self.log.debug("inizializing plugin registry")
 
         # Load common event resources
         base_dir = resource_filename('clacks.common', 'data/events') + os.sep
@@ -133,7 +133,7 @@ class PluginRegistry(object):
 
         """
         if not name in PluginRegistry.modules:
-            raise ValueError("Module '%s' is not available" % name)
+            raise ValueError("no module '%s' available" % name)
 
         if isclass(PluginRegistry.modules[name]):
             return None

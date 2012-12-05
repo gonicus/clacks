@@ -13,6 +13,7 @@
 import re
 import itertools
 from clacks.common.components import PluginRegistry
+from clacks.common.error import ClacksErrorHandler as C
 from clacks.agent.objects.backend import ObjectBackend
 from clacks.agent.exceptions import EntryNotFound, BackendError
 from clacks.agent.objects.index import ObjectIndex
@@ -97,7 +98,7 @@ class ObjectHandler(ObjectBackend):
         # Ensure that we have a configuration for all attributes
         for attr in data.keys():
             if attr not in mapping:
-                raise BackendError("BACKEND_ATTRIBUTE_CONFIG_MISSING", attribute=attr)
+                raise BackendError(C.make_error("BACKEND_ATTRIBUTE_CONFIG_MISSING", attribute=attr))
 
         # Walk through each mapped foreign-object-attribute
         for targetAttr in mapping:
@@ -109,7 +110,7 @@ class ObjectHandler(ObjectBackend):
             foreignObject, foreignAttr, foreignMatchAttr, matchAttr = mapping[targetAttr]
             res = index.search({'_uuid': uuid}, {matchAttr: 1})
             if not res.count():
-                raise BackendError("SOURCE_OBJECT_NOT_FOUND", object=targetAttr)
+                raise BackendError(C.make_error("SOURCE_OBJECT_NOT_FOUND", object=targetAttr))
             matchValue = res[0][matchAttr][0]
 
             # Collect all objects that match the given value
@@ -118,7 +119,7 @@ class ObjectHandler(ObjectBackend):
             for value in allvalues:
                 res = index.search({'_type': foreignObject, foreignAttr: value}, {'dn': 1})
                 if res.count() != 1:
-                    raise EntryNotFound("NO_UNIQUE_ENTRY", object=foreignObject, attribute=foreignAttr, value=value)
+                    raise EntryNotFound(C.make_error("NO_UNIQUE_ENTRY", object=foreignObject, attribute=foreignAttr, value=value))
                 else:
                     object_mapping[value] = ObjectProxy(res[0]['dn'])
 
@@ -148,6 +149,9 @@ class ObjectHandler(ObjectBackend):
     def __init__(self):
         pass
 
+    def __del__(self):
+        self.lh.free_connection(self.con)
+
     def identify_by_uuid(self, uuid, params):
         return False
 
@@ -155,19 +159,25 @@ class ObjectHandler(ObjectBackend):
         return False
 
     def query(self, base, scope, params, fixed_rdn=None):
+        print "query", base, scope, params, fixed_rdn
         return []
 
     def exists(self, misc):
+        print "exists", misc
         return False
 
     def move_extension(self, uuid, new_base):
         pass
 
     def move(self, uuid, new_base):
+        print "move", uuid
         return False
 
     def create(self, base, data, params, foreign_keys=None):
+        print "create", base, data, params
         return None
+
+        return False
 
     def uuid2dn(self, uuid):
         return None
@@ -176,7 +186,7 @@ class ObjectHandler(ObjectBackend):
         return None
 
     def get_timestamps(self, dn):
-        return None, None
+        return (None, None)
 
     def get_uniq_dn(self, rdns, base, data, FixedRDN):
         return None
@@ -185,7 +195,7 @@ class ObjectHandler(ObjectBackend):
         return False
 
     def get_next_id(self, attr):
-        raise BackendError("ID_GENERATION_FAILED")
+        raise BackendError(C.make_error("ID_GENERATION_FAILED"))
 
     def extractBackAttrs(self, attrs):
         result = {}

@@ -186,7 +186,7 @@ class HTTPService(object):
         self.log.info("now serving on %s://%s:%s" % (self.scheme, self.host, self.port))
 
         # Register all possible instances that have shown
-        # interest to be served
+        # interrest to be served
         for path, obj in self.__register.items():
             self.app.register(path, obj)
 
@@ -209,7 +209,7 @@ class HTTPService(object):
         ================= ==========================
         """
         if path in self.__register_static or path in self.__register_ws:
-            raise HTTPException("HTTP_PATH_ALREADY_REGISTERED", path=path)
+            raise HTTPException(C.make_error("HTTP_PATH_ALREADY_REGISTERED", path=path))
 
         self.__register[path] = app
 
@@ -226,7 +226,7 @@ class HTTPService(object):
         ================= ==========================
         """
         if path in self.__register or path in self.__register_ws:
-            raise HTTPException("HTTP_PATH_ALREADY_REGISTERED", path=path)
+            raise HTTPException(C.make_error("HTTP_PATH_ALREADY_REGISTERED", path=path))
 
         self.__register_static[path] = local_path
 
@@ -242,6 +242,6 @@ class HTTPService(object):
         ================= ==========================
         """
         if path in self.__register or path in self.__register_static:
-            raise HTTPException("HTTP_PATH_ALREADY_REGISTERED", path=path)
+            raise HTTPException(C.make_error("HTTP_PATH_ALREADY_REGISTERED", path=path))
 
         self.__register_ws[path] = app

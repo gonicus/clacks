@@ -33,7 +33,6 @@ from clacks.common.components.amqp import EventConsumer
 from clacks.common.components import AMQPServiceProxy, Plugin
 from clacks.common.components.command import Command
 from clacks.agent.ldap_utils import LDAPHandler
-from clacks.common.error import ClacksErrorHandler as C, ClacksException
 from base64 import encodestring as encode
 from Crypto.Cipher import AES
 
@@ -53,23 +52,6 @@ STATUS_NEEDS_INITIAL_CONFIG = "P"
 STATUS_NEEDS_REMOVE_CONFIG = "R"
 STATUS_NEEDS_CONFIG = "c"
 STATUS_NEEDS_INSTALL = "N"
-
-# Register the errors handled  by us
-C.register_codes(dict(
-    DEVICE_EXISTS=N_("Device with hardware address '%(topic)s' already exists"),
-    USER_NOT_UNIQUE=N_("User '%(topic)s' is not unique"),
-    CLIENT_NOT_FOUND=N_("Client '%(topic)s' not found"),
-    CLIENT_OFFLINE=N_("Client '%(topic)s' is offline"),
-    CLIENT_METHOD_NOT_FOUND=N_("Client '%(topic)s' has no method %(method)s"),
-    CLIENT_DATA_INVALID=N_("Invalid data '%(entry)s:%(data)s' for client '%(target)s provided'"),
-    CLIENT_TYPE_INVALID=N_("Device type '%(type)s' for client '%(target)s' is invalid [terminal, workstation, server, sipphone, switch, router, printer, scanner]"),
-    CLIENT_OWNER_NOT_FOUND=N_("Owner '%(owner)s' for client '%(target)s' not found"),
-    CLIENT_UUID_INVALID=N_("Invalid client UUID '%(target)s'"),
-    CLIENT_STATUS_INVALID=N_("Invalid status '%(status)s' for client '%(target)s'")))
-
-
-class GOtoException(ClacksException):
-    pass
 
 
 class ClientService(Plugin):
@@ -126,7 +108,7 @@ class ClientService(Plugin):
         # Get registry - we need it later on
         self.__cr = PluginRegistry.getInstance("CommandRegistry")
 
-        # Start maintenance with a delay of 5 seconds
+        # Start maintainence with a delay of 5 seconds
         timer = Timer(5.0, self.__refresh)
         timer.start()
         self.env.threads.append(timer)
@@ -149,13 +131,13 @@ class ClientService(Plugin):
                 e = EventMaker()
                 amqp.sendEvent(e.Event(e.ClientPoll()))
 
-            # Else ask other servers for more client info
+            # Elseways, ask other servers for more client info
             else:
                 #TODO: get from host
                 #take a random node and:
                 # ... for all clients
-                #     ... load client capabilities and store them locally
-                raise NotImplementedError("getting client information from other nodes is not implemented!")
+                #     ... load client capabilities and store them localy
+                raise Exception("getting client information from other nodes is not implmeneted!")
 
     def stop(self):
         pass
@@ -165,7 +147,7 @@ class ClientService(Plugin):
         """
         List available domain clients.
 
-        ``Return:`` dict with name and timestamp information, indexed by UUID
+        ``Return:`` dict with name and timestamp informatio, indexed by UUID
         """
         res = {}
         for uuid, info in self.__client.iteritems():
@@ -191,11 +173,11 @@ class ClientService(Plugin):
 
         # Bail out if the client is not available
         if not client in self.__client:
-            raise JSONRPCException(C.make_error("CLIENT_NOT_FOUND", client))
+            raise JSONRPCException("client '%s' not available" % client)
         if not self.__client[client]['online']:
-            raise JSONRPCException(C.make_error("CLIENT_OFFLINE", client))
+            raise JSONRPCException("client '%s' is offline" % client)
         if not method in self.__client[client]['caps']:
-            raise JSONRPCException(C.make_error("CLIENT_METHOD_NOT_FOUND", client, method=method))
+            raise JSONRPCException("client '%s' has no method '%s' exported" % (client, method))
 
         # Generate tage queue name
         queue = '%s.client.%s' % (self.env.domain, client)
@@ -276,7 +258,7 @@ class ClientService(Plugin):
         Send a notification request to the user client.
         """
 
-        if icon is None:
+        if icon == None:
             icon = "_no_icon_"
 
         if users:
@@ -299,7 +281,7 @@ class ClientService(Plugin):
                 else:
                     self.log.error("sending message failed: no client found for user '%s'" % user)
 
-                # Notify web session user if available
+                # Notify websession user if available
                 jsrpc = PluginRegistry.getInstance("JSONRPCService")
                 if jsrpc.user_sessions_available(user):
                     amqp = PluginRegistry.getInstance("AMQPHandler")
@@ -315,7 +297,7 @@ class ClientService(Plugin):
                 except Exception:
                     pass
 
-            # Notify all web session users if any
+            # Notify all websession users if any
             jsrpc = PluginRegistry.getInstance("JSONRPCService")
             if jsrpc.user_sessions_available():
                 amqp = PluginRegistry.getInstance("AMQPHandler")
@@ -347,7 +329,7 @@ class ClientService(Plugin):
                 "(&(objectClass=device)(%s))" % fltr, ['deviceStatus'])
 
             if len(res) != 1:
-                raise ValueError(C.make_error("CLIENT_NOT_FOUND", device_uuid))
+                raise ValueError("no device '%s' available" % device_uuid)
 
             if 'deviceStatus' in res[0][1]:
                 return res[0][1]["deviceStatus"][0]
@@ -379,7 +361,7 @@ class ClientService(Plugin):
                 "(&(objectClass=device)(%s))" % fltr, ['deviceStatus'])
 
             if len(res) != 1:
-                raise ValueError(C.make_error("CLIENT_NOT_FOUND", device_uuid))
+                raise ValueError("no device '%s' available" % device_uuid)
 
             devstat = res[0][1]['deviceStatus'][0] if 'deviceStatus' in res[0][1] else ""
             is_new = not bool(devstat)
@@ -388,7 +370,7 @@ class ClientService(Plugin):
             r = re.compile(r"([+-].)")
             for stat in r.findall(status):
                 if not stat[1] in valid:
-                    raise ValueError(C.make_error("CLIENT_STATUS_INVALID", device_uuid, status=stat[1]))
+                    raise ValueError("invalid status %s" % stat[1])
                 if stat.startswith("+"):
                     if not stat[1] in devstat:
                         devstat.append(stat[1])
@@ -412,7 +394,7 @@ class ClientService(Plugin):
 
         uuid_check = re.compile(r"^[0-9a-f]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$", re.IGNORECASE)
         if not uuid_check.match(device_uuid):
-            raise ValueError(C.make_error("CLIENT_UUID_INVALID", device_uuid))
+            raise ValueError("join with invalid UUID %s" % device_uuid)
 
         lh = LDAPHandler.get_instance()
 
@@ -425,7 +407,7 @@ class ClientService(Plugin):
                 ["serialNumber", "ou", "o", "l", "description"]):
 
                 if not re.match(r"^[\w\s]+$", info[entry]):
-                    raise ValueError(C.make_error("CLIENT_DATA_INVALID", device_uuid, entry=entry, data=info[entry]))
+                    raise ValueError("invalid data (%s) provided for '%s'" % (info[entry], entry))
 
                 more_info.append((entry, info[entry]))
 
@@ -436,7 +418,7 @@ class ClientService(Plugin):
 
                     more_info.append(("deviceType", info["deviceType"]))
                 else:
-                    raise ValueError(C.make_error("CLIENT_TYPE_INVALID", device_uuid, type=info["deviceType"]))
+                    raise ValueError("invalid device type '%s' specified" % info["deviceType"])
 
             # Check owner for presence
             if "owner" in info:
@@ -447,8 +429,8 @@ class ClientService(Plugin):
                     try:
                         conn.search_s(info["owner"], ldap.SCOPE_BASE, attrlist=['dn'])
                         more_info.append(("owner", info["owner"]))
-                    except Exception:
-                        raise ValueError(C.make_error("CLIENT_OWNER_NOT_FOUND", device_uuid, owner=info["owner"]))
+                    except Exception as e:
+                        raise ValueError("owner %s not found: %s" % (info["owner"], str(e)))
 
         # Generate random client key
         random.seed()
@@ -467,7 +449,7 @@ class ClientService(Plugin):
 
             # Already registered?
             if res:
-                raise GOtoException("DEVICE_EXISTS", mac)
+                raise Exception("device with hardware address %s has already been joined" % mac)
 
             # While the client is going to be joined, generate a random uuid and
             # an encoded join key
@@ -478,8 +460,8 @@ class ClientService(Plugin):
             res = conn.search_s(lh.get_base(), ldap.SCOPE_SUBTREE,
                     "(uid=%s)" % user, [])
             if len(res) != 1:
-                raise GOtoException("USER_NOT_UNIQUE" if res else "UNKNOWN_USER", target=user)
-
+                raise Exception("failed to get current users DN: %s" %
+                    ("not unique" if res else "not found"))
             manager = res[0][0]
 
             # Create new machine entry
@@ -615,7 +597,7 @@ class ClientService(Plugin):
                 'Netmask': interface.Netmask.text,
                 'Broadcast': interface.Broadcast.text}
 
-        # Add receive time to be able to sort out dead nodes
+        # Add recieve time to be able to sort out dead nodes
         t = datetime.datetime.utcnow()
         info = {
             'name': data.Name.text,

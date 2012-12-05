@@ -182,7 +182,7 @@ class AMQPHandler(object):
                 acl = PluginRegistry.getInstance("ACLResolver")
                 topic = ".".join([self.env.domain, 'event', xml.__dict__.keys()[0]])
                 if not acl.check(user, topic, "x"):
-                    raise EventNotAuthorized("ACL_EVENT_BLOCKED", topic)
+                    raise EventNotAuthorized("sending the event '%s' is not permitted" % topic)
 
             return self._eventProvider.send(event)
 
@@ -280,7 +280,7 @@ class AMQPProcessor(Thread):
         except NotFound as e:
             self.env.log.critical("AMQP main loop stopped: %s" % str(e))
             self.env.requestRestart()
-        except SessionClosed:
+        except SessionClosed as e:
             self.env.log.warning("AMQP session has gone away")
         except SessionError as e:
             self.env.log.error("AMQP error: %s" % str(e))

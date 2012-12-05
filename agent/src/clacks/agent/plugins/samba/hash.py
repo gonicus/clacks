@@ -12,13 +12,6 @@
 
 import smbpasswd #@UnresolvedImport
 from clacks.agent.objects.filter import ElementFilter
-from clacks.common.error import ClacksErrorHandler as C
-from clacks.common.utils import N_
-
-
-# Register the errors handled  by us
-C.register_codes(dict(
-    TYPE_UNKNOWN=N_("Filter '%(target)s' does not support input type '%(type)s'")))
 
 
 class SambaHash(ElementFilter):
@@ -34,6 +27,7 @@ class SambaHash(ElementFilter):
             valDict['sambaNTPassword']['value'] = [nt]
             valDict['sambaLMPassword']['value'] = [lm]
         else:
-            raise ValueError(C.make_error("TYPE_UNKNOWN", self.__class__.__name__, type=type(valDict[key]['value'])))
+            raise ValueError("Unknown input type for filter %s. Type is '%s'!" % (
+                self.__class__.__name__, type(valDict[key]['value'])))
 
         return key, valDict

@@ -27,19 +27,6 @@ from clacks.agent.objects import ObjectProxy
 from clacks.agent.objects.factory import ObjectFactory
 from clacks.common.handler import IInterfaceHandler
 from json import loads, dumps
-from clacks.common.error import ClacksErrorHandler as C, ClacksException
-
-
-# Register the errors handled  by us
-C.register_codes(dict(
-    INVALID_SEARCH_SCOPE=N_("Invalid scope '%(scope)s' [SUB, BASE, ONE]"),
-    INVALID_SEARCH_DATE=N_("Invalid date specification '%(date)s' [hour, day, week, month, year, all]"),
-    UNKNOWN_USER=N_("Unknown user '%(target)s'"),
-    BACKEND_PARAMETER_MISSING=N_("Backend parameter for '%(extension)s.%(attribute)s' is missing")))
-
-
-class GOsaException(ClacksException):
-    pass
 
 
 class GuiMethods(Plugin):
@@ -78,7 +65,7 @@ class GuiMethods(Plugin):
     def getGuiTemplates(self, objectType, theme="default"):
         factory = ObjectFactory.getInstance()
         if objectType not in factory.getObjectTypes():
-            raise GOsaException("OBJECT_UNKNOWN_TYPE", type=objectType)
+            raise Exception("No such object type: %s" % (objectType))
 
         return factory.getObjectTemplates(objectType, theme)
 
@@ -86,7 +73,7 @@ class GuiMethods(Plugin):
     def getGuiDialogs(self, objectType, theme="default"):
         factory = ObjectFactory.getInstance()
         if objectType not in factory.getObjectTypes():
-            raise GOsaException("OBJECT_UNKNOWN_TYPE", type=objectType)
+            raise Exception("No such object type: %s" % (objectType))
 
         return factory.getObjectDialogs(objectType, theme)
 
@@ -105,7 +92,7 @@ class GuiMethods(Plugin):
         index = PluginRegistry.getInstance("ObjectIndex")
         res = index.search({'_type': 'User', 'uid': userid}, {'sn': 1, 'givenName': 1, 'cn': 1, 'dn': 1, '_uuid': 1})
         if not res.count():
-            raise GOsaException("UNKNOWN_USER", userid)
+            raise Exception("No such user %s" % (userid))
 
         return({'sn': res[0]['sn'][0],
                 'givenName': res[0]['givenName'][0],
@@ -118,7 +105,7 @@ class GuiMethods(Plugin):
         index = PluginRegistry.getInstance("ObjectIndex")
         res = index.search({'_type': 'User', 'uid': userid}, {'dn': 1})
         if not res.count():
-            raise GOsaException("UNKNOWN_USER", userid)
+            raise Exception("No such user %s" % (userid))
 
         user = ObjectProxy(res[0]['dn'])
         prefs = user.guiPreferences
@@ -139,7 +126,7 @@ class GuiMethods(Plugin):
         index = PluginRegistry.getInstance("ObjectIndex")
         res = index.search({'_type': 'User', 'uid': userid}, {'dn': 1})
         if not res.count():
-            raise GOsaException("UNKNOWN_USER", userid)
+            raise Exception("No such user %s" % (userid))
 
         user = ObjectProxy(res[0]['dn'])
         prefs = user.guiPreferences
@@ -167,7 +154,7 @@ class GuiMethods(Plugin):
         of = ObjectFactory.getInstance()
         be_data = of.getObjectBackendParameters(extension, attribute)
         if not be_data:
-            raise GOsaException("BACKEND_PARAMETER_MISSING", extension=extension, attribute=attribute)
+            raise Exception("no backend parameter found for %s.%s" % (extension, attribute))
 
         # Collection basic information
         otype, oattr, foreignMatchAttr, matchAttr = be_data[attribute] #@UnusedVariable
@@ -230,7 +217,7 @@ class GuiMethods(Plugin):
         be_data = of.getObjectBackendParameters(extension, attribute)
 
         if not be_data:
-            raise GOsaException("BACKEND_PARAMETER_MISSING", extension=extension, attribute=attribute)
+            raise Exception("no backend parameter found for %s.%s" % (extension, attribute))
 
         # Collection basic information
         otype, oattr, foreignMatchAttr, matchAttr = be_data[attribute] #@UnusedVariable
@@ -335,10 +322,9 @@ class GuiMethods(Plugin):
         # Sanity checks
         scope = scope.upper()
         if not scope in ["SUB", "BASE", "ONE"]:
-            raise GOsaException("INVALID_SEARCH_SCOPE", scope=scope)
-
+            raise Exception("invalid scope - needs to be one of SUB, BASE or ONE")
         if not fltr['mod-time'] in ["hour", "day", "week", "month", "year", "all"]:
-            raise GOsaException("INVALID_SEARCH_DATE", date=fltr['modtime'])
+            raise Exception("invalid scope - needs to be one of SUB, BASE or ONE")
 
         # Build query: assemble keywords
         _s = ""
@@ -370,7 +356,7 @@ class GuiMethods(Plugin):
             query = {"dn": re.compile("^(.*,)?" + re.escape(base) + "$"), "$or": queries}
 
         elif scope == "ONE":
-            query = {"$or": [{"dn": base}, {"_parent_dn": base}] + queries}
+            query = {"$or": [{"dn": base}, {"_parent_dn": base}], "$or": queries}
 
         else:
             query = {"dn": base, "$or": queries}
@@ -482,7 +468,7 @@ class GuiMethods(Plugin):
 
         # Filter out what the current use is not allowed to see
         item = self.__filter_entry(user, item)
-        if not item or item['dn'] is None:
+        if not item or item['dn'] == None:
             # We've obviously no permission to see thins one - skip it
             return
 
@@ -567,7 +553,7 @@ class GuiMethods(Plugin):
         attrs = self.__search_aid['mapping'][entry['_type']].values()
 
         for attr in attrs:
-            if attr is not None and self.__has_access_to(user, entry['dn'], entry['_type'], attr):
+            if attr != None and self.__has_access_to(user, entry['dn'], entry['_type'], attr):
                 ne[attr] = entry[attr] if attr in entry else None
             else:
                 ne[attr] = None

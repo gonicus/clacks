@@ -24,6 +24,7 @@ from json import loads, dumps
 from logging import getLogger
 from clacks.common import Environment
 from clacks.common.utils import is_uuid
+from clacks.common.error import ClacksErrorHandler as C
 from clacks.agent.objects.backend import ObjectBackend
 from clacks.agent.exceptions import DNGeneratorError, RDNNotSpecified, BackendError
 
@@ -40,12 +41,15 @@ class JSON(ObjectBackend):
         self.log = getLogger(__name__)
 
         # Create scope map
-        self.scope_map = {ldap.SCOPE_SUBTREE: "sub", ldap.SCOPE_BASE: "base", ldap.SCOPE_ONELEVEL: "one"}
+        self.scope_map = {}
+        self.scope_map[ldap.SCOPE_SUBTREE] = "sub"
+        self.scope_map[ldap.SCOPE_BASE] = "base"
+        self.scope_map[ldap.SCOPE_ONELEVEL] = "one"
 
         # Read storage path from config
         self._file_path = self.env.config.get("backend-json.database-file", None)
         if not self._file_path:
-            raise BackendError("DB_CONFIG_MISSING", "backend-json.database-file")
+            raise BackendError(C.make_error("DB_CONFIG_MISSING", target="backend-json.database-file"))
 
         # Create a json file on demand
         if not os.path.exists(self._file_path):
@@ -71,7 +75,7 @@ class JSON(ObjectBackend):
         data = {}
         if item_uuid in json:
             for obj in json[item_uuid]:
-                data += json[item_uuid][obj].items()
+                data = dict(data.items() + json[item_uuid][obj].items())
         return data
 
     def identify(self, object_dn, params, fixed_rdn=None):
@@ -133,7 +137,7 @@ class JSON(ObjectBackend):
 
     def uuid2dn(self, item_uuid):
         """
-        Tries to find the given uuid in the backend and returned the
+        Tries to find the given uuid in the backend and returnd the
         dn for the entry.
         """
         json = self.__load()
@@ -152,7 +156,7 @@ class JSON(ObjectBackend):
         json = self.__load()
 
         # Search for the given criteria.
-        # For one-level scope the parentDN must be equal with the requested base.
+        # For one-level scope the parentDN must be equal with the reqeusted base.
         found = []
         if self.scope_map[scope] == "one":
             for uuid in json:
@@ -182,7 +186,7 @@ class JSON(ObjectBackend):
 
         # All entries require a naming attribute, if it's not available we cannot generate a dn for the entry
         if not 'rdn' in params:
-            raise RDNNotSpecified("RDN_NOT_SPECIFIED")
+            raise RDNNotSpecified(C.make_error("RDN_NOT_SPECIFIED"))
 
         # Split given rdn-attributes into a list.
         rdns = [d.strip() for d in params['rdn'].split(",")]
@@ -193,19 +197,21 @@ class JSON(ObjectBackend):
         # Get a unique dn for this entry, if there was no free dn left (None) throw an error
         object_dn = self.get_uniq_dn(rdns, base, data, FixedRDN)
         if not object_dn:
-            raise DNGeneratorError("NO_UNIQUE_DN", base=base, rdns=", ".join(rdns))
+            raise DNGeneratorError(C.make_error("NO_UNIQUE_DN", base=base, rdns=", ".join(rdns)))
         object_dn = object_dn.encode('utf-8')
 
         # Build the entry that will be written to the json-database
         json = self.__load()
         str_uuid = str(uuid.uuid1())
-        obj = {'dn': object_dn, 'type': params['type'], 'parentDN': base,
-               'modifyTimestamp': datetime.datetime.now().isoformat(),
-               'createTimestamp': datetime.datetime.now().isoformat()}
+        obj = {}
+        obj['dn'] = object_dn
+        obj['type'] = params['type']
+        obj['parentDN'] = base
+        obj['modifyTimestamp'] = obj['createTimestamp'] = datetime.datetime.now().isoformat()
         for attr in data:
             obj[attr] = data[attr]['value']
 
-        # Append the entry to the database and save the changes
+        # Append the entry to the databse and save the changes
         if not str_uuid in json:
             json[str_uuid] = {}
         json[str_uuid][params['type']] = obj
@@ -220,15 +226,13 @@ class JSON(ObjectBackend):
         """
         json = self.__load()
         item_uuid = self.dn2uuid(object_dn)
-        ctime = mtime = None
-
         if item_uuid in json:
             for obj in json[item_uuid]:
                 if 'createTimestamp' in json[item_uuid][obj]:
                     ctime = datetime.datetime.strptime(json[item_uuid][obj]['createTimestamp'], "%Y-%m-%dT%H:%M:%S.%f")
                 if 'modifyTimestamp' in json[item_uuid][obj]:
                     mtime = datetime.datetime.strptime(json[item_uuid][obj]['modifyTimestamp'], "%Y-%m-%dT%H:%M:%S.%f")
-        return ctime, mtime
+        return (ctime, mtime)
 
     def get_uniq_dn(self, rdns, base, data, FixedRDN):
         """
@@ -315,7 +319,7 @@ class JSON(ObjectBackend):
 
     def move(self, item_uuid, new_base):
         """
-        Moves an entry to another base
+        Moves an entry to antoher base
         """
         json = self.__load()
         if item_uuid in json:
@@ -329,7 +333,7 @@ class JSON(ObjectBackend):
 
                     # Check if we can move the entry
                     if self.exists(entry['dn']):
-                        raise BackendError("TARGET_EXISTS", entry['dn'])
+                        raise BackendError(C.make_error("TARGET_EXISTS", target=entry['dn']))
 
                     # Save the changes
                     json[item_uuid][obj] = entry

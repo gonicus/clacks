@@ -16,18 +16,6 @@ from clacks.common import Environment
 from clacks.agent.objects.filter import ElementFilter
 from clacks.common.components import PluginRegistry
 from clacks.agent.objects.comparator import ElementComparator
-from clacks.common.error import ClacksErrorHandler as C, ClacksException
-
-
-# Register the errors handled  by us
-C.register_codes(dict(
-    SAMBA_DOMAIN_WITHOUT_SID=N_("Domain %(target)s has no SID"),
-    SAMBA_NO_SID_TYPE=N_("Invalid type '%(type)s' for SID generator [user, group]")
-))
-
-
-class SambaException(ClacksException):
-    pass
 
 
 class CheckSambaSIDList(ElementComparator):
@@ -92,18 +80,17 @@ class GenerateSambaSid(ElementFilter):
     def process(self, obj, key, valDict, method, number, domain, group_type=0):
 
         if number == "None":
-            raise SambaException("ATTRIBUTE_NOT_FOUND", "gidNumber")
+            raise Exception("No gidNumber available")
 
         if domain == "None":
-            raise SambaException("ATTRIBUTE_NOT_FOUND", "sambaDomainName")
+            raise Exception("No sambaDomainName available")
 
         index = PluginRegistry.getInstance("ObjectIndex")
         sid = index.search({'_type': 'SambaDomain', 'sambaDomainName': domain},
             {'sambaSID': 1, 'sambaAlgorithmicRidBase': 1})
 
         if sid.count() != 1:
-            raise SambaException("SAMBA_DOMAIN_WITHOUT_SID", domain)
-
+            raise Exception("No SID found for domain '%s'" % domain)
         dsid = sid[0]['sambaSID'][0]
 
         if 'sambaAlgorithmicRidBase' in sid[0]:
@@ -127,6 +114,6 @@ class GenerateSambaSid(ElementFilter):
             valDict[key]['value'] = [sid]
 
         else:
-            raise SambaException("SAMBA_NO_SID_TYPE", type=method)
+            raise Exception("Unknown method (%s) to generate samba SID!" % method)
 
         return key, valDict

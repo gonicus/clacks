@@ -141,7 +141,7 @@ class CommandRegistry(Plugin):
         ``Return``: dict describing all methods
         """
         res = {}
-        if queue is None:
+        if queue == None:
             queue = self.env.domain + ".command.core"
 
         if queue == self.env.domain + ".command.core":
@@ -278,11 +278,11 @@ class CommandRegistry(Plugin):
 
         # Check for user authentication (if user is 'self' this is an internal call)
         if not user and user != self:
-            raise CommandNotAuthorized("COMMAND_NO_USERNAME", method=func)
+            raise CommandNotAuthorized(C.make_error("COMMAND_NO_USERNAME", method=func))
 
         # Check if the command is available
         if not func in self.capabilities:
-            raise CommandInvalid("COMMAND_NOT_DEFINED", method=func)
+            raise CommandInvalid(C.make_error("COMMAND_NOT_DEFINED", method=func))
 
         # Depending on the call method, we may have no queue information
         if not queue:
@@ -293,16 +293,16 @@ class CommandRegistry(Plugin):
             chk_options = dict(dict(zip(self.capabilities[func]['sig'], arg)).items() + larg.items())
             acl = PluginRegistry.getInstance("ACLResolver")
             if not acl.check(user, "%s.%s" % (queue, func), "x", options=chk_options):
-                raise CommandNotAuthorized("PERMISSION_EXEC", queue=queue, method=func)
+                raise CommandNotAuthorized(C.make_error("PERMISSION_EXEC", queue=queue, method=func))
 
         # Convert to list
         arg = list(arg)
 
         # Check if the command needs a special queue for being executed,
-        # shutdown i.e. may not be very handy if globally executed.
+        # shutdown i.e. may not be very handy if globaly executed.
         if self.callNeedsQueue(func):
             if not self.checkQueue(func, queue):
-                raise CommandInvalid("COMMAND_INVALID_QUEUE", queue=queue, method=func)
+                raise CommandInvalid(C.make_error("COMMAND_INVALID_QUEUE", queue=queue, method=func))
             else:
                 arg.insert(0, queue)
 
@@ -335,7 +335,7 @@ class CommandRegistry(Plugin):
                     if provider in self.capabilities[func]['provider']:
                         break
 
-                # Set target queue directly to the evaluated node which provides that method
+                # Set target queue directly to the evaulated node which provides that method
                 target = self.env.domain + '.command.%s.%s' % (self.capabilities[func]['target'], provider)
 
                 # Load amqp service proxy for that queue if not already present
@@ -344,7 +344,7 @@ class CommandRegistry(Plugin):
                     self.proxy[target] = AMQPServiceProxy(amqp.url['source'], target)
 
                 # Run the query
-                methodCall = getattr(self.proxy[target], func)
+                methodCall = getattr(self.proxy[target], method)
                 return methodCall(*arg, **larg)
 
         # FIRSTRESULT: try all providers, return on first non exception
@@ -363,7 +363,7 @@ class CommandRegistry(Plugin):
                     (clazz, method) = self.path2method(self.commands[func]['path'])
                     methodCall = PluginRegistry.modules[clazz].__getattribute__(method)
                 else:
-                    # Set target queue directly to the evaluated node which provides that method
+                    # Set target queue directly to the evaulated node which provides that method
                     target = self.env.domain + '.command.%s.%s' % (self.capabilities[func]['target'], node)
 
                     # Load amqp service proxy for that queue if not already present
@@ -371,7 +371,7 @@ class CommandRegistry(Plugin):
                         amqp = PluginRegistry.getInstance("AMQPHandler")
                         self.proxy[target] = AMQPServiceProxy(amqp.url['source'], target)
 
-                    methodCall = getattr(self.proxy[target], func)
+                    methodCall = getattr(self.proxy[target], method)
 
                 # Finally do the call
                 try:
@@ -380,7 +380,7 @@ class CommandRegistry(Plugin):
                     if methodType == FIRSTRESULT:
                         return tmp
                     else:
-                        if result is None:
+                        if result == None:
                             result = {}
 
                         result[node] = tmp
@@ -392,7 +392,7 @@ class CommandRegistry(Plugin):
             return result
 
         else:
-            raise CommandInvalid("COMMAND_TYPE_NOT_DEFINED", type=methodType)
+            raise CommandInvalid(C.make_error("COMMAND_TYPE_NOT_DEFINED", type=methodType))
 
     def path2method(self, path):
         """
@@ -421,7 +421,7 @@ class CommandRegistry(Plugin):
         ``Return:`` success or failure
         """
         if not func in self.commands:
-            raise CommandInvalid("COMMAND_NOT_DEFINED", method=func)
+            raise CommandInvalid(C.make_error("COMMAND_NOT_DEFINED", method=func))
 
         (clazz, method) = self.path2method(self.commands[func]['path'])
 
@@ -441,7 +441,7 @@ class CommandRegistry(Plugin):
         ``Return:`` success or failure
         """
         if not func in self.commands:
-            raise CommandInvalid("COMMAND_NOT_DEFINED", method=func)
+            raise CommandInvalid(C.make_error("COMMAND_NOT_DEFINED", method=func))
 
         (clazz, method) = self.path2method(self.commands[func]['path'])
 
@@ -462,7 +462,7 @@ class CommandRegistry(Plugin):
         ``Return:`` success or failure
         """
         if not func in self.commands:
-            raise CommandInvalid("COMMAND_NOT_DEFINED", method=func)
+            raise CommandInvalid(C.make_error("COMMAND_NOT_DEFINED", method=func))
 
         (clazz, method) = self.path2method(self.commands[func]['path']) #@UnusedVariable
         p = re.compile(r'\.' + self.env.id + '$')
@@ -564,7 +564,7 @@ class CommandRegistry(Plugin):
         data = data.NodeStatus
         self.log.debug("received status of node %s" % data.Id)
 
-        # Add receive time to be able to sort out dead nodes
+        # Add recieve time to be able to sort out dead nodes
         t = datetime.datetime.utcnow()
         self.nodes[data.Id.text] = {
             'load': float(data.Load),
@@ -583,7 +583,7 @@ class CommandRegistry(Plugin):
         if sender in self.nodes:
             del self.nodes[sender]
 
-        # Remove node from capabilities
+        # Remove node from capabilites
         capabilities = {}
         for name, info in self.capabilities.iteritems():
             if sender in info['provider']:
@@ -623,7 +623,7 @@ class CommandRegistry(Plugin):
 
                     # Adjust documentation
                     if not method.__help__:
-                        raise CommandInvalid("COMMAND_WITHOUT_DOCS", method=func)
+                        raise CommandInvalid(C.make_error("COMMAND_WITHOUT_DOCS", method=func))
 
                     doc = re.sub("(\s|\n)+", " ", method.__help__).strip()
 
@@ -681,3 +681,6 @@ class CommandRegistry(Plugin):
         """
         amqp = PluginRegistry.getInstance("AMQPHandler")
         amqp.sendEvent(data, user)
+
+    def is_ready(self):
+        return self.__ready

@@ -40,7 +40,7 @@ class ConcatString(ElementFilter):
         super(ConcatString, self).__init__(obj)
 
     def process(self, obj, key, valDict, appstr, position):
-        if type(valDict[key]['value'] is not None):
+        if type(valDict[key]['value'] != None):
             if position == "right":
                 new_val = map(lambda x: x + appstr, valDict[key]['value'])
             else:
@@ -75,7 +75,7 @@ class Replace(ElementFilter):
         super(Replace, self).__init__(obj)
 
     def process(self, obj, key, valDict, regex, replacement):
-        if type(valDict[key]['value'] is not None):
+        if type(valDict[key]['value'] != None):
             valDict[key]['value'] = map(lambda x: re.sub(regex, str(replacement), x), valDict[key]['value'])
         return key, valDict
 
@@ -104,7 +104,7 @@ class DateToString(ElementFilter):
         super(DateToString, self).__init__(obj)
 
     def process(self, obj, key, valDict, fmt="%Y%m%d%H%M%SZ"):
-        if type(valDict[key]['value'] is not None):
+        if type(valDict[key]['value'] != None):
             valDict[key]['value'] = map(lambda x: x.strftime(fmt), valDict[key]['value'])
         return key, valDict
 
@@ -156,7 +156,7 @@ class StringToDate(ElementFilter):
         super(StringToDate, self).__init__(obj)
 
     def process(self, obj, key, valDict, fmt="%Y%m%d%H%M%SZ"):
-        if type(valDict[key]['value'] is not None):
+        if type(valDict[key]['value'] != None):
             valDict[key]['value'] = map(lambda x: datetime.datetime.strptime(x, fmt).date(), valDict[key]['value'])
         return key, valDict
 
@@ -185,6 +185,6 @@ class StringToTime(ElementFilter):
         super(StringToTime, self).__init__(obj)
 
     def process(self, obj, key, valDict, fmt="%Y%m%d%H%M%SZ"):
-        if type(valDict[key]['value'] is not None):
+        if type(valDict[key]['value'] != None):
             valDict[key]['value'] = map(lambda x: datetime.datetime.strptime(x, fmt), valDict[key]['value'])
         return key, valDict

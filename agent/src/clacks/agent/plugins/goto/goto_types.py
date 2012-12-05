@@ -24,7 +24,7 @@ class DevicePartitionTableType(AttributeType):
     __alias__ = "DevicePartitionTableType"
 
     def values_match(self, value1, value2):
-        return str(value1) == str(value2)
+        return(str(value1) == str(value2))
 
     def is_valid_value(self, value):
         for item in value:
@@ -40,7 +40,7 @@ class DevicePartitionTableType(AttributeType):
             uuid = item['__jsonclass__'][1][1]
             new_value.append(rom.dispatchObjectMethod(uuid, 'dump'))
             cr.call('closeObject', uuid)
-        return new_value
+        return(new_value)
 
     def _convert_from_string(self, value):
         return self._convert_from_unicodestring(value)
@@ -50,4 +50,4 @@ class DevicePartitionTableType(AttributeType):
         new_values = []
         for item in value:
             new_values.append(cr.call('openObject', 'libinst.diskdefinition', definition=item))
-        return new_values
+        return(new_values)

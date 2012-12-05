@@ -47,7 +47,7 @@ C.register_codes(dict(
     ATTRIBUTE_INVALID=N_("Value is invalid - expected value of type '%(type)s'"),
     ATTRIBUTE_CHECK_FAILED=N_("Value is invalid"),
     ATTRIBUTE_NOT_UNIQUE=N_("Value is not unique (%(value)s)"),
-    ATTRIBUTE_NOT_FOUND=N_("Attribute %(target)s not found"),
+    ATTRIBUTE_NOT_FOUND=N_("Attribute not found"),
     OBJECT_MODE_NOT_AVAILABLE=N_("Mode '%(mode)s' is not available for base objects"),
     OBJECT_MODE_BASE_AVAILABLE=N_("Mode '%(mode)s' is only available for base objects"),
     OBJECT_NOT_SUB_FOR=N_("Object of type '%(type)s' cannot be added as to the '%s' container"),
@@ -56,7 +56,7 @@ C.register_codes(dict(
     OBJECT_BASE_NO_RETRACT=N_("Base object cannot be retracted"),
     FILTER_INVALID_KEY=N_("Invalid key '%(key)s' for filter '%(filter)s'"),
     FILTER_MISSING_KEY=N_("Missing key '%(key)s' after processing filter '%(filter)s'"),
-    FILTER_NO_LIST=N_("Filter '%(filter)s' did return a %(type)s value - a list was expected"),
+    FILTER_NO_LIST=N_("Filter '%(filter)s' did not return a %(type)s value - a list was expected"),
     ATTRIBUTE_DEPEND_LOOP=N_("Potential loop in attribute dependencies")
 ))
 
@@ -72,7 +72,7 @@ class Object(object):
     It also contains the ability to execute the in- and out-filters for the
     object properties.
 
-    All meta-classes for objects, created by the XML definitions, will inherit this class.
+    All meta-classes for objects, created by the XML defintions, will inherit this class.
 
     """
     _reg = None
@@ -137,7 +137,7 @@ class Object(object):
         # Instantiate Backend-Registry
         self._reg = ObjectBackendRegistry.getInstance()
         self.log = getLogger(__name__)
-        self.log.debug("new object instantiated '%s'" % type(self).__name__)
+        self.log.debug("new object instantiated '%s'" % (type(self).__name__))
 
         # Group attributes by Backend
         propsByBackend = {}
@@ -175,7 +175,7 @@ class Object(object):
         # afterwards.
         # (Defaults will be passed to in-filters too, if they are not overwritten by _read())
         for key in self.myProperties:
-            if not(self.myProperties[key]['value']) and self.myProperties[key]['default'] is not None and \
+            if not(self.myProperties[key]['value']) and self.myProperties[key]['default'] != None and \
                 len(self.myProperties[key]['default']):
                 self.myProperties[key]['value'] = copy.deepcopy(self.myProperties[key]['default'])
                 if self.myProperties[key]['mandatory']:
@@ -187,14 +187,14 @@ class Object(object):
         self.myProperties[attr]['orig_value'] = original['orig_value']
 
     def listProperties(self):
-        return self.myProperties.keys()
+        return(self.myProperties.keys())
 
     def getProperties(self):
-        return copy.deepcopy(self.myProperties)
+        return(copy.deepcopy(self.myProperties))
 
     def listMethods(self):
         methods = getattr(self, '__methods')
-        return methods.keys()
+        return(methods.keys())
 
     def hasattr(self, attr):
         return attr in self.myProperties
@@ -228,7 +228,7 @@ class Object(object):
 
         # Load attributes for each backend.
         # And then assign the values to the properties.
-        self.log.debug("object uuid: %s" % self.uuid)
+        self.log.debug("object uuid: %s" % (self.uuid))
 
         for backend in self._propsByBackend:
 
@@ -241,14 +241,14 @@ class Object(object):
                 be_attrs = self._backendAttrs[backend] if backend in self._backendAttrs else None
                 attrs = be.load(self.uuid, info, be_attrs)
 
-            except ValueError:
-                raise ObjectException('READ_BACKEND_PROPERTIES', backend=backend)
+            except ValueError as e:
+                raise ObjectException(C.make_error('READ_BACKEND_PROPERTIES', backend=backend))
 
             # Assign fetched value to the properties.
             for key in self._propsByBackend[backend]:
 
                 if key not in attrs:
-                    self.log.debug("attribute '%s' was not returned by load" % key)
+                    self.log.debug("attribute '%s' was not returned by load" % (key))
                     continue
 
                 # Keep original values, they may be overwritten in the in-filters.
@@ -260,7 +260,7 @@ class Object(object):
         for key in self.myProperties:
 
             # Skip loading in-filters for None values
-            if self.myProperties[key]['value'] is None:
+            if self.myProperties[key]['value'] == None:
                 self.myProperties[key]['in_value'] = self.myProperties[key]['value'] = []
                 continue
 
@@ -303,17 +303,17 @@ class Object(object):
             # Check if this attribute is blocked by another attribute and its value.
             for bb in self.myProperties[name]['blocked_by']:
                 if bb['value'] in self.myProperties[bb['name']]['value']:
-                    raise AttributeError(
+                    raise AttributeError(C.make_error(
                         'ATTRIBUTE_BLOCKED_BY', name,
-                        source=bb['name'], value=bb['value'])
+                        source=bb['name'], value=bb['value']))
 
             # Do not allow to write to read-only attributes.
             if self.myProperties[name]['readonly']:
-                raise AttributeError('ATTRIBUTE_READ_ONLY', name)
+                raise AttributeError(C.make_error('ATTRIBUTE_READ_ONLY', name))
 
             # Do not allow remove mandatory attributes
             if self.myProperties[name]['mandatory']:
-                raise AttributeError('ATTRIBUTE_MANDATORY', name)
+                raise AttributeError(C.make_error('ATTRIBUTE_MANDATORY', name))
 
             # If not already in removed state
             if len(self.myProperties[name]['value']) != 0:
@@ -321,7 +321,7 @@ class Object(object):
                 self.myProperties[name]['last_value'] = copy.deepcopy(self.myProperties[name]['value'])
                 self.myProperties[name]['value'] = []
         else:
-            raise AttributeError('ATTRIBUTE_NOT_FOUND', name)
+            raise AttributeError(C.make_error('ATTRIBUTE_NOT_FOUND', name))
 
     def _setattr_(self, name, value):
         """
@@ -339,7 +339,7 @@ class Object(object):
             pass
 
         # A none value was passed to clear the value
-        if value is None:
+        if value == None:
             self._delattr_(name)
             return
 
@@ -349,13 +349,13 @@ class Object(object):
             # Check if this attribute is blocked by another attribute and its value.
             for bb in  self.myProperties[name]['blocked_by']:
                 if bb['value'] in self.myProperties[bb['name']]['value']:
-                    raise AttributeError(
+                    raise AttributeError(C.make_error(
                         'ATTRIBUTE_BLOCKED_BY', name,
-                        source=bb['name'], value=bb['value'])
+                        source=bb['name'], value=bb['value']))
 
             # Do not allow to write to read-only attributes.
             if self.myProperties[name]['readonly']:
-                raise AttributeError('ATTRIBUTE_READ_ONLY', name)
+                raise AttributeError(C.make_error('ATTRIBUTE_READ_ONLY', name))
 
             # Check if the given value has to match one out of a given list.
             if len(self.myProperties[name]['values']) and value not in self.myProperties[name]['values']:
@@ -402,7 +402,7 @@ class Object(object):
             #if self.myProperties[name]['unique']:
             #    backendI = ObjectBackendRegistry.getBackend(self.myProperties[name]['backend'])
             #    if not backendI.is_uniq(name, new_value):
-            #        raise ObjectException('ATTRIBUTE_NOT_UNIQUE', name, value=value)
+            #        raise ObjectException(C.make_error('ATTRIBUTE_NOT_UNIQUE', name, value=value))
 
             # Assign the properties new value.
             self.myProperties[name]['value'] = new_value
@@ -417,7 +417,7 @@ class Object(object):
                 self.myProperties[name]['last_value'] = current
 
         else:
-            raise AttributeError('ATTRIBUTE_NOT_FOUND', name)
+            raise AttributeError(C.make_error('ATTRIBUTE_NOT_FOUND', name))
 
     def _getattr_(self, name):
         """
@@ -437,7 +437,7 @@ class Object(object):
             else:
                 if len(self.myProperties[name]['value']):
                     value = self.myProperties[name]['value'][0]
-            return value
+            return(value)
 
         # The requested property-name seems to be a method, return the method reference.
         elif name in methods:
@@ -447,7 +447,7 @@ class Object(object):
             return m_call
 
         else:
-            raise AttributeError('ATTRIBUTE_NOT_FOUND', name)
+            raise AttributeError(C.make_error('ATTRIBUTE_NOT_FOUND', name))
 
     def getTemplate(self, theme="default"):
         """
@@ -522,14 +522,12 @@ class Object(object):
         if name in self.myProperties:
             return self.myProperties[name]['type']
 
-        raise AttributeError('ATTRIBUTE_NOT_FOUND', name)
+        raise AttributeError(C.make_error('ATTRIBUTE_NOT_FOUND', name))
 
-    def check(self, propsFromOtherExtensions=None):
+    def check(self, propsFromOtherExtensions={}):
         """
         Checks whether everything is fine with the extension and its given values or not.
         """
-        if not propsFromOtherExtensions:
-            propsFromOtherExtensions = {}
 
         # Create a copy to avoid touching the original values
         props = copy.deepcopy(self.myProperties)
@@ -537,22 +535,22 @@ class Object(object):
         # Check if _mode matches with the current object type
         #pylint: disable=E1101
         if self._base_object and not self._mode in ['create', 'remove', 'update']:
-            raise ObjectException('OBJECT_MODE_NOT_AVAILABLE', mode=self._mode)
+            raise ObjectException(C.make_error('OBJECT_MODE_NOT_AVAILABLE', mode=self._mode))
         if not self._base_object and self._mode in ['create', 'remove']:
-            raise ObjectException('OBJECT_MODE_BASE_AVAILABLE', mode=self._mode)
+            raise ObjectException(C.make_error('OBJECT_MODE_BASE_AVAILABLE', mode=self._mode))
 
         # Check if we are allowed to create this base object on the given base
         if self._base_object and self._mode == "create":
             base_type = self.get_object_type_by_dn(self.dn)
             if not base_type:
-                raise ObjectException('OBJECT_MODE_BASE_AVAILABLE', mode=self._mode)
+                raise ObjectException(C.make_error('OBJECT_MODE_BASE_AVAILABLE', mode=self._mode))
 
             if self.__class__.__name__ not in self._objectFactory.getAllowedSubElementsForObject(base_type):
-                raise ObjectException('OBJECT_NOT_SUB_FOR',
+                raise ObjectException(C.make_error('OBJECT_NOT_SUB_FOR',
                     ext=self.__class__.__name__,
-                    base=base_type)
+                    base=base_type))
 
-        # Transfer values form other commit processes into ourselves
+        # Transfer values form other commit processes into ourselfes
         for key in self.attributesInSaveOrder:
             if props[key]['foreign'] and key in propsFromOtherExtensions:
                 props[key]['value'] = propsFromOtherExtensions[key]['value']
@@ -576,7 +574,7 @@ class Object(object):
 
             # Check if all required attributes are set. (Skip blocked once, they cannot be set!)
             if not is_blocked and props[key]['mandatory'] and not len(props[key]['value']):
-                raise ObjectException('ATTRIBUTE_MANDATORY', key)
+                raise ObjectException(C.make_error('ATTRIBUTE_MANDATORY', key))
 
             # Process each and every out-filter with a clean set of input values,
             #  to avoid that return-values overwrite themselves.
@@ -595,7 +593,7 @@ class Object(object):
 
             # Ensure that mandatory values are set
             if props[prop_key]['mandatory'] and not len(props[prop_key]['value']):
-                raise ObjectException('ATTRIBUTE_MANDATORY', prop_key)
+                raise ObjectException(C.make_error('ATTRIBUTE_MANDATORY', prop_key))
 
             # Do not save untouched values
             if not props[prop_key]['commit_status'] & STATUS_CHANGED:
@@ -603,12 +601,10 @@ class Object(object):
 
         return props
 
-    def commit(self, propsFromOtherExtensions=None):
+    def commit(self, propsFromOtherExtensions={}):
         """
         Commits changes of an object to the corresponding backends.
         """
-        if not propsFromOtherExtensions:
-            propsFromOtherExtensions = {}
 
         self.check(propsFromOtherExtensions)
 
@@ -621,7 +617,7 @@ class Object(object):
         for key in self.attributesInSaveOrder:
             props[key]['commit_status'] = props[key]['status']
 
-            # Transfer values form other commit processes into ourselves
+            # Transfer values form other commit processes into ourselfes
             if props[key]['foreign'] and key in propsFromOtherExtensions:
                 props[key]['value'] = propsFromOtherExtensions[key]['value']
 
@@ -833,7 +829,7 @@ class Object(object):
 
         # Our filter result stack
         stack = list()
-        self.log.debug(" validator started (%s)" % key)
+        self.log.debug(" validator started (%s)" % (key))
         self.log.debug("  value: %s" % (value, ))
 
         # Process the list till we reach the end..
@@ -842,7 +838,7 @@ class Object(object):
         while (lptr + 1) in fltr:
 
             # Get the current line and increase the process list pointer.
-            lptr += 1
+            lptr = lptr + 1
             curline = fltr[lptr]
 
             # A condition matches for something and returns a boolean value.
@@ -856,7 +852,7 @@ class Object(object):
                 fname = type(curline['condition']).__name__
                 v, errors = (curline['condition']).process(*args)
 
-                # Log what happened
+                # Log what happend!
                 self.log.debug("  %s: [Filter]  %s(%s) called and returned: %s" % (
                     lptr, fname, ", ".join(["\"" + x + "\"" for x in curline['params']]), v))
 
@@ -889,7 +885,7 @@ class Object(object):
         if not res and lasterrmsg != "":
             errormsgs.append(lasterrmsg)
 
-        self.log.debug(" <- VALIDATOR ENDED (%s)" % key)
+        self.log.debug(" <- VALIDATOR ENDED (%s)" % (key))
         return res, errormsgs
 
     def __processFilter(self, fltr, key, prop):
@@ -911,13 +907,13 @@ class Object(object):
         stack = list()
 
         # Log values
-        self.log.debug(" -> FILTER STARTED (%s)" % key)
+        self.log.debug(" -> FILTER STARTED (%s)" % (key))
 
         # Process the list till we reach the end..
         while (lptr + 1) in fltr:
 
             # Get the current line and increase the process list pointer.
-            lptr += 1
+            lptr = lptr + 1
             curline = fltr[lptr]
 
             # A filter is used to manipulate the 'value' or the 'key' or maybe both.
@@ -934,20 +930,20 @@ class Object(object):
 
                 # Ensure that the processed data is still valid.
                 # Filter may mess things up and then the next cannot process correctly.
-                if key not in prop:
-                    raise ObjectException('FILTER_INVALID_KEY',
-                        key=key, filter=fname)
+                if (key not in prop):
+                    raise ObjectException(C.make_error('FILTER_INVALID_KEY',
+                        key=key, filter=fname))
 
                 # Check if the filter returned all expected property values.
                 for pk in prop:
                     if not all(k in prop[pk] for k in ('backend', 'value', 'type')):
-                        missing = ", ".join({'backend', 'value', 'type'} - set(prop[pk].keys()))
-                        raise ObjectException('FILTER_MISSING_KEY', key=missing, filter=fname)
+                        missing = ", ".join(set(['backend', 'value', 'type']) - set(prop[pk].keys()))
+                        raise ObjectException(C.make_error('FILTER_MISSING_KEY', key=missing, filter=fname))
 
                     # Check if the returned value-type is list or None.
                     if type(prop[pk]['value']) not in [list, type(None)]:
-                        raise ObjectException('FILTER_NO_LIST',
-                            key=pk, filter=fname, type=type(prop[pk]['value']))
+                        raise ObjectException(C.make_error('FILTER_NO_LIST',
+                            key=pk, filter=fname, type=type(prop[pk]['value'])))
 
                 self.log.debug("  %s: [Filter]  %s(%s) called " % (lptr, fname,
                     ", ".join(["\"" + x + "\"" for x in curline['params']])))
@@ -1021,7 +1017,7 @@ class Object(object):
             except KeyError:
                 pass
 
-            return x
+            return (x)
 
         # Walk trough each line of the process list an replace placeholders.
         for line in fltr:
@@ -1168,7 +1164,7 @@ class Object(object):
         """
         #pylint: disable=E1101
         if not self._base_object:
-            raise ObjectException('OBJECT_REMOVE_NON_BASE_OBJECT')
+            raise ObjectException(C.make_error('OBJECT_REMOVE_NON_BASE_OBJECT'))
 
         # Remove all references to ourselves
         self.remove_refs()
@@ -1227,7 +1223,7 @@ class Object(object):
         """
         #pylint: disable=E1101
         if not self._base_object:
-            raise ObjectException('OBJECT_MOVE_NON_BASE_OBJECT')
+            raise ObjectException(C.make_error('OBJECT_MOVE_NON_BASE_OBJECT'))
 
         obj = self
         zope.event.notify(ObjectChanged("pre move", obj, dn=self.dn, orig_dn=orig_dn))
@@ -1239,11 +1235,11 @@ class Object(object):
 
     def move(self, new_base):
         """
-        Moves this object - and eventually it's children.
+        Moves this object - and eventually it's containements.
         """
         #pylint: disable=E1101
         if not self._base_object:
-            raise ObjectException('OBJECT_MOVE_NON_BASE_OBJECT')
+            raise ObjectException(C.make_error('OBJECT_MOVE_NON_BASE_OBJECT'))
 
         # Collect backends
         backends = [getattr(self, '_backend')]
@@ -1275,7 +1271,7 @@ class Object(object):
         """
         #pylint: disable=E1101
         if self._base_object:
-            raise ObjectException('OBJECT_BASE_NO_RETRACT')
+            raise ObjectException(C.make_error('OBJECT_BASE_NO_RETRACT'))
 
         # Call pre-remove now
         self.__execute_hook("PreRemove")

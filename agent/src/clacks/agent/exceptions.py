@@ -10,91 +10,90 @@
 #  GPL-2: http://www.gnu.org/licenses/gpl-2.0.html
 #
 # See the LICENSE file in the project's top-level directory for details.
-from clacks.common.error import ClacksErrorHandler as ClacksException
 
 
-class ACLException(ClacksException):
+class ACLException(Exception):
     pass
 
 
-class CommandInvalid(ClacksException):
+class CommandInvalid(Exception):
     """ Exception which is raised when the command is not valid. """
     pass
 
 
-class CommandNotAuthorized(ClacksException):
+class CommandNotAuthorized(Exception):
     """ Exception which is raised when the call was not authorized. """
     pass
 
 
-class HTTPException(ClacksException):
+class HTTPException(Exception):
     pass
 
 
-class LDAPException(ClacksException):
+class LDAPException(Exception):
     pass
 
 
-class LockError(ClacksException):
+class LockError(Exception):
     pass
 
 
-class ConversationNotSupported(ClacksException):
+class ConversationNotSupported(Exception):
     pass
 
 
-class FilterException(ClacksException):
+class FilterException(Exception):
     pass
 
 
-class IndexException(ClacksException):
+class IndexException(Exception):
     pass
 
 
-class FactoryException(ClacksException):
+class FactoryException(Exception):
     pass
 
 
-class ProxyException(ClacksException):
+class ProxyException(Exception):
     pass
 
 
-class ObjectException(ClacksException):
+class ObjectException(Exception):
     pass
 
 
-class ElementFilterException(ClacksException):
+class ElementFilterException(Exception):
     pass
 
 
-class EntryNotUnique(ClacksException):
+class EntryNotUnique(Exception):
     pass
 
 
-class EntryNotFound(ClacksException):
+class EntryNotFound(Exception):
     pass
 
 
-class DNGeneratorError(ClacksException):
+class DNGeneratorError(Exception):
     """
     Exception thrown for dn generation errors
     """
     pass
 
 
-class RDNNotSpecified(ClacksException):
+class RDNNotSpecified(Exception):
     """
     Exception thrown for missing rdn property in object definitions
     """
     pass
 
 
-class BackendError(ClacksException):
+class BackendError(Exception):
     """
     Exception thrown for unknown objects
     """
     pass
 
 
-class ProxyError(ClacksException):
+class ProxyError(Exception):
     pass

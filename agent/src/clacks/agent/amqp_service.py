@@ -202,7 +202,7 @@ class AMQPService(object):
             err = str(e)
             req = {'id': id_}
 
-        if err is None:
+        if err == None:
             try:
                 id_ = req['id']
                 name = req['method']
@@ -229,7 +229,7 @@ class AMQPService(object):
                 return
 
         # Try to execute either with or without keyword arguments
-        if err is None:
+        if err == None:
             try:
                 if isinstance(args, dict):
                     res = self.__cr.dispatch(message.user_id, queue, name, **args)
@@ -243,7 +243,7 @@ class AMQPService(object):
                 err = str(e)
                 exc_value = sys.exc_info()[1]
 
-                # If message starts with [, it's a translatable message in
+                # If message starts with [, it's a translateable message in
                 # repr format
                 if err.startswith("[") or err.startswith("("):
                     if err.startswith("("):

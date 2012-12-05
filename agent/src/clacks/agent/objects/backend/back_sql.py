@@ -26,6 +26,7 @@ from sqlalchemy.sql import and_
 from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, BLOB, DateTime
 from clacks.common import Environment
 from clacks.common.utils import is_uuid
+from clacks.common.error import ClacksErrorHandler as C
 from clacks.agent.objects.backend import ObjectBackend
 from clacks.agent.exceptions import  RDNNotSpecified, DNGeneratorError, BackendError
 
@@ -44,7 +45,10 @@ class SQL(ObjectBackend):
         self.log = getLogger(__name__)
 
         # Create scope map
-        self.scope_map = {ldap.SCOPE_SUBTREE: "sub", ldap.SCOPE_BASE: "base", ldap.SCOPE_ONELEVEL: "one"}
+        self.scope_map = {}
+        self.scope_map[ldap.SCOPE_SUBTREE] = "sub"
+        self.scope_map[ldap.SCOPE_BASE] = "base"
+        self.scope_map[ldap.SCOPE_ONELEVEL] = "one"
         self.connect()
 
     def connect(self):
@@ -52,7 +56,7 @@ class SQL(ObjectBackend):
         # Read storage path from config
         con_str = self.env.config.get("backend-sql.connection", None)
         if not con_str:
-            raise BackendError("DB_CONFIG_MISSING", target="backend-sql.connection")
+            raise BackendError(C.make_error("DB_CONFIG_MISSING", target="backend-sql.connection"))
 
         # Create table definition
         self.engine = create_engine(con_str, echo=False)
@@ -123,7 +127,10 @@ class SQL(ObjectBackend):
         attrs = {}
         for item in data:
             attrs[item] = data[item]['value']
-        data = {'type': params['type'], 'uuid': item_uuid, 'attributes': dumps(attrs)}
+        data = {}
+        data['type'] = params['type']
+        data['uuid'] = item_uuid
+        data['attributes'] = dumps(attrs)
 
         # Insert the entry in the database
         self.objects.insert().execute(**data)
@@ -148,7 +155,7 @@ class SQL(ObjectBackend):
         """
 
         # Try to find an entry with the uuid and return its dn
-        search = self.objects.select(and_(self.objects.c.dn is not None, self.objects.c.uuid == item_uuid)).execute()
+        search = self.objects.select(and_(self.objects.c.dn != None, self.objects.c.uuid == item_uuid)).execute()
         entry = search.first()
         if entry:
             return entry.dn
@@ -160,7 +167,7 @@ class SQL(ObjectBackend):
         """
 
         # Search for the given criteria.
-        # For one-level scope the parentDN must be equal with the requested base.
+        # For one-level scope the parentDN must be equal with the reqeusted base.
         found = []
         if self.scope_map[scope] == "one":
             search = self.objects.select(self.objects.c.parentDN == base).execute()
@@ -187,7 +194,7 @@ class SQL(ObjectBackend):
 
         # All entries require a naming attribute, if it's not available we cannot generate a dn for the entry
         if not 'rdn' in params:
-            raise RDNNotSpecified("RDN_NOT_SPECIFIED")
+            raise RDNNotSpecified(C.make_error("RDN_NOT_SPECIFIED"))
 
         # Split given rdn-attributes into a list.
         rdns = [d.strip() for d in params['rdn'].split(",")]
@@ -198,13 +205,17 @@ class SQL(ObjectBackend):
         # Get a unique dn for this entry, if there was no free dn left (None) throw an error
         object_dn = self.get_uniq_dn(rdns, base, data, fixed_rdn)
         if not object_dn:
-            raise DNGeneratorError("NO_UNIQUE_DN", base=base, rnds=", ".join(rdns))
+            raise DNGeneratorError(C.make_error("NO_UNIQUE_DN", base=base, rnds=", ".join(rdns)))
         object_dn = object_dn.encode('utf-8')
 
         # Build the entry that will be written to the json-database
         str_uuid = str(uuid.uuid1())
-        obj = {'dn': object_dn, 'uuid': str_uuid, 'type': params['type'], 'parentDN': base,
-               'modifyTimestamp': datetime.datetime.now(), 'createTimestamp': datetime.datetime.now()}
+        obj = {}
+        obj['dn'] = object_dn
+        obj['uuid'] = str_uuid
+        obj['type'] = params['type']
+        obj['parentDN'] = base
+        obj['modifyTimestamp'] = obj['createTimestamp'] = datetime.datetime.now()
         attrs = {}
         for attr in data:
             attrs[attr] = data[attr]['value']
@@ -224,7 +235,7 @@ class SQL(ObjectBackend):
         if search:
             ctime = search.createTimestamp
             mtime = search.modifyTimestamp
-            return ctime, mtime
+            return (ctime, mtime)
         return None, None
 
     def get_uniq_dn(self, rdns, base, data, fixed_rdn):
@@ -249,11 +260,11 @@ class SQL(ObjectBackend):
 
         # Check if we've have to use a fixed RDN.
         if fixed_rdn:
-            return["%s,%s" % (fixed_rdn, base)]
+            return(["%s,%s" % (fixed_rdn, base)])
 
         # Bail out if fix part is not in data
         if not fix in data:
-            raise DNGeneratorError("ATTRIBUTE_NOT_FOUND", attribute=fix)
+            raise DNGeneratorError(C.make_error("ATTRIBUTE_NOT_FOUND", attribute=fix))
 
         # Append possible variations of RDN attributes
         if var:
@@ -323,14 +334,14 @@ class SQL(ObjectBackend):
 
     def move(self, item_uuid, new_base):
         """
-        Moves an entry to another base
+        Moves an entry to antoher base
         """
         entry = self.objects.select(self.objects.c.uuid == item_uuid).execute().first()
         if entry:
             dn = re.sub(re.escape(entry['parentDN']) + "$", new_base, entry['dn'])
             parentDN = new_base
             if self.exists(dn):
-                raise BackendError("TARGET_EXISTS", target=dn)
+                raise BackendError(C.make_error("TARGET_EXISTS", target=dn))
 
             self.objects.update().where(self.objects.c.uuid == item_uuid).values(modifyTimestamp=datetime.datetime.now(), dn=dn, parentDN=parentDN).execute()
             return True

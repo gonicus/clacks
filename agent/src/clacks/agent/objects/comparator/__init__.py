@@ -17,7 +17,7 @@ from clacks.common.error import ClacksErrorHandler as C
 
 
 C.register_codes(dict(
-    COMPARATOR_NO_INSTANCE=N_("No comparator instance for '%(comparator)s' found")
+    COMOPARATOR_NO_INSTANCE=N_("No comparator instance for '%(comparator)s' found")
     ))
 
 

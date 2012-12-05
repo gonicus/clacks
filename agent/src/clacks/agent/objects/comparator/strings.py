@@ -107,7 +107,7 @@ class stringLength(ElementComparator):
                     detail=N_("value is short, at least %(count)s characters required",
                     count=minSize)))
                 return False, errors
-            elif 0 <= maxSize < cnt:
+            elif maxSize >= 0 and cnt > maxSize:
                 errors.append(dict(index=cnt,
                     detail=N_("value is long, at max %(count)s characters allowed",
                     count=maxSize)))

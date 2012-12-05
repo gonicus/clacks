@@ -11,10 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Samba Logon Hours</string>
-  </property>
-  <property name="accessibleName">
-   <string>sambaLogonHours</string>
+   <string>Form</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_3">
    <item>
@@ -68,7 +65,4 @@
    </hints>
   </connection>
  </connections>
- <slots>
-  <slot>property_sn()</slot>
- </slots>
 </ui>

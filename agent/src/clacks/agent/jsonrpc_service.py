@@ -158,7 +158,7 @@ class JsonRpcApp(object):
         environ           WSGI environment
         ================= ==========================
 
-        ``Return``: varies
+        ``Return``: varries
         """
         # Handle OPTIONS
         if req.method == 'OPTIONS':
@@ -180,7 +180,7 @@ class JsonRpcApp(object):
             method = json['method']
             params = json['params']
             jid = json['id']
-        except KeyError:
+        except KeyError, e:
             raise ValueError(C.make_error("JSON_MISSING_PARAMETER"))
 
         if method.startswith('_'):
@@ -196,8 +196,8 @@ class JsonRpcApp(object):
             password = password.encode('utf-8')
 
             # Check password and create session id on success
-            sid = str(uuid.uuid1())
             if self.authenticate(user, password):
+                sid = str(uuid.uuid1())
                 self.__session[sid] = user
                 environ['REMOTE_USER'] = user
                 environ['REMOTE_SESSION'] = sid
@@ -208,6 +208,7 @@ class JsonRpcApp(object):
                 if 'REMOTE_SESSION' in environ and sid in self.__session:
                     del self.__session[sid]
 
+                result = False
                 self.log.error("login failed for user '%s'" % user)
                 raise exc.HTTPUnauthorized(
                     "Login failed",
@@ -284,7 +285,7 @@ class JsonRpcApp(object):
             # Don't process messages if the command registry thinks it's not ready
             if not self.dispatcher.processing.is_set():
                 self.log.warning("waiting for registry to get ready")
-                if not self.dispatcher.processing.wait(5):
+                if not self.__cr.processing.wait(5):
                     self.log.error("aborting call [%s] for %s: %s(%s) - timed out" % (jid, user, method, params))
                     raise RuntimeError(C.make_error("REGISTRY_NOT_READY"))
 

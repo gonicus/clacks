@@ -13,6 +13,7 @@
 from base64 import b64decode, b64encode
 from binascii import hexlify, unhexlify
 from clacks.agent.objects.filter import ElementFilter
+from clacks.common.error import ClacksErrorHandler as C
 
 
 class SambaMungedDialOut(ElementFilter):
@@ -26,20 +27,20 @@ class SambaMungedDialOut(ElementFilter):
     def process(self, obj, key, valDict):
 
         # Create a dictionary with all relevant samba attributes.
-        alist = ['CtxCallback', 'CtxCallbackNumber', 'CtxCfgFlags1', 'CtxCfgPresent',
-                 'CtxInitialProgram', 'CtxKeyboardLayout', 'CtxMaxConnectionTime',
-                 'CtxMaxDisconnectionTime', 'CtxMaxIdleTime', 'Ctx_flag_connectClientDrives',
-                 'CtxMinEncryptionLevel', 'oldStorageBehavior',
-                 'CtxNWLogonServer', 'CtxShadow', 'CtxWFHomeDir', 'CtxWFHomeDirDrive',
-                 'CtxWFProfilePath', 'CtxWorkDirectory', 'Ctx_flag_brokenConn',
-                 'Ctx_flag_connectClientPrinters', 'Ctx_flag_defaultPrinter',
-                 'Ctx_flag_inheritMode', 'Ctx_flag_reConn', 'Ctx_shadow', 'Ctx_flag_tsLogin']
+        alist = ['CtxCallback', 'CtxCallbackNumber', 'CtxCfgFlags1', 'CtxCfgPresent', \
+                'CtxInitialProgram', 'CtxKeyboardLayout', 'CtxMaxConnectionTime', \
+                'CtxMaxDisconnectionTime', 'CtxMaxIdleTime', 'Ctx_flag_connectClientDrives', \
+                'CtxMinEncryptionLevel', 'oldStorageBehavior', \
+                'CtxNWLogonServer', 'CtxShadow', 'CtxWFHomeDir', 'CtxWFHomeDirDrive', \
+                'CtxWFProfilePath', 'CtxWorkDirectory', 'Ctx_flag_brokenConn', \
+                'Ctx_flag_connectClientPrinters', 'Ctx_flag_defaultPrinter', \
+                'Ctx_flag_inheritMode', 'Ctx_flag_reConn', 'Ctx_shadow', 'Ctx_flag_tsLogin']
 
         # Build up a list of values to encode.
         res = {}
         for entry in alist:
             if not len(valDict[entry]['value']):
-                raise AttributeError('ATTRIBUTE_MANDATORY', entry)
+                raise AttributeError(C.make_error('ATTRIBUTE_MANDATORY', entry))
             else:
                 res[entry] = valDict[entry]['value'][0]
 
@@ -203,7 +204,7 @@ class SambaMungedDial(object):
         values['CtxCfgFlags1'] = ''.join(flags)
         values['CtxShadow'] = '0%1X000000' % (values['Ctx_shadow'])
 
-        # A list of all properties we are going to encode.
+        # A list of all properties we are goind to encode.
         params = ["CtxCfgPresent", "CtxCfgFlags1", "CtxCallback", "CtxShadow",
                 "CtxMaxConnectionTime", "CtxMaxDisconnectionTime", "CtxKeyboardLayout",
                 "CtxMinEncryptionLevel", "CtxWorkDirectory", "CtxNWLogonServer", "CtxWFHomeDir",
@@ -258,7 +259,7 @@ class SambaMungedDial(object):
         =========== ===============================
         """
 
-        # Encode parameter name with utf-16 and remove the 2 Byte BOM in front of the string.
+        # Encode parameter name with utf-16 and reomve the 2 Byte BOM infront of the string.
         utfName = name.encode('utf-16')[2:]
 
         # Set parameter length, high and low byte
@@ -282,7 +283,7 @@ class SambaMungedDial(object):
         else:
             result += value
 
-        return result
+        return (result)
 
     @staticmethod
     def decode(mstr):
@@ -306,7 +307,8 @@ class SambaMungedDial(object):
             ctxField = test[len(unhexlify(SambaMungedDial.new_header)) + 2::]
 
         # Decode parameters
-        result = {'oldStorageBehavior': True}
+        result = {}
+        result['oldStorageBehavior'] = True
         while ctxField != "":
 
             # Get parameter-name length and parameter value length
