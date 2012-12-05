@@ -207,7 +207,7 @@ class Config(object):
 
         # Bail out if there's no configuration file
         if not filesRead:
-            raise ConfigNoFile("No usable configuration file (%s/config) found!" % configDir)
+            raise RuntimeError("No usable configuration file (%s/config) found!" % configDir)
 
         # Walk thru core configuration values and push them into the registry
         for section in config.sections():

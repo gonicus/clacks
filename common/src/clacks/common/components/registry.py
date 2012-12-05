@@ -17,11 +17,18 @@ from lxml import etree
 from pkg_resources import resource_filename, resource_listdir, iter_entry_points, resource_isdir #@UnresolvedImport
 from clacks.common.handler import IInterfaceHandler
 from clacks.common import Environment
+from clacks.common.utils import N_
+from clacks.common.error import ClacksErrorHandler as C
 
 try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
+
+
+C.register_codes(dict(
+    MODULE_NOT_AVAILABLE=N_("Module '%(target)s' is not available")
+))
 
 
 class PluginRegistry(object):
@@ -32,7 +39,7 @@ class PluginRegistry(object):
     =============== ============
     Parameter       Description
     =============== ============
-    component       What setuptools entrypoint to use when looking for :class:`clacks.common.components.plugin.Plugin`.
+    component       What setuptools entry point to use when looking for :class:`clacks.common.components.plugin.Plugin`.
     =============== ============
     """
     modules = {}
@@ -43,7 +50,7 @@ class PluginRegistry(object):
         env = Environment.getInstance()
         self.env = env
         self.log = logging.getLogger(__name__)
-        self.log.debug("inizializing plugin registry")
+        self.log.debug("initializing plugin registry")
 
         # Load common event resources
         base_dir = resource_filename('clacks.common', 'data/events') + os.sep
@@ -133,7 +140,7 @@ class PluginRegistry(object):
 
         """
         if not name in PluginRegistry.modules:
-            raise ValueError("no module '%s' available" % name)
+            raise ValueError(C.make_error("MODULE_NOT_AVAILABLE", name))
 
         if isclass(PluginRegistry.modules[name]):
             return None

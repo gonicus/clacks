@@ -78,7 +78,8 @@ C.register_codes(dict(
     ACL_PARAMETER_MISMATCH=N_("Action and role name parameter cannot be used at the same time"),
     PERMISSION_UPDATE=N_("No permission to modify '%(target)s'"),
     ROLE_EXISTS=N_("Role '%(name)s' already exists"),
-    ROLE_CANNOT_POINT_TO_ITSELF=N_("Roles cannot point to themselves")
+    ROLE_CANNOT_POINT_TO_ITSELF=N_("Roles cannot point to themselves"),
+    ACL_EVENT_BLOCKED=N_("No permission to send event '%(target)s'")
     ))
 
 
@@ -461,7 +462,7 @@ class ACL(object):
 
     def use_role(self, rolename):
         """
-        Mark this ACL to use a role instead of direkt permission settings.
+        Mark this ACL to use a role instead of direct permission settings.
 
         ============== =============
         Key            Description
@@ -955,7 +956,7 @@ class ACLResolver(Plugin):
 
     def get_next_acl_id(self):
         """
-        Generate a uniqe ID for each AclEntry used in Sets or Roles.
+        Generate a unique ID for each AclEntry used in Sets or Roles.
         """
         used_ids = []
         for aclset in self.acl_sets:
@@ -1026,7 +1027,7 @@ class ACLResolver(Plugin):
             # Append the role acls to the ACLRole object
             for acl_entry in o.AclRoles:
 
-                # The acl entry refers to another role ebtry.
+                # The acl entry refers to another role entry.
                 if 'rolename' in acl_entry and acl_entry['rolename']:
 
                     # If the role wasn't loaded yet, then create and attach the requested role
