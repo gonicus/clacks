@@ -17,18 +17,11 @@ from lxml import etree
 from pkg_resources import resource_filename, resource_listdir, iter_entry_points, resource_isdir #@UnresolvedImport
 from clacks.common.handler import IInterfaceHandler
 from clacks.common import Environment
-from clacks.common.utils import N_
-from clacks.common.error import ClacksErrorHandler as C
 
 try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
-
-
-C.register_codes(dict(
-    MODULE_NOT_AVAILABLE=N_("Module '%(target)s' is not available")
-))
 
 
 class PluginRegistry(object):
@@ -140,7 +133,7 @@ class PluginRegistry(object):
 
         """
         if not name in PluginRegistry.modules:
-            raise ValueError(C.make_error("MODULE_NOT_AVAILABLE", name))
+            raise ValueError("Module '%s' is not available" % name)
 
         if isclass(PluginRegistry.modules[name]):
             return None
