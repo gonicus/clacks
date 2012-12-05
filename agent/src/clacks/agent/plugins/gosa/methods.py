@@ -34,7 +34,7 @@ from clacks.common.error import ClacksErrorHandler as C, ClacksException
 C.register_codes(dict(
     INVALID_SEARCH_SCOPE=N_("Invalid scope '%(scope)s' [SUB, BASE, ONE]"),
     INVALID_SEARCH_DATE=N_("Invalid date specification '%(date)s' [hour, day, week, month, year, all]"),
-    UNKNOWN_USER=N_("Unknown user '%(topic)s'"),
+    UNKNOWN_USER=N_("Unknown user '%(target)s'"),
     BACKEND_PARAMETER_MISSING=N_("Backend parameter for '%(extension)s.%(attribute)s' is missing")))
 
 
