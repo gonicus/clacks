@@ -10,6 +10,7 @@
 #
 # See the LICENSE file in the project's top-level directory for details.
 
+import time
 from clacks.agent.objects.types import AttributeType
 
 
@@ -81,6 +82,10 @@ class SambaLogonHoursAttribute(AttributeType):
                 n = (bin(int(value[i:i + 2], 16))[2::]).rjust(8, '0')
                 n = n[::-1]
                 lstr += n[0:4] + n[4:]
+
+            # Shift lster by timezone offset
+            shift_by = (168 + (time.timezone/3600)) % 168
+            lstr = lstr[shift_by:] + lstr[:shift_by]
 
             # Parse result into more readable value
             value = [lstr]
