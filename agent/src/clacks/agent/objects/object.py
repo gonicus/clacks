@@ -524,10 +524,12 @@ class Object(object):
 
         raise AttributeError(C.make_error('ATTRIBUTE_NOT_FOUND', name))
 
-    def check(self, propsFromOtherExtensions={}):
+    def check(self, propsFromOtherExtensions=None):
         """
         Checks whether everything is fine with the extension and its given values or not.
         """
+        if not propsFromOtherExtensions:
+            propsFromOtherExtensions = {}
 
         # Create a copy to avoid touching the original values
         props = copy.deepcopy(self.myProperties)
@@ -601,10 +603,12 @@ class Object(object):
 
         return props
 
-    def commit(self, propsFromOtherExtensions={}):
+    def commit(self, propsFromOtherExtensions=None):
         """
         Commits changes of an object to the corresponding backends.
         """
+        if not propsFromOtherExtensions:
+            propsFromOtherExtensions = {}
 
         self.check(propsFromOtherExtensions)
 

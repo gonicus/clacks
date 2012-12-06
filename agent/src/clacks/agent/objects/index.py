@@ -24,7 +24,7 @@ import logging
 import zope.event
 import datetime
 import re
-import md5
+import hashlib
 import time
 import itertools
 from zope.interface import implements
@@ -93,7 +93,7 @@ class ObjectIndex(Plugin):
         # Create the initial schema information if required
         if not "index" in self.db.collection_names():
             self.log.info('created object index collection')
-            md5s = md5.new()
+            md5s = hashlib.md5()
             md5s.update(schema)
             md5sum = md5s.hexdigest()
 
@@ -286,7 +286,7 @@ class ObjectIndex(Plugin):
 
     def isSchemaUpdated(self, collection, schema):
         # Calculate md5 checksum for potentially new schema
-        md5s = md5.new()
+        md5s = hashlib.md5()
         md5s.update(schema)
         md5sum = md5s.hexdigest()
 
