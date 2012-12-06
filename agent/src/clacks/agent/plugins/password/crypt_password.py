@@ -63,16 +63,16 @@ class PasswordMethodCrypt(PasswordMethod):
             return None
 
         password_hash = re.sub('^{[^}]+}!?', '', password_hash)
-        if re.match('^[a-zA-Z0-9.\/][a-zA-Z0-9.\/]', password_hash):
+        if re.match(r'^[a-zA-Z0-9.\\/][a-zA-Z0-9.\\/]', password_hash):
             return "crypt/standard-des"
 
-        if re.match('^_[a-zA-Z0-9.\/]', password_hash):
+        if re.match(r'^_[a-zA-Z0-9.\\/]', password_hash):
             return "crypt/enhanced-des"
 
-        if re.match('^\$1\$', password_hash):
+        if re.match(r'^\$1\$', password_hash):
             return "crypt/md5"
 
-        if re.match('^(\$2\$|\$2a|\$2x)', password_hash):
+        if re.match(r'^(\$2\$|\$2a|\$2x)', password_hash):
             return "crypt/blowfish"
 
         return None

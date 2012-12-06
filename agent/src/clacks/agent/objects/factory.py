@@ -1078,7 +1078,7 @@ class ObjectFactory(object):
 
                 # Convert value to its required type.
                 arguments[mName] = self.__attribute_type['String'].convert_to(mType, [arguments[mName]])[0]
-                cnt = cnt + 1
+                cnt += 1
 
             # Build the command-parameter list.
             # Collect all property values of this object to be able to fill in
@@ -1254,7 +1254,7 @@ class ObjectFactory(object):
         # Add the <FilterChain> process.
         cnt = len(out)
         for entry in filterChain:
-            cnt = cnt + 1
+            cnt += 1
             out[cnt] = filterChain[entry]
 
         # Add jump point to jump over the else chain
@@ -1264,7 +1264,7 @@ class ObjectFactory(object):
         # Add the <Else> process.
         cnt = len(out)
         for entry in elseChain:
-            cnt = cnt + 1
+            cnt += 1
             out[cnt] = elseChain[entry]
 
         return(out)

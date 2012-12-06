@@ -838,7 +838,7 @@ class Object(object):
         while (lptr + 1) in fltr:
 
             # Get the current line and increase the process list pointer.
-            lptr = lptr + 1
+            lptr += 1
             curline = fltr[lptr]
 
             # A condition matches for something and returns a boolean value.
@@ -913,7 +913,7 @@ class Object(object):
         while (lptr + 1) in fltr:
 
             # Get the current line and increase the process list pointer.
-            lptr = lptr + 1
+            lptr += 1
             curline = fltr[lptr]
 
             # A filter is used to manipulate the 'value' or the 'key' or maybe both.
