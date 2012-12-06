@@ -27,9 +27,9 @@ from clacks.agent import __version__ as VERSION
 
 
 def shutdown(a=None, b=None):
+    """ Function to shut down the agent. Do some clean up and close sockets."""
     global dr
 
-    """ Function to shut down the agent. Do some clean up and close sockets."""
     amqp = PluginRegistry.getInstance("AMQPHandler")
 
     # Tell others that we're away now

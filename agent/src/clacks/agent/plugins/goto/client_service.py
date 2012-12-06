@@ -28,6 +28,7 @@ from clacks.common.handler import IInterfaceHandler
 from clacks.common.event import EventMaker
 from clacks.common import Environment
 from clacks.common.utils import stripNs, N_
+from clacks.common.error import ClacksErrorHandler as C, ClacksException
 from clacks.common.components.registry import PluginRegistry
 from clacks.common.components.amqp import EventConsumer
 from clacks.common.components import AMQPServiceProxy, Plugin
@@ -52,6 +53,24 @@ STATUS_NEEDS_INITIAL_CONFIG = "P"
 STATUS_NEEDS_REMOVE_CONFIG = "R"
 STATUS_NEEDS_CONFIG = "c"
 STATUS_NEEDS_INSTALL = "N"
+
+
+# Register the errors handled  by us
+C.register_codes(dict(
+    DEVICE_EXISTS=N_("Device with hardware address '%(topic)s' already exists"),
+    USER_NOT_UNIQUE=N_("User '%(topic)s' is not unique"),
+    CLIENT_NOT_FOUND=N_("Client '%(topic)s' not found"),
+    CLIENT_OFFLINE=N_("Client '%(topic)s' is offline"),
+    CLIENT_METHOD_NOT_FOUND=N_("Client '%(topic)s' has no method %(method)s"),
+    CLIENT_DATA_INVALID=N_("Invalid data '%(entry)s:%(data)s' for client '%(target)s provided'"),
+    CLIENT_TYPE_INVALID=N_("Device type '%(type)s' for client '%(target)s' is invalid [terminal, workstation, server, sipphone, switch, router, printer, scanner]"),
+    CLIENT_OWNER_NOT_FOUND=N_("Owner '%(owner)s' for client '%(target)s' not found"),
+    CLIENT_UUID_INVALID=N_("Invalid client UUID '%(target)s'"),
+    CLIENT_STATUS_INVALID=N_("Invalid status '%(status)s' for client '%(target)s'")))
+
+
+class GOtoException(Exception):
+    pass
 
 
 class ClientService(Plugin):
@@ -137,7 +156,7 @@ class ClientService(Plugin):
                 #take a random node and:
                 # ... for all clients
                 #     ... load client capabilities and store them localy
-                raise Exception("getting client information from other nodes is not implmeneted!")
+                raise NotImplementedError("getting client information from other nodes is not implemented!")
 
     def stop(self):
         pass
@@ -329,7 +348,7 @@ class ClientService(Plugin):
                 "(&(objectClass=device)(%s))" % fltr, ['deviceStatus'])
 
             if len(res) != 1:
-                raise ValueError("no device '%s' available" % device_uuid)
+                raise ValueError(C.make_error("CLIENT_NOT_FOUND", device_uuid))
 
             if 'deviceStatus' in res[0][1]:
                 return res[0][1]["deviceStatus"][0]
@@ -361,7 +380,7 @@ class ClientService(Plugin):
                 "(&(objectClass=device)(%s))" % fltr, ['deviceStatus'])
 
             if len(res) != 1:
-                raise ValueError("no device '%s' available" % device_uuid)
+                raise ValueError(C.make_error("CLIENT_NOT_FOUND", device_uuid))
 
             devstat = res[0][1]['deviceStatus'][0] if 'deviceStatus' in res[0][1] else ""
             is_new = not bool(devstat)
@@ -370,7 +389,7 @@ class ClientService(Plugin):
             r = re.compile(r"([+-].)")
             for stat in r.findall(status):
                 if not stat[1] in valid:
-                    raise ValueError("invalid status %s" % stat[1])
+                    raise ValueError(C.make_error("CLIENT_STATUS_INVALID", device_uuid, status=stat[1]))
                 if stat.startswith("+"):
                     if not stat[1] in devstat:
                         devstat.append(stat[1])
@@ -394,7 +413,7 @@ class ClientService(Plugin):
 
         uuid_check = re.compile(r"^[0-9a-f]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$", re.IGNORECASE)
         if not uuid_check.match(device_uuid):
-            raise ValueError("join with invalid UUID %s" % device_uuid)
+            raise ValueError(C.make_error("CLIENT_UUID_INVALID", device_uuid))
 
         lh = LDAPHandler.get_instance()
 
@@ -407,7 +426,7 @@ class ClientService(Plugin):
                 ["serialNumber", "ou", "o", "l", "description"]):
 
                 if not re.match(r"^[\w\s]+$", info[entry]):
-                    raise ValueError("invalid data (%s) provided for '%s'" % (info[entry], entry))
+                    raise ValueError(C.make_error("CLIENT_DATA_INVALID", device_uuid, entry=entry, data=info[entry]))
 
                 more_info.append((entry, info[entry]))
 
@@ -418,7 +437,7 @@ class ClientService(Plugin):
 
                     more_info.append(("deviceType", info["deviceType"]))
                 else:
-                    raise ValueError("invalid device type '%s' specified" % info["deviceType"])
+                    raise ValueError(C.make_error("CLIENT_TYPE_INVALID", device_uuid, type=info["deviceType"]))
 
             # Check owner for presence
             if "owner" in info:
@@ -430,7 +449,7 @@ class ClientService(Plugin):
                         conn.search_s(info["owner"], ldap.SCOPE_BASE, attrlist=['dn'])
                         more_info.append(("owner", info["owner"]))
                     except Exception as e:
-                        raise ValueError("owner %s not found: %s" % (info["owner"], str(e)))
+                        raise ValueError(C.make_error("CLIENT_OWNER_NOT_FOUND", device_uuid, owner=info["owner"]))
 
         # Generate random client key
         random.seed()
@@ -449,7 +468,7 @@ class ClientService(Plugin):
 
             # Already registered?
             if res:
-                raise Exception("device with hardware address %s has already been joined" % mac)
+                raise GOtoException(C.make_error("DEVICE_EXISTS", mac))
 
             # While the client is going to be joined, generate a random uuid and
             # an encoded join key
@@ -460,8 +479,7 @@ class ClientService(Plugin):
             res = conn.search_s(lh.get_base(), ldap.SCOPE_SUBTREE,
                     "(uid=%s)" % user, [])
             if len(res) != 1:
-                raise Exception("failed to get current users DN: %s" %
-                    ("not unique" if res else "not found"))
+                raise GOtoException(C.make_error("USER_NOT_UNIQUE" if res else "UNKNOWN_USER", target=user))
             manager = res[0][0]
 
             # Create new machine entry

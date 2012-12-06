@@ -19,8 +19,8 @@ ACL management
 This chapter details the way access control is handled within the clacks core
 engine.
 
-How an ACL assigment could look like
-------------------------------------
+How an ACL assignment could look like
+-------------------------------------
 
 ::
 
@@ -61,11 +61,11 @@ from clacks.agent.exceptions import ACLException
 C.register_codes(dict(
     ACL_NOT_FOUND=N_("ACL not found"),
     ACL_ITEM_INVALID_TYPE=N_("Item is not of type '%(type)s'"),
-    ACL_INVALID_SCOPEN=N_("Invalid ACL scope '%(scope)s'"),
+    ACL_INVALID_SCOPE=N_("Invalid ACL scope '%(scope)s'"),
     ROLE_NOT_FOUND=N_("Role '%(role)s' not found"),
     ACL_INVALID_SCOPE_TARGET=N_("Cannot set scope for role ACLs"),
     ACL_TYPE_MISMATCH=N_("ACL and Role objects are not combinable"),
-    ACL_STRING_INVALID=N_("Invalid permission map - combination of the charaters c, r, o, w, d, s, e, x and m expected"),
+    ACL_STRING_INVALID=N_("Invalid permission map - combination of the characters c, r, o, w, d, s, e, x and m expected"),
     ENTRY_NOT_UNIQUE=N_("Entry %(dn)s is not unique"),
     ACL_LOOP=N_("Recursion in ACL resolution for role '%(role)s'"),
     ROLE_DIRECT_MEMBER=N_("Role ACLs do not support members"),
@@ -75,10 +75,11 @@ C.register_codes(dict(
     ROLE_IN_USE=N_("Role '%(role)s' is still in use"),
     ACL_PRIORITY_INVALID=N_("Priority needs to be above -100 and below 100"),
     ACL_MISSING_KEY=N_("Action '%(action)s' lacks a '%(key)s' key"),
-    ACL_PARAMETER_MISMATCH=N_("Action and rolename parameter cannot be used at the same time"),
+    ACL_PARAMETER_MISMATCH=N_("Action and role name parameter cannot be used at the same time"),
     PERMISSION_UPDATE=N_("No permission to modify '%(target)s'"),
     ROLE_EXISTS=N_("Role '%(name)s' already exists"),
-    ROLE_CANNOT_POINT_TO_ITSELF=N_("Roles cannot point to themselves")
+    ROLE_CANNOT_POINT_TO_ITSELF=N_("Roles cannot point to themselves"),
+    ACL_EVENT_BLOCKED=N_("No permission to send event '%(target)s'")
     ))
 
 
@@ -116,7 +117,7 @@ class ACLSet(list):
         """
         Returns the base for this ACLSet.
         """
-        return(self.base)
+        return self.base
 
     def remove_acls_for_user(self, user):
         """
@@ -202,7 +203,7 @@ class ACLSet(list):
         if type(item) != ACL:
             raise TypeError(C.make_error('ACL_ITEM_INVALID_TYPE', type=ACL.__name__))
 
-        if item.priority == None:
+        if item.priority is None:
             item.priority = len(self)
 
         self.append(item)
@@ -211,11 +212,11 @@ class ACLSet(list):
         self.sort(key=lambda item: (item.priority * 1))
 
     def __str__(self):
-        return(self.repr_self())
+        return self.repr_self()
 
     def repr_self(self, indent=0):
         """
-        Create a human readable reprentation of this ACLSet object.
+        Create a human readable representation of this ACLSet object.
         """
 
         # Only draw to a maximum level of 20 sub entries
@@ -323,7 +324,7 @@ class ACLRole(list):
             raise TypeError(C.make_error('ACL_ITEM_INVALID_TYPE', type=ACLRoleEntry.__name__))
 
         # Create an item priority if it does not exists.
-        if item.priority == None:
+        if item.priority is None:
             item.priority = len(self)
 
         self.append(item)
@@ -338,7 +339,7 @@ class ACLRole(list):
         return self.name
 
     def __str__(self):
-        return(self.repr_self())
+        return self.repr_self()
 
     def repr_self(self, indent=0):
         """
@@ -460,7 +461,7 @@ class ACL(object):
 
     def use_role(self, rolename):
         """
-        Mark this ACL to use a role instead of direkt permission settings.
+        Mark this ACL to use a role instead of direct permission settings.
 
         ============== =============
         Key            Description
@@ -531,7 +532,7 @@ class ACL(object):
         ============== =============
         Key            Description
         ============== =============
-        members        A list of usernames
+        members        A list of user names
         ============== =============
 
         Example::
@@ -596,9 +597,9 @@ class ACL(object):
          * w - Write
          * c - Create
          * d - Delete
-         * o - Onwer only, this acl affects only loggedin user itself.
+         * o - Owner only, this acl affects only logged in user itself.
          * m - Manager, this acl applies for the manager of on object.
-         * s - Search - or beeing found
+         * s - Search - or being found
          * x - Execute
          * e - Receive event
 
@@ -609,7 +610,7 @@ class ACL(object):
 
         **Options**
 
-        Options are additional check parameters that have to be fullfilled to get this acl to match.
+        Options are additional check parameters that have to be fulfilled to get this acl to match.
 
         The ``options`` parameter is a dictionary which contains a key and a value for each additional option we want to check for, e.g. ::
             >>> add_action('topic', 'acls', {'uid': 'hanspeter', 'ou': 'technik'})
@@ -642,10 +643,10 @@ class ACL(object):
         """
         Returns the list of members this ACL is valid for.
         """
-        return(self.members)
+        return self.members
 
     def __str__(self):
-        return(self.repr_self())
+        return self.repr_self()
 
     def repr_self(self, indent=0):
         """
@@ -815,7 +816,7 @@ class ACL(object):
         Returns the scope of an ACL.
         SUB, PSUB, RESET, ...
         """
-        return(self.scope)
+        return self.scope
 
 
 class ACLRoleEntry(ACL):
@@ -823,10 +824,10 @@ class ACLRoleEntry(ACL):
     The ``ACLRoleEntry`` object describes a set of actions that can be accessed in a given scope.
     ``ACLRoleEntry`` classes can then be bundled in ``ACLRole`` objects, to build up roles.
 
-    This class interits most methods from :class:`clacks.agent.acl.ACL`, except for methods that manage members,
+    This class inherits most methods from :class:`clacks.agent.acl.ACL`, except for methods that manage members,
     due to the fact that ACLRoleEntries do not have members!
 
-    Take a look at :class:`clacks.agent.acl.ACLRole` to get an idea aobut how roles are created.
+    Take a look at :class:`clacks.agent.acl.ACLRole` to get an idea about how roles are created.
 
     """
 
@@ -859,7 +860,7 @@ class ACLResolver(Plugin):
         >>> resolver.list_acls()
 
     To print a human readable output of an ACLSet just use the string
-    repesentation::
+    representation::
 
         >>> acls = ACLSet('...')
         >>> acl = ACL(scope=ACL.ONE)
@@ -926,7 +927,7 @@ class ACLResolver(Plugin):
                         reload = True
 
                 if reload:
-                    self.log.info("object change for %s triggered acl-reload" % (event.dn))
+                    self.log.info("object change for %s triggered acl-reload" % event.dn)
                     self.load_acls()
 
     def load_acls(self):
@@ -953,7 +954,7 @@ class ACLResolver(Plugin):
 
     def get_next_acl_id(self):
         """
-        Generate a uniqe ID for each AclEntry used in Sets or Roles.
+        Generate a unique ID for each AclEntry used in Sets or Roles.
         """
         used_ids = []
         for aclset in self.acl_sets:
@@ -968,7 +969,7 @@ class ACLResolver(Plugin):
         while self.next_acl_id in used_ids:
             self.next_acl_id += 1
 
-        return(self.next_acl_id)
+        return self.next_acl_id
 
     def clear(self):
         """
@@ -1008,7 +1009,7 @@ class ACLResolver(Plugin):
 
         for entry_dn in set(dns):
 
-            self.log.info("found acl-role %s" % (entry_dn))
+            self.log.info("found acl-role %s" % entry_dn)
 
             # Try to open the object
             try:
@@ -1028,7 +1029,7 @@ class ACLResolver(Plugin):
             # Append the role acls to the ACLRole object
             for acl_entry in o.AclRoles:
 
-                # The acl entry refers to another role ebtry.
+                # The acl entry refers to another role entry.
                 if 'rolename' in acl_entry and acl_entry['rolename']:
 
                     # If the role wasn't loaded yet, then create and attach the requested role
@@ -1064,7 +1065,7 @@ class ACLResolver(Plugin):
         for role_name in roles:
             self.add_acl_role(roles[role_name])
 
-        # Load all Objects that have the Acl exntension enabled
+        # Load all objects that have the Acl extension enabled
         dns = []
         index = PluginRegistry.getInstance("ObjectIndex")
 
@@ -1073,7 +1074,7 @@ class ACLResolver(Plugin):
             dns = [x['dn'] for x in res]
 
         for entry_dn in dns:
-            self.log.info("found acl for object %s" % (entry_dn))
+            self.log.info("found acl for object %s" % entry_dn)
 
             # Try to load the object to read the AclSets parameter from it.
             try:
@@ -1086,7 +1087,7 @@ class ACLResolver(Plugin):
             if not o.AclSets:
                 continue
 
-            ## The ACL defintion is based on an acl role.
+            # The ACL definition is based on an acl role.
             base = o.dn
             acls = ACLSet(base)
             for acls_data in o.AclSets:
@@ -1136,7 +1137,7 @@ class ACLResolver(Plugin):
             aclset = self.get_aclset_by_base(base)
             aclset.add(acl)
 
-        return(True)
+        return True
 
     def add_acl_to_role(self, rolename, acl):
         """
@@ -1158,7 +1159,7 @@ class ACLResolver(Plugin):
         else:
             self.acl_roles[rolename].add(acl)
 
-        return(True)
+        return True
 
     def add_acl_role(self, role):
         """
@@ -1196,7 +1197,7 @@ class ACLResolver(Plugin):
         """
 
         # Admin users are allowed to do anything.
-        if user in self.admins or user == None:
+        if user in self.admins or user is None:
             self.log.debug("ACL check override active for %s/%s/%s" % (user, base, str(topic)))
             return True
 
@@ -1241,14 +1242,14 @@ class ACLResolver(Plugin):
                                 self.log.debug("found permanent ACL for topic '%s'" % topic)
                                 return True
 
-                            elif (scope == ACL.SUB):
+                            elif scope == ACL.SUB:
                                 if not reset:
                                     self.log.debug("found ACL for topic '%s' (SUB)" % topic)
                                     return True
                                 else:
                                     self.log.debug("ACL DO NOT match due to reset. (SUB)")
 
-                            elif (scope == ACL.ONE and orig_loc == acl_set.base):
+                            elif scope == ACL.ONE and orig_loc == acl_set.base:
                                 if not reset:
                                     self.log.debug("found ACL for topic '%s' (ONE)" % topic)
                                     return True
@@ -1258,13 +1259,13 @@ class ACLResolver(Plugin):
             # Remove the first part of the dn
             base = ','.join([d.decode("utf-8") for d in ldap.dn.explode_dn(base.encode('utf-8'), flags=ldap.DN_FORMAT_LDAPV3)[1::]])
 
-        return(allowed)
+        return allowed
 
     def list_acls(self):
         """
         Returns all ACLSets attached to the resolver
         """
-        return(self.acl_sets)
+        return self.acl_sets
 
     def list_acl_bases(self):
         """
@@ -1273,13 +1274,13 @@ class ACLResolver(Plugin):
         return [entry.base for entry in self.acl_sets]
 
     def list_role_names(self):
-        return(self.acl_roles.keys())
+        return self.acl_roles.keys()
 
     def list_roles(self):
         """
         Returns all ACLRoles attached to the resolver
         """
-        return(self.acl_roles)
+        return self.acl_roles
 
     def is_role_used(self, rolename):
         """
@@ -1297,20 +1298,20 @@ class ACLResolver(Plugin):
 
         for aclset in self.acl_sets:
             if self.__is_role_used(aclset, rolename):
-                return(True)
-        return(False)
+                return True
+        return False
 
     def __is_role_used(self, aclset, rolename):
         for acl in aclset:
             if acl.uses_role:
                 if acl.role == rolename:
-                    return(True)
+                    return True
                 else:
                     role_acl_sets = self.acl_roles[acl.role]
                     if(self.__is_role_used(role_acl_sets, rolename)):
-                        return(True)
+                        return True
 
-        return(False)
+        return False
 
     def get_aclset_by_base(self, base):
         """
@@ -1473,7 +1474,7 @@ class ACLResolver(Plugin):
         # Collect all acls
         result = {}
         for aclset in self.acl_sets:
-            if base == aclset.base or base == None:
+            if base == aclset.base or base is None:
 
                 # Check permissions
                 if not self.check(user, '%s.acl' % self.env.domain, 'r', aclset.base):
@@ -1514,7 +1515,7 @@ class ACLResolver(Plugin):
         # Append configured admin accounts
         admins = self.list_admin_accounts()
         if len(admins) and self.check(user, '%s.acl' % self.env.domain, 'r'):
-            if topic == None or re.match(topic, '*'):
+            if topic is None or re.match(topic, '*'):
                 if not self.base in result:
                     result[self.base] = []
                 result[self.base].append(
@@ -1524,7 +1525,7 @@ class ACLResolver(Plugin):
                     'scope': acl_scope_map[ACL.PSUB],
                     'actions': [{'topic': '*', 'acls':'rwcdsxe', 'options': {}}]})
 
-        return(result)
+        return result
 
     @Command(needsUser=True, __help__=N_("Remove defined ACL by ID."))
     def removeACL(self, user, acl_id):

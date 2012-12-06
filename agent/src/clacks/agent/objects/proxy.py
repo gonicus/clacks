@@ -75,7 +75,7 @@ C.register_codes(dict(
     PERMISSION_REMOVE=N_("No permission to remove '%(target)s'"),
     PERMISSION_CREATE=N_("No permission to create '%(target)s'"),
     PERMISSION_ACCESS=N_("No permission to access '%(topic)s' on '%(target)s'"),
-    OBJECT_UUID_MISMATCH=N_("UUID of base (%(b_uuid)s)and extension (%(e_uuid)s) differ")
+    OBJECT_UUID_MISMATCH=N_("UUID of base (%(b_uuid)s) and extension (%(e_uuid)s) differ")
     ))
 
 

@@ -21,6 +21,15 @@ from clacks.common.components import Plugin
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components.amqp import EventConsumer
 from clacks.common.components.registry import PluginRegistry
+from clacks.common.error import ClacksErrorHandler as C
+from clacks.common.utils import N_
+
+
+# Register the errors handled  by us
+C.register_codes(dict(
+        INVENTORY_CLIENT_MISMATCH=N_("No client UUID for hardware UUID '%(target)s' found"),
+        INVENTORY_CHECKSUM_MISMATCH=N_("No hardware checksum found for client %(target)s"),
+        INVENTORY_DATA_INVALID=N_("Inventory data invalid")))
 
 
 class InventoryException(Exception):
@@ -100,9 +109,8 @@ class InventoryConsumer(Plugin):
             self.log.debug("inventory information received for client %s" % uuid)
 
         except Exception as e:
-            msg = "failed to extract information from received inventory data: %s" % str(e)
-            self.log.error(msg)
-            raise InventoryException(msg)
+            self.log.error("failed to extract information from received inventory data: %s" % str(e))
+            raise InventoryException(C.make_error("INVENTORY_DATA_INVALID"))
 
         # Get the Inventory part of the event only
         inv_only = xml2dict(data.xpath('/e:Event/e:Inventory', \
@@ -144,7 +152,7 @@ class InventoryConsumer(Plugin):
         if results.count() == 1:
             return(results[0]['ClientUUID'])
         else:
-            raise InventoryException("No or more than one ClientUUID was found for HardwareUUID")
+            raise InventoryException(C.make_error("INVENTORY_CLIENT_MISMATCH", huuid))
 
     def getChecksumByHardwareUUID(self, huuid):
         """
@@ -156,7 +164,7 @@ class InventoryConsumer(Plugin):
         if results.count() == 1:
             return(results[0]['Checksum'])
         else:
-            raise InventoryException("No or more than one checksums found for ClientUUID=%s" % huuid)
+            raise InventoryException(C.make_error("INVENTORY_CHECKSUM_MISMATCH", huuid))
 
     def hardwareUUIDExists(self, huuid):
         """

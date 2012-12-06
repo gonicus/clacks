@@ -267,7 +267,7 @@ class LDAP(ObjectBackend):
         else:
             dn = base
 
-        self.log.debug("evaulated new entry DN to '%s'" % dn)
+        self.log.debug("evaluated new entry DN to '%s'" % dn)
 
         # Write...
         self.log.debug("saving entry '%s'" % dn)

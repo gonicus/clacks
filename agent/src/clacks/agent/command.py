@@ -344,7 +344,7 @@ class CommandRegistry(Plugin):
                     self.proxy[target] = AMQPServiceProxy(amqp.url['source'], target)
 
                 # Run the query
-                methodCall = getattr(self.proxy[target], method)
+                methodCall = getattr(self.proxy[target], func)
                 return methodCall(*arg, **larg)
 
         # FIRSTRESULT: try all providers, return on first non exception
@@ -681,6 +681,3 @@ class CommandRegistry(Plugin):
         """
         amqp = PluginRegistry.getInstance("AMQPHandler")
         amqp.sendEvent(data, user)
-
-    def is_ready(self):
-        return self.__ready

@@ -196,8 +196,8 @@ class JsonRpcApp(object):
             password = password.encode('utf-8')
 
             # Check password and create session id on success
+            sid = str(uuid.uuid1())
             if self.authenticate(user, password):
-                sid = str(uuid.uuid1())
                 self.__session[sid] = user
                 environ['REMOTE_USER'] = user
                 environ['REMOTE_SESSION'] = sid
@@ -285,7 +285,7 @@ class JsonRpcApp(object):
             # Don't process messages if the command registry thinks it's not ready
             if not self.dispatcher.processing.is_set():
                 self.log.warning("waiting for registry to get ready")
-                if not self.__cr.processing.wait(5):
+                if not self.dispatcher.processing.wait(5):
                     self.log.error("aborting call [%s] for %s: %s(%s) - timed out" % (jid, user, method, params))
                     raise RuntimeError(C.make_error("REGISTRY_NOT_READY"))
 
