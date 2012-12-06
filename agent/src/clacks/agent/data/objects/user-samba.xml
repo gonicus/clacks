@@ -373,7 +373,7 @@
 					<Attribute>acct_serverTrustAccount</Attribute>
 					<Attribute>acct_temporaryDuplicateAccount</Attribute>
 					<Attribute>acct_normalUserAccount</Attribute>
-					<Attribute>acct_worktstationTrustAccount</Attribute>
+					<Attribute>acct_workstationTrustAccount</Attribute>
 					<Attribute>acct_passwordDoesNotExpire</Attribute>
 				</DependsOn>
 				<ReadOnly>true</ReadOnly>
@@ -802,7 +802,7 @@
 			</Attribute>
 
 			<Attribute>
-				<Name>acct_worktstationTrustAccount</Name>
+				<Name>acct_workstationTrustAccount</Name>
 				<Description></Description>
 				<Backend>NULL</Backend>
 				<Type>Boolean</Type>
