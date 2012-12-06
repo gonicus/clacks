@@ -64,10 +64,9 @@ def mainLoop(env):
     # Enable DBus runner
     dr = DBusRunner()
     dr.start()
+    log = logging.getLogger(__name__)
 
     try:
-        log = logging.getLogger(__name__)
-
         while True:
                 # Load plugins
                 oreg = ObjectRegistry.getInstance() #@UnusedVariable

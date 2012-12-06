@@ -504,8 +504,11 @@ class ClientService(Plugin):
                 default="ou=systems"), base])
             conn.add_s(dn, record)
 
-        self.log.info("UUID '%s' joined as %s" % (device_uuid, dn))
-        return [key, cn]
+            self.log.info("UUID '%s' joined as %s" % (device_uuid, dn))
+
+            return [key, cn]
+
+        return None
 
     def __encrypt_key(self, key, data):
         """

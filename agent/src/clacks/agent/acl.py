@@ -1103,7 +1103,8 @@ class ACLResolver(Plugin):
                     self.log.warning("failed to load acl information for '%s': %s" % (entry_dn, str(e)))
                     continue
 
-                    acls.add(acl)
+                acls.add(acl)
+
             self.add_acl_set(acls)
 
     def add_acl_set(self, acl):

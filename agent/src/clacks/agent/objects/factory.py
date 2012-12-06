@@ -603,8 +603,8 @@ class ObjectFactory(object):
                 be = ObjectBackendRegistry.getBackend(info['backend'])
                 classr = self.__xml_defs[name]
                 fixed_rdn = classr.FixedRDN.text if 'FixedRDN' in classr.__dict__ else None
-                if not info['base'] and (be.identify(dn, info['backend_attrs'], fixed_rdn) or \
-                        be.identify_by_uuid(uuid, info['backend_attrs'])):
+                if not info['base'] and (be.identify(dn, info['backend_attrs'], fixed_rdn) or
+                                         be.identify_by_uuid(uuid, info['backend_attrs'])):
                     id_extend.append(name)
 
         if id_base or id_base_fixed:

@@ -460,8 +460,9 @@ class ObjectProxy(object):
         zope.event.notify(ObjectChanged("pre object move", self.__base))
 
         if recursive:
+            old_base = self.__base.dn
+
             try:
-                old_base = self.__base.dn
                 child_new_base = dn2str([str2dn(self.__base.dn.encode('utf-8'))[0]]).decode('utf-8') + "," + new_base
 
                 # Get primary backend of the object to be moved
@@ -899,8 +900,8 @@ class ObjectProxy(object):
         # Combine all collected class info in a single xml file, this
         # enables us to compute things using xsl
         use_index = "<only_indexed>true</only_indexed>" if only_indexed else "<only_indexed>false</only_indexed>"
-        xml = "<merge xmlns=\"http://www.gonicus.de/Objects\">%s<defs>%s</defs>%s%s%s</merge>" % (etree.tostring(classtag), \
-                xmldefs, etree.tostring(propertiestag), etree.tostring(exttag), use_index)
+        xml = "<merge xmlns=\"http://www.gonicus.de/Objects\">%s<defs>%s</defs>%s%s%s</merge>" % (etree.tostring(classtag),
+                                                                                                  xmldefs, etree.tostring(propertiestag), etree.tostring(exttag), use_index)
 
         # Transform xml-combination into a useable xml-class representation
         xml_doc = etree.parse(StringIO(xml))

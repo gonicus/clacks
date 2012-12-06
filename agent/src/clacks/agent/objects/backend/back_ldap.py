@@ -104,7 +104,7 @@ class LDAP(ObjectBackend):
         fixed_rdn_filter = ""
         attr = None
         if fixed_rdn:
-            attr, value, nocare = ldap.dn.str2dn(fixed_rdn.encode('utf-8'), flags=ldap.DN_FORMAT_LDAPV3)[0][0] #@UnusedVariable
+            attr, value, _ = ldap.dn.str2dn(fixed_rdn.encode('utf-8'), flags=ldap.DN_FORMAT_LDAPV3)[0][0]
             fixed_rdn_filter = ldap.filter.filter_format("(%s=*)", [attr])
 
         # If we just query for an objectClass, try to get the
@@ -114,6 +114,7 @@ class LDAP(ObjectBackend):
             if fixed_rdn:
                 if dn in self.__i_cache and attr in self.__i_cache[dn]:
                     self.__i_cache_ttl[dn] = time.time()
+                    #noinspection PyUnboundLocalVariable
                     return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0 and len({value} - set(self.__i_cache[dn][attr])) == 0
 
             else:
@@ -139,6 +140,8 @@ class LDAP(ObjectBackend):
                     self.__i_cache[dn][attr] = [x.decode('utf-8') for x in res[0][1][attr]]
                 else:
                     self.__i_cache[dn][attr] = []
+
+                #noinspection PyUnboundLocalVariable
                 return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0 and len({value} - set(self.__i_cache[dn][attr])) == 0
             else:
                 return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0
@@ -374,13 +377,13 @@ class LDAP(ObjectBackend):
 
     def get_uniq_dn(self, rdns, base, data, FixedRDN):
 
-        try:
-            for dn in self.build_dn_list(rdns, base, data, FixedRDN):
+        for dn in self.build_dn_list(rdns, base, data, FixedRDN):
+            try:
                 self.con.search_s(dn.encode('utf-8'), ldap.SCOPE_BASE, '(objectClass=*)',
                     [self.uuid_entry])
 
-        except ldap.NO_SUCH_OBJECT:
-            return dn
+            except ldap.NO_SUCH_OBJECT:
+                return dn
 
         return None
 

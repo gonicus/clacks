@@ -192,9 +192,8 @@ class AMQPService(object):
         if not message.user_id:
             raise ValueError(C.make_error("AMQP_MESSAGE_WITHOUT_UID"))
 
-        err = None
-        res = None
         id_ = ''
+        name = args = err = res = None
 
         try:
             req = loads(message.content)
@@ -208,17 +207,17 @@ class AMQPService(object):
                 name = req['method']
                 args = req['params']
 
+                if not isinstance(args, list) and not isinstance(args, dict):
+                    raise ValueError(C.make_error("AMQP_BAD_PARAMETERS"))
+
             except KeyError:
                 err = str(BadServiceRequest(message.content))
-
-        if not isinstance(args, list) and not isinstance(args, dict):
-            raise ValueError(C.make_error("AMQP_BAD_PARAMETERS"))
 
         # Extract source queue
         p = re.compile(r';.*$')
         queue = p.sub('', message._receiver.source)
 
-        self.log.debug("received call [%s/%s] for %s: %s(%s)" % (id_, queue, message.user_id, name, args))
+        self.log.debug("received call [%s/%s] for %s: %s(%s)" % (id_, queue, message.user_id, name or "unknown", args or "unknown"))
 
         # Don't process messages if the command registry thinks it's not ready
         if not self.__cr.processing.is_set():

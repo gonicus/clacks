@@ -497,7 +497,7 @@ class Object(object):
                     if not os.path.exists(location):
                         raise IOError(C.make_error("NO_SUCH_RESOURCE", resource=location))
 
-                    res = None
+                    res = ""
                     with open(location, "r") as f:
                         res = f.read()
 

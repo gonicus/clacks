@@ -27,14 +27,14 @@ class SambaMungedDialOut(ElementFilter):
     def process(self, obj, key, valDict):
 
         # Create a dictionary with all relevant samba attributes.
-        alist = ['CtxCallback', 'CtxCallbackNumber', 'CtxCfgFlags1', 'CtxCfgPresent', \
-                'CtxInitialProgram', 'CtxKeyboardLayout', 'CtxMaxConnectionTime', \
-                'CtxMaxDisconnectionTime', 'CtxMaxIdleTime', 'Ctx_flag_connectClientDrives', \
-                'CtxMinEncryptionLevel', 'oldStorageBehavior', \
-                'CtxNWLogonServer', 'CtxShadow', 'CtxWFHomeDir', 'CtxWFHomeDirDrive', \
-                'CtxWFProfilePath', 'CtxWorkDirectory', 'Ctx_flag_brokenConn', \
-                'Ctx_flag_connectClientPrinters', 'Ctx_flag_defaultPrinter', \
-                'Ctx_flag_inheritMode', 'Ctx_flag_reConn', 'Ctx_shadow', 'Ctx_flag_tsLogin']
+        alist = ['CtxCallback', 'CtxCallbackNumber', 'CtxCfgFlags1', 'CtxCfgPresent',
+                 'CtxInitialProgram', 'CtxKeyboardLayout', 'CtxMaxConnectionTime',
+                 'CtxMaxDisconnectionTime', 'CtxMaxIdleTime', 'Ctx_flag_connectClientDrives',
+                 'CtxMinEncryptionLevel', 'oldStorageBehavior',
+                 'CtxNWLogonServer', 'CtxShadow', 'CtxWFHomeDir', 'CtxWFHomeDirDrive',
+                 'CtxWFProfilePath', 'CtxWorkDirectory', 'Ctx_flag_brokenConn',
+                 'Ctx_flag_connectClientPrinters', 'Ctx_flag_defaultPrinter',
+                 'Ctx_flag_inheritMode', 'Ctx_flag_reConn', 'Ctx_shadow', 'Ctx_flag_tsLogin']
 
         # Build up a list of values to encode.
         res = {}
@@ -342,7 +342,7 @@ class SambaMungedDial(object):
             ctxField = ctxField[ctxParmLength::]
 
         # Detect TS Login Flag
-        flags = ord(result['CtxCfgFlags1'][5:6])
+        flags = ord(result['CtxCfgFlags1'][5])
         result[u'Ctx_flag_tsLogin'] = bool(flags & 1)
         result[u'Ctx_flag_reConn'] = bool(flags & 2)
         result[u'Ctx_flag_brokenConn'] = bool(flags & 4)

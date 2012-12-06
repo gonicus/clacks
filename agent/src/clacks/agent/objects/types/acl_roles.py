@@ -80,11 +80,12 @@ class AclRole(AttributeType):
         This method is a converter used when values were read from or written to the backend.
         Converts an 'UnicodeString' string into a 'AclAction'-object.
         """
+        new_value = []
+
         if len(value):
 
             # Convert each acl-role entry into a usable dict
             # The result will look like this
-            new_value = []
             for item in value:
 
                 # Load base info

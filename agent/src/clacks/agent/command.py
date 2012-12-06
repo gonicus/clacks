@@ -315,14 +315,13 @@ class CommandRegistry(Plugin):
 
         # Handle function type (additive, first match, regular)
         methodType = self.capabilities[func]['type']
+        (clazz, method) = self.path2method(self.commands[func]['path'])
 
         # Type NORMAL, do a straight execute
         if methodType == NORMAL:
 
             # Do we have this method locally?
             if func in self.commands:
-                (clazz, method) = self.path2method(self.commands[func]['path'])
-
                 return PluginRegistry.modules[clazz].\
                         __getattribute__(method)(*arg, **larg)
             else:
@@ -360,7 +359,6 @@ class CommandRegistry(Plugin):
 
                 # Is it me?
                 if node == self.env.id:
-                    (clazz, method) = self.path2method(self.commands[func]['path'])
                     methodCall = PluginRegistry.modules[clazz].__getattribute__(method)
                 else:
                     # Set target queue directly to the evaulated node which provides that method
