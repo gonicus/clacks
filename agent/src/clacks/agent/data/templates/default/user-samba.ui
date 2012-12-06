@@ -123,9 +123,12 @@
            <widget class="QLineEdit" name="descriptionEdit"/>
           </item>
           <item row="2" column="1">
-           <widget class="QPushButton" name="open_dialog_SambaLoginHours">
+           <widget class="QPushButton" name="SambaLogonHours">
             <property name="text">
              <string>Logon Hours</string>
+            </property>
+            <property name="dialog" stdset="0">
+             <string>sambaLogonHours</string>
             </property>
            </widget>
           </item>
