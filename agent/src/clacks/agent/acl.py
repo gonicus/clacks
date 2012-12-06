@@ -1674,6 +1674,7 @@ class ACLResolver(Plugin):
 
         """
         # Validate the given scope
+        scope_int = ACL.SUB
         if scope:
             acl_scope_map = {'one': ACL.ONE, 'sub': ACL.SUB, 'psub': ACL.PSUB, 'reset': ACL.RESET}
 
@@ -1852,6 +1853,7 @@ class ACLResolver(Plugin):
             raise ACLException(C.make_error("ACL_PRIORITY_INVALID"))
 
         # Validate the given scope and actions
+        scope_int = ACL.SUB
         if actions:
             acl_scope_map = {'one': ACL.ONE, 'sub': ACL.SUB, 'psub': ACL.PSUB, 'reset': ACL.RESET}
 
@@ -1934,6 +1936,7 @@ class ACLResolver(Plugin):
             raise ACLException(C.make_error("ACL_PARAMETER_MISMATCH"))
 
         # Validate the scope value
+        scope_int = ACL.SUB
         if scope:
             acl_scope_map = {'one': ACL.ONE, 'sub': ACL.SUB, 'psub': ACL.PSUB, 'reset': ACL.RESET}
 
