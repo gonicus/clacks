@@ -2,7 +2,7 @@
 <Objects xmlns="http://www.gonicus.de/Objects" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gonicus.de/Objects ../object.xsd ">
 	<Object>
 		<Name>RegisteredDevice</Name>
-		<Description>The registeredDevice is a device that is known to GOsa and will displaye additional information.</Description>
+		<Description>The registeredDevice is a device that is known to GOsa and will display additional information.</Description>
 		<DisplayName>RegisteredDevice</DisplayName>
 		<BackendParameters>
 			<Backend objectClasses="registeredDevice">LDAP</Backend>

@@ -11,12 +11,11 @@
 # See the LICENSE file in the project's top-level directory for details.
 
 __import__('pkg_resources').declare_namespace(__name__)
-import re
 import ldap
 from itertools import permutations
 from clacks.common.utils import N_
 from clacks.common.error import ClacksErrorHandler as C
-from clacks.agent.exceptions import EntryNotUnique, EntryNotFound, DNGeneratorError, RDNNotSpecified, BackendError
+from clacks.agent.exceptions import DNGeneratorError
 
 
 # Register the errors handled  by us

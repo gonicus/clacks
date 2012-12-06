@@ -16,7 +16,6 @@ import sys
 import logging
 import pkg_resources
 import codecs
-
 from setproctitle import setproctitle
 from clacks.common import Environment
 from clacks.common.utils import SystemLoad

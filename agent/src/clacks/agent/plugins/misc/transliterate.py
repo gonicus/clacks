@@ -24,7 +24,7 @@ class Transliterate(Plugin):
     def transliterate(self, string):
         """
         Deliver a plain ASCII value of the given string by
-        additionaly replacing a couple of known characters
+        additionally replacing a couple of known characters
         by their ASCII versions.
 
         ========= =========================

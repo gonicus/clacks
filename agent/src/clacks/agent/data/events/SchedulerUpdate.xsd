@@ -5,7 +5,7 @@
     	<annotation>
     		<documentation>
     			The SchedulerUpdate event is fired after ordinary
-			scheduler jobs change their state - i.e. beeing
+			scheduler jobs change their state - i.e. being
 			added, updated, removed or migrated.
     		</documentation>
     	</annotation>

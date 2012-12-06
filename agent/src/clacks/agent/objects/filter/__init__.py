@@ -14,7 +14,6 @@ __import__('pkg_resources').declare_namespace(__name__)
 import pkg_resources
 from clacks.common.utils import N_
 from clacks.common.error import ClacksErrorHandler as C
-from clacks.agent.exceptions import ElementFilterException
 
 
 C.register_codes(dict(
