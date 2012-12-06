@@ -46,13 +46,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>SambaLogonHours</class>
-   <extends>QWidget</extends>
-   <header>sambalogonhours.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections>
   <connection>
