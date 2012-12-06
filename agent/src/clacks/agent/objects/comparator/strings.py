@@ -24,7 +24,7 @@ class Like(ElementComparator):
     =========== ==================
     Key         Description
     =========== ==================
-    match       The value we match againt.
+    match       The value we match against.
     =========== ==================
     """
 

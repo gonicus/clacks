@@ -16,7 +16,7 @@ from clacks.common import Environment
 from clacks.agent.objects.filter import ElementFilter
 from clacks.common.components import PluginRegistry
 from clacks.agent.objects.comparator import ElementComparator
-from clacks.common.error import ClacksErrorHandler as C, ClacksException
+from clacks.common.error import ClacksErrorHandler as C
 
 
 # Register the errors handled  by us

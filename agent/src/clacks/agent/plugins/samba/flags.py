@@ -23,7 +23,7 @@ mapping = {'D': 'acct_accountDisabled',
            'S': 'acct_serverTrustAccount',
            'T': 'acct_temporaryDuplicateAccount',
            'U': 'acct_normalUserAccount',
-           'W': 'acct_worktstationTrustAccount',
+           'W': 'acct_workstationTrustAccount',
            'X': 'acct_passwordDoesNotExpire'}
 
 

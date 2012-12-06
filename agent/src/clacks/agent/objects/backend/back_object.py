@@ -149,9 +149,6 @@ class ObjectHandler(ObjectBackend):
     def __init__(self):
         pass
 
-    def __del__(self):
-        self.lh.free_connection(self.con)
-
     def identify_by_uuid(self, uuid, params):
         return False
 

@@ -15,7 +15,6 @@ import os
 import shlex
 import time
 import datetime
-import clacks.agent.objects.renderer
 from bson.binary import Binary
 from zope.interface import implements
 from clacks.common import Environment
@@ -25,9 +24,10 @@ from clacks.common.utils import N_
 from clacks.common.components import PluginRegistry
 from clacks.agent.objects import ObjectProxy
 from clacks.agent.objects.factory import ObjectFactory
+import clacks.agent.objects.renderer
 from clacks.common.handler import IInterfaceHandler
 from json import loads, dumps
-from clacks.common.error import ClacksErrorHandler as C, ClacksException
+from clacks.common.error import ClacksErrorHandler as C
 
 
 # Register the errors handled  by us

@@ -28,7 +28,7 @@ from clacks.common.handler import IInterfaceHandler
 from clacks.common.event import EventMaker
 from clacks.common import Environment
 from clacks.common.utils import stripNs, N_
-from clacks.common.error import ClacksErrorHandler as C, ClacksException
+from clacks.common.error import ClacksErrorHandler as C
 from clacks.common.components.registry import PluginRegistry
 from clacks.common.components.amqp import EventConsumer
 from clacks.common.components import AMQPServiceProxy, Plugin

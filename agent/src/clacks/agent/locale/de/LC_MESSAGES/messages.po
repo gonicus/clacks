@@ -478,8 +478,8 @@ msgstr "Modus '%(mode)s' ist nur für Basis-Objete verfügbar"
 
 #: src/clacks/agent/objects/object.py:53
 #, python-format
-msgid "Object of type '%(type)s' cannot be added as to the '%s' container"
-msgstr "Objekte vom Typ '%(type)s' können nicht im Container '%s' abgelegt werden"
+msgid "Object of type '%(ext)s' cannot be added as to the '%(base)s' container"
+msgstr "Objekte vom Typ '%(ext)s' können nicht im Container '%(base)s' abgelegt werden"
 
 #: src/clacks/agent/objects/object.py:54
 msgid "Cannot remove non base object"
@@ -793,85 +793,85 @@ msgstr "Liefert alle Vorlagen "
 
 #: src/clacks/agent/plugins/gosa/methods.py:85
 msgid "Returns all dialog-templates used by the given object type."
-msgstr ""
+msgstr "Liefert alle Dialog-Vorlagen für den angegebenen Objekt-Typ."
 
 #: src/clacks/agent/plugins/gosa/methods.py:93
 msgid "Get all translations bound to templates."
-msgstr ""
+msgstr "Liefert alle an Vorlagen gebundene Übersetzungen."
 
 #: src/clacks/agent/plugins/gosa/methods.py:103
 msgid "Returns details about the currently logged in user"
-msgstr ""
+msgstr "Liefert Details über den momentan angemeldeten Benutzer"
 
 #: src/clacks/agent/plugins/gosa/methods.py:116
 msgid "Save user preferences"
-msgstr ""
+msgstr "Sichert Benutzer-Einstellungen"
 
 #: src/clacks/agent/plugins/gosa/methods.py:137
 msgid "Load user preferences"
-msgstr ""
+msgstr "Läd Benutzereinstellungen"
 
 #: src/clacks/agent/plugins/gosa/methods.py:157
 msgid "Search for object information"
-msgstr ""
+msgstr "Suche nach Objekt-Informationen"
 
 #: src/clacks/agent/plugins/gosa/methods.py:216
 msgid "Resolves object information"
-msgstr ""
+msgstr "Löst Objekt-Informationen auf"
 
 #: src/clacks/agent/plugins/gosa/methods.py:272
 msgid "Returns a list with all selectable samba-domain-names"
-msgstr ""
+msgstr "Liefert eine Liste mit allen auswählbaren Samba Domänen-Namen"
 
 #: src/clacks/agent/plugins/gosa/methods.py:280
 msgid "Returns a list of DOS/Windows drive letters"
-msgstr ""
+msgstr "Liefert eine Liste von DOS/Windows Laufwerksbuchstaben"
 
 #: src/clacks/agent/plugins/gosa/methods.py:288
 msgid "Filter for indexed attributes and return the matches."
-msgstr ""
+msgstr "Filter nach indizierten Attributen und liefert die Ergebnisse."
 
 #: src/clacks/agent/plugins/gosa/service.py:287
 msgid "Server information"
-msgstr ""
+msgstr "Server-Informationen"
 
 #: src/clacks/agent/plugins/gosa/service.py:287
 msgid "Websockets enabled"
-msgstr ""
+msgstr "Websockets aktiviert"
 
 #: src/clacks/agent/plugins/gosa/service.py:326
 msgid "System notification"
-msgstr ""
+msgstr "Systembenachrichtigung"
 
 #: src/clacks/agent/plugins/goto/client_service.py:59
 #, python-format
 msgid "Device with hardware address '%(topic)s' already exists"
-msgstr ""
+msgstr "Ein Gerät mit der Hardware-Adresse '%(topic)s' existiert bereits"
 
 #: src/clacks/agent/plugins/goto/client_service.py:60
 #, python-format
 msgid "User '%(topic)s' is not unique"
-msgstr ""
+msgstr "Benutzer '%(topic)s' ist nicht eindeutig"
 
 #: src/clacks/agent/plugins/goto/client_service.py:61
 #, python-format
 msgid "Client '%(topic)s' not found"
-msgstr ""
+msgstr "Client '%(topic)s' nicht gefunden"
 
 #: src/clacks/agent/plugins/goto/client_service.py:62
 #, python-format
 msgid "Client '%(topic)s' is offline"
-msgstr ""
+msgstr "Client '%(topic)s' ist nicht aktiv"
 
 #: src/clacks/agent/plugins/goto/client_service.py:63
 #, python-format
 msgid "Client '%(topic)s' has no method %(method)s"
-msgstr ""
+msgstr "Client '%(topic)s' bietet keine Methode %(method)s"
 
 #: src/clacks/agent/plugins/goto/client_service.py:64
 #, python-format
 msgid "Invalid data '%(entry)s:%(data)s' for client '%(target)s provided'"
-msgstr ""
+msgstr "Es wurden ungültige Daten '%(entry)s:%(data)s' für den Client '%(target)s angegeben"
 
 #: src/clacks/agent/plugins/goto/client_service.py:65
 #, python-format
@@ -879,91 +879,93 @@ msgid ""
 "Device type '%(type)s' for client '%(target)s' is invalid [terminal, "
 "workstation, server, sipphone, switch, router, printer, scanner]"
 msgstr ""
+"Geräte-Typ '%(type)s' des Clients '%(target)s' ist ungültig [terminal, "
+"workstation, server, sipphone, switch, router, printer, scanner]"
 
 #: src/clacks/agent/plugins/goto/client_service.py:66
 #, python-format
 msgid "Owner '%(owner)s' for client '%(target)s' not found"
-msgstr ""
+msgstr "Eigentümer '%(owner)s' des Clients %(target)s' kann nicht gefunden werden"
 
 #: src/clacks/agent/plugins/goto/client_service.py:67
 #, python-format
 msgid "Invalid client UUID '%(target)s'"
-msgstr ""
+msgstr "Ungültige Client UUID '%(target)s'"
 
 #: src/clacks/agent/plugins/goto/client_service.py:68
 #, python-format
 msgid "Invalid status '%(status)s' for client '%(target)s'"
-msgstr ""
+msgstr "Ungültiger Status '%(status)s' des Clients '%(target)s'"
 
 #: src/clacks/agent/plugins/goto/client_service.py:163
 msgid "List available clients."
-msgstr ""
+msgstr "Listet verfügbare Clients."
 
 #: src/clacks/agent/plugins/goto/client_service.py:176
 msgid "Call method exposed by client."
-msgstr ""
+msgstr "Ruft eine freigegebene Client-Methode auf."
 
 #: src/clacks/agent/plugins/goto/client_service.py:216
 msgid "Get the client Interface/IP/Netmask/Broadcast/MAC list."
-msgstr ""
+msgstr "Liefert die Client Interface/IP/Netmask/Broadcast/MAC Liste."
 
 #: src/clacks/agent/plugins/goto/client_service.py:242
 msgid "List available client methods for specified client."
-msgstr ""
+msgstr "Listet alle für den angegebenen Client verfügbaren Methoden auf."
 
 #: src/clacks/agent/plugins/goto/client_service.py:256
 msgid "List user sessions per client"
-msgstr ""
+msgstr "Listet Benutzer-Sitzungen pro Client"
 
 #: src/clacks/agent/plugins/goto/client_service.py:266
 msgid "List clients a user is logged in"
-msgstr ""
+msgstr "Listet Clients an denen ein Benutzer angemeldet ist"
 
 #: src/clacks/agent/plugins/goto/client_service.py:273
 msgid "Send synchronous notification message to user"
-msgstr ""
+msgstr "Sendet eine synchrone Benachrichtigung an einen Benutzer"
 
 #: src/clacks/agent/plugins/goto/client_service.py:336
 #: src/clacks/agent/plugins/goto/client_service.py:357
 msgid "Set system status"
-msgstr ""
+msgstr "Systemstatus setzen"
 
 #: src/clacks/agent/plugins/goto/client_service.py:405
 msgid "Join a client to the clacks infrastructure."
-msgstr ""
+msgstr "Einen Client in die Clacks-Infrastruktur einbringen."
 
 #: src/clacks/agent/plugins/goto/network.py:31
 msgid "Resolve network address to a mac / dns name tupel."
-msgstr ""
+msgstr "Netzwerk-Adresse in ein MAC/DNS Tupel auflösen."
 
 #: src/clacks/agent/plugins/goto/network.py:58
 msgid "Resolve MAC address to the producer of the network card if possible."
-msgstr ""
+msgstr "MAC-Adresse nach Netzwerkkarten-Hersteller auflösen."
 
 #: src/clacks/agent/plugins/inventory/consumer.py:30
 #, python-format
 msgid "No client UUID for hardware UUID '%(target)s' found"
-msgstr ""
+msgstr "Keine Client UUID für die Hardware UUID '%(target)s' gefunden"
 
 #: src/clacks/agent/plugins/inventory/consumer.py:31
 #, python-format
 msgid "No hardware checksum found for client %(target)s"
-msgstr ""
+msgstr "Keine Hardware-Prüfsumme für den Client %(target)s gefunden"
 
 #: src/clacks/agent/plugins/inventory/consumer.py:32
 msgid "Inventory data invalid"
-msgstr ""
+msgstr "Inventar-Daten ungültig"
 
 #: src/clacks/agent/plugins/misc/filter_validators.py:34
 #, python-format
 msgid "invalid hostname '%(hostname)s'"
-msgstr ""
+msgstr "ungültiger hostname '%(hostname)s'"
 
 #: src/clacks/agent/plugins/misc/filter_validators.py:55
 #: src/clacks/agent/plugins/misc/filter_validators.py:76
 #, python-format
 msgid "DN '%(dn)s' does not exist"
-msgstr ""
+msgstr "DN '%(dn)s' existiert nicht"
 
 #: src/clacks/agent/plugins/misc/filter_validators.py:98
 #, python-format
@@ -971,10 +973,11 @@ msgid ""
 "no '%(type)s' object with '%(attribute)s' property matching '%(value)s' "
 "found"
 msgstr ""
+"kein '%(type)s'-Objekt mit %(attribute)s'-Eigenschaft welche auf '%(value)s' passt gefunden"
 
 #: src/clacks/agent/plugins/misc/gravatar.py:33
 msgid "Generate samba lm:nt hash combination from the supplied password."
-msgstr ""
+msgstr "Erzeuge Samba LM:NT Hash-Kombination aus dem angegebenen Passwort."
 
 #: src/clacks/agent/plugins/misc/locales.py:25
 msgid "Afrikaans (South Africa)"
@@ -1554,108 +1557,108 @@ msgstr ""
 
 #: src/clacks/agent/plugins/misc/locales.py:178
 msgid "Return list of languages"
-msgstr ""
+msgstr "Liste verfügbare Sprachen auf"
 
 #: src/clacks/agent/plugins/misc/locales.py:196
 msgid "value"
-msgstr ""
+msgstr "Wert"
 
 #: src/clacks/agent/plugins/misc/transliterate.py:23
 msgid "Transliterate a given string"
-msgstr ""
+msgstr "Transliteriere die angegebene Zeichenkette"
 
 #: src/clacks/agent/plugins/password/manager.py:29
 msgid "Cannot detect password method"
-msgstr ""
+msgstr "Kann Passwort-Methode nicht ermitteln"
 
 #: src/clacks/agent/plugins/password/manager.py:30
 #, python-format
 msgid "No password method to generate hash of type '%(type)s' available"
-msgstr ""
+msgstr "Keine Passwort-Methode zum erzeugen des Hash-Typs '%(type)s' verfügbar"
 
 #: src/clacks/agent/plugins/password/manager.py:31
 #, python-format
 msgid "Invalid hash type for password method '%(method)s'"
-msgstr ""
+msgstr "Ungültiger Passwort-Hash für die Passwort-Methode '%(method)s'"
 
 #: src/clacks/agent/plugins/password/manager.py:32
 msgid "Object has no 'userPassword' attribute"
-msgstr ""
+msgstr "Objekt hat kein 'userPassword' Attribut"
 
 #: src/clacks/agent/plugins/password/manager.py:33
 msgid "No password to lock."
-msgstr ""
+msgstr "Kein Passwort zum Sperren vorhanden."
 
 #: src/clacks/agent/plugins/password/manager.py:64
 msgid "Locks the account password for the given DN"
-msgstr ""
+msgstr "Sperrt das Konto-Passwort der angegebenen DN"
 
 #: src/clacks/agent/plugins/password/manager.py:99
 msgid "Unlocks the account password for the given DN"
-msgstr ""
+msgstr "Gibt das Konto-Passwort der angegebenen DN frei"
 
 #: src/clacks/agent/plugins/password/manager.py:133
 msgid "Check whether the account can be locked or not"
-msgstr ""
+msgstr "Prüft ob das Konto gesperrt werden kann"
 
 #: src/clacks/agent/plugins/password/manager.py:165
 msgid "Check whether the account can be unlocked or not"
-msgstr ""
+msgstr "Prüft ob das Konto freigegeben werden kann"
 
 #: src/clacks/agent/plugins/password/manager.py:195
 msgid "Changes the used password encryption method"
-msgstr ""
+msgstr "Ändert die verwendete Passwortverschlüsselungsmethode"
 
 #: src/clacks/agent/plugins/password/manager.py:224
 msgid "Sets a new password for a user"
-msgstr ""
+msgstr "Setzt ein neues Benutzerpasswort"
 
 #: src/clacks/agent/plugins/password/manager.py:255
 msgid "List all password hashing-methods"
-msgstr ""
+msgstr "Listet alle verfügbaren Passwort-Methoden"
 
 #: src/clacks/agent/plugins/posix/filters.py:21
 #, python-format
 msgid "Parameter for '%(target)s' have to be numeric"
-msgstr ""
+msgstr "Parameter für '%(target)s' müssen nummerisch sein"
 
 #: src/clacks/agent/plugins/posix/filters.py:22
 #, python-format
 msgid "Too many backends for %(target)s specified"
-msgstr ""
+msgstr "Zu viele Backends für %(target)s angegeben"
 
 #: src/clacks/agent/plugins/posix/filters.py:23
 #, python-format
 msgid "ID pool for attribute %(target)s is empty [> %(max)s]"
-msgstr ""
+msgstr "ID-Pool für Attribut %(target)s ist leer [> %(max)s]"
 
 #: src/clacks/agent/plugins/posix/shells.py:43
 msgid "Return list of supported shells"
-msgstr ""
+msgstr "Liefert eine Liste der unterstützten Shells"
 
 #: src/clacks/agent/plugins/samba/domain.py:37
 #, python-format
 msgid "Unknown domain '%(domain)s'"
-msgstr ""
+msgstr "Unbekannte Domäne '%(domain)s'"
 
 #: src/clacks/agent/plugins/samba/hash.py:21
 #, python-format
 msgid "Filter '%(target)s' does not support input type '%(type)s'"
-msgstr ""
+msgstr "Filter '%(target)s' unterstützt den Eingabe-Typen '%(type)s' nicht"
 
 #: src/clacks/agent/plugins/samba/sid.py:24
 #, python-format
 msgid "Domain %(target)s has no SID"
-msgstr ""
+msgstr "Domäne %(target)s hat keine SID"
 
 #: src/clacks/agent/plugins/samba/sid.py:25
 #, python-format
 msgid "Invalid type '%(type)s' for SID generator [user, group]"
-msgstr ""
+msgstr "Ungültiger Typ '%(type)s' für den SID-Generator [user, group]"
 
 #: src/clacks/agent/plugins/samba/sid.py:47
 msgid "recursive nesting not allowed"
-msgstr ""
+msgstr "rekursive Verschachtelung ist nicht erlaubt"
 
 #: src/clacks/agent/plugins/user/filters.py:26
 msgid "Image sizes not specified"
