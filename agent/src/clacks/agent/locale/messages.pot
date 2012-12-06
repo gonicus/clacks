@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2012-10-24 17:49+0200\n"
+"POT-Creation-Date: 2012-12-05 14:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,7 +46,7 @@ msgstr ""
 
 #: src/clacks/agent/acl.py:68
 msgid ""
-"Invalid permission map - combination of the charaters c, r, o, w, d, s, "
+"Invalid permission map - combination of the characters c, r, o, w, d, s, "
 "e, x and m expected"
 msgstr ""
 
@@ -94,7 +94,7 @@ msgid "Action '%(action)s' lacks a '%(key)s' key"
 msgstr ""
 
 #: src/clacks/agent/acl.py:78
-msgid "Action and rolename parameter cannot be used at the same time"
+msgid "Action and role name parameter cannot be used at the same time"
 msgstr ""
 
 #: src/clacks/agent/acl.py:79
@@ -111,43 +111,48 @@ msgstr ""
 msgid "Roles cannot point to themselves"
 msgstr ""
 
+#: src/clacks/agent/acl.py:82
+#, python-format
+msgid "No permission to send event '%(target)s'"
+msgstr ""
+
 #: src/clacks/agent/acl.py:1444
 msgid "List defined ACLs by base or topic."
 msgstr ""
 
-#: src/clacks/agent/acl.py:1529
+#: src/clacks/agent/acl.py:1525
 msgid "Remove defined ACL by ID."
 msgstr ""
 
-#: src/clacks/agent/acl.py:1569
+#: src/clacks/agent/acl.py:1565
 msgid "Add a new ACL."
 msgstr ""
 
-#: src/clacks/agent/acl.py:1658
+#: src/clacks/agent/acl.py:1651
 msgid "Refresh existing ACL by ID."
 msgstr ""
 
-#: src/clacks/agent/acl.py:1753
+#: src/clacks/agent/acl.py:1743
 msgid "List defined roles."
 msgstr ""
 
-#: src/clacks/agent/acl.py:1795
+#: src/clacks/agent/acl.py:1781
 msgid "Add new role."
 msgstr ""
 
-#: src/clacks/agent/acl.py:1829
+#: src/clacks/agent/acl.py:1815
 msgid "Add new acl to an existing role."
 msgstr ""
 
-#: src/clacks/agent/acl.py:1914
+#: src/clacks/agent/acl.py:1897
 msgid "Refresh existing role by ID."
 msgstr ""
 
-#: src/clacks/agent/acl.py:2018
+#: src/clacks/agent/acl.py:1999
 msgid "Remove defined role-acl by ID."
 msgstr ""
 
-#: src/clacks/agent/acl.py:2046
+#: src/clacks/agent/acl.py:2027
 msgid "Remove a defined acl-role by name"
 msgstr ""
 
@@ -392,15 +397,15 @@ msgstr ""
 msgid "index rebuild in progress - try again later"
 msgstr ""
 
-#: src/clacks/agent/objects/index.py:521
+#: src/clacks/agent/objects/index.py:520
 msgid "Check if an object with the given UUID exists."
 msgstr ""
 
-#: src/clacks/agent/objects/index.py:537
+#: src/clacks/agent/objects/index.py:536
 msgid "Get list of defined base object types."
 msgstr ""
 
-#: src/clacks/agent/objects/index.py:546
+#: src/clacks/agent/objects/index.py:545
 msgid "Query the index for entries."
 msgstr ""
 
@@ -451,7 +456,8 @@ msgid "Value is not unique (%(value)s)"
 msgstr ""
 
 #: src/clacks/agent/objects/object.py:50
-msgid "Attribute not found"
+#, python-format
+msgid "Attribute %(target)s not found"
 msgstr ""
 
 #: src/clacks/agent/objects/object.py:51
@@ -565,57 +571,57 @@ msgstr ""
 msgid "UUID of base (%(b_uuid)s)and extension (%(e_uuid)s) differ"
 msgstr ""
 
-#: src/clacks/agent/objects/backend/__init__.py:24
+#: src/clacks/agent/objects/backend/__init__.py:23
 #, python-format
 msgid "Attribute '%(topic)s needed to generate a RDN is missing"
 msgstr ""
 
-#: src/clacks/agent/objects/backend/__init__.py:25
+#: src/clacks/agent/objects/backend/__init__.py:24
 msgid "No 'RDN' backend parameter specified"
 msgstr ""
 
-#: src/clacks/agent/objects/backend/__init__.py:26
+#: src/clacks/agent/objects/backend/__init__.py:25
 #, python-format
 msgid "Cannot generate a unique DN in '%(base)s' using a combination of %(rdns)s"
 msgstr ""
 
-#: src/clacks/agent/objects/backend/__init__.py:27
+#: src/clacks/agent/objects/backend/__init__.py:26
 #, python-format
 msgid "Target DN '%(target)s' already exists"
 msgstr ""
 
-#: src/clacks/agent/objects/backend/__init__.py:28
+#: src/clacks/agent/objects/backend/__init__.py:27
 #, python-format
 msgid "No database configuration found for '%(target)s'"
 msgstr ""
 
-#: src/clacks/agent/objects/backend/__init__.py:29
+#: src/clacks/agent/objects/backend/__init__.py:28
 #, python-format
 msgid ""
 "Attribute '%s' uses the ObjectHandler backend but there is no config for "
 "it"
 msgstr ""
 
-#: src/clacks/agent/objects/backend/__init__.py:30
+#: src/clacks/agent/objects/backend/__init__.py:29
 #, python-format
 msgid "Cannot find source object '%(object)s'"
 msgstr ""
 
-#: src/clacks/agent/objects/backend/__init__.py:31
+#: src/clacks/agent/objects/backend/__init__.py:30
 #, python-format
 msgid "No unique '%(object)s' object which matches '%(attribute)s == %(value)s'"
 msgstr ""
 
-#: src/clacks/agent/objects/backend/__init__.py:32
+#: src/clacks/agent/objects/backend/__init__.py:31
 msgid "Failed to generate a unique ID"
 msgstr ""
 
-#: src/clacks/agent/objects/backend/__init__.py:33
+#: src/clacks/agent/objects/backend/__init__.py:32
 #, python-format
 msgid "Entry '%(uuid)s' not found"
 msgstr ""
 
-#: src/clacks/agent/objects/backend/__init__.py:34
+#: src/clacks/agent/objects/backend/__init__.py:33
 #, python-format
 msgid "Entry '%(uuid)s' not unique"
 msgstr ""
@@ -626,12 +632,6 @@ msgstr ""
 
 #: src/clacks/agent/objects/backend/back_ldap.py:32
 msgid "Multiple ID pools found"
-msgstr ""
-
-#: src/clacks/agent/objects/backend/back_mongodb.py:26
-#: src/clacks/agent/objects/filter/__init__.py:21
-#, python-format
-msgid "No filter instance for '%(filter)s' found"
 msgstr ""
 
 #: src/clacks/agent/objects/backend/registry.py:20
@@ -730,6 +730,11 @@ msgstr ""
 msgid "value is long, at max %(count)s characters allowed"
 msgstr ""
 
+#: src/clacks/agent/objects/filter/__init__.py:20
+#, python-format
+msgid "No filter instance for '%(filter)s' found"
+msgstr ""
+
 #: src/clacks/agent/objects/operator/__init__.py:21
 #, python-format
 msgid "No operator instance for '%(operator)s' found"
@@ -750,47 +755,71 @@ msgstr ""
 msgid "Cannot convert from '%(source)s' type to '%(target)s' type"
 msgstr ""
 
-#: src/clacks/agent/plugins/gosa/methods.py:59
-msgid "Returns a list containing all available object names"
+#: src/clacks/agent/plugins/gosa/methods.py:35
+#, python-format
+msgid "Invalid scope '%(scope)s' [SUB, BASE, ONE]"
 msgstr ""
 
-#: src/clacks/agent/plugins/gosa/methods.py:64
-msgid "Returns all templates used by the given object type."
+#: src/clacks/agent/plugins/gosa/methods.py:36
+#, python-format
+msgid "Invalid date specification '%(date)s' [hour, day, week, month, year, all]"
+msgstr ""
+
+#: src/clacks/agent/plugins/gosa/methods.py:37
+#, python-format
+msgid "Unknown user '%(topic)s'"
+msgstr ""
+
+#: src/clacks/agent/plugins/gosa/methods.py:38
+#, python-format
+msgid "Backend parameter for '%(extension)s.%(attribute)s' is missing"
 msgstr ""
 
 #: src/clacks/agent/plugins/gosa/methods.py:72
+msgid "Returns a list containing all available object names"
+msgstr ""
+
+#: src/clacks/agent/plugins/gosa/methods.py:77
+msgid "Returns all templates used by the given object type."
+msgstr ""
+
+#: src/clacks/agent/plugins/gosa/methods.py:85
+msgid "Returns all dialog-templates used by the given object type."
+msgstr ""
+
+#: src/clacks/agent/plugins/gosa/methods.py:93
 msgid "Get all translations bound to templates."
 msgstr ""
 
-#: src/clacks/agent/plugins/gosa/methods.py:82
+#: src/clacks/agent/plugins/gosa/methods.py:103
 msgid "Returns details about the currently logged in user"
 msgstr ""
 
-#: src/clacks/agent/plugins/gosa/methods.py:95
+#: src/clacks/agent/plugins/gosa/methods.py:116
 msgid "Save user preferences"
 msgstr ""
 
-#: src/clacks/agent/plugins/gosa/methods.py:116
+#: src/clacks/agent/plugins/gosa/methods.py:137
 msgid "Load user preferences"
 msgstr ""
 
-#: src/clacks/agent/plugins/gosa/methods.py:136
+#: src/clacks/agent/plugins/gosa/methods.py:157
 msgid "Search for object information"
 msgstr ""
 
-#: src/clacks/agent/plugins/gosa/methods.py:195
+#: src/clacks/agent/plugins/gosa/methods.py:216
 msgid "Resolves object information"
 msgstr ""
 
-#: src/clacks/agent/plugins/gosa/methods.py:251
+#: src/clacks/agent/plugins/gosa/methods.py:272
 msgid "Returns a list with all selectable samba-domain-names"
 msgstr ""
 
-#: src/clacks/agent/plugins/gosa/methods.py:259
+#: src/clacks/agent/plugins/gosa/methods.py:280
 msgid "Returns a list of DOS/Windows drive letters"
 msgstr ""
 
-#: src/clacks/agent/plugins/gosa/methods.py:267
+#: src/clacks/agent/plugins/gosa/methods.py:288
 msgid "Filter for indexed attributes and return the matches."
 msgstr ""
 
@@ -806,40 +835,92 @@ msgstr ""
 msgid "System notification"
 msgstr ""
 
-#: src/clacks/agent/plugins/goto/client_service.py:145
+#: src/clacks/agent/plugins/goto/client_service.py:59
+#, python-format
+msgid "Device with hardware address '%(topic)s' already exists"
+msgstr ""
+
+#: src/clacks/agent/plugins/goto/client_service.py:60
+#, python-format
+msgid "User '%(topic)s' is not unique"
+msgstr ""
+
+#: src/clacks/agent/plugins/goto/client_service.py:61
+#, python-format
+msgid "Client '%(topic)s' not found"
+msgstr ""
+
+#: src/clacks/agent/plugins/goto/client_service.py:62
+#, python-format
+msgid "Client '%(topic)s' is offline"
+msgstr ""
+
+#: src/clacks/agent/plugins/goto/client_service.py:63
+#, python-format
+msgid "Client '%(topic)s' has no method %(method)s"
+msgstr ""
+
+#: src/clacks/agent/plugins/goto/client_service.py:64
+#, python-format
+msgid "Invalid data '%(entry)s:%(data)s' for client '%(target)s provided'"
+msgstr ""
+
+#: src/clacks/agent/plugins/goto/client_service.py:65
+#, python-format
+msgid ""
+"Device type '%(type)s' for client '%(target)s' is invalid [terminal, "
+"workstation, server, sipphone, switch, router, printer, scanner]"
+msgstr ""
+
+#: src/clacks/agent/plugins/goto/client_service.py:66
+#, python-format
+msgid "Owner '%(owner)s' for client '%(target)s' not found"
+msgstr ""
+
+#: src/clacks/agent/plugins/goto/client_service.py:67
+#, python-format
+msgid "Invalid client UUID '%(target)s'"
+msgstr ""
+
+#: src/clacks/agent/plugins/goto/client_service.py:68
+#, python-format
+msgid "Invalid status '%(status)s' for client '%(target)s'"
+msgstr ""
+
+#: src/clacks/agent/plugins/goto/client_service.py:163
 msgid "List available clients."
 msgstr ""
 
-#: src/clacks/agent/plugins/goto/client_service.py:158
+#: src/clacks/agent/plugins/goto/client_service.py:176
 msgid "Call method exposed by client."
 msgstr ""
 
-#: src/clacks/agent/plugins/goto/client_service.py:198
+#: src/clacks/agent/plugins/goto/client_service.py:216
 msgid "Get the client Interface/IP/Netmask/Broadcast/MAC list."
 msgstr ""
 
-#: src/clacks/agent/plugins/goto/client_service.py:224
+#: src/clacks/agent/plugins/goto/client_service.py:242
 msgid "List available client methods for specified client."
 msgstr ""
 
-#: src/clacks/agent/plugins/goto/client_service.py:238
+#: src/clacks/agent/plugins/goto/client_service.py:256
 msgid "List user sessions per client"
 msgstr ""
 
-#: src/clacks/agent/plugins/goto/client_service.py:248
+#: src/clacks/agent/plugins/goto/client_service.py:266
 msgid "List clients a user is logged in"
 msgstr ""
 
-#: src/clacks/agent/plugins/goto/client_service.py:255
+#: src/clacks/agent/plugins/goto/client_service.py:273
 msgid "Send synchronous notification message to user"
 msgstr ""
 
-#: src/clacks/agent/plugins/goto/client_service.py:318
-#: src/clacks/agent/plugins/goto/client_service.py:339
+#: src/clacks/agent/plugins/goto/client_service.py:336
+#: src/clacks/agent/plugins/goto/client_service.py:357
 msgid "Set system status"
 msgstr ""
 
-#: src/clacks/agent/plugins/goto/client_service.py:387
+#: src/clacks/agent/plugins/goto/client_service.py:405
 msgid "Join a client to the clacks infrastructure."
 msgstr ""
 
@@ -849,6 +930,20 @@ msgstr ""
 
 #: src/clacks/agent/plugins/goto/network.py:58
 msgid "Resolve MAC address to the producer of the network card if possible."
+msgstr ""
+
+#: src/clacks/agent/plugins/inventory/consumer.py:30
+#, python-format
+msgid "No client UUID for hardware UUID '%(target)s' found"
+msgstr ""
+
+#: src/clacks/agent/plugins/inventory/consumer.py:31
+#, python-format
+msgid "No hardware checksum found for client %(target)s"
+msgstr ""
+
+#: src/clacks/agent/plugins/inventory/consumer.py:32
+msgid "Inventory data invalid"
 msgstr ""
 
 #: src/clacks/agent/plugins/misc/filter_validators.py:34
@@ -1461,32 +1556,69 @@ msgstr ""
 msgid "Transliterate a given string"
 msgstr ""
 
-#: src/clacks/agent/plugins/password/manager.py:46
+#: src/clacks/agent/plugins/password/manager.py:29
+msgid "Cannot detect password method"
+msgstr ""
+
+#: src/clacks/agent/plugins/password/manager.py:30
+#, python-format
+msgid "No password method to generate hash of type '%(type)s' available"
+msgstr ""
+
+#: src/clacks/agent/plugins/password/manager.py:31
+#, python-format
+msgid "Invalid hash type for password method '%(method)s'"
+msgstr ""
+
+#: src/clacks/agent/plugins/password/manager.py:32
+msgid "Object has no 'userPassword' attribute"
+msgstr ""
+
+#: src/clacks/agent/plugins/password/manager.py:33
+msgid "No password to lock."
+msgstr ""
+
+#: src/clacks/agent/plugins/password/manager.py:64
 msgid "Locks the account password for the given DN"
 msgstr ""
 
-#: src/clacks/agent/plugins/password/manager.py:80
+#: src/clacks/agent/plugins/password/manager.py:99
 msgid "Unlocks the account password for the given DN"
 msgstr ""
 
-#: src/clacks/agent/plugins/password/manager.py:114
+#: src/clacks/agent/plugins/password/manager.py:133
 msgid "Check whether the account can be locked or not"
 msgstr ""
 
-#: src/clacks/agent/plugins/password/manager.py:146
+#: src/clacks/agent/plugins/password/manager.py:165
 msgid "Check whether the account can be unlocked or not"
 msgstr ""
 
-#: src/clacks/agent/plugins/password/manager.py:176
-msgid "Changes the used password enryption method"
+#: src/clacks/agent/plugins/password/manager.py:195
+msgid "Changes the used password encryption method"
 msgstr ""
 
-#: src/clacks/agent/plugins/password/manager.py:205
+#: src/clacks/agent/plugins/password/manager.py:224
 msgid "Sets a new password for a user"
 msgstr ""
 
-#: src/clacks/agent/plugins/password/manager.py:236
+#: src/clacks/agent/plugins/password/manager.py:255
 msgid "List all password hashing-methods"
+msgstr ""
+
+#: src/clacks/agent/plugins/posix/filters.py:21
+#, python-format
+msgid "Parameter for '%(target)s' have to be numeric"
+msgstr ""
+
+#: src/clacks/agent/plugins/posix/filters.py:22
+#, python-format
+msgid "Too many backends for %(target)s specified"
+msgstr ""
+
+#: src/clacks/agent/plugins/posix/filters.py:23
+#, python-format
+msgid "ID pool for attribute %(target)s is empty [> %(max)s]"
 msgstr ""
 
 #: src/clacks/agent/plugins/posix/shells.py:43
@@ -1498,7 +1630,26 @@ msgstr ""
 msgid "Unknown domain '%(domain)s'"
 msgstr ""
 
-#: src/clacks/agent/plugins/samba/sid.py:35
+#: src/clacks/agent/plugins/samba/hash.py:21
+#, python-format
+msgid "Filter '%(target)s' does not support input type '%(type)s'"
+msgstr ""
+
+#: src/clacks/agent/plugins/samba/sid.py:24
+#, python-format
+msgid "Domain %(target)s has no SID"
+msgstr ""
+
+#: src/clacks/agent/plugins/samba/sid.py:25
+#, python-format
+msgid "Invalid type '%(type)s' for SID generator [user, group]"
+msgstr ""
+
+#: src/clacks/agent/plugins/samba/sid.py:47
 msgid "recursive nesting not allowed"
+msgstr ""
+
+#: src/clacks/agent/plugins/user/filters.py:26
+msgid "Image sizes not specified"
 msgstr ""
 
