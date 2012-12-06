@@ -219,14 +219,17 @@ class JSON(ObjectBackend):
         """
         Returns the create- and modify-timestamps for the given dn
         """
+        ctime = mtime = 0
         json = self.__load()
         item_uuid = self.dn2uuid(object_dn)
+
         if item_uuid in json:
             for obj in json[item_uuid]:
                 if 'createTimestamp' in json[item_uuid][obj]:
                     ctime = datetime.datetime.strptime(json[item_uuid][obj]['createTimestamp'], "%Y-%m-%dT%H:%M:%S.%f")
                 if 'modifyTimestamp' in json[item_uuid][obj]:
                     mtime = datetime.datetime.strptime(json[item_uuid][obj]['modifyTimestamp'], "%Y-%m-%dT%H:%M:%S.%f")
+
         return ctime, mtime
 
     def get_uniq_dn(self, rdns, base, data, FixedRDN):

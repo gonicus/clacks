@@ -113,8 +113,8 @@ class InventoryConsumer(Plugin):
             raise InventoryException(C.make_error("INVENTORY_DATA_INVALID"))
 
         # Get the Inventory part of the event only
-        inv_only = xml2dict(data.xpath('/e:Event/e:Inventory', \
-                namespaces={'e': 'http://www.gonicus.de/Events'})[0])
+        inv_only = xml2dict(data.xpath('/e:Event/e:Inventory',
+            namespaces={'e': 'http://www.gonicus.de/Events'})[0])
 
         # The given hardware-uuid is already part of our inventory database
         if self.hardwareUUIDExists(huuid):

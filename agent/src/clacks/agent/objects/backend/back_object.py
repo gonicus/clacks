@@ -159,25 +159,19 @@ class ObjectHandler(ObjectBackend):
         return False
 
     def query(self, base, scope, params, fixed_rdn=None):
-        print "query", base, scope, params, fixed_rdn
         return []
 
     def exists(self, misc):
-        print "exists", misc
         return False
 
     def move_extension(self, uuid, new_base):
         pass
 
     def move(self, uuid, new_base):
-        print "move", uuid
         return False
 
     def create(self, base, data, params, foreign_keys=None):
-        print "create", base, data, params
         return None
-
-        return False
 
     def uuid2dn(self, uuid):
         return None

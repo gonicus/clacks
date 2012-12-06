@@ -272,11 +272,11 @@ class ObjectIndex(Plugin):
             obj = ObjectProxy(dn)
 
         except ProxyException as e:
-            self.log.warning("not found %s: %s" % (obj, str(e)))
+            self.log.warning("not found %s: %s" % (dn, str(e)))
             obj = None
 
         except ObjectException as e:
-            self.log.warning("not indexing %s: %s" % (obj, str(e)))
+            self.log.warning("not indexing %s: %s" % (dn, str(e)))
             obj = None
 
         return obj
