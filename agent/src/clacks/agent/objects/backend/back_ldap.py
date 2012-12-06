@@ -80,6 +80,7 @@ class LDAP(ObjectBackend):
         return False
 
     def identify(self, dn, params, fixed_rdn=None):
+
         # Check for special RDN attribute
         if 'RDN' in params:
             rdns = [o.strip() for o in params['RDN'].split(",")]
@@ -92,6 +93,10 @@ class LDAP(ObjectBackend):
 
             if not found:
                 return False
+
+        custom_filter = ""
+        if 'filter' in params:
+            custom_filter = params['filter']
 
         ocs = [o.strip() for o in params['objectClasses'].split(",")]
 
@@ -109,7 +114,7 @@ class LDAP(ObjectBackend):
 
         # If we just query for an objectClass, try to get the
         # answer from the cache.
-        if dn in self.__i_cache:
+        if not 'filter' in params and dn in self.__i_cache:
 
             if fixed_rdn:
                 if dn in self.__i_cache and attr in self.__i_cache[dn]:
@@ -121,7 +126,7 @@ class LDAP(ObjectBackend):
                 self.__i_cache_ttl[dn] = time.time()
                 return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0
 
-        fltr = "(&(objectClass=*)" + fixed_rdn_filter + ")"
+        fltr = "(&(objectClass=*)" + fixed_rdn_filter + custom_filter + ")"
         try:
             res = self.con.search_s(dn.encode('utf-8'), ldap.SCOPE_BASE, fltr,
                     [self.uuid_entry, 'objectClass'] + ([attr] if attr else []))

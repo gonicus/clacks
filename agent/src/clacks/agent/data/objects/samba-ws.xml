@@ -1,170 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Objects xmlns="http://www.gonicus.de/Objects" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gonicus.de/Objects ../object.xsd ">
   <Object>
-    <Name>User</Name>
-    <Description>A generic user</Description>
-    <DisplayName>User</DisplayName>
-    <Templates>
-      <Template>user.ui</Template>
-      <Template>user-organizational.ui</Template>
-    </Templates>
+    <Name>WindowsMachineAccount</Name>
+    <Description>Windows workstation account</Description>
+    <DisplayName>Windows Workstation</DisplayName>
     <BackendParameters>
-      <Backend objectClasses="inetOrgPerson" manager="User:dn" RDN="cn,uid" filter="(!(uid=*$))">LDAP</Backend>
-      <Backend type="User">JSON</Backend>
+      <Backend objectClasses="inetOrgPerson" RDN="uid" filter="(uid=*$)">LDAP</Backend>
     </BackendParameters>
     <Backend>LDAP</Backend>
 
-    <Methods>
-      <Method>
-        <Name>lock</Name>
-        <Command>lockAccountPassword</Command>
-        <CommandParameters>
-          <Value>dn</Value>
-        </CommandParameters>
-      </Method>
-      <Method>
-        <Name>unlock</Name>
-        <Command>unlockAccountPassword</Command>
-        <CommandParameters>
-          <Value>dn</Value>
-        </CommandParameters>
-      </Method>
-      <Method>
-        <Name>notify</Name>
-        <MethodParameters>
-          <MethodParameter>
-            <Name>notify_title</Name>
-            <Type>UnicodeString</Type>
-            <Default></Default>
-          </MethodParameter>
-          <MethodParameter>
-            <Name>notify_message</Name>
-            <Type>UnicodeString</Type>
-            <Required>true</Required>
-          </MethodParameter>
-          <MethodParameter>
-            <Name>notify_duration</Name>
-            <Type>Integer</Type>
-            <Required>false</Required>
-            <Default>60</Default>
-          </MethodParameter>
-        </MethodParameters>
-        <Command>notifyUser</Command>
-        <CommandParameters>
-          <Value>uid</Value>
-          <Value>notify_title</Value>
-          <Value>notify_message</Value>
-          <Value>notify_duration</Value>
-        </CommandParameters>
-      </Method>
-
-      <Method>
-        <Name>changePassword</Name>
-        <MethodParameters>
-          <MethodParameter>
-            <Name>password</Name>
-            <Type>UnicodeString</Type>
-            <Default></Default>
-          </MethodParameter>
-        </MethodParameters>
-        <Command>setUserPassword</Command>
-        <CommandParameters>
-          <Value>dn</Value>
-          <Value>password</Value>
-        </CommandParameters>
-      </Method>
-
-      <Method>
-        <Name>changePasswordMethod</Name>
-        <MethodParameters>
-          <MethodParameter>
-            <Name>password_method</Name>
-            <Type>UnicodeString</Type>
-            <Default></Default>
-          </MethodParameter>
-          <MethodParameter>
-            <Name>password</Name>
-            <Type>UnicodeString</Type>
-            <Default></Default>
-          </MethodParameter>
-        </MethodParameters>
-        <Command>setUserPasswordMethod</Command>
-        <CommandParameters>
-          <Value>dn</Value>
-          <Value>password_method</Value>
-          <Value>password</Value>
-        </CommandParameters>
-      </Method>
-    </Methods>
-
     <Attributes>
-      <Attribute>
-        <Name>guiPreferences</Name>
-        <Description>The Audio attribute type allows the storing of sounds in the Directory. The attribute uses a u-law encoded sound file as used by the "play" utility on a Sun 4. This is an interim format</Description>
-        <Type>AnyType</Type>
-        <Backend>JSON</Backend>
-      </Attribute>
-      <Attribute>
-        <Name>audio</Name>
-        <Description>The Audio attribute type allows the storing of sounds in the Directory. The attribute uses a u-law encoded sound file as used by the "play" utility on a Sun 4. This is an interim format</Description>
-        <Type>Binary</Type>
-      </Attribute>
-      <Attribute>
-        <Name>businessCategory</Name>
-        <Description>This attribute describes the kind of business performed by an organization.</Description>
-        <Type>UnicodeString</Type>
-      </Attribute>
-      <Attribute>
-        <Name>carLicense</Name>
-        <Description>This multivalued field is used to record the values of the license or registration plate associated with an individual.</Description>
-        <Type>UnicodeString</Type>
-        <MultiValue>true</MultiValue>
-      </Attribute>
-      <Attribute>
-        <Name>departmentNumber</Name>
-        <Description>Identifies a department within an organization</Description>
-        <Type>String</Type>
-      </Attribute>
       <Attribute>
         <Name>displayName</Name>
         <Description>preferred name of a person to be used when displaying entries</Description>
         <Type>UnicodeString</Type>
-        <BlockedBy>
-          <Attribute value="true">autoDisplayName</Attribute>
-        </BlockedBy>
-        <DependsOn>
-          <Attribute>autoDisplayName</Attribute>
-        </DependsOn>
-      </Attribute>
-
-      <Attribute>
-        <Name>autoDisplayName</Name>
-        <Default>true</Default>
-        <Mandatory>true</Mandatory>
-        <Backend>NULL</Backend>
-        <Type>Boolean</Type>
-        <OutFilter>
-          <FilterChain>
-            <FilterEntry>
-              <Filter>
-                <Name>GenerateDisplayName</Name>
-              </Filter>
-            </FilterEntry>
-          </FilterChain>
-        </OutFilter>
-        <InFilter>
-          <FilterChain>
-            <FilterEntry>
-              <Filter>
-                <Name>LoadDisplayNameState</Name>
-              </Filter>
-            </FilterEntry>
-          </FilterChain>
-        </InFilter>
-        <DependsOn>
-          <Attribute>givenName</Attribute>
-          <Attribute>sn</Attribute>
-        </DependsOn>
       </Attribute>
 
       <Attribute>
@@ -550,33 +399,5 @@
       </Attribute>
     </Attributes>
     <BaseObject>true</BaseObject>
-
-	<Find>
-		<Aspect>
-			<Tag>User</Tag>
-			<Keyword>User</Keyword>
-			<Search>givenName</Search>
-			<Search>sn</Search>
-			<Search>cn</Search>
-			<Search>uid</Search>
-			<Resolve type="PosixGroup" filter="cn">groupMembership</Resolve>
-			<Resolve filter="DN">manager</Resolve>
-			<Result>
-				<Map>
-					<Source>cn</Source>
-					<Destination>title</Destination>
-				</Map>
-				<Map>
-					<Source><![CDATA[%(description)s%(phoneRenderer)s%(mailRenderer)s<br>%(extensions)s]]></Source>
-					<Destination>description</Destination>
-				</Map>
-				<Map>
-					<Source>jpegPhoto</Source>
-					<Destination>icon</Destination>
-				</Map>
-			</Result>
-		</Aspect>
-	</Find>
-
   </Object>
 </Objects>
