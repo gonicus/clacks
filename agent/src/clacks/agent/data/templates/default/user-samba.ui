@@ -127,6 +127,9 @@
             <property name="text">
              <string>Logon Hours</string>
             </property>
+            <property name="dialog" stdset="0">
+             <string>sambaLogonHours</string>
+            </property>
            </widget>
           </item>
          </layout>

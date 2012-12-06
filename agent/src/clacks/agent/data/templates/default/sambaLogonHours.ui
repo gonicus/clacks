@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>502</width>
-    <height>184</height>
+    <width>199</width>
+    <height>85</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,7 +38,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="snEdit2"/>
+           <widget class="SambaLogonHours" name="sambaLogonHoursEdit"/>
           </item>
          </layout>
         </item>
@@ -52,10 +52,10 @@
  <resources/>
  <connections>
   <connection>
-   <sender>snEdit2</sender>
+   <sender>sambaLogonHoursEdit</sender>
    <signal>textChanged(QString)</signal>
    <receiver>sambaLogonHours</receiver>
-   <slot>property_sn()</slot>
+   <slot>property_sambaLogonHours()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>224</x>
