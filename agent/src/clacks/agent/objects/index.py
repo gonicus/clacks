@@ -532,13 +532,13 @@ class ObjectIndex(Plugin):
 
         ``Return``: True/False
         """
-        return self.db.index.find_one({'_uuid': uuid}, {'_uuid': 1}) != None
+        return self.db.index.find_one({'_uuid': uuid}, {'_uuid': 1}) is not None
 
     @Command(__help__=N_("Get list of defined base object types."))
     def getBaseObjectTypes(self):
         ret = []
         for k, v in self.factory.getObjectTypes().items():
-            if v['base'] == True:
+            if v['base']:
                 ret.append(k)
 
         return ret
@@ -577,7 +577,7 @@ class ObjectIndex(Plugin):
 
             # Filter out what the current use is not allowed to see
             item = self.__filter_entry(user, item)
-            if item and item['dn'] != None:
+            if item and item['dn'] is not None:
                 del item['_id']
 
                 # Convert binary (bson) to Binary

@@ -277,7 +277,7 @@ class ClientService(Plugin):
         Send a notification request to the user client.
         """
 
-        if icon == None:
+        if icon is None:
             icon = "_no_icon_"
 
         if users:

@@ -81,7 +81,7 @@ class PasswordMethodCrypt(PasswordMethod):
         """
         See PasswordMethod Interface for details
         """
-        return re.match("\{[^\}]*\}!", password_hash) != None
+        return re.match("\{[^\}]*\}!", password_hash) is not None
 
     def lock_account(self, password_hash):
         """

@@ -155,7 +155,7 @@ class SQL(ObjectBackend):
         """
 
         # Try to find an entry with the uuid and return its dn
-        search = self.objects.select(and_(self.objects.c.dn != None, self.objects.c.uuid == item_uuid)).execute()
+        search = self.objects.select(and_(self.objects.c.dn is not None, self.objects.c.uuid == item_uuid)).execute()
         entry = search.first()
         if entry:
             return entry.dn

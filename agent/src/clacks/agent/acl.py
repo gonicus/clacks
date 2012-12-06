@@ -1484,7 +1484,7 @@ class ACLResolver(Plugin):
 
                     # Check if this acl matches the requested topic
                     match = True
-                    if topic != None:
+                    if topic is not None:
                         match = False
 
                         # Walk through defined topics of the current acl and check if one
@@ -1945,11 +1945,11 @@ class ACLResolver(Plugin):
             raise ACLException(C.make_error("PERMISSION_UPDATE", target=self.base))
 
         # Validate the priority
-        if priority != None and type(priority) != int:
+        if priority is not None and type(priority) != int:
             raise ACLException(C.make_error("ATTRIBUTE_INVALID", "priority", int.__name__))
 
         # Check for priority
-        if priority != None and priority < -100 or priority > 100:
+        if priority is not None and priority < -100 or priority > 100:
             raise ACLException(C.make_error('ACL_PRIORITY_INVALID'))
 
         # We cannot set a role and actions.

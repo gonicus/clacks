@@ -141,7 +141,7 @@ class CommandRegistry(Plugin):
         ``Return``: dict describing all methods
         """
         res = {}
-        if queue == None:
+        if queue is None:
             queue = self.env.domain + ".command.core"
 
         if queue == self.env.domain + ".command.core":
@@ -380,7 +380,7 @@ class CommandRegistry(Plugin):
                     if methodType == FIRSTRESULT:
                         return tmp
                     else:
-                        if result == None:
+                        if result is None:
                             result = {}
 
                         result[node] = tmp

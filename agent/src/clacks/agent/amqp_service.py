@@ -202,7 +202,7 @@ class AMQPService(object):
             err = str(e)
             req = {'id': id_}
 
-        if err == None:
+        if err is None:
             try:
                 id_ = req['id']
                 name = req['method']
@@ -229,7 +229,7 @@ class AMQPService(object):
                 return
 
         # Try to execute either with or without keyword arguments
-        if err == None:
+        if err is None:
             try:
                 if isinstance(args, dict):
                     res = self.__cr.dispatch(message.user_id, queue, name, **args)

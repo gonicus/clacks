@@ -79,7 +79,7 @@ class MongoDB(ObjectBackend):
         """
         Identify an object by uuid
         """
-        return self.db.find_one({'_uuid': item_uuid, '_type': params['type']}) != None
+        return self.db.find_one({'_uuid': item_uuid, '_type': params['type']}) is not None
 
     def retract(self, item_uuid, data, params):
         """

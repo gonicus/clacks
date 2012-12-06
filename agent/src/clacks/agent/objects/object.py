@@ -175,7 +175,7 @@ class Object(object):
         # afterwards.
         # (Defaults will be passed to in-filters too, if they are not overwritten by _read())
         for key in self.myProperties:
-            if not(self.myProperties[key]['value']) and self.myProperties[key]['default'] != None and \
+            if not(self.myProperties[key]['value']) and self.myProperties[key]['default'] is not None and \
                 len(self.myProperties[key]['default']):
                 self.myProperties[key]['value'] = copy.deepcopy(self.myProperties[key]['default'])
                 if self.myProperties[key]['mandatory']:
@@ -260,7 +260,7 @@ class Object(object):
         for key in self.myProperties:
 
             # Skip loading in-filters for None values
-            if self.myProperties[key]['value'] == None:
+            if self.myProperties[key]['value'] is None:
                 self.myProperties[key]['in_value'] = self.myProperties[key]['value'] = []
                 continue
 
@@ -339,7 +339,7 @@ class Object(object):
             pass
 
         # A none value was passed to clear the value
-        if value == None:
+        if value is None:
             self._delattr_(name)
             return
 

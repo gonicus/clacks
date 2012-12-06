@@ -236,7 +236,7 @@ class LDAP(ObjectBackend):
                 items.append(cnv(lvalue))
 
             self.log.debug(" * add attribute '%s' with value %s" % (attr, items))
-            if foreign_keys == None:
+            if foreign_keys is None:
                 mod_attrs.append((attr, items))
             else:
                 mod_attrs.append((ldap.MOD_ADD, attr, items))
@@ -244,12 +244,12 @@ class LDAP(ObjectBackend):
         # We know about object classes - add them if possible
         if 'objectClasses' in params:
             ocs = [o.strip() for o in params['objectClasses'].split(",")]
-            if foreign_keys == None:
+            if foreign_keys is None:
                 mod_attrs.append(('objectClass', ocs))
             else:
                 mod_attrs.append((ldap.MOD_ADD, 'objectClass', ocs))
 
-        if foreign_keys == None:
+        if foreign_keys is None:
             # Check if obligatory information for assembling the DN are
             # provided
             if not 'RDN' in params:
@@ -272,7 +272,7 @@ class LDAP(ObjectBackend):
         # Write...
         self.log.debug("saving entry '%s'" % dn)
 
-        if foreign_keys == None:
+        if foreign_keys is None:
             self.con.add_s(dn, mod_attrs)
         else:
             self.con.modify_s(dn, mod_attrs)

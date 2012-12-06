@@ -218,7 +218,7 @@ class ObjectProxy(object):
         for attr, ext in self.__foreign_attrs:
 
             # Only populate value for the given extension
-            if extension != None and extension != ext:
+            if extension is not None and extension != ext:
                 continue
 
             # Tell the class that own the foreign property that it
@@ -304,7 +304,7 @@ class ObjectProxy(object):
         return self.__base.__class__.__name__
 
     def get_extension_types(self):
-        return dict([(e, i != None) for e, i in self.__extensions.iteritems()])
+        return dict([(e, i is not None) for e, i in self.__extensions.iteritems()])
 
     def get_templates(self, theme="default"):
         res = {}
@@ -366,18 +366,18 @@ class ObjectProxy(object):
             raise ProxyException(C.make_error('OBJECT_EXTENSION_NOT_ALLOWED', extension=extension))
 
         # Is this extension already active?
-        if self.__extensions[extension] != None:
+        if self.__extensions[extension] is not None:
             raise ProxyException(C.make_error('OBJECT_EXTENSION_DEFINED', extension=extension))
 
         # Ensure that all precondition for this extension are fullfilled
         oTypes = self.__factory.getObjectTypes()
         for r_ext in oTypes[extension]['requires']:
-            if not r_ext in self.__extensions or self.__extensions[r_ext] == None:
+            if not r_ext in self.__extensions or self.__extensions[r_ext] is None:
                 raise ProxyException(C.make_error('OBJECT_EXTENSION_DEPENDS', extension=extension, missing=r_ext))
 
         # Check Acls
         # Required is the 'c' (create) right for the extension on the current object.
-        if self.__current_user != None:
+        if self.__current_user is not None:
             topic = "%s.objects.%s" % (self.__env.domain, extension)
             if not self.__acl_resolver.check(self.__current_user, topic, "c", base=self.__base.dn):
                 self.__log.debug("user '%s' has insufficient permissions to add extension %s to %s, required is %s:%s on %s" % (
@@ -402,7 +402,7 @@ class ObjectProxy(object):
         if not extension in self.__extensions:
             raise ProxyException(C.make_error('OBJECT_EXTENSION_NOT_ALLOWED', extension=extension))
 
-        if self.__extensions[extension] == None:
+        if self.__extensions[extension] is None:
             raise ProxyException(C.make_error('OBJECT_NO_SUCH_EXTENSION', extension=extension))
 
         # Collect all extensions that are required due to dependencies..
@@ -414,7 +414,7 @@ class ObjectProxy(object):
 
         # Check Acls
         # Required is the 'd' (delete) right for the extension on the current object.
-        if self.__current_user != None:
+        if self.__current_user is not None:
             topic = "%s.objects.%s" % (self.__env.domain, extension)
             if not self.__acl_resolver.check(self.__current_user, topic, "d", base=self.__base.dn):
                 self.__log.debug("user '%s' has insufficient permissions to add extension %s to %s, required is %s:%s on %s" % (
@@ -434,7 +434,7 @@ class ObjectProxy(object):
         # to move an object we need the 'w' (write) right on the virtual attribute base,
         # the d (delete) right for the complete source object and at least the c (create)
         # right on the target base.
-        if self.__current_user != None:
+        if self.__current_user is not None:
 
             # Prepare ACL results
             topic_user = "%s.objects.%s" % (self.__env.domain, self.__base_type)
@@ -551,8 +551,9 @@ class ObjectProxy(object):
 
         # Check ACLs
         # We need the 'd' right for the current base-object and all its active extensions to be able to remove it.
-        if self.__current_user != None:
-            required_acl_objects = [self.__base_type] + [ext for ext, item in self.__extensions.items() if item != None]
+        if self.__current_user is not None:
+            required_acl_objects = [self.__base_type] + [ext for ext, item in self.__extensions.items() if
+                                                         item is not None]
             for ext_type in required_acl_objects:
                 topic = "%s.objects.%s" % (self.__env.domain, ext_type)
                 if not self.__acl_resolver.check(self.__current_user, topic, "d", base=self.dn):
@@ -596,7 +597,7 @@ class ObjectProxy(object):
         # Check create permissions
         if self.__base_mode == "create":
             topic = "%s.objects.%s" % (self.__env.domain, self.__base_type)
-            if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "c", base=self.dn):
+            if self.__current_user is not None and not self.__acl_resolver.check(self.__current_user, topic, "c", base=self.dn):
                 self.__log.debug("user '%s' has insufficient permissions to create %s, required is %s:%s" % (
                     self.__current_user, self.__base.dn, topic, 'c'))
                 raise ACLException(C.make_error('PERMISSION_CREATE', target=self.__base.dn))
@@ -708,7 +709,7 @@ class ObjectProxy(object):
             # To execute a method the 'x' permission is required.
             attr_type = self.__method_type_map[name]
             topic = "%s.objects.%s.methods.%s" % (self.__env.domain, attr_type, name)
-            if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "x", base=self.dn):
+            if self.__current_user is not None and not self.__acl_resolver.check(self.__current_user, topic, "x", base=self.dn):
                 self.__log.debug("user '%s' has insufficient permissions to execute %s on %s, required is %s:%s" % (
                     self.__current_user, name, self.dn, topic, "x"))
                 raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=self.dn))
@@ -729,7 +730,7 @@ class ObjectProxy(object):
         # Do we have read permissions for the requested attribute
         attr_type = self.__attribute_type_map[name]
         topic = "%s.objects.%s.attributes.%s" % (self.__env.domain, attr_type, name)
-        if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
+        if self.__current_user is not None and not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
             self.__log.debug("user '%s' has insufficient permissions to read %s on %s, required is %s:%s" % (
                 self.__current_user, name, self.dn, topic, "r"))
             raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=self.dn))
@@ -757,7 +758,7 @@ class ObjectProxy(object):
             pass
 
         # If we try to modify pbject specific properties then check acls
-        if self.__attribute_map and name in self.__attribute_map and self.__current_user != None:
+        if self.__attribute_map and name in self.__attribute_map and self.__current_user is not None:
 
             # Do we have read permissions for the requested attribute, method
             attr_type = self.__attribute_type_map[name]
@@ -795,7 +796,7 @@ class ObjectProxy(object):
 
         # Check permissions
         topic = "%s.objects.%s" % (self.__env.domain, self.__base_type)
-        if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
+        if self.__current_user is not None and not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
             self.__log.debug("user '%s' has insufficient permissions for asXML on %s, required is %s:%s" % (
                 self.__current_user, self.dn, topic, "r"))
             raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=self.dn))
@@ -835,7 +836,7 @@ class ObjectProxy(object):
 
         # Check permissions
         topic = "%s.objects.%s" % (self.__env.domain, self.__base_type)
-        if self.__current_user != None and not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
+        if self.__current_user is not None and not self.__acl_resolver.check(self.__current_user, topic, "r", base=self.dn):
             self.__log.debug("user '%s' has insufficient permissions for asXML on %s, required is %s:%s" % (
                 self.__current_user, self.dn, topic, "r"))
             raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=self.dn))

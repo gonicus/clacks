@@ -365,7 +365,7 @@ class ObjectFactory(object):
 
                         # Append the result if it matches the given parameters.
                         for ref in attr.References.iterchildren():
-                            if (s_obj == None or s_obj == ref.Object.text) and (s_attr == None or s_attr == ref.Attribute.text):
+                            if (s_obj is None or s_obj == ref.Object.text) and (s_attr is None or s_attr == ref.Attribute.text):
 
                                 # Ensure that values are initialized
                                 if obj not in res:
