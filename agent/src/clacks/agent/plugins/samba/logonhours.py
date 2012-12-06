@@ -82,7 +82,6 @@ class SambaLogonHoursAttribute(AttributeType):
 
             # Convert each hex-pair into binary values.
             # Then reverse the binary result and switch high and low pairs.
-            res = {}
             value = value[0]
             lstr = ""
             for i in range(0, 42, 2):
@@ -91,8 +90,6 @@ class SambaLogonHoursAttribute(AttributeType):
                 lstr += n[0:4] + n[4:]
 
             # Parse result into more readable value
-            for day in range(0, 7):
-                res[day] = lstr[(day * 24):((day + 1) * 24)]
-            value = [res]
+            value = [lstr]
 
         return(value)
