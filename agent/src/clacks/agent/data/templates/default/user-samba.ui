@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>728</width>
-    <height>614</height>
+    <height>761</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -121,16 +121,6 @@
           </item>
           <item row="1" column="1">
            <widget class="QLineEdit" name="descriptionEdit"/>
-          </item>
-          <item row="2" column="1">
-           <widget class="QPushButton" name="SambaLogonHours">
-            <property name="text">
-             <string>Logon Hours</string>
-            </property>
-            <property name="dialog" stdset="0">
-             <string>sambaLogonHours</string>
-            </property>
-           </widget>
           </item>
          </layout>
         </item>
@@ -327,6 +317,9 @@
             </property>
            </widget>
           </item>
+          <item row="1" column="1">
+           <widget class="QDateTimeEdit" name="sambaKickoffTimeEdit"/>
+          </item>
           <item row="2" column="0">
            <widget class="QLabel" name="sambaPwdCanChangeLabel">
             <property name="text">
@@ -337,6 +330,9 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="1">
+           <widget class="QDateTimeEdit" name="sambaPwdCanChangeEdit"/>
+          </item>
           <item row="3" column="0">
            <widget class="QLabel" name="sambaPwdMustChangeLabel">
             <property name="text">
@@ -346,12 +342,6 @@
              <cstring>sambaPwdMustChangeEdit</cstring>
             </property>
            </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QDateTimeEdit" name="sambaKickoffTimeEdit"/>
-          </item>
-          <item row="2" column="1">
-           <widget class="QDateTimeEdit" name="sambaPwdCanChangeEdit"/>
           </item>
           <item row="3" column="1">
            <widget class="QDateTimeEdit" name="sambaPwdMustChangeEdit"/>
@@ -403,6 +393,28 @@
           <string comment="description">Description</string>
          </property>
         </column>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="title">
+      <string>Access options</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="0" column="0">
+       <widget class="QPushButton" name="SambaLogonHours">
+        <property name="text">
+         <string>Logon Hours</string>
+        </property>
+        <property name="dialog" stdset="0">
+         <string>sambaLogonHours</string>
+        </property>
        </widget>
       </item>
      </layout>
