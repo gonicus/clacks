@@ -33,7 +33,7 @@ class PasswordMethodCrypt(PasswordMethod):
         """
         See PasswordMethod Interface for details
         """
-        if not(hash_value):
+        if not hash_value:
             return False
 
         return not(self.is_locked(hash_value))
@@ -42,7 +42,7 @@ class PasswordMethodCrypt(PasswordMethod):
         """
         See PasswordMethod Interface for details
         """
-        if not(hash_value):
+        if not hash_value:
             return False
 
         return self.is_locked(hash_value)

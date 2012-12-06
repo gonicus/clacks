@@ -225,7 +225,7 @@ class SQL(ObjectBackend):
         if search:
             ctime = search.createTimestamp
             mtime = search.modifyTimestamp
-            return (ctime, mtime)
+            return ctime, mtime
         return None, None
 
     def get_uniq_dn(self, rdns, base, data, fixed_rdn):
@@ -250,7 +250,7 @@ class SQL(ObjectBackend):
 
         # Check if we've have to use a fixed RDN.
         if fixed_rdn:
-            return(["%s,%s" % (fixed_rdn, base)])
+            return["%s,%s" % (fixed_rdn, base)]
 
         # Bail out if fix part is not in data
         if not fix in data:

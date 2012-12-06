@@ -137,7 +137,7 @@ class Object(object):
         # Instantiate Backend-Registry
         self._reg = ObjectBackendRegistry.getInstance()
         self.log = getLogger(__name__)
-        self.log.debug("new object instantiated '%s'" % (type(self).__name__))
+        self.log.debug("new object instantiated '%s'" % type(self).__name__)
 
         # Group attributes by Backend
         propsByBackend = {}
@@ -187,14 +187,14 @@ class Object(object):
         self.myProperties[attr]['orig_value'] = original['orig_value']
 
     def listProperties(self):
-        return(self.myProperties.keys())
+        return self.myProperties.keys()
 
     def getProperties(self):
-        return(copy.deepcopy(self.myProperties))
+        return copy.deepcopy(self.myProperties)
 
     def listMethods(self):
         methods = getattr(self, '__methods')
-        return(methods.keys())
+        return methods.keys()
 
     def hasattr(self, attr):
         return attr in self.myProperties
@@ -228,7 +228,7 @@ class Object(object):
 
         # Load attributes for each backend.
         # And then assign the values to the properties.
-        self.log.debug("object uuid: %s" % (self.uuid))
+        self.log.debug("object uuid: %s" % self.uuid)
 
         for backend in self._propsByBackend:
 
@@ -248,7 +248,7 @@ class Object(object):
             for key in self._propsByBackend[backend]:
 
                 if key not in attrs:
-                    self.log.debug("attribute '%s' was not returned by load" % (key))
+                    self.log.debug("attribute '%s' was not returned by load" % key)
                     continue
 
                 # Keep original values, they may be overwritten in the in-filters.
@@ -437,7 +437,7 @@ class Object(object):
             else:
                 if len(self.myProperties[name]['value']):
                     value = self.myProperties[name]['value'][0]
-            return(value)
+            return value
 
         # The requested property-name seems to be a method, return the method reference.
         elif name in methods:
@@ -833,7 +833,7 @@ class Object(object):
 
         # Our filter result stack
         stack = list()
-        self.log.debug(" validator started (%s)" % (key))
+        self.log.debug(" validator started (%s)" % key)
         self.log.debug("  value: %s" % (value, ))
 
         # Process the list till we reach the end..
@@ -889,7 +889,7 @@ class Object(object):
         if not res and lasterrmsg != "":
             errormsgs.append(lasterrmsg)
 
-        self.log.debug(" <- VALIDATOR ENDED (%s)" % (key))
+        self.log.debug(" <- VALIDATOR ENDED (%s)" % key)
         return res, errormsgs
 
     def __processFilter(self, fltr, key, prop):
@@ -911,7 +911,7 @@ class Object(object):
         stack = list()
 
         # Log values
-        self.log.debug(" -> FILTER STARTED (%s)" % (key))
+        self.log.debug(" -> FILTER STARTED (%s)" % key)
 
         # Process the list till we reach the end..
         while (lptr + 1) in fltr:
@@ -934,14 +934,14 @@ class Object(object):
 
                 # Ensure that the processed data is still valid.
                 # Filter may mess things up and then the next cannot process correctly.
-                if (key not in prop):
+                if key not in prop:
                     raise ObjectException(C.make_error('FILTER_INVALID_KEY',
                         key=key, filter=fname))
 
                 # Check if the filter returned all expected property values.
                 for pk in prop:
                     if not all(k in prop[pk] for k in ('backend', 'value', 'type')):
-                        missing = ", ".join(set(['backend', 'value', 'type']) - set(prop[pk].keys()))
+                        missing = ", ".join({'backend', 'value', 'type'} - set(prop[pk].keys()))
                         raise ObjectException(C.make_error('FILTER_MISSING_KEY', key=missing, filter=fname))
 
                     # Check if the returned value-type is list or None.
@@ -1021,7 +1021,7 @@ class Object(object):
             except KeyError:
                 pass
 
-            return (x)
+            return x
 
         # Walk trough each line of the process list an replace placeholders.
         for line in fltr:

@@ -264,7 +264,7 @@ class PasswordManager(Plugin):
         """
         methods = self.list_methods()
         for hash_name in methods:
-            if(methods[hash_name].is_responsible_for_password_hash(hash_value)):
+            if methods[hash_name].is_responsible_for_password_hash(hash_value):
                 return methods[hash_name]
         return None
 

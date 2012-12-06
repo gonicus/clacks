@@ -150,7 +150,7 @@ class InventoryConsumer(Plugin):
 
         # Walk through results and return the ClientUUID
         if results.count() == 1:
-            return(results[0]['ClientUUID'])
+            return results[0]['ClientUUID']
         else:
             raise InventoryException(C.make_error("INVENTORY_CLIENT_MISMATCH", huuid))
 
@@ -162,7 +162,7 @@ class InventoryConsumer(Plugin):
 
         # Walk through results and return the found checksum
         if results.count() == 1:
-            return(results[0]['Checksum'])
+            return results[0]['Checksum']
         else:
             raise InventoryException(C.make_error("INVENTORY_CHECKSUM_MISMATCH", huuid))
 

@@ -186,7 +186,7 @@ class ObjectHandler(ObjectBackend):
         return None
 
     def get_timestamps(self, dn):
-        return (None, None)
+        return None, None
 
     def get_uniq_dn(self, rdns, base, data, FixedRDN):
         return None

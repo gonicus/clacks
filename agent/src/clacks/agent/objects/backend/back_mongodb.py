@@ -183,9 +183,9 @@ class MongoDB(ObjectBackend):
         """
         entry = self.db.find_one({'dn': object_dn}, {'_created': 1, '_last_changed': 1})
         if entry:
-            return (entry['_created'], entry['_last_changed'])
+            return entry['_created'], entry['_last_changed']
 
-        return (None, None)
+        return None, None
 
     def get_uniq_dn(self, rdns, base, data, FixedRDN):
         """

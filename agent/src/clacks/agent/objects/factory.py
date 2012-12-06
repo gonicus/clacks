@@ -160,7 +160,7 @@ class ObjectFactory(object):
         self.load_object_types()
 
     def getAttributeTypes(self):
-        return(self.__attribute_type)
+        return self.__attribute_type
 
     def getObjectBackendProperties(self, name):
         if not name in self.__classes:
@@ -313,7 +313,7 @@ class ObjectFactory(object):
         if find.hasattr(self.__xml_defs[objectType]):
             for attr in find(self.__xml_defs[objectType]):
                 res.append(attr.text)
-        return(res)
+        return res
 
     def getAttributeTypeMap(self, objectType):
         """
@@ -608,7 +608,7 @@ class ObjectFactory(object):
                     id_extend.append(name)
 
         if id_base or id_base_fixed:
-            return (id_base_fixed or id_base, id_extend)
+            return id_base_fixed or id_base, id_extend
 
         return None, None
 
@@ -707,7 +707,7 @@ class ObjectFactory(object):
             if find.hasattr(xml):
                 for attr in find(xml):
                     self.__xml_defs[attr['Name'].text] = attr
-                    self.log.info("loaded schema for '%s'" % (attr['Name'].text))
+                    self.log.info("loaded schema for '%s'" % attr['Name'].text)
 
         except etree.XMLSyntaxError as e:
             self.log.error("error loading object schema: %s" % str(e))
@@ -729,15 +729,19 @@ class ObjectFactory(object):
 
         class klass(Object):
 
+            #noinspection PyMethodParameters
             def __init__(me, *args, **kwargs): #@NoSelf
                 Object.__init__(me, *args, **kwargs)
 
+            #noinspection PyMethodParameters
             def __setattr__(me, name, value): #@NoSelf
                 me._setattr_(name, value)
 
+            #noinspection PyMethodParameters
             def __getattr__(me, name): #@NoSelf
                 return me._getattr_(name)
 
+            #noinspection PyMethodParameters
             def __delattr__(me, name): #@NoSelf
                 me._delattr_(name)
 
@@ -1212,7 +1216,7 @@ class ObjectFactory(object):
         for el in element.iterchildren():
             if el.tag == "{http://www.gonicus.de/Objects}When":
                 out = self.__handleWhen(el, out)
-        return(out)
+        return out
 
     def __handleWhen(self, element, out):
         """
@@ -1267,7 +1271,7 @@ class ObjectFactory(object):
             cnt += 1
             out[cnt] = elseChain[entry]
 
-        return(out)
+        return out
 
     def __handleElse(self, element, out):
         """
@@ -1350,7 +1354,7 @@ class ObjectFactory(object):
         # Append the condition to the process list.
         cnt = len(out) + 1
         out[cnt] = {'condition': get_comparator(name)(self), 'params': params}
-        return(out)
+        return out
 
     @staticmethod
     def getInstance():

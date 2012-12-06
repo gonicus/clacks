@@ -227,7 +227,7 @@ class JSON(ObjectBackend):
                     ctime = datetime.datetime.strptime(json[item_uuid][obj]['createTimestamp'], "%Y-%m-%dT%H:%M:%S.%f")
                 if 'modifyTimestamp' in json[item_uuid][obj]:
                     mtime = datetime.datetime.strptime(json[item_uuid][obj]['modifyTimestamp'], "%Y-%m-%dT%H:%M:%S.%f")
-        return (ctime, mtime)
+        return ctime, mtime
 
     def get_uniq_dn(self, rdns, base, data, FixedRDN):
         """

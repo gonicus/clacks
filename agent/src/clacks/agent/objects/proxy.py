@@ -293,9 +293,9 @@ class ObjectProxy(object):
                 topic = "%s.objects.%s.methods.%s" % (self.__env.domain, attr_type, method)
                 return self.__acl_resolver.check(self.__current_user, topic, "x", base=self.dn)
 
-            return(filter(lambda x: check_acl(x), self.__method_map.keys()))
+            return filter(lambda x: check_acl(x), self.__method_map.keys())
         else:
-            return(self.__method_map.keys())
+            return self.__method_map.keys()
 
     def get_parent_dn(self):
         return dn2str(str2dn(self.__base.dn.encode('utf-8'))[1:]).decode('utf-8')
@@ -645,7 +645,7 @@ class ObjectProxy(object):
         for extension in [ext for ext in self.__extensions.values() if ext]:
 
             # Populate the base uuid to the extensions
-            if(extension.uuid and extension.uuid != self.__base.uuid):
+            if extension.uuid and extension.uuid != self.__base.uuid:
                 raise ProxyException(C.make_error('OBJECT_UUID_MISMATCH', b_uuid=self.__base.uuid, e_uuid=extension.uuid))
             if not extension.uuid:
                 extension.uuid = self.__base.uuid

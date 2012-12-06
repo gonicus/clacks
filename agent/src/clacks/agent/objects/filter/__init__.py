@@ -36,7 +36,7 @@ class ElementFilter(object):
     def __init__(self, obj):
         pass
 
-    def process(self, obj, key, value):
+    def process(self, obj, key, value, *args):
         raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", method="process"))
 
     def __copy__(self):

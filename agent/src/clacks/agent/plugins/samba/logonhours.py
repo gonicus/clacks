@@ -24,7 +24,7 @@ class SambaLogonHoursAttribute(AttributeType):
     __alias__ = "SambaLogonHours"
 
     def values_match(self, value1, value2):
-        return(str(value1) == str(value2))
+        return str(value1) == str(value2)
 
     def is_valid_value(self, value):
         if len(value):
@@ -66,7 +66,7 @@ class SambaLogonHoursAttribute(AttributeType):
                 new += n
             value = [new.upper()]
 
-        return(value)
+        return value
 
     def _convert_from_string(self, value):
         return self._convert_from_unicodestring(value)
@@ -95,4 +95,4 @@ class SambaLogonHoursAttribute(AttributeType):
                 res[day] = lstr[(day * 24):((day + 1) * 24)]
             value = [res]
 
-        return(value)
+        return value

@@ -114,7 +114,7 @@ class LDAP(ObjectBackend):
             if fixed_rdn:
                 if dn in self.__i_cache and attr in self.__i_cache[dn]:
                     self.__i_cache_ttl[dn] = time.time()
-                    return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0 and len(set([value]) - set(self.__i_cache[dn][attr])) == 0
+                    return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0 and len({value} - set(self.__i_cache[dn][attr])) == 0
 
             else:
                 self.__i_cache_ttl[dn] = time.time()
@@ -139,7 +139,7 @@ class LDAP(ObjectBackend):
                     self.__i_cache[dn][attr] = [x.decode('utf-8') for x in res[0][1][attr]]
                 else:
                     self.__i_cache[dn][attr] = []
-                return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0 and len(set([value]) - set(self.__i_cache[dn][attr])) == 0
+                return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0 and len({value} - set(self.__i_cache[dn][attr])) == 0
             else:
                 return len(set(ocs) - set(self.__i_cache[dn]['objectClass'])) == 0
 
@@ -370,7 +370,7 @@ class LDAP(ObjectBackend):
         cts = self._convert_from_timestamp(res[0][1][self.create_ts_entry][0])
         mts = self._convert_from_timestamp(res[0][1][self.modify_ts_entry][0])
 
-        return (cts, mts)
+        return cts, mts
 
     def get_uniq_dn(self, rdns, base, data, FixedRDN):
 
@@ -405,7 +405,7 @@ class LDAP(ObjectBackend):
 
         # Check if we've have to use a fixed RDN.
         if FixedRDN:
-            return(["%s,%s" % (FixedRDN, base)])
+            return["%s,%s" % (FixedRDN, base)]
 
         # Bail out if fix part is not in data
         if not fix in data:

@@ -27,7 +27,7 @@ class AclRole(AttributeType):
         """
         Checks whether the given values are equal
         """
-        return(str(value1) == str(value2))
+        return str(value1) == str(value2)
 
     def is_valid_value(self, value):
         """
@@ -51,9 +51,9 @@ class AclRole(AttributeType):
 
                 # Add scope and priority (scope is not available for role based acls)
                 if "rolename" in entry and entry["rolename"]:
-                    item = "\n%(priority)s\n" % (entry)
+                    item = "\n%(priority)s\n" % entry
                 else:
-                    item = "%(scope)s\n%(priority)s\n" % (entry)
+                    item = "%(scope)s\n%(priority)s\n" % entry
 
                 # Add rolename or actions
                 if "rolename" in entry and entry["rolename"]:
@@ -67,7 +67,7 @@ class AclRole(AttributeType):
 
                 res.append(item)
             return res
-        return(value)
+        return value
 
     def _convert_from_string(self, value):
         """
@@ -117,4 +117,4 @@ class AclRole(AttributeType):
 
                         new_entry['actions'].append({"topic": topic, "acl": acl, "options": options})
 
-        return(new_value)
+        return new_value

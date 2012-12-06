@@ -283,7 +283,7 @@ class SambaMungedDial(object):
         else:
             result += value
 
-        return (result)
+        return result
 
     @staticmethod
     def decode(mstr):

@@ -737,7 +737,7 @@ class ACL(object):
                 (match, scope) = acl.match(user, topic, acls, targetBase, options if options else {}, False, used_roles, override_users)
                 if match:
                     self.log.debug("ACL role entry matched for role '%s'" % self.role)
-                    return (match, scope)
+                    return match, scope
 
         else:
             for act in self.actions:
@@ -806,10 +806,10 @@ class ACL(object):
                         continue
 
                 # The acl rule matched!
-                return (True, self.scope)
+                return True, self.scope
 
         # Nothing matched!
-        return (False, None)
+        return False, None
 
     def get_scope(self):
         """
@@ -1304,7 +1304,7 @@ class ACLResolver(Plugin):
                     return True
                 else:
                     role_acl_sets = self.acl_roles[acl.role]
-                    if(self.__is_role_used(role_acl_sets, rolename)):
+                    if self.__is_role_used(role_acl_sets, rolename):
                         return True
 
         return False
