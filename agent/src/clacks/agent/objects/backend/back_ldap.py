@@ -203,7 +203,7 @@ class LDAP(ObjectBackend):
         for key in data.keys():
             mod_attrs.append((ldap.MOD_DELETE, key, None))
 
-        self.con.modify_s(dn, mod_attrs)
+        self.con.modify_s(dn.encode('utf-8'), mod_attrs)
 
         # Clear identify cache, else we will receive old values from self.identifyObject
         if dn in self.__i_cache_ttl:
