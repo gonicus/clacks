@@ -80,9 +80,9 @@ class Greater(ElementComparator):
             item = int(item)
             if not (item > match):
                 errors.append(dict(index=cnt,
-                    detail=N_("item needs to be greater than %(compare)s",
+                    detail=N_("item needs to be greater than %(compare)s"),
                     compare=match
-                    )))
+                    ))
                 return False, errors
             cnt += 1
         return True, errors
@@ -114,9 +114,9 @@ class Smaller(ElementComparator):
             item = int(item)
             if not (item < match):
                 errors.append(dict(index=cnt,
-                    detail=N_("item needs to be smaller than %(compare)s",
+                    detail=N_("item needs to be smaller than %(compare)s"),
                     compare=match
-                    )))
+                    ))
                 return False, errors
             cnt += 1
         return True, errors

@@ -40,8 +40,8 @@ class Like(ElementComparator):
         for item in value:
             if difflib.SequenceMatcher(None, unicode(item), unicode(match)).ratio() < 0.75:
                 errors.append(dict(index=cnt,
-                    detail=N_("value is not like %(comparator)s",
-                    comparator=match)))
+                    detail=N_("value is not like %(comparator)s"),
+                    comparator=match))
                 return False, errors
             cnt += 1
         return True, errors
@@ -104,12 +104,12 @@ class stringLength(ElementComparator):
             cnt = len(entry)
             if minSize >= 0 and cnt < minSize:
                 errors.append(dict(index=cnt,
-                    detail=N_("value is short, at least %(count)s characters required",
-                    count=minSize)))
+                    detail=N_("value is short, at least %(count)s characters required"),
+                    count=minSize))
                 return False, errors
-            elif maxSize >= 0 and cnt > maxSize:
+            elif 0 <= maxSize < cnt:
                 errors.append(dict(index=cnt,
-                    detail=N_("value is long, at max %(count)s characters allowed",
-                    count=maxSize)))
+                    detail=N_("value is long, at max %(count)s characters allowed"),
+                    count=maxSize))
                 return False, errors
         return True, errors

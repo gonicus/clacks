@@ -137,7 +137,7 @@ class Object(object):
         # Instantiate Backend-Registry
         self._reg = ObjectBackendRegistry.getInstance()
         self.log = getLogger(__name__)
-        self.log.debug("new object instantiated '%s'" % (type(self).__name__))
+        self.log.debug("new object instantiated '%s'" % type(self).__name__)
 
         # Group attributes by Backend
         propsByBackend = {}
@@ -175,7 +175,7 @@ class Object(object):
         # afterwards.
         # (Defaults will be passed to in-filters too, if they are not overwritten by _read())
         for key in self.myProperties:
-            if not(self.myProperties[key]['value']) and self.myProperties[key]['default'] != None and \
+            if not(self.myProperties[key]['value']) and self.myProperties[key]['default'] is not None and \
                 len(self.myProperties[key]['default']):
                 self.myProperties[key]['value'] = copy.deepcopy(self.myProperties[key]['default'])
                 if self.myProperties[key]['mandatory']:
@@ -187,14 +187,14 @@ class Object(object):
         self.myProperties[attr]['orig_value'] = original['orig_value']
 
     def listProperties(self):
-        return(self.myProperties.keys())
+        return self.myProperties.keys()
 
     def getProperties(self):
-        return(copy.deepcopy(self.myProperties))
+        return copy.deepcopy(self.myProperties)
 
     def listMethods(self):
         methods = getattr(self, '__methods')
-        return(methods.keys())
+        return methods.keys()
 
     def hasattr(self, attr):
         return attr in self.myProperties
@@ -228,7 +228,7 @@ class Object(object):
 
         # Load attributes for each backend.
         # And then assign the values to the properties.
-        self.log.debug("object uuid: %s" % (self.uuid))
+        self.log.debug("object uuid: %s" % self.uuid)
 
         for backend in self._propsByBackend:
 
@@ -248,7 +248,7 @@ class Object(object):
             for key in self._propsByBackend[backend]:
 
                 if key not in attrs:
-                    self.log.debug("attribute '%s' was not returned by load" % (key))
+                    self.log.debug("attribute '%s' was not returned by load" % key)
                     continue
 
                 # Keep original values, they may be overwritten in the in-filters.
@@ -260,7 +260,7 @@ class Object(object):
         for key in self.myProperties:
 
             # Skip loading in-filters for None values
-            if self.myProperties[key]['value'] == None:
+            if self.myProperties[key]['value'] is None:
                 self.myProperties[key]['in_value'] = self.myProperties[key]['value'] = []
                 continue
 
@@ -339,7 +339,7 @@ class Object(object):
             pass
 
         # A none value was passed to clear the value
-        if value == None:
+        if value is None:
             self._delattr_(name)
             return
 
@@ -437,7 +437,7 @@ class Object(object):
             else:
                 if len(self.myProperties[name]['value']):
                     value = self.myProperties[name]['value'][0]
-            return(value)
+            return value
 
         # The requested property-name seems to be a method, return the method reference.
         elif name in methods:
@@ -524,10 +524,12 @@ class Object(object):
 
         raise AttributeError(C.make_error('ATTRIBUTE_NOT_FOUND', name))
 
-    def check(self, propsFromOtherExtensions={}):
+    def check(self, propsFromOtherExtensions=None):
         """
         Checks whether everything is fine with the extension and its given values or not.
         """
+        if not propsFromOtherExtensions:
+            propsFromOtherExtensions = {}
 
         # Create a copy to avoid touching the original values
         props = copy.deepcopy(self.myProperties)
@@ -601,10 +603,12 @@ class Object(object):
 
         return props
 
-    def commit(self, propsFromOtherExtensions={}):
+    def commit(self, propsFromOtherExtensions=None):
         """
         Commits changes of an object to the corresponding backends.
         """
+        if not propsFromOtherExtensions:
+            propsFromOtherExtensions = {}
 
         self.check(propsFromOtherExtensions)
 
@@ -829,7 +833,7 @@ class Object(object):
 
         # Our filter result stack
         stack = list()
-        self.log.debug(" validator started (%s)" % (key))
+        self.log.debug(" validator started (%s)" % key)
         self.log.debug("  value: %s" % (value, ))
 
         # Process the list till we reach the end..
@@ -838,7 +842,7 @@ class Object(object):
         while (lptr + 1) in fltr:
 
             # Get the current line and increase the process list pointer.
-            lptr = lptr + 1
+            lptr += 1
             curline = fltr[lptr]
 
             # A condition matches for something and returns a boolean value.
@@ -885,7 +889,7 @@ class Object(object):
         if not res and lasterrmsg != "":
             errormsgs.append(lasterrmsg)
 
-        self.log.debug(" <- VALIDATOR ENDED (%s)" % (key))
+        self.log.debug(" <- VALIDATOR ENDED (%s)" % key)
         return res, errormsgs
 
     def __processFilter(self, fltr, key, prop):
@@ -907,13 +911,13 @@ class Object(object):
         stack = list()
 
         # Log values
-        self.log.debug(" -> FILTER STARTED (%s)" % (key))
+        self.log.debug(" -> FILTER STARTED (%s)" % key)
 
         # Process the list till we reach the end..
         while (lptr + 1) in fltr:
 
             # Get the current line and increase the process list pointer.
-            lptr = lptr + 1
+            lptr += 1
             curline = fltr[lptr]
 
             # A filter is used to manipulate the 'value' or the 'key' or maybe both.
@@ -930,14 +934,14 @@ class Object(object):
 
                 # Ensure that the processed data is still valid.
                 # Filter may mess things up and then the next cannot process correctly.
-                if (key not in prop):
+                if key not in prop:
                     raise ObjectException(C.make_error('FILTER_INVALID_KEY',
                         key=key, filter=fname))
 
                 # Check if the filter returned all expected property values.
                 for pk in prop:
                     if not all(k in prop[pk] for k in ('backend', 'value', 'type')):
-                        missing = ", ".join(set(['backend', 'value', 'type']) - set(prop[pk].keys()))
+                        missing = ", ".join({'backend', 'value', 'type'} - set(prop[pk].keys()))
                         raise ObjectException(C.make_error('FILTER_MISSING_KEY', key=missing, filter=fname))
 
                     # Check if the returned value-type is list or None.
@@ -1017,7 +1021,7 @@ class Object(object):
             except KeyError:
                 pass
 
-            return (x)
+            return x
 
         # Walk trough each line of the process list an replace placeholders.
         for line in fltr:

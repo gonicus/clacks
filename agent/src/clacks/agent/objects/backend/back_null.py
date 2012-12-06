@@ -51,7 +51,7 @@ class NULL(ObjectBackend):
     def update(self, uuid, data, params):
         return True
 
-    def is_uniq(self, attr, value, at_type):
+    def is_uniq(self, attr, value):
         return False
 
     def query(self, base, scope, params, fixed_rdn=None):

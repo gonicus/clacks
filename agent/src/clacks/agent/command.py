@@ -141,7 +141,7 @@ class CommandRegistry(Plugin):
         ``Return``: dict describing all methods
         """
         res = {}
-        if queue == None:
+        if queue is None:
             queue = self.env.domain + ".command.core"
 
         if queue == self.env.domain + ".command.core":
@@ -344,7 +344,7 @@ class CommandRegistry(Plugin):
                     self.proxy[target] = AMQPServiceProxy(amqp.url['source'], target)
 
                 # Run the query
-                methodCall = getattr(self.proxy[target], method)
+                methodCall = getattr(self.proxy[target], func)
                 return methodCall(*arg, **larg)
 
         # FIRSTRESULT: try all providers, return on first non exception
@@ -380,7 +380,7 @@ class CommandRegistry(Plugin):
                     if methodType == FIRSTRESULT:
                         return tmp
                     else:
-                        if result == None:
+                        if result is None:
                             result = {}
 
                         result[node] = tmp
@@ -681,6 +681,3 @@ class CommandRegistry(Plugin):
         """
         amqp = PluginRegistry.getInstance("AMQPHandler")
         amqp.sendEvent(data, user)
-
-    def is_ready(self):
-        return self.__ready

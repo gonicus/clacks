@@ -32,9 +32,9 @@ class AttributeType(object):
     def _cnv_topic(self):
         fname = inspect.stack()[1][3]
         if fname[:12:] == "_convert_to_":
-            return (self.__alias__.lower(), fname[12:].replace("_", " "))
+            return self.__alias__.lower(), fname[12:].replace("_", " ")
         else:
-            return (self.__alias__.lower(), fname[14:].replace("_", " "))
+            return self.__alias__.lower(), fname[14:].replace("_", " ")
 
     def is_valid_value(self, value):
         raise ConversationNotSupported(C.make_error('TYPE_NO_CHECK', type=self.__alias__.lower()))

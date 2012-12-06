@@ -53,7 +53,7 @@ class ObjectBackend(object):
         """
         Return a tuple (createdTimestamp, modifyTimestamp)
         """
-        return (None, None)
+        return None, None
 
     def load(self, uuid, keys, back_attrs=None):
         """
@@ -109,7 +109,7 @@ class ObjectBackend(object):
         """
         raise NotImplementedError(C.make_error("NOT_IMPLEMENTED", uuid, method="retract"))
 
-    def is_uniq(self, attr, value):
+    def is_uniq(self, attr, value, at_type):
         """
         Check if the given attribute is unique.
         """
@@ -138,7 +138,7 @@ class ObjectBackend(object):
 
         # Check if we've have to use a fixed RDN.
         if FixedRDN:
-            return(["%s,%s" % (FixedRDN, base)])
+            return["%s,%s" % (FixedRDN, base)]
 
         # Bail out if fix part is not in data
         if not fix in data:

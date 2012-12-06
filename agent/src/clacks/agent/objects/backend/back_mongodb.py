@@ -38,10 +38,7 @@ class MongoDB(ObjectBackend):
         self.log = getLogger(__name__)
 
         # Create scope map
-        self.scope_map = {}
-        self.scope_map[ldap.SCOPE_SUBTREE] = "sub"
-        self.scope_map[ldap.SCOPE_BASE] = "base"
-        self.scope_map[ldap.SCOPE_ONELEVEL] = "one"
+        self.scope_map = {ldap.SCOPE_SUBTREE: "sub", ldap.SCOPE_BASE: "base", ldap.SCOPE_ONELEVEL: "one"}
 
         # Get database collection
         db_name = self.env.config.get("backend-mongodb.database", "storage")
@@ -79,7 +76,7 @@ class MongoDB(ObjectBackend):
         """
         Identify an object by uuid
         """
-        return self.db.find_one({'_uuid': item_uuid, '_type': params['type']}) != None
+        return self.db.find_one({'_uuid': item_uuid, '_type': params['type']}) is not None
 
     def retract(self, item_uuid, data, params):
         """
@@ -186,9 +183,9 @@ class MongoDB(ObjectBackend):
         """
         entry = self.db.find_one({'dn': object_dn}, {'_created': 1, '_last_changed': 1})
         if entry:
-            return (entry['_created'], entry['_last_changed'])
+            return entry['_created'], entry['_last_changed']
 
-        return (None, None)
+        return None, None
 
     def get_uniq_dn(self, rdns, base, data, FixedRDN):
         """

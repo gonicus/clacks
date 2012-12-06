@@ -16,6 +16,13 @@ from bson.binary import Binary
 from clacks.common import Environment
 from clacks.agent.objects.filter import ElementFilter
 from clacks.agent.exceptions import ElementFilterException
+from clacks.common.error import ClacksErrorHandler as C
+from clacks.common.utils import N_
+
+
+# Register the errors handled  by us
+C.register_codes(dict(
+    USER_IMAGE_SIZE_MISSING=N_("Image sizes not specified")))
 
 
 try:
@@ -43,7 +50,7 @@ class ImageProcessor(ElementFilter):
 
         # Sanity check
         if len(sizes) == 0:
-            raise ElementFilterException("ImageProcessor needs at least one image size to process")
+            raise ElementFilterException(C.make_error("USER_IMAGE_SIZE_MISSING"))
 
         # Do we have an attribute to process?
         if key in valDict and valDict[key]['value']:
