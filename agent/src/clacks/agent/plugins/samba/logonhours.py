@@ -29,14 +29,10 @@ class SambaLogonHoursAttribute(AttributeType):
     def is_valid_value(self, value):
         if len(value):
             try:
-                # Check if we've got a dict with values for all seven week days.
-                if value[0].keys() != range(0, 7):
-                    return False
 
                 # Check if each week day contains 24 values.
-                for i in range(0, 7):
-                    if type(value[0][i]) != str or len(value[0][i]) != 24 or len(set(value[0][i]) - set('01')):
-                        return False
+                if type(value[0]) not in  [str, unicode] or len(value[0]) != 168 or len(set(value[0]) - set('01')):
+                    return False
                 return True
 
             except:
@@ -51,10 +47,7 @@ class SambaLogonHoursAttribute(AttributeType):
         if len(value):
 
             # Combine the binary strings
-            val = value[0]
-            lstr = ""
-            for day in range(0, 7):
-                lstr += val[day]
+            lstr = value[0]
 
             # New reverse every 8 bit part, and toggle high- and low-tuple (4Bits)
             new = ""
