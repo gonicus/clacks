@@ -38,10 +38,7 @@ class MongoDB(ObjectBackend):
         self.log = getLogger(__name__)
 
         # Create scope map
-        self.scope_map = {}
-        self.scope_map[ldap.SCOPE_SUBTREE] = "sub"
-        self.scope_map[ldap.SCOPE_BASE] = "base"
-        self.scope_map[ldap.SCOPE_ONELEVEL] = "one"
+        self.scope_map = {ldap.SCOPE_SUBTREE: "sub", ldap.SCOPE_BASE: "base", ldap.SCOPE_ONELEVEL: "one"}
 
         # Get database collection
         db_name = self.env.config.get("backend-mongodb.database", "storage")

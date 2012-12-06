@@ -307,8 +307,7 @@ class ObjectProxy(object):
         return dict([(e, i is not None) for e, i in self.__extensions.iteritems()])
 
     def get_templates(self, theme="default"):
-        res = {}
-        res[self.get_base_type()] = self.__base.getTemplate(theme)
+        res = {self.get_base_type(): self.__base.getTemplate(theme)}
         for name, ext in self.__extensions.items():
             res[name] = ext.getTemplate(theme) if ext else self._get_template(name, theme)
         return res
@@ -343,10 +342,7 @@ class ObjectProxy(object):
         return res
 
     def get_object_info(self, locale=None, theme="default"):
-        res = {}
-
-        res['base'] = self.get_base_type()
-        res['extensions'] = self.get_extension_types()
+        res = {'base': self.get_base_type(), 'extensions': self.get_extension_types()}
 
         # Resolve all available extensions for their dependencies
         ei = {}
@@ -801,13 +797,10 @@ class ObjectProxy(object):
                 self.__current_user, self.dn, topic, "r"))
             raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=self.dn))
 
-        res = {}
+        res = {'dn': self.__base.dn, '_type': self.__base.__class__.__name__,
+               '_parent_dn': re.sub("^[^,]*,", "", self.__base.dn), '_uuid': self.__base.uuid}
 
         # Create non object pseudo attributes
-        res['dn'] = self.__base.dn
-        res['_type'] = self.__base.__class__.__name__
-        res['_parent_dn'] = re.sub("^[^,]*,", "", self.__base.dn)
-        res['_uuid'] = self.__base.uuid
 
         if self.__base.modifyTimestamp:
             res['_last_changed'] = time.mktime(self.__base.modifyTimestamp.timetuple())
@@ -853,10 +846,8 @@ class ObjectProxy(object):
         # Create a list of all class information required to build an
         # xml represention of this class
         propertiestag = etree.Element("properties")
-        attrs = {}
-        attrs['dn'] = [self.__base.dn]
-        attrs['parent-dn'] = [re.sub("^[^,]*,", "", self.__base.dn)]
-        attrs['entry-uuid'] = [self.__base.uuid]
+        attrs = {'dn': [self.__base.dn], 'parent-dn': [re.sub("^[^,]*,", "", self.__base.dn)],
+                 'entry-uuid': [self.__base.uuid]}
         if self.__base.modifyTimestamp:
             attrs['modify-date'] = atypes['Timestamp'].convert_to("UnicodeString", [self.__base.modifyTimestamp])
 

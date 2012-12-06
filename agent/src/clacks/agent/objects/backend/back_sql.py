@@ -45,10 +45,7 @@ class SQL(ObjectBackend):
         self.log = getLogger(__name__)
 
         # Create scope map
-        self.scope_map = {}
-        self.scope_map[ldap.SCOPE_SUBTREE] = "sub"
-        self.scope_map[ldap.SCOPE_BASE] = "base"
-        self.scope_map[ldap.SCOPE_ONELEVEL] = "one"
+        self.scope_map = {ldap.SCOPE_SUBTREE: "sub", ldap.SCOPE_BASE: "base", ldap.SCOPE_ONELEVEL: "one"}
         self.connect()
 
     def connect(self):
@@ -127,10 +124,7 @@ class SQL(ObjectBackend):
         attrs = {}
         for item in data:
             attrs[item] = data[item]['value']
-        data = {}
-        data['type'] = params['type']
-        data['uuid'] = item_uuid
-        data['attributes'] = dumps(attrs)
+        data = {'type': params['type'], 'uuid': item_uuid, 'attributes': dumps(attrs)}
 
         # Insert the entry in the database
         self.objects.insert().execute(**data)
@@ -210,12 +204,8 @@ class SQL(ObjectBackend):
 
         # Build the entry that will be written to the json-database
         str_uuid = str(uuid.uuid1())
-        obj = {}
-        obj['dn'] = object_dn
-        obj['uuid'] = str_uuid
-        obj['type'] = params['type']
-        obj['parentDN'] = base
-        obj['modifyTimestamp'] = obj['createTimestamp'] = datetime.datetime.now()
+        obj = {'dn': object_dn, 'uuid': str_uuid, 'type': params['type'], 'parentDN': base,
+               'modifyTimestamp': datetime.datetime.now(), 'createTimestamp': datetime.datetime.now()}
         attrs = {}
         for attr in data:
             attrs[attr] = data[attr]['value']

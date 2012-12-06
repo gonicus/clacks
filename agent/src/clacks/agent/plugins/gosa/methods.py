@@ -369,7 +369,7 @@ class GuiMethods(Plugin):
             query = {"dn": re.compile("^(.*,)?" + re.escape(base) + "$"), "$or": queries}
 
         elif scope == "ONE":
-            query = {"$or": [{"dn": base}, {"_parent_dn": base}], "$or": queries}
+            query = {"$or": [{"dn": base}, {"_parent_dn": base}] + queries}
 
         else:
             query = {"dn": base, "$or": queries}

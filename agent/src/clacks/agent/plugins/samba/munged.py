@@ -307,8 +307,7 @@ class SambaMungedDial(object):
             ctxField = test[len(unhexlify(SambaMungedDial.new_header)) + 2::]
 
         # Decode parameters
-        result = {}
-        result['oldStorageBehavior'] = True
+        result = {'oldStorageBehavior': True}
         while ctxField != "":
 
             # Get parameter-name length and parameter value length

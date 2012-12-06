@@ -103,9 +103,7 @@ class AclSet(AttributeType):
                     members.remove("")
 
                 # Build entry list
-                new_entry = {}
-                new_entry['priority'] = priority
-                new_entry['members'] = members
+                new_entry = {'priority': priority, 'members': members}
                 new_value.append(new_entry)
 
                 # Do we have a role or action-based acl

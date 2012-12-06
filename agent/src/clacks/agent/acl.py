@@ -991,11 +991,7 @@ class ACLResolver(Plugin):
         """
 
         # A map for scope-strings to konstants
-        acl_scope_map = {}
-        acl_scope_map['one'] = ACL.ONE
-        acl_scope_map['sub'] = ACL.SUB
-        acl_scope_map['psub'] = ACL.PSUB
-        acl_scope_map['reset'] = ACL.RESET
+        acl_scope_map = {'one': ACL.ONE, 'sub': ACL.SUB, 'psub': ACL.PSUB, 'reset': ACL.RESET}
 
         roles = {}
         unresolved = []
@@ -1465,11 +1461,7 @@ class ACLResolver(Plugin):
         ============== =============
 
         """
-        acl_scope_map = {}
-        acl_scope_map[ACL.ONE] = 'one'
-        acl_scope_map[ACL.SUB] = 'sub'
-        acl_scope_map[ACL.PSUB] = 'psub'
-        acl_scope_map[ACL.RESET] = 'reset'
+        acl_scope_map = {ACL.ONE: 'one', ACL.SUB: 'sub', ACL.PSUB: 'psub', ACL.RESET: 'reset'}
 
         # Collect all acls
         result = {}
@@ -1604,11 +1596,7 @@ class ACLResolver(Plugin):
 
         # Validate the given scope
         if scope:
-            acl_scope_map = {}
-            acl_scope_map['one'] = ACL.ONE
-            acl_scope_map['sub'] = ACL.SUB
-            acl_scope_map['psub'] = ACL.PSUB
-            acl_scope_map['reset'] = ACL.RESET
+            acl_scope_map = {'one': ACL.ONE, 'sub': ACL.SUB, 'psub': ACL.PSUB, 'reset': ACL.RESET}
 
             if scope not in acl_scope_map:
                 raise ACLException(C.make_error("ACL_INVALID_SCOPE", scope=scope))
@@ -1686,11 +1674,7 @@ class ACLResolver(Plugin):
         """
         # Validate the given scope
         if scope:
-            acl_scope_map = {}
-            acl_scope_map['one'] = ACL.ONE
-            acl_scope_map['sub'] = ACL.SUB
-            acl_scope_map['psub'] = ACL.PSUB
-            acl_scope_map['reset'] = ACL.RESET
+            acl_scope_map = {'one': ACL.ONE, 'sub': ACL.SUB, 'psub': ACL.PSUB, 'reset': ACL.RESET}
 
             if scope not in acl_scope_map:
                 raise ACLException(C.make_error("ACL_INVALID_SCOPE", scope=scope))
@@ -1766,11 +1750,7 @@ class ACLResolver(Plugin):
         if not self.check(user, '%s.acl' % self.env.domain, 'r', self.base):
             raise ACLException(C.make_error("PERMISSION_ACCESS", target=self.base))
 
-        acl_scope_map = {}
-        acl_scope_map[ACL.ONE] = 'one'
-        acl_scope_map[ACL.SUB] = 'sub'
-        acl_scope_map[ACL.PSUB] = 'psub'
-        acl_scope_map[ACL.RESET] = 'reset'
+        acl_scope_map = {ACL.ONE: 'one', ACL.SUB: 'sub', ACL.PSUB: 'psub', ACL.RESET: 'reset'}
 
         # Collect all acls
         result = []
@@ -1872,11 +1852,7 @@ class ACLResolver(Plugin):
 
         # Validate the given scope and actions
         if actions:
-            acl_scope_map = {}
-            acl_scope_map['one'] = ACL.ONE
-            acl_scope_map['sub'] = ACL.SUB
-            acl_scope_map['psub'] = ACL.PSUB
-            acl_scope_map['reset'] = ACL.RESET
+            acl_scope_map = {'one': ACL.ONE, 'sub': ACL.SUB, 'psub': ACL.PSUB, 'reset': ACL.RESET}
 
             if scope not in acl_scope_map:
                 raise TypeError(C.make_error("ACL_INVALID_SCOPE", scope=scope))
@@ -1958,11 +1934,7 @@ class ACLResolver(Plugin):
 
         # Validate the scope value
         if scope:
-            acl_scope_map = {}
-            acl_scope_map['one'] = ACL.ONE
-            acl_scope_map['sub'] = ACL.SUB
-            acl_scope_map['psub'] = ACL.PSUB
-            acl_scope_map['reset'] = ACL.RESET
+            acl_scope_map = {'one': ACL.ONE, 'sub': ACL.SUB, 'psub': ACL.PSUB, 'reset': ACL.RESET}
 
             if scope not in acl_scope_map:
                 raise TypeError(C.make_error("ACL_INVALID_SCOPE", scope=scope))

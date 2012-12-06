@@ -93,8 +93,7 @@ class AclRole(AttributeType):
                 actions = data[4::]
 
                 # Build entry list
-                new_entry = {}
-                new_entry['priority'] = priority
+                new_entry = {'priority': priority}
                 new_value.append(new_entry)
 
                 # Do we have a role or action-based acl

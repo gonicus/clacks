@@ -41,10 +41,7 @@ class JSON(ObjectBackend):
         self.log = getLogger(__name__)
 
         # Create scope map
-        self.scope_map = {}
-        self.scope_map[ldap.SCOPE_SUBTREE] = "sub"
-        self.scope_map[ldap.SCOPE_BASE] = "base"
-        self.scope_map[ldap.SCOPE_ONELEVEL] = "one"
+        self.scope_map = {ldap.SCOPE_SUBTREE: "sub", ldap.SCOPE_BASE: "base", ldap.SCOPE_ONELEVEL: "one"}
 
         # Read storage path from config
         self._file_path = self.env.config.get("backend-json.database-file", None)
@@ -203,11 +200,9 @@ class JSON(ObjectBackend):
         # Build the entry that will be written to the json-database
         json = self.__load()
         str_uuid = str(uuid.uuid1())
-        obj = {}
-        obj['dn'] = object_dn
-        obj['type'] = params['type']
-        obj['parentDN'] = base
-        obj['modifyTimestamp'] = obj['createTimestamp'] = datetime.datetime.now().isoformat()
+        obj = {'dn': object_dn, 'type': params['type'], 'parentDN': base,
+               'modifyTimestamp': datetime.datetime.now().isoformat(),
+               'createTimestamp': datetime.datetime.now().isoformat()}
         for attr in data:
             obj[attr] = data[attr]['value']
 
