@@ -1602,6 +1602,7 @@ class ACLResolver(Plugin):
             raise ACLException(C.make_error('PERMISSION_CREATE', target=base))
 
         # Validate the given scope
+        scope_int = ACL.SUB
         if scope:
             acl_scope_map = {}
             acl_scope_map['one'] = ACL.ONE
