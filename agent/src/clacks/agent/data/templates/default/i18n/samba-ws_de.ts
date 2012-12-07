@@ -4,9 +4,13 @@
 <context>
     <name>SambaMachineAccount</name>
     <message>
-        <location filename="../samba-ws.ui" line="14"/>
         <source>Samba Machine Account</source>
-        <translation>Samba Maschinen Konto</translation>
+        <translation type="obsolete">Samba Maschinen Konto</translation>
+    </message>
+    <message>
+        <location filename="../samba-ws.ui" line="14"/>
+        <source>Machine Account</source>
+        <translation>Maschinen-Konto</translation>
     </message>
     <message>
         <location filename="../samba-ws.ui" line="21"/>
