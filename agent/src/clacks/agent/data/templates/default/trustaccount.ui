@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Trust account</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>:/images/trustaccount.png</normaloff>:/images/trustaccount.png</iconset>
+  </property>
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0">
     <widget class="QGroupBox" name="groupBox">
@@ -66,7 +70,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources/trustaccount.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>comboBox</sender>
