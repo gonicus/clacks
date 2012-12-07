@@ -32,6 +32,10 @@
         <Type>String</Type>
         <ReadOnly>false</ReadOnly>
         <MultiValue>true</MultiValue>
+        <BlockedBy>
+          <Attribute value="">trustModel</Attribute>
+          <Attribute value="fullaccess">trustModel</Attribute>
+        </BlockedBy>
       </Attribute>
     </Attributes>
     <Extends>

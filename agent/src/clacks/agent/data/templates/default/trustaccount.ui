@@ -25,7 +25,7 @@
       </property>
       <item>
        <layout class="QVBoxLayout" name="verticalLayout">
-        <property name="topMargin">
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
@@ -43,21 +43,21 @@
           <item row="0" column="1">
            <widget class="QComboBox" name="comboBox"/>
           </item>
-          <item row="1" column="1">
-           <widget class="QTableWidget" name="tableWidget">
-            <column>
-             <property name="text">
-              <string comment="uid">Name</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string comment="description">Description</string>
-             </property>
-            </column>
-           </widget>
-          </item>
          </layout>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="tableWidget">
+          <column>
+           <property name="text">
+            <string comment="uid">Name</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string comment="description">Description</string>
+           </property>
+          </column>
+         </widget>
         </item>
        </layout>
       </item>
