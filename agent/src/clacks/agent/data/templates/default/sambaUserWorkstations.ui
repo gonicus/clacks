@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>sambaUserWorkstations</class>
+ <widget class="QWidget" name="sambaUserWorkstations">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>300</width>
+    <height>111</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Samba user workstations</string>
+  </property>
+  <property name="dialogName" stdset="0">
+   <string>sambaUserWorkstations</string>
+  </property>
+  <layout class="QVBoxLayout" name="horizontalLayout_3">
+   <item>
+    <widget class="QTableWidget" name="sambaUserWotkstationsEdit">
+     <column>
+      <property name="text">
+       <string comment="cn">Name</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item>
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>10</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>sambaUserWotkstationsEdit</sender>
+   <signal>itemChanged(QTableWidgetItem*)</signal>
+   <receiver>sambaUserWorkstations</receiver>
+   <slot>property_sambaUserWorkstations()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>157</x>
+     <y>66</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>62</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>property_sambaUserWorkstations()</slot>
+ </slots>
+</ui>
