@@ -38,7 +38,8 @@ class SplitString(ElementFilter):
 
     def process(self, obj, key, valDict, glue=", "):
         if type(valDict[key]['value']) is not None and len(valDict[key]['value']):
-            new_val = valDict[key]['value'][0].split(glue)
+            tmp = valDict[key]['value'][0].split(glue)
+            new_val = [n for n in tmp if n != ""]
             valDict[key]['value'] = new_val
         return key, valDict
 
@@ -68,7 +69,10 @@ class JoinArray(ElementFilter):
     def process(self, obj, key, valDict, glue=", "):
         if type(valDict[key]['value'] is not None):
             new_val = glue.join(valDict[key]['value'])
-            valDict[key]['value'] = [new_val]
+            if not new_val:
+                valDict[key]['value'] = []
+            else:
+                valDict[key]['value'] = [new_val]
         return key, valDict
 
 
