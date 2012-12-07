@@ -181,6 +181,12 @@ class ObjectProxy(object):
                     self.__method_map[method] = getattr(self.__extensions[obj], method)
                     self.__method_type_map[method] = obj
 
+        for ext in all_extensions:
+            if self.__extensions[ext]:
+                props = self.__extensions[ext].getProperties()
+            else:
+                props = self.__factory.getObjectProperties(ext)
+
         # Generate read and write mapping for attributes
         self.__attribute_map = self.__factory.get_attributes_by_object(self.__base_type)
 
@@ -358,6 +364,11 @@ class ObjectProxy(object):
         for e in res['extensions'].keys():
             ei[e] = self.get_extension_dependencies(e)
         res['extension_deps'] = ei
+        res['extension_methods'] = {};
+        for method in self.__method_type_map:
+            if self.__method_type_map[method] not in res['extension_methods']:
+                res['extension_methods'][self.__method_type_map[method]] = []
+            res['extension_methods'][self.__method_type_map[method]].append(method)
 
         return res
 
@@ -397,6 +408,12 @@ class ObjectProxy(object):
             self.__extensions[extension] = self.__factory.getObject(extension,
                 self.__base.uuid, mode="extend")
 
+        # Register the extensions methods
+        object_types = self.__factory.getObjectTypes()
+        for method in object_types[extension]['methods']:
+            self.__method_map[method] = getattr(self.__extensions[extension], method)
+            self.__method_type_map[method] = extension
+
         # Set initial values for foreign properties
         self.populate_to_foreign_properties(extension)
 
@@ -425,6 +442,12 @@ class ObjectProxy(object):
                 self.__log.debug("user '%s' has insufficient permissions to add extension %s to %s, required is %s:%s on %s" % (
                 self.__current_user, extension, self.__base.dn, topic, "d", self.__base.dn))
                 raise ACLException(C.make_error('PERMISSION_RETRACT', extension=extension, target=self.__base.dn))
+
+        # Unregister the extensions methods
+        for method in self.__method_type_map:
+            if self.__method_type_map[method] == extension:
+                del(self.__method_map[method])
+                del(self.__method_type_map[method])
 
         # Move the extension to retractions
         self.__retractions[extension] = self.__extensions[extension]
