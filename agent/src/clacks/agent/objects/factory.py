@@ -888,18 +888,13 @@ class ObjectFactory(object):
 
                 # Check for valid value list
                 values = []
+                values_populate = None
                 if "Values" in prop.__dict__:
                     avalues = []
                     dvalues = {}
 
                     if 'populate' in prop.__dict__['Values'].attrib:
-                        cr = PluginRegistry.getInstance('CommandRegistry')
-                        values = cr.call(prop.__dict__['Values'].attrib['populate'])
-                        if type(values).__name__ == "dict":
-                            dvalues = values
-                        else:
-                            avalues = values
-
+                        values_populate = prop.__dict__['Values'].attrib['populate']
                     else:
                         for d in prop.__dict__['Values'].iterchildren():
                             if 'key' in d.attrib:
@@ -918,6 +913,7 @@ class ObjectFactory(object):
                 props[prop['Name'].text] = {
                     'value': [],
                     'values': values,
+                    'values_populate': values_populate,
                     'status': STATUS_OK,
                     'depends_on': depends_on,
                     'type': syntax,

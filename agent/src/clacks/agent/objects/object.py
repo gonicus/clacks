@@ -146,7 +146,17 @@ class Object(object):
         self.myProperties = copy.deepcopy(props)
         self.attributesInSaveOrder = self.__saveOrder()
 
+        atypes = self._objectFactory.getAttributeTypes()
         for key in self.myProperties:
+
+            # Load dynamic dropdown-values
+            if self.myProperties[key]['values_populate']:
+                cr = PluginRegistry.getInstance('CommandRegistry')
+                values = cr.call(self.myProperties[key]['values_populate'])
+                if type(values).__name__ == "dict":
+                    self.myProperties[key]['values'] = values
+                else:
+                    self.myProperties[key]['values'] = atypes['String'].convert_to(self.myProperties[key]['type'], values)
 
             # Initialize an empty array for each backend
             for be in self.myProperties[key]['backend']:
