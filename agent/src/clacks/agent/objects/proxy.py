@@ -101,6 +101,7 @@ class ObjectProxy(object):
     __base_mode = None
     __property_map = None
     __foreign_attrs = None
+    __all_method_names = None
 
     def __init__(self, _id, what=None, user=None):
         self.__env = Environment.getInstance()
@@ -119,6 +120,7 @@ class ObjectProxy(object):
         self.__method_type_map = {}
         self.__property_map = {}
         self.__foreign_attrs = []
+        self.__all_method_names = []
 
         # Do we have a uuid when opening?
         dn_or_base = _id
@@ -164,6 +166,10 @@ class ObjectProxy(object):
                 self.__extensions[extension] = None
                 self.__initial_extension_state[extension] = False
 
+        # Collect all method names (also not available due to deactivated extension)
+        for obj in [base] + all_extensions:
+            self.__all_method_names = self.__all_method_names + self.__factory.getObjectMethods(obj)
+
         # Generate method mapping
         for obj in [base] + extensions:
             for method in object_types[obj]['methods']:
@@ -204,6 +210,9 @@ class ObjectProxy(object):
         self.dn = self.__base.dn
 
         self.populate_to_foreign_properties()
+
+    def get_all_method_names(self):
+        return self.__all_method_names
 
     def populate_to_foreign_properties(self, extension=None):
         """
