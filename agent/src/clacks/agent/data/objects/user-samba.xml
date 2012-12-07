@@ -15,7 +15,7 @@
 		</Dialogs>
 		<BackendParameters>
 			<Backend sambaPrimaryGroupSID="SambaGroup:sambaSID" objectClasses="sambaSamAccount">LDAP</Backend>
-      <Backend sambaUserWorkstations="WindowsMachineAccount:uid,">ObjectHandler</Backend>
+      <Backend sambaUserWorkstations="SambaMachineAccount:uid,">ObjectHandler</Backend>
 		</BackendParameters>
 		<Backend>LDAP</Backend>
 
