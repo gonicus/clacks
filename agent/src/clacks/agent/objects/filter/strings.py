@@ -37,7 +37,7 @@ class SplitString(ElementFilter):
         super(SplitString, self).__init__(obj)
 
     def process(self, obj, key, valDict, glue=", "):
-        if type(valDict[key]['value'] is not None):
+        if type(valDict[key]['value']) is not None and len(valDict[key]['value']):
             new_val = valDict[key]['value'][0].split(glue)
             valDict[key]['value'] = new_val
         return key, valDict
