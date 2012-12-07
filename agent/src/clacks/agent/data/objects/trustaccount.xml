@@ -4,19 +4,24 @@
     <Name>TrustAccount</Name>
     <Description>A trust account extension</Description>
     <DisplayName>Trust account</DisplayName>
+    <BaseObject>false</BaseObject>
     <BackendParameters>
       <Backend objectClasses="trustAccount">LDAP</Backend>
+      <Backend accessTo="SambaMachineAccount:uid,">ObjectHandler</Backend>
     </BackendParameters>
+    <Templates>
+      <Template>trustaccount.ui</Template>
+    </Templates>
     <Backend>LDAP</Backend>
-
     <Attributes>
       <Attribute>
         <Name>trustModel</Name>
         <Description>Access scheme</Description>
         <Type>String</Type>
         <Values>
-          <Value>fullaccess</Value>
-          <Value>byhost</Value>
+          <Value key="">Disabled</Value>
+          <Value key="fullaccess">Full access</Value>
+          <Value key="byhost">By host</Value>
         </Values>
         <Mandatory>true</Mandatory>
       </Attribute>
@@ -27,20 +32,12 @@
         <Type>String</Type>
         <ReadOnly>false</ReadOnly>
         <MultiValue>true</MultiValue>
-        <Validators>
-          <Condition>
-            <Name>IsValidHostName</Name>
-          </Condition>
-        </Validators>
       </Attribute>
     </Attributes>
-
     <Extends>
       <Value>PosixGroup</Value>
       <Value>User</Value>
     </Extends>
-
-    <BaseObject>false</BaseObject>
   </Object>
 </Objects>
 
