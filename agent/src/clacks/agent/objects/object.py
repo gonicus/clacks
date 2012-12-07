@@ -946,7 +946,6 @@ class Object(object):
 
                     # Check if the returned value-type is list or None.
                     if type(prop[pk]['value']) not in [list, type(None)]:
-                        print pk, prop[pk]['value']
                         raise ObjectException(C.make_error('FILTER_NO_LIST',
                             key=pk, filter=fname, type=type(prop[pk]['value'])))
 
