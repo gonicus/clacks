@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>724</width>
-    <height>400</height>
+    <width>726</width>
+    <height>565</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -121,6 +121,23 @@
           </item>
           <item row="1" column="1">
            <widget class="QLineEdit" name="descriptionEdit"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Policy information</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QPushButton" name="pushButton">
+            <property name="text">
+             <string>Show</string>
+            </property>
+            <property name="dialog" stdset="0">
+             <string>sambaDomainInfo</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -424,7 +441,6 @@
   <tabstop>sambaKickoffTimeEdit</tabstop>
   <tabstop>sambaPwdCanChangeEdit</tabstop>
   <tabstop>sambaPwdMustChangeEdit</tabstop>
-  <tabstop>sambaUserWorkstationsEdit</tabstop>
  </tabstops>
  <resources>
   <include location="resources/user-samba.qrc"/>
@@ -471,22 +487,6 @@
     <hint type="sourcelabel">
      <x>139</x>
      <y>149</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>sambaUserWorkstationsEdit</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>sambaSamAccount</receiver>
-   <slot>property_sambaUserWorkstations()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>31</x>
-     <y>420</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
