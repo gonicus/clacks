@@ -22,8 +22,8 @@
 
     <Methods>
       <Method>
-        <Name>getSambaDomainNames</Name>
-        <Command>getSambaDriveLetters</Command>
+        <Name>getSambaDomainInformation</Name>
+        <Command>getSambaDomainInformation</Command>
       </Method>
     </Methods>
 

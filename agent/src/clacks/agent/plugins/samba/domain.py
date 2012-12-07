@@ -11,8 +11,22 @@
 # See the LICENSE file in the project's top-level directory for details.
 
 from clacks.common.utils import N_
+from zope.interface import implements
+from clacks.common.components import Plugin
+from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import PluginRegistry
+from clacks.common.components import Command
 from clacks.agent.objects.comparator import ElementComparator
+
+
+class SambaGuiMethods(Plugin):
+    implements(IInterfaceHandler)
+    _target_ = 'gosa'
+    _priority_ = 80
+
+    @Command(__help__=N_("Returns the current samba domain policy for a given user"))
+    def getSambaDomainInformation(self):
+        return "Ja"
 
 
 class IsValidSambaDomainName(ElementComparator):

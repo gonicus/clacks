@@ -107,6 +107,7 @@ setup(
         locales = clacks.agent.plugins.misc.locales:Locales
         shells = clacks.agent.plugins.posix.shells:ShellSupport
         guimethods = clacks.agent.plugins.gosa.methods:GuiMethods
+        sambaguimethods = clacks.agent.plugins.samba.domain:SambaGuiMethods
         gravatar = clacks.agent.plugins.misc.gravatar:Gravatar
         goto.network = clacks.agent.plugins.goto.network:NetworkUtils
         goto.client_service = clacks.agent.plugins.goto.client_service:ClientService
