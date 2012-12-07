@@ -21,7 +21,12 @@
     <widget class="QTableWidget" name="sambaUserWotkstationsEdit">
      <column>
       <property name="text">
-       <string comment="cn">Name</string>
+       <string comment="uid">Name</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string comment="description">Description</string>
       </property>
      </column>
     </widget>
