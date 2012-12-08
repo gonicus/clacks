@@ -208,9 +208,6 @@ class SambaGuiMethods(Plugin):
             "\n<tr><td>" + N_("Last log off") + ":                   </td><td>"+ attrs['sambaLogoffTime'] + "</td></tr>" + \
             "\n<tr><td>" + N_("Automatic log off") + ":              </td><td>"+ attrs['sambaKickoffTime'] + "</td></tr>";
 
-
-        import pprint
-        pprint.pprint(attrs)
         return res
 
 
