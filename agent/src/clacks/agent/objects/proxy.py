@@ -353,10 +353,12 @@ class ObjectProxy(object):
         for item in self.get_attributes():
             if self.__base_type == self.__attribute_type_map[item]:
                 res['value'][item] = getattr(self, item)
-                res['values'][item] = self.__base.getProperties()[item]['values']
+                if self.__base.getProperties()[item]['values_populate']:
+                    res['values'][item] = self.__base.getProperties()[item]['values']
             elif self.__extensions[self.__attribute_type_map[item]]:
                 res['value'][item] = getattr(self, item)
-                res['values'][item] = self.__extensions[self.__attribute_type_map[item]].getProperties()[item]['values']
+                if self.__extensions[self.__attribute_type_map[item]].getProperties()[item]['values_populate']:
+                    res['values'][item] = self.__extensions[self.__attribute_type_map[item]].getProperties()[item]['values']
 
         return res
 
