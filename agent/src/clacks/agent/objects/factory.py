@@ -1111,6 +1111,8 @@ class ObjectFactory(object):
                     parmList.append(propList[value])
                 elif value in ['dn']:
                     parmList.append(getattr(caller_object, value))
+                elif value in ['__self__']:
+                    parmList.append(caller_object.parent)
                 else:
                     raise FactoryException(C.make_error("FACTORY_INVALID_METHOD_DEPENDS", method=command, attribute=value))
 

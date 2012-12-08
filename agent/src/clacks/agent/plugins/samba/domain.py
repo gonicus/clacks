@@ -25,8 +25,83 @@ class SambaGuiMethods(Plugin):
     _priority_ = 80
 
     @Command(__help__=N_("Returns the current samba domain policy for a given user"))
-    def getSambaDomainInformation(self):
-        return "Ja"
+    def getSambaDomainInformation(self, target_object):
+
+        # Use proxy if available
+        _self = target_object
+        try:
+            _self = target_object.parent
+        except:
+            pass
+
+        print type(_self);
+
+        sambaMinPwdLength = "unset"
+        sambaPwdHistoryLength = "unset"
+        sambaLogonToChgPwd = "unset"
+        sambaMaxPwdAge = "unset"
+        sambaMinPwdAge = "unset"
+        sambaLockoutDuration = "unset"
+        sambaLockoutThreshold = "unset"
+        sambaForceLogoff = "unset"
+        sambaRefuseMachinePwdChange = "unset"
+        sambaPwdLastSet = "unset"
+        sambaLogonTime = "unset"
+        sambaLogoffTime = "unset"
+        sambaKickoffTime = "unset"
+        sambaPwdCanChange = "unset"
+        sambaPwdMustChange = "unset"
+        sambaBadPasswordCount = "unset"
+        sambaBadPasswordTime = "unset"
+
+        # Domain attributes
+        domain_attributes = ["sambaMinPwdLength","sambaPwdHistoryLength","sambaMaxPwdAge",
+                "sambaMinPwdAge","sambaLockoutDuration","sambaRefuseMachinePwdChange",
+                "sambaLogonToChgPwd","sambaLockoutThreshold","sambaForceLogoff"]
+
+        # User attributes
+        user_attributes = ["sambaBadPasswordTime","sambaPwdLastSet","sambaLogonTime","sambaLogoffTime",
+                "sambaKickoffTime","sambaPwdCanChange","sambaPwdMustChange","sambaBadPasswordCount", "sambaSID"]
+
+        index = PluginRegistry.getInstance("ObjectIndex")
+        res = index.search({'_type': 'SambaDomain', 'sambaDomainName': _self.sambaDomainName}, {'dn': 1})
+        print res.count()
+        print {'_type': 'SambaDomain', 'sambaDomainName': _self.sambaDomainName}
+        if not res.count():
+            print "Ne"
+
+        for item in res:
+            print item
+
+
+        #$ldap = $this->config->get_ldap_link();
+        #$ldap->cd($this->config->current['BASE']);
+        #if(!empty($this->sambaDomainName) && isset($this->config->data['SERVERS']['SAMBA'][$this->sambaDomainName])){
+        #    $attrs = $this->get_domain_info();
+        #    foreach($domain_attributes as $attr){
+        #        if(isset($attrs[$attr])){
+        #            $$attr = $attrs[$attr][0];
+        #        }
+        #    }
+        #}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        return target_object.dn
 
 
 class IsValidSambaDomainName(ElementComparator):

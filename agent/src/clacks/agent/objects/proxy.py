@@ -154,12 +154,14 @@ class ObjectProxy(object):
 
         # Load base object and extenions
         self.__base = self.__factory.getObject(base, dn_or_base, mode=base_mode)
+        self.__base.parent = self
         self.__base_type = base
         self.__base_mode = base_mode
         for extension in extensions:
             self.__log.debug("loading %s extension for %s" % (extension, dn_or_base))
             self.__extensions[extension] = self.__factory.getObject(extension, self.__base.uuid)
             self.__extensions[extension].dn = self.__base.dn
+            self.__extensions[extension].parent = self
             self.__initial_extension_state[extension] = True
         for extension in all_extensions:
             if extension not in self.__extensions:
@@ -347,12 +349,14 @@ class ObjectProxy(object):
         """
         Return a dictionary containing all property values.
         """
-        res = {}
+        res = {'value': {}, 'values': {}}
         for item in self.get_attributes():
             if self.__base_type == self.__attribute_type_map[item]:
-                res[item] = getattr(self, item)
+                res['value'][item] = getattr(self, item)
+                res['values'][item] = self.__base.getProperties()[item]['values']
             elif self.__extensions[self.__attribute_type_map[item]]:
-                res[item] = getattr(self, item)
+                res['value'][item] = getattr(self, item)
+                res['values'][item] = self.__extensions[self.__attribute_type_map[item]].getProperties()[item]['values']
 
         return res
 
@@ -405,8 +409,8 @@ class ObjectProxy(object):
             self.__extensions[extension] = self.__retractions[extension]
             del self.__retractions[extension]
         else:
-            self.__extensions[extension] = self.__factory.getObject(extension,
-                self.__base.uuid, mode="extend")
+            self.__extensions[extension] = self.__factory.getObject(extension, self.__base.uuid, mode="extend")
+            self.__extensions[extension].parent = self
 
         # Register the extensions methods
         object_types = self.__factory.getObjectTypes()
@@ -536,6 +540,7 @@ class ObjectProxy(object):
                     # primary backend move will be triggered and do a recursive
                     # move for that backend.
                     obj = self.__factory.getObject(children[fdn], fdn)
+                    obj.parent = self
                     obj.move(new_child_base)
 
                 # Update all DN references
@@ -551,6 +556,7 @@ class ObjectProxy(object):
                     # their refs.
                     new_cdn = cdn[:len(cdn) - len(old_base)] + child_new_base
                     obj = self.__factory.getObject(ctype, new_cdn)
+                    obj.parent = self
                     obj.simulate_move(cdn)
 
                 zope.event.notify(ObjectChanged("post object move", self.__base))

@@ -87,6 +87,7 @@ class Object(object):
     modifyTimestamp = None
     myProperties = None
     env = None
+    parent = None
     attributesInSaveOrder = None
 
     def __saveOrder(self):

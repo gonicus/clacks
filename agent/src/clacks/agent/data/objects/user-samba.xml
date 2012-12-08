@@ -24,6 +24,9 @@
       <Method>
         <Name>getSambaDomainInformation</Name>
         <Command>getSambaDomainInformation</Command>
+        <CommandParameters>
+          <Value>__self__</Value>
+        </CommandParameters>
       </Method>
     </Methods>
 
