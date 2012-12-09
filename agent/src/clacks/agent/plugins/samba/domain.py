@@ -77,8 +77,11 @@ class SambaGuiMethods(Plugin):
         for item in user_attributes:
             if getattr(_self, item):
                 try:
-                    attrs[item] = int(getattr(_self, item))
-                except:
+                    if type(getattr(_self, item)) == datetime:
+                        attrs[item] =  mktime(getattr(_self, item).timetuple())
+                    else:
+                        attrs[item] = int(getattr(_self, item))
+                except Exception as e:
                     attrs[item] = "unset"
             else:
                 attrs[item] = "unset"
@@ -160,7 +163,6 @@ class SambaGuiMethods(Plugin):
         if attrs['sambaLogonTime'] == "unset" or not attrs['sambaLogonTime']:
             attrs['sambaLogonTime'] = "<i>(" + N_("unset") + ")</i>"
         else:
-            print attrs['sambaLogonTime']
             attrs['sambaLogonTime'] = date.fromtimestamp(attrs['sambaLogonTime']).strftime("%d.%m.%Y")
 
         # sambaLogoffTime: Timestamp of last logoff
