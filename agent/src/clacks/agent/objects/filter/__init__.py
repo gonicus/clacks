@@ -27,7 +27,7 @@ def get_filter(name):
         if module.__name__ == name:
             return module
 
-    raise KeyError(C.make_error("FILTER_NO_INSTANCE", name))
+    raise KeyError(C.make_error("FILTER_NO_INSTANCE", filter=name))
 
 
 class ElementFilter(object):
