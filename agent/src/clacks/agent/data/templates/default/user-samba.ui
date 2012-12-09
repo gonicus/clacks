@@ -460,6 +460,9 @@
    <property name="dialog" stdset="0">
     <string notr="true">ChangeSambaPasswordDialog</string>
    </property>
+   <property name="condition" stdset="0">
+    <string notr="true">extensionExists(dn,"SambaUser")</string>
+   </property>
   </action>
  </widget>
  <tabstops>
