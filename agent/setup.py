@@ -163,6 +163,8 @@ setup(
         dateToString = clacks.agent.objects.filter.strings:DateToString
         timeToString = clacks.agent.objects.filter.strings:TimeToString
         sambahash = clacks.agent.plugins.samba.hash:SambaHash
+        adddollar = clacks.agent.plugins.samba.dollar:SambaDollarFilterIn
+        deldollar = clacks.agent.plugins.samba.dollar:SambaDollarFilterOut
         target = clacks.agent.objects.filter.basic:Target
         setbackends = clacks.agent.objects.filter.basic:SetBackends
         setvalue = clacks.agent.objects.filter.basic:SetValue

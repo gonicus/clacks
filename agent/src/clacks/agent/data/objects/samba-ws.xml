@@ -227,6 +227,15 @@
         <Description>The Userid attribute type specifies a computer system login name.</Description>
         <Type>String</Type>
         <Mandatory>true</Mandatory>
+	<InFilter>
+		<FilterChain>
+			<FilterEntry>
+				<Filter>
+					<Name>SambaDollarFilterIn</Name>
+				</Filter>
+			</FilterEntry>
+		</FilterChain>
+	</InFilter>
         <OutFilter>
           <FilterChain>
             <FilterEntry>
@@ -236,7 +245,12 @@
                 <Param>LDAP</Param>
               </Filter>
             </FilterEntry>
-          </FilterChain>
+	    <FilterEntry>
+		    <Filter>
+			    <Name>SambaDollarFilterOut</Name>
+		    </Filter>
+	    </FilterEntry>
+    </FilterChain>
         </OutFilter>
       </Attribute>
       <Attribute>
