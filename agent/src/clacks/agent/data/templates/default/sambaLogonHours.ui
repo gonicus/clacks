@@ -22,24 +22,10 @@
      <item>
       <widget class="SambaLogonHours" name="sambaLogonHoursEdit" native="true"/>
      </item>
-     <item>
-      <widget class="Line" name="line">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>SambaLogonHours</class>
-   <extends>QWidget</extends>
-   <header>sambalogonhours.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections>
   <connection>

@@ -16,8 +16,8 @@
   <property name="dialogName" stdset="0">
    <string notr="true">sambaUserWorkstations</string>
   </property>
-  <layout class="QVBoxLayout" name="horizontalLayout_3">
-   <item>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
     <widget class="QTableWidget" name="sambaUserWotkstationsEdit">
      <column>
       <property name="text">
@@ -52,7 +52,4 @@
    </hints>
   </connection>
  </connections>
- <slots>
-  <slot>property_sambaUserWorkstations()</slot>
- </slots>
 </ui>
