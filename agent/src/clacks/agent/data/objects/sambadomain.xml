@@ -99,6 +99,20 @@
       </Attribute>
     </Attributes>
     <BaseObject>true</BaseObject>
+    <Find>
+      <Aspect>
+        <Tag>SambaDomain</Tag>
+        <Keyword>Samba</Keyword>
+        <Keyword>Domain</Keyword>
+        <Search>sambaDomainName</Search>
+        <Result>
+          <Map>
+            <Source>sambaDomainName</Source>
+            <Destination>title</Destination>
+          </Map>
+        </Result>
+      </Aspect>
+    </Find>
   </Object>
 </Objects>
 

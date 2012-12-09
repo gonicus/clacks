@@ -148,7 +148,7 @@ class ObjectIndex(Plugin):
         tmp = [x for x in attrs.values()]
         used_attrs = list(itertools.chain.from_iterable(tmp))
         used_attrs += list(itertools.chain.from_iterable([x.values() for x in mapping.values()]))
-        used_attrs += list(set(itertools.chain.from_iterable([[x[0]['filter'], x[0]['attribute']] for x in resolve.values()])))
+        used_attrs += list(set(itertools.chain.from_iterable([[x[0]['filter'], x[0]['attribute']] for x in resolve.values() if len(x)])))
         used_attrs = list(set(used_attrs))
 
         # Remove potentially not assigned values

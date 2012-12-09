@@ -233,5 +233,21 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>sambaDomainNameEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>sambaSamAccount</receiver>
+   <slot>property_sambaDomainName()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>128</x>
+     <y>84</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
 </ui>
