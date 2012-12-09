@@ -449,7 +449,7 @@
     </widget>
    </item>
   </layout>
-  <action name="actionChange_sambaPassword">
+  <action name="1p_actionChange_sambaPassword">
    <property name="icon">
     <iconset>
     <normaloff>:/images/password.png</normaloff>:/images/password.png</iconset>

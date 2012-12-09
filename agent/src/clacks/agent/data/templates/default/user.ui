@@ -308,7 +308,7 @@
     </widget>
    </item>
   </layout>
-  <action name="actionChange_password">
+  <action name="1p_actionChange_password">
    <property name="icon">
     <iconset>
      <normaloff>:/images/password.png</normaloff>:/images/password.png</iconset>
@@ -326,7 +326,7 @@
     <string notr="true">!isLocked</string>
    </property>
   </action>
-  <action name="actionLock_account">
+  <action name="l_actionLock_account">
    <property name="icon">
     <iconset>
      <normaloff>:/images/lock.png</normaloff>:/images/lock.png</iconset>
@@ -341,7 +341,7 @@
     <string notr="true">accountLockable(dn)</string>
    </property>
   </action>
-  <action name="actionUnlock_account">
+  <action name="l_actionUnlock_account">
    <property name="icon">
     <iconset>
      <normaloff>:/images/unlock.png</normaloff>:/images/unlock.png</iconset>
@@ -356,7 +356,7 @@
     <string notr="true">accountUnlockable(dn)</string>
    </property>
   </action>
-  <action name="actionSend_message">
+  <action name="m_actionSend_message">
    <property name="icon">
     <iconset>
      <normaloff>:/images/notify.png</normaloff>:/images/notify.png</iconset>
