@@ -157,34 +157,32 @@
   <connection>
    <sender>uidEdit</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>User</receiver>
+   <receiver>SambaMachineAccount</receiver>
    <slot>property_uid()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>239</x>
-     <y>27</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
   </connection>
   <connection>
    <sender>displayNameEdit</sender>
    <signal>textChanged(QString)</signal>
-   <receiver>User</receiver>
+   <receiver>SambaMachineAccount</receiver>
    <slot>property_displayName()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>239</x>
-     <y>53</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
+  </connection>
+  <connection>
+   <sender>sambaSIDEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>SambaMachineAccount</receiver>
+   <slot>property_sambaSID()</slot>
+  </connection>
+  <connection>
+   <sender>sambaDomainnameEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>SambaMachineAccount</receiver>
+   <slot>property_sambaDomainname()</slot>
+  </connection>
+  <connection>
+   <sender>descriptionEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>SambaMachineAccount</receiver>
+   <slot>property_description()</slot>
   </connection>
  </connections>
 </ui>
