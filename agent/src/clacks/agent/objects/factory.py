@@ -600,6 +600,10 @@ class ObjectFactory(object):
         # .. then find all active extensions
         if uuid:
             for name, info in self.__object_types.items():
+
+                if not name in self.__object_types[id_base]['extended_by']:
+                    continue
+
                 be = ObjectBackendRegistry.getBackend(info['backend'])
                 classr = self.__xml_defs[name]
                 fixed_rdn = classr.FixedRDN.text if 'FixedRDN' in classr.__dict__ else None

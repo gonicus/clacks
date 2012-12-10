@@ -8,6 +8,9 @@
       <Backend objectClasses="account,posixAccount,sambaSamAccount" RDN="uid" filter="(uid=*$)">LDAP</Backend>
     </BackendParameters>
     <Backend>LDAP</Backend>
+    <Templates>
+      <Template>samba-ws.ui</Template>
+    </Templates>
     <Attributes>
       <Attribute>
         <Name>displayName</Name>
