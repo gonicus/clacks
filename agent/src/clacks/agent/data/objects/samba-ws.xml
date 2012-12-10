@@ -36,6 +36,104 @@
 	        <Attribute>uidNumber</Attribute>
 	</DependsOn>
       </Attribute>
+                        <Attribute>
+                                <Name>acct_accountDisabled</Name>
+                                <Description></Description>
+                                <Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>acct_interDomainTrust</Name>
+                                <Description></Description>
+                                <Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>acct_homeDirectoryRequired</Name>
+                                <Description></Description>
+                                <Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>acct_MNSLogonAccount</Name>
+                                <Description></Description>
+                                <Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>acct_isAutoLocked</Name>
+                                <Description></Description>
+                                <Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>acct_passwordNotRequired</Name>
+                                <Description></Description>
+                                <Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>acct_serverTrustAccount</Name>
+                                <Description></Description>
+                                <Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>acct_normalUserAccount</Name>
+                                <Description></Description>
+                                <Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>true</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>acct_temporaryDuplicateAccount</Name>
+                                <Description></Description>
+                                <Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>acct_workstationTrustAccount</Name>
+                                <Description></Description>
+                                <Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
+
+                        <Attribute>
+                                <Name>acct_passwordDoesNotExpire</Name>
+                                <Description></Description>
+                                <Backend>NULL</Backend>
+                                <Type>Boolean</Type>
+                                <Default>false</Default>
+                                <Mandatory>true</Mandatory>
+                        </Attribute>
       <Attribute>
               <Name>sambaAcctFlags</Name>
               <Description>Account Flags</Description>
@@ -92,30 +190,18 @@
             <Param>65500</Param>
           </Condition>
         </Validators>
-        <BlockedBy>
-          <Attribute value="true">autoIDs</Attribute>
-        </BlockedBy>
-        <DependsOn>
-          <Attribute>autoIDs</Attribute>
-        </DependsOn>
       </Attribute>
       <Attribute>
         <Name>gidNumber</Name>
         <Description>An integer uniquely identifying a group in an administrative domain</Description>
         <Type>Integer</Type>
         <Mandatory>true</Mandatory>
-        <BlockedBy>
-          <Attribute value="true">autoIDs</Attribute>
-        </BlockedBy>
         <Validators>
           <Condition>
             <Name>Smaller</Name>
             <Param>65500</Param>
           </Condition>
         </Validators>
-        <DependsOn>
-          <Attribute>autoIDs</Attribute>
-        </DependsOn>
       </Attribute>
       <Attribute>
         <Name>seeAlso</Name>
