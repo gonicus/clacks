@@ -11,9 +11,11 @@
 		</Templates>
 		<Dialogs>
 			<Dialog>sambaLogonHours.ui</Dialog>
+			<Dialog>sambaUserWorkstations.ui</Dialog>
 		</Dialogs>
 		<BackendParameters>
 			<Backend sambaPrimaryGroupSID="SambaGroup:sambaSID" objectClasses="sambaSamAccount">LDAP</Backend>
+      <Backend sambaUserWorkstations="WindowsMachineAccount:uid,">ObjectHandler</Backend>
 		</BackendParameters>
 		<Backend>LDAP</Backend>
 
@@ -253,6 +255,7 @@
 				<Name>sambaUserWorkstations</Name>
 				<Description>List of user workstations the user is allowed to logon to</Description>
 				<Type>UnicodeString</Type>
+        <MultiValue>true</MultiValue>
 			</Attribute>
 
 			<Attribute>
