@@ -14,6 +14,63 @@ import re
 from clacks.agent.objects.filter import ElementFilter
 import datetime
 
+class SplitString(ElementFilter):
+    """
+    splits a string ba the given separator
+
+    =========== ===========================
+    Key         Description
+    =========== ===========================
+    glue        The separator string
+    =========== ===========================
+
+    e.g.:
+    >>> <FilterEntry>
+    >>>  <Filter>
+    >>>   <Name>SplitString</Name>
+    >>>   <Param>,</Param>
+    >>>  </Filter>
+    >>> </FilterEntry>
+    >>>  ...
+    """
+    def __init__(self, obj):
+        super(SplitString, self).__init__(obj)
+
+    def process(self, obj, key, valDict, glue=", "):
+        if type(valDict[key]['value'] is not None):
+            new_val = valDict[key]['value'][0].split(glue)
+            valDict[key]['value'] = new_val
+        return key, valDict
+
+
+class JoinArray(ElementFilter):
+    """
+    Joins an array into a single string using the given separator
+
+    =========== ===========================
+    Key         Description
+    =========== ===========================
+    glue        The joining string
+    =========== ===========================
+
+    e.g.:
+    >>> <FilterEntry>
+    >>>  <Filter>
+    >>>   <Name>JoinArray</Name>
+    >>>   <Param>,</Param>
+    >>>  </Filter>
+    >>> </FilterEntry>
+    >>>  ...
+    """
+    def __init__(self, obj):
+        super(JoinArray, self).__init__(obj)
+
+    def process(self, obj, key, valDict, glue=", "):
+        if type(valDict[key]['value'] is not None):
+            new_val = glue.join(valDict[key]['value'])
+            valDict[key]['value'] = [new_val]
+        return key, valDict
+
 
 class ConcatString(ElementFilter):
     """

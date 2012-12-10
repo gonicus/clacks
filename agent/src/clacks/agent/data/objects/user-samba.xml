@@ -15,7 +15,7 @@
 		</Dialogs>
 		<BackendParameters>
 			<Backend sambaPrimaryGroupSID="SambaGroup:sambaSID" objectClasses="sambaSamAccount">LDAP</Backend>
-      <Backend sambaUserWorkstations="WindowsMachineAccount:uid,">ObjectHandler</Backend>
+      <Backend sambaUserWorkstations="SambaMachineAccount:uid,">ObjectHandler</Backend>
 		</BackendParameters>
 		<Backend>LDAP</Backend>
 
@@ -255,7 +255,28 @@
 				<Name>sambaUserWorkstations</Name>
 				<Description>List of user workstations the user is allowed to logon to</Description>
 				<Type>UnicodeString</Type>
+				<BackendType>String</BackendType>
         <MultiValue>true</MultiValue>
+				<InFilter>
+					<FilterChain>
+						<FilterEntry>
+							<Filter>
+								<Name>SplitString</Name>
+								<Param>,</Param>
+							</Filter>
+						</FilterEntry>
+					</FilterChain>
+				</InFilter>
+				<OutFilter>
+					<FilterChain>
+						<FilterEntry>
+							<Filter>
+								<Name>JoinArray</Name>
+								<Param>,</Param>
+							</Filter>
+						</FilterEntry>
+					</FilterChain>
+				</OutFilter>
 			</Attribute>
 
 			<Attribute>

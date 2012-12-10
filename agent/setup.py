@@ -154,6 +154,8 @@ setup(
 
         [object.filter]
         concatstring = clacks.agent.objects.filter.strings:ConcatString
+        joinarray = clacks.agent.objects.filter.strings:JoinArray
+        splitstring = clacks.agent.objects.filter.strings:SplitString
         replace = clacks.agent.objects.filter.strings:Replace
         stringToTime = clacks.agent.objects.filter.strings:StringToTime
         stringToDate = clacks.agent.objects.filter.strings:StringToDate
