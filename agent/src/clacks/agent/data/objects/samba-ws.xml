@@ -15,26 +15,26 @@
         <Type>UnicodeString</Type>
       </Attribute>
       <Attribute>
-	<Name>sambaSID</Name>
-	<Description>Security ID</Description>
-	<Type>String</Type>
-	<OutFilter>
-	        <FilterChain>
-	  	      <FilterEntry>
-	  		      <Filter>
-	  			      <Name>GenerateSambaSid</Name>
-	  			      <Param>user</Param>
-	  			      <Param>%(uidNumber)s</Param>
-	  			      <Param>%(sambaDomainName)s</Param>
-	  		      </Filter>
-	  	      </FilterEntry>
-	        </FilterChain>
-	</OutFilter>
-	<ReadOnly>true</ReadOnly>
-	<DependsOn>
-	        <Attribute>sambaDomainName</Attribute>
-	        <Attribute>uidNumber</Attribute>
-	</DependsOn>
+        <Name>sambaSID</Name>
+        <Description>Security ID</Description>
+        <Type>String</Type>
+        <OutFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>GenerateSambaSid</Name>
+                <Param>user</Param>
+                <Param>%(uidNumber)s</Param>
+                <Param>%(sambaDomainName)s</Param>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </OutFilter>
+        <ReadOnly>true</ReadOnly>
+        <DependsOn>
+          <Attribute>sambaDomainName</Attribute>
+          <Attribute>uidNumber</Attribute>
+        </DependsOn>
       </Attribute>
                         <Attribute>
                                 <Name>acct_accountDisabled</Name>
@@ -135,41 +135,41 @@
                                 <Mandatory>true</Mandatory>
                         </Attribute>
       <Attribute>
-              <Name>sambaAcctFlags</Name>
-              <Description>Account Flags</Description>
-              <Type>UnicodeString</Type>
-              <DependsOn>
-                      <Attribute>acct_accountDisabled</Attribute>
-                      <Attribute>acct_homeDirectoryRequired</Attribute>
-                      <Attribute>acct_interDomainTrust</Attribute>
-                      <Attribute>acct_isAutoLocked</Attribute>
-                      <Attribute>acct_MNSLogonAccount</Attribute>
-                      <Attribute>acct_passwordNotRequired</Attribute>
-                      <Attribute>acct_serverTrustAccount</Attribute>
-                      <Attribute>acct_temporaryDuplicateAccount</Attribute>
-                      <Attribute>acct_normalUserAccount</Attribute>
-                      <Attribute>acct_workstationTrustAccount</Attribute>
-                      <Attribute>acct_passwordDoesNotExpire</Attribute>
-              </DependsOn>
-              <ReadOnly>true</ReadOnly>
-              <InFilter>
-                      <FilterChain>
-                              <FilterEntry>
-                                      <Filter>
-                                              <Name>SambaAcctFlagsIn</Name>
-                                      </Filter>
-                              </FilterEntry>
-                      </FilterChain>
-              </InFilter>
-              <OutFilter>
-                      <FilterChain>
-                              <FilterEntry>
-                                      <Filter>
-                                              <Name>SambaAcctFlagsOut</Name>
-                                      </Filter>
-                              </FilterEntry>
-                      </FilterChain>
-              </OutFilter>
+        <Name>sambaAcctFlags</Name>
+        <Description>Account Flags</Description>
+        <Type>UnicodeString</Type>
+        <DependsOn>
+          <Attribute>acct_accountDisabled</Attribute>
+          <Attribute>acct_homeDirectoryRequired</Attribute>
+          <Attribute>acct_interDomainTrust</Attribute>
+          <Attribute>acct_isAutoLocked</Attribute>
+          <Attribute>acct_MNSLogonAccount</Attribute>
+          <Attribute>acct_passwordNotRequired</Attribute>
+          <Attribute>acct_serverTrustAccount</Attribute>
+          <Attribute>acct_temporaryDuplicateAccount</Attribute>
+          <Attribute>acct_normalUserAccount</Attribute>
+          <Attribute>acct_workstationTrustAccount</Attribute>
+          <Attribute>acct_passwordDoesNotExpire</Attribute>
+        </DependsOn>
+        <ReadOnly>true</ReadOnly>
+        <InFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>SambaAcctFlagsIn</Name>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </InFilter>
+        <OutFilter>
+          <FilterChain>
+            <FilterEntry>
+              <Filter>
+                <Name>SambaAcctFlagsOut</Name>
+              </Filter>
+            </FilterEntry>
+          </FilterChain>
+        </OutFilter>
       </Attribute>
       <Attribute>
         <Name>sambaDomainName</Name>
@@ -239,7 +239,7 @@
       <Attribute>
         <Name>homeDirectory</Name>
         <Description>The absolute path to the home directory</Description>
-	<Default>/tmp</Default>
+        <Default>/tmp</Default>
         <Type>String</Type>
         <Mandatory>true</Mandatory>
       </Attribute>
@@ -247,7 +247,7 @@
         <Name>loginShell</Name>
         <Description>The path to the login shell</Description>
         <Type>String</Type>
-	<Default>/bin/true</Default>
+        <Default>/bin/true</Default>
       </Attribute>
     </Attributes>
     <BaseObject>true</BaseObject>
