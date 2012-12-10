@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Objects xmlns="http://www.gonicus.de/Objects" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gonicus.de/Objects ../object.xsd ">
   <Object>
-    <Name>WindowsMachineAccount</Name>
+    <Name>SambaMachineAccount</Name>
     <Description>Windows workstation account</Description>
     <DisplayName>Windows Workstation</DisplayName>
     <BackendParameters>
@@ -399,5 +399,20 @@
       </Attribute>
     </Attributes>
     <BaseObject>true</BaseObject>
+    <Find>
+      <Aspect>
+        <Tag>Samba Workstation</Tag>
+        <Keyword>Samba</Keyword>
+        <Keyword>Workstation</Keyword>
+        <Search>uid</Search>
+        <Resolve type="SambaDomain" filter="sambaDomainName">sambaDomainName</Resolve>
+        <Result>
+          <Map>
+            <Source>uid</Source>
+            <Destination>title</Destination>
+          </Map>
+        </Result>
+      </Aspect>
+    </Find>
   </Object>
 </Objects>

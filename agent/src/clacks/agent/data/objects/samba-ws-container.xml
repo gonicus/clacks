@@ -12,7 +12,7 @@
 		<BaseObject>true</BaseObject>
 		<FixedRDN>ou=winstations,ou=systems</FixedRDN>
 		<Container>
-			<Type>WindowsMachineAccount</Type>
+			<Type>SambaMachineAccount</Type>
 		</Container>
 	</Object>
 </Objects>
