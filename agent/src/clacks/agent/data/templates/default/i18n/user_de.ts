@@ -67,52 +67,51 @@
         <translation type="obsolete">Geburtsdatum</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="240"/>
         <source>Gender</source>
-        <translation>Geschlecht</translation>
+        <translation type="obsolete">Geschlecht</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="273"/>
+        <location filename="../user.ui" line="244"/>
         <source>Address</source>
         <translation>Adresse</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="305"/>
+        <location filename="../user.ui" line="276"/>
         <source>Phone</source>
         <translation>Telefon</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="318"/>
+        <location filename="../user.ui" line="289"/>
         <source>Homepage</source>
         <translation>Internetseite</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="328"/>
+        <location filename="../user.ui" line="299"/>
         <source>Please provide your web page here</source>
         <translation>Bitte geben Sie hier ihre Webseite ein</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="346"/>
+        <location filename="../user.ui" line="317"/>
         <source>Change password...</source>
         <translation>Passwort ändern...</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="349"/>
+        <location filename="../user.ui" line="320"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="364"/>
+        <location filename="../user.ui" line="335"/>
         <source>Lock account</source>
         <translation>Konto sperren</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="379"/>
+        <location filename="../user.ui" line="350"/>
         <source>Unlock account</source>
         <translation>Konto freigeben</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="394"/>
+        <location filename="../user.ui" line="365"/>
         <source>Send message...</source>
         <translation>Nachricht senden...</translation>
     </message>

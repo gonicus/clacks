@@ -35,14 +35,12 @@
     </message>
     <message>
         <location filename="../user-samba.ui" line="61"/>
-        <location filename="../user-samba.ui" line="420"/>
         <source>Name</source>
         <comment>cn</comment>
         <translation>Name</translation>
     </message>
     <message>
         <location filename="../user-samba.ui" line="66"/>
-        <location filename="../user-samba.ui" line="425"/>
         <source>Description</source>
         <comment>description</comment>
         <translation>Beschreibung</translation>
@@ -87,64 +85,87 @@
         <translation>Anmeldeoptionen</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="221"/>
+        <location filename="../user-samba.ui" line="219"/>
         <source>Last password change</source>
         <translation>Letzte Passwortänderung</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="231"/>
+        <location filename="../user-samba.ui" line="229"/>
         <source>Last login</source>
         <translation>Letzte Anmeldung</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="241"/>
+        <location filename="../user-samba.ui" line="239"/>
         <source>Last logout</source>
         <translation>Letzte Abmeldung</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="251"/>
+        <location filename="../user-samba.ui" line="249"/>
         <source>Number of failed login attempts</source>
         <translation>Anzahl fehlgeschlagenen Anmeldeversuche</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="254"/>
+        <location filename="../user-samba.ui" line="252"/>
         <source>Faild login attempts</source>
         <translation>Anzahl der Fehlanmeldungen</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="276"/>
+        <location filename="../user-samba.ui" line="274"/>
         <source>Date of last failed login</source>
         <translation>Letzten Fehlanmeldung</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="312"/>
+        <location filename="../user-samba.ui" line="310"/>
         <source>Date and time when the user should be logged off the workstation</source>
         <translation>Datum und Zeit zu dem der Benutzer von der Arbeitsstation abgemeldet werden sollte</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="315"/>
+        <location filename="../user-samba.ui" line="313"/>
         <source>Forced logoff time</source>
         <translation>Erzwungene Abmeldezeit</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="325"/>
+        <location filename="../user-samba.ui" line="326"/>
         <source>Password change allowed after</source>
         <translation>Passwortänderung erlaubt nach</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="335"/>
+        <location filename="../user-samba.ui" line="339"/>
         <source>Password change required after</source>
         <translation>Passwortänderung erforderlich nach</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="383"/>
-        <source>Edit logon hours</source>
-        <translation>Anmeldezeiten bearbeiten</translation>
+        <location filename="../user-samba.ui" line="378"/>
+        <source>Access options</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="410"/>
+        <location filename="../user-samba.ui" line="386"/>
+        <source>Logon hours</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../user-samba.ui" line="389"/>
+        <source>sambaLogonHours</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../user-samba.ui" line="396"/>
+        <source>User workstations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../user-samba.ui" line="399"/>
+        <source>sambaUserWorkstations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit logon hours</source>
+        <translation type="obsolete">Anmeldezeiten bearbeiten</translation>
+    </message>
+    <message>
         <source>Allowed workstations</source>
-        <translation>Zugelassene Arbeitsstationen</translation>
+        <translation type="obsolete">Zugelassene Arbeitsstationen</translation>
     </message>
     <message>
         <source>Password options</source>
@@ -155,9 +176,8 @@
         <translation type="obsolete">Anmeldung nur von diesen Arbeitsstationen erlauben</translation>
     </message>
     <message>
-        <location filename="../user-samba.ui" line="416"/>
         <source>Choose workstations</source>
-        <translation>Arbeitsstationen auswählen</translation>
+        <translation type="obsolete">Arbeitsstationen auswählen</translation>
     </message>
     <message>
         <source>List of workstations</source>
