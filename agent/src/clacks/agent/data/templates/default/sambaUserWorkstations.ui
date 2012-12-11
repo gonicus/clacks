@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Samba user workstations</string>
+   <string>User workstations</string>
   </property>
   <property name="dialogName" stdset="0">
    <string>sambaUserWorkstations</string>

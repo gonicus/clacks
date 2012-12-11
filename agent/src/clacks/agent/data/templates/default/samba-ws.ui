@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Samba Machine Account</string>
+   <string>Machine Account</string>
   </property>
   <property name="windowIcon">
    <iconset>

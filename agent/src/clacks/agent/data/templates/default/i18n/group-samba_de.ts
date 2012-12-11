@@ -69,7 +69,7 @@
     <message>
         <location filename="../group-samba.ui" line="84"/>
         <source>SID</source>
-        <translation type="unfinished">SID</translation>
+        <translation>SID</translation>
     </message>
 </context>
 </TS>

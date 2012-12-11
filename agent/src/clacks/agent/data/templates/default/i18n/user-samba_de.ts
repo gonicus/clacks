@@ -137,12 +137,12 @@
     <message>
         <location filename="../user-samba.ui" line="378"/>
         <source>Access options</source>
-        <translation type="unfinished"></translation>
+        <translation>Zugriffsoptionen</translation>
     </message>
     <message>
         <location filename="../user-samba.ui" line="386"/>
         <source>Logon hours</source>
-        <translation type="unfinished"></translation>
+        <translation>Anmeldezeiten</translation>
     </message>
     <message>
         <location filename="../user-samba.ui" line="389"/>
@@ -152,7 +152,7 @@
     <message>
         <location filename="../user-samba.ui" line="396"/>
         <source>User workstations</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutzerarbeitsstationen</translation>
     </message>
     <message>
         <location filename="../user-samba.ui" line="399"/>

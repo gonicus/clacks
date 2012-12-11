@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Samba logon hours</string>
+   <string>Logon hours</string>
   </property>
   <property name="dialogName" stdset="0">
    <string>sambaLogonHours</string>
