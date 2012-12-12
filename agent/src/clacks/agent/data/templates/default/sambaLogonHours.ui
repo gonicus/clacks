@@ -14,7 +14,7 @@
    <string>Logon hours</string>
   </property>
   <property name="dialogName" stdset="0">
-   <string>sambaLogonHours</string>
+   <string notr="true">sambaLogonHours</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_3">
    <item>
@@ -46,6 +46,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>SambaLogonHours</class>
+   <extends>QWidget</extends>
+   <header>sambalogonhours.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

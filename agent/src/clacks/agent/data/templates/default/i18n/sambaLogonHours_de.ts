@@ -8,10 +8,5 @@
         <source>Logon hours</source>
         <translation>Anmeldezeiten</translation>
     </message>
-    <message>
-        <location filename="../sambaLogonHours.ui" line="17"/>
-        <source>sambaLogonHours</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 </TS>

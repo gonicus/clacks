@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>300</width>
-    <height>111</height>
+    <width>397</width>
+    <height>208</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>User workstations</string>
   </property>
   <property name="dialogName" stdset="0">
-   <string>sambaUserWorkstations</string>
+   <string notr="true">sambaUserWorkstations</string>
   </property>
   <layout class="QVBoxLayout" name="horizontalLayout_3">
    <item>

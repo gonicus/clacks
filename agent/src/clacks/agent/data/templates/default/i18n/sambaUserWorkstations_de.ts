@@ -9,11 +9,6 @@
         <translation>Benutzer-Arbeitsstationen</translation>
     </message>
     <message>
-        <location filename="../sambaUserWorkstations.ui" line="17"/>
-        <source>sambaUserWorkstations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../sambaUserWorkstations.ui" line="24"/>
         <source>Name</source>
         <comment>uid</comment>
