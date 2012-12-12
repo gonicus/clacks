@@ -453,7 +453,7 @@ class Object(object):
         elif name in methods:
 
             def m_call(*args, **kwargs):
-                methods[name]['ref'](self, *args, **kwargs)
+                return methods[name]['ref'](self, *args, **kwargs)
             return m_call
 
         else:

@@ -12,12 +12,20 @@
 		<Dialogs>
 			<Dialog>sambaLogonHours.ui</Dialog>
 			<Dialog>sambaUserWorkstations.ui</Dialog>
+			<Dialog>sambaDomainInfo.ui</Dialog>
 		</Dialogs>
 		<BackendParameters>
 			<Backend sambaPrimaryGroupSID="SambaGroup:sambaSID" objectClasses="sambaSamAccount">LDAP</Backend>
       <Backend sambaUserWorkstations="SambaMachineAccount:uid,">ObjectHandler</Backend>
 		</BackendParameters>
-		<Backend>LDAP</Backend>
+    <Backend>LDAP</Backend>
+
+    <Methods>
+      <Method>
+        <Name>getSambaDomainNames</Name>
+        <Command>getSambaDriveLetters</Command>
+      </Method>
+    </Methods>
 
 		<Attributes>
 			<ForeignAttribute>

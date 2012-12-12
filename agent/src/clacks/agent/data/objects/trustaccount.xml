@@ -23,6 +23,7 @@
           <Value key="fullaccess">Full access</Value>
           <Value key="byhost">By host</Value>
         </Values>
+        <Default></Default>
         <Mandatory>true</Mandatory>
       </Attribute>
       <Attribute>

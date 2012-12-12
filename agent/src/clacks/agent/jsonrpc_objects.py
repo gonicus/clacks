@@ -282,6 +282,9 @@ class JSONRPCObjectMapper(Plugin):
         kwargs['user'] = user
         obj = obj_type(*args, **kwargs)
 
+        # Merge in methods that may be available later due to extending more addons
+        methods += obj.get_all_method_names()
+
         # Add dynamic information - if available
         if hasattr(obj, 'get_attributes'):
             properties = properties + obj.get_attributes()

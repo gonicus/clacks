@@ -174,6 +174,12 @@ class ObjectFactory(object):
 
         return getattr(self.__classes[name], "__properties")
 
+    def getObjectMethods(self, name):
+        if not name in self.__classes:
+            self.__classes[name] = self.__build_class(name)
+
+        return getattr(self.__classes[name], "__methods").keys()
+
     def getXMLDefinitionsCombined(self):
         """
         Returns a complete XML of all defined objects.
