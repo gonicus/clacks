@@ -7,7 +7,7 @@
     <BaseObject>false</BaseObject>
     <BackendParameters>
       <Backend objectClasses="trustAccount">LDAP</Backend>
-      <Backend accessTo="SambaMachineAccount:uid,">ObjectHandler</Backend>
+      <Backend accessTo="Device:cn,">ObjectHandler</Backend>
     </BackendParameters>
     <Templates>
       <Template>trustaccount.ui</Template>
