@@ -58,6 +58,22 @@
       </Attribute>
     </Attributes>
     <BaseObject>true</BaseObject>
+    <Find>
+      <Aspect>
+        <Tag>Device</Tag>
+        <Keyword>Device</Keyword>
+        <Keyword>Server</Keyword>
+        <Keyword>Workstation</Keyword>
+        <Search>cn</Search>
+        <Resolve filter="DN">manager</Resolve>
+        <Result>
+          <Map>
+            <Source>cn</Source>
+            <Destination>title</Destination>
+          </Map>
+        </Result>
+      </Aspect>
+    </Find>
   </Object>
 </Objects>
 
