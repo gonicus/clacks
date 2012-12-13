@@ -73,18 +73,18 @@
             </column>
            </widget>
           </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="descriptionLabel">
+            <property name="text">
+             <string>Description</string>
+            </property>
+            <property name="buddy">
+             <cstring>descriptionEdit</cstring>
+            </property>
+           </widget>
+          </item>
           <item row="3" column="1">
-           <spacer name="verticalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
+           <widget class="QLineEdit" name="descriptionEdit"/>
           </item>
          </layout>
         </item>
@@ -121,19 +121,6 @@
           </item>
           <item row="0" column="1">
            <widget class="QComboBox" name="sambaDomainNameEdit"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="descriptionLabel">
-            <property name="text">
-             <string>Description</string>
-            </property>
-            <property name="buddy">
-             <cstring>descriptionEdit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="descriptionEdit"/>
           </item>
           <item row="2" column="1">
            <spacer name="verticalSpacer_2">
@@ -467,7 +454,6 @@
   <tabstop>sambaDomainNameEdit</tabstop>
   <tabstop>sambaSIDEdit</tabstop>
   <tabstop>sambaPrimaryGroupSIDEdit</tabstop>
-  <tabstop>descriptionEdit</tabstop>
   <tabstop>sambaHomePathEdit</tabstop>
   <tabstop>sambaHomeDriveEdit</tabstop>
   <tabstop>sambaLogonScriptEdit</tabstop>
