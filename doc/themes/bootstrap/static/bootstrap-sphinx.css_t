@@ -17,7 +17,7 @@ body {
 {%- block sidebarlogo %}
   {%- if logo %}
 .navbar h3 a, .navbar .brand {
-  background: transparent url("{{ logo }}") no-repeat 22px 3px;
+  background: transparent url("{{ logo }}") no-repeat 8px 8px;
   padding-left: 62px;
 }
   {%- endif %}
