@@ -113,6 +113,15 @@ class GuiMethods(Plugin):
                 'uuid': res[0]['_uuid'],
                 'cn': res[0]['cn'][0]})
 
+    @Command(__help__=N_("Checks whether the given extension is already activated for the current object"), needsUser=True)
+    def extensionExists(self, userid, dn, etype):
+        index = PluginRegistry.getInstance("ObjectIndex")
+        res = index.search({'_type': 'User', 'dn': dn}, {'_extensions': 1})
+        if not res.count():
+            raise GOsaException(C.make_error("UNKNOWN_USER", userid))
+
+        return etype in res[0]['_extensions'] if '_extensions' in res[0] else False
+
     @Command(__help__=N_("Save user preferences"), needsUser=True)
     def saveUserPreferences(self, userid, name, value):
         index = PluginRegistry.getInstance("ObjectIndex")
