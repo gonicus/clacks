@@ -26,6 +26,16 @@ class SambaGuiMethods(Plugin):
     _target_ = 'gosa'
     _priority_ = 80
 
+    @Command(needsUser=True, __help__=N_("Sets a new samba-password for a user"))
+    def setSambaPassword(self, user, object_dn, password):
+        """
+        Set a new samba-password for a user
+        """
+        #TODO: Implement samba password change
+        print object_dn, password, user
+        print "Not Yet Implemented!"
+
+
     @Command(__help__=N_("Returns the current samba domain policy for a given user"))
     def getSambaDomainInformation(self, target_object):
 

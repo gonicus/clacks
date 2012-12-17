@@ -449,6 +449,21 @@
     </widget>
    </item>
   </layout>
+  <action name="actionChange_sambaPassword">
+   <property name="icon">
+    <iconset>
+    <normaloff>:/images/password.png</normaloff>:/images/password.png</iconset>
+   </property>
+   <property name="text">
+    <string>Change samba password...</string>
+   </property>
+   <property name="dialog" stdset="0">
+    <string notr="true">ChangeSambaPasswordDialog</string>
+   </property>
+   <property name="condition" stdset="0">
+    <string notr="true">extensionExists(dn,"SambaUser")</string>
+   </property>
+  </action>
  </widget>
  <tabstops>
   <tabstop>sambaDomainNameEdit</tabstop>
@@ -469,6 +484,7 @@
  </tabstops>
  <resources>
   <include location="resources/user-samba.qrc"/>
+  <include location="resources/user.qrc"/>
  </resources>
  <connections>
   <connection>

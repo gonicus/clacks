@@ -51,9 +51,12 @@
         </item>
         <item>
          <widget class="QTableWidget" name="tableWidget">
+          <property name="editTitle" stdset="0">
+           <string>Edit trusted hosts</string>
+          </property>
           <column>
            <property name="text">
-            <string comment="uid">Name</string>
+            <string comment="cn">Name</string>
            </property>
           </column>
           <column>

@@ -13,6 +13,7 @@
 		<FixedRDN>ou=systems</FixedRDN>
 		<Container>
 			<Type>SambaWorkstationContainer</Type>
+			<Type>DeviceContainer</Type>
 		</Container>
 	</Object>
 </Objects>

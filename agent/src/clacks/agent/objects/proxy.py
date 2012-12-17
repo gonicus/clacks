@@ -450,7 +450,7 @@ class ObjectProxy(object):
                 raise ACLException(C.make_error('PERMISSION_RETRACT', extension=extension, target=self.__base.dn))
 
         # Unregister the extensions methods
-        for method in self.__method_type_map:
+        for method in self.__method_type_map.keys():
             if self.__method_type_map[method] == extension:
                 del(self.__method_map[method])
                 del(self.__method_type_map[method])

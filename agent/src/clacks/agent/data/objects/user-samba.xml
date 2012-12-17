@@ -28,6 +28,21 @@
           <Value>__self__</Value>
         </CommandParameters>
       </Method>
+      <Method>
+        <Name>changeSambaPassword</Name>
+        <MethodParameters>
+          <MethodParameter>
+            <Name>password</Name>
+            <Type>UnicodeString</Type>
+            <Default></Default>
+          </MethodParameter>
+        </MethodParameters>
+        <Command>setSambaPassword</Command>
+        <CommandParameters>
+          <Value>dn</Value>
+          <Value>password</Value>
+        </CommandParameters>
+      </Method>
     </Methods>
 
 		<Attributes>
