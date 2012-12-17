@@ -52,7 +52,4 @@
    </hints>
   </connection>
  </connections>
- <slots>
-  <slot>property_sambaUserWorkstations()</slot>
- </slots>
 </ui>

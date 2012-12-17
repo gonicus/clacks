@@ -110,8 +110,4 @@
    </hints>
   </connection>
  </connections>
- <slots>
-  <slot>property_trustModel()</slot>
-  <slot>property_accessTo()</slot>
- </slots>
 </ui>
