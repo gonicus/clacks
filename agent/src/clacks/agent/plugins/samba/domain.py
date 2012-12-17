@@ -12,12 +12,15 @@
 
 from datetime import date, datetime
 from time import mktime
+import smbpasswd #@UnresolvedImport
 from clacks.common.utils import N_
 from zope.interface import implements
 from clacks.common.components import Plugin
 from clacks.common.handler import IInterfaceHandler
+from clacks.common import Environment
 from clacks.common.components import PluginRegistry
 from clacks.common.components import Command
+from clacks.agent.objects.proxy import ObjectProxy
 from clacks.agent.objects.comparator import ElementComparator
 
 
@@ -26,15 +29,35 @@ class SambaGuiMethods(Plugin):
     _target_ = 'gosa'
     _priority_ = 80
 
+
     @Command(needsUser=True, __help__=N_("Sets a new samba-password for a user"))
     def setSambaPassword(self, user, object_dn, password):
         """
         Set a new samba-password for a user
         """
-        #TODO: Implement samba password change
-        print object_dn, password, user
-        print "Not Yet Implemented!"
 
+        # Do we have read permissions for the requested attribute
+        env = Environment.getInstance()
+        topic = "%s.objects.%s.attributes.%s" % (env.domain, "User", "sambaNTPassword")
+        aclresolver = PluginRegistry.getInstance("ACLResolver")
+        if not aclresolver.check(user, topic, "w", base=object_dn):
+            self.__log.debug("user '%s' has insufficient permissions to write %s on %s, required is %s:%s" % (
+                user, "isLocked", object_dn, topic, "w"))
+            raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=object_dn))
+
+        topic = "%s.objects.%s.attributes.%s" % (env.domain, "User", "sambaLMPassword")
+        aclresolver = PluginRegistry.getInstance("ACLResolver")
+        if not aclresolver.check(user, topic, "w", base=object_dn):
+            self.__log.debug("user '%s' has insufficient permissions to write %s on %s, required is %s:%s" % (
+                user, "isLocked", object_dn, topic, "w"))
+            raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=object_dn))
+
+        # Set the password and commit the changes
+        lm, nt = smbpasswd.hash(password)
+        user = ObjectProxy(object_dn)
+        user.sambaNTPassword = nt
+        user.sambaLMPassword = lm
+        user.commit()
 
     @Command(__help__=N_("Returns the current samba domain policy for a given user"))
     def getSambaDomainInformation(self, target_object):

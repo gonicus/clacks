@@ -83,14 +83,12 @@
 				<Name>sambaLMPassword</Name>
 				<Description>LanManager Password</Description>
 				<Type>String</Type>
-				<ReadOnly>true</ReadOnly>
 			</Attribute>
 
 			<Attribute>
 				<Name>sambaNTPassword</Name>
 				<Description>MD4 hash of the unicode password</Description>
 				<Type>String</Type>
-				<ReadOnly>true</ReadOnly>
 			</Attribute>
 
 			<Attribute>

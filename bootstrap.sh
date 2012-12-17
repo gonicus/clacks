@@ -30,7 +30,7 @@ prepare_clacks() {
         fi
 
         echo -n "Cloning from git://github.com/clacks/clacks.git: "
-        git clone git://github.com/clacks/clacks.git clacks/src &> /dev/null && echo ok
+        git clone git://github.com/gonicus/clacks.git clacks/src &> /dev/null && echo ok
         if [ $? -ne 0 ]; then
                 echo "failed"
                 exit 1
