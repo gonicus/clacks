@@ -27,6 +27,7 @@ import re
 import hashlib
 import time
 import itertools
+import pymongo
 from zope.interface import implements
 from bson.binary import Binary
 from clacks.common.components.jsonrpc_utils import Binary as CBinary
@@ -162,7 +163,10 @@ class ObjectIndex(Plugin):
         for attr in indices:
             if not attr in used_attrs and not attr in ['dn', '_id', '_uuid', '_last_changed', '_type', '_extensions', '_container', '_parent_dn']:
                 self.log.debug("removing obsolete index for '%s'" % attr)
-                self.db.index.drop_index(attr)
+                try:
+                    self.db.index.drop_index(attr)
+                except pymongo.errors.OperationFailure:
+                    pass
 
         # Ensure index for all attributes that want an index
         for attr in used_attrs[:39]:
