@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>726</width>
-    <height>598</height>
+    <height>627</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,8 +29,8 @@
      <property name="title">
       <string>Common</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <layout class="QFormLayout" name="formLayout_2">
@@ -175,74 +175,70 @@
         </item>
        </layout>
       </item>
-      <item row="1" column="0">
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="Line" name="line">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+      <item>
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QFormLayout" name="formLayout">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::ExpandingFieldsGrow</enum>
+        </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="sambaHomePathLabel">
+          <property name="text">
+           <string>Home directory</string>
+          </property>
+          <property name="buddy">
+           <cstring>sambaHomePathEdit</cstring>
           </property>
          </widget>
         </item>
-        <item>
-         <layout class="QFormLayout" name="formLayout">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::ExpandingFieldsGrow</enum>
-          </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="sambaHomePathLabel">
-            <property name="text">
-             <string>Home directory</string>
-            </property>
-            <property name="buddy">
-             <cstring>sambaHomePathEdit</cstring>
+        <item row="0" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLineEdit" name="sambaHomePathEdit"/>
+          </item>
+          <item>
+           <widget class="QComboBox" name="sambaHomeDriveEdit">
+            <property name="maximumSize">
+             <size>
+              <width>60</width>
+              <height>16777215</height>
+             </size>
             </property>
            </widget>
-          </item>
-          <item row="0" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QLineEdit" name="sambaHomePathEdit"/>
-            </item>
-            <item>
-             <widget class="QComboBox" name="sambaHomeDriveEdit">
-              <property name="maximumSize">
-               <size>
-                <width>60</width>
-                <height>16777215</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="sambaLogonScriptLabel">
-            <property name="text">
-             <string>Logon script</string>
-            </property>
-            <property name="buddy">
-             <cstring>sambaLogonScriptEdit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="sambaLogonScriptEdit"/>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="sambaProfilePathLabel">
-            <property name="text">
-             <string>Profile path</string>
-            </property>
-            <property name="buddy">
-             <cstring>sambaProfilePathEdit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="sambaProfilePathEdit"/>
           </item>
          </layout>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="sambaLogonScriptLabel">
+          <property name="text">
+           <string>Logon script</string>
+          </property>
+          <property name="buddy">
+           <cstring>sambaLogonScriptEdit</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="sambaLogonScriptEdit"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="sambaProfilePathLabel">
+          <property name="text">
+           <string>Profile path</string>
+          </property>
+          <property name="buddy">
+           <cstring>sambaProfilePathEdit</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="sambaProfilePathEdit"/>
         </item>
        </layout>
       </item>
