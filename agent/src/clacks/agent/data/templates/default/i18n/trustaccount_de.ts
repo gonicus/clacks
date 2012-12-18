@@ -14,18 +14,28 @@
         <translation>Vertrauenseinstellungen</translation>
     </message>
     <message>
-        <location filename="../trustaccount.ui" line="43"/>
+        <location filename="../trustaccount.ui" line="41"/>
         <source>Mode</source>
         <translation>Modus</translation>
     </message>
     <message>
-        <location filename="../trustaccount.ui" line="56"/>
-        <source>Name</source>
-        <comment>uid</comment>
-        <translation>Name</translation>
+        <location filename="../trustaccount.ui" line="59"/>
+        <source>Edit trusted hosts</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../trustaccount.ui" line="61"/>
+        <location filename="../trustaccount.ui" line="63"/>
+        <source>Name</source>
+        <comment>cn</comment>
+        <translation type="unfinished">Name</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <comment>uid</comment>
+        <translation type="obsolete">Name</translation>
+    </message>
+    <message>
+        <location filename="../trustaccount.ui" line="68"/>
         <source>Description</source>
         <comment>description</comment>
         <translation>Beschreibung</translation>

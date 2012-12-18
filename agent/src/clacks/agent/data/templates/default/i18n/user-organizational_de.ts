@@ -9,27 +9,27 @@
         <translation>Organisatorisch</translation>
     </message>
     <message>
-        <location filename="../user-organizational.ui" line="24"/>
+        <location filename="../user-organizational.ui" line="208"/>
         <source>Organizational information</source>
         <translation>Organisatorische-Information</translation>
     </message>
     <message>
-        <location filename="../user-organizational.ui" line="35"/>
+        <location filename="../user-organizational.ui" line="219"/>
         <source>Employee no.</source>
         <translation>Angestellten-Nr.</translation>
     </message>
     <message>
-        <location filename="../user-organizational.ui" line="48"/>
+        <location filename="../user-organizational.ui" line="232"/>
         <source>Employee type</source>
         <translation>Angestellten-Typ</translation>
     </message>
     <message>
-        <location filename="../user-organizational.ui" line="81"/>
+        <location filename="../user-organizational.ui" line="265"/>
         <source>Manager</source>
         <translation>Verwalter</translation>
     </message>
     <message>
-        <location filename="../user-organizational.ui" line="91"/>
+        <location filename="../user-organizational.ui" line="275"/>
         <source>Choose a manager</source>
         <translation>Verwalter auswählen</translation>
     </message>
@@ -44,74 +44,74 @@
         <translation type="obsolete">Anmelde-ID</translation>
     </message>
     <message>
-        <location filename="../user-organizational.ui" line="95"/>
+        <location filename="../user-organizational.ui" line="279"/>
         <source>Name</source>
         <comment>cn</comment>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../user-organizational.ui" line="100"/>
+        <location filename="../user-organizational.ui" line="284"/>
         <source>Login ID</source>
         <comment>uid</comment>
         <translation>Anmelde-ID</translation>
     </message>
     <message>
-        <location filename="../user-organizational.ui" line="144"/>
+        <location filename="../user-organizational.ui" line="328"/>
         <source>Organization</source>
         <translation>Organisation</translation>
     </message>
     <message>
-        <location filename="../user-organizational.ui" line="157"/>
+        <location filename="../user-organizational.ui" line="341"/>
         <source>Unit</source>
         <translation>Einheit</translation>
     </message>
     <message>
-        <location filename="../user-organizational.ui" line="170"/>
+        <location filename="../user-organizational.ui" line="354"/>
         <source>Department no.</source>
         <translation>Abeilungsnr.</translation>
     </message>
     <message>
-        <location filename="../user-organizational.ui" line="183"/>
+        <location filename="../user-organizational.ui" line="367"/>
         <source>Room no.</source>
         <translation>Zimmernr.</translation>
     </message>
     <message>
-        <location filename="../user-organizational.ui" line="201"/>
+        <location filename="../user-organizational.ui" line="30"/>
         <source>Contact information</source>
         <translation>Kontakt-Information</translation>
     </message>
     <message>
-        <location filename="../user-organizational.ui" line="212"/>
+        <location filename="../user-organizational.ui" line="41"/>
         <source>Phone</source>
         <translation>Telefon</translation>
     </message>
     <message>
-        <location filename="../user-organizational.ui" line="225"/>
+        <location filename="../user-organizational.ui" line="54"/>
         <source>Mobile phone</source>
         <translation>Mobiltelefon</translation>
     </message>
     <message>
-        <location filename="../user-organizational.ui" line="254"/>
+        <location filename="../user-organizational.ui" line="83"/>
         <source>Pager</source>
         <translation>Pager</translation>
     </message>
     <message>
-        <location filename="../user-organizational.ui" line="267"/>
+        <location filename="../user-organizational.ui" line="96"/>
         <source>Fax</source>
         <translation>FAX</translation>
     </message>
     <message>
-        <location filename="../user-organizational.ui" line="316"/>
+        <location filename="../user-organizational.ui" line="145"/>
         <source>Location</source>
         <translation>Ort</translation>
     </message>
     <message>
-        <location filename="../user-organizational.ui" line="329"/>
+        <location filename="../user-organizational.ui" line="158"/>
         <source>State</source>
         <translation>Bundesland</translation>
     </message>
     <message>
-        <location filename="../user-organizational.ui" line="342"/>
+        <location filename="../user-organizational.ui" line="171"/>
         <source>Address</source>
         <translation>Adresse</translation>
     </message>

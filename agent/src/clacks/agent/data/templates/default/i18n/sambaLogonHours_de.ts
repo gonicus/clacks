@@ -4,7 +4,7 @@
 <context>
     <name>sambaLogonHours</name>
     <message>
-        <location filename="../sambaLogonHours.ui" line="14"/>
+        <location filename="../sambaLogonHours.ui" line="20"/>
         <source>Logon hours</source>
         <translation>Anmeldezeiten</translation>
     </message>

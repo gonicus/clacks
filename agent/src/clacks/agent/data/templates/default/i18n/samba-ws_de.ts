@@ -28,39 +28,36 @@
         <translation>System-ID</translation>
     </message>
     <message>
-        <location filename="../samba-ws.ui" line="55"/>
+        <location filename="../samba-ws.ui" line="133"/>
         <source>Display name</source>
         <translation>Angezeigter Name</translation>
     </message>
     <message>
-        <location filename="../samba-ws.ui" line="88"/>
+        <location filename="../samba-ws.ui" line="75"/>
         <source>Domain</source>
         <translation>Domäne</translation>
     </message>
     <message>
-        <location filename="../samba-ws.ui" line="101"/>
+        <location filename="../samba-ws.ui" line="88"/>
         <source>SID</source>
         <translation>SID</translation>
     </message>
     <message>
-        <location filename="../samba-ws.ui" line="130"/>
+        <location filename="../samba-ws.ui" line="117"/>
         <source>Description</source>
         <translation>Beschreibung</translation>
     </message>
     <message>
-        <location filename="../samba-ws.ui" line="150"/>
         <source>POSIX settings</source>
-        <translation>POSIX Einstellungen</translation>
+        <translation type="obsolete">POSIX Einstellungen</translation>
     </message>
     <message>
-        <location filename="../samba-ws.ui" line="158"/>
         <source>User ID</source>
-        <translation>Benutzer ID</translation>
+        <translation type="obsolete">Benutzer ID</translation>
     </message>
     <message>
-        <location filename="../samba-ws.ui" line="178"/>
         <source>Group ID</source>
-        <translation>Gruppen ID</translation>
+        <translation type="obsolete">Gruppen ID</translation>
     </message>
 </context>
 </TS>

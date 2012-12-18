@@ -13,7 +13,7 @@
         <translation type="obsolete">Gruppe</translation>
     </message>
     <message>
-        <location filename="../group-posix.ui" line="108"/>
+        <location filename="../group-posix.ui" line="120"/>
         <source>Edit members</source>
         <translation>Mitglieder bearbeiten</translation>
     </message>
@@ -23,7 +23,7 @@
         <translation>Allgmein</translation>
     </message>
     <message>
-        <location filename="../group-posix.ui" line="17"/>
+        <location filename="../group-posix.ui" line="21"/>
         <source>PosixGroup</source>
         <translation>Gruppe</translation>
     </message>
@@ -48,24 +48,24 @@
         <translation>Gruppen-ID</translation>
     </message>
     <message>
-        <location filename="../group-posix.ui" line="102"/>
+        <location filename="../group-posix.ui" line="108"/>
         <source>Members</source>
         <translation>Mitglieder</translation>
     </message>
     <message>
-        <location filename="../group-posix.ui" line="118"/>
+        <location filename="../group-posix.ui" line="124"/>
         <source>Name</source>
         <comment>sn</comment>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../group-posix.ui" line="123"/>
+        <location filename="../group-posix.ui" line="129"/>
         <source>Given name</source>
         <comment>givenName</comment>
         <translation>Vorname</translation>
     </message>
     <message>
-        <location filename="../group-posix.ui" line="128"/>
+        <location filename="../group-posix.ui" line="134"/>
         <source>Login ID</source>
         <comment>uid</comment>
         <translation>Anmelde-ID</translation>

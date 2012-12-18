@@ -14,47 +14,47 @@
         <translation>Benutzer</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="27"/>
+        <location filename="../user.ui" line="33"/>
         <source>Login information</source>
         <translation>Anmelde-Information</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="76"/>
+        <location filename="../user.ui" line="47"/>
         <source>Login &amp;ID</source>
         <translation>Anmelde &amp;ID</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="105"/>
+        <location filename="../user.ui" line="76"/>
         <source>Surname</source>
         <translation>Nachname</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="118"/>
+        <location filename="../user.ui" line="89"/>
         <source>Given name</source>
         <translation>Vorname</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="147"/>
+        <location filename="../user.ui" line="118"/>
         <source>Preferred language</source>
         <translation>Bevorzugte Sprache</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="178"/>
+        <location filename="../user.ui" line="190"/>
         <source>Contact information</source>
         <translation>Kontakt-Information</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="191"/>
+        <location filename="../user.ui" line="203"/>
         <source>Automatic display name</source>
         <translation>Automatischer angezeigter Name</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="198"/>
+        <location filename="../user.ui" line="210"/>
         <source>Display name</source>
         <translation>Angezeigter Name</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="211"/>
+        <location filename="../user.ui" line="223"/>
         <source>Title</source>
         <translation>Titel</translation>
     </message>
@@ -71,47 +71,47 @@
         <translation type="obsolete">Geschlecht</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="244"/>
+        <location filename="../user.ui" line="256"/>
         <source>Address</source>
         <translation>Adresse</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="276"/>
+        <location filename="../user.ui" line="288"/>
         <source>Phone</source>
         <translation>Telefon</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="289"/>
+        <location filename="../user.ui" line="301"/>
         <source>Homepage</source>
         <translation>Internetseite</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="299"/>
+        <location filename="../user.ui" line="311"/>
         <source>Please provide your web page here</source>
         <translation>Bitte geben Sie hier ihre Webseite ein</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="317"/>
+        <location filename="../user.ui" line="342"/>
         <source>Change password...</source>
         <translation>Passwort ändern...</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="320"/>
+        <location filename="../user.ui" line="345"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="335"/>
+        <location filename="../user.ui" line="360"/>
         <source>Lock account</source>
         <translation>Konto sperren</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="350"/>
+        <location filename="../user.ui" line="375"/>
         <source>Unlock account</source>
         <translation>Konto freigeben</translation>
     </message>
     <message>
-        <location filename="../user.ui" line="365"/>
+        <location filename="../user.ui" line="390"/>
         <source>Send message...</source>
         <translation>Nachricht senden...</translation>
     </message>
