@@ -21,13 +21,13 @@
     <message>
         <location filename="../trustaccount.ui" line="59"/>
         <source>Edit trusted hosts</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertrauens-Hosts bearbeiten</translation>
     </message>
     <message>
         <location filename="../trustaccount.ui" line="63"/>
         <source>Name</source>
         <comment>cn</comment>
-        <translation type="unfinished">Name</translation>
+        <translation>Name</translation>
     </message>
     <message>
         <source>Name</source>
