@@ -59,8 +59,10 @@ class SambaGuiMethods(Plugin):
         user.sambaLMPassword = lm
         user.commit()
 
-    @Command(__help__=N_("Returns the current samba domain policy for a given user"))
-    def getSambaDomainInformation(self, target_object):
+    @Command(needsUser=True, __help__=N_("Returns the current samba domain policy for a given user"))
+    def getSambaDomainInformation(self, user, target_object):
+
+        print "-------> ACL check for user", user
 
         # Use proxy if available
         _self = target_object

@@ -27,7 +27,8 @@ C.register_codes(dict(
     PROPERTY_NOT_FOUND=N_("Property '%(property)s' not found"),
     METHOD_NOT_FOUND=N_("Method '%(method)s' not found"),
     OBJECT_LOCKED=N_("Object '%(object)s' has been locked by '%(user)s' on %(when)s"),
-    OID_NOT_FOUND=N_("Object OID '%(oid)s' not found")
+    OID_NOT_FOUND=N_("Object OID '%(oid)s' not found"),
+    NOT_OBJECT_OWNER=N_("Caller does not own the referenced object")
     ))
 
 
@@ -97,8 +98,8 @@ class JSONRPCObjectMapper(Plugin):
 
         self.db.object_pool.remove({'uuid': ref})
 
-    @Command(__help__=N_("Set property for object on stack"))
-    def setObjectProperty(self, ref, name, value):
+    @Command(needsUser=True, __help__=N_("Set property for object on stack"))
+    def setObjectProperty(self, user, ref, name, value):
         """
         Set a property on an existing stack object.
 
@@ -117,14 +118,17 @@ class JSONRPCObjectMapper(Plugin):
         if not name in objdsc['object']['properties']:
             raise ValueError(C.make_error("PROPERTY_NOT_FOUND", property=name))
 
+        if not self.__check_user(ref, user):
+            raise ValueError(C.make_error("NO_OBJECT_OWNER"))
+
         if not self.__can_be_handled_locally(ref):
             proxy = self.__get_proxy(ref)
             return proxy.setObjectProperty(ref, name, value)
 
         return setattr(objdsc['object']['object'], name, value)
 
-    @Command(__help__=N_("Get property from object on stack"))
-    def getObjectProperty(self, ref, name):
+    @Command(needsUser=True, __help__=N_("Get property from object on stack"))
+    def getObjectProperty(self, user, ref, name):
         """
         Get a property of an existing stack object.
 
@@ -144,14 +148,17 @@ class JSONRPCObjectMapper(Plugin):
         if not name in objdsc['object']['properties']:
             raise ValueError(C.make_error("PROPERTY_NOT_FOUND", property=name))
 
+        if not self.__check_user(ref, user):
+            raise ValueError(C.make_error("NO_OBJECT_OWNER"))
+
         if not self.__can_be_handled_locally(ref):
             proxy = self.__get_proxy(ref)
             return proxy.getObjectProperty(ref, name)
 
         return getattr(objdsc['object']['object'], name)
 
-    @Command(__help__=N_("Call method from object on stack"))
-    def dispatchObjectMethod(self, ref, method, *args):
+    @Command(needsUser=True, __help__=N_("Call method from object on stack"))
+    def dispatchObjectMethod(self, user, ref, method, *args):
         """
         Call a member method of the referenced object.
 
@@ -172,27 +179,35 @@ class JSONRPCObjectMapper(Plugin):
         if not method in objdsc['object']['methods']:
             raise ValueError(C.make_error("METHOD_NOT_FOUND", method=method))
 
-        if not self.__can_be_handled_locally(ref):
-            proxy = self.__get_proxy(ref)
-            return proxy.dispatchObjectMethod(ref, method, *args)
+        if not self.__check_user(ref, user):
+            raise ValueError(C.make_error("NO_OBJECT_OWNER"))
+
+        #TODO: need to implement dispatchObjectMethodAsUser
+        #if not self.__can_be_handled_locally(ref):
+        #    proxy = self.__get_proxy(ref)
+        #    return proxy.dispatchObjectMethodAsUser(user, ref, method, *args)
 
         return getattr(objdsc['object']['object'], method)(*args)
 
     @Command(needsUser=True, __help__=N_("Reloads the object"))
-    def reloadObject(self, user, instance_uuid):
+    def reloadObject(self, user, ref):
         """
-        Opens a copy of the object given as instance_uuid and
+        Opens a copy of the object given as ref and
         closes the original instance.
         """
-        res = self.db.object_pool.find({'uuid': instance_uuid})
+        res = self.db.object_pool.find({'uuid': ref})
         if res.count():
+
+            if not self.__check_user(ref, user):
+                raise ValueError(C.make_error("NO_OBJECT_OWNER"))
+
             item = res[0]
             oid = item['object']['oid']
             uuid = item['object']['uuid']
             new_obj = self.openObject(user, oid, uuid)
             return new_obj
         else:
-            raise ValueError(C.make_error("REFERENCE_NOT_FOUND", ref=instance_uuid))
+            raise ValueError(C.make_error("REFERENCE_NOT_FOUND", ref=ref))
 
     @Command(needsUser=True, __help__=N_("Removes the given object"))
     def removeObject(self, user, oid, *args, **kwargs):
@@ -209,9 +224,10 @@ class JSONRPCObjectMapper(Plugin):
         ``Return``: True
         """
 
-        if not self.__can_oid_be_handled_locally(oid):
-            proxy = self.__get_proxy_by_oid(oid)
-            return proxy.removeObject(oid, *args)
+        #TODO: needs to implement removeObjectAsUser
+        #if not self.__can_oid_be_handled_locally(oid):
+        #    proxy = self.__get_proxy_by_oid(oid)
+        #    return proxy.removeObjectAsUser(user, oid, *args)
 
         # In case of "object" we want to check the lock
         if oid == 'object':
@@ -252,9 +268,10 @@ class JSONRPCObjectMapper(Plugin):
         ``Return``: JSON encoded object description
         """
 
-        if not self.__can_oid_be_handled_locally(oid):
-            proxy = self.__get_proxy_by_oid(oid)
-            return proxy.openObject(oid, *args)
+        #TODO: implement openObjectAsUser with proper ACL checks
+        #if not self.__can_oid_be_handled_locally(oid):
+        #    proxy = self.__get_proxy_by_oid(oid)
+        #    return proxy.openObjectAsUser(user, oid, *args)
 
         # In case of "object" we want to check the lock
         if oid == 'object':
@@ -322,6 +339,9 @@ class JSONRPCObjectMapper(Plugin):
         result.update(propvals)
 
         return result
+
+    def __check_user(self, ref, user):
+        return self.db.object_pool.find_one({'uuid': ref, 'user': user}, {'user': 1}) != None
 
     def __get_object_type(self, oid):
         if not oid in ObjectRegistry.objects:

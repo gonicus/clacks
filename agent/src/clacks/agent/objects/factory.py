@@ -994,7 +994,8 @@ class ObjectFactory(object):
                 # Append the method to the list of registered methods for this
                 # object
                 self.log.debug("adding method: '%s'" % (methodName, ))
-                methods[methodName] = {'ref': self.__create_class_method(klass, methodName, command, mParams, cParams)}
+                cr = PluginRegistry.getInstance('CommandRegistry')
+                methods[methodName] = {'ref': self.__create_class_method(klass, methodName, command, mParams, cParams, cr.callNeedsUser(command))}
 
         # Build list of hooks
         if 'Hooks' in classr.__dict__:
@@ -1061,7 +1062,7 @@ class ObjectFactory(object):
 
         return funk
 
-    def __create_class_method(self, klass, methodName, command, mParams, cParams):
+    def __create_class_method(self, klass, methodName, command, mParams, cParams, needsUser=False):
         """
         Creates a new klass-method for the current objekt.
         """
@@ -1119,6 +1120,11 @@ class ObjectFactory(object):
 
             cr = PluginRegistry.getInstance('CommandRegistry')
             self.log.info("Executed %s.%s which invoked %s(...)" % (klass.__name__, methodName, command))
+
+            # Do we need a user specification?
+            if needsUser:
+                return cr.dispatch(caller_object.owner, None, command, *parmList)
+
             return cr.call(command, *parmList)
         return funk
 

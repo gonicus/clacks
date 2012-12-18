@@ -88,6 +88,7 @@ class Object(object):
     myProperties = None
     env = None
     parent = None
+    owner = None
     attributesInSaveOrder = None
 
     def __saveOrder(self):
