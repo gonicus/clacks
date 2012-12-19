@@ -128,129 +128,129 @@ class SambaGuiMethods(Plugin):
 
         # sambaMinPwdLength: Password length has a default of 5
         if attrs['sambaMinPwdLength'] == "unset" or attrs['sambaMinPwdLength'] == 5:
-            attrs['sambaMinPwdLength'] = "5 <i>(" + N_("default") + ")</i>"
+            attrs['sambaMinPwdLength'] = "5 <i>(" + _("default") + ")</i>"
 
         # sambaPwdHistoryLength: Length of Password History Entries (default: 0 => off)
         if attrs['sambaPwdHistoryLength'] == "unset" or attrs['sambaPwdHistoryLength'] == 0:
-            attrs['sambaPwdHistoryLength'] = N_("Off") + " <i>(" + N_("default") + ")</i>"
+            attrs['sambaPwdHistoryLength'] = _("Off") + " <i>(" + _("default") + ")</i>"
 
         # sambaLogonToChgPwd: Force Users to logon for password change (default: 0 => off, 2 => on)
         if attrs['sambaLogonToChgPwd'] == "unset" or attrs['sambaLogonToChgPwd'] == 0:
-            attrs['sambaLogonToChgPwd'] = N_("Off") + " <i>(" + N_("default") + ")</i>"
+            attrs['sambaLogonToChgPwd'] = _("Off") + " <i>(" + _("default") + ")</i>"
         else:
-            attrs['sambaLogonToChgPwd'] = N_("On")
+            attrs['sambaLogonToChgPwd'] = _("On")
 
         # sambaMaxPwdAge: Maximum password age, in seconds (default: -1 => never expire passwords)'
         if attrs['sambaMaxPwdAge'] == "unset" or attrs['sambaMaxPwdAge'] <= 0:
-            attrs['sambaMaxPwdAge'] = N_("disabled") + " <i>(" + N_("default") + ")</i>"
+            attrs['sambaMaxPwdAge'] = _("disabled") + " <i>(" + _("default") + ")</i>"
         else:
-            attrs['sambaMaxPwdAge'] += " " + N_("seconds")
+            attrs['sambaMaxPwdAge'] += " " + _("seconds")
 
         # sambaMinPwdAge: Minimum password age, in seconds (default: 0 => allow immediate password change
         if attrs['sambaMinPwdAge'] == "unset" or attrs['sambaMinPwdAge'] <= 0:
-            attrs['sambaMinPwdAge'] = N_("disabled") + " <i>(" + N_("default") + ")</i>"
+            attrs['sambaMinPwdAge'] = _("disabled") + " <i>(" + _("default") + ")</i>"
         else:
-            attrs['sambaMinPwdAge'] += " " + N_("seconds")
+            attrs['sambaMinPwdAge'] += " " + _("seconds")
 
         # sambaLockoutDuration: Lockout duration in minutes (default: 30, -1 => forever)
         if attrs['sambaLockoutDuration'] == "unset" or attrs['sambaLockoutDuration'] == 30:
-            attrs['sambaLockoutDuration'] = "30 " + N_("minutes") + " <i>(" + N_("default") + ")</i>"
+            attrs['sambaLockoutDuration'] = "30 " + _("minutes") + " <i>(" + _("default") + ")</i>"
         elif attrs['sambaLockoutDuration'] == -1:
-            attrs['sambaLockoutDuration'] = N_("forever")
+            attrs['sambaLockoutDuration'] = _("forever")
         else:
-            attrs['sambaLockoutDuration'] += " " + N_("minutes")
+            attrs['sambaLockoutDuration'] += " " + _("minutes")
 
         # sambaLockoutThreshold: Lockout users after bad logon attempts (default: 0 => off
         if attrs['sambaLockoutThreshold'] == "unset" or attrs['sambaLockoutThreshold'] == 0:
-            attrs['sambaLockoutThreshold'] = N_("disabled") + " <i>(" + N_("default") + ")</i>"
+            attrs['sambaLockoutThreshold'] = _("disabled") + " <i>(" + _("default") + ")</i>"
 
         # sambaForceLogoff: Disconnect Users outside logon hours (default: -1 => off, 0 => on
         if attrs['sambaForceLogoff'] == "unset" or attrs['sambaForceLogoff'] == -1:
-            attrs['sambaForceLogoff'] = N_("off") + " <i>(" + N_("default") + ")</i>"
+            attrs['sambaForceLogoff'] = _("off") + " <i>(" + _("default") + ")</i>"
         else:
-            attrs['sambaForceLogoff'] = N_("on")
+            attrs['sambaForceLogoff'] = _("on")
 
         # sambaRefuseMachinePwdChange: Allow Machine Password changes (default: 0 => off
         if attrs['sambaRefuseMachinePwdChange'] == "unset" or attrs['sambaRefuseMachinePwdChange'] == 0:
-            attrs['sambaRefuseMachinePwdChange'] = N_("off") + " <i>(" + N_("default") + ")</i>"
+            attrs['sambaRefuseMachinePwdChange'] = _("off") + " <i>(" + _("default") + ")</i>"
         else:
-            attrs['sambaRefuseMachinePwdChange'] = N_("on")
+            attrs['sambaRefuseMachinePwdChange'] = _("on")
 
         # sambaBadPasswordTime: Time of the last bad password attempt
         if attrs['sambaBadPasswordTime'] == "unset" or not attrs['sambaBadPasswordTime']:
-            attrs['sambaBadPasswordTime'] = "<i>(" + N_("unset") + ")</i>"
+            attrs['sambaBadPasswordTime'] = "<i>(" + _("unset") + ")</i>"
         else:
             attrs['sambaRefuseMachinePwdChange'] = date.fromtimestamp(attrs['sambaBadPasswordTime']).strftime("%d.%m.%Y")
 
         # sambaBadPasswordCount: Bad password attempt count
         if attrs['sambaBadPasswordCount'] == "unset" or not attrs['sambaBadPasswordCount']:
-            attrs['sambaBadPasswordCount'] = "<i>(" + N_("unset") + ")</i>"
+            attrs['sambaBadPasswordCount'] = "<i>(" + _("unset") + ")</i>"
         else:
             attrs['sambaBadPasswordCount'] = date.fromtimestamp(attrs['sambaBadPasswordCount']).strftime("%d.%m.%Y")
 
         # sambaPwdLastSet: Timestamp of the last password update
         if attrs['sambaPwdLastSet'] == "unset" or not attrs['sambaPwdLastSet']:
-            attrs['sambaPwdLastSet'] = "<i>(" + N_("unset") + ")</i>"
+            attrs['sambaPwdLastSet'] = "<i>(" + _("unset") + ")</i>"
         else:
             attrs['sambaPwdLastSet'] = date.fromtimestamp(attrs['sambaPwdLastSet']).strftime("%d.%m.%Y")
 
         # sambaLogonTime: Timestamp of last logon
         if attrs['sambaLogonTime'] == "unset" or not attrs['sambaLogonTime']:
-            attrs['sambaLogonTime'] = "<i>(" + N_("unset") + ")</i>"
+            attrs['sambaLogonTime'] = "<i>(" + _("unset") + ")</i>"
         else:
             attrs['sambaLogonTime'] = date.fromtimestamp(attrs['sambaLogonTime']).strftime("%d.%m.%Y")
 
         # sambaLogoffTime: Timestamp of last logoff
         if attrs['sambaLogoffTime'] == "unset" or not attrs['sambaLogoffTime']:
-            attrs['sambaLogoffTime'] = "<i>(" + N_("unset") + ")</i>"
+            attrs['sambaLogoffTime'] = "<i>(" + _("unset") + ")</i>"
         else:
             attrs['sambaLogoffTime'] = date.fromtimestamp(attrs['sambaLogoffTime']).strftime("%d.%m.%Y")
 
         # sambaKickoffTime: Timestamp of when the user will be logged off automatically
         if attrs['sambaKickoffTime'] == "unset" or not attrs['sambaKickoffTime']:
-            attrs['sambaKickoffTime'] = "<i>(" + N_("unset") + ")</i>"
+            attrs['sambaKickoffTime'] = "<i>(" + _("unset") + ")</i>"
 
         # sambaPwdMustChange: Timestamp of when the password will expire
         if attrs['sambaPwdMustChange'] == "unset" or not attrs['sambaPwdMustChange']:
-            attrs['sambaPwdMustChange'] = "<i>(" + N_("unset") + ")</i>"
+            attrs['sambaPwdMustChange'] = "<i>(" + _("unset") + ")</i>"
 
         # sambaPwdCanChange: Timestamp of when the user is allowed to update the password
         time_now = mktime(datetime.now().timetuple())
         if attrs['sambaPwdCanChange'] == "unset" or not attrs['sambaPwdCanChange']:
-            attrs['sambaPwdCanChange'] = "<i>(" + N_("unset") + ")</i>"
+            attrs['sambaPwdCanChange'] = "<i>(" + _("unset") + ")</i>"
         elif attrs['sambaPwdCanChange'] != "unset" and time_now > attrs['sambaPwdCanChange']:
-            attrs['sambaPwdCanChange'] = N_("immediately")
+            attrs['sambaPwdCanChange'] = _("immediately")
         else:
             days = int((attrs['sambaPwdCanChange'] - time_now) / (60*60*24))
             hours = int(((attrs['sambaPwdCanChange'] - time_now) / (60*60)) % 24)
             minutes = int(((attrs['sambaPwdCanChange'] - time_now) / (60)) % 60)
-            attrs['sambaPwdCanChange'] = " " + days    + " " + N_("days")
-            attrs['sambaPwdCanChange']+= " " + hours   + " " + N_("hours")
-            attrs['sambaPwdCanChange']+= " " + minutes + " " + N_("minutes")
+            attrs['sambaPwdCanChange'] = " " + days    + " " + _("days")
+            attrs['sambaPwdCanChange']+= " " + hours   + " " + _("hours")
+            attrs['sambaPwdCanChange']+= " " + minutes + " " + _("minutes")
 
 
         res = "\n<div style='height:200px; overflow: auto;'>" + \
             "\n<table style='width:100%;'>" + \
-            "\n<tr><td><b>" + N_("Domain attributes") + "</b></td></tr>" + \
-            "\n<tr><td>" + N_("Min password length") + ":           </td><td>" + attrs['sambaMinPwdLength'] + "</td></tr>" + \
-            "\n<tr><td>" + N_("Min password length") + ":           </td><td>" + attrs['sambaMinPwdLength'] + "</td></tr>" + \
-            "\n<tr><td>" + N_("Password history") + ":              </td><td>" + attrs['sambaPwdHistoryLength'] + "</td></tr>" + \
-            "\n<tr><td>" + N_("Force password change") + ":         </td><td>" + attrs['sambaLogonToChgPwd'] + "</td></tr>" + \
-            "\n<tr><td>" + N_("Maximum password age") + ":          </td><td>" + attrs['sambaMaxPwdAge'] + "</td></tr>" + \
-            "\n<tr><td>" + N_("Minimum password age") + ":          </td><td>" + attrs['sambaMinPwdAge'] + "</td></tr>" + \
-            "\n<tr><td>" + N_("Lockout duration") + ":              </td><td>" + attrs['sambaLockoutDuration'] + "</td></tr>" + \
-            "\n<tr><td>" + N_("Bad lockout attempt") + ":           </td><td>" + attrs['sambaLockoutThreshold'] + "</td></tr>" + \
-            "\n<tr><td>" + N_("Disconnect time") + ":               </td><td>" + attrs['sambaForceLogoff'] + "</td></tr>" + \
-            "\n<tr><td>" + N_("Refuse machine password change") + ":</td><td>" + attrs['sambaRefuseMachinePwdChange'] + "</td></tr>" + \
+            "\n<tr><td><b>" + _("Domain attributes") + "</b></td></tr>" + \
+            "\n<tr><td>" + _("Min password length") + ":           </td><td>" + attrs['sambaMinPwdLength'] + "</td></tr>" + \
+            "\n<tr><td>" + _("Min password length") + ":           </td><td>" + attrs['sambaMinPwdLength'] + "</td></tr>" + \
+            "\n<tr><td>" + _("Password history") + ":              </td><td>" + attrs['sambaPwdHistoryLength'] + "</td></tr>" + \
+            "\n<tr><td>" + _("Force password change") + ":         </td><td>" + attrs['sambaLogonToChgPwd'] + "</td></tr>" + \
+            "\n<tr><td>" + _("Maximum password age") + ":          </td><td>" + attrs['sambaMaxPwdAge'] + "</td></tr>" + \
+            "\n<tr><td>" + _("Minimum password age") + ":          </td><td>" + attrs['sambaMinPwdAge'] + "</td></tr>" + \
+            "\n<tr><td>" + _("Lockout duration") + ":              </td><td>" + attrs['sambaLockoutDuration'] + "</td></tr>" + \
+            "\n<tr><td>" + _("Bad lockout attempt") + ":           </td><td>" + attrs['sambaLockoutThreshold'] + "</td></tr>" + \
+            "\n<tr><td>" + _("Disconnect time") + ":               </td><td>" + attrs['sambaForceLogoff'] + "</td></tr>" + \
+            "\n<tr><td>" + _("Refuse machine password change") + ":</td><td>" + attrs['sambaRefuseMachinePwdChange'] + "</td></tr>" + \
             "\n<tr><td>&nbsp;</td></tr>" + \
-            "\n<tr><td><b>" + N_("User attributes") + "</b></td></tr>" + \
-            "\n<tr><td>" + N_("SID") + ":                           </td><td>" + attrs['sambaSID'] + "</td></tr>" + \
-            "\n<tr><td>" + N_("Last failed login") + ":             </td><td>" + attrs['sambaBadPasswordTime'] + "</td></tr>" + \
-            "\n<tr><td>" + N_("Log on attempts") + ":                </td><td>"+ attrs['sambaBadPasswordCount'] + "</td></tr>" + \
-            "\n<tr><td>" + N_("Last password update") + ":          </td><td>" + attrs['sambaPwdLastSet'] + "</td></tr>" + \
-            "\n<tr><td>" + N_("Last log on") + ":                    </td><td>"+ attrs['sambaLogonTime'] + "</td></tr>" + \
-            "\n<tr><td>" + N_("Last log off") + ":                   </td><td>"+ attrs['sambaLogoffTime'] + "</td></tr>" + \
-            "\n<tr><td>" + N_("Automatic log off") + ":              </td><td>"+ attrs['sambaKickoffTime'] + "</td></tr>";
+            "\n<tr><td><b>" + _("User attributes") + "</b></td></tr>" + \
+            "\n<tr><td>" + _("SID") + ":                           </td><td>" + attrs['sambaSID'] + "</td></tr>" + \
+            "\n<tr><td>" + _("Last failed login") + ":             </td><td>" + attrs['sambaBadPasswordTime'] + "</td></tr>" + \
+            "\n<tr><td>" + _("Log on attempts") + ":                </td><td>"+ attrs['sambaBadPasswordCount'] + "</td></tr>" + \
+            "\n<tr><td>" + _("Last password update") + ":          </td><td>" + attrs['sambaPwdLastSet'] + "</td></tr>" + \
+            "\n<tr><td>" + _("Last log on") + ":                    </td><td>"+ attrs['sambaLogonTime'] + "</td></tr>" + \
+            "\n<tr><td>" + _("Last log off") + ":                   </td><td>"+ attrs['sambaLogoffTime'] + "</td></tr>" + \
+            "\n<tr><td>" + _("Automatic log off") + ":              </td><td>"+ attrs['sambaKickoffTime'] + "</td></tr>";
 
         return res
 

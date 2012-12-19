@@ -19,6 +19,7 @@ from clacks.common import Environment
 from clacks.common.error import ClacksErrorHandler as C
 from clacks.common.handler import IInterfaceHandler
 from clacks.common.components import Command, PluginRegistry, ObjectRegistry, AMQPServiceProxy, Plugin
+from clacks.agent.objects import ObjectProxy
 
 
 # Register the errors handled  by us
@@ -77,8 +78,8 @@ class JSONRPCObjectMapper(Plugin):
         cr = PluginRegistry.getInstance('CommandRegistry')
         return cr.objects.keys()
 
-    @Command(__help__=N_("Close object and remove it from stack"))
-    def closeObject(self, ref):
+    @Command(needsUser=True, __help__=N_("Close object and remove it from stack"))
+    def closeObject(self, user, ref):
         """
         Close an object by its reference. This will free the object on
         the agent side.
@@ -91,6 +92,9 @@ class JSONRPCObjectMapper(Plugin):
         """
         if not self.__get_ref(ref):
             raise ValueError(C.make_error("REFERENCE_NOT_FOUND", ref=ref))
+
+        if not self.__check_user(ref, user):
+            raise ValueError(C.make_error("NO_OBJECT_OWNER"))
 
         # Remove local object if needed
         if ref in self.__object:
@@ -195,19 +199,73 @@ class JSONRPCObjectMapper(Plugin):
         Opens a copy of the object given as ref and
         closes the original instance.
         """
-        res = self.db.object_pool.find({'uuid': ref})
-        if res.count():
+        item = self.db.object_pool.find_one({'uuid': ref})
+        if item:
 
             if not self.__check_user(ref, user):
                 raise ValueError(C.make_error("NO_OBJECT_OWNER"))
 
-            item = res[0]
             oid = item['object']['oid']
             uuid = item['object']['uuid']
-            new_obj = self.openObject(user, oid, uuid)
-            return new_obj
+            new_item = self.openObject(user, oid, uuid)
+
+            # Close original ref and return the new one
+            self.closeObject(user, item['uuid'])
+
+            return new_item
         else:
             raise ValueError(C.make_error("REFERENCE_NOT_FOUND", ref=ref))
+
+    @Command(needsUser=True, __help__=N_("Returns a delta of the reference currently in store and the data store"))
+    def diffObject(self, user, ref):
+        """
+        Opens a copy of the object given as ref and
+        returns a diff - if any.
+        """
+        item = self.db.object_pool.find_one({'uuid': ref})
+        if item is None:
+            return None
+
+        if not self.__check_user(ref, user):
+            raise ValueError(C.make_error("NO_OBJECT_OWNER"))
+
+        # Load current object
+        current_obj = ObjectProxy(item['object']['dn'])
+
+        # Load cache object
+        cache_obj = item['object']['object']
+        if cache_obj is None:
+            cache_obj = self.__object[ref]
+
+        ##
+        ## Generate delta
+        ##
+        delta = {'attributes': {'added': {}, 'removed': [], 'changed': {}}, 'extensions': {'added': [], 'removed': []}}
+
+        # Compare extension list
+        crnt_extensions = set(current_obj.get_object_info()['extensions'].items())
+        cche_extensions = set(cache_obj.get_object_info()['extensions'].items())
+        for _e, _s in crnt_extensions - cche_extensions:
+            if _s:
+                delta['extensions']['added'].append(_e)
+            else:
+                delta['extensions']['removed'].append(_e)
+
+        # Compare attribute contents
+        crnt_attributes = current_obj.get_attribute_values()['value']
+        cche_attributes = cache_obj.get_attribute_values()['value']
+        for _k, _v in crnt_attributes.items():
+            if _k in cche_attributes:
+                if _v != cche_attributes[_k]:
+                    delta['attributes']['changed'][_k] = _v
+            else:
+                delta['attributes']['added'][_k] = _v
+
+        for _k, _v in cche_attributes.items():
+            if not _k in crnt_attributes:
+                delta['attributes']['removed'].append(_k)
+
+        return delta
 
     @Command(needsUser=True, __help__=N_("Removes the given object"))
     def removeObject(self, user, oid, *args, **kwargs):
