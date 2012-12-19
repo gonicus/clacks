@@ -2,14 +2,22 @@
 <ui version="4.0">
  <class>SambaDomainInfo</class>
  <widget class="QWidget" name="SambaDomainInfo">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>351</width>
+    <height>311</height>
+   </rect>
+  </property>
   <property name="windowTitle">
    <string>Domain policy information</string>
   </property>
   <property name="dialogName" stdset="0">
-   <string notr="true">sambaDomainInfo</string>
+   <string notr="true">sambaDomainInfo(%locale)</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
     <widget class="QLabel" name="sambaDomainInfo">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
