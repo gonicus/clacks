@@ -14,7 +14,7 @@
    <string>Domain policy information</string>
   </property>
   <property name="dialogName" stdset="0">
-   <string notr="true">sambaDomainInfo(%locale)</string>
+   <string notr="true">sambaDomainInfo</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -26,7 +26,7 @@
       </sizepolicy>
      </property>
      <property name="callObjectMethod" stdset="0">
-      <string notr="true">getSambaDomainInformation</string>
+      <string notr="true">getSambaDomainInformation(%locale)</string>
      </property>
     </widget>
    </item>
