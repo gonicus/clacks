@@ -1,13 +1,13 @@
-# German translations for PROJECT.
+# German translations for Clacks.
 # Copyright (C) 2012 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
+# This file is distributed under the same license as the Clacks project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Clacks 0.8\n"
 "Report-Msgid-Bugs-To: pollmeier@gonicus.de\n"
-"POT-Creation-Date: 2012-12-05 14:57+0100\n"
+"POT-Creation-Date: 2012-12-19 12:51+0100\n"
 "PO-Revision-Date: 2012-09-28 16:00+0200\n"
 "Last-Translator: Cajus Pollmeier <pollmeier@gonicus.de>\n"
 "Language-Team: de <LL@li.org>\n"
@@ -49,8 +49,8 @@ msgid ""
 "Invalid permission map - combination of the characters c, r, o, w, d, s, "
 "e, x and m expected"
 msgstr ""
-"Ungültige Berechtigungsabbildung - Kombination der Zeichen c, r, o, w, d, s, "
-"e, x und m erwartet"
+"Ungültige Berechtigungsabbildung - Kombination der Zeichen c, r, o, w, d,"
+" s, e, x und m erwartet"
 
 #: src/clacks/agent/acl.py:69
 #, python-format
@@ -118,43 +118,43 @@ msgstr "Rollen können nicht auf sich selbst verweisen"
 msgid "No permission to send event '%(target)s'"
 msgstr "Keine Berechtigung das Ereignis '%(target)s' zu senden"
 
-#: src/clacks/agent/acl.py:1444
+#: src/clacks/agent/acl.py:1442
 msgid "List defined ACLs by base or topic."
 msgstr "Definierte ACLs nach Basis oder Topic listen."
 
-#: src/clacks/agent/acl.py:1525
+#: src/clacks/agent/acl.py:1523
 msgid "Remove defined ACL by ID."
 msgstr "Definierte ACL anhand der ID löschen."
 
-#: src/clacks/agent/acl.py:1565
+#: src/clacks/agent/acl.py:1563
 msgid "Add a new ACL."
 msgstr "Neue ACL hinzufügen."
 
-#: src/clacks/agent/acl.py:1651
+#: src/clacks/agent/acl.py:1649
 msgid "Refresh existing ACL by ID."
 msgstr "Existierende ACL anhand der ID aktualisieren."
 
-#: src/clacks/agent/acl.py:1743
+#: src/clacks/agent/acl.py:1741
 msgid "List defined roles."
 msgstr "Definierte Rollen auflisten."
 
-#: src/clacks/agent/acl.py:1781
+#: src/clacks/agent/acl.py:1779
 msgid "Add new role."
 msgstr "Neue Rolle hinzufügen."
 
-#: src/clacks/agent/acl.py:1815
+#: src/clacks/agent/acl.py:1813
 msgid "Add new acl to an existing role."
 msgstr "Neue ACL zu einer existierenden Rolle hinzufügen."
 
-#: src/clacks/agent/acl.py:1897
+#: src/clacks/agent/acl.py:1895
 msgid "Refresh existing role by ID."
 msgstr "Existierende Rolle anhand der ID aktualisiern."
 
-#: src/clacks/agent/acl.py:1999
+#: src/clacks/agent/acl.py:1996
 msgid "Remove defined role-acl by ID."
 msgstr "Definierte Rollen-ACL anhand der ID löschen."
 
-#: src/clacks/agent/acl.py:2027
+#: src/clacks/agent/acl.py:2024
 msgid "Remove a defined acl-role by name"
 msgstr "Definierte Rollen-ACL anhand des Namens löschen"
 
@@ -169,7 +169,9 @@ msgstr "Ungültige Parameter - Liste oder Verzeichnis erwartet"
 #: src/clacks/agent/command.py:77
 #, python-format
 msgid "Calling method '%(method)s' without a valid user session is not permitted"
-msgstr "Methodenaufruf '%(method)s' ohne gültige Benutzer-Sitzung ist nicht erlaubt"
+msgstr ""
+"Methodenaufruf '%(method)s' ohne gültige Benutzer-Sitzung ist nicht "
+"erlaubt"
 
 #: src/clacks/agent/command.py:78
 #, python-format
@@ -218,15 +220,15 @@ msgid ""
 "connections, this command will shut down the node you're currently logged"
 " in."
 msgstr ""
-"Node herunterfahren, dem die verwendete Queue gehört. Im Fall von HTTP-Verbindungen "
-"wird der Node heruntergefahren, der das HTTP-Gateway bereitstellt an dem Sie "
-"angemeldet sind."
+"Node herunterfahren, dem die verwendete Queue gehört. Im Fall von HTTP-"
+"Verbindungen wird der Node heruntergefahren, der das HTTP-Gateway "
+"bereitstellt an dem Sie angemeldet sind."
 
-#: src/clacks/agent/command.py:664
+#: src/clacks/agent/command.py:662
 msgid "Return the current session's user ID."
 msgstr "Liefert die momentane Sitzungs-Benutzer-ID."
 
-#: src/clacks/agent/command.py:668
+#: src/clacks/agent/command.py:666
 msgid "Send event to the bus."
 msgstr "Ein Ereignis auf den Bus senden."
 
@@ -235,60 +237,68 @@ msgstr "Ein Ereignis auf den Bus senden."
 msgid "'%(path)s' has already been registered"
 msgstr "'%(path)s' ist bereits registriert"
 
-#: src/clacks/agent/jsonrpc_objects.py:26
+#: src/clacks/agent/jsonrpc_objects.py:27
 #, python-format
 msgid "Reference '%(ref)s' not found"
 msgstr "Referenz '%(ref)s' nicht gefunden"
 
-#: src/clacks/agent/jsonrpc_objects.py:27
+#: src/clacks/agent/jsonrpc_objects.py:28
 #, python-format
 msgid "Property '%(property)s' not found"
 msgstr "Eigenschaft '%(property)s' nicht gefunden"
 
-#: src/clacks/agent/jsonrpc_objects.py:28
+#: src/clacks/agent/jsonrpc_objects.py:29
 #, python-format
 msgid "Method '%(method)s' not found"
 msgstr "Methode '%(method)s' nicht gefunden"
 
-#: src/clacks/agent/jsonrpc_objects.py:29
+#: src/clacks/agent/jsonrpc_objects.py:30
 #, python-format
 msgid "Object '%(object)s' has been locked by '%(user)s' on %(when)s"
 msgstr "Objekt '%(object)s' wurde von '%(user)s' am %(when)s gesperrt"
 
-#: src/clacks/agent/jsonrpc_objects.py:30
+#: src/clacks/agent/jsonrpc_objects.py:31
 #, python-format
 msgid "Object OID '%(oid)s' not found"
 msgstr "Objekt-OID '%(oid)s' nicht gefunden"
 
-#: src/clacks/agent/jsonrpc_objects.py:69
+#: src/clacks/agent/jsonrpc_objects.py:32
+msgid "Caller does not own the referenced object"
+msgstr "Der Aufrufer ist nicht Eigentümer des Objektes"
+
+#: src/clacks/agent/jsonrpc_objects.py:71
 msgid "List available object OIDs"
 msgstr "Listet verfügbare Objekt-OIDs auf"
 
-#: src/clacks/agent/jsonrpc_objects.py:79
+#: src/clacks/agent/jsonrpc_objects.py:81
 msgid "Close object and remove it from stack"
 msgstr "Schliesst ein Objekt und entfernt es vom Stapel"
 
-#: src/clacks/agent/jsonrpc_objects.py:100
+#: src/clacks/agent/jsonrpc_objects.py:105
 msgid "Set property for object on stack"
 msgstr "Setzt Eigenschaft für Objekt auf dem Stapel"
 
-#: src/clacks/agent/jsonrpc_objects.py:126
+#: src/clacks/agent/jsonrpc_objects.py:134
 msgid "Get property from object on stack"
 msgstr "Holt Eigenschaft für Objekt auf dem Stapel"
 
-#: src/clacks/agent/jsonrpc_objects.py:153
+#: src/clacks/agent/jsonrpc_objects.py:164
 msgid "Call method from object on stack"
 msgstr "Ruft Methode von Objekt auf dem Stapel auf"
 
-#: src/clacks/agent/jsonrpc_objects.py:181
+#: src/clacks/agent/jsonrpc_objects.py:196
 msgid "Reloads the object"
 msgstr "Läd Objekt neu"
 
-#: src/clacks/agent/jsonrpc_objects.py:197
+#: src/clacks/agent/jsonrpc_objects.py:219
+msgid "Returns a delta of the reference currently in store and the data store"
+msgstr "Liefert die Änderungen der Objekt-Referenz und des momentanen Objektes"
+
+#: src/clacks/agent/jsonrpc_objects.py:270
 msgid "Removes the given object"
 msgstr "Entfernt das angegebene Objekt"
 
-#: src/clacks/agent/jsonrpc_objects.py:238
+#: src/clacks/agent/jsonrpc_objects.py:312
 msgid "Instantiate object and place it on stack"
 msgstr "Instanziert Objekt und platziert es auf dem Stapel"
 
@@ -363,8 +373,8 @@ msgid ""
 "Cannot identify '%(topic)s' - it seems to be of type '%(type1)s and "
 "%(type2)s at the same time'"
 msgstr ""
-"Kann '%(topic)s' nicht identifizieren - es scheint gleichzeitig von Typ '%(type1)s und "
-"%(type2)s zu sein'"
+"Kann '%(topic)s' nicht identifizieren - es scheint gleichzeitig von Typ "
+"'%(type1)s und %(type2)s zu sein'"
 
 #: src/clacks/agent/objects/factory.py:87
 msgid "Cannot load object schema"
@@ -373,12 +383,16 @@ msgstr "Kann Objekt-Schema nicht laden"
 #: src/clacks/agent/objects/factory.py:88
 #, python-format
 msgid "Attribute '%(topic)s' is blocked by non existing attribute '%(blocker)s'"
-msgstr "Attribut '%(topic)s' wird von einem nicht existierenden Attribut '%(blocker)s' blockiert"
+msgstr ""
+"Attribut '%(topic)s' wird von einem nicht existierenden Attribut "
+"'%(blocker)s' blockiert"
 
 #: src/clacks/agent/objects/factory.py:89
 #, python-format
 msgid "Attribute '%(topic)s' depends on non existing attribute '%(dependency)s'"
-msgstr "Attribut '%(topic)s' hängt von einem nicht existierenden Attribut '%(dependency)s' ab"
+msgstr ""
+"Attribut '%(topic)s' hängt von einem nicht existierenden Attribut "
+"'%(dependency)s' ab"
 
 #: src/clacks/agent/objects/factory.py:90
 #, python-format
@@ -390,29 +404,29 @@ msgstr "Methode '%(method)s' hängt von einem unbekannten Attribut %(attribute)s
 msgid "Parameter '%(parameter)s' for command '%(command)s' is missing"
 msgstr "'%(parameter)s' Parameter für Methode '%(command)s' fehlt"
 
-#: src/clacks/agent/objects/index.py:47
+#: src/clacks/agent/objects/index.py:48
 #, python-format
 msgid "Object with UUID %(uuid)s already exists"
 msgstr "Objekt mit der UUID %(uuid)s existiert bereits"
 
-#: src/clacks/agent/objects/index.py:48
+#: src/clacks/agent/objects/index.py:49
 #, python-format
 msgid "Cannot find object %(id)s"
 msgstr "Kann Objekt %(id)s nicht finden"
 
-#: src/clacks/agent/objects/index.py:49
+#: src/clacks/agent/objects/index.py:50
 msgid "index rebuild in progress - try again later"
 msgstr "Index wird gerade erneuert - bitte später versuchen"
 
-#: src/clacks/agent/objects/index.py:520
+#: src/clacks/agent/objects/index.py:525
 msgid "Check if an object with the given UUID exists."
 msgstr "Prüfen ob ein Objekt mit der angegebenen UUID existiert."
 
-#: src/clacks/agent/objects/index.py:536
+#: src/clacks/agent/objects/index.py:541
 msgid "Get list of defined base object types."
 msgstr "Listet definierte Basis-Objekt-Typen auf."
 
-#: src/clacks/agent/objects/index.py:545
+#: src/clacks/agent/objects/index.py:550
 msgid "Query the index for entries."
 msgstr "Index nach Einträgen durchsuchen."
 
@@ -463,7 +477,8 @@ msgid "Value is not unique (%(value)s)"
 msgstr "Wert ist nicht eindeutig (%(value)s)"
 
 #: src/clacks/agent/objects/object.py:50
-msgid "Attribute %(target)s not found"
+#, fuzzy
+msgid "Attribute not found"
 msgstr "Attribut %(target)s nicht gefunden"
 
 #: src/clacks/agent/objects/object.py:51
@@ -479,7 +494,9 @@ msgstr "Modus '%(mode)s' ist nur für Basis-Objete verfügbar"
 #: src/clacks/agent/objects/object.py:53
 #, python-format
 msgid "Object of type '%(ext)s' cannot be added as to the '%(base)s' container"
-msgstr "Objekte vom Typ '%(ext)s' können nicht im Container '%(base)s' abgelegt werden"
+msgstr ""
+"Objekte vom Typ '%(ext)s' können nicht im Container '%(base)s' abgelegt "
+"werden"
 
 #: src/clacks/agent/objects/object.py:54
 msgid "Cannot remove non base object"
@@ -505,8 +522,10 @@ msgstr "Fehlender Schlüssel '%(key)s' nach dem Verarbeiten von Filter '%(filter
 
 #: src/clacks/agent/objects/object.py:59
 #, python-format
-msgid "Filter '%(filter)s' did return a %(type)s value - a list was expected"
-msgstr "Filter '%(filter)s' lieferte einen %(type)s Wert - eine Liste wurde erwartet"
+msgid "Filter '%(filter)s' did not return a %(type)s value - a list was expected"
+msgstr ""
+"Filter '%(filter)s' lieferte einen %(type)s Wert - eine Liste wurde "
+"erwartet"
 
 #: src/clacks/agent/objects/object.py:60
 msgid "Potential loop in attribute dependencies"
@@ -575,7 +594,9 @@ msgstr "Keine Berechtigung auf '%(topic)s' von '%(target)s' zuzugreifen"
 #: src/clacks/agent/objects/proxy.py:78
 #, python-format
 msgid "UUID of base (%(b_uuid)s) and extension (%(e_uuid)s) differ"
-msgstr "UUID der Basis (%(b_uuid)s) und der  Erweiterung (%(e_uuid)s) unterscheiden sich"
+msgstr ""
+"UUID der Basis (%(b_uuid)s) und der  Erweiterung (%(e_uuid)s) "
+"unterscheiden sich"
 
 #: src/clacks/agent/objects/backend/__init__.py:23
 #, python-format
@@ -589,7 +610,9 @@ msgstr "Kein 'RDN' Backend-Parameter angegeben"
 #: src/clacks/agent/objects/backend/__init__.py:25
 #, python-format
 msgid "Cannot generate a unique DN in '%(base)s' using a combination of %(rdns)s"
-msgstr "Kann keine eindeutige DN in '%(base)s' aus einer Kombination von %(rdns)s erzeugen"
+msgstr ""
+"Kann keine eindeutige DN in '%(base)s' aus einer Kombination von %(rdns)s"
+" erzeugen"
 
 #: src/clacks/agent/objects/backend/__init__.py:26
 #, python-format
@@ -607,8 +630,8 @@ msgid ""
 "Attribute '%s' uses the ObjectHandler backend but there is no config for "
 "it"
 msgstr ""
-"Attribut '%s' verwendet das ObjectHandler-Backend, aber es existiert keine "
-"Konfiguration dafür"
+"Attribut '%s' verwendet das ObjectHandler-Backend, aber es existiert "
+"keine Konfiguration dafür"
 
 #: src/clacks/agent/objects/backend/__init__.py:29
 #, python-format
@@ -618,7 +641,9 @@ msgstr "Kann Quell-Objekt '%(object)s' nicht finden"
 #: src/clacks/agent/objects/backend/__init__.py:30
 #, python-format
 msgid "No unique '%(object)s' object which matches '%(attribute)s == %(value)s'"
-msgstr "Kein eindeutiges '%(object)s' Objekt bei dem '%(attribute)s == %(value)s' gilt gefunden"
+msgstr ""
+"Kein eindeutiges '%(object)s' Objekt bei dem '%(attribute)s == %(value)s'"
+" gilt gefunden"
 
 #: src/clacks/agent/objects/backend/__init__.py:31
 msgid "Failed to generate a unique ID"
@@ -641,6 +666,12 @@ msgstr "Kein ID-Pool gefunden"
 #: src/clacks/agent/objects/backend/back_ldap.py:32
 msgid "Multiple ID pools found"
 msgstr "Mehrere ID-Pools gefunden"
+
+#: src/clacks/agent/objects/backend/back_mongodb.py:26
+#: src/clacks/agent/objects/filter/__init__.py:20
+#, python-format
+msgid "No filter instance for '%(filter)s' found"
+msgstr "Keine Filter-Instanz für '%(filter)s' gefunden"
 
 #: src/clacks/agent/objects/backend/registry.py:20
 #, python-format
@@ -693,7 +724,9 @@ msgstr "unbekannte Rolle '%(role)s'"
 #: src/clacks/agent/objects/comparator/acl_roles.py:136
 #: src/clacks/agent/objects/comparator/acl_set.py:135
 msgid "please use a combination of the charaters c, r, o, w, d, s, e, x and m"
-msgstr "Bitte verwenden Sie eine Kombination der Zeichen c, r, o, w, d, s, e, x und m"
+msgstr ""
+"Bitte verwenden Sie eine Kombination der Zeichen c, r, o, w, d, s, e, x "
+"und m"
 
 #: src/clacks/agent/objects/comparator/acl_roles.py:149
 #: src/clacks/agent/objects/comparator/acl_set.py:148
@@ -703,7 +736,9 @@ msgstr "unbekannte Attribute %(attributes)s"
 
 #: src/clacks/agent/objects/comparator/basic.py:44
 msgid "item does not match the given value ignoring the case"
-msgstr "Element passt nicht zu dem angegebenen Wert beim Ingorieren der Gross-/Kleinschreibung"
+msgstr ""
+"Element passt nicht zu dem angegebenen Wert beim Ingorieren der "
+"Gross-/Kleinschreibung"
 
 #: src/clacks/agent/objects/comparator/basic.py:50
 msgid "item does not match the given value"
@@ -738,11 +773,6 @@ msgstr "Wert ist zu kurz, es sind mindestens %(count)s Zeichen erforderlich"
 msgid "value is long, at max %(count)s characters allowed"
 msgstr "Wert ist zu lang, es sind maximal %(count)s Zeichen erlaubt"
 
-#: src/clacks/agent/objects/filter/__init__.py:20
-#, python-format
-msgid "No filter instance for '%(filter)s' found"
-msgstr "Keine Filter-Instanz für '%(filter)s' gefunden"
-
 #: src/clacks/agent/objects/operator/__init__.py:21
 #, python-format
 msgid "No operator instance for '%(operator)s' found"
@@ -771,7 +801,9 @@ msgstr "Ungültiger Bereich '%(scope)s' [SUB, BASE, ONE]"
 #: src/clacks/agent/plugins/gosa/methods.py:36
 #, python-format
 msgid "Invalid date specification '%(date)s' [hour, day, week, month, year, all]"
-msgstr "Ungültige Datums-Sepzifikation '%(date)s' [hour, day, week, month, year, all]"
+msgstr ""
+"Ungültige Datums-Sepzifikation '%(date)s' [hour, day, week, month, year, "
+"all]"
 
 #: src/clacks/agent/plugins/gosa/methods.py:37
 #, python-format
@@ -804,30 +836,36 @@ msgid "Returns details about the currently logged in user"
 msgstr "Liefert Details über den momentan angemeldeten Benutzer"
 
 #: src/clacks/agent/plugins/gosa/methods.py:116
+msgid ""
+"Checks whether the given extension is already activated for the current "
+"object"
+msgstr ""
+
+#: src/clacks/agent/plugins/gosa/methods.py:125
 msgid "Save user preferences"
 msgstr "Sichert Benutzer-Einstellungen"
 
-#: src/clacks/agent/plugins/gosa/methods.py:137
+#: src/clacks/agent/plugins/gosa/methods.py:146
 msgid "Load user preferences"
 msgstr "Läd Benutzereinstellungen"
 
-#: src/clacks/agent/plugins/gosa/methods.py:157
+#: src/clacks/agent/plugins/gosa/methods.py:166
 msgid "Search for object information"
 msgstr "Suche nach Objekt-Informationen"
 
-#: src/clacks/agent/plugins/gosa/methods.py:216
+#: src/clacks/agent/plugins/gosa/methods.py:225
 msgid "Resolves object information"
 msgstr "Löst Objekt-Informationen auf"
 
-#: src/clacks/agent/plugins/gosa/methods.py:272
+#: src/clacks/agent/plugins/gosa/methods.py:281
 msgid "Returns a list with all selectable samba-domain-names"
 msgstr "Liefert eine Liste mit allen auswählbaren Samba Domänen-Namen"
 
-#: src/clacks/agent/plugins/gosa/methods.py:280
+#: src/clacks/agent/plugins/gosa/methods.py:289
 msgid "Returns a list of DOS/Windows drive letters"
 msgstr "Liefert eine Liste von DOS/Windows Laufwerksbuchstaben"
 
-#: src/clacks/agent/plugins/gosa/methods.py:288
+#: src/clacks/agent/plugins/gosa/methods.py:297
 msgid "Filter for indexed attributes and return the matches."
 msgstr "Filter nach indizierten Attributen und liefert die Ergebnisse."
 
@@ -843,37 +881,39 @@ msgstr "Websockets aktiviert"
 msgid "System notification"
 msgstr "Systembenachrichtigung"
 
-#: src/clacks/agent/plugins/goto/client_service.py:59
+#: src/clacks/agent/plugins/goto/client_service.py:60
 #, python-format
 msgid "Device with hardware address '%(topic)s' already exists"
 msgstr "Ein Gerät mit der Hardware-Adresse '%(topic)s' existiert bereits"
 
-#: src/clacks/agent/plugins/goto/client_service.py:60
+#: src/clacks/agent/plugins/goto/client_service.py:61
 #, python-format
 msgid "User '%(topic)s' is not unique"
 msgstr "Benutzer '%(topic)s' ist nicht eindeutig"
 
-#: src/clacks/agent/plugins/goto/client_service.py:61
+#: src/clacks/agent/plugins/goto/client_service.py:62
 #, python-format
 msgid "Client '%(topic)s' not found"
 msgstr "Client '%(topic)s' nicht gefunden"
 
-#: src/clacks/agent/plugins/goto/client_service.py:62
+#: src/clacks/agent/plugins/goto/client_service.py:63
 #, python-format
 msgid "Client '%(topic)s' is offline"
 msgstr "Client '%(topic)s' ist nicht aktiv"
 
-#: src/clacks/agent/plugins/goto/client_service.py:63
+#: src/clacks/agent/plugins/goto/client_service.py:64
 #, python-format
 msgid "Client '%(topic)s' has no method %(method)s"
 msgstr "Client '%(topic)s' bietet keine Methode %(method)s"
 
-#: src/clacks/agent/plugins/goto/client_service.py:64
+#: src/clacks/agent/plugins/goto/client_service.py:65
 #, python-format
 msgid "Invalid data '%(entry)s:%(data)s' for client '%(target)s provided'"
-msgstr "Es wurden ungültige Daten '%(entry)s:%(data)s' für den Client '%(target)s angegeben"
+msgstr ""
+"Es wurden ungültige Daten '%(entry)s:%(data)s' für den Client '%(target)s"
+" angegeben"
 
-#: src/clacks/agent/plugins/goto/client_service.py:65
+#: src/clacks/agent/plugins/goto/client_service.py:66
 #, python-format
 msgid ""
 "Device type '%(type)s' for client '%(target)s' is invalid [terminal, "
@@ -882,55 +922,55 @@ msgstr ""
 "Geräte-Typ '%(type)s' des Clients '%(target)s' ist ungültig [terminal, "
 "workstation, server, sipphone, switch, router, printer, scanner]"
 
-#: src/clacks/agent/plugins/goto/client_service.py:66
+#: src/clacks/agent/plugins/goto/client_service.py:67
 #, python-format
 msgid "Owner '%(owner)s' for client '%(target)s' not found"
 msgstr "Eigentümer '%(owner)s' des Clients %(target)s' kann nicht gefunden werden"
 
-#: src/clacks/agent/plugins/goto/client_service.py:67
+#: src/clacks/agent/plugins/goto/client_service.py:68
 #, python-format
 msgid "Invalid client UUID '%(target)s'"
 msgstr "Ungültige Client UUID '%(target)s'"
 
-#: src/clacks/agent/plugins/goto/client_service.py:68
+#: src/clacks/agent/plugins/goto/client_service.py:69
 #, python-format
 msgid "Invalid status '%(status)s' for client '%(target)s'"
 msgstr "Ungültiger Status '%(status)s' des Clients '%(target)s'"
 
-#: src/clacks/agent/plugins/goto/client_service.py:163
+#: src/clacks/agent/plugins/goto/client_service.py:164
 msgid "List available clients."
 msgstr "Listet verfügbare Clients."
 
-#: src/clacks/agent/plugins/goto/client_service.py:176
+#: src/clacks/agent/plugins/goto/client_service.py:177
 msgid "Call method exposed by client."
 msgstr "Ruft eine freigegebene Client-Methode auf."
 
-#: src/clacks/agent/plugins/goto/client_service.py:216
+#: src/clacks/agent/plugins/goto/client_service.py:217
 msgid "Get the client Interface/IP/Netmask/Broadcast/MAC list."
 msgstr "Liefert die Client Interface/IP/Netmask/Broadcast/MAC Liste."
 
-#: src/clacks/agent/plugins/goto/client_service.py:242
+#: src/clacks/agent/plugins/goto/client_service.py:243
 msgid "List available client methods for specified client."
 msgstr "Listet alle für den angegebenen Client verfügbaren Methoden auf."
 
-#: src/clacks/agent/plugins/goto/client_service.py:256
+#: src/clacks/agent/plugins/goto/client_service.py:257
 msgid "List user sessions per client"
 msgstr "Listet Benutzer-Sitzungen pro Client"
 
-#: src/clacks/agent/plugins/goto/client_service.py:266
+#: src/clacks/agent/plugins/goto/client_service.py:267
 msgid "List clients a user is logged in"
 msgstr "Listet Clients an denen ein Benutzer angemeldet ist"
 
-#: src/clacks/agent/plugins/goto/client_service.py:273
+#: src/clacks/agent/plugins/goto/client_service.py:274
 msgid "Send synchronous notification message to user"
 msgstr "Sendet eine synchrone Benachrichtigung an einen Benutzer"
 
-#: src/clacks/agent/plugins/goto/client_service.py:336
-#: src/clacks/agent/plugins/goto/client_service.py:357
+#: src/clacks/agent/plugins/goto/client_service.py:337
+#: src/clacks/agent/plugins/goto/client_service.py:358
 msgid "Set system status"
 msgstr "Systemstatus setzen"
 
-#: src/clacks/agent/plugins/goto/client_service.py:405
+#: src/clacks/agent/plugins/goto/client_service.py:406
 msgid "Join a client to the clacks infrastructure."
 msgstr "Einen Client in die Clacks-Infrastruktur einbringen."
 
@@ -973,7 +1013,8 @@ msgid ""
 "no '%(type)s' object with '%(attribute)s' property matching '%(value)s' "
 "found"
 msgstr ""
-"kein '%(type)s'-Objekt mit %(attribute)s'-Eigenschaft welche auf '%(value)s' passt gefunden"
+"kein '%(type)s'-Objekt mit %(attribute)s'-Eigenschaft welche auf "
+"'%(value)s' passt gefunden"
 
 #: src/clacks/agent/plugins/misc/gravatar.py:33
 msgid "Generate samba lm:nt hash combination from the supplied password."
@@ -1593,27 +1634,28 @@ msgstr "Kein Passwort zum Sperren vorhanden."
 msgid "Locks the account password for the given DN"
 msgstr "Sperrt das Konto-Passwort der angegebenen DN"
 
-#: src/clacks/agent/plugins/password/manager.py:99
+#: src/clacks/agent/plugins/password/manager.py:98
 msgid "Unlocks the account password for the given DN"
 msgstr "Gibt das Konto-Passwort der angegebenen DN frei"
 
-#: src/clacks/agent/plugins/password/manager.py:133
+#: src/clacks/agent/plugins/password/manager.py:132
 msgid "Check whether the account can be locked or not"
 msgstr "Prüft ob das Konto gesperrt werden kann"
 
-#: src/clacks/agent/plugins/password/manager.py:165
+#: src/clacks/agent/plugins/password/manager.py:164
 msgid "Check whether the account can be unlocked or not"
 msgstr "Prüft ob das Konto freigegeben werden kann"
 
-#: src/clacks/agent/plugins/password/manager.py:195
-msgid "Changes the used password encryption method"
+#: src/clacks/agent/plugins/password/manager.py:194
+#, fuzzy
+msgid "Changes the used password enryption method"
 msgstr "Ändert die verwendete Passwortverschlüsselungsmethode"
 
-#: src/clacks/agent/plugins/password/manager.py:224
+#: src/clacks/agent/plugins/password/manager.py:223
 msgid "Sets a new password for a user"
 msgstr "Setzt ein neues Benutzerpasswort"
 
-#: src/clacks/agent/plugins/password/manager.py:255
+#: src/clacks/agent/plugins/password/manager.py:254
 msgid "List all password hashing-methods"
 msgstr "Listet alle verfügbaren Passwort-Methoden"
 
@@ -1636,7 +1678,18 @@ msgstr "ID-Pool für Attribut %(target)s ist leer [> %(max)s]"
 msgid "Return list of supported shells"
 msgstr "Liefert eine Liste der unterstützten Shells"
 
-#: src/clacks/agent/plugins/samba/domain.py:37
+#: src/clacks/agent/plugins/samba/domain.py:35
+msgid "Sets a new samba-password for a user"
+msgstr "Setzt ein neues Benutzerpasswort"
+
+#: src/clacks/agent/plugins/samba/domain.py:64
+msgid "Returns the current samba domain policy for a given user"
+msgstr ""
+"Liefert die momentane Samba Domänen-Richtlinie für den angegebenen "
+"Benutzer"
+
+#: src/clacks/agent/plugins/samba/domain.py:284
+#: src/clacks/agent/plugins/samba/domain.py:287
 #, python-format
 msgid "Unknown domain '%(domain)s'"
 msgstr "Unbekannte Domäne '%(domain)s'"
@@ -1660,6 +1713,164 @@ msgstr "Ungültiger Typ '%(type)s' für den SID-Generator [user, group]"
 msgid "recursive nesting not allowed"
 msgstr "rekursive Verschachtelung ist nicht erlaubt"
 
-#: src/clacks/agent/plugins/user/filters.py:26
+#: src/clacks/agent/plugins/user/filters.py:25
 msgid "Image sizes not specified"
 msgstr "Bildgrössen wurden nicht angegeben"
+
+#: src/clacks/agent/plugins/samba/domain.py:142
+#: src/clacks/agent/plugins/samba/domain.py:146
+#: src/clacks/agent/plugins/samba/domain.py:156
+#: src/clacks/agent/plugins/samba/domain.py:162
+#: src/clacks/agent/plugins/samba/domain.py:168
+#: src/clacks/agent/plugins/samba/domain.py:176
+#: src/clacks/agent/plugins/samba/domain.py:180
+#: src/clacks/agent/plugins/samba/domain.py:186
+msgid "default"
+msgstr "Standard"
+
+#: src/clacks/agent/plugins/samba/domain.py:146
+#: src/clacks/agent/plugins/samba/domain.py:150
+#: src/clacks/agent/plugins/samba/domain.py:180
+#: src/clacks/agent/plugins/samba/domain.py:186
+msgid "off"
+msgstr "aus"
+
+#: src/clacks/agent/plugins/samba/domain.py:152
+#: src/clacks/agent/plugins/samba/domain.py:182
+#: src/clacks/agent/plugins/samba/domain.py:188
+msgid "on"
+msgstr "an"
+
+#: src/clacks/agent/plugins/samba/domain.py:156
+#: src/clacks/agent/plugins/samba/domain.py:162
+#: src/clacks/agent/plugins/samba/domain.py:176
+msgid "disabled"
+msgstr "deaktiviert"
+
+#: src/clacks/agent/plugins/samba/domain.py:158
+#: src/clacks/agent/plugins/samba/domain.py:164
+msgid "second"
+msgstr "Sekunde"
+
+#: src/clacks/agent/plugins/samba/domain.py:158
+msgid "seconds"
+msgstr "Sekunden"
+
+#: src/clacks/agent/plugins/samba/domain.py:168
+#: src/clacks/agent/plugins/samba/domain.py:172
+#: src/clacks/agent/plugins/samba/domain.py:240
+msgid "minutes"
+msgstr "Minuten"
+
+#: src/clacks/agent/plugins/samba/domain.py:170
+msgid "unlimited"
+msgstr "unbegrenzt"
+
+#: src/clacks/agent/plugins/samba/domain.py:172
+#: src/clacks/agent/plugins/samba/domain.py:240
+msgid "minute"
+msgstr "Minute"
+
+#: src/clacks/agent/plugins/samba/domain.py:192
+#: src/clacks/agent/plugins/samba/domain.py:198
+#: src/clacks/agent/plugins/samba/domain.py:204
+#: src/clacks/agent/plugins/samba/domain.py:210
+#: src/clacks/agent/plugins/samba/domain.py:216
+#: src/clacks/agent/plugins/samba/domain.py:222
+#: src/clacks/agent/plugins/samba/domain.py:226
+#: src/clacks/agent/plugins/samba/domain.py:231
+msgid "not set"
+msgstr "nicht gesetzt"
+
+#: src/clacks/agent/plugins/samba/domain.py:233
+msgid "immediately"
+msgstr "sofort"
+
+#: src/clacks/agent/plugins/samba/domain.py:238
+msgid "day"
+msgstr "Tag"
+
+#: src/clacks/agent/plugins/samba/domain.py:238
+msgid "days"
+msgstr "Tage"
+
+#: src/clacks/agent/plugins/samba/domain.py:239
+msgid "hour"
+msgstr "Stunde"
+
+#: src/clacks/agent/plugins/samba/domain.py:239
+msgid "hours"
+msgstr "Stunden"
+
+#: src/clacks/agent/plugins/samba/domain.py:245
+msgid "Domain attributes"
+msgstr "Domänen-Attribute"
+
+#: src/clacks/agent/plugins/samba/domain.py:246
+msgid "Minimum password length"
+msgstr "Minimale Passwortlänge"
+
+#: src/clacks/agent/plugins/samba/domain.py:247
+msgid "Password history"
+msgstr "Passwort-Historie"
+
+#: src/clacks/agent/plugins/samba/domain.py:248
+msgid "Force password change"
+msgstr "Passwortänderung erzwingen"
+
+#: src/clacks/agent/plugins/samba/domain.py:249
+msgid "Maximum password age"
+msgstr "Maximales Passwortalter"
+
+#: src/clacks/agent/plugins/samba/domain.py:250
+msgid "Minimum password age"
+msgstr "Minimales Passwortalter"
+
+#: src/clacks/agent/plugins/samba/domain.py:251
+msgid "Lockout duration"
+msgstr "Sperrzeit"
+
+#: src/clacks/agent/plugins/samba/domain.py:252
+msgid "Number of bad lockout attempts"
+msgstr "Anzahl der Fehlanmeldungen"
+
+#: src/clacks/agent/plugins/samba/domain.py:253
+msgid "Disconnect time"
+msgstr "Trennzeit"
+
+#: src/clacks/agent/plugins/samba/domain.py:254
+msgid "Refuse machine password change"
+msgstr "Änderung des Maschinenpasswortes verbieten"
+
+#: src/clacks/agent/plugins/samba/domain.py:256
+msgid "User attributes"
+msgstr "Benutzer-Attribute"
+
+#: src/clacks/agent/plugins/samba/domain.py:257
+msgid "SID"
+msgstr "SID"
+
+#: src/clacks/agent/plugins/samba/domain.py:258
+msgid "Last failed login"
+msgstr "Letzte fehlgeschlagene Anmeldung"
+
+#: src/clacks/agent/plugins/samba/domain.py:259
+msgid "Log on attempts"
+msgstr "Anmeldeversuche"
+
+#: src/clacks/agent/plugins/samba/domain.py:260
+msgid "Last password update"
+msgstr "Letzte Passwortaktualisierung"
+
+#: src/clacks/agent/plugins/samba/domain.py:261
+msgid "Last log on"
+msgstr "Letzte Anmeldung"
+
+#: src/clacks/agent/plugins/samba/domain.py:262
+msgid "Last log off"
+msgstr "Letzte Abmeldung"
+
+#: src/clacks/agent/plugins/samba/domain.py:263
+msgid "Automatic log off"
+msgstr "Automatische Abmeldung"
+
