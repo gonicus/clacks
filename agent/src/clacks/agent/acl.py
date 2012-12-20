@@ -888,6 +888,9 @@ class ACLResolver(Plugin):
         # Load default LDAP base
         self.base = self.env.base
 
+        # Get Mongo in the hands
+        self.db = self.env.get_mongo_db('clacks')
+
     def __check_actions(self, actions):
         for action in actions:
             if 'acls' not in action:
@@ -1438,6 +1441,32 @@ class ACLResolver(Plugin):
         """
         for aclset in self.acl_sets:
             aclset.remove_acls_for_user(user)
+
+    @Command(needsUser=True, __help__=N_("Get entry points for browsing the object tree."))
+    def getEntryPoints(self, user):
+        bases = {}
+
+        # Walk thru all ACL definitions and check if the current user
+        # can read the base entry
+        for aclset in self.acl_sets:
+            base_type = self.db.index.find_one({'dn': aclset.base}, {'_type'})['_type']
+
+            # Do ACL check
+            topic = "%s.objects.%s" % (self.env.domain, base_type)
+            if self.check(user, topic, "r", base=aclset.base):
+
+                # Check if this ACL is eventually already covered by a previous sub ACL
+                #TODO: this could be refined by checking for ACL types
+                member = False
+                for acl in aclset:
+                    if user in acl.members:
+                        member = True
+                        break
+
+                if member:
+                    bases[aclset.base] = True
+
+        return bases.keys()
 
     @Command(needsUser=True, __help__=N_("List defined ACLs by base or topic."))
     def getACLs(self, user, base=None, topic=None):
