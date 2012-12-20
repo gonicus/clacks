@@ -64,6 +64,7 @@ class SambaGuiMethods(Plugin):
     @Command(needsUser=True, __help__=N_("Returns the current samba domain policy for a given user"))
     def getSambaDomainInformation(self, user, target_object, locale=None):
         print "-------> ACL check for user", user
+        print target_object
 
         # Do we have a locale?
         if locale is None:
@@ -240,7 +241,7 @@ class SambaGuiMethods(Plugin):
             attrs['sambaPwdCanChange']+= " " + minutes + " " + trn(N_("minute"), N_("minutes"), minutes)
 
 
-        res = "\n<div style='height:200px; overflow: auto;'>" + \
+        res = "\n<div style='overflow: auto;'>" + \
             "\n<table style='width:100%;'>" + \
             "\n<tr><td><b>" + tr(N_("Domain attributes")) + "</b></td></tr>" + \
             "\n<tr><td>" + tr(N_("Minimum password length")) + ":           </td><td>" + attrs['sambaMinPwdLength'] + "</td></tr>" + \

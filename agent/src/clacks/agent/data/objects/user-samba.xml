@@ -23,9 +23,17 @@
     <Methods>
       <Method>
         <Name>getSambaDomainInformation</Name>
+        <MethodParameters>
+          <MethodParameter>
+            <Name>locale</Name>
+            <Type>UnicodeString</Type>
+            <Default>C</Default>
+          </MethodParameter>
+        </MethodParameters>
         <Command>getSambaDomainInformation</Command>
         <CommandParameters>
           <Value>__self__</Value>
+          <Value>locale</Value>
         </CommandParameters>
       </Method>
       <Method>
