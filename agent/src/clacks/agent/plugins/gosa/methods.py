@@ -301,6 +301,150 @@ class GuiMethods(Plugin):
         for number in xrange(ord(start), ord(stop) + 1):
             yield chr(number)
 
+    @Command(needsUser=True, __help__=N_("Do a base query on top of the given base"))
+    def baseSearch(self, user, base, fltr=None):
+        """
+        Performs a query based on a simple search string consisting of keywords.
+
+        Query the database using the given query string.
+
+        ========== ==================
+        Parameter  Description
+        ========== ==================
+        base       Query base
+        fltr       Filter string
+        ========== ==================
+
+        ``Return``: List of dicts
+        """
+        #TODO: simplify the "search" code to do what it says.
+#        res = {}
+#        keywords = None
+#        fallback = fltr and "fallback" in fltr and fltr["fallback"]
+#
+#        # Bail out for empty searches
+#        if not qstring:
+#            return []
+#
+#        # Set defaults
+#        if not fltr:
+#            fltr = {}
+#        if not 'category' in fltr:
+#            fltr['category'] = "all"
+#        if not 'secondary' in fltr:
+#            fltr['secondary'] = "enabled"
+#        if not 'mod-time' in fltr:
+#            fltr['mod-time'] = "all"
+#
+#        try:
+#            keywords = [s.strip("'").strip('"') for s in shlex.split(qstring)]
+#        except ValueError:
+#            keywords = [s.strip("'").strip('"') for s in qstring.split(" ")]
+#        qstring = qstring.strip("'").strip('"')
+#        keywords.append(qstring)
+#
+#        # Make keywords unique
+#        keywords = list(set(keywords))
+#
+#        # Sanity checks
+#        scope = scope.upper()
+#        if not scope in ["SUB", "BASE", "ONE"]:
+#            raise GOsaException(C.make_error("INVALID_SEARCH_SCOPE", scope=scope))
+#        if not fltr['mod-time'] in ["hour", "day", "week", "month", "year", "all"]:
+#            raise GOsaException(C.make_error("INVALID_SEARCH_SCOPE", scope=scope))
+#
+#        # Build query: assemble keywords
+#        _s = ""
+#        if fallback:
+#            _s = re.compile('^.*(' + ("|".join([re.escape(p) for p in keywords])) + ').*$', re.IGNORECASE)
+#        else:
+#            _s = {'$in': keywords}
+#
+#        # Build query: join attributes and keywords
+#        queries = []
+#        for typ in self.__search_aid['attrs'].keys():
+#
+#            # Only filter for cateogry if desired
+#            if not ("all" == fltr['category'] or typ == fltr['category']):
+#                continue
+#
+#            attrs = self.__search_aid['attrs'][typ]
+#
+#            if len(attrs) == 0:
+#                continue
+#            if len(attrs) == 1:
+#                queries.append({'_type': typ, attrs[0]: _s})
+#            if len(attrs) > 1:
+#                queries.append({'_type': typ, "$or": map(lambda a: {a: _s}, attrs)})
+#
+#        # Build query: assemble
+#        query = ""
+#        if scope == "SUB":
+#            query = {"dn": re.compile("^(.*,)?" + re.escape(base) + "$"), "$or": queries}
+#
+#        elif scope == "ONE":
+#            query = {"$or": [{"dn": base}, {"_parent_dn": base}] + queries}
+#
+#        else:
+#            query = {"dn": base, "$or": queries}
+#
+#        # Build query: eventually extend with timing information
+#        td = None
+#        if fltr['mod-time'] != "all":
+#            now = datetime.datetime.now()
+#            if fltr['mod-time'] == 'hour':
+#                td = now - datetime.timedelta(hours=1)
+#            elif fltr['mod-time'] == 'day':
+#                td = now - datetime.timedelta(days=1)
+#            elif fltr['mod-time'] == 'week':
+#                td = now - datetime.timedelta(weeks=1)
+#            elif fltr['mod-time'] == 'month':
+#                td = now - datetime.timedelta(days=31)
+#            elif fltr['mod-time'] == 'year':
+#                td = now - datetime.timedelta(days=365)
+#
+#            td = {"$gte": time.mktime(td.timetuple())}
+#            query["_last_changed"] = td
+#
+#        # Perform primary query and get collect the results
+#        squery = []
+#        these = dict([(x, 1) for x in self.__search_aid['used_attrs']])
+#        these.update(dict(dn=1, _type=1, _uuid=1, _last_changed=1))
+#
+#        for item in self.db.index.find(query, these):
+#
+#            self.__update_res(res, item, user, self.__make_relevance(item, keywords, fltr))
+#
+#            # Collect information for secondary search?
+#            if fltr['secondary'] != "enabled":
+#                continue
+#
+#            for r in self.__search_aid['resolve'][item['_type']]:
+#                if r['attribute'] in item:
+#                    tag = r['type'] if r['type'] else item['_type']
+#
+#                    # If a category was choosen and it does not fit the
+#                    # desired target tag - skip that one
+#                    if not (fltr['category'] == "all" or fltr['category'] == tag):
+#                        continue
+#
+#                    squery.append({'_type': tag, r['filter']: {'$in': item[r['attribute']]}})
+#
+#        # Perform secondary query and update the result
+#        if fltr['secondary'] == "enabled" and squery:
+#            query = {"$or": squery}
+#
+#            # Add "_last_changed" information to query
+#            if fltr['mod-time'] != "all":
+#                query["_last_changed"] = td
+#
+#            # Execute query and update results
+#            for item in self.db.index.find(query, these):
+#                self.__update_res(res, item, user, self.__make_relevance(item, keywords, fltr, True), secondary=True)
+#
+#        return res.values()
+        return []
+
     @Command(needsUser=True, __help__=N_("Filter for indexed attributes and return the matches."))
     def search(self, user, base, scope, qstring, fltr=None):
         """
