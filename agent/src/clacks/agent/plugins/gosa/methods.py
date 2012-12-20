@@ -61,6 +61,13 @@ class GuiMethods(Plugin):
     def __init__(self):
         self.env = Environment.getInstance()
 
+        # Load container mapping from object Factory
+        factory = ObjectFactory.getInstance()
+        self.containers = []
+        for ot, info in factory.getObjectTypes().items():
+            if 'container' in info:
+                self.containers.append(ot)
+
     def serve(self):
         # Collect value extenders
         self.__value_extender = clacks.agent.objects.renderer.get_renderers()
@@ -515,6 +522,7 @@ class GuiMethods(Plugin):
                     entry[k] = self.__build_value(v, item)
 
             entry['icon'] = None
+            entry['container'] = item['_type'] in self.containers
 
             icon_attribute = self.__search_aid['mapping'][item['_type']]['icon']
             if icon_attribute and icon_attribute in item and item[icon_attribute]:
