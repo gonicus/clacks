@@ -191,6 +191,17 @@ class Binary(object):
     def __init__(self, data):
         self.set(data)
 
+    def __eq__(self, other):
+        if isinstance(other, Binary):
+            return self.data == other.data
+        return NotImplemented
+
+    def __ne__(self, other):
+        result = self.__eq__(other)
+        if result is NotImplemented:
+            return result
+        return not result
+
     def set(self, data):
         self.data = data
 
