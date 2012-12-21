@@ -252,8 +252,8 @@ class JSONRPCObjectMapper(Plugin):
                 delta['extensions']['removed'].append(_e)
 
         # Compare attribute contents
-        crnt_attributes = current_obj.get_attribute_values()['value']
-        cche_attributes = cache_obj.get_attribute_values()['value']
+        crnt_attributes = dict(filter(lambda x: x[1], current_obj.get_attribute_values()['value'].items()))
+        cche_attributes = dict(filter(lambda x: x[1], cache_obj.get_attribute_values()['value'].items()))
         for _k, _v in crnt_attributes.items():
             if _k in cche_attributes:
                 if _v != cche_attributes[_k]:
