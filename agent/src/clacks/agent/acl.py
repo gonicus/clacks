@@ -1456,6 +1456,11 @@ class ACLResolver(Plugin):
 
     @Command(needsUser=True, __help__=N_("Get entry points for browsing the object tree."))
     def getEntryPoints(self, user):
+
+        # Check if we've an admin override first
+        if user in self.admins:
+            return [self.env.base]
+
         sub_bases = {}
         bases = {}
 
