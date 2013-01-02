@@ -32,7 +32,7 @@ from clacks.common.error import ClacksErrorHandler as C
 
 # Register the errors handled  by us
 C.register_codes(dict(
-    INVALID_SEARCH_SCOPE=N_("Invalid scope '%(scope)s' [SUB, BASE, ONE]"),
+    INVALID_SEARCH_SCOPE=N_("Invalid scope '%(scope)s' [SUB, BASE, ONE, CHILDREN]"),
     INVALID_SEARCH_DATE=N_("Invalid date specification '%(date)s' [hour, day, week, month, year, all]"),
     UNKNOWN_USER=N_("Unknown user '%(target)s'"),
     BACKEND_PARAMETER_MISSING=N_("Backend parameter for '%(extension)s.%(attribute)s' is missing")))
@@ -313,13 +313,14 @@ class GuiMethods(Plugin):
         Parameter  Description
         ========== ==================
         base       Query base
-        scope      Query scope (SUB, BASE, ONE)
+        scope      Query scope (SUB, BASE, ONE, CHILDREN)
         qstring    Query string
         fltr       Hash for extra parameters
         ========== ==================
 
         ``Return``: List of dicts
         """
+
         res = {}
         keywords = None
         fallback = fltr and "fallback" in fltr and fltr["fallback"]
@@ -350,10 +351,10 @@ class GuiMethods(Plugin):
 
         # Sanity checks
         scope = scope.upper()
-        if not scope in ["SUB", "BASE", "ONE"]:
+        if not scope in ["SUB", "BASE", "ONE", "CHILDREN"]:
             raise GOsaException(C.make_error("INVALID_SEARCH_SCOPE", scope=scope))
         if not fltr['mod-time'] in ["hour", "day", "week", "month", "year", "all"]:
-            raise GOsaException(C.make_error("INVALID_SEARCH_SCOPE", scope=scope))
+            raise GOsaException(C.make_error("NVALID_SEARCH_DATE", date=fltr['mod-time']))
 
         # Build query: assemble keywords
         _s = {}
@@ -389,7 +390,12 @@ class GuiMethods(Plugin):
             query = {"dn": re.compile("^(.*,)?" + re.escape(base) + "$"), "$or": queries}
 
         elif scope == "ONE":
-            query = {"$or": [{"dn": base}, {"_parent_dn": base}] + queries}
+            query = {"$or": [{"dn": base}, {"_parent_dn": base}]}
+            query.update(dict((k,v) for d in queries for (k,v) in d.items()))
+
+        elif scope == "CHILDREN":
+            query = {"_parent_dn": base}
+            query.update(dict((k,v) for d in queries for (k,v) in d.items()))
 
         else:
             query = {"dn": base, "$or": queries}
