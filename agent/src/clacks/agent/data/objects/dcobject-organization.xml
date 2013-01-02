@@ -62,6 +62,22 @@
       <Type>SystemsContainer</Type>
     </Container>
     <BaseObject>true</BaseObject>
+    <Find>
+      <Aspect>
+        <Tag>DomainComponentOrg</Tag>
+        <Keyword>Container</Keyword>
+        <Keyword>Domain</Keyword>
+        <Keyword>Component</Keyword>
+        <Search>dc</Search>
+        <Resolve filter="DN">manager</Resolve>
+        <Result>
+          <Map>
+            <Source>dc</Source>
+            <Destination>title</Destination>
+          </Map>
+        </Result>
+      </Aspect>
+    </Find>
   </Object>
 </Objects>
 

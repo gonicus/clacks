@@ -13,6 +13,20 @@
 		</Container>
 		<BaseObject>true</BaseObject>
 		<FixedRDN>ou=people</FixedRDN>
+    <Find>
+      <Aspect>
+        <Tag>PeopleContainer</Tag>
+        <Keyword>User</Keyword>
+        <Search>ou</Search>
+        <Resolve filter="DN">manager</Resolve>
+        <Result>
+          <Map>
+            <Source>ou</Source>
+            <Destination>title</Destination>
+          </Map>
+        </Result>
+      </Aspect>
+    </Find>
 	</Object>
 </Objects>
 

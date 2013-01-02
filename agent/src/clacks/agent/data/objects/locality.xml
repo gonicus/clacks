@@ -62,6 +62,20 @@
       <Type>SystemsContainer</Type>
 		</Container>
 		<BaseObject>true</BaseObject>
+    <Find>
+      <Aspect>
+        <Tag>Locality</Tag>
+        <Keyword>Locality</Keyword>
+        <Search>l</Search>
+        <Resolve filter="DN">manager</Resolve>
+        <Result>
+          <Map>
+            <Source>l</Source>
+            <Destination>title</Destination>
+          </Map>
+        </Result>
+      </Aspect>
+    </Find>
 	</Object>
 </Objects>
 

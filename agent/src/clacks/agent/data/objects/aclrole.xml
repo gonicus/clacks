@@ -30,6 +30,19 @@
       </Attribute>
     </Attributes>
 		<BaseObject>true</BaseObject>
+    <Find>
+      <Aspect>
+        <Tag>AclRole</Tag>
+        <Keyword>Acl</Keyword>
+        <Search>name</Search>
+        <Result>
+          <Map>
+            <Source>name</Source>
+            <Destination>title</Destination>
+          </Map>
+        </Result>
+      </Aspect>
+    </Find>
 	</Object>
 </Objects>
 

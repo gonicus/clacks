@@ -15,6 +15,20 @@
 			<Type>PosixGroup</Type>
 			<Type>GroupOfNames</Type>
 		</Container>
+    <Find>
+      <Aspect>
+        <Tag>GroupContainer</Tag>
+        <Keyword>Groups</Keyword>
+        <Search>ou</Search>
+        <Resolve filter="DN">manager</Resolve>
+        <Result>
+          <Map>
+            <Source>ou</Source>
+            <Destination>title</Destination>
+          </Map>
+        </Result>
+      </Aspect>
+    </Find>
 	</Object>
 </Objects>
 

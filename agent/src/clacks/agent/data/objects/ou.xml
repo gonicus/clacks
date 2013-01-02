@@ -93,6 +93,21 @@
       <Type>AclRole</Type>
     </Container>
     <BaseObject>true</BaseObject>
+    <Find>
+      <Aspect>
+        <Tag>OrganizationalUnit</Tag>
+        <Keyword>Unit</Keyword>
+        <Keyword>Organization</Keyword>
+        <Search>ou</Search>
+        <Resolve filter="DN">manager</Resolve>
+        <Result>
+          <Map>
+            <Source>ou</Source>
+            <Destination>title</Destination>
+          </Map>
+        </Result>
+      </Aspect>
+    </Find>
   </Object>
 </Objects>
 
