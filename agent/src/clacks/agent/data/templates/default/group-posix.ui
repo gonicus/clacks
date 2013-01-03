@@ -198,7 +198,13 @@
      <y>20</y>
     </hint>
    </hints>
-  </connection>
+ </connection>
+ <connection>
+   <sender>autoGid</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>posixAccount</receiver>
+   <slot>property_autoGid()</slot>
+ </connection>
   <connection>
    <sender>memberUidEdit</sender>
    <signal>textChanged(QString)</signal>
