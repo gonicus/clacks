@@ -291,8 +291,8 @@ class ObjectFactory(object):
                     res['keyword'].append(s.text)
 
                 res['resolve'] = []
-                if "Resolve" in attr:
-                    for r in attr['Resolve']:
+                if "Resolve" in attr.__dict__:
+                    for r in attr.Resolve:
                         res['resolve'].append(dict(attribute=r.text,
                             filter=r.attrib['filter'] if 'filter' in r.attrib else None,
                             type=r.attrib['type'] if 'type' in r.attrib else None))

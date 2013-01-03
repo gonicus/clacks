@@ -323,6 +323,7 @@ class GuiMethods(Plugin):
 
         res = {}
         keywords = None
+        dn_hook = "_parent_dn"
         fallback = fltr and "fallback" in fltr and fltr["fallback"]
 
         if not base:
@@ -337,6 +338,8 @@ class GuiMethods(Plugin):
             fltr['secondary'] = "enabled"
         if not 'mod-time' in fltr:
             fltr['mod-time'] = "all"
+        if 'adjusted-dn' in fltr and fltr['adjusted-dn'] == True:
+            dn_hook = "_adjusted_parent_dn"
 
         if qstring:
             try:
@@ -382,19 +385,23 @@ class GuiMethods(Plugin):
                 if len(attrs) > 1:
                     queries.append({'_type': typ, "$or": map(lambda a: {a: _s}, attrs)})
             else:
-                queries.append({'_type': typ})
+                if dn_hook != "_adjusted_parent_dn":
+                    queries.append({'_type': typ})
 
         # Build query: assemble
         query = ""
         if scope == "SUB":
-            query = {"dn": re.compile("^(.*,)?" + re.escape(base) + "$"), "$or": queries}
+            if queries:
+                query = {"dn": re.compile("^(.*,)?" + re.escape(base) + "$"), "$or": queries}
+            else:
+                query = {"dn": re.compile("^(.*,)?" + re.escape(base) + "$")}
 
         elif scope == "ONE":
-            query = {"$or": [{"dn": base}, {"_parent_dn": base}]}
+            query = {"$or": [{"dn": base}, {dn_hook: base}]}
             query.update(dict((k,v) for d in queries for (k,v) in d.items()))
 
         elif scope == "CHILDREN":
-            query = {"_parent_dn": base}
+            query = {dn_hook: base}
             query.update(dict((k,v) for d in queries for (k,v) in d.items()))
 
         else:
@@ -431,16 +438,17 @@ class GuiMethods(Plugin):
             if fltr['secondary'] != "enabled":
                 continue
 
-            for r in self.__search_aid['resolve'][item['_type']]:
-                if r['attribute'] in item:
-                    tag = r['type'] if r['type'] else item['_type']
+            if item['_type'] in self.__search_aid['resolve']:
+                for r in self.__search_aid['resolve'][item['_type']]:
+                    if r['attribute'] in item:
+                        tag = r['type'] if r['type'] else item['_type']
 
-                    # If a category was choosen and it does not fit the
-                    # desired target tag - skip that one
-                    if not (fltr['category'] == "all" or fltr['category'] == tag):
-                        continue
+                        # If a category was choosen and it does not fit the
+                        # desired target tag - skip that one
+                        if not (fltr['category'] == "all" or fltr['category'] == tag):
+                            continue
 
-                    squery.append({'_type': tag, r['filter']: {'$in': item[r['attribute']]}})
+                        squery.append({'_type': tag, r['filter']: {'$in': item[r['attribute']]}})
 
         # Perform secondary query and update the result
         if fltr['secondary'] == "enabled" and squery:
@@ -491,8 +499,9 @@ class GuiMethods(Plugin):
                     penalty *= 2
 
             # Penalty for not having category in keywords
-            if not set([t.lower() for t in self.__search_aid['aliases'][item['_type']]]).intersection(set([k.lower() for k in keywords])):
-                penalty *= 6
+            if item['_type'] in self.__search_aid['aliases']:
+                if not set([t.lower() for t in self.__search_aid['aliases'][item['_type']]]).intersection(set([k.lower() for k in keywords])):
+                    penalty *= 6
 
         # Penalty for secondary
         if fltr['secondary'] == "enabled":
@@ -591,6 +600,10 @@ class GuiMethods(Plugin):
         """
         ne = {'dn': entry['dn'], '_type': entry['_type'], '_uuid':
                 entry['_uuid'], '_last_changed': entry['_last_changed']}
+
+        if not entry['_type'] in self.__search_aid['mapping']:
+            return None
+
         attrs = self.__search_aid['mapping'][entry['_type']].values()
 
         for attr in attrs:
