@@ -11,6 +11,7 @@
 
 		<BaseObject>true</BaseObject>
 		<FixedRDN>ou=winstations</FixedRDN>
+                <StructuralInvisible>true</StructuralInvisible>
 		<Container>
 			<Type>SambaMachineAccount</Type>
 		</Container>

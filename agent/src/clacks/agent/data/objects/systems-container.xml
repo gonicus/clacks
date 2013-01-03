@@ -11,23 +11,11 @@
 
 		<BaseObject>true</BaseObject>
 		<FixedRDN>ou=systems</FixedRDN>
+                <StructuralInvisible>true</StructuralInvisible>
 		<Container>
 			<Type>SambaWorkstationContainer</Type>
 			<Type>DeviceContainer</Type>
 		</Container>
-    <Find>
-      <Aspect>
-        <Tag>SystemsContainer</Tag>
-        <Keyword>Systems</Keyword>
-        <Search>ou</Search>
-        <Result>
-          <Map>
-            <Source>ou</Source>
-            <Destination>title</Destination>
-          </Map>
-        </Result>
-      </Aspect>
-    </Find>
 	</Object>
 </Objects>
 

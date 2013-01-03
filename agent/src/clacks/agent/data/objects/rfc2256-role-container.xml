@@ -13,6 +13,7 @@
 		</Container>
 		<BaseObject>true</BaseObject>
 		<FixedRDN>ou=roles</FixedRDN>
+                <StructuralInvisible>true</StructuralInvisible>
 	</Object>
 </Objects>
 

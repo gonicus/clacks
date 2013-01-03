@@ -316,8 +316,31 @@ class ObjectProxy(object):
         else:
             return self.__method_map.keys()
 
-    def get_parent_dn(self):
-        return dn2str(str2dn(self.__base.dn.encode('utf-8'))[1:]).decode('utf-8')
+    def get_parent_dn(self, dn=None):
+        if not dn:
+            dn = self.__base.dn
+        return dn2str(str2dn(dn.encode('utf-8'))[1:]).decode('utf-8')
+
+    def get_adjusted_parent_dn(self, dn=None):
+        index = PluginRegistry.getInstance("ObjectIndex")
+        tdn = []
+        pdn = self.get_parent_dn(dn)
+
+        while True:
+            if pdn == self.__env.base or len(pdn) < len(self.__env.base):
+                break
+
+            # Fetch object type for pdn
+            ptype = index.search({"dn": pdn}, {'_type': 1})[0]['_type']
+            schema = self.__factory.getXMLSchema(ptype)
+            if not ("StructuralInvisible" in schema.__dict__ and schema.StructuralInvisible == True):
+                tdn.insert(0, str2dn(pdn.encode('utf-8'))[0])
+
+            pdn = self.get_parent_dn(pdn)
+
+        tdn += str2dn(self.__env.base.encode('utf-8'))
+
+        return dn2str(tdn).decode('utf-8')
 
     def get_base_type(self):
         return self.__base.__class__.__name__
@@ -842,7 +865,9 @@ class ObjectProxy(object):
             raise ACLException(C.make_error('PERMISSION_ACCESS', topic, target=self.dn))
 
         res = {'dn': self.__base.dn, '_type': self.__base.__class__.__name__,
-               '_parent_dn': re.sub("^[^,]*,", "", self.__base.dn), '_uuid': self.__base.uuid}
+               '_parent_dn': self.get_parent_dn(self.__base.dn),
+               '_adjusted_parent_dn': self.get_adjusted_parent_dn(self.__base.dn),
+               '_uuid': self.__base.uuid}
 
         # Create non object pseudo attributes
 

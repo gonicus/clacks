@@ -11,6 +11,7 @@
 
 		<BaseObject>true</BaseObject>
 		<FixedRDN>ou=devices</FixedRDN>
+                <StructuralInvisible>true</StructuralInvisible>
 		<Container>
 			<Type>Device</Type>
 		</Container>
