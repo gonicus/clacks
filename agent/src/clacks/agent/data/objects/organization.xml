@@ -9,6 +9,10 @@
     </BackendParameters>
     <Backend>LDAP</Backend>
 
+    <Templates>
+      <Template>organization.ui</Template>
+    </Templates>
+
     <Attributes>
       <Attribute>
         <Name>o</Name>
