@@ -9,6 +9,10 @@
     </BackendParameters>
     <Backend>LDAP</Backend>
 
+    <Templates>
+      <Template>locality.ui</Template>
+    </Templates>
+
     <Attributes>
       <Attribute>
         <Name>l</Name>

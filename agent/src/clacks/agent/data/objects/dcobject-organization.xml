@@ -9,6 +9,10 @@
     </BackendParameters>
     <Backend>LDAP</Backend>
 
+    <Templates>
+      <Template>domaincomponent.ui</Template>
+    </Templates>
+
     <Attributes>
       <Attribute>
         <Name>dc</Name>
