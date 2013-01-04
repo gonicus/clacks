@@ -66,6 +66,19 @@
       <Type>SystemsContainer</Type>
     </Container>
     <BaseObject>true</BaseObject>
+    <Find>
+      <Aspect>
+        <Tag>Country</Tag>
+        <Keyword>Country</Keyword>
+        <Search>c</Search>
+        <Result>
+          <Map>
+            <Source>c</Source>
+            <Destination>title</Destination>
+          </Map>
+        </Result>
+      </Aspect>
+    </Find>
   </Object>
 </Objects>
 
