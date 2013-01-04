@@ -405,7 +405,11 @@ class GuiMethods(Plugin):
             query.update(dict((k,v) for d in queries for (k,v) in d.items()))
 
         else:
-            query = {"dn": base, "$or": queries}
+            if queries:
+                query = {"dn": base, "$or": queries}
+            else:
+                query = {"dn": base}
+
 
         # Build query: eventually extend with timing information
         td = None
