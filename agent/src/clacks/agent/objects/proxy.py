@@ -326,6 +326,10 @@ class ObjectProxy(object):
         tdn = []
         pdn = self.get_parent_dn(dn)
 
+        # Skip base
+        if len(pdn) < len(self.__env.base):
+            return pdn
+
         while True:
             if pdn == self.__env.base or len(pdn) < len(self.__env.base):
                 break
