@@ -532,7 +532,7 @@ class GuiMethods(Plugin):
             return
 
         entry = {'tag': item['_type'], 'relevance': relevance, 'uuid': item['_uuid'],
-            'secondary': secondary, 'lastChanged': item['_last_changed']}
+            'secondary': secondary, 'lastChanged': item['_last_changed'], 'hasChildren': True}
         for k, v in self.__search_aid['mapping'][item['_type']].items():
             if k:
                 if k == "icon":
