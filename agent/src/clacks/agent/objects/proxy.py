@@ -338,13 +338,14 @@ class ObjectProxy(object):
             ptype = index.search({"dn": pdn}, {'_type': 1})[0]['_type']
             schema = self.__factory.getXMLSchema(ptype)
             if not ("StructuralInvisible" in schema.__dict__ and schema.StructuralInvisible == True):
-                tdn.insert(0, str2dn(pdn.encode('utf-8'))[0])
+                #tdn.insert(0, str2dn(pdn.encode('utf-8'))[0])
+                tdn.append(str2dn(pdn.encode('utf-8'))[0])
 
             pdn = self.get_parent_dn(pdn)
 
-        tdn += str2dn(self.__env.base.encode('utf-8'))
+        tdn = str2dn(self.__env.base.encode('utf-8'))[::-1] + tdn[::-1]
 
-        return dn2str(tdn).decode('utf-8')
+        return dn2str(tdn[::-1]).decode('utf-8')
 
     def get_base_type(self):
         return self.__base.__class__.__name__
